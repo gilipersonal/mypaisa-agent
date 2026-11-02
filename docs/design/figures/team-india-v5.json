@@ -1,1398 +1,761 @@
 {
- "about": "Prototype v5's figures for phases 18 to 20 (MA-291): the agent team, India, the app beyond the chat. Written and checked by make_team_india.py; illustrative figures and names.",
- "clock": {
-  "today": "2026-10-26",
-  "label": "Mon 26 Oct",
-  "prices": "Fri 23 Oct close",
-  "fx": 112.5,
-  "review": "Sat 24 Oct 09:00"
- },
- "team": {
-  "heartbeat": {
-   "every_min": 5,
-   "silent_after_min": 15
+  "about": "Prototype v5's figures for phases 13 to 15, numbered 18 to 20 before MA-307 (MA-291): the agent team, India, the app beyond the chat. Written and checked by make_team_india.py; illustrative figures and names.",
+  "clock": {
+    "today": "2026-10-26",
+    "label": "Mon 26 Oct",
+    "prices": "Fri 23 Oct close",
+    "fx": 112.5,
+    "review": "Sat 24 Oct 09:00"
   },
-  "agents": [
-   {
-    "id": "concierge",
-    "name": "Concierge",
-    "icon": "support_agent",
-    "share": "concierge",
-    "job": "Talks to members in the chat; routes your instructions to the desk",
-    "brain": "Sonnet, Haiku for small turns",
-    "alone": "Answers, reads, proposes changes to records with a Confirm card",
-    "asks": "Nothing: members confirm their own records",
-    "runs": [
-     [
-      "2026-10-25T21:14",
-      "A chat with Asha"
-     ],
-     [
-      "2026-10-26T06:10",
-      "Your question about the team"
-     ],
-     [
-      "2026-10-26T06:40",
-      "Friday's grades, for you"
-     ],
-     [
-      "2026-10-26T08:26",
-      "The tuner's reasons, for you"
-     ]
-    ],
-    "hb": 2,
-    "code_only": false
-   },
-   {
-    "id": "steward",
-    "name": "Data steward",
-    "icon": "dataset",
-    "share": "steward_warden",
-    "job": "Keeps prices flowing from free sources",
-    "brain": "Code; Haiku writes its requests",
-    "alone": "Fails over within a chain, retries, fills gaps, labels stale data",
-    "asks": "A new or reordered source, any paid feed, a source's terms",
-    "runs": [
-     [
-      "2026-10-25T18:20",
-      "Asked you: EODHD Historian (cr-25)"
-     ],
-     [
-      "2026-10-26T06:00",
-      "Friday's prices checked; the FT page filled in Balanced"
-     ]
-    ],
-    "hb": 3,
-    "code_only": false
-   },
-   {
-    "id": "scout",
-    "name": "News scout",
-    "icon": "newspaper",
-    "share": "scout",
-    "job": "Collects news and events, tags them, matches them to holdings",
-    "brain": "Haiku through Batches; code scores",
-    "alone": "Tags and matches",
-    "asks": "A new feed or event type",
-    "runs": [
-     [
-      "2026-10-26T03:00",
-      "Stopped at the 8-call guard"
-     ],
-     [
-      "2026-10-26T08:31",
-      "Ran again, without the bad story"
-     ]
-    ],
-    "hb": 1,
-    "silent": [
-     "2026-10-26T03:12",
-     "2026-10-26T08:31"
-    ],
-    "code_only": false
-   },
-   {
-    "id": "analyst",
-    "name": "Analyst",
-    "icon": "calculate",
-    "share": null,
-    "job": "The rules engine",
-    "brain": "Code only",
-    "alone": "Runs after each close",
-    "asks": "Any rule threshold change, through the tuner",
-    "runs": [
-     [
-      "2026-10-23T21:20",
-      "Stances after the US close"
-     ]
-    ],
-    "hb": 4,
-    "code_only": true
-   },
-   {
-    "id": "forecaster",
-    "name": "Forecaster",
-    "icon": "online_prediction",
-    "share": "forecaster",
-    "job": "The models; switches itself off when its record slips",
-    "brain": "Code; Sonnet writes the explanations",
-    "alone": "Runs daily; switches itself off",
-    "asks": "Promotions, through the tuner",
-    "runs": [
-     [
-      "2026-10-24T06:10",
-      "After Friday's close"
-     ]
-    ],
-    "hb": 4,
-    "code_only": false
-   },
-   {
-    "id": "tuner",
-    "name": "Grader and tuner",
-    "icon": "grading",
-    "share": "tuner",
-    "job": "Grades daily, calibrates within bounds, proposes changes on evidence",
-    "brain": "Code; Sonnet writes the reviews",
-    "alone": "Grades, moves calibration within bounds, rolls back a worse map",
-    "asks": "Promoting a challenger, any change to rules or models",
-    "runs": [
-     [
-      "2026-10-23T22:10",
-      "Graded Friday's calls"
-     ],
-     [
-      "2026-10-26T05:40",
-      "Calibration refitted"
-     ],
-     [
-      "2026-10-26T06:40",
-      "Asked you: risk model v8 (cr-26)"
-     ],
-     [
-      "2026-10-26T07:05",
-      "Asked you: 3 flags for a PAUSE (cr-27)"
-     ]
-    ],
-    "hb": 0,
-    "asking_from": "2026-10-26T06:40",
-    "code_only": false
-   },
-   {
-    "id": "warden",
-    "name": "Ops warden",
-    "icon": "engineering",
-    "share": "steward_warden",
-    "job": "Runs the daily pipeline and repairs it",
-    "brain": "Code; Haiku summarises incidents",
-    "alone": "Retries, catches up, rolls back to the last good version",
-    "asks": "Anything it cannot fix: an incident",
-    "runs": [
-     [
-      "2026-10-26T03:27",
-      "Opened inc-7"
-     ],
-     [
-      "2026-10-26T04:00",
-      "Rolled the news scout back to v13"
-     ],
-     [
-      "2026-10-26T08:31",
-      "Ran the news scout again, skipping the story"
-     ]
-    ],
-    "hb": 2,
-    "code_only": false
-   },
-   {
-    "id": "keeper",
-    "name": "Budget keeper",
-    "icon": "account_balance_wallet",
-    "share": null,
-    "job": "The meter, the ladder and the guards",
-    "brain": "Code only",
-    "alone": "Steps down and back up",
-    "asks": "Nothing: ceilings and shares are yours",
-    "runs": [
-     [
-      "2026-10-26T06:00",
-      "Normal step: 22% of prod"
-     ]
-    ],
-    "hb": 0,
-    "code_only": true
-   },
-   {
-    "id": "desk",
-    "name": "Admin desk",
-    "icon": "admin_panel_settings",
-    "share": "desk",
-    "job": "The one channel between the agents and you",
-    "brain": "Code; Haiku turns your words into a request",
-    "alone": "Queues, batches, reminds, expires",
-    "asks": "It is the asking",
-    "runs": [
-     [
-      "2026-10-25T19:00",
-      "Sunday's digest"
-     ],
-     [
-      "2026-10-26T04:01",
-      "Raised inc-7 to you"
-     ],
-     [
-      "2026-10-26T06:12",
-      "cr-25 kept for tonight's digest"
-     ],
-     [
-      "2026-10-26T08:29",
-      "cr-27 decided"
-     ]
-    ],
-    "hb": 2,
-    "code_only": false
-   }
-  ],
-  "budget": {
-   "prod_usd": 160,
-   "dev_usd": 40,
-   "usd_gbp": 1.3,
-   "cycle": "1 to 31 Oct",
-   "to": "06:00 Mon 26 Oct",
-   "shares": [
-    {
-     "key": "concierge",
-     "label": "Concierge",
-     "what": "The chat, cards, briefs",
-     "pct": 55,
-     "usd": 88.0,
-     "spent": 26.1,
-     "used": 29.7
+  "team": {
+    "heartbeat": {
+      "every_min": 5,
+      "silent_after_min": 15
     },
-    {
-     "key": "forecaster",
-     "label": "Forecaster explanations",
-     "what": "Why each forecast says so",
-     "pct": 10,
-     "usd": 16.0,
-     "spent": 2.9,
-     "used": 18.1
+    "agents": [
+      {
+        "id": "concierge",
+        "name": "Concierge",
+        "icon": "support_agent",
+        "share": "concierge",
+        "job": "Talks to members in the chat; routes your instructions to the desk",
+        "brain": "Sonnet, Haiku for small turns",
+        "alone": "Answers, reads, proposes changes to records with a Confirm card",
+        "asks": "Nothing: an admin confirms each record",
+        "runs": [
+          [
+            "2026-10-25T21:14",
+            "A chat with Asha"
+          ],
+          [
+            "2026-10-26T06:10",
+            "Your question about the team"
+          ]
+        ],
+        "hb": 2,
+        "code_only": false
+      },
+      {
+        "id": "steward",
+        "name": "Data steward",
+        "icon": "dataset",
+        "share": "steward_warden",
+        "job": "Keeps prices flowing from free sources",
+        "brain": "Code; Haiku writes its requests",
+        "alone": "Fails over within a chain, retries, fills gaps, labels stale data",
+        "asks": "A new or reordered source, any paid feed, a source's terms",
+        "runs": [
+          [
+            "2026-10-25T18:20",
+            "Asked you: EODHD Historian (cr-25)"
+          ],
+          [
+            "2026-10-26T03:00",
+            "Stopped at the 8-call guard"
+          ],
+          [
+            "2026-10-26T08:31",
+            "Ran again, without the bad page"
+          ]
+        ],
+        "hb": 3,
+        "code_only": false,
+        "silent": [
+          "2026-10-26T03:12",
+          "2026-10-26T08:31"
+        ]
+      },
+      {
+        "id": "tuner",
+        "name": "Grader and tuner",
+        "icon": "grading",
+        "share": "tuner",
+        "job": "Grades the Budget forecast and the Projection against each closed month; proposes changes on evidence",
+        "brain": "Code; Sonnet writes the reviews",
+        "alone": "Grades each closed month against its forecast",
+        "asks": "Any change to an assumption, through the admin",
+        "runs": [
+          [
+            "2026-10-01T09:05",
+            "Graded September against its forecast"
+          ]
+        ],
+        "hb": 0,
+        "code_only": false
+      },
+      {
+        "id": "warden",
+        "name": "Ops warden",
+        "icon": "engineering",
+        "share": "steward_warden",
+        "job": "Runs the daily pipeline and repairs it",
+        "brain": "Code; Haiku summarises incidents",
+        "alone": "Retries, catches up, rolls back to the last good version",
+        "asks": "Anything it cannot fix: an incident",
+        "runs": [
+          [
+            "2026-10-26T03:27",
+            "Opened inc-7"
+          ],
+          [
+            "2026-10-26T04:00",
+            "Rolled the data steward back to v8"
+          ],
+          [
+            "2026-10-26T08:31",
+            "Ran the data steward again, skipping the page"
+          ]
+        ],
+        "hb": 2,
+        "code_only": false
+      },
+      {
+        "id": "keeper",
+        "name": "Budget keeper",
+        "icon": "account_balance_wallet",
+        "share": null,
+        "job": "The meter, the ladder and the guards",
+        "brain": "Code only",
+        "alone": "Steps down and back up",
+        "asks": "Nothing: ceilings and shares are yours",
+        "runs": [
+          [
+            "2026-10-26T06:00",
+            "Normal step: 22% of prod"
+          ]
+        ],
+        "hb": 0,
+        "code_only": true
+      },
+      {
+        "id": "desk",
+        "name": "Admin desk",
+        "icon": "admin_panel_settings",
+        "share": "desk",
+        "job": "The one channel between the agents and you",
+        "brain": "Code; Haiku turns your words into a request",
+        "alone": "Queues, batches, reminds, expires",
+        "asks": "It is the asking",
+        "runs": [
+          [
+            "2026-10-25T19:00",
+            "Sunday's digest"
+          ],
+          [
+            "2026-10-26T04:01",
+            "Raised inc-7 to you"
+          ],
+          [
+            "2026-10-26T06:12",
+            "cr-25 kept for tonight's digest"
+          ]
+        ],
+        "hb": 2,
+        "code_only": false
+      }
+    ],
+    "budget": {
+      "prod_usd": 160,
+      "dev_usd": 40,
+      "usd_gbp": 1.3,
+      "cycle": "1 to 31 Oct",
+      "to": "06:00 Mon 26 Oct",
+      "shares": [
+        {
+          "key": "concierge",
+          "label": "Concierge",
+          "what": "The chat, cards and answers, and why the Projection and the Budget forecast say what they say",
+          "pct": 70,
+          "usd": 112,
+          "spent": 31.7,
+          "used": 28.3
+        },
+        {
+          "key": "tuner",
+          "label": "Grader and tuner reviews",
+          "what": "Each closed month against its forecast",
+          "pct": 10,
+          "usd": 16.0,
+          "spent": 2.2,
+          "used": 13.8
+        },
+        {
+          "key": "desk",
+          "label": "Admin desk",
+          "what": "Your requests in plain words",
+          "pct": 5,
+          "usd": 8.0,
+          "spent": 0.8,
+          "used": 10.0
+        },
+        {
+          "key": "steward_warden",
+          "label": "Data steward and ops warden",
+          "what": "Requests and incident notes",
+          "pct": 5,
+          "usd": 8.0,
+          "spent": 0.5,
+          "used": 6.2
+        },
+        {
+          "key": "reserve",
+          "label": "Reserve, the chat first",
+          "what": "Covers the chat before anything else",
+          "pct": 10,
+          "usd": 16,
+          "spent": 0.0,
+          "used": 0.0
+        }
+      ],
+      "spent_usd": 35.2,
+      "spent_gbp": 27.08,
+      "used_pct": 22,
+      "ceiling_gbp": 123,
+      "step": "Normal, under 70%",
+      "aws": {
+        "cap_gbp": 50,
+        "used_gbp": 2.6,
+        "forecast_gbp": 3.1,
+        "month": "October"
+      }
     },
-    {
-     "key": "scout",
-     "label": "News scout",
-     "what": "Tagging and matching, through Batches",
-     "pct": 10,
-     "usd": 16.0,
-     "spent": 2.7,
-     "used": 16.9
+    "requests": [
+      {
+        "id": "cr-25",
+        "from": "steward",
+        "who": "Data steward",
+        "icon": "dataset",
+        "kind": "Approval",
+        "asked": "2026-10-25T18:20",
+        "title": "Switch on EODHD Historian at {gbp} a month?",
+        "money": 19.99,
+        "what": "A paid source first in the chain for OEICs (setting data.chain.oeic), from v3 to v4",
+        "why": [
+          "yfinance has not returned Balanced for 3 days (Wed 21, Thu 22, Fri 23 Oct); the FT page filled in, a day late, so Balanced is priced at Friday's close.",
+          "Twelve Data does not list it. EODHD's key returns its history back to 2019."
+        ],
+        "aws": {
+          "cap_gbp": 50,
+          "used_gbp": 2.6,
+          "forecast_gbp": 3.1,
+          "month": "October"
+        },
+        "aws_with": 23.09,
+        "cost": "{gbp} a month, counted in the AWS and others cap",
+        "risk": "Low: the free sources stay behind it in the chain.",
+        "undo": "Switch it off; nothing else changes.",
+        "expires": "2026-11-01T18:20",
+        "later_at": "2026-10-26T06:12",
+        "asked_label": "Sun 25 Oct 18:20",
+        "expires_label": "Sun 1 Nov 18:20"
+      }
+    ],
+    "question": {
+      "from": "Data steward",
+      "icon": "dataset",
+      "asked": "2026-10-23T18:20",
+      "t": "Which is the Monzo Balanced fund's ISIN?",
+      "how": "Answer in your chat, in your own words"
     },
-    {
-     "key": "tuner",
-     "label": "Grader and tuner reviews",
-     "what": "The weekly and monthly reviews",
-     "pct": 10,
-     "usd": 16.0,
-     "spent": 2.2,
-     "used": 13.8
+    "decided": [],
+    "settings": {
+      "rows": [
+        {
+          "group": "Budgets",
+          "name": "Prod Claude ceiling",
+          "key": "budget.claude.prod.ceiling",
+          "value": "$160",
+          "range": "$10 to $160",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Budgets",
+          "name": "Dev Claude ceiling",
+          "key": "budget.claude.dev.ceiling",
+          "value": "$40",
+          "range": "$10 to $80",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Budgets",
+          "name": "Ladder steps",
+          "key": "budget.claude.steps",
+          "value": "70, 85, 95, 100%",
+          "range": "any rising list",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Budgets",
+          "name": "Each agent's share",
+          "key": "budget.claude.shares",
+          "value": "Concierge 70%, four more",
+          "range": "summing to 100%",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Budgets",
+          "name": "AWS and others cap",
+          "key": "budget.aws.cap",
+          "value": "£50",
+          "range": "£10 to £75",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Data",
+          "name": "Price chain for OEICs",
+          "key": "data.chain.oeic",
+          "value": "yfinance first, 5 sources",
+          "range": "free sources, any order",
+          "band": "one place, 7 days",
+          "mode": "ask"
+        },
+        {
+          "group": "Data",
+          "name": "Price chain for London ETFs",
+          "key": "data.chain.lse_etf",
+          "value": "yfinance first, 4 sources",
+          "range": "free sources, any order",
+          "band": "one place, 7 days",
+          "mode": "ask"
+        },
+        {
+          "group": "Data",
+          "name": "Price chain for Indian funds",
+          "key": "data.chain.in_mf",
+          "value": "AMFI first, 3 sources",
+          "range": "free sources, any order",
+          "band": "one place, 7 days",
+          "mode": "ask"
+        },
+        {
+          "group": "Data",
+          "name": "Price chain for NSE and BSE",
+          "key": "data.chain.in_listed",
+          "value": "yfinance .NS first, 3 sources",
+          "range": "free sources, any order",
+          "band": "one place, 7 days",
+          "mode": "ask"
+        },
+        {
+          "group": "Data",
+          "name": "Stale after",
+          "key": "data.stale_after",
+          "value": "2 trading days",
+          "range": "1 to 5",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Agents",
+          "name": "Heartbeat silence",
+          "key": "agents.heartbeat.silent_after",
+          "value": "15 minutes",
+          "range": "5 to 60",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Agents",
+          "name": "Model calls in a run",
+          "key": "agents.run.max_calls",
+          "value": "8",
+          "range": "4 to 20",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Desk and alerts",
+          "name": "Daily digest",
+          "key": "desk.digest.time",
+          "value": "19:00",
+          "range": "any time",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Desk and alerts",
+          "name": "Not proposed again for",
+          "key": "desk.rejected.quiet",
+          "value": "a month",
+          "range": "a week to 3 months",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Desk and alerts",
+          "name": "Quiet hours",
+          "key": "alerts.quiet_hours",
+          "value": "22:00 to 07:00",
+          "range": "any hours",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Desk and alerts",
+          "name": "Work queue tries",
+          "key": "queue.work.max_tries",
+          "value": "5",
+          "range": "1 to 10",
+          "band": "none",
+          "mode": "admin"
+        },
+        {
+          "group": "Desk and alerts",
+          "name": "Replays by the ops warden",
+          "key": "queue.replay.max",
+          "value": "3 a message",
+          "range": "0 to 5",
+          "band": "none",
+          "mode": "admin"
+        }
+      ],
+      "modes": {
+        "auto": [
+          "smart_toy",
+          "Automatic in band"
+        ],
+        "ask": [
+          "how_to_reg",
+          "The agent asks you"
+        ],
+        "admin": [
+          "admin_panel_settings",
+          "Admin only"
+        ]
+      },
+      "history": {},
+      "band_move": {
+        "key": "data.chain.lse_etf",
+        "at": "2026-10-22T07:10",
+        "what": "Silver ETC: the FT page above yfinance for 7 days, inside its band",
+        "ends": "Thu 29 Oct"
+      },
+      "changed_week_before": 1,
+      "changed_week_after": 1
     },
-    {
-     "key": "desk",
-     "label": "Admin desk",
-     "what": "Your requests in plain words",
-     "pct": 5,
-     "usd": 8.0,
-     "spent": 0.8,
-     "used": 10.0
+    "incident": {
+      "id": "inc-7",
+      "title": "The data steward is silent",
+      "opened": "2026-10-26T03:27",
+      "raised": "2026-10-26T04:01",
+      "by": "the ops warden",
+      "severity": "Needs your choice",
+      "trace": "trace 1-6712f0a3",
+      "closed": "2026-10-26T08:31",
+      "happened": "Its 03:00 run stopped at the per-run guard, 8 model calls, on one page of the FT site it could not read. It has sent no heartbeat since 03:12.",
+      "tried": [
+        [
+          "2026-10-26T03:27",
+          "Fifteen minutes without a heartbeat: the incident opened."
+        ],
+        [
+          "2026-10-26T03:30",
+          "Restarted: it stopped again on the same page."
+        ],
+        [
+          "2026-10-26T04:00",
+          "Rolled back from v9 to v8, its last good version: it stopped again."
+        ],
+        [
+          "2026-10-26T04:01",
+          "Raised to you, in your chat and by push, silently: quiet hours until 07:00."
+        ]
+      ],
+      "meanwhile": "Today's prices wait: the holdings keep Friday's close, labelled with its date. The budget, the Projection, alerts and the chat are not affected.",
+      "choices": [
+        [
+          "skip",
+          "Skip that page and run again",
+          "The page is marked bad and left out; the next source in the chain prices the fund. A run costs about $0.05 of the steward's share.",
+          "Skip the page",
+          "skip_next",
+          "primary"
+        ],
+        [
+          "pause",
+          "Pause the data steward until Tuesday",
+          "No new prices until Tue 27 Oct 06:00; the holdings keep Friday's close.",
+          "Pause until Tue",
+          "pause_circle",
+          "alert"
+        ],
+        [
+          "issue",
+          "Open a Jira issue for a fix",
+          "The ops warden files it with the errors attached. Nothing changes in the app.",
+          "Open an issue",
+          "bug_report",
+          "tinted"
+        ]
+      ],
+      "skipped": "2026-10-26T08:31"
     },
-    {
-     "key": "steward_warden",
-     "label": "Data steward and ops warden",
-     "what": "Requests and incident notes",
-     "pct": 5,
-     "usd": 8.0,
-     "spent": 0.5,
-     "used": 6.2
-    },
-    {
-     "key": "reserve",
-     "label": "Reserve, the chat first",
-     "what": "Covers the chat before anything else",
-     "pct": 5,
-     "usd": 8.0,
-     "spent": 0.0,
-     "used": 0.0
+    "fixed": [
+      {
+        "icon": "alt_route",
+        "at": "2026-10-23T21:40",
+        "t": "Silver ETC failed over to the FT page",
+        "d": "yfinance was late; the next source in its chain answered."
+      },
+      {
+        "icon": "alt_route",
+        "at": "2026-10-26T06:00",
+        "t": "Balanced priced from the FT page",
+        "d": "yfinance missed it a third day; the next source in its chain answered (cr-25 asks about it)."
+      }
+    ],
+    "warden_may": "Retry a failed step, fail over within a source chain, fill a gap on the next run, catch up a missed schedule, roll an agent back to its last good version, skip a step that still fails and label its output stale, and replay failed work at most three times once its cause is healthy. Everything else comes to you as an incident.",
+    "notes": [
+      [
+        "steward",
+        [
+          [
+            "2026-10-26T06:00",
+            "yfinance misses Balanced's NAV some days; the FT page has it a day late."
+          ],
+          [
+            "2026-10-23T18:20",
+            "Twelve Data does not list Monzo's BlackRock funds."
+          ]
+        ]
+      ],
+      [
+        "warden",
+        [
+          [
+            "2026-10-26T08:31",
+            "inc-7: skipping the page worked; a rollback did not."
+          ]
+        ]
+      ],
+      [
+        "desk",
+        [
+          [
+            "2026-10-26T08:29",
+            "The owner reads requests at about 06:10 and 08:30: batch them for then."
+          ]
+        ]
+      ],
+      [
+        "tuner",
+        [
+          [
+            "2026-10-01T09:05",
+            "Groceries ran over plan again in September: one more month before proposing a change."
+          ]
+        ]
+      ]
+    ],
+    "drawn": {
+      "from": "2026-10-26T06:10",
+      "to": "2026-10-26T08:31"
     }
-   ],
-   "spent_usd": 35.2,
-   "spent_gbp": 27.08,
-   "used_pct": 22,
-   "ceiling_gbp": 123,
-   "step": "Normal, under 70%",
-   "aws": {
-    "cap_gbp": 50,
-    "used_gbp": 2.6,
-    "forecast_gbp": 3.1,
-    "month": "October"
-   }
   },
-  "learning": {
-   "graded_at": "2026-10-23T22:10",
-   "graded_label": "Fri 23 Oct, 22:10, after the close",
-   "review": "Sat 17 Oct",
-   "calls": [
-    {
-     "id": "nasdaq",
-     "name": "NASDAQ 100 ETF",
-     "call": "PAUSE",
-     "move": -4.02,
-     "held": true
+  "india": {
+    "accounts": [
+      {
+        "type": "demat",
+        "label": "Demat · Zerodha",
+        "icon": "account_balance",
+        "mask": "DP ID ••••",
+        "holdings": [
+          "infosys"
+        ],
+        "wrap": "A demat account in rupees. A top-up is bought on NSE through Zerodha, by you, in rupees; it cannot go into your ISA, and MyPaisa cannot trade."
+      },
+      {
+        "type": "mf_folio",
+        "label": "MF folio · CAMS",
+        "icon": "folder_open",
+        "mask": "folio ••••",
+        "holdings": [
+          "ppfas"
+        ],
+        "wrap": "A mutual fund folio in rupees, outside any ISA. A SIP or a top-up is made with the fund house, by its owner; it cannot go into your ISA, and MyPaisa cannot trade."
+      },
+      {
+        "type": "nre",
+        "label": "NRE savings · HDFC",
+        "icon": "savings",
+        "mask": "a/c ••••",
+        "holdings": [
+          "nre"
+        ],
+        "wrap": "Cash in rupees, held in India. MyPaisa reads it; it moves nothing."
+      },
+      {
+        "type": "ppf",
+        "label": "PPF · SBI",
+        "icon": "lock_clock",
+        "mask": "a/c ••••",
+        "holdings": [
+          "ppf"
+        ],
+        "wrap": "Locked until 31 Mar 2031; contributions are made with SBI."
+      }
+    ],
+    "also": [
+      "sbi_fd",
+      "lic",
+      "pune"
+    ],
+    "own_inr": 13492563,
+    "owe_inr": 1513257.4,
+    "owe_inr_nov": 1484586.73,
+    "cas": {
+      "file": "CAS-Oct-2026.pdf",
+      "size": "1.4 MB",
+      "from": "CAMS and KFintech",
+      "to": "Fri 23 Oct",
+      "owner": "asha",
+      "sent": "2026-10-26T20:40",
+      "unlocked": "2026-10-26T20:41",
+      "dry": "2026-10-26T20:41",
+      "check": "2026-10-26T20:42",
+      "saved": "2026-10-26T20:42",
+      "matched": [
+        {
+          "id": "ppfas",
+          "units": 6437.512,
+          "agree": true,
+          "sips": 46,
+          "since": "Jan 2023",
+          "sip": 10000,
+          "invested": 460000
+        }
+      ],
+      "not_matched": [
+        {
+          "what": "1 scheme, closed in 2021, with no units",
+          "why": "its ISIN is not in AMFI's list"
+        }
+      ],
+      "total_inr": 561995,
+      "import_id": "im-0417",
+      "run": "r-1302"
     },
-    {
-     "id": "balanced",
-     "name": "Balanced",
-     "call": "HOLD",
-     "move": 0.79,
-     "held": true
+    "tax": {
+      "ppfas": true,
+      "infosys": false
     },
-    {
-     "id": "robotics",
-     "name": "Robotics ETF",
-     "call": "HOLD",
-     "move": -2.9,
-     "held": false
+    "tax_line": "May not be a UK reporting fund: check with a tax adviser",
+    "tax_text": "For a UK resident, gains on a fund that is not a UK reporting fund may be taxed differently. MyPaisa flags it and goes no further: this is not tax advice.",
+    "share_text": "Infosys is a share, not a fund, so it carries no reporting-fund flag."
+  },
+  "beyond": {
+    "day_move": {
+      "gbp": 54.87,
+      "label": "on Friday",
+      "of": "Fri 23 Oct close",
+      "moves": [
+        {
+          "id": "balanced",
+          "pct": -0.01,
+          "gbp": -2.29,
+          "src": "the daily prices"
+        },
+        {
+          "id": "nasdaq",
+          "pct": 0.91,
+          "gbp": 4.61,
+          "src": "the daily prices"
+        },
+        {
+          "id": "robotics",
+          "pct": -2.1,
+          "gbp": -6.52,
+          "src": "the daily prices"
+        },
+        {
+          "id": "silver",
+          "pct": -1.4,
+          "gbp": -2.67,
+          "src": "the daily prices"
+        },
+        {
+          "id": "ppfas",
+          "pct": 0.9,
+          "gbp": 44.56,
+          "src": "this set"
+        },
+        {
+          "id": "infosys",
+          "pct": 1.1,
+          "gbp": 17.18,
+          "src": "this set"
+        }
+      ],
+      "most": "Parag Parikh Flexi Cap"
     },
-    {
-     "id": "silver",
-     "name": "Silver ETC",
-     "call": "HOLD",
-     "move": 1.6,
-     "held": true
+    "widget": {
+      "at": "2026-10-26T12:30",
+      "updated": "12:28",
+      "net_gbp": 457951
+    },
+    "lock": {
+      "at": "2026-10-26T12:41",
+      "updated": "12:28"
+    },
+    "share": {
+      "at": "2026-10-26T13:05",
+      "file": "Robotics-ETF-factsheet-Sep-2026.pdf",
+      "size": "412 KB",
+      "from": "Files",
+      "read": [
+        [
+          "Dated",
+          "30 Sep 2026"
+        ],
+        [
+          "Ongoing charge",
+          "0.40% a year"
+        ],
+        [
+          "Holdings",
+          "141"
+        ],
+        [
+          "Top 10",
+          "18% of the fund"
+        ]
+      ],
+      "matched": "robotics",
+      "save": "its ongoing charge, on the Robotics record"
+    },
+    "siri": {
+      "at": "2026-10-26T18:10",
+      "ask": "How is the portfolio today?"
+    },
+    "shortcut": {
+      "at": "2026-10-26T18:20",
+      "name": "Log money into MyPaisa",
+      "kinds": [
+        "Bought",
+        "Sold",
+        "Dividend",
+        "Fee"
+      ]
+    },
+    "live": {
+      "at": "2026-10-26T20:41",
+      "file": "CAS-Oct-2026.pdf",
+      "steps": [
+        "Kept with your files",
+        "Read and matched by ISIN",
+        "Ready for your Confirm"
+      ],
+      "step": 3,
+      "facts": [
+        "1 fund matched",
+        "46 transactions",
+        "1 left out"
+      ]
     }
-   ],
-   "held": 3,
-   "of": 4,
-   "forecaster": {
-    "week": 5,
-    "of": 8,
-    "beat": 5,
-    "next": [
-     "Fri 30 Oct",
-     "Fri 6 Nov",
-     "Fri 13 Nov"
-    ]
-   },
-   "scoreboard": [
-    {
-     "window": "30 days",
-     "graded": 16,
-     "held": 11,
-     "pct": 69,
-     "brier": 0.211
-    },
-    {
-     "window": "90 days",
-     "graded": 48,
-     "held": 32,
-     "pct": 67,
-     "brier": 0.213
-    },
-    {
-     "window": "365 days",
-     "graded": 176,
-     "held": 116,
-     "pct": 66,
-     "brier": 0.215
-    }
-   ],
-   "calibration": {
-    "at": "2026-10-26T05:40",
-    "buckets": [
-     {
-      "bucket": "55 to 60%",
-      "cases": 64,
-      "held": 56,
-      "was": 57,
-      "now": 56,
-      "move": -1,
-      "why": ""
-     },
-     {
-      "bucket": "60 to 65%",
-      "cases": 88,
-      "held": 59,
-      "was": 62,
-      "now": 60,
-      "move": -2,
-      "why": "capped at two points"
-     },
-     {
-      "bucket": "65 to 70%",
-      "cases": 71,
-      "held": 68,
-      "was": 67,
-      "now": 68,
-      "move": 1,
-      "why": ""
-     },
-     {
-      "bucket": "70 to 75%",
-      "cases": 46,
-      "held": 71,
-      "was": 71,
-      "now": 71,
-      "move": 0,
-      "why": ""
-     },
-     {
-      "bucket": "75 to 80%",
-      "cases": 12,
-      "held": 83,
-      "was": 76,
-      "now": 76,
-      "move": 0,
-      "why": "too few cases: needs 20"
-     }
-    ],
-    "max_move": 2,
-    "min_cases": 20,
-    "probation_days": 10,
-    "probation_ends": "Fri 6 Nov",
-    "held_back": {
-     "new": 0.209,
-     "old": 0.211
-    },
-    "serves_from": "tonight's engine run, after Monday's close"
-   },
-   "rolled_back": {
-    "at": "2026-10-24T05:40",
-    "what": "Silver ETC's map",
-    "day": 6
-   }
-  },
-  "requests": [
-   {
-    "id": "cr-25",
-    "from": "steward",
-    "who": "Data steward",
-    "icon": "dataset",
-    "kind": "Approval",
-    "asked": "2026-10-25T18:20",
-    "title": "Switch on EODHD Historian at {gbp} a month?",
-    "money": 19.99,
-    "what": "A paid source first in the chain for OEICs (setting data.chain.oeic), from v3 to v4",
-    "why": [
-     "yfinance has not returned Balanced for 3 days (Wed 21, Thu 22, Fri 23 Oct); the FT page filled in, a day late, so Balanced is priced at Friday's close.",
-     "Twelve Data does not list it. EODHD's key returns its history back to 2019."
-    ],
-    "aws": {
-     "cap_gbp": 50,
-     "used_gbp": 2.6,
-     "forecast_gbp": 3.1,
-     "month": "October"
-    },
-    "aws_with": 23.09,
-    "cost": "{gbp} a month, counted in the AWS and others cap",
-    "risk": "Low: the free sources stay behind it in the chain.",
-    "undo": "Switch it off; nothing else changes.",
-    "expires": "2026-11-01T18:20",
-    "later_at": "2026-10-26T06:12",
-    "asked_label": "Sun 25 Oct 18:20",
-    "expires_label": "Sun 1 Nov 18:20"
-   },
-   {
-    "id": "cr-26",
-    "from": "tuner",
-    "who": "Grader and tuner",
-    "icon": "grading",
-    "kind": "Approval",
-    "asked": "2026-10-26T06:40",
-    "title": "Promote the risk model v8 over v7?",
-    "what": "The Forecaster's risk model, v7 → v8 (setting forecaster.risk.model)",
-    "why": [
-     "v8 beats v7 in the held-out years and over 8 live weeks, by more than the margin."
-    ],
-    "brier": {
-     "held_out": [
-      0.162,
-      0.171
-     ],
-     "live": [
-      0.158,
-      0.169
-     ]
-    },
-    "safety": [
-     28,
-     28
-    ],
-    "cost": "None: Claude and AWS spend do not change.",
-    "risk": "Low. The Forecaster stays in practice, week 5 of 8.",
-    "undo": "v7 stays ready and comes back on its own if v8 slips.",
-    "expires": "2026-11-02T06:40",
-    "asked_label": "Mon 26 Oct 06:40",
-    "expires_label": "Mon 2 Nov 06:40"
-   },
-   {
-    "id": "cr-27",
-    "from": "tuner",
-    "who": "Grader and tuner",
-    "for": "the analyst's rules",
-    "icon": "grading",
-    "kind": "Approval",
-    "asked": "2026-10-26T07:05",
-    "title": "Ask for 3 exhaustion flags before a PAUSE, not 2?",
-    "what": "The holder's cascade (§6.3): a PAUSE on exhaustion alone needs 3 flags, not 2 (setting engine.pause.exhaustion_min, range 1 to 4)",
-    "why": [
-     "In the held-out years, it would have changed 41 calls on the four UK holdings: the new call held up in 27, the old in 14. It did worse only in 2022.",
-     "Over 8 live weeks in shadow it would have changed 3 of the household's calls: the new call held up in 2, the old in 1."
-    ],
-    "folds": [
-     [
-      "2019",
-      7,
-      5,
-      2
-     ],
-     [
-      "2020",
-      6,
-      4,
-      2
-     ],
-     [
-      "2021",
-      9,
-      7,
-      2
-     ],
-     [
-      "2022",
-      8,
-      2,
-      6
-     ],
-     [
-      "2023",
-      5,
-      4,
-      1
-     ],
-     [
-      "Oct 2024 to Sep 2026",
-      6,
-      5,
-      1
-     ]
-    ],
-    "held_out": {
-     "calls": 1456,
-     "held_now": 978,
-     "brier": [
-      0.212,
-      0.219
-     ],
-     "held_new": 991
-    },
-    "live": [
-     {
-      "review": "2026-09-05",
-      "id": "silver",
-      "name": "Silver ETC",
-      "old": "PAUSE",
-      "new": "HOLD",
-      "move": 2.6,
-      "day": "Sat 5 Sep 2026",
-      "new_held": true,
-      "old_held": false
-     },
-     {
-      "review": "2026-09-12",
-      "id": "robotics",
-      "name": "Robotics ETF",
-      "old": "PAUSE",
-      "new": "HOLD",
-      "move": 1.9,
-      "day": "Sat 12 Sep 2026",
-      "new_held": true,
-      "old_held": false
-     },
-     {
-      "review": "2026-09-26",
-      "id": "silver",
-      "name": "Silver ETC",
-      "old": "PAUSE",
-      "new": "HOLD",
-      "move": -1.4,
-      "day": "Sat 26 Sep 2026",
-      "new_held": false,
-      "old_held": true
-     }
-    ],
-    "brier": {
-     "held_out": [
-      0.212,
-      0.219
-     ],
-     "live": [
-      0.204,
-      0.213
-     ]
-    },
-    "safety": [
-     36,
-     36
-    ],
-    "rule": {
-     "key": "engine.pause.exhaustion_min",
-     "from": 2,
-     "to": 3,
-     "range": [
-      1,
-      4
-     ]
-    },
-    "today": "None of today's stances changes. The NASDAQ 100 ETF's PAUSE rests on its risk, not on exhaustion (RSI 38, stochastic 18); a stricter PAUSE cannot turn a HOLD into one.",
-    "cost": "None.",
-    "risk": "Low: fewer PAUSE calls on exhaustion alone; a PAUSE still comes at once when risk is elevated or the macro is adverse.",
-    "undo": "2 flags stays ready: Roll back in Settings, and it comes back on its own if the new rule slips.",
-    "serves": "tonight's engine run, after Monday's close",
-    "expires": "2026-11-02T07:05",
-    "approved_at": "2026-10-26T08:29",
-    "asked_label": "Mon 26 Oct 07:05",
-    "expires_label": "Mon 2 Nov 07:05"
-   }
-  ],
-  "question": {
-   "from": "Data steward",
-   "icon": "dataset",
-   "asked": "2026-10-23T18:20",
-   "t": "Which is the Monzo Balanced fund's ISIN?",
-   "how": "Answer in your chat, in your own words"
-  },
-  "decided": [
-   {
-    "id": "cr-22",
-    "who": "News scout",
-    "icon": "newspaper",
-    "t": "Add a Reddit forum as a news feed",
-    "at": "2026-10-20T20:05",
-    "how": "Rejected · You",
-    "st": "Rejected",
-    "again": "2026-11-20"
-   }
-  ],
-  "margin": 0.005,
-  "settings": {
-   "rows": [
-    {
-     "group": "Budgets",
-     "name": "Prod Claude ceiling",
-     "key": "budget.claude.prod.ceiling",
-     "value": "$160",
-     "range": "$10 to $160",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Budgets",
-     "name": "Dev Claude ceiling",
-     "key": "budget.claude.dev.ceiling",
-     "value": "$40",
-     "range": "$10 to $80",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Budgets",
-     "name": "Ladder steps",
-     "key": "budget.claude.steps",
-     "value": "70, 85, 95, 100%",
-     "range": "any rising list",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Budgets",
-     "name": "Each agent's share",
-     "key": "budget.claude.shares",
-     "value": "Concierge 55%, six more",
-     "range": "summing to 100%",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Budgets",
-     "name": "AWS and others cap",
-     "key": "budget.aws.cap",
-     "value": "£50",
-     "range": "£10 to £75",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Data",
-     "name": "Price chain for OEICs",
-     "key": "data.chain.oeic",
-     "value": "yfinance first, 5 sources",
-     "range": "free sources, any order",
-     "band": "one place, 7 days",
-     "mode": "ask"
-    },
-    {
-     "group": "Data",
-     "name": "Price chain for London ETFs",
-     "key": "data.chain.lse_etf",
-     "value": "yfinance first, 4 sources",
-     "range": "free sources, any order",
-     "band": "one place, 7 days",
-     "mode": "ask"
-    },
-    {
-     "group": "Data",
-     "name": "Price chain for Indian funds",
-     "key": "data.chain.in_mf",
-     "value": "AMFI first, 3 sources",
-     "range": "free sources, any order",
-     "band": "one place, 7 days",
-     "mode": "ask"
-    },
-    {
-     "group": "Data",
-     "name": "Price chain for NSE and BSE",
-     "key": "data.chain.in_listed",
-     "value": "yfinance .NS first, 3 sources",
-     "range": "free sources, any order",
-     "band": "one place, 7 days",
-     "mode": "ask"
-    },
-    {
-     "group": "Data",
-     "name": "Stale after",
-     "key": "data.stale_after",
-     "value": "2 trading days",
-     "range": "1 to 5",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Data",
-     "name": "News feeds",
-     "key": "news.feeds",
-     "value": "9 feeds",
-     "range": "listed feeds only",
-     "band": "none",
-     "mode": "ask"
-    },
-    {
-     "group": "Engine",
-     "name": "Exhaustion flags for a PAUSE",
-     "key": "engine.pause.exhaustion_min",
-     "value": "2",
-     "range": "1 to 4",
-     "band": "none",
-     "mode": "tuner"
-    },
-    {
-     "group": "Engine",
-     "name": "Relentless-bearish bars for a TRIM",
-     "key": "engine.trim.relentless_min",
-     "value": "3",
-     "range": "2 to 5",
-     "band": "none",
-     "mode": "tuner"
-    },
-    {
-     "group": "Engine",
-     "name": "Drift band for a REBALANCE",
-     "key": "engine.rebalance.band",
-     "value": "5 points",
-     "range": "3 to 10",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Engine",
-     "name": "No clear view below",
-     "key": "engine.confidence.floor",
-     "value": "55%",
-     "range": "50 to 65%",
-     "band": "none",
-     "mode": "tuner"
-    },
-    {
-     "group": "Engine",
-     "name": "Sentiment tilt",
-     "key": "engine.sentiment.tilt",
-     "value": "one notch, in shadow",
-     "range": "off or one notch",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Forecaster",
-     "name": "Risk model",
-     "key": "forecaster.risk.model",
-     "value": "v7",
-     "range": "any tested version",
-     "band": "none",
-     "mode": "tuner"
-    },
-    {
-     "group": "Forecaster",
-     "name": "Switch-off",
-     "key": "forecaster.switch_off.weeks",
-     "value": "4 weeks worse than the base rate",
-     "range": "2 to 8",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Forecaster",
-     "name": "Retrain",
-     "key": "forecaster.retrain",
-     "value": "monthly",
-     "range": "monthly or quarterly",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Learning",
-     "name": "Calibration maps",
-     "key": "learn.calibration.map",
-     "value": "refitted today 05:40",
-     "range": "bounded",
-     "band": "±2 points a day",
-     "mode": "auto"
-    },
-    {
-     "group": "Learning",
-     "name": "Probation for a new map",
-     "key": "learn.calibration.probation",
-     "value": "10 trading days",
-     "range": "5 to 30",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Learning",
-     "name": "Cases a bucket needs",
-     "key": "learn.calibration.min_cases",
-     "value": "20",
-     "range": "10 to 50",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Learning",
-     "name": "Margin for a promotion",
-     "key": "learn.promote.margin",
-     "value": "0.005 Brier",
-     "range": "0.002 to 0.02",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Learning",
-     "name": "Live weeks before a promotion",
-     "key": "learn.promote.live_weeks",
-     "value": "8",
-     "range": "4 to 12",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Agents",
-     "name": "Heartbeat silence",
-     "key": "agents.heartbeat.silent_after",
-     "value": "15 minutes",
-     "range": "5 to 60",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Agents",
-     "name": "Model calls in a run",
-     "key": "agents.run.max_calls",
-     "value": "8",
-     "range": "4 to 20",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Desk and alerts",
-     "name": "Daily digest",
-     "key": "desk.digest.time",
-     "value": "19:00",
-     "range": "any time",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Desk and alerts",
-     "name": "Not proposed again for",
-     "key": "desk.rejected.quiet",
-     "value": "a month",
-     "range": "a week to 3 months",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Desk and alerts",
-     "name": "Quiet hours",
-     "key": "alerts.quiet_hours",
-     "value": "22:00 to 07:00",
-     "range": "any hours",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Desk and alerts",
-     "name": "Work queue tries",
-     "key": "queue.work.max_tries",
-     "value": "5",
-     "range": "1 to 10",
-     "band": "none",
-     "mode": "admin"
-    },
-    {
-     "group": "Desk and alerts",
-     "name": "Replays by the ops warden",
-     "key": "queue.replay.max",
-     "value": "3 a message",
-     "range": "0 to 5",
-     "band": "none",
-     "mode": "admin"
-    }
-   ],
-   "modes": {
-    "auto": [
-     "smart_toy",
-     "Automatic in band"
-    ],
-    "ask": [
-     "how_to_reg",
-     "The agent asks you"
-    ],
-    "tuner": [
-     "grading",
-     "Through the tuner"
-    ],
-    "admin": [
-     "admin_panel_settings",
-     "Admin only"
-    ]
-   },
-   "history": {
-    "engine.pause.exhaustion_min": [
-     {
-      "v": "v1",
-      "at": null,
-      "who": "Default, from config/defaults.yaml",
-      "what": "2 flags, as the desk's cascade had it"
-     },
-     {
-      "v": "v2",
-      "at": "2026-10-26T08:29",
-      "who": "You approved cr-27",
-      "what": "2 → 3 flags, from tonight's engine run"
-     }
-    ]
-   },
-   "band_move": {
-    "key": "data.chain.lse_etf",
-    "at": "2026-10-22T07:10",
-    "what": "Silver ETC: the FT page above yfinance for 7 days, inside its band",
-    "ends": "Thu 29 Oct"
-   },
-   "changed_week_before": 1,
-   "changed_week_after": 2
-  },
-  "incident": {
-   "id": "inc-7",
-   "title": "The news scout is silent",
-   "opened": "2026-10-26T03:27",
-   "raised": "2026-10-26T04:01",
-   "by": "the ops warden",
-   "severity": "Needs your choice",
-   "trace": "trace 1-6712f0a3",
-   "closed": "2026-10-26T08:31",
-   "happened": "Its 03:00 run stopped at the per-run guard, 8 model calls, on one GDELT story about the Fed. It has sent no heartbeat since 03:12.",
-   "tried": [
-    [
-     "2026-10-26T03:27",
-     "Fifteen minutes without a heartbeat: the incident opened."
-    ],
-    [
-     "2026-10-26T03:30",
-     "Restarted: it stopped again on the same story."
-    ],
-    [
-     "2026-10-26T04:00",
-     "Rolled back from v14 to v13, its last good version: it stopped again."
-    ],
-    [
-     "2026-10-26T04:01",
-     "Raised to you, in your chat and by push, silently: quiet hours until 07:00."
-    ]
-   ],
-   "meanwhile": "Today's news is not matched to the holdings; stances keep Friday's events. Prices, the engine, alerts and the chat are not affected.",
-   "choices": [
-    [
-     "skip",
-     "Skip that story and run again",
-     "The story is marked bad and left out. A run costs about $0.05 of the scout's $16.",
-     "Skip the story",
-     "skip_next",
-     "primary"
-    ],
-    [
-     "pause",
-     "Pause the news scout until Tuesday",
-     "No news matching until Tue 27 Oct 06:00; stances keep Friday's events.",
-     "Pause until Tue",
-     "pause_circle",
-     "alert"
-    ],
-    [
-     "issue",
-     "Open a Jira issue for a fix",
-     "The ops warden files it with the errors attached. Nothing changes in the app.",
-     "Open an issue",
-     "bug_report",
-     "tinted"
-    ]
-   ],
-   "skipped": "2026-10-26T08:31"
-  },
-  "fixed": [
-   {
-    "icon": "alt_route",
-    "at": "2026-10-23T21:40",
-    "t": "Silver ETC failed over to the FT page",
-    "d": "yfinance was late; the next source in its chain answered."
-   },
-   {
-    "icon": "history",
-    "at": "2026-10-24T05:40",
-    "t": "A calibration map rolled back",
-    "d": "Silver ETC's map did worse on day 6 of its 10 on probation, so the last good one is back."
-   },
-   {
-    "icon": "replay",
-    "at": "2026-10-24T06:31",
-    "t": "The Forecaster's run retried",
-    "d": "Its Sat 24 Oct 06:10 run timed out once at 06:24 and finished on the second try."
-   },
-   {
-    "icon": "alt_route",
-    "at": "2026-10-26T06:00",
-    "t": "Balanced priced from the FT page",
-    "d": "yfinance missed it a third day; the next source in its chain answered (cr-25 asks about it)."
-   }
-  ],
-  "warden_may": "Retry a failed step, fail over within a source chain, fill a gap on the next run, catch up a missed schedule, roll a model or a calibration map back to its last good version, skip a step that still fails and label its output stale, and replay failed work at most three times once its cause is healthy. Everything else comes to you as an incident.",
-  "notes": [
-   [
-    "steward",
-    [
-     [
-      "2026-10-26T06:00",
-      "yfinance misses Balanced's NAV some days; the FT page has it a day late."
-     ],
-     [
-      "2026-10-23T18:20",
-      "Twelve Data does not list Monzo's BlackRock funds."
-     ]
-    ]
-   ],
-   [
-    "scout",
-    [
-     [
-      "2026-10-26T08:31",
-      "A GDELT story about the Fed loops the tagger past 8 calls: marked bad, left out."
-     ],
-     [
-      "2026-10-20T20:05",
-      "Reddit forums as a feed: rejected, not before Fri 20 Nov."
-     ]
-    ]
-   ],
-   [
-    "forecaster",
-    [
-     [
-      "2026-10-24T06:10",
-      "An explanation called a rates hold a cut: use the decision's own words."
-     ]
-    ]
-   ],
-   [
-    "tuner",
-    [
-     [
-      "2026-10-26T08:29",
-      "cr-27 approved: the owner read the live weeks before the held-out years."
-     ],
-     [
-      "2026-10-20T20:05",
-      "cr-22 rejected: not again before Fri 20 Nov."
-     ]
-    ]
-   ],
-   [
-    "warden",
-    [
-     [
-      "2026-10-26T08:31",
-      "inc-7: skipping the story worked; a rollback did not."
-     ]
-    ]
-   ],
-   [
-    "desk",
-    [
-     [
-      "2026-10-26T08:29",
-      "The owner reads requests at about 06:10 and 08:30: batch them for then."
-     ]
-    ]
-   ]
-  ],
-  "today_stances": [
-   [
-    "nasdaq",
-    "PAUSE",
-    64
-   ],
-   [
-    "balanced",
-    "HOLD",
-    71
-   ],
-   [
-    "robotics",
-    "HOLD",
-    58
-   ],
-   [
-    "silver",
-    "HOLD",
-    62
-   ]
-  ],
-  "drawn": {
-   "from": "2026-10-26T06:10",
-   "to": "2026-10-26T08:31"
   }
- },
- "india": {
-  "accounts": [
-   {
-    "type": "demat",
-    "label": "Demat · Zerodha",
-    "icon": "account_balance",
-    "mask": "DP ID ••••",
-    "holdings": [
-     "infosys"
-    ],
-    "wrap": "A demat account in rupees. A top-up is bought on NSE through Zerodha, by you, in rupees; it cannot go into your ISA, and MyPaisa cannot trade."
-   },
-   {
-    "type": "mf_folio",
-    "label": "MF folio · CAMS",
-    "icon": "folder_open",
-    "mask": "folio ••••",
-    "holdings": [
-     "ppfas"
-    ],
-    "wrap": "A mutual fund folio in rupees, outside any ISA. A SIP or a top-up is made with the fund house, by its owner; it cannot go into your ISA, and MyPaisa cannot trade."
-   },
-   {
-    "type": "nre",
-    "label": "NRE savings · HDFC",
-    "icon": "savings",
-    "mask": "a/c ••••",
-    "holdings": [
-     "nre"
-    ],
-    "wrap": "Cash in rupees, held in India. MyPaisa reads it; it moves nothing."
-   },
-   {
-    "type": "ppf",
-    "label": "PPF · SBI",
-    "icon": "lock_clock",
-    "mask": "a/c ••••",
-    "holdings": [
-     "ppf"
-    ],
-    "wrap": "Locked until 31 Mar 2031; contributions are made with SBI."
-   }
-  ],
-  "also": [
-   "sbi_fd",
-   "lic",
-   "pune"
-  ],
-  "own_inr": 13492563,
-  "owe_inr": 1513257.4,
-  "owe_inr_nov": 1484586.73,
-  "cas": {
-   "file": "CAS-Oct-2026.pdf",
-   "size": "1.4 MB",
-   "from": "CAMS and KFintech",
-   "to": "Fri 23 Oct",
-   "owner": "asha",
-   "sent": "2026-10-26T20:40",
-   "unlocked": "2026-10-26T20:41",
-   "dry": "2026-10-26T20:41",
-   "check": "2026-10-26T20:42",
-   "saved": "2026-10-26T20:42",
-   "matched": [
-    {
-     "id": "ppfas",
-     "units": 6437.512,
-     "agree": true,
-     "sips": 46,
-     "since": "Jan 2023",
-     "sip": 10000,
-     "invested": 460000
-    }
-   ],
-   "not_matched": [
-    {
-     "what": "1 scheme, closed in 2021, with no units",
-     "why": "its ISIN is not in AMFI's list"
-    }
-   ],
-   "total_inr": 561995,
-   "import_id": "im-0417",
-   "run": "r-1302"
-  },
-  "engine": {
-   "state": "in shadow",
-   "graded": 0,
-   "first_review": "Sat 31 Oct",
-   "reads_from": "tonight",
-   "basket": [
-    "the Nifty 50 against Indian government bonds",
-    "India VIX",
-    "the rupee against the dollar",
-    "foreign portfolio investor flows",
-    "the RBI's policy rate"
-   ],
-   "sources": {
-    "ppfas": [
-     "NAV: AMFI's daily file, Fri 23 Oct",
-     "History: mfapi.in, every NAV since launch",
-     "FX: ECB reference rate, £1 = ₹112.50",
-     "Units and cost: CAS-Oct-2026.pdf, open from Files"
-    ],
-    "infosys": [
-     "Price: yfinance INFY.NS, NSE's close, Fri 23 Oct",
-     "Behind it: NSE's bhavcopy, then stale",
-     "FX: ECB reference rate, £1 = ₹112.50",
-     "Buys: none yet; Zerodha's tradebook would add them"
-    ]
-   }
-  },
-  "tax": {
-   "ppfas": true,
-   "infosys": false
-  },
-  "tax_line": "May not be a UK reporting fund: check with a tax adviser",
-  "tax_text": "For a UK resident, gains on a fund that is not a UK reporting fund may be taxed differently. MyPaisa flags it and goes no further: this is not tax advice.",
-  "share_text": "Infosys is a share, not a fund, so it carries no reporting-fund flag."
- },
- "beyond": {
-  "day_move": {
-   "gbp": 54.87,
-   "label": "on Friday",
-   "of": "Fri 23 Oct close",
-   "moves": [
-    {
-     "id": "balanced",
-     "pct": -0.01,
-     "gbp": -2.29,
-     "src": "forecaster-v4"
-    },
-    {
-     "id": "nasdaq",
-     "pct": 0.91,
-     "gbp": 4.61,
-     "src": "forecaster-v4"
-    },
-    {
-     "id": "robotics",
-     "pct": -2.1,
-     "gbp": -6.52,
-     "src": "engine-v5"
-    },
-    {
-     "id": "silver",
-     "pct": -1.4,
-     "gbp": -2.67,
-     "src": "engine-v5"
-    },
-    {
-     "id": "ppfas",
-     "pct": 0.9,
-     "gbp": 44.56,
-     "src": "this set"
-    },
-    {
-     "id": "infosys",
-     "pct": 1.1,
-     "gbp": 17.18,
-     "src": "this set"
-    }
-   ],
-   "most": "Parag Parikh Flexi Cap"
-  },
-  "widget": {
-   "at": "2026-10-26T12:30",
-   "updated": "12:28",
-   "net_gbp": 457951
-  },
-  "lock": {
-   "at": "2026-10-26T12:41",
-   "updated": "12:28"
-  },
-  "share": {
-   "at": "2026-10-26T13:05",
-   "file": "Robotics-ETF-factsheet-Sep-2026.pdf",
-   "size": "412 KB",
-   "from": "Files",
-   "read": [
-    [
-     "Dated",
-     "30 Sep 2026"
-    ],
-    [
-     "Ongoing charge",
-     "0.40% a year"
-    ],
-    [
-     "Holdings",
-     "141"
-    ],
-    [
-     "Top 10",
-     "18% of the fund"
-    ]
-   ],
-   "matched": "robotics",
-   "save": "its charge and holdings, for Overlap"
-  },
-  "siri": {
-   "at": "2026-10-26T18:10",
-   "ask": "How is the portfolio today?"
-  },
-  "shortcut": {
-   "at": "2026-10-26T18:20",
-   "name": "Log money into MyPaisa",
-   "kinds": [
-    "Bought",
-    "Sold",
-    "Dividend",
-    "Fee"
-   ]
-  },
-  "live": {
-   "at": "2026-10-26T20:41",
-   "file": "CAS-Oct-2026.pdf",
-   "steps": [
-    "Kept with your files",
-    "Read and matched by ISIN",
-    "Ready for your Confirm"
-   ],
-   "step": 3,
-   "facts": [
-    "1 fund matched",
-    "46 transactions",
-    "1 left out"
-   ]
-  }
- }
 }

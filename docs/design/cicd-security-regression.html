@@ -375,7 +375,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 <section id="regression">
   <div class="head">
     <div class="kicker">4 · Five-layer regression pyramid &amp; runner cost analysis (MA-269, MA-272)</div>
-    <h2>Five testing layers across Phases 0–20 at £0.00/month by defeating the 10x macOS multiplier</h2>
+    <h2>Five testing layers across Phases 0–15 at £0.00/month by defeating the 10x macOS multiplier</h2>
   </div>
   <div class="body">
     <div class="copy plain">
@@ -383,7 +383,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Five-Layer Pyramid (<code>scripts/regression.py</code>):</strong> L1 Unit + Hypothesis + <code>openapi-typescript</code> zero-diff (~20s); L2 <code>moto</code> + FastAPI ASGI multi-Lambda integration (~30s); L3 Inspect AI <code>T0</code> deterministic replay + 646 wealth-tracker &amp; 11 trading-desk golden maths fixtures + PII leak check (~45s); L4 web: svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright, axe and Argos run only when Arun asks (a manual run or a <code>qa</code> label; MA-303, MA-304); the QA is Playwright 1.64 on <code>web/</code> (<code>390x844</code> &amp; <code>1440x900</code>, light/dark, fail-closed <code>@axe-core/playwright</code> WCAG 2.2 AA + <strong>Argos CI</strong> Tokenless OIDC visual PNG &amp; light-deduplicated YAML <code>ariaSnapshot</code> diffing at most ~3,600 snapshots/mo inside the 5,000/mo £0 Free Hobby cap; see <code>docs/design/argos-visual-a11y.html</code>) &amp; iOS <code>XCUITest</code>/Snapshot/AX5; L5 Change-gated live <code>T1</code>/<code>T2</code> evals.</li>
+        <li><strong>Five-Layer Pyramid (<code>scripts/regression.py</code>):</strong> L1 Unit + Hypothesis + <code>openapi-typescript</code> zero-diff (~20s); L2 <code>moto</code> + FastAPI ASGI multi-Lambda integration (~30s); L3 Inspect AI <code>T0</code> deterministic replay + 646 wealth-tracker golden maths fixtures + PII leak check (~45s); L4 web: svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright, axe and Argos run only when Arun asks (a manual run or a <code>qa</code> label; MA-303, MA-304); the QA is Playwright 1.64 on <code>web/</code> (<code>390x844</code> &amp; <code>1440x900</code>, light/dark, fail-closed <code>@axe-core/playwright</code> WCAG 2.2 AA + <strong>Argos CI</strong> Tokenless OIDC visual PNG &amp; light-deduplicated YAML <code>ariaSnapshot</code> diffing at most ~3,600 snapshots/mo inside the 5,000/mo £0 Free Hobby cap; see <code>docs/design/argos-visual-a11y.html</code>) &amp; iOS <code>XCUITest</code>/Snapshot/AX5; L5 Change-gated live <code>T1</code>/<code>T2</code> evals.</li>
         <li><strong>Option D Hybrid Runner Math:</strong> ~450 Linux mins/mo (<code>1x</code>) + ~80–120 path-gated macOS mins/mo (<code>800–1,200</code> billed at <code>10x</code>, or <code>0</code> on self-hosted Mac) = <strong>450–1,650 billed GitHub mins/mo</strong> (&lt; 2,000 free tier) and <strong>~63 CodeBuild arm64 mins/mo</strong> (&lt; 100 free tier) = <strong>£0.00/month</strong>.</li>
       </ul>
     </div>
@@ -391,7 +391,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
       <div class="scroll">
       <svg id="svg-4" viewBox="0 0 960 340" role="img" aria-label="Five-layer regression pyramid and GitHub Actions vs AWS CodeBuild monthly cost comparison">
         <rect class="s-box2" x="16" y="16" width="470" height="308" rx="12"/>
-        <text class="s-h" x="32" y="42">Five-Layer Regression Pyramid (Phases 0–20)</text>
+        <text class="s-h" x="32" y="42">Five-Layer Regression Pyramid (Phases 0–15)</text>
 
         <rect class="s-ambg" x="116" y="56" width="270" height="42" rx="8"/>
         <text class="s-amt" x="128" y="75">L5 · Live Evals T1 / T2 ($10 cap)</text>
@@ -402,7 +402,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="98" y="143">Web on request (qa label); ios/** path-gated</text>
 
         <rect class="s-blbg" x="62" y="160" width="378" height="48" rx="8"/>
-        <text class="s-blt" x="74" y="180">L3 · T0 Replay, PII Gate &amp; 657 Golden Maths</text>
+        <text class="s-blt" x="74" y="180">L3 · T0 Replay, PII Gate &amp; 646 Golden Maths</text>
         <text class="s-m" x="74" y="198">Every PR (~45s on ubuntu-24.04-arm, 1x)</text>
 
         <rect class="s-upbg" x="44" y="216" width="414" height="46" rx="8"/>
@@ -450,7 +450,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <tbody>
           <tr><td class="k">MA-267</td><td>0</td><td>Seven-layer vulnerability gate across secrets (<code>gitleaks</code>), SAST (<code>ruff S</code>, <code>semgrep</code>), SCA (<code>pip-audit</code>, <code>pnpm audit</code>, <code>trivy fs</code>), Terraform (<code>tflint</code>, <code>trivy config</code>), container images (<code>trivy image</code> + ECR scan) and Monday 04:00 UTC CVE sweep</td></tr>
           <tr><td class="k">MA-268</td><td>0</td><td>Phase-progressive smoke runner (<code>scripts/smoke.py --env dev|prod --up-to-phase N</code>) with full synthetic round-trip + X-Ray trace check in <code>dev</code>, read-only safety in <code>prod</code>, and &lt;5s Lambda <code>:live</code> alias rollback</td></tr>
-          <tr><td class="k">MA-269</td><td>0</td><td>Five-layer regression pyramid (<code>scripts/regression.py</code>), OpenAPI contract gate, 657 golden financial maths fixtures, and Option D path-filtered CI runner configuration (£0/mo)</td></tr>
+          <tr><td class="k">MA-269</td><td>0</td><td>Five-layer regression pyramid (<code>scripts/regression.py</code>), OpenAPI contract gate, 646 golden financial maths fixtures, and Option D path-filtered CI runner configuration (£0/mo)</td></tr>
           <tr><td class="k">MA-272</td><td>0</td><td>CI/CD pipeline, seven-layer vulnerability scanning, smoke suite, phase-wise regression matrix and GitHub Actions runner cost analysis recorded in the plan and Confluence with block diagrams</td></tr>
           <tr><td class="k">MA-271</td><td>1</td><td>Typed <code>AnthropicAgentRunner</code> loop, prompt-cache assembler (three explicit breakpoints and automatic caching for the tail), Pydantic v2 <code>@tool</code> registry, policy/figure hooks and <code>gen_ai.*</code> OpenTelemetry spans</td></tr>
           <tr><td class="k">MA-270</td><td>2</td><td>Typed DynamoDB single-table repository on Pydantic v2, <code>boto3</code> <code>TypeSerializer</code>, <code>mypy-boto3-dynamodb</code>, <code>ForbiddenScanError</code> guard, signed cursor pagination and <code>TransactWriteUnit</code></td></tr>
@@ -463,7 +463,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 </div>
 </main>
 <footer>
-  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §7 and <span class="mono">ARCHITECTURE.md</span> §18.4 in the MyPaisa repository, 28 Oct 2026 (MA-267 to MA-272).</div>
+  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §7 and <span class="mono">ARCHITECTURE.md</span> §17.4 in the MyPaisa repository, 28 Oct 2026 (MA-267 to MA-272).</div>
 </footer>
 
 <script>

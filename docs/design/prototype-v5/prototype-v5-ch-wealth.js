@@ -198,7 +198,6 @@
   /* ---------- helpers ---------- */
   function hh(ctx) { return (ctx.D && ctx.D.household) || window.MP5D.household || {}; }
   function fp(ctx) { return (ctx.D && ctx.D.plans) || (window.MP5D && window.MP5D.plans) || {}; }
-  function fc(ctx) { return (ctx.D && ctx.D.forecaster) || (window.MP5D && window.MP5D.forecaster) || {}; }
   function wv(ctx) { return (ctx.D && ctx.D.wealth) || (window.MP5D && window.MP5D.wealth) || null; }
   function rhe(x) { var f = Math.floor(x); return Math.abs(x - f - 0.5) < 1e-9 ? (f % 2 === 0 ? f : f + 1) : Math.round(x); }
   var g = function (n, o) { return K.gbp(n, o); };
@@ -243,7 +242,6 @@
   var LEAD = { balanced: 'BA', nasdaq: 'NQ', robotics: 'RB', silver: 'SI', ppfas: 'PP', infosys: 'IN', monzo_savings: 'MZ', pot: 'MP', nre: 'NR', home: 'HM', pune: 'FP', saver: 'NW', sbi_fd: 'FD', ppf: 'PF', lic: 'LI', pension_arun: 'AV', sipp_asha: 'VG' };
   var GROUP = { balanced: 'inv', nasdaq: 'inv', robotics: 'inv', silver: 'inv', ppfas: 'inv', infosys: 'inv', monzo_savings: 'cash', pot: 'cash', nre: 'cash', home: 'prop', pune: 'prop', saver: 'fix', sbi_fd: 'fix', ppf: 'fix', lic: 'fix', pension_arun: 'pen', sipp_asha: 'pen' };
   var GROUPS = [['inv', 'Investments'], ['cash', 'Cash and savings'], ['prop', 'Property'], ['fix', 'Fixed term'], ['pen', 'Pensions']];
-  var UK_HOLD = { balanced: 1, nasdaq: 1, robotics: 1, silver: 1 };
   function who(owners) {
     if (owners.length > 1) return 'Arun and Asha, half each';
     return owners[0][0] === 'arun' ? 'Arun' : 'Asha';
@@ -278,24 +276,7 @@
     return records(ctx).filter(function (a) { return a.country === 'IN'; }).reduce(function (s, a) { return s + a.value; }, 0) - hdfcInr(ctx);
   }
   function groupSum(list, gid) { return list.filter(function (a) { return a.group === gid; }).reduce(function (s, a) { return s + a.gbp; }, 0); }
-  /* the rules engine's stances: at the Fri 23 Oct close (forecaster-v4) until Sat 7 Nov, then engine-v5's at the Fri 6 Nov
-     close, as the core's prices move; in shadow until the gate passed, Sat 7 Nov 09:00 */
-  function stancesLive(ctx) { return ctx.t >= '2026-11-07T09:00'; }
-  function shadowChip(ctx) { return stancesLive(ctx) ? K.chip(K.ms('verified') + 'Stances live, past the gate', 'mp-neutral') : K.shadow('Stances in shadow'); }
-  function stanceNote(ctx) { return stancesLive(ctx) ? 'Each stance is the rules engine’s at the ' + ctx.W.pricesAt + '. They went live after beating doing nothing for 8 weeks (Sat 7 Nov).' : 'Each stance is the rules engine’s at the ' + ctx.W.pricesAt + ', written daily and kept in shadow until it has beaten doing nothing for 8 weeks.'; }
-  function stances(ctx) {
-    var F = fc(ctx), o = {}, E = (ctx.D && ctx.D.engine) || null;
-    if (E && E.nov6 && ctx.t >= '2026-11-07T00:00') { Object.keys(E.nov6).forEach(function (id) { var x = E.nov6[id]; if (x && x.stance) o[id] = { code: x.stance, conf: x.conf }; }); if (o.balanced) return o; }
-    if (F.balanced && F.balanced.rules) o.balanced = { code: F.balanced.rules.stance, conf: F.balanced.rules.conf };
-    if (F.nasdaq && F.nasdaq.rules) o.nasdaq = { code: F.nasdaq.rules.stance, conf: F.nasdaq.rules.conf };
-    ((F.review && F.review.cards) || []).forEach(function (c) {
-      var m = /^(\w+) · (\d+)%/.exec(c.rules || ''), id = /Robotics/.test(c.name) ? 'robotics' : /Silver/.test(c.name) ? 'silver' : /NASDAQ/.test(c.name) ? 'nasdaq' : null;
-      if (m && id && !o[id]) o[id] = { code: m[1], conf: +m[2] };
-    });
-    return o;
-  }
-  function stanceChip(ctx, id) { var s = stances(ctx)[id]; return s ? K.stance(s.code, s.conf) : ''; }
-  function recLink(a) { return UK_HOLD[a.id] ? 'nav:holding/' + a.id : 'nav:asset/' + a.id; }
+  function recLink(a) { return 'nav:asset/' + a.id; }
   function recSub(a) {
     var parts = [who(a.owners)];
     if (a.account) parts.push(a.account);
@@ -471,13 +452,11 @@
           K.foot('Actuals come in with November’s statements, on Tue 1 Dec.') }));
       }
     }
-    var ST = stances(ctx);
     var inv = list.filter(function (a) { return a.group === 'inv' || a.id === 'pot'; });
-    cards.push(K.card({ t: 'Investments', r: shadowChip(ctx), id: 'w-inv', body: K.list(inv.map(function (a) {
-      var s = ST[a.id];
-      return K.row({ lead: lead(LEAD[a.id]), t: a.name.replace(' · Direct Growth', '').replace(' (BlackRock MyMap 5)', ''), s: recSub(a) + (a.id === 'pot' ? ' · cash, no stance' : a.country === 'IN' ? ' · stances from phase 19' : ''),
-        v: inr && a.ccy === 'GBP' ? ri(a.value * FX) : recValue(a), vs: s ? K.stance(s.code, s.conf) : recVs(a), go: recLink(a) });
-    })) + K.foot(stanceNote(ctx)) + K.viewNotAdvice() }));
+    cards.push(K.card({ t: 'Investments', id: 'w-inv', body: K.list(inv.map(function (a) {
+      return K.row({ lead: lead(LEAD[a.id]), t: a.name.replace(' · Direct Growth', '').replace(' (BlackRock MyMap 5)', ''), s: recSub(a) + (a.id === 'pot' ? ' · cash' : ''),
+        v: inr && a.ccy === 'GBP' ? ri(a.value * FX) : recValue(a), vs: recVs(a), go: recLink(a) });
+    })) + K.foot('Funds and shares at the ' + ctx.W.pricesAt + ', valued by the price registry; each return comes from its dated buys.') + K.fromCode() }));
     var R = debtsRaw(ctx), span = 2045.75 - 2026.82;
     var runs = [['Car loan · Close Brothers', g(D.car), 'UK · Arun · ' + g(347) + ' a month', 'paid off Tue 20 Feb 2029', 2029.13],
       ['Home loan · HDFC, the Pune flat', ri(D.hdfcInr), 'India · Arun · ' + ri(39390) + ' a month', 'paid off Fri 5 Jul 2030', 2030.5],
@@ -503,7 +482,7 @@
       return K.row({ lead: lead(LEAD[a.id]), t: a.name, s: (a.country === 'UK' ? 'UK · £ · ' : 'India · ₹ · ') + who(a.owners) + (a.id === 'home' ? (ctx.W.homeCorrected ? ' · your estimate, Mon 26 Oct' : ' · valued 30 Apr') : a.id === 'pune' ? ' · valued 15 Jan · overdue' : a.unlocks_at ? ' · unlocks at 57' : ''),
         v: recValue(a), vs: recVs(a), go: recLink(a), id: a.id === 'home' ? 'w-homerow' : null });
     })) + K.foot(rest.length + ' more records, ' + g(rest.reduce(function (s, a) { return s + a.gbp; }, 0)) + ' in all.') + '<div>' + K.btn('All assets', 'nav:assets', 'plain', 'chevron_right') + '</div>' }));
-    if (ctx.compact || ctx.narrow) cards.push(K.card({ t: 'Everything else', body: K.list([['account_balance_wallet', 'Assets', 'assets'], ['credit_card', 'Debts', 'debts'], ['pie_chart', 'Budget', 'budget'], ['show_chart', 'Projection', 'projection'], ['event_note', 'Plans', 'plans'], ['summarize', 'Reports', 'reports'], ['candlestick_chart', 'Holdings', 'holdings'], ['join', 'Overlap', 'overlap'], ['fact_check', 'Track record', 'track'], ['newspaper', 'News and events', 'news']].map(function (l) { return K.row({ icon: l[0], t: l[1], go: 'nav:' + l[2] }); })) }));
+    if (ctx.compact || ctx.narrow) cards.push(K.card({ t: 'Everything else', body: K.list([['account_balance_wallet', 'Assets', 'assets'], ['credit_card', 'Debts', 'debts'], ['pie_chart', 'Budget', 'budget'], ['show_chart', 'Projection', 'projection'], ['event_note', 'Plans', 'plans'], ['summarize', 'Reports', 'reports']].map(function (l) { return K.row({ icon: l[0], t: l[1], go: 'nav:' + l[2] }); })) }));
     return cards;
   }
   M.page('home', function (ctx) {
@@ -518,7 +497,6 @@
       '<div class="hstat"><span class="hstat-k">Fixed term</span><span class="hstat-v">' + g(fix) + '</span><span class="hstat-s">4 records</span></div>' +
       '<div class="hstat"><span class="hstat-k">Locked</span><span class="hstat-v">' + g(T.own_gbp - liq - fix) + '</span><span class="hstat-s">4 records</span></div></div>';
     var hero = K.hero({ k: 'What you own · household · ' + list.length + ' records', v: g(T.own_gbp), s: 'UK and India, in pounds at ' + RATE() + ' (ECB, Fri 23 Oct)', extra: stats });
-    var ST = stances(ctx);
     var groups = GROUPS.map(function (gr) {
       var rows = list.filter(function (a) { return a.group === gr[0]; }).map(function (a) {
         var sub = recSub(a);
@@ -530,13 +508,12 @@
         if (a.id === 'ppf') sub = 'Arun · 7.1% · to 31 Mar 2031';
         if (a.id === 'lic') sub = 'Asha · surrender value';
         if (a.unlocks_at) sub = who(a.owners) + ' · unlocks at 57';
-        var s = ST[a.id];
-        return K.row({ lead: lead(LEAD[a.id]), t: a.name.replace(' · Direct Growth', ''), s: sub, v: recValue(a), vs: s ? K.stance(s.code, s.conf) : recVs(a), go: recLink(a), id: 'w-a-' + a.id });
+        return K.row({ lead: lead(LEAD[a.id]), t: a.name.replace(' · Direct Growth', ''), s: sub, v: recValue(a), vs: recVs(a), go: recLink(a), id: 'w-a-' + a.id });
       });
       return K.card({ t: gr[1], r: '<span class="mp-sub mp-num" style="font-weight:700">' + g(groupSum(list, gr[0])) + '</span>', body: K.list(rows) });
     });
     return { title: 'Assets', sub: ctx.d + ' · investments at the ' + ctx.W.pricesAt + ', the rest as last recorded · illustrative figures', chip: K.draft(),
-      body: wrap(hero + '<div class="cols">' + groups.join('') + '</div>' + K.note('chat', 'Nothing is added on this page: a new record starts in the chat. Tap a figure on a record’s page to correct it.') + K.viewNotAdvice()) };
+      body: wrap(hero + '<div class="cols">' + groups.join('') + '</div>' + K.note('chat', 'Nothing is added on this page: a new record starts in the chat. Tap a figure on a record’s page to correct it.') + K.fromCode()) };
   });
 
   /* ---------- one asset ---------- */
@@ -579,7 +556,8 @@
     var back = bk('Assets', 'assets'), body = [], sub = '', chips = K.draft();
     var native = recValue(a), gbpBeside = a.ccy === 'INR' ? '<span class="mp-sub mp-ink2">≈ ' + g(a.gbp) + ' at ' + RATE() + '</span>' : '';
     if (id === 'home') {
-      var state = ctx.W.homeCorrected ? 'saved' : (ctx.has('homeEdit') || (ctx.step && ctx.step.homeEdit)) ? 'edit' : 'rest';
+      var state = ctx.W.homeCorrected ? 'saved' : !ctx.isAdmin ? 'view' : (ctx.has('homeEdit') || (ctx.step && ctx.step.homeEdit)) ? 'edit' : 'rest';
+      /* MA-307: only an admin corrects a figure in place; any other member views it */
       sub = 'Property · UK · Arun and Asha, half each · locked';
       var top;
       if (state === 'edit') {
@@ -589,8 +567,8 @@
           '<div class="btns">' + K.btn('Save', 'home:save', 'primary small') + K.btn('Cancel', 'home:cancel', 'tinted small') + '</div>' +
           K.foot('Save writes a correction with its audit row. Nothing else on the record changes.') + '</div>';
       } else {
-        top = '<button type="button" class="btn-reset fx ac g8" id="w-fig"' + K.go(state === 'rest' ? 'home:edit' : null) + '><span class="big">' + g(a.value) + '</span>' + K.ms(state === 'saved' ? 'check_circle' : 'edit', 'mp-ink2') + '</button>' +
-          '<span class="mp-foot mp-ink2">' + (state === 'saved' ? 'your estimate, Mon 26 Oct' : 'your figure, valued Thu 30 Apr. Tap the figure to correct it.') + '</span>' +
+        top = '<button type="button" class="btn-reset fx ac g8" id="w-fig"' + K.go(state === 'rest' ? 'home:edit' : null) + '><span class="big">' + g(a.value) + '</span>' + (state === 'view' ? '' : K.ms(state === 'saved' ? 'check_circle' : 'edit', 'mp-ink2')) + '</button>' +
+          '<span class="mp-foot mp-ink2">' + (state === 'saved' ? 'your estimate, Mon 26 Oct' : state === 'view' ? 'valued Thu 30 Apr. An admin corrects it, in place or in the chat.' : 'your figure, valued Thu 30 Apr. Tap the figure to correct it.') + '</span>' +
           (state === 'saved' ? okline('Corrected in place by Arun, Mon 26 Oct, 09:52: ' + g(415000) + ' → ' + g(428000) + ', his estimate. Written as a correction with its audit row (via inline edit). Net worth is now ' + g(457951) + ', the engine’s figure.') : '');
       }
       body.push(K.card({ t: 'Property · UK · Arun and Asha, half each', body: '<div class="fx col g10">' + top +
@@ -642,7 +620,7 @@
       var ev = S ? [['2026-10-10', 'Sat 10 Oct'], ['2026-09-10', 'Thu 10 Sep'], ['2026-08-10', 'Mon 10 Aug']] : [];
       body.push(K.card({ t: 'Events', r: '<span class="mp-foot mp-ink2">' + (S ? S.count + ' buys' : '') + '</span>', body: K.list(ev.map(function (e) { return K.row({ icon: 'event_available', t: 'SIP · ' + e[1] + ' 2026', s: 'went through · Asha', v: ri(10000) }); })
         .concat([K.row({ icon: 'add_circle', t: 'Holding added · Sun 25 Oct, 10:31', s: 'by Arun, for Asha, in the chat · she owns it', v: ri(a.value) })])) }));
-      return { title: 'Parag Parikh Flexi Cap', sub: 'Direct Growth · MF folio · CAMS · India · Asha’s', back: back, chip: chips, body: wrap('<div class="cols">' + body.join('') + '</div>' + K.viewNotAdvice()) };
+      return { title: 'Parag Parikh Flexi Cap', sub: 'Direct Growth · MF folio · CAMS · India · Asha’s', back: back, chip: chips, body: wrap('<div class="cols">' + body.join('') + '</div>' + K.fromCode()) };
     }
     if (id === 'infosys') {
       body.push(K.card({ t: 'Shares · India · Arun', body: '<div class="fx col g8"><span class="big">' + native + '</span>' + gbpBeside +
@@ -650,7 +628,7 @@
         cells([['Return', 'Not worked out', 'no history yet'], ['Bought', 'Not known', 'past buys or an estimate'], ['Demat', 'Zerodha', 'Arun’s']]) + '</div>' }));
       body.push(K.card({ t: 'Its return', id: 'w-nohist', body: K.p('It has no history yet, so the engine can’t work out its return. Send past buys (Zerodha’s tax P&L or your contract notes) in the chat, or give an estimate there; an estimate stays marked as yours everywhere it shows.') +
         '<div class="btns">' + K.btn('Ask in the chat', 'tab:chat', 'tinted small', 'chat_bubble') + '</div>' }));
-      return { title: 'Infosys', sub: 'Shares · Demat · Zerodha · India · Arun’s', back: back, chip: chips, body: wrap(body.join('') + K.viewNotAdvice()) };
+      return { title: 'Infosys', sub: 'Shares · Demat · Zerodha · India · Arun’s', back: back, chip: chips, body: wrap(body.join('') + K.fromCode()) };
     }
     /* any other record: its figure, its terms, its source */
     var kindT = { cash: 'Cash', savings_account: 'Savings', property: 'Property', workplace_pension: 'Workplace pension', sipp: 'SIPP', ppf: 'PPF', endowment: 'Endowment policy', oeic: 'Fund (OEIC)', etf: 'ETF', commodity_etc: 'ETC' }[a.kind] || a.kind;
@@ -660,9 +638,8 @@
     if (a.id === 'lic') lines.push(['Premium', ri(a.premium_year) + ' a year', 'next Sun 28 Mar 2027'], ['Sum assured', ri(a.sum_assured), 'Fri 28 Mar 2031']);
     if (a.unlocks_at) lines.push(['Valued', 'Wed 30 Sep', 'its last statement'], ['Unlocks', 'at 57', 'locked until then']);
     body.push(K.card({ t: kindT + ' · ' + (a.country === 'UK' ? 'UK' : 'India') + ' · ' + who(a.owners), body: '<div class="fx col g8"><span class="big">' + native + '</span>' + gbpBeside +
-      (UK_HOLD[a.id] ? '<div class="fx ac g8 wrap">' + stanceChip(ctx, a.id) + shadowChip(ctx) + '</div>' : '') + cells(lines) +
-      (UK_HOLD[a.id] ? '<div>' + K.btn('Open the holding', 'nav:holding/' + a.id, 'tinted small', 'candlestick_chart') + '</div>' : '') + '</div>' }));
-    return { title: a.name.replace(' · Direct Growth', ''), sub: kindT + ' · ' + (a.country === 'UK' ? 'UK' : 'India') + ' · ' + who(a.owners), back: back, chip: chips, body: wrap(body.join('') + (UK_HOLD[a.id] ? K.viewNotAdvice() : K.foot(ILLUS))) };
+      cells(lines) + '</div>' }));
+    return { title: a.name.replace(' · Direct Growth', ''), sub: kindT + ' · ' + (a.country === 'UK' ? 'UK' : 'India') + ' · ' + who(a.owners), back: back, chip: chips, body: wrap(body.join('') + K.foot(ILLUS)) };
   });
 
   /* ---------- Debts and one debt ---------- */
@@ -1075,7 +1052,7 @@
     if (stage >= 8) {
       out.push(K.daysep('10:02'));
       out.push(K.me('How are our investments?', '10:02'));
-      out.push(K.ai('Steady. Five UK holdings, ' + g(24110) + ' at the Fri 23 Oct close, and Asha’s fund and your Infosys shares in India.', { cards: [portfolioCard(ctx)], meta: 'get_portfolio · get_stances · figures: the engine and the price registry' }));
+      out.push(K.ai('Steady. Five UK holdings, ' + g(24110) + ' at the Fri 23 Oct close, and Asha’s fund and your Infosys shares in India.', { cards: [portfolioCard(ctx)], meta: 'get_portfolio · figures: the engine and the price registry' }));
     }
     if (stage >= 9) {
       out.push(K.daysep('10:04'));
@@ -1099,17 +1076,17 @@
       acts: [K.cbtn('One didn’t go', 'x:didnt'), K.cbtn('Open Debts', 'nav:debts', 'ghost')] });
   }
   function portfolioCard(ctx) {
-    var who2 = ctx.has('pf:arun') ? 'arun' : ctx.has('pf:asha') ? 'asha' : 'all', ST = stances(ctx), list = records(ctx).filter(function (a) { return a.group === 'inv' || a.id === 'pot'; });
+    var who2 = ctx.has('pf:arun') ? 'arun' : ctx.has('pf:asha') ? 'asha' : 'all', list = records(ctx).filter(function (a) { return a.group === 'inv' || a.id === 'pot'; });
     var mine = list.filter(function (a) { return who2 === 'all' || a.owners.some(function (o) { return o[0] === who2; }); });
     var uk = mine.filter(function (a) { return a.country === 'UK'; }), ukSum = uk.reduce(function (s, a) { return s + (a.owners.length > 1 && who2 !== 'all' ? a.gbp / 2 : a.gbp); }, 0);
     var rows = mine.map(function (a) {
-      var s = ST[a.id], half = a.owners.length > 1 && who2 !== 'all';
-      return K.row({ lead: lead(LEAD[a.id].slice(0, 1)), t: a.name.replace(' · Direct Growth', '').replace(' (BlackRock MyMap 5)', ''), s: who(a.owners) + ' · ' + (a.account || '') + (half ? ' · half' : ''), v: a.ccy === 'INR' ? ri(a.value) : g(half ? a.gbp / 2 : a.value), vs: s ? K.stance(s.code, s.conf) : a.ccy === 'INR' ? '≈ ' + g(a.gbp) : 'cash, no stance' });
+      var half = a.owners.length > 1 && who2 !== 'all';
+      return K.row({ lead: lead(LEAD[a.id].slice(0, 1)), t: a.name.replace(' · Direct Growth', '').replace(' (BlackRock MyMap 5)', ''), s: who(a.owners) + ' · ' + (a.account || '') + (half ? ' · half' : ''), v: a.ccy === 'INR' ? ri(a.value) : g(half ? a.gbp / 2 : a.value), vs: a.ccy === 'INR' ? '≈ ' + g(a.gbp) : a.id === 'pot' ? 'cash' : null });
     }).join('');
     return card({ chip: overline('Portfolio') + K.draft(), id: 'w-portfolio',
       body: K.seg([{ t: 'Household', on: who2 === 'all', go: 'pf:all' }, { t: 'Arun', on: who2 === 'arun', go: 'pf:arun' }, { t: 'Asha', on: who2 === 'asha', go: 'pf:asha' }]) +
         '<span class="mp-cap mp-ink2">' + (who2 === 'all' ? 'Household' : who2 === 'arun' ? 'Arun' : 'Asha') + ' · UK at the Fri 23 Oct close</span><span class="mp-num-l">' + g(ukSum) + '</span>' + rows +
-        K.foot('Stances are the rules engine’s, in shadow until they have beaten doing nothing for 8 weeks; India’s come with phase 19. A view, not advice: MyPaisa cannot trade.'),
+        K.foot('Funds and shares at the Fri 23 Oct close, from the price registry; India’s in rupees, with pounds beside. MyPaisa records and values them; it cannot trade.'),
       acts: [K.cbtn('Open Home', 'nav:home', 'ghost', 'chevron_right')] });
   }
   var PF_ON = {
@@ -1274,9 +1251,9 @@
     out.push(K.ai('Asha asked at 10:12 to add her NS&I Premium Bonds. They aren’t a kind MyPaisa knows yet, so it’s yours to approve.', { cards: [card({ chip: overline(ok ? 'New kind · approved' : 'New kind · to approve') + K.chip(K.ms('shield_person') + 'Admin', 'mp-neutral') + K.draft(),
       h: ok ? K.ms('check_circle', 'mp-up') + ' NS&I Premium Bonds is a kind now' : 'NS&I Premium Bonds isn’t a kind yet: add it as cash, no interest, prizes as income?', id: 'w-kind',
       body: K.kv('Built from', 'Cash: the last figure given') + K.kv('Interest', 'none') + K.kv('Prizes', 'income, in the budget') + K.kv('Where', 'UK, in pounds, liquid') + K.kv('Asked for by', 'Asha, 10:12') +
-        (ok ? K.kv('Checked with', 'Sign in with Apple, Face ID') + K.foot('Asha’s registration picks up in her chat, with her own Confirm.') + savedFoot('10:14') : K.foot('A kind is data: no screen or form changes. Only you, the admin, can add one; Asha’s own record still comes to her Confirm.')),
+        (ok ? K.kv('Checked with', 'Sign in with Apple, Face ID') + K.foot('Her Premium Bonds can be added now: an admin adds them in the chat, with its own Confirm.') + savedFoot('10:14') : K.foot('A kind is data: no screen or form changes. Only an admin can add one; Asha views only, so an admin adds her record, with its own Confirm.')),
       acts: ok ? [] : [K.cbtn('Approve', 'kind:approve', 'primary'), K.cbtn('Reject', 'x:reject')], fold: { t: 'Technical', open: ctx.has('tech'), go: 'fold:tech', body: 'propose_kind → premium_bonds · from the cash template<br>fields: value (the last figure given), prizes → income · no accrual<br>approved behind the second check · versioned, kind v1' } })],
-      meta: ok ? 'list_kinds · describe_kind · propose_kind · in the audit log 10:14' : 'list_kinds found no kind for it · propose_kind, the admin’s alone', icon: 'shield_person' }));
+      meta: ok ? 'list_kinds · describe_kind · propose_kind · in the audit log 10:14' : 'list_kinds found no kind for it · propose_kind, an admin’s alone', icon: 'shield_person' }));
     return out;
   }
   function secondCheck(ctx) {
@@ -1295,7 +1272,7 @@
   }
   function decChat(ctx) {
     var out = [K.daysep('Mon 14 Dec 09:00')], ren = ctx.has('renew');
-    out.push(K.ai('', { cards: [card({ chip: K.chip(K.ms('event_available') + 'Check-in', 'mp-neutral') + '<span class="mp-foot mp-ink2">matures today</span>' + K.draft(), h: 'Your fixed-rate saver matured today with ' + g(10460) + '. What happened to it?', id: 'w-saver',
+    out.push(K.ai('', { cards: [card({ chip: K.chip(K.ms('event_available') + 'Check-in', 'mp-neutral') + '<span class="mp-foot mp-ink2">matures today</span>' + K.draft(), h: 'Asha’s fixed-rate saver matured today with ' + g(10460) + '. What happened to it?', id: 'w-saver',
       body: K.kv('Saver', 'Nationwide, 4.6% fixed') + K.kv('Opened', 'Sun 14 Dec 2025, ' + g(10000)) + K.kv('At maturity', g(10460)) + K.foot('Nothing is assumed: pick what happened.') + (ren ? K.kv('What happened?', 'Renewed') : ''),
       acts: ren ? [] : [K.cbtn('Renewed', 'mat:renew', 'primary'), K.cbtn('Paid out', 'x:paidout'), K.cbtn('Moved', 'x:moved')] })] }));
     if (ren) out.push(K.ai('', { cards: [card({ chip: overline('Renewed · 1 of 2'), h: 'How long is the new one fixed for?', id: 'w-term',
@@ -1376,7 +1353,7 @@
     return { title: 'The household learns', sub: 'Projection · the assumptions · March closed Thu 1 Apr 2027 · the tuner’s proposal beside them', chip: K.draft(),
       body: wrap(tunerPanel(ctx) + (T ? K.card({ t: 'Groceries, six closed months', body: '<div class="btable"><div class="brow h"><span>Month</span><span>Plan</span><span>Actual</span></div>' + T.months.map(function (m) { return '<div class="brow"><span>' + m.m + '</span><span class="mp-ink2">' + g(m.plan) + '</span><span>' + (m.actual > m.plan ? '▲ ' : '') + g(m.actual) + '</span></div>'; }).join('') + '</div>' +
         K.foot('October’s plan, ' + g(T.plan_2026) + ', grown by the UK’s 2.5% each January. The tuner refits the inputs that are estimates, never the household’s facts.') }) : '') +
-        K.note('school', 'The household learns the way the market side does: each month graded when it closes, a change proposed only on that evidence, and the admin deciding.') + K.foot(ILLUS)) };
+        K.note('school', 'The household learns from its own numbers: each month graded when it closes, a change proposed only on that evidence, and an admin deciding.') + K.foot(ILLUS)) };
   });
 
   /* ======================= the chapters ======================= */
@@ -1403,7 +1380,7 @@
       g: 'Saved as a correction, with its audit row (via inline edit): £415,000 → £428,000, “your estimate”. Net worth is £457,951 (₹5,15,19,488), the engine’s figure; the check-in is answered by it.',
       chat: function (ctx) { return monChat(ctx, 5); }, on: on() },
     { id: 'p2-kind', d: 'Sat 31 Oct', tm: '10:13', viewer: 'arun', t: 'A new kind for the admin: Premium Bonds', page: 'home', focus: 'chat', draft: true,
-      g: 'Asha asked for her NS&I Premium Bonds at 10:12; no kind fits, so it comes to Arun, the admin. Approve opens the second check: Sign in with Apple. Then the kind is data, versioned and audited; Asha’s record still waits for her own Confirm.',
+      g: 'Asha asked for her NS&I Premium Bonds at 10:12; no kind fits, so it comes to Arun, an admin. Approve opens the second check: Sign in with Apple. Then the kind is data, versioned and audited; Asha views only, so an admin adds her record next, with its own Confirm.',
       chat: satChat, target: 'kind:approve', sheet: function (ctx) { return ctx.has('check') ? secondCheck(ctx) : null; }, sheetClose: 'kind:close',
       on: on({ 'kind:approve': openK('check'), 'kind:close': function (st) { st.open.check = false; }, 'kind:apple': function (st) { st.open.check = false; st.open.ok = true; }, 'x:reject': toast('Reject tells Asha it can’t be added yet. This walk-through approves it.') }), scroll: { chat: 'w-kind' } }
   ] });
@@ -1415,8 +1392,8 @@
     { id: 'p3-fd', d: D1, tm: '09:56', viewer: 'arun', t: 'A deposit, accrued to maturity', page: 'asset/sbi_fd', focus: 'page', draft: true,
       g: 'The FD accrues at its stated 7.1%, quarterly: ₹5,17,908 today, ₹6,17,538 on Sat 10 Mar 2029, the engine’s figures. The household’s fixed terms mature in turn; on the day, the chat asks what happened.',
       chat: function (ctx) { return monChat(ctx, 6); } },
-    { id: 'p3-saver', d: 'Mon 14 Dec', tm: '09:00', t: 'A maturing deposit’s check-in', page: 'asset/saver', focus: 'chat', viewer: 'asha', draft: true,
-      g: 'Asha’s chat. Her fixed-rate saver matured today with £10,460; nothing is assumed. Tap Renewed: it asks the new term, then its rate, then a Confirm starts the successor record and closes this one as matured. (The ledger holds no events after Thu 5 Nov, so totals show that day’s.)',
+    { id: 'p3-saver', d: 'Mon 14 Dec', tm: '09:00', t: 'A maturing deposit’s check-in', page: 'asset/saver', focus: 'chat', viewer: 'arun', draft: true,
+      g: 'Arun’s chat: Asha’s fixed-rate saver matured today with £10,460. A check-in goes to an admin, since answering it writes a record, and nothing is assumed. Tap Renewed: it asks the new term, then its rate, then a Confirm starts the successor record and closes this one as matured. (The ledger holds no events after Thu 5 Nov, so totals show that day’s.)',
       chat: decChat, target: 'mat:renew', on: on({ 'mat:renew': openK('renew', null, 'w-term'), 'x:paidout': toast('Paid out asks where the £10,460 went. This walk-through renews it.'), 'x:moved': toast('Moved asks which account it went to. This walk-through renews it.'), 'x:term': toast('The term, then the rate, then the Confirm card: this walk-through stops before anything is saved.') }) }
   ] });
 
@@ -1440,7 +1417,7 @@
       g: 'A replay of Fri 23 Oct, 08:13: free text lands on the transaction’s Confirm card, in pounds as Balanced is. It becomes a transaction only after Confirm. Balanced’s £22,925 at the Fri close already holds it. Tap Confirm.',
       chat: function (ctx) { return monChat(ctx, 7); }, target: 'buy:confirm', on: on({ 'buy:confirm': openK('bought', null, 'w-buy') }), scroll: { chat: 'w-buy' } },
     { id: 'p5-portfolio', d: D1, tm: '10:02', viewer: 'arun', t: 'The Portfolio card, each member’s holdings', page: 'home', focus: 'chat', draft: true,
-      g: 'The household’s holdings, then each member’s: tap Arun or Asha. Each UK holding carries the rules engine’s stance (Balanced Hold 71%, NASDAQ Pause 64%, Robotics Hold 58%, Silver Hold 62%), in shadow; India’s come with phase 19.',
+      g: 'The household’s holdings, then each member’s: tap Arun or Asha. Each holding shows its value at the Fri 23 Oct close, from the price registry; India’s in rupees, with pounds beside.',
       chat: function (ctx) { return monChat(ctx, 8); }, target: 'pf:asha', on: on(), scroll: { chat: 'w-portfolio', page: 'w-inv' } },
     { id: 'p5-infosys', d: D1, tm: '10:04', viewer: 'arun', t: 'A share with no history: the agent asks', page: 'asset/infosys', focus: 'chat', draft: true,
       g: 'Infosys has 120 shares and no buys on record, so XIRR returns nothing, with the reason. The agent asks for past buys or an estimate, and an estimate stays marked as yours everywhere. Phase 9’s importer brings the buys.',
@@ -1485,7 +1462,7 @@
 
   M.chapter({ key: 'p9', n: '9', order: 9, title: 'The whole dashboard', short: 'Dashboard', steps: [
     { id: 'p9-overview', d: 'Fri 6 Nov', tm: '08:30', viewer: 'arun', t: 'The Overview, complete', page: 'home', focus: 'page', picked: pk.home,
-      g: 'Every part of the Overview at every door: net worth first, own and owe, each country and member, liquid and locked, what’s due, this month’s cash on the plan (the pot included), the investments with their stances, how the debts run off, what matures next and the largest assets.',
+      g: 'Every part of the Overview at every door: net worth first, own and owe, each country and member, liquid and locked, what’s due, this month’s cash on the plan (the pot included), the investments at their latest prices, how the debts run off, what matures next and the largest assets.',
       chat: function (ctx) { return fri6Chat(ctx, 0); }, on: on(), scroll: { page: 'w-cash' } },
     { id: 'p9-reports', d: 'Fri 6 Nov', tm: '08:40', viewer: 'arun', t: 'Reports, exports, and any question', page: 'reports', focus: 'chat', draft: true,
       g: 'Reports and exports, each made from the ledger as it stands; mypaisapp.com now opens the dashboard and the old tracker is retired. Any other question is answered from the ledger’s read-only copy: the figures are the query’s, and the SQL is under Technical.',

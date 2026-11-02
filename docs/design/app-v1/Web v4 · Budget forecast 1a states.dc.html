@@ -353,7 +353,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </sc-for>
 </div>
 </div>
-<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms" aria-hidden="true">add</span></button><span class="cfw" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
+<div class="cmpw"><sc-if value="{{ f.v.admin }}" hint-placeholder-val="{{ true }}"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms" aria-hidden="true">add</span></button></sc-if><span class="cfw" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
 </aside>
 </div>
 <nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#w0" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden="true">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
@@ -511,7 +511,7 @@ const V = {
     chat: [{ day: 'Today' }, { ai: true, text: 'Hello. Tell me what comes in and what goes out each month, in your own words, or send a payslip or a statement, and I’ll set up your budget for you to confirm.' }],
     foot: 'An illustrative household before its first budget; nothing on this tab is made here.' }),
   asha: base({ meta: 'Each year to 2046, in pounds of each year · the engine’s run, Thu 5 Nov 21:18', who: 'Asha · member', chatWho: 'Asha', admin: false,
-    chat: [{ day: 'Today' }, { ai: true, text: 'Hi Asha. Ask me anything about the household’s plans; Arun keeps them.' }],
+    chat: [{ day: 'Today' }, { ai: true, text: 'Hi Asha. Ask me anything about the household’s plans; the admins keep them.' }],
     ch: chart(Wy, { mode: 'gbp', years: 20, sel: 2027, cash: true, whose: 'Arun’s', chips: [{ c: 'mp-alertchip', t: '▼ Cash below zero', s: D.W.short[0] + ' to Feb 2028, at worst ' + gbp(D.W.short[1]) + ' in ' + D.W.short[0] }],
       aria: 'No year below the floor. Cash goes below zero from ' + D.W.short[0] + ' to Feb 2028, when the extension is paid after the wedding.',
       notes: ['The wedding, £20,000 in Mar 2027, and the extension, £35,000 in Jun 2027, are paid from cash, which runs out in ' + D.W.short[0] + ' and is back above zero in ' + D.W.back + '.'] }),
@@ -588,7 +588,7 @@ B({ id: 's8', tag: 'S8', name: 'Browser · Budget forecast 1a, empty', intro: 'A
   draws: 'Draws: “the Budget forecast after a rearrangement (the School fees pot’s lines, no flags), and its loading, empty and error states” (empty).',
   frames: [FR('Browser · Budget forecast 1a, empty', 'desktop', 'Light', V.empty), FR('Browser · Budget forecast 1a, empty', 'desktop', 'Dark', V.empty)],
   notes: [['Create in the chat:', 'the button opens it; the examples are the kind of sentences it understands.'], ['Illustrative,', 'not this household’s evening: Arun and Asha have had a budget since October.']] }),
-B({ id: 's9', tag: 'S9', name: 'Browser · Budget forecast 1a, as Asha sees it', intro: 'Thu 5 Nov, 21:19, in Asha’s own session. Arun saved the wedding at 21:16, applied a way at 21:17 and undid it at 21:18, so cash is flagged again: below zero from Jun 2027, when the extension is paid. She sees every figure; the ways are Arun’s.',
+B({ id: 's9', tag: 'S9', name: 'Browser · Budget forecast 1a, as Asha sees it', intro: 'Thu 5 Nov, 21:19, in Asha’s own session. Arun saved the wedding at 21:16, applied a way at 21:17 and undid it at 21:18, so cash is flagged again: below zero from Jun 2027, when the extension is paid. She sees every figure; the ways are the admins’, and her composer asks questions only, with no + to attach a file.',
   draws: 'Draws: “the Budget forecast as Asha sees it: the same figures, no Ways to cover it”.',
   frames: [FR('Browser · Budget forecast 1a, as Asha sees it', 'desktop', 'Light', V.asha), FR('Browser · Budget forecast 1a, as Asha sees it', 'desktop', 'Dark', V.asha), FR('Browser · Budget forecast 1a, as Asha sees it', 'phone, 390', 'Light', V.asha)],
   notes: [['A second kind of flag:', 'cash below zero, a strip under the bars and a chip, since the leanest month never drops below the floor here.'], ['Below the surplus:', 'the two one-offs paid from cash and the year’s closing cash, −£6,633; the months show cash at each month’s end.'], ['No Ways to cover it:', 'Ask about it opens her chat; plans and their ways are the admin’s.'], ['The figures:', 'forecast.W in future-plans-v4.json, after Arun’s Undo at 21:18.']] })

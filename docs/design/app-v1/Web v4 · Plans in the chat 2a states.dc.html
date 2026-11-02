@@ -608,7 +608,7 @@
 
           // 21:20, Asha, a member, in her own conversation
           const refusePlan = card({ over: 'Not saved', title: 'Plans are Arun’s', sub: '£300 a month for your gym from January, your words',
-            blocks: [lock('Plan items are the admin’s alone; Arun adds them. Nothing is saved.'), foot('I can show it as a what-if instead: the engine runs it, and nothing in the plan moves.')],
+            blocks: [lock('Plan items are an admin’s to add; Arun is one. Nothing is saved.'), foot('I can show it as a what-if instead: the engine runs it, and nothing in the plan moves.')],
             acts: [btn('Show it as a what-if', 'cbtn-primary'), btn('Tell Arun', '')] });
           const refuseAsm = card({ over: 'Not saved', title: 'The saved assumptions are Arun’s', sub: 'UK inflation is 2.5% a year, the prior Arun keeps',
             blocks: [lock('Only Arun can change a saved assumption. Nothing is saved.'), foot('I can run a what-if at 3% for you; nothing in the plan moves.')],
@@ -662,7 +662,9 @@
           const n6 = 'Browser · Plans in the chat 2a, Asha asks';
           const n7 = 'Browser · Plans in the chat 2a, plans it cannot set up';
           const ph = (n) => n.replace(', the wedding, cash below zero', ', the wedding, cash below zero, phone').replace(', Asha asks', ', Asha asks, phone');
-          const asha = (f) => f;
+          const CHIPS_M = [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['help', 'What if…']].map((c) => ({ i: c[0], l: c[1] }));
+          // a member's chat offers no Add or statement chip: only admins write (MA-307)
+          const asha = (f) => Object.assign(f, { chips: CHIPS_M });
           const S2w = S2.concat([me('See November’s budget'), tm('20:47')]);
           const boards = [
             { anchor: 's1', id: 'S1', name: 'Browser · Plans in the chat 2a, the two more ways opened', keys: 'MA-263 · MA-264',
@@ -699,8 +701,8 @@
                 { h: 'The page is scrolled to the milestones', t: 'because way 1’s run has a middle path in the figure set but no fan; the hero above it is the fan, as on the other boards.' }] },
             { anchor: 's6', id: 'S6', name: 'Browser · Plans in the chat 2a, Asha asks', keys: 'MA-263 · MA-222 · MA-264',
               lead: 'At 21:20 Asha, a member, asks in her own conversation: the wedding’s ways, with a lock where Confirm would be; then a plan and a saved assumption, each refused with a what-if offered. Nothing she does here is saved; her page is the same Projection.',
-              frames: [desk(n6 + ' · 21:20', T[0], '21:20', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -40, { member: true }), desk(n6 + ' · 21:21', T[1], '21:21', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -990, { member: true }),
-                phone(ph(n6) + ' · 21:20', T[0], '21:20', S6, -60), phone(ph(n6) + ' · 21:21', T[1], '21:21', S6, -1060)],
+              frames: [asha(desk(n6 + ' · 21:20', T[0], '21:20', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -40, { member: true })), asha(desk(n6 + ' · 21:21', T[1], '21:21', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -990, { member: true })),
+                asha(phone(ph(n6) + ' · 21:20', T[0], '21:20', S6, -60)), asha(phone(ph(n6) + ' · 21:21', T[1], '21:21', S6, -1060))],
               notes: [{ h: 'Draws (MA-263):', t: '“a member asking for ways to cover a shortfall: the options shown, nothing saved, at both doors”.' },
                 { h: 'Draws (MA-222):', t: '“refusal and validation outcomes in the chat and in place: plan items and saved assumptions refused to a member (…)”. In place, a member’s figures have no pencil (Plans tab 3a states).' },
                 { h: 'Asha’s words', t: 'are the board’s own, illustrative; the £300 and the 3% are hers. Her sidebar’s foot says she is a member.' }] },

@@ -234,7 +234,7 @@ class Component extends DCLogic {
     const nav = NAV.map((n) => ({ icon: n[1], label: n[2], cls: (n[0] === sec ? 'on' : '') + T('nav:' + n[0]), fill: n[0] === sec ? 'ms-fill' : '', go: f('nav:' + n[0]) }));
     const tsec = st.v.chat ? 'chat' : (sec === 'act' ? 'act' : sec === 'you' ? 'you' : 'home');
     const tabs = [['chat', 'chat_bubble', 'Chat'], ['home', 'home', 'Home'], ['act', 'insights', 'Activity'], ['you', 'account_circle', 'You']].map((n) => ({ icon: n[1], label: n[2], cls: (n[0] === tsec ? 'on' : '') + T('tab:' + n[0]), fill: n[0] === tsec ? 'ms-fill' : '', go: f('tab:' + n[0]) }));
-    const common = { themeCls: st.dark ? 't-dark' : 't-light', privCls: st.priv ? 'privon' : '', time: V.time, isSignin: signin, isApp: !signin, signinGo: f('signin'), signinCls: T('signin'), nopeGo: f('x'),
+    const common = { isAdmin: !st.asha, themeCls: st.dark ? 't-dark' : 't-light', privCls: st.priv ? 'privon' : '', time: V.time, isSignin: signin, isApp: !signin, signinGo: f('signin'), signinCls: T('signin'), nopeGo: f('x'),
       chatp: { list: V.chat, isWeb: door !== 'ios' }, pagep: { pg: V.page, isWeb: door !== 'ios' }, composer: Object.assign({}, V.composer, { sendIcon: (V.composer.typed || V.composer.hasFiles) ? 'arrow_upward' : 'mic' }), strip: Object.assign({}, V.strip, { noUp: !V.strip.hasUp }), tabs: tabs };
     const webp = Object.assign({}, common, { isDesk: door === 'desk', isPweb: door === 'pweb', nav: nav, user: st.asha ? 'Asha · member' : 'Arun · admin', chdSub: st.asha ? 'Asha\'s own conversation' : 'One conversation at every door', shlCls: st.v.chat ? 'v-chat' : 'v-page' });
     const PAR = { assets: 1, debts: 1, budget: 1, proj: 1, audit: 1, homeval: 1, hdfc: 1, run: 1 };

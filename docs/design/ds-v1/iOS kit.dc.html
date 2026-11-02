@@ -302,8 +302,8 @@
           <div class="bd-note">
             <p><b>Tokens become assets.</b> Each <code>--mp-*</code> token is a colour set in MyPaisaUI's asset catalog with four slots: light, dark, and each with Increase Contrast. A script writes the catalog from tokens.css, so the two never drift (MA-165).</p>
             <p><b>Swift names.</b> <code>--mp-ink</code> becomes <code>Color.mpInk</code>; views use the names, never a hex.</p>
-            <p><b>Two figures a pair.</b> WCAG's ratio at full brightness, then at a simulated 25% (each luminance a quarter, plus room glare), from <code>scripts/contrast_check.py --report</code>, against the card (the hero for hero ink and coral, its tint for a stance). Body text needs 7:1 and 4.5:1, other text 4.5:1 and 3:1, meaningful marks 3:1 and 1.8:1.</p>
-            <p><b>Dark raised for 25% (MA-181).</b> ink-2, ink-3, accent, down-quiet, alert and hold were lighter than they could hold dimmed; each row shows the old value and its figures. Rebalance and Watch rose too.</p>
+            <p><b>Two figures a pair.</b> WCAG's ratio at full brightness, then at a simulated 25% (each luminance a quarter, plus room glare), from <code>scripts/contrast_check.py --report</code>, against the card (the hero for hero ink and coral, its tint for a status chip). Body text needs 7:1 and 4.5:1, other text 4.5:1 and 3:1, meaningful marks 3:1 and 1.8:1.</p>
+            <p><b>Dark raised for 25% (MA-181).</b> ink-2, ink-3, accent, down-quiet, alert and hold were lighter than they could hold dimmed; each row shows the old value and its figures. Closed and Draft rose too.</p>
             <p><b>Drawn here first.</b> The Increase Contrast values are new on this board; tokens.css takes them in MA-165, before the catalog is generated.</p>
           </div>
         </div>
@@ -514,7 +514,7 @@
                         <div class="kv"><span>Balanced</span><span>£22,925</span></div>
                         <div class="kv"><span>Three ETFs and cash</span><span>£1,185</span></div>
                       </div>
-                      <div class="ccard-acts" style="align-items: center"><span class="atag">3</span><span class="cbtn">Open Home</span><span class="cbtn cbtn-ghost">Why?</span></div>
+                      <div class="ccard-acts" style="align-items: center"><span class="atag">3</span><span class="cbtn">Open Home</span><span class="cbtn cbtn-ghost">Ask about it</span></div>
                       <div class="ccard-fold"><span class="fx ac gap8"><span class="atag">4</span><span>Technical</span></span><span class="ms" aria-hidden="true">expand_less</span></div>
                       <div class="ccard-tech"><span>Balanced 1,234.50 u × 18.57 = £22,925</span><span>ETFs £512 + £304 + £188 = £1,004</span><span>Cash, Monzo pot = £181</span><span>Close Thu 22 Oct · GBP/USD 1.2945</span></div>
                     </div>
@@ -531,7 +531,7 @@
             <p><b>Two voices.</b> The member writes in navy bubbles on the right; MyPaisa's words sit beside its mark with no bubble, so its cards read as part of what it says.</p>
             <p><b>Typing, then streaming.</b> The typing mark shows until the first word; words stream in as MyPaisa writes; a card arrives whole.</p>
             <p><b>One card, five parts.</b> Heading, figures, actions, the Technical fold and a plain line. Every figure is the engine's, a typed number in the card's JSON; the words never work one out (MA-174).</p>
-            <p><b>Summary first.</b> Technical opens in place, one tap away; Why? asks in the chat. A card type the app does not know shows its plain line and asks to update.</p>
+            <p><b>Summary first.</b> Technical opens in place, one tap away; Ask about it asks in the chat. A card type the app does not know shows its plain line and asks to update.</p>
             <p><b>Motion.</b> The member's message pushes up from the composer, a card rises whole with <code>.smooth</code>, and Confirm turns into its saved check with <code>.bouncy</code> and a success haptic.</p>
             <p><b>Confirm is content.</b> Confirm, Edit and Cancel are content buttons on the card, and nothing is saved until Confirm. The Portfolio and Confirm cards are MA-34's pick, drawn natively in MA-169.</p>
           </div>
@@ -565,8 +565,8 @@
                   <span class="fx"><span class="mp-switch on"><span class="mp-switch-k" style="width: 33px; transform: translateX(14px)"></span></span></span>
                   <span class="fx"><span class="mp-switch on mp-disabled"><span class="mp-switch-k"></span></span></span>
                 </div>
-                <div class="ks"><span class="kl">The six stances · a word and, on a holding's own card, its confidence</span>
-                  <div class="fx" style="gap: 8px; flex-wrap: wrap"><span class="mp-chip mp-add">Add</span><span class="mp-chip mp-hold">Hold</span><span class="mp-chip mp-pause">Pause</span><span class="mp-chip mp-trim">Trim</span><span class="mp-chip mp-reb">Rebalance</span><span class="mp-chip mp-watch">Watch</span></div>
+                <div class="ks"><span class="kl">The six status chips · a word, and a figure where it helps</span>
+                  <div class="fx" style="gap: 8px; flex-wrap: wrap"><span class="mp-chip mp-add">Paid</span><span class="mp-chip mp-hold">Due</span><span class="mp-chip mp-pause">Over plan</span><span class="mp-chip mp-trim">Failed</span><span class="mp-chip mp-reb">Closed</span><span class="mp-chip mp-watch">Draft</span></div>
                 </div>
               </div>
             </div>
@@ -574,7 +574,7 @@
           <div class="bd-note">
             <p><b>Content buttons.</b> Primary (filled accent) for the one action that matters, tinted for the others, ghost for Cancel, alert red only for a destructive act. Never glass; at least 44 pt tall.</p>
             <p><b>Pressed and disabled.</b> Pressed scales to 97% and darkens a step (lightens in dark); glass brightens and swells. Disabled is 40% and takes no tap, with the reason said nearby.</p>
-            <p><b>Chips.</b> Shortcut chips are glass, they live with the composer, and their tap area is 44 pt. Stance chips are content: always a word, and on a holding's own card its confidence and "a view, not advice".</p>
+            <p><b>Chips.</b> Shortcut chips are glass, they live with the composer, and their tap area is 44 pt. Status chips are content: always a word, and a figure where it helps.</p>
             <p><b>Motion.</b> Every control answers the finger with <code>.snappy(extraBounce: 0.08)</code>: buttons dip to 95%, the segmented lens and the switch knob glide, a chip ticks with a selection haptic.</p>
             <p><b>No Buy or Sell.</b> MyPaisa cannot trade, so no button anywhere offers to. The segmented control and switch are the system's, coloured by the tokens. MA-165 builds them in MyPaisaUI.</p>
           </div>
@@ -642,7 +642,7 @@
             </div>
           </sc-for>
           <div class="bd-note">
-            <p><b>Partial sheets float in glass,</b> inset from the edges with concentric corners, at the medium or large detent: Why?, What if? and the pickers. What they hold is solid content.</p>
+            <p><b>Partial sheets float in glass,</b> inset from the edges with concentric corners, at the medium or large detent: a what-if, a sum explained and the pickers. What they hold is solid content.</p>
             <p><b>Full sheets are solid ground,</b> edge to edge, for a screen opened over the chat: close at the left, Ask at the right, Update opens the chat.</p>
             <p><b>Menus and alerts are glass</b> and grow out of what opened them. A destructive choice is red and never the default.</p>
             <p><b>The second check is iOS's own sheet:</b> a fresh Sign in with Apple under Face ID, or a passkey, bound to the action and verified by the server. A local Face ID alone never authorises anything (MA-76).</p>
@@ -671,32 +671,32 @@
                   <div class="spec"><b>The hero line</b><span>LineMark · coral, 2.5 pt, .catmullRom</span><span>AreaMark · coral at 18%</span><span>PointMark · today, labelled in text</span><span>No grid and no y axis on the hero</span></div>
 
                   <div class="mp-card" style="padding: 16px 16px 12px">
-                    <div class="fx ac jb"><span class="mp-hl">Balanced · 90 days</span><span class="mp-chip mp-hold">Hold · 71%</span></div>
+                    <div class="fx ac jb"><span class="mp-hl">Balanced · 90 days</span><span class="mp-chip mp-neutral">XIRR 8.4%</span></div>
                     <div class="fx ac gap8" style="margin-top: 2px"><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span></div>
                     <div class="cplot">
-                      <div class="mp-chartbox cc"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="8.33" y2="8.33" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="50" y2="50" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="91.67" y2="91.67" stroke="var(--mp-chart-grid)" stroke-width="1"></line><rect x="86.5" y="0" width="13.5" height="100" fill="var(--mp-hold-bg)" stroke="var(--mp-hold)" stroke-width="1" stroke-dasharray="3 3"></rect><path d="{{ bal.area }}" fill="var(--mp-chart-area)"></path><path d="{{ bal.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ bal.ex }}; top: {{ bal.ey }}"></span><span class="hzl mp-hold" style="left: 93.25%">Hold</span></div>
+                      <div class="mp-chartbox cc"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="8.33" y2="8.33" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="50" y2="50" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="91.67" y2="91.67" stroke="var(--mp-chart-grid)" stroke-width="1"></line><path d="{{ bal.area }}" fill="var(--mp-chart-area)"></path><path d="{{ bal.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ bal.ex }}; top: {{ bal.ey }}"></span></div>
                       <span class="ylab" style="top: 8.33%">£23k</span><span class="ylab" style="top: 50%">£22k</span><span class="ylab" style="top: 91.67%">£21k</span>
                     </div>
-                    <div class="mp-chartaxis mp-ink2" style="margin: 6px 40px 0 0"><span style="left: 6.7%">Aug</span><span style="left: 36.5%">Sep</span><span style="left: 65.4%">Oct</span><span class="ax-e" style="left: 100%">6 Nov</span></div>
-                    <div class="mp-foot mp-ink2" style="margin-top: 10px">Hold for the next 2 weeks · a view, not advice</div>
+                    <div class="mp-chartaxis mp-ink2" style="margin: 6px 40px 0 0"><span style="left: 7.7%">Aug</span><span style="left: 42.2%">Sep</span><span style="left: 75.6%">Oct</span><span class="ax-e" style="left: 100%">23 Oct</span></div>
+                    <div class="mp-foot mp-ink2" style="margin-top: 10px">XIRR 8.4% · CAGR 8.0% from 38 dated buys</div>
                   </div>
-                  <div class="spec"><b>A holding's history</b><span>LineMark and AreaMark · the chart line and area</span><span>RectangleMark · the stance horizon, in the stance's tint, dashed edge</span><span>AxisMarks · trailing, pounds masked in privacy mode</span><span>The stance only on the holding's own card</span></div>
+                  <div class="spec"><b>A holding's history</b><span>LineMark and AreaMark · the chart line and area</span><span>AxisMarks · trailing, pounds masked in privacy mode</span><span>XIRR and CAGR as text under the plot</span></div>
 
                   <div class="mp-card fx col gap12">
-                    <div class="fx col gap2"><span class="mp-hl">Overlap · what your funds share</span><span class="mp-foot mp-ink2">Share of the smaller fund that the other also holds</span></div>
-                    <sc-for list="{{ overlap }}" as="o" hint-placeholder-count="3">
-                      <div class="obar"><div class="obar-t"><span>{{ o.a }}</span><span class="mp-w6">{{ o.p }}</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: {{ o.p }}"></div></div></div>
+                    <div class="fx col gap2"><span class="mp-hl">Returns · each holding's XIRR</span><span class="mp-foot mp-ink2">From the dated ledger, every buy on its date</span></div>
+                    <sc-for list="{{ returns }}" as="o" hint-placeholder-count="3">
+                      <div class="obar"><div class="obar-t"><span>{{ o.a }}</span><span class="mp-w6">{{ o.p }}</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: {{ o.w }}"></div></div></div>
                     </sc-for>
                   </div>
-                  <div class="spec"><b>The overlap bars</b><span>BarMark · one colour, the meter blue, never green</span><span>The value as text beside each bar</span><span>Largest first</span></div>
+                  <div class="spec"><b>The return bars</b><span>BarMark · one colour, the meter blue, never green</span><span>The value as text beside each bar</span><span>Largest first</span></div>
                 </div>
               </div>
             </div>
           </sc-for>
           <div class="bd-note">
             <p><b>One house style in Swift Charts.</b> The chat's cards and the dashboard draw the same charts from the engine's series; no chart is an image any more (MA-56, MA-58).</p>
-            <p><b>Lines and areas are marks; words are text.</b> Labels, values and the stance's word are SwiftUI text over the plot, as tokens.css's chart rule says: never a value baked into a drawing.</p>
-            <p><b>The coral line is the house's,</b> on the navy hero and on the card. A stance's horizon is shaded in its own tint, and the card says "a view, not advice".</p>
+            <p><b>Lines and areas are marks; words are text.</b> Labels, values and a status word are SwiftUI text over the plot, as tokens.css's chart rule says: never a value baked into a drawing.</p>
+            <p><b>The coral line is the house's,</b> on the navy hero and on the card. A forecast is its own chart (the Projection, the Budget forecast), never a tail on a price line.</p>
             <p><b>Motion.</b> The line and its area draw in under an animated mask, dots and labels land after, bars grow from zero, and scrubbing moves a glass lollipop with a selection tick per point.</p>
             <p><b>Never green for a bar.</b> Bars and meters are the meter blue; green stays for gains with ▲. Every chart has an audio graph (board 11).</p>
           </div>
@@ -760,7 +760,7 @@
               <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 720px">
                 <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start">
                   <div class="atile" style="grid-column: 1 / -1"><span class="kl">25% brightness · the same card at full and at a simulated 25%</span>
-                    <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px"><div class="ks gap6"><span class="kl">Full brightness</span><div style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Why?</span></div></div></div></div><div class="ks gap6"><span class="kl">25%, drawn as brightness 0.35</span><div class="dimmed" style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Why?</span></div></div></div></div></div>
+                    <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px"><div class="ks gap6"><span class="kl">Full brightness</span><div style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Ask about it</span></div></div></div></div><div class="ks gap6"><span class="kl">25%, drawn as brightness 0.35</span><div class="dimmed" style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Ask about it</span></div></div></div></div></div>
                     <div class="brule"><span class="kli"><span class="ms" aria-hidden="true">check</span><span>No tertiary grey for anything a member must read</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Nothing under 12 pt; secondary text 13 pt or more</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Regular weight or heavier, never light or thin</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>No hairline as the only edge of a control</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Glass carries labels only, in ink or ink-2</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>iOS turns glass dark over dark content</span></span></div>
                   </div>
                   <div class="ks" style="gap: 16px">
@@ -799,7 +799,7 @@
                     </div>
                     <div class="atile"><span class="kl">Colour is never the only signal</span>
                       <div class="fx ac" style="gap: 14px; flex-wrap: wrap"><span class="mp-sub mp-up mp-w6">▲ 0.6%</span><span class="mp-sub mp-dq mp-w6">▼ 1.2%</span><span class="mp-chip mp-alertchip"><span class="ms" style="font-size: 16px" aria-hidden="true">warning</span>Needs a look</span></div>
-                      <span class="mp-foot mp-ink2">Gains carry ▲, falls ▼; a stance is a word; an alert has an icon and a word; a chart labels its lines.</span>
+                      <span class="mp-foot mp-ink2">Gains carry ▲, falls ▼; a status is a word; an alert has an icon and a word; a chart labels its lines.</span>
                     </div>
                   </div>
                 </div>
@@ -839,7 +839,7 @@
                   <div class="ks"><span class="kl dv-cap">Card arrives · .smooth</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Portfolio</span><span class="mp-num-l">£24,110</span><span class="mp-foot mp-up mp-w6">▲ £96 · 0.4% today</span></div></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Sent and received</span><div class="mdemo" data-mo-frame-root="1"><div class="chat" style="padding: 0; gap: 10px"><div class="me">£200 into Balanced</div><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Got it. Read it, then Confirm.</div></div></div></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Chips · 45 ms apart</span><div class="mdemo" data-mo-frame-root="1"><div class="chips" style="flex-wrap: wrap; overflow: visible"><span class="gchip lg"><span class="ms" aria-hidden="true">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">history</span><span>Audit</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">payments</span><span>Log money</span></span></div></div></div>
-                  <div class="ks"><span class="kl dv-cap">Sheet rises</span><div class="mdemo" data-mo-frame-root="1" style="justify-content: flex-start"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span><div class="dim"></div><div class="sheet lg" style="border-radius: 26px; padding: 8px 16px 16px; gap: 6px"><div class="sheet-grab"></div><span class="mp-hl">What if?</span><span class="mp-foot mp-ink2">Drag up for the large detent</span></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Sheet rises</span><div class="mdemo" data-mo-frame-root="1" style="justify-content: flex-start"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span><div class="dim"></div><div class="sheet lg" style="border-radius: 26px; padding: 8px 16px 16px; gap: 6px"><div class="sheet-grab"></div><span class="mp-hl">A what-if</span><span class="mp-foot mp-ink2">Drag up for the large detent</span></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Chart draws in</span><div class="mdemo" data-mo-frame-root="1"><div class="mp-chartbox" style="height: 96px; margin-top: 16px"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="height: 100%"><path d="{{ hero.area }}" fill="var(--mp-chart-area)"></path><path d="{{ hero.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ hero.ex }}; top: {{ hero.ey }}"></span><span class="mp-chartlbl" style="left: {{ hero.ex }}; top: {{ hero.ey }}">Today</span></div><div class="mp-chartaxis mp-ink2"><span class="ax-s" style="left: 0">1 Oct</span><span class="ax-e" style="left: 100%">23 Oct</span></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Meters grow</span><div class="mdemo" data-mo-frame-root="1"><div class="obar"><div class="obar-t"><span>Claude this cycle</span><span class="mp-w6">$18 of $160</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: 11%"></div></div></div><div class="obar"><div class="obar-t"><span>AWS and others</span><span class="mp-w6">£3 of £50</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: 6%"></div></div></div><span class="mp-foot mp-ink2">Renews on the 3rd</span></div></div>
                   <div class="ks"><span class="kl dv-cap">Figure rolls · numericText</span><div class="mdemo" data-mo-frame-root="1"><div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">Household · counts once</span><span class="mp-num-hero">£24,110</span></div></div></div>
@@ -847,7 +847,7 @@
                   <div class="ks"><span class="kl dv-cap">Tab bar lens · tap it</span><div class="mdemo" data-mo-frame-root="1"><div class="tabs lg" style="flex: none"><span class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</span></div><span class="mp-foot mp-ink2">One glass lens, morphed with glassEffectID.</span></div></div>
                   <div class="ks"><span class="kl dv-cap">Confirm, then Saved</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Confirm</span><span class="mp-hl">Bought £200 of Balanced</span></div><div class="ccard-acts" style="align-items: center"><span class="ms ms-fill msaved" data-mo="saved" aria-hidden="true">check_circle</span><span class="mp-hl">Saved</span><span class="mp-foot mp-ink2">to the audit log</span></div></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Face ID</span><div class="mdemo" data-mo-frame-root="1" style="align-items: center"><div class="faceid" data-mo="face"><span class="ms" aria-hidden="true">familiar_face_and_zone</span></div><span class="mp-foot mp-ink2">iOS's glyph settles, then the action runs</span></div></div>
-                  <div class="ks"><span class="kl dv-cap">Red alert · one pulse</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard" data-mo="attn" style="box-shadow: inset 0 0 0 1.5px var(--mp-alert), var(--mp-shadow)"><div class="ccard-h"><span class="fx ac gap6 c-alert mp-foot mp-w6"><span class="ms" style="font-size: 18px" aria-hidden="true">warning</span>Act today</span><span class="mp-hl">NASDAQ 100 ETF passed your alert</span><span class="mp-foot mp-ink2">8.4% below its high, past the 8% you set.</span></div></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Red alert · one pulse</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard" data-mo="attn" style="box-shadow: inset 0 0 0 1.5px var(--mp-alert), var(--mp-shadow)"><div class="ccard-h"><span class="fx ac gap6 c-alert mp-foot mp-w6"><span class="ms" style="font-size: 18px" aria-hidden="true">warning</span>Have a look today</span><span class="mp-hl">A job failed twice</span><span class="mp-foot mp-ink2">Prices for 2 holdings did not arrive.</span></div></div></div></div>
                 </div>
               </div>
             </div>
@@ -934,11 +934,11 @@
               T('mp-cap', 'caption 12/16', '.mp-cap', 'Fri 23 Oct · 07:15')
             ],
             hero: mk([23614, 23580, 23650, 23700, 23660, 23720, 23810, 23790, 23760, 23840, 23900, 23870, 23930, 23980, 23950, 23890, 23940, 24010, 23990, 24050, 24030, 24014, 24110], 0, 97, 23500, 24300),
-            bal: mk([21650, 21800, 21720, 21950, 22100, 22040, 22300, 22250, 22480, 22610, 22550, 22790, 22925], 0, 86.5, 20800, 23200),
-            overlap: [
-              { a: 'NASDAQ 100 ETF and Balanced', p: '37%' },
-              { a: 'Robotics ETF and Balanced', p: '9%' },
-              { a: 'Robotics ETF and NASDAQ 100 ETF', p: '3%' }
+            bal: mk([21650, 21800, 21720, 21950, 22100, 22040, 22300, 22250, 22480, 22610, 22550, 22790, 22925], 0, 100, 20800, 23200),
+            returns: [
+              { a: 'NASDAQ 100 ETF', p: '14.2%', w: '89%' },
+              { a: 'Balanced', p: '8.4%', w: '53%' },
+              { a: 'Robotics ETF', p: '6.1%', w: '38%' }
             ],
             btns: [
               B('Primary', 'filled accent', 'cbtn cbtn-primary', 'Confirm'),
@@ -946,7 +946,7 @@
               B('Ghost', 'accent label', 'cbtn cbtn-ghost', 'Cancel'),
               B('Alert', 'destructive only', 'cbtn cbtn-alert', 'Sign out'),
               B('Large', 'sheets · 50', 'mp-btn mp-btn-primary', 'Continue'),
-              B('Stance chip', 'content', 'mp-chip mp-hold', 'Hold · 71%')
+              B('Status chip', 'content', 'mp-chip mp-hold', 'Due Sun 1 Nov')
             ],
             icons: [
               { lab: 'Default', cls: 'appicon-default ic-def' },

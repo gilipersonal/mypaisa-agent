@@ -10,6 +10,16 @@
 > longer drive the design. The sentences that state the current plan now say
 > the app.
 
+> **2 Nov 2026, MA-307.** The market side was retired: MyPaisa is a wealth
+> tracker only (`docs/design/reviews/MA-307/decision.md`). What still drives
+> the design from §1 to §4 is the discipline (code computes, the model
+> explains, limits are enforced outside the model), the card shape, and the
+> price sources of §3.2, used only to value holdings. The desk's indicators,
+> pillars, cascade and confidence (§1), the toolbelt's verdict cards (§2), the
+> finance agent frameworks (§3.1), the confidence scores (§3.5) and the
+> engine and research rows of §4 are kept as the record of 23 Oct 2026;
+> nothing is ported from them.
+
 Reverse engineering of the two references, plus a survey of what is possible
 around them, done on 23 Oct 2026. `ARCHITECTURE.md` and `PLAN.md` are written
 from this. Nothing here is built.
@@ -340,10 +350,11 @@ same score and breed alert fatigue. The sources agree with him.
   investment, made by way of business (PERG 8, PERG 2.3). A household's own
   tool is outside that perimeter on our reading (§3.6; not legal advice).
   The FCA's 19 Oct 2026 remarks ask AI tools for clear, proportionate
-  disclaimers on financial answers; "a view, not advice" stays on every
-  stance card.
-- Forecasts are scored when they resolve: Brier score with its reliability
-  diagram, against a base rate (§3.5 above; `ARCHITECTURE.md` §20.4).
+  disclaimers on financial answers. Since MA-307 MyPaisa makes no
+  recommendation at all: no stance, and no buy, hold or sell call.
+- The household's own forecasts are scored when each month closes: the Budget
+  forecast against what happened, each gap traced to its input
+  (`ARCHITECTURE.md` §20.9).
 
 ### 5.5 Tools
 
@@ -384,7 +395,7 @@ The observability design is recorded in `ARCHITECTURE.md` §10 (`MA-230`, drawn 
 | `MA-233` | Phase 1 | To Do | OpenTelemetry GenAI semantic conventions (`gen_ai.*` and `mypaisa.*` attributes) on every `chat <model>` and `tool <name>` span, feeding CloudWatch Generative AI Observability and CloudWatch Omni, plus a weekly token/cost reconciliation job against `SpendMonth` and `RunRecord`. |
 | `MA-234` | Phase 1 | To Do | Client-side telemetry (`POST /v1/telemetry`) reporting `ClientFirstWord`, `ClientErrors` and `ClientCrashes` with `trace_id` and `run_id` and zero user content. |
 | `MA-196` | Phase 1 | To Do | The in-app **Activity** screen at both doors reading `RunRecord` rows in plain English (what the agent read, which tools it called, what it proposed, tokens, cache hits, latency and cost). |
-| `MA-235` | Phase 18 | To Do | Multi-agent trace continuity across AWS Step Functions and EventBridge (`mypaisa-<env>-events`), per-agent `OTEL_SERVICE_NAME`, replay links (`replays_run_id`), and `AgentHeartbeat` metrics. |
+| `MA-235` | Phase 13 | To Do | Multi-agent trace continuity across AWS Step Functions and EventBridge (`mypaisa-<env>-events`), per-agent `OTEL_SERVICE_NAME`, replay links (`replays_run_id`), and `AgentHeartbeat` metrics. |
 
 #### How the FastAPI REST APIs (`handlers/api` and `handlers/stream`) fit into the trace and request-ID flow (`MA-266`)
 
@@ -497,16 +508,16 @@ Any agent runtime we choose must satisfy ten hard architectural constraints alre
 2. **Explicit `cache_control` breakpoints** (`ephemeral`; at most three, the chat's fixed part on the 1h TTL, with the request's automatic caching for the tail and a lifetime per route, `ARCHITECTURE.md` §24.1, MA-286) on the stable system prompt, tool definitions, household profile, and `Kind` catalog so multi-turn conversations and 15-minute jobs achieve `> 60%` cache-read hit rates (`§8.4`).
 3. **Claude 5.5 thinking blocks & cryptographic signatures** preserved verbatim and append-only across tool-use turns within a run (`§8.2`).
 4. **Constrained decoding (`strict: true`) on every tool schema + isolated server-side `web_search_20260209` / `web_fetch_20260209`** inside dedicated tool-less `search_web` / `fetch_page` sub-calls so untrusted web content never shares an API request with household write tools (`§23.2`, lesson 32).
-5. **Anthropic Message Batches API** (50% discount) for overnight non-urgent workloads (`narrator` morning brief prose, `archivist` conversation notes, and the 3 LLM judges in `MA-252`).
+5. **Anthropic Message Batches API** (50% discount) for overnight non-urgent workloads (`narrator` prose, `archivist` conversation notes, and the 3 LLM judges in `MA-252`).
 6. **Deterministic pre-tool `PolicyGate` in Python (`§23.2`)** checking five invariants (manifest allowlist, member role, household partition, schema/date bounds, per-run caps + untrusted-content taint narrowing) *before* any tool executes, and **`FigureCheck` (`§23.2`, `MA-248`)** checking every number in the final reply against tool outputs before sending.
 7. **Stateless pause & resume across hours (`PendingAction`, `§8.2`):** When the agent calls `ask_user` or proposes a Confirm card (`draft_record`, `propose_plan_item`, `propose_budget_rearrangement`), the Lambda must **not** block waiting for a human; it writes a `PendingAction` row to DynamoDB and exits cleanly, and the next SQS message hours later resumes from that state.
 8. **OpenTelemetry GenAI spans (`gen_ai.*` + `mypaisa.*`) and `RunRecord` (`§10.1`, `§10.3`)** with exact per-call cache-read/write tokens, TTFT, stop reason, and cost.
 9. **Inspect AI (`T0` deterministic replay + `T1` golden set + `T2` full suite, `§23.3`, `MA-246`)** replaying recorded conversations with zero network in CI.
-10. **Phase 18 nine-agent architecture (`§20`):** Only two agents (`concierge` and `research`) run an open-ended LLM tool loop; four (`ingestion`, `planner`, `sentinel`, `narrator`) are **deterministic Python pipelines that call Claude once for structured extraction or prose**; and three (`market_data`, `quant`, `archivist`) are **100% deterministic Python with zero LLM calls**, orchestrated by **AWS Step Functions** and **Amazon EventBridge (`mypaisa-<env>-events`)**, each in its own Lambda with its own IAM role.
+10. **Phase 13 agent team (`§20`; nine agents as of MA-265, before MA-307 retired the market side):** Only two agents (`concierge` and `research`) run an open-ended LLM tool loop; four (`ingestion`, `planner`, `sentinel`, `narrator`) are **deterministic Python pipelines that call Claude once for structured extraction or prose**; and three (`market_data`, `quant`, `archivist`) are **100% deterministic Python with zero LLM calls**, orchestrated by **AWS Step Functions** and **Amazon EventBridge (`mypaisa-<env>-events`)**, each in its own Lambda with its own IAM role.
 
 #### Comparison of the six agent framework options
 
-| Framework | 1. Direct Anthropic API + 1h cache + Batches | 2. Thinking block signatures & `strict: true` | 3. Pre-tool `PolicyGate` & post-reply `FigureCheck` | 4. Stateless `PendingAction` pause/resume on Lambda | 5. OTel `gen_ai.*` spans & `RunRecord` | 6. Lambda cold start & dependency weight | 7. Fit for Phase 18 (Step Functions + EventBridge) | Overall score |
+| Framework | 1. Direct Anthropic API + 1h cache + Batches | 2. Thinking block signatures & `strict: true` | 3. Pre-tool `PolicyGate` & post-reply `FigureCheck` | 4. Stateless `PendingAction` pause/resume on Lambda | 5. OTel `gen_ai.*` spans & `RunRecord` | 6. Lambda cold start & dependency weight | 7. Fit for Phase 13 (Step Functions + EventBridge) | Overall score |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Option 1 (Recommended): Thin Custom Loop on official `anthropic` Python SDK + Pydantic v2 + Step Functions & EventBridge** | **Native (10/10)** — first-day support for `cache_control` (1h), `strict: true`, server-side web search, PDF document blocks, and Message Batches. | **Exact (10/10)** — `response.content` blocks (including signed `thinking` blocks) are appended unchanged. | **Native (10/10)** — `PolicyGate.check()` runs at the exact `tool_use` dispatch point; `FigureCheck.verify()` runs before `outbox.fifo` enqueue. | **Native (10/10)** — `ask_user` or `draft_*` serializes `PendingAction` to DynamoDB and returns immediately. | **Exact (10/10)** — wraps `client.messages.stream` directly to capture TTFT, cache tokens, and `msg_id`. | **Fastest (10/10)** — only `anthropic` + `pydantic` + `httpx` (~15 MB, `< 250 ms` cold start). | **Exact (10/10)** — Step Functions + EventBridge handle multi-agent workflows with per-Lambda IAM roles. | **10 / 10 (Recommended)** |
 | **Option 2: `PydanticAI` (`pydantic-ai`)** | **Good (7/10)** — supports `AnthropicModel`, but fine-grained 1h `cache_control` per content block, isolated server-side `web_search` sub-calls, and Message Batches require dropping down to the raw `anthropic` client anyway. | **Good (8/10)** — Pydantic v2 tool schemas are clean (`@agent.tool`, `RunContext[Deps]`), though message history maps through PydanticAI's generic `ModelMessage` AST. | **Good (8/10)** — tool wrappers can call `PolicyGate`, and `@agent.result_validator` can run `FigureCheck`. | **Fair (6/10)** — assumes an in-process loop unless manually exited via custom exception/result type. | **Good (8/10)** — built-in Logfire/OTel GenAI spans, though custom `mypaisa.*` attributes and `RunRecord` still need our wrapper. | **Light (8/10)** — moderate dependency tree (~35 MB). | **Good (8/10)** — works inside individual Lambdas, while Step Functions still does orchestration. | **7.9 / 10 (Runner-up; borrow `RunContext[Deps]` pattern)** |
@@ -537,7 +548,7 @@ Why this combination gives MyPaisa the best of both worlds:
           FigureCheck.verify(reply_text, tool_results, user_words)
           write RunRecord + Conversation turn -> enqueue to outbox.fifo
    ```
-4. **Hardware-grade multi-agent isolation in Phase 18:** Instead of an in-memory multi-agent framework (`CrewAI` / `LangGraph`) where all agents share one IAM role and chat in prose, Phase 18 uses **AWS Step Functions** (for the 06:30 / 21:05 daily brief pipeline) and **Amazon EventBridge (`mypaisa-<env>-events`)** (for reactive events), with each agent running in its own Lambda under its own least-privilege IAM role (`§20.2`).
+4. **Hardware-grade multi-agent isolation in Phase 13:** Instead of an in-memory multi-agent framework (`CrewAI` / `LangGraph`) where all agents share one IAM role and chat in prose, Phase 13 uses **AWS Step Functions** (for the daily run) and **Amazon EventBridge (`mypaisa-<env>-events`)** (for reactive events), with each agent running in its own Lambda under its own least-privilege IAM role (`§20.2`).
 
 ---
 
@@ -553,7 +564,7 @@ Why this combination gives MyPaisa the best of both worlds:
 | **Server state & live SSE cache** | `@tanstack/svelte-query` **6.3** (`@tanstack/query-core`) | Holds every server read (`records`, `views`, `turns`, `runs`, `projection`, `scorecards`). The SSE client (`GET /v1/stream`) writes incoming `StreamEvent` deltas and confirmed record changes directly into `queryClient.setQueryData(...)`, so every open tab updates in real time without polling. |
 | **Tables & virtualized lists** | `@tanstack/table-core` **9.3**, `@tanstack/svelte-virtual` **3.13** | Powers sorting, owner/country/currency filtering, and column pinning on Assets & Debts, Statement lines, Audit log, and Activity runs; virtualizes the chat timeline and statement imports with thousands of rows at 60 fps. |
 | **In-place correction & settings forms** | `@tanstack/svelte-form` **1.33** + `zod` **4.0** | Powers in-place cell editing on editable `Kind` fields (`PATCH /v1/records/{id}`, `MA-74`, `MA-201`) and Admin center settings with optimistic updates and schema validation. (Remember Rule 1: creation happens in the chat, never via creation forms.) |
-| **Charts** | `layerchart` **2.9** (`shadcn-svelte` charts on D3 scales) + `lightweight-charts` **5.2** (TradingView) | LayerChart renders the wealth breakdown, allocation rings, 20-year Projection fan/stack, and Budget forecast bars in DS v1 tokens; `lightweight-charts` is loaded lazily only on market holding price/candlestick views (Phases 10+). |
+| **Charts** | `layerchart` **2.9** (`shadcn-svelte` charts on D3 scales) | LayerChart renders the wealth breakdown, allocation rings, 20-year Projection fan/stack, and Budget forecast bars in DS v1 tokens. (`lightweight-charts` was planned for the market side's price charts and left with MA-307.) |
 | **Motion system** | `motion` **14** + Svelte transitions + `docs/design/shared/motion.css` | Shared arrival stagger, spring sheets, and tabular figure roll (`MA-182`), snapping immediately under `prefers-reduced-motion: reduce`. |
 | **Shared contract & codegen (`web/src/lib/`)** | `openapi-typescript` **7.x** + generated Pydantic card schemas (`MA-174`, `MA-266`) | Generates `web/src/lib/api-types.d.ts` from FastAPI's OpenAPI 3.1 schema and shares query keys, fetchers, W3C `traceparent` generator, GBP, INR, USD and EUR formatters (rupees in `lakh`/`crore`), and privacy masks with the iOS React Native shell. |
 | **Quality gates** | `svelte-check`, `eslint` **10**, `vitest` **5** + `@testing-library/svelte`, `@playwright/test` **1.64** + `@axe-core/playwright` **4.14** + `@argos-ci/playwright` | Type-check and unit tests: svelte-check, eslint and vitest run on every PR touching `web/`; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304). `MA-304`'s QA on request is one fail-closed `auditAndCapture()` Playwright fixture at `390x844` and `1440x900` in both themes running WCAG 2.2 Level A & AA axe checks before Argos CI Tokenless OIDC visual PNG + light-deduplicated YAML `ariaSnapshot` accessibility tree diffing (inside the 5,000/month £0 Free Hobby cap, `§10`), the 25% brightness floors, the 320 to 1920 width sweep on the built app, and a pixel parity check of each built screen against its picked board. Nothing checks the boards in `docs/design/` themselves (MA-303, Arun, 2 Nov 2026). |
@@ -638,13 +649,13 @@ Because `.claude/rules/aws-changes.md` and `ARCHITECTURE.md` §18.1 forbid any s
 
 ---
 
-### 7.4 Five-layer regression test pyramid & phase-wise rollout matrix (Phases 0 to 20, `MA-269`)
+### 7.4 Five-layer regression test pyramid & phase-wise rollout matrix (Phases 0 to 15, `MA-269`)
 
 #### The five regression layers (`scripts/regression.py`)
 
 1. **Layer 1 — Unit, Property-Based (`hypothesis`) & OpenAPI Contract Gate (`~20 s` on Linux `1x`, every PR):** `ruff`, `pyright` (strict), `pytest` unit + Hypothesis property tests (currency minor units, tax bands, loan schedules, hash chains), `svelte-check`, `vitest`, iOS `Jest` (TypeScript shell & card schemas), `openapi-typescript` zero-diff verification against FastAPI's `app.openapi()` (`MA-266`), and `python3 scripts/maestro_local.py check-syntax` + `TestIDs.swift` <-> `web/src/lib/test-ids.ts` parity (`MA-273`).
 2. **Layer 2 — Local Full-Stack Integration (`moto` + FastAPI ASGI, `~30 s` on Linux `1x`, every PR):** Runs the full `api` $\rightarrow$ `updates.fifo` $\rightarrow$ `agent` $\rightarrow$ `TransactWriteUnit` (`mypaisa-local`) $\rightarrow$ `outbox.fifo` $\rightarrow$ `sender` $\rightarrow$ `stream` SSE pipeline in-process against the seeded synthetic household (`MA-110`, `MA-198`).
-3. **Layer 3 — Deterministic Agent Replay (`T0`) & Golden Maths Fixtures (`~45 s` on Linux `1x`, every PR):** Replays recorded multi-turn conversations through `AnthropicAgentRunner`, `PolicyGate` (`MA-247`), `FigureCheck` (`MA-248`), the red-team refusal suite (`MA-249`), and the OTel PII-leak test (`MA-232`) with zero network calls (`MA-246`), plus the **646 wealth-tracker golden test cases** (`MA-105`) and **11 Agentic Trading Desk indicator golden fixtures** (`MA-34`).
+3. **Layer 3 — Deterministic Agent Replay (`T0`) & Golden Maths Fixtures (`~45 s` on Linux `1x`, every PR):** Replays recorded multi-turn conversations through `AnthropicAgentRunner`, `PolicyGate` (`MA-247`), `FigureCheck` (`MA-248`), the red-team refusal suite (`MA-249`), and the OTel PII-leak test (`MA-232`) with zero network calls (`MA-246`), plus the **646 wealth-tracker golden test cases** (`MA-105`).
 4. **Layer 4 — Web & iOS Visual, Responsive & Accessibility Regression (web QA on request; iOS path-gated on PRs + `main`, plus local Apple Silicon Maestro):**
    - **Web (`ubuntu-24.04-arm`, `1x`, `concurrency: cancel-in-progress`):** no gate runs on the design boards: MA-303 stopped `board_fit.js` and `contrast_check.py` (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code implemented"). Svelte-check, eslint and vitest run on every PR touching `web/`; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304). When Arun asks, `MA-304` runs on the built SvelteKit 3 (`web/`) code (`MA-194`, `MA-269`) Playwright 1.64 at `390x844` and `1440x900` in `.t-light` and `.t-dark` (plus privacy mode `£••••` on wealth/home screens) through one shared `auditAndCapture()` fixture:
      1. deterministic stabilization (`prefers-reduced-motion: reduce`, `document.fonts.ready`, `aria-busy="false"`, volatile locators masked),
@@ -656,7 +667,7 @@ Because `.claude/rules/aws-changes.md` and `ARCHITECTURE.md` §18.1 forbid any s
    - **`T1`:** ~40 golden tasks $\times$ 3 trials on the `evals` workspace ($10/run cap, $30/mo cap) only when a PR touches a prompt, tool, guard, agent loop, model route, `Kind` template, or the Anthropic SDK.
    - **`T2`:** Full suite $\times$ 5 trials before a release promotes a changed model ID to `prod`.
 
-#### Phase-wise testing rollout matrix (Phases 0 to 20)
+#### Phase-wise testing rollout matrix (Phases 0 to 15)
 
 | Phase | Phase focus | Regression additions (L1–L5) | Smoke additions (`scripts/smoke.py`) | Security / vulnerability additions |
 | --- | --- | --- | --- | --- |
@@ -666,8 +677,8 @@ Because `.claude/rules/aws-changes.md` and `ARCHITECTURE.md` §18.1 forbid any s
 | **Phase 3–4** | Deposits, policies, four currencies, debts & check-ins (`MA-188`, `MA-192`) | L1/L3: Compound deposit accrual, PPF/EPF/NPS/SGB/LIC schedules, loan amortisation & early-closure maths (`MA-105`), GBP/INR dual-currency rollups, monthly check-in batching. | `--up-to-phase 4`: Read-only check on `dev` seed's GBP/INR totals and commitment schedule endpoints. | Bounds validation on interest rates, tenors, and FX rates to prevent overflow/DoS. |
 | **Phase 5–7** | Investments priced, Budget statements & 20-Year Projection (`MA-189`, `MA-190`, `MA-191`) | L2: Statement PDF/CSV parser pipeline (`Document` row written before extraction, lesson 15), transfer deduplication.<br>L3: **646 wealth-tracker golden cases** (XIRR, TWRR, 20-year monthly Projection + budget rearrangement `MA-262`/`263`); untrusted PDF statement prompt-injection `T0` cases. | `--up-to-phase 7`: `dev` smoke queries `/v1/projection` and `/v1/budget` for the synthetic household and asserts deterministic figure vectors. | Polyglot/malformed PDF rejection; strict taint isolation when parsing bank/card statements (`MA-247`). |
 | **Phase 8–9** | Audit, search, Admin center & full dashboard cutover (`MA-14`, `MA-18`) | L2: DuckDB-over-Parquet `query_ledger_sql` (`MA-104`), Excel history importer dry-run/commit/rollback (`MA-111`), Admin center approvals behind second check (`MA-76`).<br>L4: Admin center & full dashboard Playwright/XCUITest suite. | `--up-to-phase 9`: Read-only audit chain verification & Admin health summary endpoint check. | SQL read-only sandbox check on `query_ledger_sql` (DuckDB `access_mode='READ_ONLY'`, no file/network extensions). |
-| **Phase 10–17** | Market engine, briefs, research cards, news, stances & Forecaster (`MA-11`–`MA-17`, `MA-118`) | L3: **11 trading-desk golden indicator fixtures** (RSI, MACD, Bollinger, ATR, ADX, Supertrend, Ichimoku, pillars, cascade, confidence calibration) verified to $10^{-6}$; Forecaster walk-forward grading (`MA-120`). | `--up-to-phase 17`: Price source chain health check & indicator calculation latency check (`< 150 ms`). | SSRF allowlist guard on market/news fetchers; strict compliance refusal gate ensuring zero buy/sell imperative language (`MA-249`). |
-| **Phase 18–20** | Autonomous agent team, Indian markets & iOS extensions (`MA-127`, `MA-151`, `MA-169`) | L2: Step Functions state machine & EventBridge `traceparent` propagation (`MA-235`), per-agent IAM least-privilege boundaries, CAS importer & Indian lakh/crore parity, WidgetKit/Share Extension XCUITests. | `--up-to-phase 20`: Step Functions definition check, agent heartbeat metrics in CloudWatch (`MA-235`), dual-currency `£`/`₹` parity check. | Per-agent tool allowlist enforcement (`MA-247`: `market_data`, `quant`, `research` cannot call write tools); CAS password never logged. |
+| **Phase 10–11** | Alerts, charts, the Claude client and asking anything about the household's wealth (`MA-12`, `MA-13`) | L3: alert state machine with frozen time, the figure check on alerts and answers, the ladder's steps; every figure in an answer traced to a tool result. | `--up-to-phase 11`: Price source chain health check and alert routing check. | SSRF allowlist guard on the price fetchers and web search; strict refusal gate ensuring no buy, hold or sell call is ever written (`MA-249`, `MA-307`). |
+| **Phase 12–15** | New kinds, the agent team, Indian holdings and iOS extensions (`MA-19`, `MA-127`, `MA-147`, `MA-175`) | L2: Step Functions state machine & EventBridge `traceparent` propagation (`MA-235`), per-agent IAM least-privilege boundaries, CAS importer & Indian lakh/crore parity, WidgetKit/Share Extension XCUITests. | `--up-to-phase 15`: Step Functions definition check, agent heartbeat metrics in CloudWatch (`MA-235`), dual-currency `£`/`₹` parity check. | Per-agent tool allowlist enforcement (`MA-247`: only the admin desk's agents reach a write tool, and every write is an admin's Confirm, `MA-308`); CAS password never logged. |
 
 ---
 
@@ -709,7 +720,7 @@ Because `.claude/rules/aws-changes.md` and `ARCHITECTURE.md` §18.1 forbid any s
 ## 8. Local iOS & iPadOS testing strategy with Maestro, phase-wise rollout, and private 90-day TestFlight beta plan (MA-167, MA-273, MA-274)
 
 Arun asked on 29 Oct 2026 (`MA-273`, `MA-274`) for:
-1. A detailed strategy and phase-by-phase plan for **local iOS and iPadOS end-to-end testing using Maestro** on this Apple Silicon Mac across Phases 0 to 20.
+1. A detailed strategy and phase-by-phase plan for **local iOS and iPadOS end-to-end testing using Maestro** on this Apple Silicon Mac across Phases 0 to 15.
 2. How to keep **MyPaisa privately installed on physical iPhones and iPads for 3 months (90 days) — and rolling indefinitely — using TestFlight** for household beta testing without ever publishing the app to the public App Store (`MA-162`, `MA-164`, `MA-167`).
 
 ### 8.1 Local Apple Silicon architecture, Maestro MCP vs. CLI one-owner-per-device rule & cloned simulator pool
@@ -804,7 +815,7 @@ Maestro's native YAML commands cover taps, swipes, permissions, orientation, ima
 
 ### 8.6 `.maestro/` workspace blueprint, tag taxonomy & concrete YAML flow templates
 
-Planned repository layout (`MA-273` ships the workspace, `TestIDs` parity gate and `p00_shell_smoke.yaml` in Phase 0; `p01..p20` join phase by phase):
+Planned repository layout (`MA-273` ships the workspace, `TestIDs` parity gate and `p00_shell_smoke.yaml` in Phase 0; `p01..p15` join phase by phase):
 
 ```text
 .maestro/
@@ -837,7 +848,7 @@ Planned repository layout (`MA-273` ships the workspace, `TestIDs` parity gate a
     p07_projection_plans.yaml         # Phase 7: Projection fan scrub, 1a Budget forecast, 2a chat plan, 3a Plans tab
     p08_audit_search_admin_faceid.yaml# Phase 8: Quick Look file preview, Search tab, Admin Center Face ID 2nd check
     p09_full_wealth_accessibility.yaml# Phase 9: whole-wealth journey at AX5 Dynamic Type + Dark + Privacy Mode
-    p10_to_p20_market_and_widgets.yaml# Phases 10-20: briefs, Swift Charts, stances, agents, India CAS, widgets/share
+    p10_to_p15_alerts_and_widgets.yaml# Phases 10-15: alerts, Swift Charts, agents, India CAS, widgets/share
 ```
 
 #### Concrete flow template 1 — iPad 4-sub-band width rule & live mid-draft rotation (`p01_ipad_rotation_continuity.yaml`)
@@ -921,7 +932,7 @@ tags:
 - assertVisible: ".*Claude monthly ceiling: \\$160 -> \\$150.*"
 ```
 
-### 8.7 Phase-wise Maestro rollout plan (Phases 0 to 20) & local-vs-CI cost analysis (£0.00/month)
+### 8.7 Phase-wise Maestro rollout plan (Phases 0 to 15) & local-vs-CI cost analysis (£0.00/month)
 
 Every phase adds its Maestro flows alongside the SwiftUI pieces it ships (`plan-sync` rule 10 traces each story's `.maestro/flows/p<NN>_*.yaml` path):
 
@@ -937,9 +948,9 @@ Every phase adds its Maestro flows alongside the SwiftUI pieces it ships (`plan-
 | **Phase 7** | `MA-191` | Projection fan chart scrub, editable assumptions, `1a` Budget forecast tab, `2a` chat future-plan flow with budget rearrangement on Confirm, `3a` Plans tab (`MA-264`). | iPhone `402`, iPad `1376` 3-column (chat what-if moving Projection fan live) | +50 s |
 | **Phase 8** | `MA-14` | Audit log filter + `Quick Look` original file preview (`MA-149`), iOS 26 Search tab, Admin Center behind Face ID `BiometricKit` match & mismatch (`MA-76`, `MA-137`, `MA-145` DLQ Replay; `Cmd+*` keyboard shortcuts run in `XCUITest`). | iPhone `402`, iPad `1376`, `BiometricKit_Sim.pearl` match/fail, Quick Look | +50 s |
 | **Phase 9** | `MA-18` | Full whole-wealth cross-band sweep (`320 pt` to `1376 pt`), Dynamic Type `AX5` audit across every tab/sheet, Dark Mode 25% brightness `assertScreenshot`, Local File Provider Excel hydration workbook upload (`MA-111`). | All 5 cloned simulators + `Duo`, `AX5`, Light & Dark, Privacy Mode | +1.5 min |
-| **Phases 10–15** | `MA-11`..`MA-17` | Weekday 07:15 brief & 21:15 wrap cards, time-sensitive red alert push, Swift Charts horizon shading & Technical glossary tap, Holding Profile / Overlap / Bear-vs-Bull / Scenario cards, Scorecard & live stances. | iPhone `402`, iPad `1376`, `simctl push`, Swift Charts `AXChartDescriptor` | +1.5 min |
-| **Phases 16–19** | `MA-19`..`MA-147` | New holding kind spec approval behind Face ID, Forecaster dual-engine card (`MA-117`), Phase 18 9-agent incident/budget desk (`MA-127`), India CAMS/KFintech CAS PDF import via Local File Provider & NSE/AMFI INR/GBP views (`MA-147`). | iPhone `402`, iPad `1376`, Local File Provider CAS PDF, `BiometricKit_Sim` | +1.2 min |
-| **Phase 20** | `MA-175` | Home Screen / Lock Screen WidgetKit snapshots, Share Sheet extension (`Share a statement or screenshot to MyPaisa` from Safari/Files via Maestro system UI flow), App Intents / Siri shortcut deep links, Live Activities. | iPhone `402` (`appId: com.apple.mobilesafari` -> Share Sheet -> `MyPaisa Dev`) | +1.0 min |
+| **Phases 10–11** | `MA-12`, `MA-13` | Alert cards (a budget over its plan, a check-in overdue, a failed job), time-sensitive red alert push, Swift Charts house style and Technical glossary tap, a question answered from the records with a Scenario card. | iPhone `402`, iPad `1376`, `simctl push`, Swift Charts `AXChartDescriptor` | +1.0 min |
+| **Phases 12–14** | `MA-19`..`MA-147` | New holding kind spec approval behind Face ID, Phase 13 agent incident/budget desk (`MA-127`), India CAMS/KFintech CAS PDF import via Local File Provider & NSE/AMFI INR/GBP views (`MA-147`). | iPhone `402`, iPad `1376`, Local File Provider CAS PDF, `BiometricKit_Sim` | +1.0 min |
+| **Phase 15** | `MA-175` | Home Screen / Lock Screen WidgetKit snapshots, Share Sheet extension (`Share a statement or screenshot to MyPaisa` from Safari/Files via Maestro system UI flow), App Intents / Siri shortcut deep links, Live Activities. | iPhone `402` (`appId: com.apple.mobilesafari` -> Share Sheet -> `MyPaisa Dev`) | +1.0 min |
 
 #### Cost comparison: why full Maestro multi-simulator runs belong locally on Apple Silicon
 
@@ -1017,11 +1028,11 @@ Arun also asked on 29 Oct 2026: *"how I can get the app kept installed for 3 mon
 
 ## 9. Optional AWS VPC enterprise lockdown, seven-layer data perimeter & three-tier costing (MA-283, MA-284)
 
-### 9.1 Scope & decision gate — optional, decided last after Phase 20 (`MA-283`, `MA-284`)
+### 9.1 Scope & decision gate — optional, decided last after Phase 15 (`MA-283`, `MA-284`)
 
-By default across Phases 0 to 20, MyPaisa runs its serverless estate in `us-east-1` (`545595341442`) without custom VPCs (`enable_vpc_lockdown = false`), relying on strict per-environment IAM roles, explicit `env=prod` developer denies, `SigV4` and KMS encryption at rest, Cognito five-minute access tokens, and CloudFront Origin Access Control (`ARCHITECTURE.md` §14, §18.1) at **£3.50/month** across both environments.
+By default across Phases 0 to 15, MyPaisa runs its serverless estate in `us-east-1` (`545595341442`) without custom VPCs (`enable_vpc_lockdown = false`), relying on strict per-environment IAM roles, explicit `env=prod` developer denies, `SigV4` and KMS encryption at rest, Cognito five-minute access tokens, and CloudFront Origin Access Control (`ARCHITECTURE.md` §14, §18.1) at **£3.50/month** across both environments.
 
-On 29 Oct 2026 (`MA-283`, `MA-284`), Arun asked to record the complete blueprint and deterministic costing for locking down the entire AWS estate inside isolated VPCs, with **Option 3B (Lean Zero-Trust VPC + CloudFront Pro bundled WAF on `prod`, +£24.86/month = +$32.32/month, bringing total AWS spend to ~£28.36/month inside the £50/month AWS cap)** marked as the **preferred** option, and all higher-cost managed/enterprise tiers (**Option 1**, **Option 2A**, **Option 2B**, and **Option 3A**) recorded side by side. **Whether to turn this VPC lockdown on is decided last, after Phase 20 completes.**
+On 29 Oct 2026 (`MA-283`, `MA-284`), Arun asked to record the complete blueprint and deterministic costing for locking down the entire AWS estate inside isolated VPCs, with **Option 3B (Lean Zero-Trust VPC + CloudFront Pro bundled WAF on `prod`, +£24.86/month = +$32.32/month, bringing total AWS spend to ~£28.36/month inside the £50/month AWS cap)** marked as the **preferred** option, and all higher-cost managed/enterprise tiers (**Option 1**, **Option 2A**, **Option 2B**, and **Option 3A**) recorded side by side. **Whether to turn this VPC lockdown on is decided last, after Phase 15 completes.**
 
 Placing Lambda functions inside private subnets is only half of an enterprise lockdown: without coordinated ingress locks, AWS Data Perimeter resource/endpoint policies, outbound DNS/TLS-SNI filtering, and private CI/CD runners, either side doors remain open or deployments and presigned file links break. Sections 9.2 to 9.7 record all seven layers, the four serverless VPC operational gotchas, the safe five-step rollout order, and the deterministic `us-east-1` (`730 hours/month`, `$1.30 = £1.00`) cost model. The interactive explainer page with four animated block diagrams is `docs/design/aws-vpc-enterprise-lockdown.html`, mirrored to Confluence on the page **Optional AWS VPC enterprise lockdown, data perimeter and costing**.
 
@@ -1031,7 +1042,7 @@ Placing Lambda functions inside private subnets is only half of an enterprise lo
 
 - **Environment separation:** Non-overlapping dual-stack (IPv4 + AWS-assigned `/56` IPv6) VPCs in `us-east-1`: `mypaisa-dev-vpc` (`10.10.0.0/16`, 1–2 AZs) and `mypaisa-prod-vpc` (`10.20.0.0/16`, 2 AZs, `us-east-1a` and `us-east-1b`), with **zero VPC peering** between `dev` and `prod` (or separate AWS Organizations accounts connected through a central Transit Gateway inspection hub in Option 1).
 - **Three subnet tiers per Availability Zone:**
-  - **Isolated (Zero-Egress) Subnets:** Route table contains local VPC routes and S3/DynamoDB Gateway Endpoint prefix lists *only* — `0.0.0.0/0` and `::/0` do not exist. Hosts deterministic compute (`engine`, `projection`, DB workers), quarantined file/PDF extractors (`ARCHITECTURE.md` §14, §23.2), and PrivateLink Interface Endpoint ENIs.
+  - **Isolated (Zero-Egress) Subnets:** Route table contains local VPC routes and S3/DynamoDB Gateway Endpoint prefix lists *only* — `0.0.0.0/0` and `::/0` do not exist. Hosts deterministic compute (`projection`, DB workers), quarantined file/PDF extractors (`ARCHITECTURE.md` §14, §23.2), and PrivateLink Interface Endpoint ENIs.
   - **Private Egress Subnets:** Zero inbound internet route; outbound IPv6 traverses an Egress-Only Internet Gateway (`EIGW`, `$0/mo`) and outbound IPv4 traverses the environment's controlled NAT / TLS-SNI proxy (`api`, `stream`, `agent`, `auth`, `ingester`, `notifier`, and private `arm64` `CodeBuild` runners).
   - **Perimeter Subnets:** Zero application compute ever sits here; holds only NAT Gateways, Graviton `t4g.nano` `fck-nat`/Envoy appliances, or AWS Network Firewall endpoints.
 - **Declarative account-level blast-radius controls (`$0.00/mo`):**
@@ -1069,7 +1080,7 @@ MyPaisa requires outbound HTTPS (`TCP 443`) to a small, known set of external ho
 - **CI-only FQDN allowlist (scoped exclusively to CodeBuild's subnet/rule group, never runtime Lambdas):** `github.com`, `api.github.com`, `pypi.org`, `files.pythonhosted.org`, `registry.npmjs.org`, `objects.githubusercontent.com`, `dl-cdn.alpinelinux.org` / `deb.debian.org`.
 - **Micro-segmented Security Groups (aligned with Lambda Hyperplane ENI sharing):**
   - `sg-vpce` (when Interface Endpoints are present): Inbound TCP `443` solely from `sg-lambda-isolated`, `sg-lambda-egress` and `sg-codebuild`; Outbound none.
-  - `sg-lambda-isolated` (rules engine, projection, DB jobs, quarantined file extractor): Outbound TCP `443` *only* to `sg-vpce` and the S3/DynamoDB managed prefix lists. Zero internet egress.
+  - `sg-lambda-isolated` (projection, DB jobs, quarantined file extractor): Outbound TCP `443` *only* to `sg-vpce` and the S3/DynamoDB managed prefix lists. Zero internet egress.
   - `sg-lambda-egress` (`api`, `stream`, `agent`, `auth`, `ingester`, `notifier`): Outbound **TCP `443` only** to the NAT/SNI proxy and AWS prefix lists — explicitly dropping raw DNS (`UDP/TCP 53`), DNS-over-TLS (`853`), SSH (`22`) and SMTP (`25`) so workloads cannot bypass VPC DNS filtering via `8.8.8.8` or `1.1.1.1`.
 - **Default-Deny DNS + TLS-SNI Filtering:**
   - **Route 53 Resolver DNS Firewall** runs in **walled-garden mode** (`$0.60` per million queries + `$0.0005` per custom domain/month ≈ **`$0.20/mo`**): priority rules `ALLOW` the exact runtime/CI domain lists above; priority `999` matches `*` with `BLOCK` (`NXDOMAIN`) and emits a CloudWatch alarm to SNS/Admin center on the first blocked lookup (an immediate canary for prompt-injection or supply-chain exfiltration).
@@ -1094,7 +1105,7 @@ MyPaisa requires outbound HTTPS (`TCP 443`) to a small, known set of external ho
 - **Cognito `cognito-idp` PrivateLink scope:** Amazon Cognito's `cognito-idp` Interface VPC Endpoint covers SDK/`Admin*` calls and direct/custom authentication (`InitiateAuth`, `RespondToAuthChallenge`) used by MyPaisa's `/auth/*` routes (not Cognito Hosted UI OAuth redirects, which MyPaisa does not use); Cognito's custom-auth trigger Lambdas still require allowlisted outbound `443` (with in-memory warm JWKS caching) to verify Apple (`appleid.apple.com`) and Google (`www.googleapis.com`) OIDC keys.
 - **Presigned S3 file uploads & five-minute Audit links (`ARCHITECTURE.md` §4.6, §18.5, `MA-31`, `MA-111`, `MA-149`):** Browser/iPhone uploads, five-minute Audit document previews, and `MA-111`'s 15-minute laptop `.xlsx` upload link connect to S3 from the member's client IP rather than `aws:SourceVpce`. Under the S3 Data Perimeter, either serve uploads/downloads via **CloudFront Signed URLs over OAC** (matching `aws:SourceArn` of the CloudFront distribution) or exempt *only* `s3:PutObject`/`s3:GetObject` signed by a dedicated no-other-permissions `mypaisa-<env>-presigner` role conditioned on `s3:signatureAge <= 900000` (15 minutes).
 
-### 9.6 Safe five-step zero-lockout rollout order (when opted into after Phase 20)
+### 9.6 Safe five-step zero-lockout rollout order (when opted into after Phase 15)
 
 1. **Step 1 — VPC Foundation & Alert-Only Telemetry (`dev` first):** Apply dual-stack VPCs, Isolated/Private-Egress/Perimeter subnets, VPC Block Public Access, S3 & DynamoDB Gateway Endpoints (without resource `Deny` policies yet), S3 v5 Flow Logs, and Route 53 DNS Firewall in **`ALERT` (log-only)** mode.
 2. **Step 2 — Egress Appliance & Private CI Plane:** Provision IPv6 EIGW + `t4g.nano` `fck-nat`/Envoy SNI proxy (or Managed NAT GW) and attach **AWS CodeBuild** to `Private Egress` subnets so CI builds and Terraform applies already originate inside the VPC before any resource `Deny` turns on.

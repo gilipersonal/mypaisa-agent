@@ -3,15 +3,15 @@
 <p><span data-type="status" data-color="red">Member</span> <span data-type="status" data-color="blue">App and web app</span> <span data-type="status" data-color="yellow">AWS</span> <span data-type="status" data-color="purple">Claude</span> <span data-type="status" data-color="neutral">External data</span> <span data-type="status" data-color="green">A note</span></p>
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
-<h2>11 · The Admin center, owner only</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The owner&#x27;s room, in the app (in You on the iPhone, in the iPad&#x27;s sidebar) and in the web app on a laptop, for the owner alone. People first: each member&#x27;s signed-in devices with the actions that end them. Spend: the Claude ceilings, the AWS cap and where alerts go. Later, the agents&#x27; requests for approval. Every action needs the second check: in the app a fresh Sign in with Apple or a passkey under Face ID (Google again for a Google-only member), in the browser a passkey or a fresh sign-in.</p>
-<p><em><strong>Trigger</strong> the owner opens You, then Admin center, or the Admin center in the web app</em> <em>Phase 8 (devices, spend, alerts)</em> <span data-type="status" data-color="blue">Phase 18 (approvals)</span></p>
+<h2>10 · The Admin center, admins only</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The admins&#x27; room, in the app (in You on the iPhone, in the iPad&#x27;s sidebar) and in the web app on a laptop, for the admins alone: the owner, who always is one, and any member the owner has made one in the chat (MA-308). People first: each member&#x27;s role and signed-in devices, with the actions that end them. Spend: the Claude ceilings, the AWS cap and where alerts go. Later, the agents&#x27; requests for approval. Every action needs the second check: in the app a fresh Sign in with Apple or a passkey under Face ID (Google again for a Google-only member), in the browser a passkey or a fresh sign-in.</p>
+<p><em><strong>Trigger</strong> an admin opens You, then Admin center, or the Admin center in the web app</em> <em>Phase 8 (devices, admins, spend, alerts)</em> <span data-type="status" data-color="blue">Phase 13 (approvals)</span></p>
 </div>
 <h3>🛤️ The path</h3>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
 </thead>
-<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member (owner) to App</td><td>You open You, then <strong>Admin center</strong> (or the Admin center in the web app). Members and viewers never see it, and its routes refuse them</td></tr>
-<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The people, their devices and the security log, through owner-only GET routes</td></tr>
+<tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member (owner) to App</td><td>You open You, then <strong>Admin center</strong> (or the Admin center in the web app). Members who are not admins, and viewers, never see it, and its routes refuse them</td></tr>
+<tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The people, their devices and the security log, through admin-only GET routes</td></tr>
 <tr><td data-background="#FFEBE6"><strong>3</strong></td><td data-background="#FFEBE6">Member (owner) to App</td><td>You choose Asha, then <strong>Sign out all devices</strong></td></tr>
 <tr><td data-background="#DEEBFF"><strong>4</strong></td><td data-background="#DEEBFF">App to External (Apple or Google)</td><td>The second check (flow 2, route 4): a challenge bound to this action, then a fresh Sign in with Apple under Face ID, or a passkey (Google again for a Google-only member); in the browser, a passkey or a fresh sign-in</td></tr>
 <tr><td data-background="#DEEBFF"><strong>5</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The action, with the fresh assertion</td></tr>
@@ -19,23 +19,24 @@
 <tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td>Her next call from any device fails the epoch check, and an open stream closes within 60 s</td></tr>
 <tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Asha&#x27;s app returns to the welcome screen with one line: she was signed out</td></tr>
 <tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Pause</strong> goes further: <code>AdminDisableUser</code> and the epoch end every session, in the app and in the browser, Apple, Google and passkey alike, and block signing back in. Her app and the web app show one line; only the owner restores it, from the Admin center. The owner cannot pause their own account, since nobody else could restore it; a lost phone of theirs is signed out from another device (Arun, 29 Oct 2026).</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>The admin role is given in the chat.</strong> The owner types &quot;Make Asha an admin&quot;: a card, Confirm, the second check and an audit row; &quot;Take back Asha&#x27;s admin role&quot; works the same way (MA-308). People shows each member&#x27;s role; the owner is always an admin.</td></tr>
 <tr><td data-background="#FFEBE6"><strong>9</strong></td><td data-background="#FFEBE6">Member (owner) to App</td><td><strong>Spend</strong>: you move the prod Claude ceiling, behind the same second check</td></tr>
 <tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>BudgetSettings</strong> in <strong>DynamoDB</strong> updated with an audit row; the next model call reads it. Lowering it below what is spent moves MyPaisa straight to that step, said before Confirm</td></tr>
 <tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to App</td><td>A message in your chat confirms the change; alerts follow your routing to the Alerts page (in the app and the web app), push and email through <strong>SNS</strong></td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Phase 18, approvals.</strong> An agent&#x27;s request reaches the admin desk and shows in your chat and on the Admin center&#x27;s Approvals screen, in the app and the web app. Approving needs the second check, wherever you tap it. Deciding in one place updates the other.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Phase 13, approvals.</strong> An agent&#x27;s request reaches the admin desk and shows in your chat and on the Admin center&#x27;s Approvals screen, in the app and the web app. Approving needs the second check, wherever you tap it. Deciding in one place updates the other.</td></tr>
 </tbody>
 </table>
-<h3>👀 What the owner sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="b8b922fc-3f85-4fc0-8eeb-f47eb27a5f11" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-admin.png"></div>
-<figcaption>What the member sees: The Admin center, owner only (Agent Journey)</figcaption></figure>
+<h3>👀 What the admin sees</h3>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="5b447f90-668b-4922-ae0e-d99bf773b2f6" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-admin.png"></div>
+<figcaption>What the member sees: The Admin center, admins only (Agent Journey)</figcaption></figure>
 <ul><li><strong>People first.</strong> The unconfirmed device on top; each action with its consequence; destructive ones in crimson, never the coral primary.</li>
 <li><strong>The web app · Spend.</strong> Dollars for Claude, as the credit and Anthropic&#x27;s limit are, with pounds beside them; the AWS cap in pounds; where alerts go.</li>
 <li><strong>An approval.</strong> What changes, why, the cost and the budget left, the undo.</li>
 <li><strong>The member&#x27;s side.</strong> Signed out: the welcome screen and one line. Paused instead: signing in is refused and shows only &quot;The household’s owner has paused your access to MyPaisa.&quot;</li>
 </ul>
 <h3>🛡️ Safeguards on this path</h3>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Owner only</strong></strong></p>
-<p>Members and viewers never see it: not in their You, not in the iPad&#x27;s sidebar, not in their web app; and the routes refuse them.</p>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Admins only</strong></strong></p>
+<p>Members who are not admins, and viewers, never see it: not in their You, not in the iPad&#x27;s sidebar, not in their web app; and the routes refuse them.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The second check</strong></strong></p>
@@ -48,7 +49,7 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit row</strong></strong></p>
-<p>Every sign-out, pause, restore, unlink and ceiling change is a row; a ceiling change also messages you in the chat.</p>
+<p>Every sign-out, pause, restore, unlink, admin role given or taken back, and ceiling change is a row; a ceiling change also messages you in the chat.</p>
 </div>
 </div>
 </section>
@@ -62,19 +63,20 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-102" data-card-appearance="inline"></a></td><td>The owner can sign out or pause any member&#x27;s devices from the Admin center, behind the second check</td></tr>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-308" data-card-appearance="inline"></a></td><td>The owner makes a member an admin, or takes it back, through the chat; only admins write and every other member views only</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-102" data-card-appearance="inline"></a></td><td>The owner can sign out or pause any member&#x27;s devices from the Admin center, behind the second check</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-76" data-card-appearance="inline"></a></td><td>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-184" data-card-appearance="inline"></a></td><td>The web app&#x27;s Audit, Files and Admin center pages work in a browser, with the second check for the owner&#x27;s actions</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-116" data-card-appearance="inline"></a></td><td>The owner moves the Claude ceiling up or down in the Admin center</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-137" data-card-appearance="inline"></a></td><td>The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the app and the web app, push and email</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-113" data-card-appearance="inline"></a></td><td>Every Claude call is metered and nothing runs past the monthly ceiling</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-130" data-card-appearance="inline"></a></td><td>E2: an admin desk in the owner&#x27;s chat and the Admin center where agents ask questions and seek approval (phase 18)</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-136" data-card-appearance="inline"></a></td><td>E8: each agent has its share of the $200 Claude credit (phase 18)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-130" data-card-appearance="inline"></a></td><td>E2: an admin desk in the owner&#x27;s chat and the Admin center where agents ask questions and seek approval (phase 13)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-136" data-card-appearance="inline"></a></td><td>E8: each agent has its share of the $200 Claude credit (phase 13)</td></tr>
 </tbody>
 </table>
-<h2>12 · When something fails</h2>
+<h2>11 · When something fails</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Every hand-off goes through an SQS queue. A bad minute at Apple&#x27;s push service, at the Anthropic API or at a data source costs a delay, never a message or a day&#x27;s work. What keeps failing waits in a dead-letter queue until someone, or later the ops warden, replays it. A lost signal on the member&#x27;s side costs nothing either: the app keeps what is typed and catches up when it is back.</p>
-<p><em><strong>Trigger</strong> a timeout, an error or a bad deploy anywhere on a path, or no signal on the phone</em> <span data-type="status" data-color="blue">Phase 1 (queues, offline)</span> <span data-type="status" data-color="blue">Phase 8 (Replay)</span> <span data-type="status" data-color="blue">Phase 18 (ops warden)</span></p>
+<p><em><strong>Trigger</strong> a timeout, an error or a bad deploy anywhere on a path, or no signal on the phone</em> <span data-type="status" data-color="blue">Phase 1 (queues, offline)</span> <span data-type="status" data-color="blue">Phase 8 (Replay)</span> <span data-type="status" data-color="blue">Phase 13 (ops warden)</span></p>
 </div>
 <h3>📌 The three queues</h3>
 <h5>mypaisa-&lt;env&gt;-updates.fifo</h5>
@@ -90,14 +92,14 @@
 <p>Carries</p>
 <p>Every message, card and edit MyPaisa sends</p>
 <p>Lanes</p>
-<p>One per member, so a brief&#x27;s parts arrive in order</p>
+<p>One per member, so a reply&#x27;s parts arrive in order</p>
 <p>Consumer</p>
 <p>sender λ, to each open stream, or by push</p>
 <p>Tries</p>
 <p>5 with backoff, honouring APNs&#x27; limits; a push token APNs calls dead is removed</p>
 <h5>mypaisa-&lt;env&gt;-work</h5>
 <p>Carries</p>
-<p>Each ingest, news feed, document read, the engine, each brief, scoring</p>
+<p>Each ingest and valuation, document and statement read, each check-in and Projection run</p>
 <p>Lanes</p>
 <p>None needed</p>
 <p>Consumer</p>
@@ -111,22 +113,22 @@
 <table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
 </thead>
 <tbody><tr><td data-background="#FFFAE6"><strong>1</strong></td><td data-background="#FFFAE6">AWS to External data</td><td><strong>worker λ</strong>&#x27;s ingest job for one holding calls a source, which times out</td></tr>
-<tr><td data-background="#FFFAE6"><strong>2</strong></td><td data-background="#FFFAE6">AWS</td><td>The message returns to the <strong>SQS work</strong> queue after a growing wait: five tries with backoff. Meanwhile the chain falls through, and the brief goes out labelled stale</td></tr>
+<tr><td data-background="#FFFAE6"><strong>2</strong></td><td data-background="#FFFAE6">AWS</td><td>The message returns to the <strong>SQS work</strong> queue after a growing wait: five tries with backoff. Meanwhile the chain falls through, and the holding is valued at its last price, labelled stale</td></tr>
 <tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>After the fifth try it moves to the dead-letter queue: kept 14 days, with a copy in <strong>S3</strong> under <code>raw/dlq/</code> for good</td></tr>
 <tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS</td><td>A <strong>CloudWatch</strong> alarm fires the moment the dead-letter queue holds anything; the alert router sends <em>failed work</em></td></tr>
 <tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Your chat and the Admin center&#x27;s Alerts page, in the app and the web app, show it with <strong>Replay</strong>; a push if the app is closed</td></tr>
 <tr><td data-background="#FFEBE6"><strong>6</strong></td><td data-background="#FFEBE6">Member (owner) to AWS</td><td>You tap <strong>Replay</strong> once the cause is fixed, and pass the second check</td></tr>
 <tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td>The messages move back to their queue. Handlers are idempotent, keyed by the client id, the message id, or the job id and date, so nothing runs twice</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Replay, by phase.</strong> Phase 1: <code>scripts/redrive.sh &lt;queue&gt;</code>. Phase 8: the Replay button on the alert and in the Admin center. Phase 18: the ops warden replays on its own once the cause is healthy, at most three times per message with growing gaps; failing the same way again opens an incident.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Replay, by phase.</strong> Phase 1: <code>scripts/redrive.sh &lt;queue&gt;</code>. Phase 8: the Replay button on the alert and in the Admin center. Phase 13: the ops warden replays on its own once the cause is healthy, at most three times per message with growing gaps; failing the same way again opens an incident.</td></tr>
 <tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS</td><td>A member&#x27;s message that fails three times within about a minute goes to the updates dead-letter queue, and the member is told it was kept</td></tr>
 <tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Replayed after more than an hour, a message is answered <em>still want this?</em> rather than acted on</td></tr>
 <tr><td data-background="#FFEBE6"><strong>10</strong></td><td data-background="#FFEBE6">Member to AWS</td><td>A Confirm tap whose PendingAction has expired is refused, so an old tap never saves a change by surprise</td></tr>
-<tr><td data-background="#FFEBE6"><strong>11</strong></td><td data-background="#FFEBE6">Member to App</td><td>On a train with no signal, Asha types a message: it waits on her iPhone with its client id and a clock mark. A Confirm tapped now is refused on the device</td></tr>
+<tr><td data-background="#FFEBE6"><strong>11</strong></td><td data-background="#FFEBE6">Member to App</td><td>On a train with no signal, you type a message: it waits on your iPhone with its client id and a clock mark. A Confirm tapped now is refused on the device</td></tr>
 <tr><td data-background="#DEEBFF"><strong>12</strong></td><td data-background="#DEEBFF">App to AWS</td><td>Back online, the app sends it once and asks for every turn after the last one it has; the chat API&#x27;s dedupe makes a resend harmless</td></tr>
 </tbody>
 </table>
 <h3>👀 What the members see</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e08ac76b-48ba-4067-8cc7-8a296e320b49" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-failure.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="53ca87bf-4148-46bf-bfe3-190fa57f6398" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-failure.png"></div>
 <figcaption>What the member sees: When something fails (Agent Journey)</figcaption></figure>
 <ul><li><strong>The owner&#x27;s failed-work alert.</strong> Phase 8 adds the Replay button; replaying is an owner action, behind the second check.</li>
 <li><strong>The member&#x27;s side.</strong> Kept, asked again when old, and an expired Confirm refused.</li>
@@ -147,7 +149,7 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Never silent</strong></strong></p>
-<p>An alarm the moment a dead-letter queue holds anything; the brief, the wrap and alerts are always attempted.</p>
+<p>An alarm the moment a dead-letter queue holds anything; alerts and check-ins are always attempted.</p>
 </div>
 </div>
 </section>
@@ -173,21 +175,20 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-137" data-card-appearance="inline"></a></td><td>Alerts reach the app and the web app, push and email; &quot;failed work&quot; carries a Replay button</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-173" data-card-appearance="inline"></a></td><td>Offline, the app shows the last figures with their time, keeps what is typed and sends it once back online</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-30" data-card-appearance="inline"></a></td><td>Replies, cards and record changes stream to every open door over SSE, in order and never twice, and an app catches up when it opens</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-135" data-card-appearance="inline"></a></td><td>E7: an ops warden repairs what it safely can and opens an incident when it cannot (phase 18)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-135" data-card-appearance="inline"></a></td><td>E7: an ops warden repairs what it safely can and opens an incident when it cannot (phase 13)</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-61" data-card-appearance="inline"></a></td><td>A dead man&#x27;s switch and the error alarms tell the owner, in the app and by push, when a job did not run</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-29" data-card-appearance="inline"></a></td><td>Every Lambda run leaves a RunRecord, logs, traces and an error alarm</td></tr>
 </tbody>
 </table>
-<h2>13 · The Claude spend ladder in practice</h2>
+<h2>12 · The Claude spend ladder in practice</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The agents&#x27; allowance is the Max 20x plan&#x27;s $200 monthly credit: $160 for prod and $40 for dev, each a ceiling the owner moves. As the month&#x27;s spend climbs, MyPaisa steps down to cheaper ways of working before it stops. Alerts always go out.</p>
-<p><em><strong>Trigger</strong> every model call reads the meter first</em> <span data-type="status" data-color="blue">Phase 1 (meter, 100% stop)</span> <span data-type="status" data-color="blue">Phase 11 (the lower steps)</span></p>
+<p><em><strong>Trigger</strong> every model call reads the meter first</em> <span data-type="status" data-color="blue">Phase 1 (meter, 100% stop)</span> <span data-type="status" data-color="blue">Phase 10 (the lower steps)</span></p>
 </div>
 <h3>📌 The steps</h3>
 <p><strong>Prod, this cycle (illustrative)</strong>$41.20 of $160 · 26%</p>
 <p><strong>&lt; 70%</strong></p>
 <h5>Normal</h5>
-<ul><li>Sonnet for chat and cards, Opus for the Saturday review</li>
-<li>The bull and bear debate above 70% confidence</li>
+<ul><li>Sonnet for chat and cards</li>
 <li>Why? with web search</li>
 </ul>
 <p><strong>70%</strong></p>
@@ -197,15 +198,13 @@
 </ul>
 <p><strong>85%</strong></p>
 <h5>Savers</h5>
-<ul><li>The debate is skipped</li>
-<li>The Saturday review runs on Sonnet instead of Opus</li>
-<li>Why? gets three searches a day</li>
-<li>Nightly sentiment scoring pauses; stances keep the last index</li>
+<ul><li>Why? gets three searches a day</li>
+<li>Everything else as normal</li>
 </ul>
 <p><strong>95%</strong></p>
 <h5>Essentials only</h5>
 <ul><li>Chat answers on Haiku</li>
-<li>The brief, the wrap and alerts go out as plain templates with the engine&#x27;s numbers</li>
+<li>Alerts and check-ins go out as plain templates with code&#x27;s numbers</li>
 <li>Reading a factsheet or screenshot still works</li>
 </ul>
 <p><strong>100%</strong></p>
@@ -219,7 +218,7 @@
 <table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
 </thead>
 <tbody><tr><td data-background="#FFFAE6"><strong>1</strong></td><td data-background="#FFFAE6">AWS</td><td>Before every model call, <strong>agent λ</strong> reads this cycle&#x27;s <strong>SpendMonth</strong> row in <strong>DynamoDB</strong>: one item</td></tr>
-<tr><td data-background="#FFFAE6"><strong>2</strong></td><td data-background="#FFFAE6">AWS</td><td>The step decides whether and how the call is made: which model, whether to debate, how many searches. The guards per member, per day and per run apply on top</td></tr>
+<tr><td data-background="#FFFAE6"><strong>2</strong></td><td data-background="#FFFAE6">AWS</td><td>The step decides whether and how the call is made: which model, how many searches. The guards per member, per day and per run apply on top</td></tr>
 <tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The call, if the step allows it</td></tr>
 <tr><td data-background="#EAE6FF"><strong>4</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>The API&#x27;s own usage counts: input, output and thinking, cache writes and reads, web searches</td></tr>
 <tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>The cost, from the price table, added atomically to SpendMonth by member, feature, agent, model and day, and written on the <strong>RunRecord</strong></td></tr>
@@ -234,13 +233,13 @@
 <p>No day spends more than three times the cycle&#x27;s daily average, about $16 at a $160 ceiling; past it, the rest of the day runs at the 95% step.</p>
 <p>Per run</p>
 <p>At most eight model calls in one run; a loop that reaches it stops and says so.</p>
-<p>Per agent (phase 18)</p>
+<p>Per agent (phase 13)</p>
 <p>Each agent has its share of the ceiling, the concierge 55%; past it, that agent drops to its 95% step and the reserve covers the chat first.</p>
 <h3>👀 What the members see</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7c54024c-32fa-488d-ac34-32142901a172" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-ladder.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="341dee58-8ba5-488c-b601-e908b0f0dc46" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-ladder.png"></div>
 <figcaption>What the member sees: The Claude spend ladder in practice (Agent Journey)</figcaption></figure>
 <ul><li><strong>85%.</strong> The owner is told what changed.</li>
-<li><strong>95%.</strong> The same numbers from the engine, the words from the template.</li>
+<li><strong>95%.</strong> A check-in as its plain template: the same figures from code, the words from the template.</li>
 <li><strong>100%.</strong> One line; everything with a button keeps working. The renewal date is illustrative.</li>
 </ul>
 <h3>🧩 Built by</h3>
@@ -248,12 +247,12 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-114" data-card-appearance="inline"></a></td><td>As spend nears the ceiling, MyPaisa steps down to cheaper ways of working before it stops</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-116" data-card-appearance="inline"></a></td><td>The owner moves the Claude ceiling up or down in the Admin center</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-137" data-card-appearance="inline"></a></td><td>The admin sets the caps and their alert thresholds; alerts reach the app and the web app, push and email</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-136" data-card-appearance="inline"></a></td><td>E8: each agent has its share of the $200 Claude credit (phase 18)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-136" data-card-appearance="inline"></a></td><td>E8: each agent has its share of the $200 Claude credit (phase 13)</td></tr>
 </tbody>
 </table>
-<h2>14 · The first of the month: a contribution&#x27;s check-in</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The old first-of-the-month question is now a check-in (ARCHITECTURE §4.9). A usual contribution is a commitment, made when its record is confirmed, so on its day code puts a check-in card in its member&#x27;s chat: did your usual £200 go into Balanced? The card shows exactly what Went through saves, so that tap is the Confirm, with Undo. The same morning the budget&#x27;s own check-in closes last month (flow 23), and several due together fold into one card. Later, the Forecaster&#x27;s risk-steered split sits beside the rules engine&#x27;s on the same card.</p>
-<p><em><strong>Trigger</strong> the daily check-in job, on the day a usual contribution is due</em> <span data-type="status" data-color="blue">Phase 4 (check-ins)</span> <em>Phase 5 (contributions and SIPs as commitments)</em> <span data-type="status" data-color="blue">Phase 17 (the steered split)</span></p>
+<h2>13 · The first of the month: a contribution&#x27;s check-in</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The old first-of-the-month question is now a check-in (ARCHITECTURE §4.9). A usual contribution is a commitment, made when its record is confirmed, so on its day code puts a check-in card in the chat of its member, here you, an admin: did your usual £200 go into Balanced? The card shows exactly what Went through saves, so that tap is the Confirm, with Undo. The same morning the budget&#x27;s own check-in closes last month (flow 22), and several due together fold into one card. The buy updates the holding&#x27;s XIRR and the Projection runs again.</p>
+<p><em><strong>Trigger</strong> the daily check-in job, on the day a usual contribution is due</em> <span data-type="status" data-color="blue">Phase 4 (check-ins)</span> <em>Phase 5 (contributions and SIPs as commitments)</em></p>
 </div>
 <h3>🛤️ The path</h3>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
@@ -264,20 +263,18 @@
 <tr><td data-background="#FFEBE6"><strong>4</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Went through: the card shows exactly what it writes, so the tap is the Confirm</td></tr>
 <tr><td data-background="#DEEBFF"><strong>5</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The tap, through <code>/v1/chat/actions</code>, queued in your lane</td></tr>
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>One transaction answers the check-in and writes the buy with its audit row (<code>via: checkin</code>); code works out the units. The card edits in place, with Undo</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Something else</strong> holds Skipped this month (the commitment carries on) and A different amount (one question, then a Confirm card). Undo writes a reversal, never a delete. Several due the same morning come as one card; the budget&#x27;s own check-in closes last month (flow 23). How every check-in works is flow 21.</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Later, phase 17 (F7).</strong> The prompt carries two suggested splits: the rules engine&#x27;s, from each holding&#x27;s stance, and the Forecaster&#x27;s, steered by risk. Contributions always continue; new money tilts away from holdings in a stressed or falling mood or with a high chance of a deep fall; rebalancing stays within bands and a drawdown budget the owner sets. It never says sell everything, stays ISA-safe, and only suggests.</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>The Forecaster&#x27;s split appears here only after 8 live weeks beating both the base rate and the rules engine; until then it is in the Saturday review, labelled &quot;in practice&quot;. It switches itself off when its record slips.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Something else</strong> holds Skipped this month (the commitment carries on) and A different amount (one question, then a Confirm card). Undo writes a reversal, never a delete. Several due the same morning come as one card; the budget&#x27;s own check-in closes last month (flow 22). How every check-in works is flow 20.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>A check-in writes a record, so only an admin answers it; a member who views sees it on Home as due, then as paid. The buy feeds the holding&#x27;s XIRR from the dated ledger, and the Projection runs again from the new figures.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the members see</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="bf37710f-6e7f-477f-9b22-c906607a9e80" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-monthly.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="3ccc3a61-7a37-4b2c-90a0-2d9d6b3c2733" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-monthly.png"></div>
 <figcaption>What the member sees: The first of the month: a contribution&#x27;s check-in (Agent Journey)</figcaption></figure>
 <ul><li><strong>Today.</strong> A check-in card in 1b&#x27;s style: Went through is the Confirm, saved with Undo.</li>
-<li><strong>Later.</strong> Both engines side by side, the disagreement said out loud; Confirm follows.</li>
 </ul>
 <h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Asked by code, never assumed</strong></strong></p>
-<p>The daily job is code with no LLM, and a check-in is made once. Nothing is logged until the member answers; an unanswered one shows as overdue, in amber.</p>
+<p>The daily job is code with no LLM, and a check-in is made once. Nothing is logged until an admin answers; an unanswered one shows as overdue, in amber.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The tap is the Confirm</strong></strong></p>
@@ -289,16 +286,9 @@
 <p>The push asks about &quot;your usual contribution&quot;; the £200 is shown only inside the app, unless the member chose amounts in notifications.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Suggestions only</strong></strong></p>
-<p>The app cannot trade. The split moves new money, never the holdings, and never says sell everything.</p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Admins answer</strong></strong></p>
+<p>Answering a check-in writes a record, so only an admin answers it; every other member views. The app cannot trade, and the card never says buy or sell: it records what happened.</p>
 </div>
-</div>
-</section>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A forecaster that has to earn it</strong></strong></p>
-<p>8 live weeks beating the base rate and the rules engine before it is shown; off again when its record slips.</p>
-</div>
-</div>
-<div data-type="column"><p></p>
 </div>
 </section>
 <h3>🧩 Built by</h3>
@@ -306,9 +296,7 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-216" data-card-appearance="inline"></a></td><td>SIPs and regular contributions are commitments that record each buy, with an annual step-up</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-38" data-card-appearance="inline"></a></td><td>&quot;I put £200 into Balanced&quot; becomes a transaction after Confirm</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-170" data-card-appearance="inline"></a></td><td>Apple push reaches each member&#x27;s devices when the app is closed, with no amounts on the lock screen unless they choose</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-124" data-card-appearance="inline"></a></td><td>F6: the Forecaster&#x27;s view appears beside the rules engine in the chat and on the dashboard</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-125" data-card-appearance="inline"></a></td><td>F7: monthly money and rebalancing are steered by risk to cut deep falls while growing steadily</td></tr>
 </tbody>
 </table>
-<p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
+<p>All twenty-three: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

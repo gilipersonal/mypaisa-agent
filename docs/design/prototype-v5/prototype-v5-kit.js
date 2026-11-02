@@ -68,22 +68,8 @@
   /* ---------- small pieces ---------- */
   K.ms = function (name, cls) { return '<span class="ms' + (cls ? ' ' + cls : '') + '" aria-hidden="true">' + esc(name) + '</span>'; };
   K.chip = function (t, cls, icon) { return '<span class="mp-chip ' + (cls || 'mp-neutral') + '">' + (icon ? K.ms(icon) : '') + t + '</span>'; };
-  var ST = {
-    ADD: ['Buy', 'mp-add'], BUY: ['Buy', 'mp-add'], HOLD: ['Hold', 'mp-hold'], PAUSE: ['Pause', 'mp-pause'],
-    TRIM: ['Trim', 'mp-trim'], REBALANCE: ['Rebalance', 'mp-reb'], WATCH: ['Watch', 'mp-watch'], WAIT: ['Wait', 'mp-watch']
-  };
-  /* stance(code, conf, o): every card says Buy for ADD and for BUY (MA-275); upper: true writes PAUSE · 64% */
-  K.stanceLabel = function (code) { return (ST[code] || [code])[0]; };
-  K.stance = function (code, conf, o) {
-    o = o || {};
-    var s = ST[code] || [code, 'mp-neutral'];
-    var label = o.upper ? (code === 'ADD' ? 'BUY' : code) : s[0];
-    return '<span class="mp-chip ' + s[1] + '">' + label + (conf != null ? ' · ' + conf + '%' : '') + '</span>';
-  };
   K.draft = function (t) { return '<span class="mp-draft">' + K.ms('edit_note') + (t || 'Draft, not picked') + '</span>'; };
   K.picked = function (t) { return K.chip(K.ms('check') + (t || 'Picked'), 'mp-add'); };
-  K.inpractice = function (t) { return K.chip(K.ms('science') + (t || 'In practice'), 'mp-neutral'); };
-  K.shadow = function (t) { return K.chip(K.ms('visibility_off') + (t || 'In shadow'), 'mp-neutral'); };
   K.note = function (icon, t, cls) { return '<div class="sysnote' + (cls ? ' ' + cls : '') + '">' + K.ms(icon || 'info') + '<span>' + t + '</span></div>'; };
   K.kv = function (k, v, cls) { return '<div class="kv' + (cls ? ' ' + cls : '') + '"><span>' + k + '</span><span>' + v + '</span></div>'; };
   K.mode = function () { return (window.MP5 && window.MP5.state && window.MP5.state().charts) || 'a'; };
@@ -101,37 +87,6 @@
     if (m === 'b') return '<div class="bar bar-bullet' + (o.tick != null ? ' has-tick' : '') + (cls ? ' ' + cls : '') + '"><i style="width:' + (f * 100).toFixed(1) + '%"></i>' + tick + '</div>';
     if (o.tick != null) return '<div class="bar has-tick' + (cls ? ' ' + cls : '') + '"><span class="bar-clip"><i style="width:' + (f * 100).toFixed(1) + '%"></i></span>' + tick + '</div>';
     return '<div class="bar' + (cls ? ' ' + cls : '') + '"><i style="width:' + (f * 100).toFixed(1) + '%"></i></div>';
-  };
-  /* a pillar's −2..+2: classic 4-bar meter, A diverging centre spine, B 5-stop scale dots, C 5-cell bento matrix */
-  K.pillar = function (name, v, sub) {
-    var m = K.mode(), lbl = esc(name) + ' ' + (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v), meter = '';
-    if (m === 'a') {
-      meter = '<span class="mp5-pil-a" aria-label="' + lbl + '">' +
-        '<i class="' + (v <= -2 ? 'neg' : '') + '"></i><i class="' + (v <= -1 ? 'neg' : '') + '"></i><b></b>' +
-        '<i class="' + (v >= 1 ? 'on' : '') + '"></i><i class="' + (v >= 2 ? 'on' : '') + '"></i></span>';
-    } else if (m === 'b') {
-      var dots = '';
-      for (var j = -2; j <= 2; j++) dots += '<i class="' + (j === v && v > 0 ? 'on' : j === v && v < 0 ? 'neg' : j === 0 ? 'zero' : '') + '"></i>';
-      meter = '<span class="mp5-pil-b" aria-label="' + lbl + '">' + dots + '</span>';
-    } else if (m === 'c') {
-      var cells = '';
-      for (var k = -2; k <= 2; k++) {
-        var active = (v > 0 && k > 0 && k <= v) || (v < 0 && k < 0 && k >= v);
-        cells += '<i class="' + (active ? (v > 0 ? 'on' : 'neg') : k === 0 ? 'zero' : '') + '"></i>';
-      }
-      meter = '<span class="mp5-pil-c" aria-label="' + lbl + '">' + cells + '</span>';
-    } else {
-      var marks = '';
-      for (var i = -2; i <= 2; i++) {
-        if (i === 0) continue;
-        var on = (v > 0 && i > 0 && i <= v) || (v < 0 && i < 0 && i >= v);
-        marks += '<i class="' + (on ? (v > 0 ? 'on' : 'neg') : '') + '"></i>';
-      }
-      meter = '<span class="pill-meter" aria-label="' + lbl + '">' + marks + '</span>';
-    }
-    return '<div class="mp-row" style="padding-left:0;padding-right:0"><div class="f1 fx col"><span class="mp-sub">' + name + '</span>' +
-      (sub ? '<span class="mp-foot mp-ink2">' + sub + '</span>' : '') + '</div>' + meter +
-      '<span class="mp-sub mp-num" style="width:28px;text-align:right">' + (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + '</span></div>';
   };
 
   /* ---------- buttons ---------- */
@@ -181,7 +136,7 @@
   K.p = function (t, cls) { return '<p class="mp-sub' + (cls ? ' ' + cls : '') + '" style="margin:0;text-wrap:pretty">' + t + '</p>'; };
   K.foot = function (t) { return '<p class="mp-foot mp-ink2" style="margin:0;text-wrap:pretty">' + t + '</p>'; };
   /* the footer every view carries (ARCHITECTURE §1, §19.7) */
-  K.viewNotAdvice = function () { return K.foot('Every figure comes from code; Claude only puts them into words. A view, not advice: MyPaisa cannot trade.'); };
+  K.fromCode = function () { return K.foot('Every figure comes from code; Claude only puts them into words. MyPaisa records and values; it cannot trade.'); };
   /* an editable figure (create in the chat, correct in place): state rest | edit | saved */
   K.editable = function (o) {
     if (o.state === 'edit') {

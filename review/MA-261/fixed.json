@@ -5,8 +5,14 @@
   "finding": "ARCHITECTURE section citations drifted between docs/trace.json, PLAN.md and the Jira stories' Where lines across MA-261, MA-96, MA-222, MA-224, MA-262 and MA-263 (lane B)",
   "check": {
    "type": "cmd",
-   "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; want={'MA-96':['4.1','6.6','12'],'MA-219':['6.6'],'MA-222':['4.1','4.5','4.10','6.6','8'],'MA-223':['6.6','8'],'MA-224':['6.6','9.3','12'],'MA-262':['6.6','9.3','12'],'MA-263':['4.5','4.10','6.6','8','12'],'MA-261':['2','4.1','4.5','4.10','6.6','8','9.3','12']}; ok=all(t[k]['arch']==v for k,v in want.items()) and 'ARCHITECTURE 2, 4.1, 4.5, 4.10, 6.6, 8, 9.3 and 12' in t['MA-261']['notes']; sys.exit(0 if ok else 1)\""
-  }
+   "argv": [
+    "python3",
+    "-I",
+    "-c",
+    "import json, sys\nt = {i['key']: i for i in json.load(open('docs/trace.json'))['items']}\nwant = {'MA-96': ['4.1', '6', '11'], 'MA-219': ['6'], 'MA-222': ['4.1', '4.5', '4.10', '6', '7'], 'MA-223': ['6', '7'],\n        'MA-224': ['6', '8.3', '11'], 'MA-262': ['6', '8.3', '11'], 'MA-263': ['4.5', '4.10', '6', '7', '11'],\n        'MA-261': ['2', '4.1', '4.5', '4.10', '6', '7', '8.3', '11']}\nbad = [k + ' ' + str(t[k]['arch']) for k, v in want.items() if t[k]['arch'] != v]\nn = t['MA-261']['notes']\nif not ('ARCHITECTURE 2, 4.1, 4.5, 4.10, 6.6, 8, 9.3 and 12' in n or 'ARCHITECTURE 2, 4.1, 4.5, 4.10, 6, 7, 8.3 and 11' in n):\n    bad.append('MA-261 notes name no section list')\nsys.exit('drifted: ' + '; '.join(bad) if bad else 0)\n"
+   ]
+  },
+  "updated": "MA-307, 2 Nov 2026: ARCHITECTURE renumbered: §6.6 is §6, §8 is §7, §9.3 is §8.3, §12 is §11; MA-261's notes keep the list as written then (the old numbers), or may give the new ones"
  },
  {
   "id": "r1-b1-plan",
@@ -15,9 +21,10 @@
   "check": {
    "type": "grep",
    "file": "PLAN.md",
-   "pattern": "Budget \\(MA-96, `ARCHITECTURE\\.md` §4\\.1, §6\\.6, §12\\)[\\s\\S]*?The engine \\(MA-219, `ARCHITECTURE\\.md` §6\\.6\\)[\\s\\S]*?Plan items: future plans by talking \\(MA-222, MA-261, `ARCHITECTURE\\.md` §4\\.1, §4\\.5, §4\\.10, §6\\.6, §8\\)[\\s\\S]*?The Budget forecast \\(MA-262, `ARCHITECTURE\\.md` §6\\.6, §9\\.3, §12\\)[\\s\\S]*?Rearranging the budget \\(MA-263, `ARCHITECTURE\\.md` §4\\.5, §4\\.10, §6\\.6, §8, §12\\)[\\s\\S]*?What-ifs and the story \\(MA-223, `ARCHITECTURE\\.md` §6\\.6, §8\\)[\\s\\S]*?The Projection screen \\(MA-224, `ARCHITECTURE\\.md` §6\\.6, §9\\.3, §12\\)",
+   "pattern": "Budget \\(MA-96, `ARCHITECTURE\\.md` §4\\.1, §6, §11\\)[\\s\\S]*?The engine \\(MA-219, `ARCHITECTURE\\.md` §6\\)[\\s\\S]*?Plan items: future plans by talking \\(MA-222, MA-261, `ARCHITECTURE\\.md` §4\\.1, §4\\.5, §4\\.10, §6, §7\\)[\\s\\S]*?The Budget forecast \\(MA-262, `ARCHITECTURE\\.md` §6, §8\\.3, §11\\)[\\s\\S]*?Rearranging the budget \\(MA-263, `ARCHITECTURE\\.md` §4\\.5, §4\\.10, §6, §7, §11\\)[\\s\\S]*?What-ifs and the story \\(MA-223, `ARCHITECTURE\\.md` §6, §7\\)[\\s\\S]*?The Projection screen \\(MA-224, `ARCHITECTURE\\.md` §6, §8\\.3, §11\\)",
    "present": true
-  }
+  },
+  "updated": "MA-307, 2 Nov 2026: ARCHITECTURE renumbered: §6.6 is §6, §8 is §7, §9.3 is §8.3, §12 is §11, as in docs/trace.json"
  },
  {
   "id": "r1-b1-jira",
@@ -44,9 +51,10 @@
   "check": {
    "type": "grep",
    "file": "ARCHITECTURE.md",
-   "pattern": "Income with its history and dated future changes, a monthly plan per category \\(each with its `inflation_key`\\)[\\s\\S]*?income commitments accept dated future changes \\(§12, MA-96\\)[\\s\\S]*?kept as income commitments that accept\\s+dated future changes so phase 7's plan items can change them \\(MA-96, MA-261\\)",
+   "pattern": "Income with its history and dated future changes, a monthly plan per category \\(each with its `inflation_key`\\)[\\s\\S]*?income commitments accept dated future changes \\(§11, MA-96\\)[\\s\\S]*?kept as income commitments that accept\\s+dated future changes so phase 7's plan items can change them \\(MA-96, MA-261\\)",
    "present": true
-  }
+  },
+  "updated": "MA-307, 2 Nov 2026: ARCHITECTURE's §12 (the road to the wealth tracker) is now §11"
  },
  {
   "id": "r1-c1",
@@ -109,13 +117,14 @@
  {
   "id": "d1-admin-only",
   "round": 1,
-  "finding": "Owner decision (Arun, 28 Oct 2026): plans stay the admin's alone; members view the Projection and ask what-ifs, saving nothing",
+  "finding": "Owner decision (Arun, 28 Oct 2026): plans stay the admin's alone; members view the Projection and ask what-ifs, saving nothing; since MA-307, plans are any admin's alone, deleted only in the chat, and every other member views",
   "check": {
    "type": "grep",
    "file": "ARCHITECTURE.md",
-   "pattern": "They\\s+are created through the admin's chat \\(`propose_plan_item`\\) and corrected,\\s+paused or ended in place by the admin only[\\s\\S]*?Members view the Projection, the plans and the Budget\\s+forecast, and ask what-ifs, but save nothing",
+   "pattern": "created through an admin's chat \\(`propose_plan_item`\\), corrected, paused or\\s+ended in the chat or in place, and deleted only in the chat \\(MA-309\\), by an\\s+admin only[\\s\\S]*?Members view the Projection, the plans and the Budget\\s+forecast, and ask what-ifs, but save nothing",
    "present": true
-  }
+  },
+  "updated": "MA-307, 2 Nov 2026: Arun changed the decision: several admins replace the one admin, and a delete goes only through the chat. Arun, 2 Nov 2026 (MA-307, MA-308): \"Only admins can do all these. Others users can view only.\"; and his answer the same day (docs/design/reviews/MA-307/decision.md): \"Several. The owner grants or takes back the admin role through the chat ... Admins add, correct and delete; every other member views only\". The check now holds plans created, corrected, paused, ended and deleted by an admin only, and members viewing and saving nothing"
  },
  {
   "id": "d2-rearrange-confirm",

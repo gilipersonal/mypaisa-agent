@@ -186,7 +186,7 @@
 
       <section class="dv-turn" id="intro" data-screen-label="iPhone v4 · Projection: intro">
         <div class="dv-thd"><a class="dv-tid" href="#intro">P</a><span class="dv-tname">iPhone · Projection: where the household's net worth is heading</span></div>
-        <p class="dv-intro">The old wealth tracker's Forecast, renamed Projection (Forecast stays the market's word), in shell 1a, Chat first: pushed from Home, with the Liquid Glass tab bar. Three options for the screen, then the recommended option's states: milestones and plan items, the assumptions with their sources, Asha's view, rupees at 2026 prices, privacy, the admin's corrections in place, and the chat's what-if and plan item cards. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start): since MA-264, run month by month (future-plans-v4.json, R26 and what_if_26), which replaced the v4 figure set's yearly sketch. Since MA-261 the Projection has three tabs and opens at 20 years; 1a and its states draw them, and P11 and P12 add the iPad and the evening of Thu 5 Nov, after Arun's plans. The browser boards are Web v4 · Projection in MyPaisa app v1.</p>
+        <p class="dv-intro">The old wealth tracker's Forecast, renamed Projection, in shell 1a, Chat first: pushed from Home, with the Liquid Glass tab bar. Three options for the screen, then the recommended option's states: milestones and plan items, the assumptions with their sources, Asha's view, rupees at 2026 prices, privacy, the admin's corrections in place, and the chat's what-if and plan item cards. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start): since MA-264, run month by month (future-plans-v4.json, R26 and what_if_26), which replaced the v4 figure set's yearly sketch. Since MA-261 the Projection has three tabs and opens at 20 years; 1a and its states draw them, and P11 and P12 add the iPad and the evening of Thu 5 Nov, after Arun's plans. The browser boards are Web v4 · Projection in MyPaisa app v1.</p>
         <div class="plan"><b>Jira</b><span class="plan-k">MA-224</span><span>the screen</span><span class="plan-k">MA-222</span><span>plan items</span><span class="plan-k">MA-223</span><span>what-ifs and the story</span><span class="plan-k">MA-221</span><span>priors and sources</span><span class="plan-k">MA-219</span><span>the engine, its fan</span></div>
       </section>
 
@@ -280,7 +280,7 @@
                           <div class="sech"><span class="mp-over mp-ink2">Plan items</span><span class="mp-foot mp-ink2">{{ f.d.piSub }}</span></div>
                           <div class="mp-group"><sc-for list="{{ f.d.pi }}" as="p" hint-placeholder-count="3"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ p.i }}</span></span><span class="grow"><span class="mp-sub mp-w6">{{ p.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="mk-sq"></i></span>{{ p.s }}</span></span><span class="fig {{ p.ed }}"><span class="{{ p.a.m }}" role="{{ p.a.ar }}" aria-label="{{ p.a.al }}">{{ p.a.v }}</span><sc-if value="{{ f.adm }}"><span class="ms" aria-hidden="true">edit</span></sc-if></span></div></sc-for></div>
                           <sc-if value="{{ f.adm }}"><button type="button" class="cbtn" style="align-self: flex-start"><span class="ms" aria-hidden="true">chat_bubble</span>Add a plan item in the chat</button></sc-if>
-                          <sc-if value="{{ f.mem }}"><div class="note"><span class="ms" aria-hidden="true">lock</span><span class="mp-foot mp-ink2">Plan items are Arun's, the admin's. Ask a what-if in the chat to try your own.</span></div></sc-if>
+                          <sc-if value="{{ f.mem }}"><div class="note"><span class="ms" aria-hidden="true">lock</span><span class="mp-foot mp-ink2">Plan items are kept by the admins. Ask a what-if in the chat to try your own.</span></div></sc-if>
                         </sc-if>
 
                         <!-- 1a scrolled: the assumptions -->
@@ -290,7 +290,7 @@
                           <sc-for list="{{ f.groups }}" as="g" hint-placeholder-count="2"><div class="sech"><span class="mp-over mp-ink2">{{ g.h }}</span><span></span></div>
                             <div class="mp-group"><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3"><div class="mp-row rowc"><span class="grow"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="src"><span class="ms" aria-hidden="true">{{ r.si }}</span>{{ r.src }}</span><sc-if value="{{ r.long }}"><span class="mp-foot mp-ink2">{{ r.why }}</span></sc-if></span><span class="fig {{ f.d.ed }}">{{ r.v }}<sc-if value="{{ f.adm }}"><span class="ms" aria-hidden="true">edit</span></sc-if></span></div></sc-for></div>
                           </sc-for>
-                          <sc-if value="{{ f.endnote }}"><p class="pp mp-foot mp-ink2" style="padding: 0 16px">Priors are the household's settings, each with its source; Arun sets them. The engine runs again whenever a figure changes.</p></sc-if>
+                          <sc-if value="{{ f.endnote }}"><p class="pp mp-foot mp-ink2" style="padding: 0 16px">Priors are the household's settings, each with its source; an admin sets them. The engine runs again whenever a figure changes.</p></sc-if>
                         </sc-if>
 
                         <!-- corrections in place -->
@@ -326,7 +326,7 @@
                               <p class="pp mp-foot down">▼ Cash goes £14,462 below zero in Jun 2028, when the deposit is paid; back above zero in Nov 2028. Code’s flag.</p>
                               <p class="pp mp-foot mp-ink2">The engine's figures; nothing is saved. £60,000 and June 2028 are your words.</p>
                             </div>
-                            <div class="ccard-acts"><sc-if value="{{ f.adm }}"><button type="button" class="cbtn cbtn-primary"><span class="ms" aria-hidden="true">bookmark_add</span>Save as a plan item</button></sc-if><button type="button" class="cbtn">Change it</button><sc-if value="{{ f.mem }}"><span class="lockl"><span class="ms" aria-hidden="true">lock</span>Only Arun can save it as a plan item.</span></sc-if></div>
+                            <div class="ccard-acts"><sc-if value="{{ f.adm }}"><button type="button" class="cbtn cbtn-primary"><span class="ms" aria-hidden="true">bookmark_add</span>Save as a plan item</button></sc-if><button type="button" class="cbtn">Change it</button><sc-if value="{{ f.mem }}"><span class="lockl"><span class="ms" aria-hidden="true">lock</span>Only an admin can save it as a plan item.</span></sc-if></div>
                             <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden="true">expand_more</span></div>
                           </div></sc-if>
                           <sc-if value="{{ msg.ask }}"><div class="ccard">
@@ -342,7 +342,7 @@
                         </div></div></sc-for>
                       </div></div>
                       <div class="edge-bot"></div>
-                      <div class="composer cmp"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="4"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.l }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                      <div class="composer cmp"><div class="chips"><sc-for list="{{ f.cchips }}" as="c" hint-placeholder-count="4"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.l }}</span></button></sc-for></div><div class="cbar"><sc-if value="{{ f.adm }}" hint-placeholder-val="{{ true }}"><button type="button" class="cplus lg" aria-label="Add"><span class="ms" aria-hidden="true">add</span></button></sc-if><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
                       <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsChat }}" as="t" hint-placeholder-count="4"><button type="button" class="tab {{ t.on }}"><span class="ms" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div>
                     </sc-if>
                     <div class="homebar"></div>
@@ -463,9 +463,9 @@
                 sq: o.r4 ? MS4.filter((m) => m[4] === 'mk-sq').map((m) => c.P(tOf(m[5], m[6]), 2)) : PI.filter((p) => p[4] && p[4] <= last).map((p) => c.P(tOf(p[4], p[5]), 2)) },
               ms, ms2: ms.slice(0, 2),
               pi: o.r4 ? PI4.map((p) => ({ i: p[0], w: p[1], s: p[2], a: mk(p[3]), ed: o.mem ? '' : 'ed' })) : PI.map((p) => ({ i: p[0], w: p[1], s: p[2], a: mk((p[3] > 0 ? '+' : '') + gbp(p[3])), ed: o.mem ? '' : 'ed' })),
-              piSub: o.mem ? 'Arun’s, the admin’s' : 'yours alone, as the admin',
+              piSub: o.mem ? 'kept by the admins' : 'yours, as an admin',
               ed: o.mem ? '' : 'ed', asmI: o.mem ? 'lock' : 'edit',
-              asmNote: o.mem ? 'Arun keeps these figures. Ask in the chat to see what other figures would do.' : 'Tap a figure to correct it. Only you can, as the admin; each change is audited.'
+              asmNote: o.mem ? 'The admins keep these figures. Ask in the chat to see what other figures would do.' : 'Tap a figure to correct it. Only an admin can; each change is audited.'
             };
           };
           const cw = chart(W0, 10, 2e6, 3e5), cb = chart(F0.slice(0, 11), 10, 2e6, 3e5);
@@ -486,7 +486,9 @@
           const scrolled = { large: false, small: true, ctl: false, off: 'top8' };
           const mA = { q: 'Has the Projection caught up with this morning’s changes?', qt: '10:03', a: 'Yes. The engine ran it again at 09:53, after the Monzo savings and the home’s new value. Ask what moves the line, or try a what-if.' };
           const mW = { q: 'What if we put £60,000 down on a second flat in June 2028?', qt: '10:20', a: 'Here’s the engine’s run with it.', wif: true };
-          const C = (b, c, o, clock) => T.map((t) => ({ cap: b + ' · ' + t[0], cls: t[1], chat: true, clock, adm: !o.mem, mem: !!o.mem, c }));
+          // MA-307: only admins write, so a member's chips are views only: no Add anything, no Send a statement.
+      const CCHIPS = (mem) => (mem ? [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['trending_up', 'Projection'], ['savings', 'Budget']] : [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']]).map((c) => ({ i: c[0], l: c[1] }));
+      const C = (b, c, o, clock) => T.map((t) => ({ cap: b + ' · ' + t[0], cls: t[1], chat: true, clock, adm: !o.mem, mem: !!o.mem, cchips: CCHIPS(!!o.mem), c }));
           const payRows = (s) => [
             s === 'a' ? { editing: true, n: 'Arun’s salary growth', field: 'A year · now 4.17%, his history blended with a prior', typed: '4.8', unit: '%', before: '4.17%', after: '4.8%', hint: 'His own 4.8% a year since 2022, without the UK’s 3.5% blended in.' }
               : { done: true, n: 'Arun’s salary growth', s: 'a year', v: '4.8%', src: 'Set by Arun', was: 'was 4.17%' },
@@ -515,7 +517,7 @@
               head: { n: '2', t: 'In 1a: the lists, the member, the switches, privacy, corrections and the chat', p: 'Mon 26 Oct: 10:05 the screen, 10:06 rupees, 10:08 Asha, 10:20 Arun’s what-if, 10:26 Asha’s, 10:40 and 10:44 Arun’s corrections. The plan item added in the chat is Sun 25 Oct, the evening before.' },
               lead: 'Scrolled: the eight milestones from the records, each with its shape and what it frees, then the three plan items, each figure a tappable pill for the admin, and Add a plan item in the chat.',
               frames: P('iPhone · Projection, milestones and plan items', { list: true, plans: true }, {}, Object.assign({}, scrolled, { off: 'off110' })),
-              notes: [{ h: 'Plan items are the admin’s alone:', t: 'created only in the chat (P10), corrected in place (P7). Members see them without the pill (P3) (MA-222).' }, { h: 'Milestones come from the records,', t: 'not from a guess: a maturity date, a loan’s last payment, Arun’s retirement at 60.' }] },
+              notes: [{ h: 'Plan items are the admins’ alone:', t: 'created only in the chat (P10), corrected in place (P7). Members see them without the pill (P3) (MA-222).' }, { h: 'Milestones come from the records,', t: 'not from a guess: a maturity date, a loan’s last payment, Arun’s retirement at 60.' }] },
             { anchor: 'p2', id: 'P2', name: 'iPhone · Projection, the assumptions', keys: 'MA-224 · MA-221',
               lead: 'Each figure with its source: Contract for the FD and PPF; a prior for UK shares, property and prices; history shrunk toward a prior for Parag Parikh (10.7% to 9.06%) and for pay (Arun’s 4.8% blended with the UK’s 3.5% to 4.17%).',
               frames: P('iPhone · Projection, the assumptions', { asm: true, groups: ASM.slice(0, 2) }, {}, scrolled).concat(P('iPhone · Projection, the assumptions · scrolled to the end', { asm: true, groups: ASM.slice(1), endnote: true }, {}, Object.assign({}, scrolled, { off: 'off40' }))),
@@ -545,7 +547,7 @@
               frames: C('iPhone · Chat, a what-if', { net: '£457,951', day: 'Today', low: 'low', msgs: [mA, mW] }, {}, '10:20'),
               notes: [{ h: 'The engine’s figures:', t: '£1,417,000 against £1,508,000 in 2036, £91,000 lower, and code’s flag: cash £14,462 below zero in Jun 2028, back above zero in Nov 2028 (the run month by month, MA-264). The agent fills a typed override from his words and calls run_projection (MA-223).' }, { h: 'Save as a plan item', t: 'opens the plan item card (P10); nothing changes until Confirm.' }] },
             { anchor: 'p9', id: 'P9', name: 'iPhone · Chat, a what-if as Asha asks it', keys: 'MA-223',
-              lead: 'Asha asks the same at 10:26 in her own conversation: the same figures, no Save, and a line saying only Arun can make it a plan item.',
+              lead: 'Asha asks the same at 10:26 in her own conversation: the same figures, no Save, and a line saying only an admin can make it a plan item.',
               frames: C('iPhone · Chat, a what-if as Asha asks it', { net: '£457,951', day: 'Today', low: 'low', msgs: [{ q: 'What is the shaded band?', qt: '10:08', a: 'It is where 8 in 10 of the engine’s runs land; the line through it is the middle one. Shares swing the most, so the band widens with the years.' }, Object.assign({}, mW, { qt: '10:26' })] }, { mem: true }, '10:26'),
               notes: [{ h: 'Members ask, never save', t: '(§6.6). The card is otherwise the admin’s card, figure for figure.' }] },
             { anchor: 'p10', id: 'P10', name: 'iPhone · Chat, adding a plan item', keys: 'MA-222',

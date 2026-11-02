@@ -107,7 +107,7 @@
 
       <section class="dv-turn" id="t1" data-screen-label="iPhone v4 check-ins: the card's options">
         <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">The check-in card: three options</span></div>
-        <p class="dv-intro">MA-205: when a payment, a maturity or a valuation is due, the daily job (code, no model) puts a check-in card in the member's chat and one tap records the answer. Each option answers the HDFC home loan's EMI, due Thu 5 Nov: "Was November's EMI of ₹39,390 paid?" In every option the card shows exactly what Paid writes, so the Paid tap is the Confirm, and Undo follows it (K2). Shell 1a, light and dark. The strip shows the day only: the figure set holds no net worth after Mon 26 Oct, and a board never makes one up.</p>
+        <p class="dv-intro">MA-205: when a payment, a maturity or a valuation is due, the daily job (code, no model) puts a check-in card in an admin's chat and one tap records the answer (a member who is not an admin only sees that one is pending). Each option answers the HDFC home loan's EMI, due Thu 5 Nov: "Was November's EMI of ₹39,390 paid?" In every option the card shows exactly what Paid writes, so the Paid tap is the Confirm, and Undo follows it (K2). Shell 1a, light and dark. The strip shows the day only: the figure set holds no net worth after Mon 26 Oct, and a board never makes one up.</p>
         <div class="dv-opts">
 
           <div class="dv-opt" id="1a">
@@ -394,7 +394,7 @@
           <div class="bd-note">
             <p><b>Not yet saves nothing to the loan.</b> The card says when it will ask again, Mon 9 Nov, and what happens after: overdue on Home, never red.</p>
             <p><b>Different amount opens a short flow:</b> the answer folds to its line and one question asks how much. Over the EMI, it asks whether the extra shortens the term (India's default) or lowers the EMI; under it, the rest stays due.</p>
-            <p><b>No figure is assumed:</b> the amount is the member's own, typed in the composer, then a Confirm card as R3's shows what is saved.</p>
+            <p><b>No figure is assumed:</b> the amount is the admin's own, typed in the composer, then a Confirm card as R3's shows what is saved.</p>
             <p><b>Motion:</b> each answer folds into its line as the next question rises in its place.</p>
             <p><b>Builds:</b> MA-205 (the answers), MA-209 (prepayment, shortening the term or lowering the EMI).</p>
           </div>
@@ -595,14 +595,14 @@
         <div class="bd-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="dv-col" data-screen-label="iPhone · Check-in: the SIP · {{ t.label }}">
-              <div class="bd-theme">iPhone · {{ t.label }} · Asha's chat, Something else open</div>
+              <div class="bd-theme">iPhone · {{ t.label }} · Arun's chat, Something else open</div>
               <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
                 <div class="sbar"><span>09:02</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
                 <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Tue 10 Nov</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                 <div class="scroll"><div class="fadet"></div><div class="chat cb">
                   <div class="daysep">Today 09:00</div>
                   <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
-                    <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms" aria-hidden="true">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Did November's SIP of ₹10,000 go through?</span></div>
+                    <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms" aria-hidden="true">event_available</span>Check-in</span><span class="mp-foot mp-ink2">due today</span></span><span class="mp-hl">Did Asha's November SIP of ₹10,000 go through?</span></div>
                     <div class="ccard-b"><div class="kv"><span>Fund</span><span>Parag Parikh Flexi Cap</span></div><div class="kv"><span>Went through saves</span><span>a ₹10,000 buy, Tue 10 Nov</span></div><span class="mp-foot mp-ink2">Its units come at that day's NAV, from AMFI, once it is published.</span></div>
                     <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Went through</button><button type="button" class="cbtn sel">Something else<span class="ms" aria-hidden="true">expand_less</span></button></div>
                     <div class="opts">
@@ -618,7 +618,7 @@
             </div>
           </sc-for>
           <div class="bd-note">
-            <p><b>Asha's fund, so Asha is asked.</b> Her SIP of ₹10,000 on the 10th is a commitment (registered for her in R5); the check-in comes to her chat on Tue 10 Nov.</p>
+            <p><b>Asha's fund, but an admin is asked.</b> Her SIP of ₹10,000 on the 10th is a commitment (registered for her in R5); only admins write, so the check-in comes to Arun's chat on Tue 10 Nov, and Asha's chat shows only that it is pending, with no buttons.</p>
             <p><b>Went through is the Confirm:</b> it saves a ₹10,000 buy dated Tue 10 Nov. The units are the engine's, at AMFI's NAV for that day, filled in when it is published; no figure is guessed.</p>
             <p><b>Skipped</b> keeps the SIP for December; <b>Stopped</b> ends it and its check-ins, after a Confirm card.</p>
             <p><b>Motion:</b> Something else opens its rows in place under the buttons.</p>
@@ -633,14 +633,14 @@
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="dv-col" data-screen-label="iPhone · Check-in: the saver matures · {{ t.label }}">
               <div class="pair">
-                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, Asha's chat, what happened?</div>
+                <div class="dv-col"><div class="bd-theme">iPhone · {{ t.label }} · 1 of 2, Arun's chat, what happened?</div>
                 <div class="dev dev-iphone mp {{ t.cls }}"><div class="island"></div><div class="scrn">
                   <div class="sbar"><span>09:00</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
                   <div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household</span><span class="mp-hl">Mon 14 Dec</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                   <div class="scroll"><div class="fadet"></div><div class="chat cb">
                     <div class="daysep">Today 09:00</div>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
-                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms" aria-hidden="true">event_available</span>Check-in</span><span class="mp-foot mp-ink2">matures today</span></span><span class="mp-hl">Your fixed-rate saver matured today with £10,460. What happened to it?</span></div>
+                      <div class="ccard-h"><span class="fx ac jb"><span class="mp-chip mp-neutral"><span class="ms" aria-hidden="true">event_available</span>Check-in</span><span class="mp-foot mp-ink2">matures today</span></span><span class="mp-hl">Asha's fixed-rate saver matured today with £10,460. What happened to it?</span></div>
                       <div class="ccard-b"><div class="kv"><span>Saver</span><span>Nationwide, 4.6% fixed</span></div><div class="kv"><span>Opened</span><span>Sun 14 Dec 2025, £10,000</span></div><div class="kv"><span>At maturity</span><span>£10,460</span></div><span class="mp-foot mp-ink2">Nothing is assumed: pick what happened.</span></div>
                       <div class="ccard-acts"><button type="button" class="cbtn">Renewed</button><button type="button" class="cbtn">Paid out</button><button type="button" class="cbtn">Moved</button></div>
                     </div></div></div>
@@ -674,7 +674,7 @@
             <p><b>No expected answer, so no primary.</b> The saver's maturity is set to ask, so Renewed, Paid out and Moved sit side by side, each opening a short flow; none saves on its own.</p>
             <p><b>The figure is the engine's:</b> £10,000 at 4.6% fixed for a year, opened Sun 14 Dec 2025, is £10,460 today.</p>
             <p><b>Renewed starts a successor:</b> it asks the term, then the rate, then a Confirm card makes a new saver with £10,460 from today, linked to this one, which closes as matured. Paid out asks where the money went; Moved asks which record it joined.</p>
-            <p><b>Asha's saver, so Asha is asked.</b> Motion: the answer folds to its line and the next question rises.</p>
+            <p><b>Asha's saver, but an admin is asked:</b> only admins write, so Arun answers; Asha sees only that the check-in is pending. Motion: the answer folds to its line and the next question rises.</p>
             <p><b>Builds:</b> MA-202 (the maturity outcome and its successor record), MA-205 (the check-in). The rate is not drawn: the figure set holds none for a renewal.</p>
           </div>
         </div>
@@ -715,7 +715,7 @@
           <div class="bd-note">
             <p><b>Autopay never asks.</b> The mortgage and the car loan are paid by direct debit, so each is assumed paid once its grace passes, and both are listed here once a week instead of two check-ins: the way MyPaisa keeps to about ten notifications a week.</p>
             <p><b>The first digest since setup</b> carries October's autopay so far, as the figure set lists it for the week of Mon 19 Oct: £1,456 on Thu 1 Oct and £347 on Tue 20 Oct, £1,803 in all (£1,456.46 + £346.55).</p>
-            <p><b>One didn't go</b> opens a short flow for that row, and a statement that shows the payment confirms it by itself. The mortgage is joint: Asha's digest lists it too.</p>
+            <p><b>One didn't go</b> opens a short flow for that row, and a statement that shows the payment confirms it by itself. The mortgage is joint: Asha's digest lists it too, without One didn't go: she views only, and an admin answers.</p>
             <p><b>Quiet:</b> one notification, no sound, never at quiet hours. Motion: the card rises with its rows in turn.</p>
             <p><b>Builds:</b> MA-211. Strip £439,951: the figure set's net worth before the 09:41 Monzo savings.</p>
           </div>
@@ -745,7 +745,7 @@
           </sc-for>
           <div class="bd-note">
             <p><b>No amount on the lock screen:</b> the loan and the question, in the card's plain line with its figure left out. The ₹39,390 waits inside the app (the rule MA-170 sets for every push).</p>
-            <p><b>No answer from the lock screen.</b> A tap opens the chat at the card, where Paid shows exactly what it saves; a lock-screen Paid would save an amount the member never saw.</p>
+            <p><b>No answer from the lock screen.</b> A tap opens the chat at the card, where Paid shows exactly what it saves; a lock-screen Paid would save an amount the admin never saw.</p>
             <p><b>An ordinary notification,</b> not time-sensitive; quiet hours hold. Several due at once arrive as one.</p>
             <p><b>Motion:</b> the date and time rise, then the notification slides in.</p>
             <p><b>Builds:</b> MA-205 (the check-in's push).</p>
@@ -778,7 +778,7 @@
           </sc-for>
           <div class="bd-note">
             <p><b>Privacy on:</b> the EMI is masked in the question and in what Paid saves; dates and names stay.</p>
-            <p><b>Paid still saves exactly what the card holds,</b> behind the mask; Show amounts on this card reveals this card only, for a member who wants to see before tapping.</p>
+            <p><b>Paid still saves exactly what the card holds,</b> behind the mask; Show amounts on this card reveals this card only, for an admin who wants to see before tapping.</p>
             <p><b>The glass eye beside the strip is on,</b> tinted; a tap shows amounts everywhere again.</p>
             <p><b>Motion:</b> masks fade in as blocks and never roll.</p>
             <p><b>Builds:</b> MA-205 (the card), MA-171 (privacy mode).</p>

@@ -489,8 +489,8 @@ tbl('minmax(0,1.5fr) minmax(0,1fr) 64px', [['Date and flow'], ['Amount', 'r'], [
 code(['solve  Σ flow ÷ (1 + r)^years = 0', 'newton 8% → ' + steps.slice(0, 3).map(pc3).join(' → '), 'check  at r = ' + pc3(ppX) + ' the 47 flows net to ₹' + Math.abs(Math.round(npv(ppX))), 'shown  10.7% a year']),
 F('Years count 365.25 days. Newton’s method, with bisection if it ever strays; the same code checks every fixture against a spreadsheet’s XIRR. Claude only puts it into words.', 'function')]);
 const sip = card('The SIP', 'a commitment', [list([
-{ hasI: true, i: 'event_upcoming', name: 'Next: Tue 10 Nov', sub: 'MyPaisa asks Asha whether it went through', a: V('₹10,000', priv), b: V('£89', priv), hasChip: true, chip: 'Due', chipC: 'mp-hold' },
-{ hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[45], true), sub: 'went through, Asha said so', a: V('−₹10,000', priv) },
+{ hasI: true, i: 'event_upcoming', name: 'Next: Tue 10 Nov', sub: 'MyPaisa asks an admin whether it went through', a: V('₹10,000', priv), b: V('£89', priv), hasChip: true, chip: 'Due', chipC: 'mp-hold' },
+{ hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[45], true), sub: 'went through, Arun said so', a: V('−₹10,000', priv) },
 { hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[44], true), sub: 'went through', a: V('−₹10,000', priv) },
 { hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[43], true), sub: 'went through', a: V('−₹10,000', priv) },
 { hasI: true, i: 'flag', name: 'First SIP · ' + dd(sipT[0], true), sub: '46 in all, ₹10,000 each', a: V('−₹10,000', priv) }
@@ -785,7 +785,7 @@ B({ id: 'p-ml', tid: 'P8', name: 'iPhone · Mortgage and car loan', arch: 'ARCHI
 const allK = ['MA-217', 'MA-212', 'MA-215', 'MA-201', 'MA-214', 'MA-204', 'MA-209', 'MA-210'];
 return {
 intro1: 'MA-193’s iPhone boards for MA-217 (Assets and one asset) and MA-214 (Debts and one loan), in shell 1a, Chat first, with the Liquid Glass tab bar (Chat · Home · Activity · You); Assets and Debts are pushed from Home. Light and dark. Figures from the household figure set: today Mon 26 Oct 2026, prices at the Fri 23 Oct close, £1 = ₹112.50.',
-intro2: 'Anything new is made in the chat; an existing figure is corrected in place (a dotted figure with a pencil). Every figure is the engine’s or the registry’s; an estimate the member gave says so. The web boards are in MyPaisa app v1, Web v4 · Assets and debts.',
+intro2: 'Anything new is made in the chat; an existing figure is corrected in place (a dotted figure with a pencil). Every figure is the engine’s or the registry’s; an estimate an admin gave says so. The web boards are in MyPaisa app v1, Web v4 · Assets and debts.',
 allKeys: allK.map(key), index: boards.map((b) => ({ id: b.id, name: b.name, keys: b.keyline })), boards: boards
 };
 }

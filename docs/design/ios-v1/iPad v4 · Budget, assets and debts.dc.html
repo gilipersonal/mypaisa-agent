@@ -607,8 +607,8 @@ tbl('minmax(0,1.5fr) minmax(0,1fr) 64px', [['Date and flow'], ['Amount', 'r'], [
 code(['solve  Σ flow ÷ (1 + r)^years = 0', 'newton 8% → ' + steps.slice(0, 3).map(pc3).join(' → '), 'check  at r = ' + pc3(ppX) + ' the 47 flows net to ₹' + Math.abs(Math.round(npv(ppX))), 'shown  10.7% a year']),
 F('Years count 365.25 days. Newton’s method, with bisection if it ever strays; the same code checks every fixture against a spreadsheet’s XIRR. Claude only puts it into words.', 'function')]);
 const sip = card('The SIP', 'a commitment', [list([
-{ hasI: true, i: 'event_upcoming', name: 'Next: Tue 10 Nov', sub: 'MyPaisa asks Asha whether it went through', a: V('₹10,000', priv), b: V('£89', priv), hasChip: true, chip: 'Due', chipC: 'mp-hold' },
-{ hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[45], true), sub: 'went through, Asha said so', a: V('−₹10,000', priv) },
+{ hasI: true, i: 'event_upcoming', name: 'Next: Tue 10 Nov', sub: 'MyPaisa asks an admin whether it went through', a: V('₹10,000', priv), b: V('£89', priv), hasChip: true, chip: 'Due', chipC: 'mp-hold' },
+{ hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[45], true), sub: 'went through, Arun said so', a: V('−₹10,000', priv) },
 { hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[44], true), sub: 'went through', a: V('−₹10,000', priv) },
 { hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[43], true), sub: 'went through', a: V('−₹10,000', priv) },
 { hasI: true, i: 'flag', name: 'First SIP · ' + dd(sipT[0], true), sub: '46 in all, ₹10,000 each', a: V('−₹10,000', priv) }
@@ -800,7 +800,7 @@ B({ id: 'd-bud', tid: 'D1', name: 'iPad · Budget', arch: 'ARCHITECTURE.md §12 
   [['The figures are iPhone · Budget’s:', 'budget_oct’s plan £2,682 and actual £2,246, income £7,560, EMIs £2,153, SIP £89, surplus £3,072 against £2,636, savings rate 40.6%. Derived as there: £436 over plan, the plan’s rate 34.9%, each category’s over or under.'],
    ['Regular width, the same blocks:', 'the hero splits into four across, and plan against actual runs the width of the screen so every category name fits on one line; income and salary sit beside the EMIs and the SIP below it.'],
    ['The chat beside it', 'shows the morning that closed October: the two statements sent at 08:40 and saved at 08:44, and the check-in closed at 09:02, with Undo.'],
-   ['Correct in place, create in the chat:', 'a plan, income or salary figure is tapped and corrected; a new category is made only in the chat.'],
+   ['Correct in place, create in the chat:', 'an admin taps a plan, income or salary figure and corrects it; a new category is made only in the chat, by an admin. A member who is not an admin views only.'],
    ['Glass is the controls only:', 'the sidebar, the toolbar buttons and the composer; the hero, the cards and the bars are solid Warm ledger.']]),
 B({ id: 'd-as', tid: 'D2', name: 'iPad · Assets', arch: 'ARCHITECTURE.md §9.1, §9.3, §4.8', intro: 'Everything the household owns on iPad in landscape: the four filters across the top, the total and how much of it is liquid, then every record by kind in two columns. At 9:41 on Mon 26 Oct, with the morning’s chat beside it. Light, dark, and privacy on.', keys: ['MA-217'] },
   pair('iPad · Assets', { on: 'Assets', title: 'Assets', page: (pv) => PG.assets({ priv: pv }), lay: [[0], [1, 2, 3], [4, 5, 6, 7, 8]], ph: 'Ask about Assets' }).concat([frame('iPad · Assets', TH[1], { on: 'Assets', title: 'Assets', page: (pv) => PG.assets({ priv: pv }), lay: [[0], [1, 2, 3], [4, 5, 6, 7, 8]], ph: 'Ask about Assets', priv: true })]),

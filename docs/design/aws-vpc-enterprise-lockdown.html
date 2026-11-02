@@ -138,9 +138,9 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
   <div class="wrap">
     <div class="eyebrow">Optional End-of-Roadmap AWS Network Perimeter · MA-283, MA-284</div>
     <h1>Optional AWS VPC Enterprise Lockdown, Data Perimeter &amp; Costing</h1>
-    <p class="lede">Across Phases 0 to 20 MyPaisa runs serverless IAM/tag isolation at <strong>£3.50/month</strong> (<code>enable_vpc_lockdown = false</code>). This record captures the complete seven-layer enterprise VPC blueprint and deterministic <code>us-east-1</code> costing across five options—with <strong>Option 3 (Lean Zero-Trust VPC: +£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod)</strong> preferred inside the <strong>£50/month</strong> AWS cap—to be <strong>decided last, after Phase 20</strong>.</p>
+    <p class="lede">Across Phases 0 to 15 MyPaisa runs serverless IAM/tag isolation at <strong>£3.50/month</strong> (<code>enable_vpc_lockdown = false</code>). This record captures the complete seven-layer enterprise VPC blueprint and deterministic <code>us-east-1</code> costing across five options—with <strong>Option 3 (Lean Zero-Trust VPC: +£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod)</strong> preferred inside the <strong>£50/month</strong> AWS cap—to be <strong>decided last, after Phase 15</strong>.</p>
     <ul class="rules">
-      <li><b>01</b>Decided last after Phase 20 (enable_vpc_lockdown = false by default)</li>
+      <li><b>01</b>Decided last after Phase 15 (enable_vpc_lockdown = false by default)</li>
       <li><b>02</b>Dual-stack dev/prod VPCs + VPC Block Public Access + zero-egress Isolated subnets (£0)</li>
       <li><b>03</b>Free S3 &amp; DynamoDB Gateway Endpoints + 3-way aws:SourceVpce Data Perimeter (£0)</li>
       <li><b>04</b>Route 53 DNS Firewall default-deny + Graviton t4g.nano TLS-SNI proxy (£11.32/mo)</li>
@@ -180,7 +180,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     <div class="copy tech">
       <ul>
         <li><strong>Non-overlapping dual-stack VPCs + VPC Block Public Access ($0/mo):</strong> <code>mypaisa-dev-vpc</code> (<code>10.10.0.0/16</code>, 1–2 AZs) and <code>mypaisa-prod-vpc</code> (<code>10.20.0.0/16</code>, 2 AZs, <code>us-east-1a/b</code>) + AWS IPv6 <code>/56</code>, zero VPC peering, default VPCs deleted region-wide, and declarative <strong>VPC Block Public Access (BPA)</strong> preventing accidental public ingress routes.</li>
-        <li><strong>Three subnet classes per AZ:</strong> <code>Isolated</code> (zero <code>0.0.0.0/0</code> or <code>::/0</code> route: rules engine, projection, DB workers, quarantined PDF/file extractor), <code>Private Egress</code> (<code>api</code>, <code>stream</code>, <code>agent</code>, <code>auth</code>, <code>ingester</code>, <code>notifier</code>, private <code>arm64</code> CodeBuild), and <code>Perimeter</code> (NAT / TLS-SNI proxy only; zero app compute).</li>
+        <li><strong>Three subnet classes per AZ:</strong> <code>Isolated</code> (zero <code>0.0.0.0/0</code> or <code>::/0</code> route: XIRR and CAGR maths, projection, DB workers, quarantined PDF/file extractor), <code>Private Egress</code> (<code>api</code>, <code>stream</code>, <code>agent</code>, <code>auth</code>, <code>ingester</code>, <code>notifier</code>, private <code>arm64</code> CodeBuild), and <code>Perimeter</code> (NAT / TLS-SNI proxy only; zero app compute).</li>
         <li><strong>Front-door API &amp; SSE rule:</strong> CloudFront VPC Origins ($0 extra fee) targets Internal ALB/NLB/EC2—not Private API Gateway (<code>execute-api</code> VPCE). Option 1 uses <strong>Pattern A</strong> (<code>CloudFront -&gt; VPC Origin -&gt; Internal ALB -&gt; Lambda</code>, $35.19/mo for 2 ALBs); Preferred Option 3 uses <strong>Pattern B</strong> (<code>CloudFront Pro WAF -&gt; Regional API Gateway REST API</code> with <code>disable_execute_api_endpoint = true</code> and mTLS/origin-secret lock at <strong>$0/mo ALB cost</strong>).</li>
       </ul>
     </div>
@@ -213,7 +213,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="s-albg" x="332" y="56" width="360" height="82" rx="8"/>
         <text class="s-alt" x="344" y="78">1 · Isolated Subnets (Zero Internet Route)</text>
         <text class="s-s" x="344" y="96">No 0.0.0.0/0 · No ::/0 · Prefix lists only</text>
-        <text class="s-m" x="344" y="114">engine · projection · DB jobs · PDF extractor</text>
+        <text class="s-m" x="344" y="114">XIRR · projection · DB jobs · PDF extractor</text>
         <text class="s-m" x="344" y="130">sg-lambda-isolated → S3/DDB GW VPCE only</text>
         <rect class="s-vibg" x="332" y="150" width="360" height="82" rx="8"/>
         <text class="s-vit" x="344" y="172">2 · Private Egress Subnets (Outbound 443 Only)</text>
@@ -268,7 +268,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
       <ul>
         <li><strong>Three-Way AWS Data Perimeter ($0.00/mo):</strong> (1) <em>Network Perimeter</em> (<code>aws:SourceVpce</code> explicit <code>Deny</code> on S3, DynamoDB, KMS and SQS outside the environment's VPCE); (2) <em>Resource Perimeter</em> (<code>aws:ResourceAccount = "545595341442"</code> on Gateway Endpoint policies so compromised packages inside the VPC cannot push data to an external S3 bucket); and (3) <em>Identity Perimeter</em> (<code>aws:PrincipalAccount = "545595341442"</code> on VPCEs).</li>
         <li><strong>Gateway Endpoints ($0) vs Interface PrivateLink ($7.30/AZ-mo):</strong> Every option turns on free S3 and DynamoDB Gateway Endpoints. Option 1 adds 26 PrivateLink AZ-endpoints ($189.85/mo); Option 3 keeps low-volume <code>SigV4</code> TLS 1.3 control calls (<code>ssm</code>, <code>kms</code>, <code>sqs</code>, <code>xray</code>, <code>cognito-idp</code>) over the allowlisted NAT/SNI proxy, saving <strong>£146.04/month</strong>.</li>
-        <li><strong>Presigned S3 &amp; 5-minute Audit preview join (ARCHITECTURE §4.6, §18.5):</strong> Member browsers/iPhones and <code>MA-111</code>'s 15-minute laptop <code>.xlsx</code> link hit S3 from client IPs, not <code>aws:SourceVpce</code>. We preserve them via <strong>CloudFront Signed URLs over OAC</strong> (<code>aws:SourceArn</code>) or a surgical <code>mypaisa-&lt;env&gt;-presigner</code> role carve-out bounded by <code>s3:signatureAge &lt;= 900000</code> (15 minutes).</li>
+        <li><strong>Presigned S3 &amp; 5-minute Audit preview join (ARCHITECTURE §4.6, §17.5):</strong> Browsers and iPhones (uploads and Audit previews) and <code>MA-111</code>'s 15-minute laptop <code>.xlsx</code> link hit S3 from client IPs, not <code>aws:SourceVpce</code>. We preserve them via <strong>CloudFront Signed URLs over OAC</strong> (<code>aws:SourceArn</code>) or a surgical <code>mypaisa-&lt;env&gt;-presigner</code> role carve-out bounded by <code>s3:signatureAge &lt;= 900000</code> (15 minutes).</li>
       </ul>
     </div>
     <figure class="fig" id="fig-2">
@@ -281,7 +281,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="42" y="98">PrincipalAccount = 545595341442</text>
         <text class="s-m" x="42" y="116">Routes via vpce-s3 / vpce-ddb</text>
         <rect class="s-blbg" x="30" y="144" width="272" height="78" rx="8"/>
-        <text class="s-blt" x="42" y="166">Member File Upload / Audit Link</text>
+        <text class="s-blt" x="42" y="166">Admin File Upload / Audit Link</text>
         <text class="s-m" x="42" y="184">5-min Audit PDF · 15-min .xlsx</text>
         <text class="s-m" x="42" y="202">CF Signed OAC or signatureAge≤15m</text>
         <rect class="s-albg" x="30" y="234" width="272" height="74" rx="8"/>
@@ -342,7 +342,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
   </div>
   <div class="body">
     <div class="copy plain">
-      <p>Even functions allowed to call the outside world can only reach our exact list of approved partners (Claude, Apple, Google, market feeds). Any surprise domain lookup is blocked and triggers an instant security alert, and raw IP connections trying to sneak past DNS are dropped at the TLS handshake.</p>
+      <p>Even functions allowed to call the outside world can only reach our exact list of approved partners (Claude, Apple, Google, the price feeds that value holdings). Any surprise domain lookup is blocked and triggers an instant security alert, and raw IP connections trying to sneak past DNS are dropped at the TLS handshake.</p>
     </div>
     <div class="copy tech">
       <ul>
@@ -427,12 +427,12 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
   </div>
   <div class="body">
     <div class="copy plain">
-      <p>Full bank-grade AWS appliances (Network Firewalls, Transit Gateways and 26 PrivateLink endpoints) cost £730 a month because they charge hourly fees meant for big banks with dozens of accounts. <strong>Option 3 (Preferred)</strong> uses every free AWS Data Perimeter lock plus lightweight Graviton egress proxies and CloudFront's flat-rate WAF, adding just <strong>£13.32/month</strong> (3A) or <strong>£24.86/month</strong> (3B with full prod WAF)—keeping total MyPaisa AWS spend well under our £50/month ceiling. We decide whether to switch it on last, after Phase 20.</p>
+      <p>Full bank-grade AWS appliances (Network Firewalls, Transit Gateways and 26 PrivateLink endpoints) cost £730 a month because they charge hourly fees meant for big banks with dozens of accounts. <strong>Option 3 (Preferred)</strong> uses every free AWS Data Perimeter lock plus lightweight Graviton egress proxies and CloudFront's flat-rate WAF, adding just <strong>£13.32/month</strong> (3A) or <strong>£24.86/month</strong> (3B with full prod WAF)—keeping total MyPaisa AWS spend well under our £50/month ceiling. We decide whether to switch it on last, after Phase 15.</p>
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Why Option 3 is Preferred:</strong> Option 1 (£729.91/mo) and Option 2A/2B (£149.01 / £70.39/mo) breach §15.2's £50/month AWS cap due to fixed hourly charges ($288.35/AZ Network Firewall, $36.50/mo Managed NAT GW incl. $3.65 EIP, $7.30/AZ-mo Interface VPCEs). <strong>Option 3A (+£13.32/mo = +$17.32/mo)</strong> and <strong>Preferred Option 3B (+£24.86/mo = +$32.32/mo, adding CloudFront Pro's bundled AWS WAF + Bot + DDoS on <code>prod</code> with zero overages)</strong> keep total MyPaisa AWS spend at <strong>£16.82/mo</strong> or <strong>£28.36/mo</strong>.</li>
-        <li><strong>Safe five-step zero-lockout rollout (when opted into after Phase 20):</strong> Step 1 applies VPCs, BPA, free S3/DDB Gateway Endpoints and DNS Firewall in <code>ALERT</code> mode; Step 2 brings up EIGW + <code>t4g.nano</code> SNI proxy and moves CodeBuild inside the VPC; Step 3 attaches Lambdas by tier and verifies <code>smoke.py --env dev</code> + ADOT X-Ray traces; Step 4 locks API Gateway mTLS + CloudFront Pro WAF and flips DNS Firewall <code>*</code> to <code>BLOCK</code>; Step 5 enforces <code>aws:SourceVpce</code> <code>Deny</code> policies and CI VPC Reachability Analyzer checks.</li>
+        <li><strong>Why Option 3 is Preferred:</strong> Option 1 (£729.91/mo) and Option 2A/2B (£149.01 / £70.39/mo) breach §14.2's £50/month AWS cap due to fixed hourly charges ($288.35/AZ Network Firewall, $36.50/mo Managed NAT GW incl. $3.65 EIP, $7.30/AZ-mo Interface VPCEs). <strong>Option 3A (+£13.32/mo = +$17.32/mo)</strong> and <strong>Preferred Option 3B (+£24.86/mo = +$32.32/mo, adding CloudFront Pro's bundled AWS WAF + Bot + DDoS on <code>prod</code> with zero overages)</strong> keep total MyPaisa AWS spend at <strong>£16.82/mo</strong> or <strong>£28.36/mo</strong>.</li>
+        <li><strong>Safe five-step zero-lockout rollout (when opted into after Phase 15):</strong> Step 1 applies VPCs, BPA, free S3/DDB Gateway Endpoints and DNS Firewall in <code>ALERT</code> mode; Step 2 brings up EIGW + <code>t4g.nano</code> SNI proxy and moves CodeBuild inside the VPC; Step 3 attaches Lambdas by tier and verifies <code>smoke.py --env dev</code> + ADOT X-Ray traces; Step 4 locks API Gateway mTLS + CloudFront Pro WAF and flips DNS Firewall <code>*</code> to <code>BLOCK</code>; Step 5 enforces <code>aws:SourceVpce</code> <code>Deny</code> policies and CI VPC Reachability Analyzer checks.</li>
       </ul>
     </div>
     <figure class="fig" id="fig-4">
@@ -463,7 +463,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="step-ring" data-f4="0" x="28" y="218" width="530" height="108" rx="10"/>
 
         <rect class="s-box2" x="586" y="16" width="398" height="318" rx="12"/>
-        <text class="s-h" x="600" y="42">B · 5-Step Zero-Lockout Rollout (After Ph 20)</text>
+        <text class="s-h" x="600" y="42">B · 5-Step Zero-Lockout Rollout (After Ph 15)</text>
 
         <rect class="s-box" x="600" y="58" width="370" height="46" rx="8"/>
         <text class="s-t" x="612" y="77">Step 1 · VPCs, BPA, GW VPCEs &amp; DNS ALERT</text>
@@ -488,7 +488,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="step-ring" data-f4="2" x="598" y="218" width="374" height="108" rx="10"/>
       </svg>
       </div>
-      <figcaption>Preferred Option 3B (+£24.86/mo) and leanest Option 3A (+£13.32/mo) stay well inside the £50/month AWS cap and roll out in five zero-lockout stages if chosen after Phase 20.</figcaption>
+      <figcaption>Preferred Option 3B (+£24.86/mo) and leanest Option 3A (+£13.32/mo) stay well inside the £50/month AWS cap and roll out in five zero-lockout stages if chosen after Phase 15.</figcaption>
     </figure>
 
     <div class="tbl">
@@ -594,7 +594,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 </main>
 
 <footer>
-  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §9, <span class="mono">PLAN.md</span> Phase 0 &amp; Phase 20, and <span class="mono">ARCHITECTURE.md</span> §14, §15, §18.1, §18.4 in the MyPaisa repository, 29 Oct 2026 (MA-283, MA-284).</div>
+  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §9, <span class="mono">PLAN.md</span> Phase 0 &amp; Phase 15, and <span class="mono">ARCHITECTURE.md</span> §13, §14, §17.1, §17.4 in the MyPaisa repository, 29 Oct 2026 (MA-283, MA-284).</div>
 </footer>
 
 <script>

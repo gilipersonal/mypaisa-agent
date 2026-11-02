@@ -3,11 +3,15 @@
 It joins the figure sets the prototype draws from, each written and checked by its own script:
 
 - household-v4.json (make_household.py): MA-193's household, its records, the totals at each step;
-- forecaster-v4.json (make_forecaster.py): MA-281's Forecaster figures at the Fri 23 Oct close;
 - future-plans-v4.json (make_future_plans.py): MA-264's plans and the Budget forecast;
 - and Prototype v5's own sets, each with its make_*.py that asserts every claim over its own figures
-  (lesson 38): talk-v5.json (phases 0, 1, 8), wealth-v5.json (phases 2 to 7, 9), engine-v5.json (phases 10 to 13, 15),
-  news-share-v5.json (phases 14, 16), team-india-v5.json (phases 18 to 20).
+  (lesson 38): talk-v5.json (phases 0, 1, 8), wealth-v5.json (phases 2 to 7, 9), prices-v5.json (the prices
+  that value the holdings) and team-india-v5.json (phases 13 to 15).
+
+MA-307 (2 Nov 2026) retired the market side: the Forecaster, engine and news-share sets and their scripts went;
+prices-v5.json keeps the price part of the old engine set, and talk-v5.json and team-india-v5.json were cut by hand
+to match the prototype, so make_talk.py would put the market rows back, and make_team_india.py, which still reads the
+deleted sets, cannot run, until each is cut the same way.
 
 Run: python3 docs/design/figures/make_prototype_v5.py   (from the repo root, or anywhere)
 --check exits 1 if the data file is not what the figure sets make.
@@ -20,13 +24,11 @@ HERE = pathlib.Path(__file__).resolve().parent
 OUT = HERE.parent / "prototype-v5" / "prototype-v5-data.js"
 SETS = [
     ("household", "household-v4.json", True),
-    ("forecaster", "forecaster-v4.json", True),
     ("plans", "future-plans-v4.json", True),
     ("talk", "talk-v5.json", False),
     ("wealth", "wealth-v5.json", False),
-    ("engine", "engine-v5.json", False),
-    ("newsShare", "news-share-v5.json", False),
     ("teamIndia", "team-india-v5.json", False),
+    ("prices", "prices-v5.json", False),
 ]
 
 

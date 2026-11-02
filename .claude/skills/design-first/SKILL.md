@@ -1,6 +1,6 @@
 ---
 name: design-first
-description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, a React Native shell whose every visible piece is SwiftUI, one spec in the MyPaisa iOS v1 boards in docs/design/ios-v1/, for iPhone, iPad and the foldable), the web app (web/, a SvelteKit 3 PWA with the chat, the dashboard and the Admin center, at desktop and phone width (390), from the browser boards in MyPaisa app v1, docs/design/app-v1/), the chat's cards, buttons, guided flows and in-place corrections, the charts (Swift Charts and the web's LayerChart in one house style), the motion, the design pages (the agent journey, the market agent) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps), drawn in the repo as .dc.html boards on MyPaisa DS v1 (docs/design/), keeping the record in docs/design/reviews/MA-<n>/; publish the round as a private Claude Artifact, give Arun its link and let him judge it by eye (no gate measures the boards: plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303)); and build only the option Arun picks.
+description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, a React Native shell whose every visible piece is SwiftUI, one spec in the MyPaisa iOS v1 boards in docs/design/ios-v1/, for iPhone, iPad and the foldable), the web app (web/, a SvelteKit 3 PWA with the chat, the dashboard and the Admin center, at desktop and phone width (390), from the browser boards in MyPaisa app v1, docs/design/app-v1/), the chat's cards, buttons, guided flows and in-place corrections, the charts (Swift Charts and the web's LayerChart in one house style), the motion, the design pages (the agent journey) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps), drawn in the repo as .dc.html boards on MyPaisa DS v1 (docs/design/), keeping the record in docs/design/reviews/MA-<n>/; publish the round as a private Claude Artifact, give Arun its link and let him judge it by eye (no gate measures the boards: plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303)); and build only the option Arun picks.
 ---
 
 # Design first
@@ -36,18 +36,18 @@ with one obvious fix. When unsure whether something is a design change, treat it
   drawn ahead of the story (`design: "planned"`) are the starting point for the options, not a pick
   (`.claude/rules/plan-sync.md`).
 - Read the context:
-  - `ARCHITECTURE.md`: the four rules (§1), the iOS app (§9: the shell, the size classes and the motion in §9.1, the
-    chat's cards and guided flows, the dashboard screens and the Admin center), the web app (§9.4), identity and the
-    second check (§4.5) and push (§11);
+  - `ARCHITECTURE.md`: the four rules (§1), the iOS app (§8: the shell, the size classes and the motion in §8.1, the
+    chat's cards and guided flows, the dashboard screens and the Admin center), the web app (§8.4), identity and the
+    second check (§4.5) and push (§10);
   - `PLAN.md`, the phase the surface belongs to (phase 1 for sign-in, the chat at both doors, Activity, the motion and
     legibility; the wealth phases 2 to 9 for the dashboard screens, each in the phase of the record it shows; phase 8
-    for Audit, Search and the Admin center; phase 20 for widgets, Siri and the share sheet);
+    for Audit, Search and the Admin center; phase 15 for widgets, Siri and the share sheet);
   - `docs/design/README.md` and the surface's existing design: for the app, the one spec in MyPaisa iOS v1
     (`docs/design/ios-v1/`: `Shell options`, the `iPhone` files, `iPad and foldable`) and the iOS kit in MyPaisa DS v1
     (`docs/design/ds-v1/`); for the web app, the browser boards in MyPaisa app v1 (`docs/design/app-v1/`:
     `Browser · ...`, at desktop and at 390; the whole-wealth boards and the clickable prototype are drawn on MA-193);
     the Mini App and Telegram boards in `app-v1/` and the Nocturne artboards in `docs/design/dashboard/` are the
-    superseded record, read only for a flow Arun already picked; `agent-journey.html` and `market-agent.html`
+    superseded record, read only for a flow Arun already picked; `agent-journey.html`
     for the explainers;
   - earlier reviews for the same surface in `docs/design/reviews/` (`MA-161/decision.md` for the shell, the size
     classes and Liquid Glass).
@@ -74,8 +74,8 @@ with one obvious fix. When unsure whether something is a design change, treat it
 | The iOS app, `ios/`: one app, one spec in MyPaisa iOS v1 (`docs/design/ios-v1/`), every size class; a React Native shell whose every visible piece is SwiftUI, hosted through Fabric and fed one JSON model. Boards for **iPhone** (compact) and for **iPad and the foldable** (regular, narrow and wide), each in light and dark, with Dynamic Type up to AX5 and privacy mode wherever they change a screen: the shell, sign-in, the chat, Home and the dashboard's screens (net worth, assets and one asset, debts and one loan, Budget, Projection), a holding, Overlap, Scorecard, Audit and Files, Activity, Search, the Admin center and You | `impeccable`, Operate mode (`shape`, `layout`, `critique`) | `ui-ux-pro-max` for UX rules (`python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "<outcome>" --domain ux`, and `--stack swiftui` for SwiftUI patterns); Apple's Human Interface Guidelines for every control; `redesign-existing-projects` to audit a screen that exists; `qwengen-bf16` for a comp from a screenshot of the current screen |
 | The web app, `web/`: a SvelteKit 3 PWA with the chat, the dashboard and the Admin center in a browser. **Browser** boards in MyPaisa app v1 (`docs/design/app-v1/`) at desktop (laptop, two columns) and at phone width (390, the adaptive shell), and the sign-in page, for the chat, Home and the dashboard's screens, a holding, Overlap, Scorecard, Audit and Files, Activity, Search and the Admin center | `impeccable`, Operate mode (`shape`, `layout`, `critique`) | `ui-ux-pro-max --domain ux`, and `--stack svelte` for Svelte patterns; `redesign-existing-projects` to audit a page that exists; `qwengen-bf16` for a comp from a screenshot of the current page |
 | The chat's cards, buttons and guided flows: SwiftUI views in the app and Svelte components in the web app, both drawn from the card JSON of MA-174 (`src/mypaisa_agent/cards/`, the card types in `web/src/lib/`, the card pieces in `ios/` and `web/`), in `simple` and `technical` | `impeccable` (`clarify`, `distill`) on the card's text and hierarchy | `ui-ux-pro-max --domain ux` for the flow; `design-skills:ux-writing` for button labels and one-line copy |
-| Charts: Swift Charts in the app and shadcn-svelte's charts on LayerChart in the web app (lightweight-charts only for the market side's price charts), one house style (MA-56), in the chat's cards and on the dashboard | `dataviz` | Validate palettes with its script; one palette at both doors, so a holding looks the same everywhere |
-| Design pages (`docs/design/agent-journey.html`, `market-agent.html`; the earlier `architecture.html` and `journeys.html`) | `impeccable` | `high-end-visual-design` and `design-taste-frontend` are allowed here, and only here |
+| Charts: Swift Charts in the app and shadcn-svelte's charts on LayerChart in the web app, one house style (MA-56), in the chat's cards and on the dashboard | `dataviz` | Validate palettes with its script; one palette at both doors, so a holding looks the same everywhere |
+| Design pages (`docs/design/agent-journey.html`; the earlier `architecture.html` and `journeys.html`) | `impeccable` | `high-end-visual-design` and `design-taste-frontend` are allowed here, and only here |
 | The mark (`docs/mark.svg` and its PNGs) and the app icon | `impeccable` | `qwengen-bf16` for drafts; the shipped mark stays SVG; the app icon is made from it in Icon Composer (default, dark, clear and tinted; the DEV band on MyPaisa Dev) |
 
 The taste skills are for landing pages and showcases, not dashboards or multi-step product UI. Keep them off the app,
@@ -105,13 +105,15 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
     an amount or an assumption) can be corrected in place on any screen: tap it, type the new value, a before → after
     line appears with Save, and Save writes a `correction` event with its audit row (`via: inline_edit`). Both paths
     run through one write service, checked against the kind spec and audited. Nothing is created in place: no Add
-    button, form or empty row on a dashboard screen. A member corrects their own records' figures and the admin
-    anyone's; plan items and saved projection assumptions are the admin's alone. Show the correction's states (the
+    button, form or empty row on a dashboard screen, and no delete on any screen: deleting happens only in the chat
+    (MA-309). Only admins write (MA-307, MA-308, Arun, 2 Nov 2026: "Only admins can do all these. Others users can
+    view only."): an admin adds, corrects and deletes; every other member sees no Save, no Update and no check-in
+    buttons, and the chat refuses their writes politely. Plan items and saved projection assumptions are admins' too. Show the correction's states (the
     tap, the before → after line with Save, the saved figure) wherever a design puts an editable figure. The Admin
     center stays the exception: the owner's admin settings and operations, in the app and the web app, each sit
     behind the second check (in the app a fresh Sign in with Apple or passkey under Face ID, or Google again for a
     member who signs in only with Google; in a browser a passkey or a fresh sign-in; bound to the action and verified
-    by the server, MA-76) and an audit row (`ARCHITECTURE.md` §9.3, §9.4). Arun's "read only (except for admin)" of
+    by the server, MA-76) and an audit row (`ARCHITECTURE.md` §8.3, §8.4). Arun's "read only (except for admin)" of
     24 Oct 2026 is superseded by the in-place correction; its admin exception stands;
   - **the summary first:** the layman sees the summary, the detail is one tap away (the `Technical` section, `Why?`);
     show both `simple` and `technical` modes where a card has them;
@@ -170,7 +172,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   - **a chart:** the real thing, not a drawing of one: Swift Charts on the simulator once `ios/` exists, the
     LayerChart chart in the web app; until then, a board drawn with the kit's chart classes from the shape of
     the engine's series.
-- **Motion** (MA-182; `ARCHITECTURE.md` §9.1): one motion system for every component and chart, at both doors, drawn
+- **Motion** (MA-182; `ARCHITECTURE.md` §8.1): one motion system for every component and chart, at both doors, drawn
   on the iOS kit's `12 · Motion` board. Every board loads `motion.css` and `motion.js` and uses their classes, so it
   moves the way the build will.
   - Content moves, the glass bars stay put. Cards and rows arrive with a soft spring and a 45 ms stagger (at most
@@ -284,7 +286,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 - **How.** On the same branch:
   1. Update the spec first when the pick changes it: the boards at every size class in `docs/design/ios-v1/` and the
      browser boards in `docs/design/app-v1/`, or the example
-     cards in `ARCHITECTURE.md` §9.2. Republishing an explainer page's artifact is Arun's call; ask.
+     cards in `ARCHITECTURE.md` §8.2. Republishing an explainer page's artifact is Arun's call; ask.
   2. Build with impeccable, comp-led when the pick includes an approved comp: `ios/` for the app (the React Native
      shell in TypeScript, and every piece a member looks at in SwiftUI, hosted through a Fabric component and fed one
      JSON model), `web/` for the web app (SvelteKit 3, Tailwind CSS 4, shadcn-svelte, TanStack, LayerChart; MA-229), `cards/` and the card pieces at both doors

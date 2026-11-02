@@ -1,20 +1,20 @@
-<div data-type="panel-custom" data-icon=":house:" data-color="#DEEBFF"><p><strong>MyPaisa</strong> keeps one household's whole wealth across the UK and India, registered and kept through a chat, with no forms: what the family owns and owes, each member's income and spending, a Projection of where it is heading, and later a market agent for the investments. Every phase ships at both doors at once: the web app (a SvelteKit 3 PWA at dashboard.mypaisapp.com, desktop and phone) and the iOS app (a React Native shell with a native SwiftUI core, iPhone and iPad).</p>
+<div data-type="panel-custom" data-icon=":house:" data-color="#DEEBFF"><p><strong>MyPaisa</strong> keeps one household's whole wealth across the UK and India, registered and kept through a chat, with no forms: what the family owns and owes, each member's income and spending, a Projection of where it is heading from the household's actual numbers (XIRR and CAGR), and a team of agents that keeps it all current. Only admins write, through the chat; every other member views. MyPaisa gives no buy, sell or hold calls and never predicts a market (MA-307). Every phase ships at both doors at once: the web app (a SvelteKit 3 PWA at dashboard.mypaisapp.com, desktop and phone) and the iOS app (a React Native shell with a native SwiftUI core, iPhone and iPad).</p>
 </div>
-<section data-type="layout-three-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":calendar_spiral:" data-color="#EAE6FF"><h3>21 phases</h3>
-<p>From <time datetime="2026-11-02">Mon 2 Nov 2026</time>. The whole wealth by <time datetime="2028-01-14">Fri 14 Jan 2028</time>, everything by <time datetime="2028-08-04">Fri 4 Aug 2028</time>.</p>
-</div>
-</div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":white_check_mark:" data-color="#E3FCEF"><h3>270 stories</h3>
-<p>214 To Do, 36 Done, 20 In Progress; 540.25 build days.</p>
+<section data-type="layout-three-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":calendar_spiral:" data-color="#EAE6FF"><h3>16 phases</h3>
+<p>From <time datetime="2026-11-02">Mon 2 Nov 2026</time>. The whole wealth by <time datetime="2028-01-26">Wed 26 Jan 2028</time>, everything by <time datetime="2028-04-04">Tue 4 Apr 2028</time>.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":art:" data-color="#FFFAE6"><h3>345 boards</h3>
-<p>113 stories have screens, drawn in the repo before anything is built.</p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":white_check_mark:" data-color="#E3FCEF"><h3>233 stories</h3>
+<p>179 To Do, 34 Done, 20 In Progress; 436.25 build days.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":art:" data-color="#FFFAE6"><h3>314 boards</h3>
+<p>99 stories have screens, drawn in the repo before anything is built.</p>
 </div>
 </div>
 </section>
 <h2>🗺️ The journey</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="310fa958-92da-439d-b360-066c93aadda8" data-collection="contentId-197090" data-alt="roadmap.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7f75af5e-f84d-45eb-a5e9-0808cc0b2363" data-collection="contentId-197090" data-alt="roadmap.png"></div>
 <figcaption>The phases in build order</figcaption></figure>
 <p><a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/197112">The roadmap</a> has each phase's dates, exit demo and your tasks, and how the dates are worked out. Every story is in <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/database/197767">the story explorer</a>, filterable by phase, door, status and design state.</p>
 <h2>🧭 Where to look</h2>
@@ -36,7 +36,7 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":movie_camera:" data-color="#E6FCFF"><h3><a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/294922">Explainers</a></h3>
-<p>The Inside MyPaisa, Architecture v4, Agent Journey, Market Agent and Guardrails and Evals pages, the clickable prototype, the architecture drawings.</p>
+<p>The Inside MyPaisa, Architecture v4, Agent Journey and Guardrails and Evals pages, the clickable prototype, the architecture drawings.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":link:" data-color="#F4F5F7"><h3><a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/66065">Staying in step</a></h3>
@@ -51,13 +51,13 @@
 <p>The four-layer implementation stack (SvelteKit 3, TanStack and shadcn-svelte; React Native 0.88 and SwiftUI; Python 3.14, FastAPI and single-table DynamoDB versus DocumentDB; the agent framework comparison) and end-to-end tracing and LLM observability with monthly costing (MA-265, MA-266).</p>
 </div>
 <div data-type="panel-custom" data-icon=":rocket:" data-color="#FFFAE6"><h3><a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/2589543">CI/CD, vulnerability scanning, smoke and regression architecture</a></h3>
-<p>The GitHub Actions + AWS CodeBuild arm64 + ECR delivery pipeline for dev and prod, the seven-layer vulnerability scanning gate, the phase-progressive smoke runner with &lt;5s auto-rollback, the five-layer regression pyramid across Phases 0 to 20, and the £0/month Option D runner cost model (MA-267 to MA-272).</p>
+<p>The GitHub Actions + AWS CodeBuild arm64 + ECR delivery pipeline for dev and prod, the seven-layer vulnerability scanning gate, the phase-progressive smoke runner with &lt;5s auto-rollback, the five-layer regression pyramid across Phases 0 to 15, and the £0/month Option D runner cost model (MA-267 to MA-272).</p>
 </div>
 <div data-type="panel-custom" data-icon=":iphone:" data-color="#EAE6FF"><h3><a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/2818197">Local iOS and iPadOS Maestro testing and private TestFlight beta plan</a></h3>
-<p>The local Apple Silicon Maestro architecture (cloned simulator pool with flock isolation from interactive MCP), the React Native 0.88 + SwiftUI selector contract, the four-sub-band iOS and iPadOS adaptive matrix, the phase-by-phase rollout across Phases 0 to 20 at £0/month, and the 100% private 90-day (3-month) evergreen TestFlight household beta plan (MA-167, MA-273, MA-274).</p>
+<p>The local Apple Silicon Maestro architecture (cloned simulator pool with flock isolation from interactive MCP), the React Native 0.88 + SwiftUI selector contract, the four-sub-band iOS and iPadOS adaptive matrix, the phase-by-phase rollout across Phases 0 to 15 at £0/month, and the 100% private 90-day (3-month) evergreen TestFlight household beta plan (MA-167, MA-273, MA-274).</p>
 </div>
 <div data-type="panel-custom" data-icon=":lock:" data-color="#FFEBE6"><h3><a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/3670133">Optional AWS VPC enterprise lockdown, data perimeter and costing</a></h3>
-<p>The optional end-of-roadmap seven-layer AWS VPC enterprise lockdown and three-way aws:SourceVpce Data Perimeter across dev and prod (decided last after Phase 20, enable_vpc_lockdown = false by default), comparing Option 1 (£729.91/mo), Option 2A/2B (£149.01 and £70.39/mo) and Preferred Option 3 (+£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod, staying inside the £50/mo AWS cap; MA-283, MA-284).</p>
+<p>The optional end-of-roadmap seven-layer AWS VPC enterprise lockdown and three-way aws:SourceVpce Data Perimeter across dev and prod (decided last after Phase 15, enable_vpc_lockdown = false by default), comparing Option 1 (£729.91/mo), Option 2A/2B (£149.01 and £70.39/mo) and Preferred Option 3 (+£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod, staying inside the £50/mo AWS cap; MA-283, MA-284).</p>
 </div>
 <div data-type="panel-custom" data-icon=":sparkles:" data-color="#E3FCEF"><h3><a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/4816897">Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI</a></h3>
 <p>How the built SvelteKit 3 (web/) app runs Playwright 1.64, fail-closed @axe-core/playwright 4.14 WCAG 2.2 AA and Argos CI (@argos-ci/playwright, Tokenless GitHub App OIDC) through one shared auditAndCapture() fixture at 390x844 and 1440x900 in Light and Dark, using five engineering cost guardrails (including light-theme-only ariaSnapshot deduplication) to stay at ~3,600 snapshots/month inside Argos CI's 5,000/month £0 Free Hobby cap (MA-194, MA-269).</p>
@@ -69,7 +69,6 @@
 <li><strong>Inside MyPaisa</strong>: <a href="https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5" data-card-appearance="inline"></a></li>
 <li><strong>MyPaisa Architecture v4</strong>: <a href="https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9" data-card-appearance="inline"></a></li>
 <li><strong>MyPaisa Agent Journey</strong>: <a href="https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7" data-card-appearance="inline"></a></li>
-<li><strong>MyPaisa Market Agent</strong>: <a href="https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb" data-card-appearance="inline"></a></li>
 <li><strong>MyPaisa Guardrails and Evals</strong>: <a href="https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT" data-card-appearance="inline"></a></li>
 </ul>
 <h2>📚 Every page</h2>
