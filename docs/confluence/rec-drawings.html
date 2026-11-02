@@ -55,13 +55,20 @@ The optional second argument writes view 8, adding a record through the chat and
 PlantUML for Lucid&#x27;s sequence importer (the Standard Import format has no sequence diagrams).
 
 A change after the first import is made in the Lucid documents in place, so their ids and links stay: a shape&#x27;s text
-and box by its id (the ids here are the ids in Lucid), and view 8 by replacing its sequence generator&#x27;s markup.</code></pre>
+and box by its id (the ids here are the ids in Lucid), and view 8 by replacing its sequence generator&#x27;s markup.
+
+MA-312 (2 Nov 2026), after MA-307 made MyPaisa a wealth tracker only: page 6, the market agent and learning loop, is
+gone (its Lucid document, 6f1b4c75-353c-49e5-b6e7-29fd2c18d356, is left as it was for Arun to decide on), and no
+other page draws the News scout, the Analyst, the Forecaster, the rules engine, briefs, stances or news feeds. The
+agent team is the six agents of ARCHITECTURE 18.1, prices exist only to value the holdings (5.1), only admins write
+(4.10), and the phases are numbered as PLAN.md now numbers them (the agent team is phase 13). A shape that left a
+page was deleted from its Lucid document; the ids of the shapes that stayed did not change.</code></pre>
 </div>
 <h3>The sequence: adding a record, and correcting it in place</h3>
 <p>Drawn from <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/lucid/08-add-holding-sequence.puml">08-add-holding-sequence.puml</a>:</p>
 <details><summary>The PlantUML source</summary><pre><code>@startuml
-title Adding a record through the chat, and correcting a figure in place (figures illustrative)
-actor Member
+title An admin adds a record through the chat, and corrects a figure in place (figures illustrative)
+actor Admin
 participant &quot;iOS app (React Native shell, SwiftUI core)&quot; as app
 participant &quot;web app (SvelteKit PWA)&quot; as web
 participant &quot;S3 documents (kept for good)&quot; as s3
@@ -75,7 +82,7 @@ database &quot;DynamoDB registry&quot; as ddb
 participant &quot;SQS outbox.fifo + sender λ&quot; as out
 participant &quot;stream log + stream λ (SSE on the api host)&quot; as stream
 autonumber
-Member -&gt; app : attaches factsheet.pdf in the chat
+Admin -&gt; app : attaches factsheet.pdf in the chat
 app -&gt; api : asks for an upload link
 api --&gt; app : presigned PUT URL
 app -&gt; s3 : PUT factsheet.pdf
@@ -99,7 +106,7 @@ worker -&gt; out : what I read, unsure fields in amber; which account is it in? 
 deactivate worker
 out -&gt; stream : appended to the stream log
 stream --&gt; app : SSE: the card and its chips
-Member -&gt; app : taps ISA · Monzo
+Admin -&gt; app : taps ISA · Monzo
 app -&gt; api : POST /v1/chat/actions (the chip, the flow id)
 api -&gt; qin : queue the tap
 api --&gt; app : acknowledged at once
@@ -110,7 +117,7 @@ agent -&gt; out : ask_user: &quot;How many units do you hold? Type them, or send
 deactivate agent
 out -&gt; stream : appended to the stream log
 stream --&gt; app : SSE: the question
-Member -&gt; app : types &quot;1,234.5 units&quot;
+Admin -&gt; app : types &quot;1,234.5 units&quot;
 app -&gt; api : POST /v1/chat/messages
 api -&gt; qin : queue
 qin -&gt; agent : the answer, in order
@@ -120,7 +127,7 @@ agent -&gt; out : Confirm card: Balanced, in ISA · Monzo, Arun&#x27;s, £22,925
 deactivate agent
 out -&gt; stream : appended to the stream log
 stream --&gt; app : SSE: the Confirm card
-Member -&gt; app : taps Confirm
+Admin -&gt; app : taps Confirm
 app -&gt; api : POST /v1/chat/actions (Confirm, the draft&#x27;s hash)
 api -&gt; qin : queue the tap
 api --&gt; app : acknowledged at once
@@ -133,12 +140,12 @@ out -&gt; stream : appended to the stream log
 stream --&gt; app : SSE: the confirmation
 stream --&gt; web : SSE: records.changed, the laptop&#x27;s dashboard moves
 group Correction in place
-Member -&gt; web : taps Home, Reading&#x27;s value, types 428,000
-web --&gt; Member : £415,000 → £428,000 [Save]
-Member -&gt; web : Save
+Admin -&gt; web : taps Home, Reading&#x27;s value, types 428,000
+web --&gt; Admin : £415,000 → £428,000 [Save]
+Admin -&gt; web : Save
 web -&gt; api : PATCH /v1/records/{id} (value 428,000; the figure shown, 415,000), the session cookie
 activate api
-api -&gt; ddb : write service: value is editable on the property kind, a number in range; has the record moved since 415,000?
+api -&gt; ddb : write service: the caller is an admin; value is editable on the property kind, a number in range; has the record moved since 415,000?
 alt the record moved since the screen showed it
 api --&gt; web : refused, nothing written; the new figure is shown
 else unchanged since the screen showed it
@@ -151,7 +158,7 @@ end
 deactivate api
 end
 note over agent, out : The Document and audit rows of a file are written when it arrives, before the docs job reads it, and stay whatever happens next (Cancel, an expired PendingAction, a failed read); the file opens from the Audit screen. A draft writes nothing: only Confirm, the tap on a check-in or a Save in place commits.
-note over api, ddb : One write service, the same code behind Confirm in the agent and the PATCH in the api: it checks the change against the kind spec and writes the event with its audit row in one transaction.
+note over api, ddb : Only an admin writes (MA-307, MA-308): a member who is not an admin is offered nothing to Confirm or Save. One write service, the same code behind Confirm in the agent and the PATCH in the api: it checks the change against the kind spec and writes the event with its audit row in one transaction.
 note over out, stream : A device with no fresh Presence gets Apple push or Web Push instead; on opening, a door resumes from its last event (Last-Event-ID).
 @enduml
 </code></pre>
