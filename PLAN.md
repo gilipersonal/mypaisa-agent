@@ -642,6 +642,13 @@ Claude's:
   sweep; svelte-check, eslint and vitest run on every PR touching `web/`;
   Playwright, axe and Argos run only when Arun asks (a manual run or a `qa`
   label; MA-303, MA-304). Depends on MA-194.
+- **One CI workflow, its jobs in parallel (MA-305):** CI runs Plan sync,
+  Plan-sync selftest, Review tooling (every ledger and state file), Confluence
+  receipts and Workflow lint side by side, as mypaisaa-prediction does
+  (Arun, 2 Nov 2026); a superseded run is cancelled, actions are pinned to
+  commit SHAs, and a description edit no longer reruns the checks. jira-key
+  stays its own workflow. Web, Backend and iOS jobs join with MA-24, MA-194
+  and MA-165.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 

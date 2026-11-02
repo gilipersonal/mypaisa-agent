@@ -8,8 +8,9 @@
   "finding": "CI's pr-files could never fail: a pull request is a detached merge commit, so no MA key was found and it exited 0",
   "check": {
    "type": "cmd",
-   "run": "python3 scripts/plan_sync.py selftest && grep -q 'a detached HEAD in CI with no key fails closed' scripts/plan_sync.py && grep -q 'a detached HEAD with GITHUB_HEAD_REF set refuses an unclaimed file' scripts/plan_sync.py && grep -q 'pr-files --base HEAD^1' .github/workflows/plan-sync.yml && grep -q 'GITHUB_HEAD_REF' .github/workflows/plan-sync.yml"
-  }
+   "run": "python3 scripts/plan_sync.py selftest && grep -q 'a detached HEAD in CI with no key fails closed' scripts/plan_sync.py && grep -q 'a detached HEAD with GITHUB_HEAD_REF set refuses an unclaimed file' scripts/plan_sync.py && grep -q 'pr-files --base HEAD^1' .github/workflows/ci.yml && grep -q 'GITHUB_HEAD_REF' .github/workflows/ci.yml"
+  },
+  "amended": "MA-305 (2 Nov 2026): the PR job moved from plan-sync.yml into ci.yml; the check reads it there."
  },
  {
   "id": "r1-a2",
