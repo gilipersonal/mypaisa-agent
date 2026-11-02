@@ -1,5 +1,5 @@
 <div data-type="panel-custom" data-icon=":house:" data-color="#FFFAE6"><p><strong>🏠 From the first tap to a team of agents keeping the family&#x27;s money.</strong></p>
-<p>MyPaisa is a private money assistant for one household. You talk to it in a chat, on the iPhone, the iPad or in a browser. It keeps everything the family owns and owes in the UK and India, works out how it has grown (XIRR and CAGR from the dated ledger), forecasts where it is heading from those actual numbers, asks when something is due, and explains what moved. This page follows the household&#x27;s admin from the very first screen to the chatbot at work, and shows what happens behind every tap.</p>
+<p>MyPaisa is a private money assistant for one household. You talk to it in a chat, on the iPhone, the iPad or in a browser. It keeps everything the family owns and owes in the UK and India, works out how it has grown (XIRR and CAGR from the dated ledger), forecasts where it is heading from those actual numbers, tracks the family&#x27;s goals, asks when something is due, and explains what moved and why, with one quiet digest for the admins on Mondays. This page follows the household&#x27;s admin from the very first screen to the chatbot at work, and shows what happens behind every tap.</p>
 <p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/inside-mypaisa.html">inside-mypaisa.html</a> (MA-239), the whole architecture in plain words, live at <a href="https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5">Inside MyPaisa</a>.</p>
 </div>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="b7985b91-44b4-4c38-962a-bb4dc7e4b183" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-hero.png"></div>
@@ -41,10 +41,10 @@
 <p>Nothing is handed over directly. It waits in a tray that retries it until it works.</p>
 <h4>The concierge</h4>
 <p>agent Lambda + Claude</p>
-<p>The only one who talks to you. It understands what you mean and calls the right tools.</p>
+<p>The only one who talks to you. It understands what you mean and calls the right tools. When an admin wants to plan a big decision, it brings in Claude&#x27;s deepest model.</p>
 <h4>The calculator</h4>
 <p>wealth maths, tested</p>
-<p>Net worth, XIRR and CAGR, loan schedules, deposits, the Projection and the Budget forecast. Numbers come only from here.</p>
+<p>Net worth, XIRR and CAGR, loan schedules, deposits, the Projection and the Budget forecast, what a goal needs and what changed and why. Numbers come only from here.</p>
 <h4>The ledger</h4>
 <p>DynamoDB · records, events, audit</p>
 <p>Everything the family owns and owes, with a tamper-evident line for every change.</p>
@@ -53,7 +53,7 @@
 <p>Every file and screenshot you send, kept for good and opened from the audit log.</p>
 <h4>The back office</h4>
 <p>worker · scheduler</p>
-<p>Runs the jobs nobody asked for out loud: prices, reading files, check-ins, overnight sums.</p>
+<p>Runs the jobs nobody asked for out loud: prices, reading files, check-ins, overnight sums, and a nightly look for anything worth telling the admins.</p>
 <h4>The postman</h4>
 <p>sender Lambda</p>
 <p>Delivers every reply to each open screen, or by push when the app is closed.</p>
@@ -61,8 +61,8 @@
 <p>SSE stream on the api host</p>
 <p>Keeps open screens in step: a tap on the phone moves the laptop at once.</p>
 <h4>Claude</h4>
-<p>Anthropic API · Sonnet, Haiku</p>
-<p>The language brain the concierge consults. It lives outside AWS and sees only what it needs.</p>
+<p>Anthropic API · Sonnet, Haiku, Opus</p>
+<p>The language brain the concierge consults, in three sizes: Sonnet talks, Haiku sorts and files, and Opus plans with an admin, only when asked. It lives outside AWS and sees only what it needs.</p>
 <h2>🚶 Nine steps, from the first screen to the chatbot at work</h2>
 <p>Arun is the household&#x27;s owner, and so always an admin. Follow him through the app. Each step plays once as you reach it; press Replay to watch again.</p>
 <section data-type="layout-two-equal"><div data-type="column"><h3>1 · Open the app and sign in</h3>
@@ -186,6 +186,7 @@
 <section data-type="layout-two-equal"><div data-type="column"><h3>9 · Ask anything: the chatbot at work</h3>
 <p><span data-type="status" data-color="blue">Phase 7</span> <span data-type="status" data-color="purple">AI explains</span> <span data-type="status" data-color="green">Code computes</span></p>
 <p>&quot;What if we put £60,000 down on a second flat in June 2028?&quot; MyPaisa answers in plain words with a chart: the household&#x27;s net worth year by year with that deposit, its likely range, and the plan as it stands for comparison. It&#x27;s a what-if, so nothing is saved unless Arun, as admin, chooses to add it to the plan. &quot;Why?&quot; and &quot;Technical&quot; open the reasoning and the assumptions, each with its source.</p>
+<p>The bigger questions work the same way, every figure from the calculator: what a goal needs each month to land on time (&quot;£40,000 for a car deposit by September 2028&quot;), what changed and why (&quot;up £3,100 in October: £1,900 saved, £1,600 from markets, less £450 from the rupee&quot;), and two or three plans side by side in one card. The range on the chart is checked every month against what really happened, so you can see how often it has held. For a big decision, an admin can start <strong>Plan with me</strong>: a slower session on Opus that asks what is missing, compares the options and ends in one plan card. It lays out each option with its figures and leaves the choice to you; each change is saved only on that admin&#x27;s Confirm.</p>
 <p></p>
 <h4>Behind the screen</h4>
 <table><tbody><tr><td data-background="#EAE6FF"><strong>The front desk says &quot;got it&quot; at once</strong> and drops the question in Arun&#x27;s own lane of the in-tray.</td></tr>

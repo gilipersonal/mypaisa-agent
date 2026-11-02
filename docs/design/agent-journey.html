@@ -749,7 +749,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="card lanecard"><h3><i class="dot dm"></i>Member</h3><p>You (an admin) or Asha (a member who views), in the MyPaisa app on an iPhone or an iPad (or a foldable, folded or open), or in the web app in a browser on a laptop.</p></div>
   <div class="card lanecard"><h3><i class="dot dp"></i>App and web app</h3><p>MyPaisa, one app for iPhone and iPad on iOS 26, a React Native shell with a native SwiftUI core: the chat with its cards, composer and shortcut chips; Home, Activity and You; the Admin center for the admins; the Keychain, Face ID, push and the share sheet. It talks to AWS over HTTPS (<code>api.mypaisapp.com</code>), and replies stream to it over Server-Sent Events from the same host. Beside it, the web app at <code>dashboard.mypaisapp.com</code>: a SvelteKit 3 progressive web app with the same chat, the dashboard and the Admin center.</p></div>
   <div class="card lanecard"><h3><i class="dot da"></i>AWS</h3><p>API Gateway (the api's REST API, with the SSE stream as its streaming route on the same host), the api λ, the SQS FIFO updates queue, the agent λ, the SQS work queue and worker λ, the SQS outbox and sender λ, DynamoDB, S3, Cognito, EventBridge Scheduler, Step Functions (phase 13), SNS, CloudWatch.</p></div>
-  <div class="card lanecard"><h3><i class="dot dc"></i>Claude</h3><p>The Anthropic API: Haiku and Sonnet 5.5, server-side web search and fetch, Message Batches.</p></div>
+  <div class="card lanecard"><h3><i class="dot dc"></i>Claude</h3><p>The Anthropic API: Sonnet 5.5 and Haiku 5.5, and Opus 5.5 only for an admin's plan with me session in a loop of its own; server-side web search and fetch, Message Batches.</p></div>
   <div class="card lanecard"><h3><i class="dot de"></i>External data</h3><p>Free sources first, for prices only, to value what the household holds: yfinance, Twelve Data's free tier, ECB FX, issuer pages, FT. For India: AMFI's NAV file from phase 5; from phase 14, mfapi.in, yfinance <code>.NS</code> and <code>.BO</code>, NSE and BSE bhavcopy, the RBI/FBIL rate. Apple and Google, when they vouch for a sign-in; Apple's push service (APNs), when the app is closed.</p></div>
 </div>
 
@@ -2304,10 +2304,10 @@ footer.foot b { color: var(--mp-ink); }
     <div class="ticks" aria-hidden="true"><span style="left:70%">70</span><span style="left:85%">85</span><span style="left:95%">95%</span></div>
   </div>
   <div class="ladder">
-    <div class="rung"><b>&lt; 70%</b><h4>Normal</h4><ul><li>Sonnet for chat and cards</li><li>Web search to look up a holding's details when it is added</li></ul></div>
+    <div class="rung"><b>&lt; 70%</b><h4>Normal</h4><ul><li>Sonnet for chat and cards</li><li>Opus for a plan with me session an admin starts, at most 5% of the ceiling</li><li>Web search to look up a holding's details when it is added</li></ul></div>
     <div class="rung"><b>70%</b><h4>A heads-up</h4><ul><li>One message to the admins: what is spent, on what, and the days left</li><li>Nothing changes</li></ul></div>
-    <div class="rung"><b>85%</b><h4>Savers</h4><ul><li>Web searches are limited to three a day</li><li>Everything else as normal</li></ul></div>
-    <div class="rung"><b>95%</b><h4>Essentials only</h4><ul><li>Chat answers on Haiku</li><li>Alerts and check-ins go out as plain templates with code's numbers</li><li>Reading a factsheet or screenshot still works</li></ul></div>
+    <div class="rung"><b>85%</b><h4>Savers</h4><ul><li>Plan with me waits, and the insight job sends the Monday digest only, its timely nudges waiting</li><li>Web searches are limited to three a day; the overnight judges pause; the tuner's monthly note is held to its figures; a memory note only when asked</li><li>Chat as normal</li></ul></div>
+    <div class="rung"><b>95%</b><h4>Essentials only</h4><ul><li>Chat answers on Haiku</li><li>Alerts, check-ins and the Monday digest go out as plain templates with code's numbers</li><li>Plan with me is off</li><li>Reading a factsheet or screenshot still works</li></ul></div>
     <div class="rung stop"><b>100%</b><h4>Templates only</h4><ul><li>Claude stops until the cycle renews or an admin raises the ceiling</li><li>Every card goes out as its plain template; its buttons, the chips and guided flows work</li><li>A typed message gets one line saying when free text is back</li></ul></div>
   </div>
   <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><span><b>Alerts are never dropped at any step:</b> a template needs no model. Raising the ceiling moves MyPaisa back up the ladder at the next call.</span></p>
@@ -2332,7 +2332,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Per member</dt><dd>No member spends more than 60% of the ceiling; past it, that member's chat runs at the 95% step for the rest of the cycle.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>Per day</dt><dd>No day spends more than three times the cycle's daily average, about $16 at a $160 ceiling; past it, the rest of the day runs at the 95% step.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg>Per run</dt><dd>At most eight model calls in one run; a loop that reaches it stops and says so.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Per agent (phase 13)</dt><dd>Each agent has its share of the ceiling, the concierge 75%; past it, that agent drops to its 95% step and the reserve covers the chat first.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Per agent (phase 13)</dt><dd>Each agent has its share of the ceiling: the concierge 70%, the insight job and plan with me 10% between them (plan with me at most 5%), the grader and tuner 5%; past it, that agent drops to its 95% step and the reserve covers the chat first.</dd></div>
   </dl>
 
   <h3 class="blk">What the members see</h3>
@@ -2347,7 +2347,7 @@ footer.foot b { color: var(--mp-ink); }
             <div class="mcard">
               <h5>Claude spend: 85% of $160</h5>
               <p>$136 spent this cycle, mostly the chat and reading statements. 9 days left.</p>
-              <p>Savers are on: three web searches a day; everything else as normal.</p>
+              <p>Savers are on: plan with me and the week's timely nudges wait, three web searches a day; the chat as normal.</p>
               <small>Move the ceiling in the Admin center, behind the second check.</small>
               <div class="cbs c1"><span class="cb">Open Spend</span></div>
             </div>

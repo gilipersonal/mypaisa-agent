@@ -505,7 +505,7 @@ footer ul{display:grid;gap:5px}
     <div>
       <p class="eyebrow">MyPaisa Agent · technical architecture · v4</p>
       <h1 style="margin-top:12px">From a tap at either door to <em>Claude</em> and back, on AWS, in one trace.</h1>
-      <p class="lede">The household's wealth tracker end to end, driven by the chat: the iOS app and the web app, the AWS services between them, the concierge's tool loop on the Anthropic API, the six agents that keep the records, the budget and the wealth forecast current, and which Claude model each piece uses. Admins add, correct and delete through the chat; every other member views. The forecast comes from the household's actual numbers: XIRR and CAGR from the dated ledger, the Projection and the Budget forecast. Pick a journey below and press play to watch it move through the system.</p>
+      <p class="lede">The household's wealth tracker end to end, driven by the chat: the iOS app and the web app, the AWS services between them, the concierge's tool loop on the Anthropic API, the six agents that keep the records, the budget and the wealth forecast current, and which Claude model each piece uses. Admins add, correct and delete through the chat; every other member views. The forecast comes from the household's actual numbers: XIRR and CAGR from the dated ledger, the Projection and the Budget forecast. Goals and the saving they need, what changed and why, scenarios side by side and a forecast range graded each month all come from code; a nightly insight job in the worker says what matters, quietly, in a Monday digest; and an admin can plan with Opus. Pick a journey below and press play to watch it move through the system.</p>
       <div class="pills">
         <span class="pill amber"><i></i>Design only: nothing is built yet</span>
         <span class="pill"><i></i>AWS <span class="mono">us-east-1</span> · account <span class="mono">545595341442</span></span>
@@ -515,7 +515,7 @@ footer ul{display:grid;gap:5px}
         <div class="stat"><b>2</b><span>doors: iOS app, web app</span></div>
         <div class="stat"><b>5</b><span>core Lambda handlers, one Dockerfile</span></div>
         <div class="stat"><b>3</b><span>SQS queues, a DLQ behind each</span></div>
-        <div class="stat"><b>2</b><span>Claude models</span></div>
+        <div class="stat"><b>3</b><span>Claude models: Sonnet, Haiku, Opus</span></div>
         <div class="stat"><b>6</b><span>agents in the team</span></div>
         <div class="stat"><b>$160</b><span>prod Claude ceiling a month</span></div>
       </div>
@@ -525,11 +525,11 @@ footer ul{display:grid;gap:5px}
       <dl>
         <div class="row"><dt>Doors</dt><dd><b>iOS app</b>: React Native 0.88 shell, SwiftUI core · <b>web app</b>: SvelteKit 3 PWA</dd></div>
         <div class="row"><dt>Edge</dt><dd>API Gateway REST at <b>api.mypaisapp.com</b> · CloudFront at <b>dashboard.mypaisapp.com</b> · Cognito</dd></div>
-        <div class="row"><dt>Runtime</dt><dd>Lambda container image, arm64: <b>api · agent · sender · worker · stream</b></dd></div>
+        <div class="row"><dt>Runtime</dt><dd>Lambda container image, arm64: <b>api · agent · sender · worker · stream</b>; the worker runs the nightly insight job</dd></div>
         <div class="row"><dt>Queues</dt><dd><b>updates.fifo</b> in, <b>outbox.fifo</b> out, <b>work</b> for jobs, each with a DLQ</dd></div>
         <div class="row"><dt>Live</dt><dd>SSE on the api host · Apple push · Web Push</dd></div>
         <div class="row"><dt>State</dt><dd>DynamoDB single table · S3 lake in Parquet, read with DuckDB · S3 documents</dd></div>
-        <div class="row"><dt>Claude</dt><dd><b>Sonnet 5.5 · Haiku 5.5</b> through the Anthropic API, key in SSM</dd></div>
+        <div class="row"><dt>Claude</dt><dd><b>Sonnet 5.5 · Haiku 5.5</b>, and <b>Opus 5.5</b> only for an admin's plan with me, through the Anthropic API, key in SSM</dd></div>
         <div class="row"><dt>Watching</dt><dd>OpenTelemetry on every Lambda → X-Ray, CloudWatch's generative AI views</dd></div>
         <div class="row"><dt>Delivery</dt><dd>Terraform only · GitHub OIDC · CodeBuild arm64 → ECR · prod on approval</dd></div>
       </dl>
@@ -607,7 +607,7 @@ footer ul{display:grid;gap:5px}
     <div class="sec-head">
       <p class="eyebrow">The concierge</p>
       <h2>One Claude tool loop, with code doing every sum</h2>
-      <p>The <code>agent</code> Lambda runs one tool loop on Sonnet 5.5. Before each call it reads the month's spend and lets the ladder choose the model. It sends only the current conversation after a cached prefix, loops through strict tools until it can answer, ask one thing, or show a Confirm card. Only an admin's turn can draft a change. A draft writes nothing: only a Confirm, a check-in's tap or a Save in place commits, through the one write service; a delete also takes the second check.</p>
+      <p>The <code>agent</code> Lambda runs one tool loop on Sonnet 5.5. Before each call it reads the month's spend and lets the ladder choose the model. When an admin starts plan with me, the session runs on Opus 5.5 in a loop of its own, since a loop never changes model. It sends only the current conversation after a cached prefix, loops through strict tools until it can answer, ask one thing, or show a Confirm card. Only an admin's turn can draft a change. A draft writes nothing: only a Confirm, a check-in's tap or a Save in place commits, through the one write service; a delete also takes the second check.</p>
     </div>
     <div class="card loop scroll-x">
       <svg viewBox="0 0 1100 300" role="img" aria-label="The concierge's loop: message, ladder check, context, then Claude and tools in a loop, ending in an answer, a question or a Confirm card">
@@ -676,14 +676,14 @@ footer ul{display:grid;gap:5px}
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow">Model routing</p>
-      <h2>Two Claude models, each where it earns its cost</h2>
-      <p>Sonnet carries the conversation and Haiku files and filters at volume. Both go through one wrapper that meters every call from the API's own <code>usage</code> counts, so the cost on the span is what will be billed. Prompt caching covers the system prompt, the tool list and the card rubrics. Prices are as <code>TECH_STACK.md</code> records them, per million tokens in and out.</p>
+      <h2>Three Claude models, each where it earns its cost</h2>
+      <p>Sonnet carries the conversation, Haiku files and filters at volume, and Opus plans with an admin who asks for it, in a loop of its own. All three go through one wrapper that meters every call from the API's own <code>usage</code> counts, so the cost on the span is what will be billed. Prompt caching covers the system prompt, the tool list and the card rubrics. Prices are as <code>TECH_STACK.md</code> records them, per million tokens in and out.</p>
     </div>
     <div class="models" id="modelcards"></div>
     <div class="ladder">
       <div class="card">
         <h3>The spend ladder</h3>
-        <p class="muted" style="font-size:14px">Drag to see what each step changes. Prod's ceiling is $160 a month, dev's $40, inside the Max 20x plan's $200 credit; the admin moves it in the Admin center behind the second check.</p>
+        <p class="muted" style="font-size:14px">Drag to see what each step changes. What steps down first, at 85%: plan with me waits, the insight job's timely nudges wait, web search is held to three a day; the chat stays on Sonnet until 95%. Prod's ceiling is $160 a month, dev's $40, inside the Max 20x plan's $200 credit; the admin moves it in the Admin center behind the second check.</p>
         <div class="lad-read"><b id="ladamt">$64</b><span id="ladof">of $160 spent this cycle</span><span class="lad-step" id="ladstep">Normal</span></div>
         <div class="slider">
           <label for="spend" class="muted" style="font-size:12px;position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Share of the ceiling spent</label>
@@ -704,7 +704,7 @@ footer ul{display:grid;gap:5px}
         </div>
         <div class="shares">
           <h3 style="font-size:15px;margin-top:18px">Each agent's share of the ceiling</h3>
-          <div class="sharebar" id="sharebar" role="img" aria-label="Budget shares: concierge 75%, grader and tuner 10%, admin desk 5%, data steward and ops warden 5%, reserve 5%"></div>
+          <div class="sharebar" id="sharebar" role="img" aria-label="Budget shares: concierge 70%, the insight job and plan with me 10%, grader and tuner 5%, admin desk 5%, data steward and ops warden 5%, reserve 5%"></div>
           <div class="sharekey" id="sharekey"></div>
         </div>
       </div>
@@ -795,8 +795,8 @@ footer ul{display:grid;gap:5px}
       <h2>Enforced in code, not in the prompt</h2>
     </div>
     <div class="rules">
-      <div class="card rule"><span class="ri"><svg><use href="#g-calc"/></svg></span><h3>Claude never produces a number</h3><p>Every figure comes from tested code: XIRR, CAGR, loan schedules, the Projection and the Budget forecast. Claude chooses what to say and how.</p><span class="where">§1 rule 1 · wealth/</span></div>
-      <div class="card rule"><span class="ri"><svg><use href="#g-noentry"/></svg></span><h3>The app cannot trade</h3><p>No broker login and no orders, and nothing says buy or sell. No tool can trade, spend beyond a search, erase data or message anyone but the member it answers.</p><span class="where">§1 rule 2 · §7 guardrails</span></div>
+      <div class="card rule"><span class="ri"><svg><use href="#g-calc"/></svg></span><h3>Claude never produces a number</h3><p>Every figure comes from tested code: XIRR, CAGR, loan schedules, the Projection and the Budget forecast, the goal solver, the attribution and the fan. Claude chooses what to say and how; the figure check holds every number, and the claim check every cause, to what a tool returned.</p><span class="where">§1 rule 1 · §6.2 · wealth/</span></div>
+      <div class="card rule"><span class="ri"><svg><use href="#g-noentry"/></svg></span><h3>The app cannot trade</h3><p>No broker login and no orders, and nothing says buy or sell. A nudge, a digest or a plan card states facts and options, never "you should". No tool can trade, spend beyond a search, erase data or message anyone but the member it answers.</p><span class="where">§1 rule 2 · §7 guardrails</span></div>
       <div class="card rule"><span class="ri"><svg><use href="#g-check"/></svg></span><h3>A policy gate before every tool call</h3><p>Code checks the agent's manifest, the member's role and household, the arguments (an amount stays the member's own words) and the run's caps, and fails closed. Third-party text is data only; a chat that has read it loses its outbound tools, and the server tools run in a call with no household figure.</p><span class="where">§21.2 · MA-247, MA-253</span></div>
       <div class="card rule"><span class="ri"><svg><use href="#g-eye"/></svg></span><h3>Tested on change, watched live</h3><p>T0 replays on every pull request; T1 live, three trials, when a prompt, tool, guard, loop, routing, kind or the SDK changes; T2 on a model change before release. Every live run checked by code; flagged runs and 10% judged overnight; judges calibrated by the admin. <a href="https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT">The explainer</a>.</p><span class="where">§21.3 to §21.5 · MA-246, MA-250 to MA-255</span></div>
       <div class="card rule"><span class="ri"><svg><use href="#g-check"/></svg></span><h3>Only admins write, through one service</h3><p>Several admins; the owner grants or takes back the role in the chat. An admin adds and deletes only in the chat, with a card and a Confirm (a delete also takes the second check and marks the record <code>deleted</code>, restorable); a figure is corrected in the chat or in place with Save. Every other member views only. Each write validates against the kind and writes the audit row.</p><span class="where">§4.10 · PATCH /v1/records/{id} · MA-308, MA-309</span></div>
@@ -878,7 +878,7 @@ var N = {
          facts:["Consumer: agent","3 tries in about a minute","Member told it was kept"]},
   agent:{x:610, y:310, icon:"lambda", cat:"compute", big:1, name:"agent λ", sub:"the concierge",
          info:"The one Claude tool loop that talks to members. It reads the spend meter before every call, lets the ladder pick the model, and, for an admin only, proposes an add, a correction or a delete with a Confirm card.",
-         facts:["Sonnet 5.5, Haiku for small turns","At most 8 model calls a run","Strict tools, append-only history"]},
+         facts:["Sonnet 5.5, Haiku for small turns","Opus 5.5 only for plan with me","At most 8 model calls a run","Strict tools, append-only history"]},
   cf:   {x:250, y:430, icon:"cloudfront", cat:"net", name:"CloudFront", sub:"S3 site · PWA",
          info:"CloudFront over the S3 site: the web app, the iOS app's apple-app-site-association file and the invite page. It holds no data.",
          facts:["dashboard.mypaisapp.com","Service worker caches the shell"]},
@@ -898,11 +898,11 @@ var N = {
          info:"EventBridge Scheduler, every schedule in Europe/London, each with its own retry policy and dead-letter queue. The tick is the root of the job's trace.",
          facts:["Nightly prices, the 1st's month close","Daily check-ins, nightly views","Dev's schedules off by default"]},
   work: {x:490, y:550, icon:"sqs", cat:"int", name:"work queue", sub:"background jobs",
-         info:"Background jobs: each instrument's prices, each document read, check-ins, the month close, the nightly views and Projection runs.",
+         info:"Background jobs: each instrument's prices, each document read, check-ins, the month close, the nightly views, Projection runs and the insight job.",
          facts:["5 tries, 30 s → 30 min backoff","Concurrency keeps free APIs in limits"]},
   wrkr: {x:610, y:550, icon:"lambda", cat:"compute", name:"worker λ", sub:"each job by type",
-         info:"The same image, running each job by its type. A finished job can queue the next: prices, then the nightly views.",
-         facts:["Haiku through Batches","Code decides every check-in","A RunRecord per run"]},
+         info:"The same image, running each job by its type. A finished job can queue the next: prices, then the nightly views, the Projection run and the insight job.",
+         facts:["Haiku through Batches","Code decides every check-in","Insight job: code finds, Haiku and Sonnet word","A RunRecord per run"]},
   sns:  {x:250, y:670, icon:"sns", cat:"int", name:"SNS", sub:"admin-alerts",
          info:"mypaisa-<env>-admin-alerts: every alarm goes to the admin's email from phase 0.",
          facts:["One message per incident, not ten"]},
@@ -1306,11 +1306,12 @@ if (!RM && "IntersectionObserver" in window){
 
 /* ---------------- tools ---------------- */
 var TOOLS = [
-  {h:"Read the records and views", c:"#C925D1", p:"Look up rather than ask.", l:["get_portfolio","get_holding(id)","get_networth(view)","get_commitments(window)","get_budget(month)","get_audit(filter)","list_kinds","describe_kind","chart_series(id, days)","query_ledger","query_ledger_sql","get_spend"]},
-  {h:"Compute, never saved", c:"#1D9A5B", p:"Typed overrides through code.", l:["run_projection(overrides)"]},
-  {h:"Draft and propose", c:"#E7157B", p:"Admins only, enforced in code. Writes nothing until Confirm; the draft is hashed; a delete also takes the second check.", l:["draft_record(kind, fields)","draft_event(record, type, fields)","propose_change(entity, patch)"]},
+  {h:"Read the records and views", c:"#C925D1", p:"Look up rather than ask. get_wealth is one read for what five did (get_portfolio, get_holding, get_history, chart_series, get_networth), merged in phase 11 (MA-321); until then the five stand.", l:["get_wealth(scope, view, period)","get_commitments(window)","get_budget(month)","get_audit(filter)","list_kinds","describe_kind","query_ledger","query_ledger_sql","get_spend"]},
+  {h:"Plan and explain, from code", c:"#2453C9", p:"Read only. Goals, what changed and why, dates and stored runs; a reply that explains a change also passes the claim check.", l:["solve_goal(goal or target, by, levers[])","explain_change(scope, from, to)","get_calendar(window)","get_projection(run?)","get_returns(scope, from, to)"]},
+  {h:"What-ifs, never saved", c:"#1D9A5B", p:"Typed overrides through code; up to four scenarios side by side in one call, on one seed.", l:["run_projection(overrides)","compare_scenarios(scenarios[≤4])"]},
+  {h:"Draft and propose", c:"#E7157B", p:"Admins only, enforced in code. Writes nothing until Confirm; the draft is hashed; a delete also takes the second check. A goal or a scenario is saved through propose_change.", l:["draft_record(kind, fields)","draft_event(record, type, fields)","propose_change(entity, patch)"]},
   {h:"Ask, read, search", c:"#D97757", p:"Server tools are Anthropic's, with citations.", l:["ask_user(question, options[])","extract_document(s3_key, schema)","web_search","web_fetch"]},
-  {h:"Kinds, plan and budget", c:"#DD344C", p:"Admins only, enforced in code; propose_kind takes the second check, plan and budget changes take Confirm.", l:["propose_kind","propose_plan_item","rearrange_budget"]}
+  {h:"Kinds, plan and budget", c:"#DD344C", p:"Admins only, enforced in code; propose_kind takes the second check, plan and budget changes take Confirm. A saved scenario becomes plan items here, with one Confirm.", l:["propose_kind","propose_plan_item","rearrange_budget"]}
 ];
 var toolsEl = document.getElementById("tools");
 TOOLS.forEach(function(t){
@@ -1324,14 +1325,14 @@ if (RM){ var lp = document.querySelector("#loop svg"); if (lp && lp.pauseAnimati
 var KIND = {loop:"var(--st-hot)", code:"var(--st-amber)", none:"var(--st-ink-3)"};
 var KIND_PAGE = {loop:"var(--coral)", code:"var(--amber)", none:"var(--ink-3)"};
 var AG = [
-  {id:"con", name:"Concierge", icon:"chat", kind:"loop", type:"Conversational tool-loop agent · the agent Lambda", brain:["sonnet","haiku"], x:160, y:96, job:"Talks to every member in the chat and answers anything about the household's wealth; routes an admin's instructions to the admin desk.", own:"Answers and reads for everyone; for an admin, proposes an add, a correction or a delete with a Confirm card.", ask:"Nothing: an admin confirms each change on its card.", share:75},
+  {id:"con", name:"Concierge", icon:"chat", kind:"loop", type:"Conversational tool-loop agent · the agent Lambda", brain:["sonnet","haiku","opus"], x:160, y:96, job:"Talks to every member in the chat and answers anything about the household's wealth, goals, scenarios and what changed and why; routes an admin's instructions to the admin desk; for an admin who starts one, a plan with me session on Opus in a loop of its own.", own:"Answers and reads for everyone; for an admin, proposes an add, a correction or a delete with a Confirm card.", ask:"Nothing: an admin confirms each change on its card.", share:70, shareNote:"70% of the ceiling; plan with me and the insight job have their own 10%"},
   {id:"desk", name:"Admin desk", icon:"person", kind:"code", type:"Approval router, the human in the loop", brain:["code","haiku"], x:550, y:88, job:"The one channel between the agents and the admins, in their chat and the Admin center.", own:"Queues, batches into one daily digest, reminds, expires.", ask:"It is the asking: approvals take the second check.", share:5},
   {id:"bud", name:"Budget keeper", icon:"meter", kind:"none", type:"Spend governor", brain:["code"], x:940, y:96, job:"The meter, the ladder and the guards on every model call.", own:"Steps down the ladder and back up.", ask:"Ceilings and shares are the admins'.", share:0},
   {id:"stew", name:"Data steward", icon:"pipe", kind:"code", type:"Data reliability agent", brain:["code","haiku"], x:100, y:240, job:"Keeps prices flowing from free sources, only to value holdings; watches freshness, gaps, disagreement and free quotas.", own:"Fails over within the chain, retries, fills gaps, labels stale data.", ask:"A new or reordered source, any paid feed, a source's terms.", share:5, shareNote:"5%, shared with the ops warden"},
   {id:"ops", name:"Ops warden", icon:"wrench", kind:"code", type:"Self-healing operator", brain:["code","haiku"], x:1000, y:240, job:"Runs the daily pipeline and repairs it; finds the cause when a dead-letter queue fills.", own:"Retries, catches up, replays at most three times, rolls back to the last good version.", ask:"Anything it cannot fix: an incident with what was tried.", share:5, shareNote:"5%, shared with the data steward"},
-  {id:"grade", name:"Grader and tuner", icon:"target", kind:"code", type:"The household's forecasts, graded against its actuals", brain:["code","sonnet"], x:820, y:395, job:"Grades each closed month's Budget forecast, and once a year the Projection, against what happened; proposes inputs from the household's own history.", own:"Grades each closed month and writes the month's review.", ask:"Every household assumption it proposes, such as a category's run rate or a salary's growth.", share:10}
+  {id:"grade", name:"Grader and tuner", icon:"target", kind:"code", type:"The household's forecasts, graded against its actuals", brain:["code","sonnet"], x:820, y:395, job:"Grades each closed month's Budget forecast, the fan's p10 to p90 band and each goal's glide path, and once a year the Projection, against what happened; proposes inputs from the household's own history.", own:"Grades each closed month and writes the tuner's monthly note, with how often the band has held.", ask:"Every household assumption it proposes, such as a category's run rate, a salary's growth or a prior.", share:5}
 ];
-var BRAIN = {sonnet:["sonnet","Sonnet 5.5"], haiku:["haiku","Haiku 5.5"], "haiku-batch":["haiku","Haiku 5.5 · Batches"], code:["code","Code"]};
+var BRAIN = {opus:["opus","Opus 5.5"], sonnet:["sonnet","Sonnet 5.5"], haiku:["haiku","Haiku 5.5"], "haiku-batch":["haiku","Haiku 5.5 · Batches"], code:["code","Code"]};
 var bus = document.getElementById("bus");
 var BUS = {x1:400, x2:700, y1:212, y2:268};
 function busPoint(a){
@@ -1422,8 +1423,9 @@ AG.forEach(function(a){
 
 /* ---------------- models ---------------- */
 var MC = [
-  {k:"sonnet", name:"Sonnet 5.5", id:"claude-sonnet-5-5", role:"Carries the conversation.", uses:["The concierge's tool loop: the chat, its cards and guided flows, about 1.5p to 3p a message","Reading a factsheet or a screenshot sent in the chat, with citations","Web search and fetch, only to look up a holding's public details when it is added","From phase 9: the grader and tuner's monthly note on each closed month"], price:"$2 in · $10 out per million tokens"},
-  {k:"haiku", name:"Haiku 5.5", id:"claude-haiku-5-5", role:"Files and filters at volume.", uses:["Statement merchants the memory has not seen, through Message Batches at half price","A one-line note on each closed conversation; the alerts' repeat filter; small chat turns","Phase 13: the data steward's requests, the ops warden's incident summaries, the admin desk's drafts","Chat answers at the 95% step"], price:"$0.10 in · $0.50 out per million tokens"}
+  {k:"sonnet", name:"Sonnet 5.5", id:"claude-sonnet-5-5", role:"Carries the conversation.", uses:["The concierge's tool loop: the chat, its cards and guided flows, about 1.5p to 3p a message","Reading a factsheet or a screenshot sent in the chat, with citations","Web search and fetch, only to look up a holding's public details when it is added","The words over the goal solver, the scenario workspace and what changed and why, every figure and cause from code","From phase 9: the tuner's monthly note; from phase 10: the insight job's Monday digest"], price:"$2 in · $10 out per million tokens"},
+  {k:"haiku", name:"Haiku 5.5", id:"claude-haiku-5-5", role:"Files and filters at volume.", uses:["Statement merchants the memory has not seen, through Message Batches at half price","A one-line note on each closed conversation; the alerts' repeat filter; small chat turns","From phase 10: the insight job's one-line findings","Phase 13: the data steward's requests, the ops warden's incident summaries, the admin desk's drafts","Chat answers at the 95% step"], price:"$0.10 in · $0.50 out per million tokens"},
+  {k:"opus", name:"Opus 5.5", id:"claude-opus-5-5", role:"Plans with an admin, only when asked.", uses:["Plan with me, from phase 11: an admin taps it or types /plan for a big decision, such as retirement, education or a house","Its own loop and cached prefix, at high effort with adaptive thinking; nothing starts it on a schedule","Read and planning tools only: solves the goals, compares up to four scenarios, reads the sensitivity table, and ends in one plan card, each change on the admin's Confirm","At most 5% of prod's ceiling (about $8), about $0.40 a session; it waits from 85% and is off at 95%"], price:"$4 in · $20 out per million tokens"}
 ];
 var mcEl = document.getElementById("modelcards");
 MC.forEach(function(m){
@@ -1434,6 +1436,9 @@ MC.forEach(function(m){
 var JOBS = [
   ["Chat answers", function(p){ return p>=100?["tpl","One-line reply, templates"]:p>=95?["haiku","Haiku 5.5"]:["sonnet","Sonnet 5.5"]; }],
   ["Alert wording", function(p){ return p>=95?["tpl","Plain template"]:["sonnet","Sonnet 5.5"]; }],
+  ["Plan with me, admin-started", function(p){ return p>=95?["off","Off"]:p>=85?["tpl","Waits"]:["opus","Opus 5.5"]; }],
+  ["The Monday digest", function(p){ return p>=95?["tpl","Plain template"]:["sonnet","Sonnet 5.5"]; }],
+  ["Timely nudges", function(p){ return p>=85?["tpl","Wait for Monday"]:["haiku","Haiku 5.5"]; }],
   ["Check-in cards", function(p){ return ["tpl","Template, no model"]; }],
   ["Reading a factsheet or screenshot", function(p){ return p>=100?["off","Stopped"]:["ok","Works"]; }],
   ["Web searches for a new holding's details", function(p){ return p>=100?["off","Stopped"]:p>=95?["off","Essentials only"]:p>=85?["tpl","Three a day"]:["ok","When one is added"]; }],
@@ -1441,8 +1446,8 @@ var JOBS = [
 ];
 var STEPS = [
   [100,"s100","Claude stops","Claude stops until the cycle renews or an admin raises the ceiling. Every card goes out as its plain template; buttons and guided flows work as before. Alerts are never dropped: a template needs no model."],
-  [95,"s95","Essentials only","Chat answers on Haiku; alert wording goes out as its plain template with code's numbers (check-ins are templates at every step). Reading a factsheet or screenshot still works. The admins are told."],
-  [85,"s85","Savers","Web searches are limited to three a day, and a memory note is written only when a member asks MyPaisa to remember. The admins are told."],
+  [95,"s95","Essentials only","Chat answers on Haiku; alert wording and the Monday digest go out as their plain templates with code's numbers (check-ins are templates at every step); plan with me is off. Reading a factsheet or screenshot still works; memory notes are read and none is written. The admins are told."],
+  [85,"s85","Savers","Plan with me waits, and the insight job sends the Monday digest only, its timely nudges waiting. Web searches are limited to three a day, the overnight judges pause, the tuner's monthly note is held to its figures, and a memory note is written only when a member asks MyPaisa to remember. The admins are told."],
   [70,"s70","Admins told","One message to the admins: what is spent, on what, and the days left. Nothing changes."],
   [0,"s0","Normal","Every job runs on its usual model."]
 ];
@@ -1456,7 +1461,7 @@ function ladder(){
   routes.innerHTML = JOBS.map(function(j){ var r = j[1](p); return '<div><span>'+esc(j[0])+'</span><span class="chip '+r[0]+'">'+((r[0]==="opus"||r[0]==="sonnet"||r[0]==="haiku")?CHIPSVG:"")+esc(r[1])+'</span></div>'; }).join("");
 }
 spend.addEventListener("input", ladder); ladder();
-var SHARES = [["Concierge",75,"#FF6B4F"],["Grader and tuner",10,"#2453C9"],["Admin desk",5,"#E7157B"],["Data steward and ops warden",5,"#ED7100"],["Reserve, the chat first",5,"#9AA3B2"]];
+var SHARES = [["Concierge",70,"#FF6B4F"],["Insight job and plan with me",10,"#6B3FB8"],["Grader and tuner",5,"#2453C9"],["Admin desk",5,"#E7157B"],["Data steward and ops warden",5,"#ED7100"],["Reserve, the chat first",5,"#9AA3B2"]];
 var sb = document.getElementById("sharebar"), sk = document.getElementById("sharekey");
 SHARES.forEach(function(s){
   var i = h("i"); i.style.width = s[1]+"%"; i.style.background = s[2]; i.title = s[0]+": "+s[1]+"%"; sb.appendChild(i);

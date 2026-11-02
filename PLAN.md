@@ -385,8 +385,9 @@ Claude's:
   hop (a question, a factsheet, a check-in, the nightly valuation, a delete,
   a failure and its replay, since MA-307), traces one message from the door
   to the model, and shows the six agents, the kind of agent each is and
-  which of Sonnet and Haiku it uses, with the spend ladder; its source is
-  `docs/design/architecture-v4.html`.
+  which of Sonnet, Haiku and Opus it uses (Opus only for an admin's plan
+  with me, since MA-323), with the spend ladder and each agent's share; its
+  source is `docs/design/architecture-v4.html`.
 - **Guardrails and evals, recorded (MA-245, `ARCHITECTURE.md` §21):**
   guarded in code before the prompt, tested on every change and never on a
   calendar, every live run checked by code and a few judged overnight, the
@@ -1592,8 +1593,11 @@ and see the Budget forecast and the fan move; you accept a rearrangement and
 see this month's budget change; you correct a plan item and an assumption in
 place; each with its audit row.
 
-**Cost:** the engine is code; only the assumptions, the what-ifs and the
-narration call Claude, inside the ceiling; nothing more in AWS.
+**Cost:** the engine, the goal solver, the scenario workspace and the fan
+are code; only the assumptions, the what-ifs, the narration and the words
+over goals and scenarios call Claude, inside the ceiling (goals, scenarios
+and what changed: about £2.70 a month on the standard setup,
+`ARCHITECTURE.md` §14); nothing more in AWS.
 
 ---
 
@@ -1836,7 +1840,8 @@ Charts `AXChartDescriptor` summary and Technical glossary tap (MA-273).
 **Exit:** two weeks of alerts in which none fires twice in its cooldown; a
 layman reads the top of a card and understands it without the bottom.
 
-**Cost:** about £3 a month.
+**Cost:** about £3.60 a month, the insight job's lines and its Monday
+digest about £0.60 of it (`ARCHITECTURE.md` §14).
 
 ---
 
@@ -1883,7 +1888,9 @@ iPhone and iPad (MA-273).
 **Exit:** ten real questions about the household's wealth answered from its
 records, each figure with its working under Technical.
 
-**Cost:** about £5 a month cumulative.
+**Cost:** about £10 a month cumulative, plan with me on Opus about £3.85 of
+it on the standard setup and never more than its 5% of the ceiling
+(`ARCHITECTURE.md` §7.2, §14).
 
 ---
 

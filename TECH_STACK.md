@@ -31,7 +31,7 @@ exist only to value holdings. §2 holds the app's stack and §3 the web app's.
 | Packaging | `uv`, `pyproject.toml`, `uv.lock` | Fast, reproducible installs in CI and in the image |
 | REST API and models | **FastAPI** and **pydantic v2**, with `openapi-typescript` generating `web/src/lib/api-types.d.ts` from FastAPI's OpenAPI 3.1 schema (MA-265, MA-266) | Tool inputs, the chat API's requests, every kind spec, record and event, and every card, whose versioned JSON Schema and OpenAPI 3.1 endpoint contracts the app's and the web app's TypeScript types are generated from (MA-174, MA-266), with `schema_version` |
 | Single-table DynamoDB repository | Thin typed repository in `src/mypaisa_agent/registry/` on **pydantic v2** + **boto3** (`TypeSerializer`/`TypeDeserializer`, `Decimal` at the wire boundary) + **mypy-boto3-dynamodb** (`boto3-stubs[dynamodb]`), with a `TransactWriteUnit` builder that enforces the hash-chained `AuditEvent` (MA-27, MA-28, MA-265) | Polymorphic single-table `Query` (zero `Scan`), 100% strict `pyright` typing, zero ORM overhead, and no Amazon DocumentDB (DocumentDB costs £75 to £110 a month across dev and prod vs £0 in DynamoDB's free tier; `docs/RESEARCH.md` §6.2) |
-| Agent loop and orchestration | Thin custom Python tool loop directly on the `anthropic` SDK + pydantic v2 (`@tool` with typed `RunContext`, inspired by PydanticAI), `PolicyGate` and `FigureCheck` in code, `PendingAction` pause/resume in DynamoDB, every agent's prompt caching (one frozen order, a lifetime per route, the request's automatic caching for the tail) and Claude's memory tool on MyPaisa's own `MemoryNote` store from the same runner (`ARCHITECTURE.md` §22, MA-285), and AWS Step Functions + EventBridge in phase 13 (MA-265) | Zero abstraction tax over 1-hour prompt caching, Claude 5.5 thinking block signatures, `strict: true` schemas, isolated server-side web search, and Message Batches, with fastest Lambda cold start (`docs/RESEARCH.md` §6.3 compares six frameworks) |
+| Agent loop and orchestration | Thin custom Python tool loop directly on the `anthropic` SDK + pydantic v2 (`@tool` with typed `RunContext`, inspired by PydanticAI), `PolicyGate`, `FigureCheck` and the claim check beside it (MA-315) in code, `PendingAction` pause/resume in DynamoDB, Sonnet 5.5 and Haiku 5.5 in the concierge's loop and Opus 5.5 only in an admin's plan with me loop of its own (`ARCHITECTURE.md` §7.2, MA-322), every agent's prompt caching (one frozen order, a lifetime per route, the request's automatic caching for the tail) and Claude's memory tool on MyPaisa's own `MemoryNote` store from the same runner (`ARCHITECTURE.md` §22, MA-285), and AWS Step Functions + EventBridge in phase 13 (MA-265) | Zero abstraction tax over 1-hour prompt caching, Claude 5.5 thinking block signatures, `strict: true` schemas, isolated server-side web search, and Message Batches, with fastest Lambda cold start (`docs/RESEARCH.md` §6.3 compares six frameworks) |
 | Data maths | pandas, numpy, pyarrow | The price inputs cleaned before valuing (MA-45); the wealth maths (accrual, loan schedules, XIRR, the Projection) ported from the old wealth tracker's tested TypeScript, its cases kept as golden fixtures (MA-105); parquet history in S3 |
 | Calendars and FX | `exchange_calendars`; ECB reference rates for USD, EUR and INR | XLON, XETR, XNYS sessions and holidays; the clock-change weeks; GBP, INR, USD or EUR per member |
 | HTTP | httpx, with HTTP/2 (`httpx[http2]`) for Apple push | ECB, EODHD, Twelve Data, product pages; APNs from the `sender` |
@@ -175,19 +175,28 @@ actually runs.
 | The stream (SSE) | £0 | £0 | £0 | £0 | Each open stream is a running Lambda: about $0.012 per open hour at 256 MB. One leader tab per browser, the stream closed 60 s after a page is hidden, push instead of a stream when a door is closed, and reserved concurrency of about 20 keep it small: even at about 3 open hours a day for each of 4 members (about 324,000 GB-seconds a month, of the 400,000 free that it shares with the other functions) it stays inside the free tier. Its idle cost is measured in the phase 1 spike (MA-195) and confirmed with Arun before any apply |
 | S3, CloudWatch Logs, ECR | £0.10 | £0.10 | £0.20 | £0.20 | A few hundred MB; ECR $0.10 per GB |
 | The web app (S3, CloudFront), Route 53 queries, prod's point-in-time recovery and versioning, and the watching: X-Ray with Transaction Search, Application Signals, the metrics and alarms past the free ten (`ARCHITECTURE.md` §9.9) | £0.30 | £2.50 | £2.90 | £3 | Three dashboards, ten metrics and ten alarms are free; spans at $0.35 per GB and Application Signals at $1.50 per million signals are pennies at this volume; dev is measured first |
-| Claude: alerts, chat, cards, the agent team | £1–3 | £7 | £12 | £21 | dev runs the schedule only while testing; tests use recordings |
+| Claude: chat, cards, statements, alert wording, the tuner's monthly note | £1–3 | £7 | £12 | £21 | dev runs the schedule only while testing; tests use recordings |
+| Claude: goals, scenarios and what changed | £0 | £1 | £2.70 | £3 | Sonnet's words over the goal solver, the scenario workspace and the attribution (`ARCHITECTURE.md` §6.1 to §6.3) |
+| Claude: the insight job and tax-year dates | £0 | £0.30 | £0.60 | £0.80 | Haiku's one-line findings and Sonnet's Monday digest (`ARCHITECTURE.md` §10.1, §6.5) |
+| Claude: plan with me | £0 | £0 | £3.85 | £6.15 | Opus 5.5, admin-started, at most its 5% share of prod's ceiling, about $0.40 a session (`ARCHITECTURE.md` §7.2) |
 | Claude: factsheet and screenshot extraction | £0.20 | £0.20 | £0.20 | £0.20 | A few documents a month |
-| Claude: web search (~60 a month) | £0 | £0.50 | £0.50 | £1 | $10 per 1,000 searches |
+| Claude: web search (under 10 a month) | £0 | £0.20 | £0.25 | £0.50 | Only when a holding is added; $10 per 1,000 searches, with the results read as input |
 | Twelve Data | £0 | £0 | £0 | £0 | Free tier; the same free key in both environments' SSM paths |
 | EODHD | £0 | £0 | £20 | £20 | Historian at £19.99 (£16.66 paid yearly); one subscription, shared; dev reads the same feed |
 | Domains and certificates | £0 | £0 | £0 | £0 | The zone and the wildcard certificate already exist; four records; ACM is free |
-| **Total** | **£2–4** | **£10** | **£36** | **£46** | |
+| **Total** | **£2–4** | **£11** | **£43** | **£55** | The Claude lines are `ARCHITECTURE.md` §14's for one member; each further member adds £2 to £5 of chat |
 
-Both environments together: about **£10–12 a month lean, £36–38 standard**.
+Both environments together: about **£13–15 a month lean, £45–47 standard**.
+With the Apple Developer Program's £6.35 a month and `ARCHITECTURE.md` §14's
+AWS line, one member comes to about £18 lean, £49 standard and £62 full, and
+two members on the standard setup to about £52.
 The agents' Claude allowance is the Max 20x plan's $200 monthly credit (about
 £154) across both environments ($160 prod, $40 dev by default), each ceiling
-moved by an admin; expected use for two members is about $21 to $36
-(`ARCHITECTURE.md` §14.1). Not in the table: the live evals' own workspace,
+moved by an admin; expected use for two members is about $30 on the
+standard setup and $48 on the full one (`ARCHITECTURE.md` §14.1), shared
+70% to the concierge, 10% to the insight job and plan with me (plan with me
+at most 5%), and 5% each to the grader and tuner, the admin desk, the data
+steward with the ops warden, and the reserve (`ARCHITECTURE.md` §18.6). Not in the table: the live evals' own workspace,
 up to $30 (about £23) in a month of prompt or tool changes and nothing in a
 quiet one, from the same credit, and the overnight judges, under $1 inside
 prod's ceiling (`ARCHITECTURE.md` §21.7). AWS and other services have their own cap, £50 by

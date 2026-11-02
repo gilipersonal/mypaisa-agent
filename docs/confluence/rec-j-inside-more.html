@@ -79,7 +79,7 @@
 <p>An agent acts alone only within the limits its settings allow; often that limit is zero.</p>
 <p>The agents never call each other directly. They post notes on a shared board (an event bus) and leave work in the ledger; a daily pipeline runs them in order.</p>
 <h4>Concierge</h4>
-<p>Sonnet · Haiku for small turns</p>
+<p>Sonnet · Haiku for small turns · Opus when an admin plans</p>
 <p>Its job</p>
 <p>Talks to every member in the chat; passes the admin&#x27;s instructions to the admin desk.</p>
 <p>On its own</p>
@@ -97,9 +97,9 @@
 <p>A new source, or anything that costs money.</p>
 <p>Phase 13</p>
 <h4>Grader and tuner</h4>
-<p>Code · Sonnet writes the reviews</p>
+<p>Code · Sonnet writes the monthly note</p>
 <p>Its job</p>
-<p>Grades each month&#x27;s Budget forecast, and each year&#x27;s Projection, against what really happened.</p>
+<p>Grades each month&#x27;s Budget forecast, its range and each goal&#x27;s progress, and each year&#x27;s Projection, against what really happened.</p>
 <p>On its own</p>
 <p>Grades each closed month, and works out better estimates from the household&#x27;s own history.</p>
 <p>Asks</p>
@@ -157,11 +157,11 @@
 <p>Before any tool runs, a small piece of code checks it is allowed for this agent and this person, that its details make sense and that the run is inside its limits; if in doubt, the answer is no. What a statement, a factsheet or a web page says is read as data, never as an instruction, and a chat that has read one loses every tool that could send something out. Every figure in a reply must come from a tool or from your own words.</p>
 <p>The tests run on every change, never on a timer: recorded ones always, live ones when the AI&#x27;s instructions or tools change, and a new Claude model is tested five times over before it answers you. Every live chat is checked by code, and a few are read overnight by a judge that you calibrate each month. The whole story, in plain words or technical detail: <a href="https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT">MyPaisa Guardrails and Evals</a>.</p>
 <h4>A spending ceiling for the AI, with a ladder</h4>
-<p>An admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan&#x27;s monthly credit. Two members are expected to use about $21 of it. Every call&#x27;s cost is added to a meter, and the meter is read before every call.</p>
-<p>70% 85% 95% 100% Expected: about $21 a month</p>
+<p>An admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan&#x27;s monthly credit. Two members are expected to use about $30 of it, or about $48 on the fullest setup. Every call&#x27;s cost is added to a meter, and the meter is read before every call.</p>
+<p>70% 85% 95% 100% Expected: about $30 a month</p>
 <p><strong>70%</strong>A message to the admins. Nothing changes.</p>
-<p><strong>85%</strong>Savers: shorter reviews and fewer web searches.</p>
-<p><strong>95%</strong>Essentials: chat on the smallest model; alerts as plain templates.</p>
+<p><strong>85%</strong>Savers: plan with me and the week&#x27;s extra nudges wait, the Monday digest still comes; fewer web searches.</p>
+<p><strong>95%</strong>Essentials: chat on the smallest model; alerts and the digest as plain templates; plan with me off.</p>
 <p><strong>100%</strong>The AI stops until the month renews or the ceiling is raised. Buttons, check-ins and alerts still work, since they need no AI.</p>
 <h4>Nothing is lost, everything is retried</h4>
 <p>Every hand-over goes through a tray (a queue). If Apple&#x27;s push service, Claude or a price source has a bad minute, the work waits and tries again, a little later each time. After too many tries it goes into safe keeping for 14 days, with a copy kept for good, and the admin gets an alert with a Replay button. Every part remembers what it has done, so a retry never does anything twice.</p>
@@ -207,7 +207,7 @@
 <h4>Written down, checked, approved</h4>
 <p>A change<em>→</em>GitHub<em>→</em>Checks<em>→</em>Dev<em>→</em>Arun approves<em>→</em>Prod</p>
 <p>Infrastructure is described in Terraform files and changed only through them; nobody clicks around the AWS console. Prod is updated only by the release workflow.</p>
-<p>≈ £46a month for two members on the standard setup, about £6 of it Apple&#x27;s developer membership. The AI is paid from the plan&#x27;s monthly credit.</p>
+<p>≈ £52a month for two members on the standard setup, about £6 of it Apple&#x27;s developer membership. The AI is paid from the plan&#x27;s monthly credit.</p>
 <h2>☀️ Mostly quiet, on time, and there when you ask</h2>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="b1263767-aa4e-4186-9df4-75211aecf954" data-collection="contentId-1736725" data-alt="rec-j-inside-more--inside-day.png"></div>
 <figcaption>A day with MyPaisa: mostly quiet, on time, and there when you ask (Inside MyPaisa)</figcaption></figure>
@@ -215,6 +215,7 @@
 <p>00:0006:0012:0018:0024:00</p>
 <p>Overnight<strong>The sums are redone</strong>Prices, net worth, XIRR and CAGR, the views and the Projection are rebuilt.Code</p>
 <p>09:00<strong>Check-ins</strong>Whatever is due today: an EMI, a SIP, a valuation. Several at once become one card.Code decides</p>
-<p>Any time<strong>The chat</strong>Ask, what-if; admins add, correct and delete. Every write shown first; every change audited.Concierge</p>
+<p>Monday<strong>The week in one card</strong>For the admins, silent: what changed last week and why, what is due in the next fortnight, and anything worth knowing, said as facts. At most one other nudge a week, only if it cannot wait.Code finds · Claude words</p>
+<p>Any time<strong>The chat</strong>Ask, what-if, compare plans, check a goal; admins add, correct and delete. Every write shown first; every change audited.Concierge</p>
 <p>The 1st<strong>Month-end</strong>Last month&#x27;s budget closes, and its Budget forecast is graded against what really happened.Code · Sonnet explains</p>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>
