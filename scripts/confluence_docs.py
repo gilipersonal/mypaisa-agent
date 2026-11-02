@@ -1550,7 +1550,7 @@ class _Canon(HTMLParser):
         return any(m for _, m in self.stack)
 
     def flush(self) -> None:
-        text = " ".join(" ".join(self.buf).split())
+        text = " ".join("".join(self.buf).split())  # joined as written: Confluence merges adjacent marks
         self.buf = []
         if text:
             self.out.append(text)
@@ -1768,6 +1768,11 @@ def selftest() -> int:
                 r_ws = record_readback("p", page.replace("\n", "\n\n   ").replace("> <", ">  <"))
                 r_marks = record_readback("p", envelope(live.replace("<strong>MyPaisa&#39;s plan.</strong>",
                                                                      "<strong>MyPaisa&#39;s</strong> <code>plan.</code>")))
+                (PAGES / "p.html").write_text(page.replace("The news job", "<em>The news</em><em> job</em>"))
+                record_page("p", "42", 3, "P", published=True)
+                r_merged = record_readback("p", envelope(live.replace("The news job", "<em>The news job</em>")))
+                (PAGES / "p.html").write_text(page)
+                record_page("p", "42", 3, "P", published=True)
                 r_cut = record_readback("p", envelope(live[: len(live) * 2 // 3]))
                 ok_cut = rec().get("readback_ok")
                 errs_cut = receipt_findings(load(MANIFEST)["pages"], ["p"])[0]
@@ -1778,6 +1783,7 @@ def selftest() -> int:
                 sys.stdout = out
             expect("an identical body (Confluence's own ids, dates, cards and macro ids aside) passes", (r_same, ok_same), (0, True))
             expect("whitespace-only differences pass", r_ws, 0)
+            expect("two adjacent marks Confluence merges into one pass (rec-j-market's <em>prod $160</em><em>dev $40</em>)", r_merged, 0)
             expect("inline marks Confluence splits or reorders pass (a <code> moved out of a <strong>, MA-303's phase-00)", r_marks, 0)
             expect("a truncated body fails", (r_cut, ok_cut), (1, False))
             expect("a failed read-back of what is live is an error", len(errs_cut), 1)
