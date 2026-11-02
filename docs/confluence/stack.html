@@ -19,7 +19,7 @@
 <figcaption>FastAPI serves both REST and SSE; a thin typed repository on Pydantic v2, boto3 and mypy-boto3-dynamodb handles single-table DynamoDB at £0/mo, whereas DocumentDB would cost £75–£110/mo.</figcaption></figure>
 </div>
 <div data-type="extension-frame"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="45983446-985a-425f-90c6-14a8429ef73d" data-collection="contentId-2622286" data-alt="stack-06-agent-framework-architecture.gif"></div>
-<figcaption>The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa&#x27;s seven criteria, borrowing PydanticAI&#x27;s @tool RunContext pattern and using Step Functions + EventBridge in Phase 18.</figcaption></figure>
+<figcaption>The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa&#x27;s seven criteria, borrowing PydanticAI&#x27;s @tool RunContext pattern and using Step Functions + EventBridge for the six-agent team in Phase 13.</figcaption></figure>
 </div>
 </div>
 <h2>📡 1. End-to-end tracing, Request IDs &amp; FastAPI observability</h2>
@@ -39,7 +39,7 @@
 <figcaption>FastAPI serves both REST and SSE; a thin typed repository on Pydantic v2, boto3 and mypy-boto3-dynamodb handles single-table DynamoDB at £0/mo, whereas DocumentDB would cost £75–£110/mo.</figcaption></figure>
 <h2>🤖 6. Agent loop architecture &amp; framework comparison</h2>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="45983446-985a-425f-90c6-14a8429ef73d" data-collection="contentId-2622286" data-alt="stack-06-agent-framework-architecture.gif"></div>
-<figcaption>The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa&#x27;s seven criteria, borrowing PydanticAI&#x27;s @tool RunContext pattern and using Step Functions + EventBridge in Phase 18.</figcaption></figure>
+<figcaption>The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa&#x27;s seven criteria, borrowing PydanticAI&#x27;s @tool RunContext pattern and using Step Functions + EventBridge for the six-agent team in Phase 13.</figcaption></figure>
 <h2>📖 Full research, architecture &amp; costing record (docs/RESEARCH.md §6)</h2>
 <p>Researched 28 Oct 2026 (<code>MA-265</code>, <code>MA-266</code>) to answer four questions end to end:</p>
 <ol><li><strong>How AWS monitoring, tracing, request IDs and LLM observability work across every component, including the FastAPI REST APIs (<code>handlers/api</code> and <code>handlers/stream</code>), with a complete costing analysis</strong> — and what is already planned in the repo.</li>

@@ -13,7 +13,7 @@
 <figcaption>scripts/smoke.py runs a full synthetic chat and X-Ray trace check in dev and a strictly read-only health/auth/alarm probe in prod (zero writes to prod tables), rewinding Lambda :live aliases in under five seconds on any fault.</figcaption></figure>
 </div>
 <div data-type="extension-frame"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e9a1e124-f355-42ea-adad-4cf9e4bc1fbb" data-collection="contentId-2589543" data-alt="cicd-04-regression-pyramid-and-costs.gif"></div>
-<figcaption>The five-layer regression pyramid across Phases 0 to 20 and the Option D hybrid runner strategy keep both GitHub Actions (&lt;2,000 free mins) and AWS CodeBuild (&lt;100 free arm64 mins) at £0.00/month.</figcaption></figure>
+<figcaption>The five-layer regression pyramid across Phases 0 to 15 (web and iOS UI checks on request, 646 golden maths fixtures) and the Option D hybrid runner strategy keep both GitHub Actions (&lt;2,000 free mins) and AWS CodeBuild (&lt;100 free arm64 mins) at £0.00/month.</figcaption></figure>
 </div>
 </div>
 <h2>🚀 1. End-to-end CI/CD delivery pipeline (GitHub Actions, AWS CodeBuild arm64, ECR, dev &amp; prod)</h2>
@@ -27,7 +27,7 @@
 <figcaption>scripts/smoke.py runs a full synthetic chat and X-Ray trace check in dev and a strictly read-only health/auth/alarm probe in prod (zero writes to prod tables), rewinding Lambda :live aliases in under five seconds on any fault.</figcaption></figure>
 <h2>📐 4. Five-layer regression pyramid (Phases 0–20) &amp; £0/month runner cost analysis (MA-269)</h2>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e9a1e124-f355-42ea-adad-4cf9e4bc1fbb" data-collection="contentId-2589543" data-alt="cicd-04-regression-pyramid-and-costs.gif"></div>
-<figcaption>The five-layer regression pyramid across Phases 0 to 20 and the Option D hybrid runner strategy keep both GitHub Actions (&lt;2,000 free mins) and AWS CodeBuild (&lt;100 free arm64 mins) at £0.00/month.</figcaption></figure>
+<figcaption>The five-layer regression pyramid across Phases 0 to 15 (web and iOS UI checks on request, 646 golden maths fixtures) and the Option D hybrid runner strategy keep both GitHub Actions (&lt;2,000 free mins) and AWS CodeBuild (&lt;100 free arm64 mins) at £0.00/month.</figcaption></figure>
 <h2>📖 Full architecture, phase-wise matrix &amp; runner costing record (docs/RESEARCH.md §7)</h2>
 <p>Arun, 28 Oct 2026 (<code>MA-272</code>): track setup and tech-debt stories for the stack and observability foundations (<code>MA-267</code> to <code>MA-271</code>), design a phase-wise plan for vulnerability scanning, the smoke test suite and the regression test suite across Phases 0 to 20, design the GitHub Actions + AWS CodeBuild (<code>arm64</code>) + ECR CI/CD pipeline for <code>dev</code> and <code>prod</code>, and analyse the expected costs and runner alternatives for running regression and smoke suites on GitHub Actions.</p>
 <h2>7.1 Setup, tech-debt &amp; testing stories (<code>MA-267</code> to <code>MA-272</code>)</h2>
