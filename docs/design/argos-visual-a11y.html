@@ -133,9 +133,9 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
   <div class="wrap">
     <div class="eyebrow">SvelteKit 3 Web Visual Regression &amp; Accessibility Pipeline · MA-194, MA-269</div>
     <h1>Argos CI, Playwright &amp; axe-core: Visual &amp; WCAG 2.2 AA Testing at £0/Month</h1>
-    <p class="lede">Every canonical SvelteKit 3 screen in <code>web/</code> runs through one fail-closed <code>auditAndCapture()</code> Playwright fixture at <code>390x844</code> and <code>1440x900</code> in Light and Dark: deterministic motion/font stabilization, hard <code>@axe-core/playwright</code> WCAG 2.2 AA auditing before capture, keyboard focus/landmark checks, and <strong>Argos CI</strong> Tokenless OIDC visual PNG diffing plus a light-theme-deduplicated YAML <code>ariaSnapshot</code> accessibility tree diff—staying at <strong>~3,600 snapshots/month (72% of Argos CI's 5,000/month Free Hobby cap = £0.00/month)</strong>.</p>
+    <p class="lede">When Arun asks for QA (MA-304), every canonical SvelteKit 3 screen in <code>web/</code> runs through one fail-closed <code>auditAndCapture()</code> Playwright fixture at <code>390x844</code> and <code>1440x900</code> in Light and Dark: deterministic motion/font stabilization, hard <code>@axe-core/playwright</code> WCAG 2.2 AA auditing before capture, keyboard focus/landmark checks, and <strong>Argos CI</strong> Tokenless OIDC visual PNG diffing plus a light-theme-deduplicated YAML <code>ariaSnapshot</code> accessibility tree diff—staying at <strong>at most ~3,600 snapshots/month (72% of Argos CI's 5,000/month Free Hobby cap = £0.00/month)</strong>. svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright, axe and Argos run only when Arun asks (a manual run or a <code>qa</code> label; MA-303, MA-304).</p>
     <ul class="rules">
-      <li><b>01</b>100% dedicated to real SvelteKit 3 (web/) code; boards stay on local board_fit.js (£0)</li>
+      <li><b>01</b>100% dedicated to real SvelteKit 3 (web/) code; no checks run on the boards (MA-303)</li>
       <li><b>02</b>One helper, four gates: Stabilize → axe-core WCAG 2.2 AA → Focus/h1 → argosScreenshot</li>
       <li><b>03</b>Smart ARIA deduplication: Light &amp; Dark PNGs + Light-only ARIA saves 50% ARIA quota</li>
       <li><b>04</b>Tokenless GitHub App OIDC on ubuntu-24.04-arm (1x) + cancel-in-progress (0 secrets)</li>
@@ -175,7 +175,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Track A (Repo-Local Board Gates, 0 Quota) vs Track B (SvelteKit <code>web/</code> on Argos CI):</strong> Static <code>.dc.html</code> design boards stay on offline <code>scripts/board_fit.js</code> (320–1920 px in Chromium &amp; WebKit) and <code>scripts/contrast_check.py</code> (100% &amp; 25% brightness). The entire 5,000/month Argos Hobby quota is reserved for the built SvelteKit 3 PWA (<code>pnpm build &amp;&amp; pnpm preview</code>).</li>
+        <li><strong>Track A (Board Gates, stopped by MA-303) vs Track B (SvelteKit <code>web/</code> on Argos CI):</strong> The offline gates on the static <code>.dc.html</code> design boards were stopped by MA-303 (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code implemented"); the QA is measured on the built web app by MA-304, QA on request; iOS QA comes after MA-165, with no story yet. svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright, axe and Argos run only when Arun asks (a manual run or a <code>qa</code> label; MA-303, MA-304). The entire 5,000/month Argos Hobby quota is reserved for the built SvelteKit 3 PWA (<code>pnpm build &amp;&amp; pnpm preview</code>).</li>
         <li><strong>Gate 1 (Stabilize) &amp; Gate 2 (Fail-Closed <code>@axe-core/playwright</code> 4.14):</strong> <code>auditAndCapture()</code> sets <code>prefers-reduced-motion: reduce</code>, toggles <code>.t-light</code> / <code>.t-dark</code>, waits for <code>document.fonts.ready</code> and zero <code>[aria-busy="true"]</code> nodes, and runs <code>AxeBuilder</code> with <code>wcag2a</code>, <code>wcag2aa</code>, <code>wcag21a</code>, <code>wcag21aa</code>, <code>wcag22aa</code>, and <code>best-practice</code> tags in both themes before <code>argosScreenshot()</code> is ever called.</li>
         <li><strong>Gate 3 (Landmarks &amp; Keyboard Focus) &amp; Gate 4 (<code>argosScreenshot</code>):</strong> Verifies visible <code>&lt;main&gt;</code>, single <code>&lt;h1&gt;</code>, and <code>:focus-visible</code> rings (<code>MA-181</code>), then captures full-page PNGs in both themes (<code>threshold: 0.2</code>) and the YAML accessibility tree on Light (<code>ariaSnapshot: opts.theme === 'light'</code>).</li>
       </ul>
@@ -196,9 +196,9 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="42" y="208">document.fonts.ready</text>
         <text class="s-m" x="42" y="224">[aria-busy="true"] == 0</text>
         <rect class="s-upbg" x="30" y="246" width="196" height="74" rx="8"/>
-        <text class="s-upt" x="42" y="268">Token Contrast Pre-Gate</text>
-        <text class="s-m" x="42" y="286">contrast_check.py (MA-181)</text>
-        <text class="s-m" x="42" y="304">100% &amp; 25% brightness OK</text>
+        <text class="s-upt" x="42" y="268">Board Contrast Gate</text>
+        <text class="s-m" x="42" y="286">stopped by MA-303</text>
+        <text class="s-m" x="42" y="304">QA on code, on request</text>
         <rect class="step-ring" data-f1="0" x="26" y="52" width="204" height="272" rx="10"/>
 
         <line class="s-line" x1="240" y1="175" x2="264" y2="175"/>
@@ -269,17 +269,17 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 <section id="cloud">
   <div class="head">
     <div class="kicker">2 · Tokenless OIDC upload, cloud merge-base matching &amp; dual visual + ARIA diffing</div>
-    <h2>Side-by-side pixel heatmaps and Git-style YAML accessibility tree diffs on every PR</h2>
+    <h2>Side-by-side pixel heatmaps and Git-style YAML accessibility tree diffs on every QA run</h2>
   </div>
   <div class="body">
     <div class="copy plain">
-      <p>When Playwright finishes on GitHub Actions, the Argos reporter uploads the screenshots and accessibility trees using GitHub's built-in identity—with no secret token stored anywhere. Argos automatically finds the matching baseline from <code>main</code> and compares every screen.</p>
+      <p>When Arun asks for QA and Playwright finishes on GitHub Actions, the Argos reporter uploads the screenshots and accessibility trees using GitHub's built-in identity—with no secret token stored anywhere. Argos automatically finds the matching baseline from <code>main</code> and compares every screen.</p>
       <p>If a colour, chart line, or spacing shifted, Argos highlights the exact pixels in a side-by-side heatmap. And if a button label, heading level, or screen-reader role changed—even without changing a single pixel on screen—Argos shows a text diff of the accessibility tree right beside the picture.</p>
     </div>
     <div class="copy tech">
       <ul>
         <li><strong>Tokenless GitHub App OIDC (Zero Secrets):</strong> With the Argos GitHub App installed on <code>gilipersonal/mypaisa-agent</code> and Tokenless Authentication enabled, <code>@argos-ci/playwright/reporter</code> authenticates directly through the GitHub Actions check-run context—zero <code>ARGOS_TOKEN</code> in GitHub Secrets or AWS SSM.</li>
-        <li><strong>Single-Pass CI Render (Saves ~45–60s/run):</strong> Unlike local <code>git archive</code> diffing that renders both <code>main</code> and <code>HEAD</code> on every PR, GitHub Actions renders <code>HEAD</code> once. Argos resolves the Git merge-base commit on <code>main</code> in the cloud and supports automatic Playwright sharding (<code>--shard=x/y</code>) with zero merge scripts.</li>
+        <li><strong>Single-Pass CI Render (Saves ~45–60s/run):</strong> Unlike local <code>git archive</code> diffing that renders both <code>main</code> and <code>HEAD</code> on every run, GitHub Actions renders <code>HEAD</code> once per QA run. Argos resolves the Git merge-base commit on <code>main</code> in the cloud and supports automatic Playwright sharding (<code>--shard=x/y</code>) with zero merge scripts.</li>
         <li><strong>Dual Review Surface (`argos/visual` PR Check):</strong> Every screen pairs its 2x Retina PNG heatmap diff (Light &amp; Dark) with its structured Playwright YAML <code>.aria.yml</code> tree diff, catching silent semantic regressions (missing <code>aria-label</code>, shifted heading hierarchy, dropped <code>aria-live</code>) that pass rule-based <code>axe-core</code> checks.</li>
       </ul>
     </div>
@@ -371,11 +371,11 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
   <div class="body">
     <div class="copy plain">
       <p>Argos CI's Hobby tier is free forever up to 5,000 snapshots a month, while the next tier up costs $100 a month. Without guardrails, running visual and accessibility snapshots on every commit across every file in the repository would burn 34,000 snapshots a month.</p>
-      <p>Five simple rules—running only when web or card files change, deduplicating the dark-mode accessibility tree, failing early on broken axe rules, cancelling superseded PR runs, and keeping local runs offline—bring usage down to 3,600 snapshots a month, safely inside the free tier.</p>
+      <p>Five simple rules—running only when Arun asks (a manual run or a <code>qa</code> label), deduplicating the dark-mode accessibility tree, failing early on broken axe rules, cancelling superseded PR runs, and keeping local runs offline—keep usage at most 3,600 snapshots a month, safely inside the free tier.</p>
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Guardrail 1 (Path Filter <code>web/**</code>, <code>cards/**</code>) &amp; Guardrail 2 (Light-Only <code>ariaSnapshot</code>):</strong> Skipping backend/infra/iOS/docs PRs drops monthly runs from ~85 to ~40. Deduplicating <code>ariaSnapshot: opts.theme === 'light'</code> cuts per-screen items from 8 to 6 (saving 1,200 snapshots/month) because CSS custom properties in <code>.t-dark</code> never alter DOM roles or labels.</li>
+        <li><strong>Guardrail 1 (On request only, MA-303, MA-304) &amp; Guardrail 2 (Light-Only <code>ariaSnapshot</code>):</strong> <code>web-visual-a11y.yml</code> triggers only on <code>workflow_dispatch</code> or a <code>qa</code> label, never on every PR, so monthly runs are at most the ~40 a per-PR trigger on <code>web/**</code> and <code>cards/**</code> would make (from ~85). Deduplicating <code>ariaSnapshot: opts.theme === 'light'</code> cuts per-screen items from 8 to 6 (saving 1,200 snapshots/month) because CSS custom properties in <code>.t-dark</code> never alter DOM roles or labels.</li>
         <li><strong>Guardrail 3 (Fail-Fast Axe + Offline Local Runs) &amp; Guardrail 4 (<code>cancel-in-progress: true</code>):</strong> <code>@axe-core/playwright</code> aborts before <code>argosScreenshot()</code> on any violation; <code>uploadToArgos: !!process.env.CI</code> keeps laptop runs 100% local; and GitHub Actions concurrency cancels superseded PR pushes before the end-of-job reporter uploads.</li>
         <li><strong>Guardrail 5 (<code>ubuntu-24.04-arm</code> 1x + Cached Chromium):</strong> Uses ~2.0 mins/run (~80 billed GitHub mins/mo out of 2,000 free) with zero secrets and zero AWS cost.</li>
       </ul>
@@ -403,9 +403,9 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-h" x="228" y="48">The Five Cost &amp; Quota Guardrails (.github/workflows/web-visual-a11y.yml)</text>
 
         <rect class="s-blbg" x="228" y="62" width="254" height="72" rx="8"/>
-        <text class="s-blt" x="240" y="82">1 · Path Filter: web/**, cards/**</text>
-        <text class="s-m" x="240" y="100">Skips src/**, infra/**, ios/**, docs/**</text>
-        <text class="s-upt" x="240" y="120">−60% runs (85 → 40 UI runs/mo)</text>
+        <text class="s-blt" x="240" y="82">1 · On request only (qa label)</text>
+        <text class="s-m" x="240" y="100">Never on every PR (MA-303, MA-304)</text>
+        <text class="s-upt" x="240" y="120">At most 40 UI runs/mo (from 85)</text>
 
         <rect class="s-vibg" x="494" y="62" width="254" height="72" rx="8"/>
         <text class="s-vit" x="506" y="82">2 · Light-Only ariaSnapshot</text>
@@ -423,8 +423,8 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="506" y="202">before end-of-job reporter upload</text>
 
         <rect class="s-box" x="228" y="234" width="520" height="68" rx="8"/>
-        <text class="s-t" x="240" y="256">5 · Static Boards Stay on Repo-Local Gates (scripts/board_fit.js + contrast_check.py)</text>
-        <text class="s-m" x="240" y="276">60+ .dc.html boards &amp; 12+ responsive widths tested locally on disk → 0 Argos quota used</text>
+        <text class="s-t" x="240" y="256">5 · No Gates on the Static Boards (stopped by MA-303, 2 Nov 2026)</text>
+        <text class="s-m" x="240" y="276">60+ .dc.html boards use 0 Argos quota; QA runs on the code, on request</text>
         <rect class="step-ring" data-f3="1" x="224" y="58" width="528" height="248" rx="10"/>
 
         <line class="s-line" x1="762" y1="170" x2="786" y2="170"/>
@@ -463,7 +463,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     <div class="copy tech">
       <ul>
         <li><strong>Per-Run Math (Option 1 Selected):</strong> 15 SvelteKit screens/states $\times$ (2 Light PNGs + 2 Dark PNGs + 2 Light YAML <code>ariaSnapshot</code> trees) = <strong>90 snapshots/build</strong> $\times$ 40 monthly UI builds = <strong>3,600 snapshots/month</strong> (72.0% of the 5,000/month Hobby limit).</li>
-        <li><strong>GitHub Actions Runner Math (<code>ubuntu-24.04-arm</code>, <code>1x</code>):</strong> ~2.0 mins/build for Playwright + <code>@axe-core/playwright</code> + Argos upload $\times$ 40 builds/month = <strong>~80 billed minutes/month</strong> (4% of the 2,000 free GitHub minutes/month).</li>
+        <li><strong>GitHub Actions Runner Math (<code>ubuntu-24.04-arm</code>, <code>1x</code>):</strong> ~2.0 mins/build for Playwright + <code>@axe-core/playwright</code> + Argos upload $\times$ at most 40 builds/month = <strong>at most ~80 billed minutes/month</strong> (4% of the 2,000 free GitHub minutes/month; an upper bound, since the QA runs only when Arun asks).</li>
       </ul>
     </div>
     <figure class="fig" id="fig-4">

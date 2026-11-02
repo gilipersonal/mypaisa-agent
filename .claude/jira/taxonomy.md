@@ -65,7 +65,7 @@ and the SwiftUI pieces, each hosted through a Fabric component, in
 | `web/`: the SvelteKit skeleton and its CI, and the shared TypeScript in `web/src/lib/` | MA-9 |
 | `scripts/local/` (the local stack and its scripted agent), `scripts/seed.sh` and the seed from the design figure set (MA-110) | MA-9 |
 | `audit.py`, `runs.py`, `handlers/{api,agent,sender,worker}` for the chat and push, the stream handler (SSE), the Cognito triggers, the docs job, the queues; the web app's hosting at `dashboard(-dev)`, the association file and the invite page (MA-73) | MA-10 |
-| the chat at both doors: in `ios/src/` sign-in, the api and SSE client, push and You, and in `ios/<App>/` the chat's SwiftUI pieces (the timeline and its cards, the composer); in `web/` the chat, its sign-in and session cookie and its PWA files (Web Push); `src/mypaisa_agent/cards/schema/`; Activity at every door; the shared motion (MA-182) and `scripts/contrast_check.py` (MA-181) | MA-10 |
+| the chat at both doors: in `ios/src/` sign-in, the api and SSE client, push and You, and in `ios/<App>/` the chat's SwiftUI pieces (the timeline and its cards, the composer); in `web/` the chat, its sign-in and session cookie and its PWA files (Web Push); `src/mypaisa_agent/cards/schema/`; Activity at every door; the shared motion (MA-182) | MA-10 |
 | `src/mypaisa_agent/registry/` (kinds, records, events and views), the write service, the read and `PATCH` routes of `handlers/api` | MA-187 |
 | `wealth/` accrual | MA-188 |
 | `wealth/` schedules (loans and cards), the commitments and check-ins | MA-192 |

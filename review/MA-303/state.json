@@ -1,0 +1,466 @@
+{
+ "deliverable": "[MA-303] Stop the checks on the design boards; plan-sync and the review ledger faster and smarter (PR #78)",
+ "rounds": 1,
+ "reviewed_sha": "f555da2",
+ "history": [
+  {
+   "round": 1,
+   "date": "2026-11-02",
+   "reviewed_sha": "f555da2",
+   "range": "e5668d1..f555da2 (everything)",
+   "asked": "Arun, 2 Nov 2026: \"Review first\"",
+   "review_approval": "Arun, 2 Nov 2026: \"Review first\" (round 1, then merge on a clean round)",
+   "lanes": {
+    "a1 scripts: plan_sync, hook, CI": 8,
+    "a2 scripts: runner, Confluence receipts": 10,
+    "b trace, Jira, ledgers": 6,
+    "c spec docs": 10,
+    "d rules and skills": 10
+   },
+   "blocking": 15,
+   "gate_results": [
+    {
+     "command": "python3 scripts/plan_sync.py selftest --force",
+     "result": "0 wrong"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py check",
+     "result": "0 drift"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py pr-files",
+     "result": "0 product files"
+    },
+    {
+     "command": "python3 scripts/review_regress.py --every --jobs 4",
+     "result": "175 of 175 passed, 113 retired, 25 manual"
+    },
+    {
+     "command": "python3 scripts/review_regress.py --selftest",
+     "result": "12 of 12"
+    },
+    {
+     "command": "python3 scripts/confluence_docs.py selftest",
+     "result": "15 of 15"
+    }
+   ],
+   "deferred_gates": [],
+   "result": "not clean: 15 blocking findings (CI pr-files could never fail; jira-sync could skip issues; published pages not read back passed; checks over-retired; Jira and records still prescribing the deleted gates; per-PR Playwright claims; lessons judging boards). Arun decided three questions: keep the board-name check, move the 25% floors and width sweep to MA-304, close MA-302.",
+   "findings": [
+    {
+     "id": "R1-a1",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "a",
+     "anchor": "scripts/plan_sync.py:789",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a2",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "a",
+     "anchor": "scripts/plan_sync.py:942",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a3",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/plan_sync.py:920",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a4",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/plan_sync.py:393",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed",
+     "note": "owner kept the name check; selftest on snippets"
+    },
+    {
+     "id": "R1-a5",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "docs/jira-sync.json",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "open"
+    },
+    {
+     "id": "R1-a6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/plan_sync.py:987",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a7",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/plan_sync.py:765",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a8",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": ".claude/hooks/plan_sync_hook.py:35",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a101",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "a",
+     "anchor": "scripts/confluence_docs.py:1658",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a102",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/review_regress.py:111",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a103",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/review_regress.py:111",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed",
+     "note": "fixed (documented"
+    },
+    {
+     "id": "R1-a104",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/review_regress.py:91",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a105",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/review_regress.py:163",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a106",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/plan_sync.py:994",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a107",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/confluence_docs.py:1526",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a108",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/confluence_docs.py:1622",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a109",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/review_regress.py:425",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a110",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/confluence_docs.py:94",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b1",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "review/MA-240/fixed.json:826",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b2",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "Jira MA-269 and nine more",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b3",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "docs/trace.json:4558",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b4",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json (statuses)",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "open",
+     "note": "next /plan-sync"
+    },
+    {
+     "id": "R1-b5",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json:6988",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json:8671",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c1",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "docs/RESEARCH.md:705",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c2",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "README.md:121",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c3",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "docs/RESEARCH.md:1155",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed",
+     "note": "owner chose MA-304"
+    },
+    {
+     "id": "R1-c4",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "PLAN.md:627",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c5",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "docs/RESEARCH.md:559",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "PLAN.md:461",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c7",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "docs/design/market-agent.html:1242",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c8",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "PRODUCT.md:44",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c9",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "TECH_STACK.md:89",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c10",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "docs/confluence/argos.html",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "open",
+     "note": "on main before MA-303"
+    },
+    {
+     "id": "R1-d1",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "d",
+     "anchor": ".claude/rules/independent-review.md:23",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d2",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "d",
+     "anchor": ".claude/skills/design-first/SKILL.md:240",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed",
+     "note": "owner kept the name check"
+    },
+    {
+     "id": "R1-d3",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "d",
+     "anchor": ".claude/rules/independent-review.md:85",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d4",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "d",
+     "anchor": ".claude/rules/independent-review.md:315",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d5",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "d",
+     "anchor": ".claude/skills/autoship/SKILL.md:82",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": ".claude/rules/independent-review.md:58",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d7",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "scripts/review_regress.py:441",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d8",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "d",
+     "anchor": ".agents/ (local mirror, not in git)",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "open",
+     "note": "Arun's call"
+    },
+    {
+     "id": "R1-d9",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": ".claude/skills/plan-sync/SKILL.md:171",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d10",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": ".claude/skills/design-first/SKILL.md:239",
+     "evidence": "see the round's lane report in the MA-303 Jira comments",
+     "status": "fixed"
+    }
+   ]
+  }
+ ],
+ "next_round": {
+  "approval": "not received",
+  "scope": "round 2: the round 1 fixes only, f555da2..HEAD and their joins",
+  "lanes": [
+   "a",
+   "b",
+   "c",
+   "d"
+  ]
+ }
+}

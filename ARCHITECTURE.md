@@ -1420,9 +1420,10 @@ at full brightness and one with the screen at 25%: primary text 7:1 and 4.5:1,
 secondary and coloured text 4.5:1 and 3:1, meaningful marks (chart lines,
 bars on their track, a switch's ring) 3:1 and 1.8:1, and what must only be
 seen (a privacy mask, an empty track) 1.5:1 and 1.25:1. `scripts/contrast_check.py`
-measures every pair in MyPaisa DS v1's `tokens.css` and the glass fills of
-`ios.css`, fails closed, and is a gate on every PR; the app's snapshot tests
-render every screen in both themes. Glass carries labels only, never body
+measured every pair on the boards until MA-303 stopped it (Arun, 2 Nov 2026:
+"I need this checks as QA when I ask, but on actual code implemented"); the
+floors are measured on the built web app by MA-304, QA on request, and iOS QA
+comes after MA-165, with no story yet. The app's snapshot tests render every screen in both themes. Glass carries labels only, never body
 copy, at a fill dense enough to hold them over the brightest content.
 
 **Motion** (MA-182). One motion system for every component and chart, in the
@@ -1653,15 +1654,18 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   Admin center's settings (still no creation form); shadcn-svelte's charts on
   LayerChart 2.9 for the dashboard, and lightweight-charts 5.2 only for the
   market side's price charts, both in the 1a Monzo Pulse grammar (§9.1, MA-295);
-  Motion 14 and Svelte transitions. Tests:
-  Vitest 5, Playwright 1.64 with one fail-closed `auditAndCapture()` fixture at
-  390x844 and 1440x900 in both themes (stabilised motion and fonts,
-  `@axe-core/playwright` 4.14 WCAG 2.2 AA before any capture, keyboard focus and
-  landmark checks, and **Argos CI** `@argos-ci/playwright` Tokenless OIDC cloud
-  visual PNG diffs in both themes plus a light-theme-deduplicated YAML
-  `ariaSnapshot` accessibility tree diff inside the 5,000/month £0 Free Hobby
-  tier, `docs/RESEARCH.md` §10), and a pixel parity check of each screen
-  against its board.
+  Motion 14 and Svelte transitions. Tests: svelte-check, eslint and vitest run
+  on every PR touching `web/`; Playwright, axe and Argos run only when Arun
+  asks (a manual run or a `qa` label; MA-303, MA-304). The unit tests are
+  Vitest 5; MA-304's QA on request is Playwright 1.64 with one fail-closed
+  `auditAndCapture()` fixture at 390x844 and 1440x900 in both themes
+  (stabilised motion and fonts, `@axe-core/playwright` 4.14 WCAG 2.2 AA before
+  any capture, keyboard focus and landmark checks, and **Argos CI**
+  `@argos-ci/playwright` Tokenless OIDC cloud visual PNG diffs in both themes
+  plus a light-theme-deduplicated YAML `ariaSnapshot` accessibility tree diff
+  inside the 5,000/month £0 Free Hobby tier, `docs/RESEARCH.md` §10), the 25%
+  brightness floors, the 320 to 1920 width sweep, and a pixel parity check of
+  each built screen against its picked board.
 - **Shared code:** the card types, the OpenAPI 3.1 endpoint types generated from
   FastAPI via `openapi-typescript` (`web/src/lib/api-types.d.ts`, MA-266), the
   formatting (GBP, INR, USD and EUR, rupees in lakh and crore, privacy masking) and the view
@@ -1697,8 +1701,8 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   comes from the api, whose authorizer checks the session, the member's status
   and session epoch on every call.
 - **Budgets:** INP at most 200 ms and LCP at most 2.5 s on a mid-range phone;
-  60 fps scrolling; Playwright screenshots at 390 and 1440 in both themes on
-  every PR (§18.4).
+  60 fps scrolling; Playwright screenshots at 390 and 1440 in both themes when
+  Arun asks for QA (MA-304, §18.4).
 
 ### 9.5 The iOS app's build: a React Native shell with a native SwiftUI core
 
@@ -2727,7 +2731,7 @@ resource (`.claude/rules/aws-changes.md`).
 | Stage | When | What |
 | --- | --- | --- |
 | Gates & regression (L1–L3) | every PR (`ubuntu-24.04-arm`, 1x) | ruff (lint + Bandit `S` SAST), pyright, `semgrep`, pytest (`scripts/regression.py` L1 unit + Hypothesis property tests, L2 full-stack local ASGI with moto, L3 golden financial maths and OTel PII-leak gate), `openapi-typescript` zero-diff contract check (MA-266, MA-269), `python3 scripts/maestro_local.py check-syntax` (checking `.maestro/subflows/*.yaml` and `.maestro/flows/*.yaml` one file per invocation) and `TestIDs.swift` ↔ `test-ids.ts` selector parity (MA-273), `terraform fmt` and `validate`, tflint, `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`, `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`, the `jira-key` check, and the iOS TypeScript shell `Jest` tests (MA-267, MA-269) |
-| Web gates (L4) | every PR touching `web/`, `cards/` or `docs/design/` (`ubuntu-24.04-arm`, 1x, `concurrency: cancel-in-progress`) | svelte-check, eslint (`eslint-plugin-security`), vitest, `board_fit.js` across 320 to 1920 px in Chromium and WebKit (MA-240), and Playwright 1.64 on `web/` at `390x844` and `1440x900` in both `.t-light` and `.t-dark` (plus privacy mode `£••••` on wealth/home screens) through one `auditAndCapture()` fixture: `prefers-reduced-motion` both ways, fail-closed `@axe-core/playwright` WCAG 2.2 AA before capture, keyboard focus/landmark checks (MA-181), and **Argos CI** (`@argos-ci/playwright`, Tokenless GitHub App OIDC, `uploadToArgos: !!process.env.CI`) uploading visual PNGs in both themes (`threshold: 0.2`) and a light-theme-deduplicated YAML `ariaSnapshot` accessibility tree (~3,600 snapshots/month inside Argos CI's 5,000/month £0 Free Hobby tier, `docs/RESEARCH.md` §7.4, §10); the contrast gate (`scripts/contrast_check.py`) on every PR |
+| Web gates (L4) | every PR touching `web/` or `cards/` (`ubuntu-24.04-arm`, 1x, `concurrency: cancel-in-progress`) | svelte-check, eslint and vitest run on every PR touching `web/`; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304). svelte-check, eslint (`eslint-plugin-security`) and vitest on every such PR. MA-304's QA runs only when Arun asks (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code implemented"): a manual run of the QA workflow or a `qa` label on the PR starts Playwright 1.64 on `web/` at `390x844` and `1440x900` in both `.t-light` and `.t-dark` (plus privacy mode `£••••` on wealth/home screens) through one `auditAndCapture()` fixture: `prefers-reduced-motion` both ways, fail-closed `@axe-core/playwright` WCAG 2.2 AA before capture, keyboard focus/landmark checks (MA-181), and **Argos CI** (`@argos-ci/playwright`, Tokenless GitHub App OIDC, `uploadToArgos: !!process.env.CI`) uploading visual PNGs in both themes (`threshold: 0.2`) and a light-theme-deduplicated YAML `ariaSnapshot` accessibility tree (at most ~3,600 snapshots/month inside Argos CI's 5,000/month £0 Free Hobby tier, `docs/RESEARCH.md` §7.4, §10), with the 25% brightness floors, the 320 to 1920 width sweep and a pixel parity check against the picked boards. No check runs on the boards in `docs/design/`: MA-303 stopped `board_fit.js` and `contrast_check.py` (Arun, 2 Nov 2026) |
 | iOS native gates (L4) | every PR touching `ios/` native Swift or `cards/`, and on `main` releases | on a macOS runner (`macos-15` or a self-hosted Mac runner, keeping monthly GitHub minutes inside the 2,000 free quota despite the 10x macOS multiplier, `docs/RESEARCH.md` §7.5, MA-269): swift-format, `semgrep` Swift rules, build, XCTest and XCUITest (including `⌘*` keyboard shortcuts) on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); locally on Apple Silicon at £0/month (`scripts/maestro_local.py`, MA-273, `docs/RESEARCH.md` §8), the full multi-simulator Maestro E2E matrix across all four width sub-bands, `xcrun simctl` and Local File Provider Face ID / APNs / Universal Links / Photos / Files / offline flows, and `--mode dev-live` X-Ray trace verification; the performance benches of §9.5 on the phone before a release |
 | Evals (L3 & L5) | every PR; live when it changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK; the full suite on a model-id change | T0: the recorded conversations replayed through the agent loop and its guards, and the coverage check; T1: the affected cases live in the `evals` workspace, three trials each, within $10 a run and $30 a month, a run stopped by its cap marked incomplete; T2: every case five times on the new model (§23.3; MA-246, MA-250, MA-251) |
 | Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |

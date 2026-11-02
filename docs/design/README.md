@@ -120,33 +120,36 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   Motion every step lands at once.
 - **Legible at 25% brightness** (MA-181): Arun, "the text and component
   should be clearly visible even in 25% mobile brightness". Every colour
-  pair in `ds-v1/tokens.css` and the glass fills passes
-  `python3 scripts/contrast_check.py` in light and dark, at full brightness
-  and dimmed to 25%; the dark tokens are tuned for it. No tertiary grey for
-  anything a member must read, and glass carries labels only. A bar's empty
-  track is the `--mp-track` token on every board, and the gate measures it
-  on a card, the page, a fill and the hero (MA-240).
+  pair in `ds-v1/tokens.css` and the glass fills stays legible in light and
+  dark, at full brightness and dimmed to 25%; the dark tokens are tuned for
+  it. No tertiary grey for anything a member must read, and glass carries
+  labels only. A bar's empty track is the `--mp-track` token on every board
+  (MA-240).
 - **Whole at every size** (MA-240): Arun asked, on 27 Oct 2026, that nothing
-  overflow or overlap at any screen size and nothing break on a resize. Each board
-  draws a screen at one size; `node scripts/board_fit.js` renders every
-  current board in Chromium and WebKit at the screen's own pixel ratio,
-  resizes each frame through every size its class covers (an iPhone from
-  320 (Display Zoom) to 440 and in landscape, an iPad or foldable window
-  from 600 to 1366, and the web from 320 to 1920), and walks
-  Prototype v4 at every door. Text clipped mid-word, text on text, a crushed
-  column or a box cut at the screen's edge fails it, but for what
-  `scripts/board_fit_allow.json` names with its reason. The fixes live in
-  `tokens.css`: the page is a size container of its own, so with the chat
-  beside it the page's width, not the window's, sets its columns; and the
-  fit guards keep the parts drawn on many boards whole (rows that scroll
-  really scroll, a card's answers wrap, a hero figure shrinks to fit, a
-  list row's figure goes under its name). In `motion.js`, a narrow chart's
-  axis labels thin where they would touch. A shared rule must leave every
-  board as drawn: `node scripts/board_fit.js --diff <main> --expect
-  review/MA-<n>/drawn-changes.json` compares every frame at its drawn size,
-  pixel by pixel, and fails on a change the story does not name. Once the
-  story has merged, `--since <its merge>` leaves out, by name, each board a
-  later story redrew, and compares the rest through the shared files (MA-282).
+  overflow or overlap at any screen size and nothing break on a resize. Each
+  board draws a screen at one size, and is drawn to stay whole through every
+  size its class covers (an iPhone from 320 (Display Zoom) to 440 and in
+  landscape, an iPad or foldable window from 600 to 1366, and the web from
+  320 to 1920). The fit guards live in `tokens.css`: the page is a size
+  container of its own, so with the chat beside it the page's width, not the
+  window's, sets its columns; rows that scroll really scroll, a card's
+  answers wrap, a hero figure shrinks to fit, and a list row's figure goes
+  under its name. In `motion.js`, a narrow chart's axis labels thin where
+  they would touch.
+- **No checks on the boards' content** (MA-303): Arun, 2 Nov 2026: "All the
+  6 checks currently run on docs/design. Lets stop that. I need this checks
+  as QA when I ask, but on actual code implemented (probably using
+  playwright and Argos CI tool)." `contrast_check.py`, `board_fit.js` (and
+  its drawn-size diff), `a11y_live.js`, `prototype_smoke.js`, the board
+  readers in `plan_sync.py` and the generators' `--check` no longer run, and
+  nothing checks Prototype v5. Plan-sync still checks that a story's cited
+  board file exists, that a UI story has a board before it starts, and that a
+  board name matches its canvas. The QA is measured on the built web app by
+  MA-304, QA on request, with the 25% brightness floors and the 320 to 1920
+  width sweep; iOS QA comes after MA-165 (the iOS shell), with no story yet.
+  svelte-check, eslint and vitest run on every PR touching `web/`;
+  Playwright, axe and Argos run only when Arun asks (a manual run or a `qa`
+  label; MA-303, MA-304).
 
 **Retired Telegram and Nocturne files.** In MA-278 (31 Oct 2026), the earlier Mini App, Telegram and Nocturne (`dashboard/`) files and frames were removed from the live design folders so every live board is for the iOS app or the web app in a browser; git history preserves the retired record.
 

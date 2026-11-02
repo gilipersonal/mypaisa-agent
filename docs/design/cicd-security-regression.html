@@ -172,7 +172,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>PR Gates (<code>.github/workflows/pr-gates.yml</code>):</strong> Runs on <code>ubuntu-24.04-arm</code> (1x) for L1–L3 regression, OpenAPI contract parity, 7-layer security scans, <code>T0</code> agent replays, and <code>terraform plan</code> via OIDC role <code>ci-plan</code>. Path-filters Playwright (<code>web/**</code>, <code>cards/**</code>) and macOS <code>XCUITest</code> (<code>ios/**</code>).</li>
+        <li><strong>PR Gates (<code>.github/workflows/pr-gates.yml</code>):</strong> Runs on <code>ubuntu-24.04-arm</code> (1x) for L1–L3 regression, OpenAPI contract parity, 7-layer security scans, <code>T0</code> agent replays, and <code>terraform plan</code> via OIDC role <code>ci-plan</code>. Path-filters macOS <code>XCUITest</code> (<code>ios/**</code>); svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright, axe and Argos run only when Arun asks (a manual run or a <code>qa</code> label; MA-303, MA-304).</li>
         <li><strong>Build Once on AWS CodeBuild Arm64 (<code>MA-237</code>):</strong> On merge to <code>main</code>, GitHub Actions triggers CodeBuild <code>arm1.small</code> (within the 100 free mins/mo). CodeBuild builds the multi-stage <code>Dockerfile</code> targets (<code>lambda</code> and <code>stream</code>), runs <code>trivy image --exit-code 1 --severity HIGH,CRITICAL</code>, and pushes to the single <code>mypaisa</code> ECR repository, returning immutable <code>sha256</code> digests.</li>
         <li><strong>Dev Auto-Deploy &amp; Prod Promotion (<code>MA-107</code>, <code>MA-268</code>):</strong> Terraform applies <code>infra/dev</code> with the new digests, runs <code>scripts/smoke.py --env dev</code>, and pauses at the GitHub <code>prod</code> environment gate. After your approval, <code>infra/prod</code> applies the <strong>identical ECR digests</strong>, flips each Lambda's <code>:live</code> alias, runs <code>scripts/smoke.py --env prod</code>, and only then syncs S3/CloudFront and promotes TestFlight.</li>
       </ul>
@@ -189,7 +189,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-t" x="38" y="134">L1–L3 &amp; T0 Replay</text>
         <text class="s-m" x="38" y="150">pytest + moto + OpenAPI</text>
         <rect class="s-vibg" x="28" y="168" width="166" height="44" rx="8"/>
-        <text class="s-t" x="38" y="188">Path-Gated UI (L4)</text>
+        <text class="s-t" x="38" y="188">Web QA on request (L4)</text>
         <text class="s-m" x="38" y="204">Playwright / XCUITest</text>
         <rect class="s-ambg" x="28" y="222" width="166" height="44" rx="8"/>
         <text class="s-t" x="38" y="242">Terraform Plan</text>
@@ -383,7 +383,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Five-Layer Pyramid (<code>scripts/regression.py</code>):</strong> L1 Unit + Hypothesis + <code>openapi-typescript</code> zero-diff (~20s); L2 <code>moto</code> + FastAPI ASGI multi-Lambda integration (~30s); L3 Inspect AI <code>T0</code> deterministic replay + 646 wealth-tracker &amp; 11 trading-desk golden maths fixtures + PII leak check (~45s); L4 Path-filtered Playwright 1.64 on <code>web/</code> (<code>390x844</code> &amp; <code>1440x900</code>, light/dark, fail-closed <code>@axe-core/playwright</code> WCAG 2.2 AA + <strong>Argos CI</strong> Tokenless OIDC visual PNG &amp; light-deduplicated YAML <code>ariaSnapshot</code> diffing at ~3,600 snapshots/mo inside the 5,000/mo £0 Free Hobby cap; see <code>docs/design/argos-visual-a11y.html</code>) &amp; iOS <code>XCUITest</code>/Snapshot/AX5; L5 Change-gated live <code>T1</code>/<code>T2</code> evals.</li>
+        <li><strong>Five-Layer Pyramid (<code>scripts/regression.py</code>):</strong> L1 Unit + Hypothesis + <code>openapi-typescript</code> zero-diff (~20s); L2 <code>moto</code> + FastAPI ASGI multi-Lambda integration (~30s); L3 Inspect AI <code>T0</code> deterministic replay + 646 wealth-tracker &amp; 11 trading-desk golden maths fixtures + PII leak check (~45s); L4 web: svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright, axe and Argos run only when Arun asks (a manual run or a <code>qa</code> label; MA-303, MA-304); the QA is Playwright 1.64 on <code>web/</code> (<code>390x844</code> &amp; <code>1440x900</code>, light/dark, fail-closed <code>@axe-core/playwright</code> WCAG 2.2 AA + <strong>Argos CI</strong> Tokenless OIDC visual PNG &amp; light-deduplicated YAML <code>ariaSnapshot</code> diffing at most ~3,600 snapshots/mo inside the 5,000/mo £0 Free Hobby cap; see <code>docs/design/argos-visual-a11y.html</code>) &amp; iOS <code>XCUITest</code>/Snapshot/AX5; L5 Change-gated live <code>T1</code>/<code>T2</code> evals.</li>
         <li><strong>Option D Hybrid Runner Math:</strong> ~450 Linux mins/mo (<code>1x</code>) + ~80–120 path-gated macOS mins/mo (<code>800–1,200</code> billed at <code>10x</code>, or <code>0</code> on self-hosted Mac) = <strong>450–1,650 billed GitHub mins/mo</strong> (&lt; 2,000 free tier) and <strong>~63 CodeBuild arm64 mins/mo</strong> (&lt; 100 free tier) = <strong>£0.00/month</strong>.</li>
       </ul>
     </div>
@@ -399,7 +399,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 
         <rect class="s-vibg" x="86" y="106" width="330" height="46" rx="8"/>
         <text class="s-vit" x="98" y="126">L4 · Web Playwright &amp; iOS XCUITest / AX5</text>
-        <text class="s-m" x="98" y="143">Path-gated: web/**, cards/**, ios/** + main</text>
+        <text class="s-m" x="98" y="143">Web on request (qa label); ios/** path-gated</text>
 
         <rect class="s-blbg" x="62" y="160" width="378" height="48" rx="8"/>
         <text class="s-blt" x="74" y="180">L3 · T0 Replay, PII Gate &amp; 657 Golden Maths</text>

@@ -63,6 +63,7 @@
       "type": "cmd",
       "run": "python3 -c \"import json,sys,re,pathlib; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-156'][0]; pf=pathlib.Path('docs/design/app-v1/Prototype.dc.html'); p=pf.read_text() if pf.exists() else ''; old=re.search(r'.Telegram · (Currency check|Pounds that arrived|ECB rate estimate).|Telegram · Currency check, privacy on', p); sys.exit(0 if any('MA-160' in u for u in r.get('undrawn',[])) or (not pf.exists() and any('Currency check 1b' in b['board'] for b in r.get('boards',[]))) or (old is None and 'c-cc' in p) else 1)\""
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   }
 ]

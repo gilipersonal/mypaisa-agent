@@ -224,14 +224,17 @@ Claude's:
   models, and the api client with its TanStack Query definitions and
   `api-types.d.ts` generated from FastAPI's `app.openapi()` by
   `openapi-typescript` (MA-265, MA-266). Its gates:
-  svelte-check, eslint, vitest, Playwright 1.64 at `390x844` and `1440x900` in
-  both themes through one `auditAndCapture()` fixture (`@axe-core/playwright`
-  WCAG 2.2 AA fail-closed before capture, keyboard focus/landmark checks, and
-  **Argos CI** `@argos-ci/playwright` Tokenless OIDC cloud visual PNG diffs in
-  both themes plus a light-theme-deduplicated YAML `ariaSnapshot` accessibility
-  tree diff at ~3,600 snapshots/month inside the 5,000/month £0 Free Hobby
-  tier, `docs/RESEARCH.md` §10) and a pixel parity check against the boards,
-  pnpm audit.
+  svelte-check, eslint, vitest and pnpm audit; svelte-check, eslint and
+  vitest run on every PR touching `web/`; Playwright, axe and Argos run only
+  when Arun asks (a manual run or a `qa` label; MA-303, MA-304). That QA is
+  MA-304's: Playwright 1.64 at `390x844` and `1440x900` in both themes
+  through one `auditAndCapture()` fixture (`@axe-core/playwright` WCAG 2.2 AA
+  fail-closed before capture, keyboard focus/landmark checks, and **Argos
+  CI** `@argos-ci/playwright` Tokenless OIDC cloud visual PNG diffs in both
+  themes plus a light-theme-deduplicated YAML `ariaSnapshot` accessibility
+  tree diff inside the 5,000/month £0 Free Hobby tier, `docs/RESEARCH.md`
+  §10), the 25% brightness floors, the 320 to 1920 width sweep and a pixel
+  parity check against the picked boards.
 - **The iOS app (MA-165, MA-166, MA-167, MA-273, MA-274, `ARCHITECTURE.md` §9.1,
   §9.5, §15.2, §18.4):** `ios/`, a React Native shell
   with a native SwiftUI core, as bong-panjika is built: bare React Native
@@ -405,7 +408,8 @@ Claude's:
   `docs/design/reviews/MA-259/decision.md`). Since MA-296 (30 Oct 2026, "I
   dont need claude-design sync anymore") git is the boards' only record:
   no record file, no whole-set Boards Artifact to republish, and
-  `python3 scripts/plan_sync.py check` reads every board as it is on disk.
+  `python3 scripts/plan_sync.py check` read every board as it is on disk
+  until MA-303; it now reads only each cited board's canvas titles.
 - **The future-plans design (MA-264):** the screens MA-261's future plans
   need, drawn before anything is built, from one figure set
   (`docs/design/figures/future-plans-v4.json`: MA-193's household with its
@@ -459,7 +463,8 @@ Claude's:
   project (nothing destroyed) and dropped from the repo copy; the Telegram
   and Mini App rules taken out of `tokens.css`; every trace row naming an iOS
   or web board; MA-68 and MA-114 saying "the agent"; and `plan_sync.py check`
-  refusing a Telegram or Mini App frame in a live board file. It settles
+  refusing a Telegram or Mini App frame in a live board file until MA-303
+  stopped the checks on the boards' content. It settles
   MA-160's question the same way.
 - **One consolidated design (MA-279):** every screen a story needs drawn
   once, in the v4 design and the picked shell, on the whole-wealth household,
@@ -527,7 +532,7 @@ Claude's:
   MA-194, MA-269); and the 2026
   GitHub Actions versus AWS CodeBuild runner cost model showing how Option D
   (CodeBuild `arm1.small` for Docker builds, GitHub `ubuntu-24.04-arm` for
-  Linux gates and path-filtered Playwright + Argos CI, and split iOS testing to avoid the
+  Linux gates, Playwright + Argos CI only when Arun asks (MA-303, MA-304), and split iOS testing to avoid the
   10x macOS multiplier trap) stays at £0.00 a month inside both free tiers
   (`docs/design/cicd-security-regression.html`, `docs/design/argos-visual-a11y.html`
   and their Confluence pages, MA-272).
@@ -617,17 +622,33 @@ Claude's:
   shorter overlines, a browser-only `/join/<token>` sign-in, a self-hosted type
   and icon stack and the `Cmd+K` palette, drawn as options and published as a
   private Claude Artifact for Arun to pick before anything is built.
-- **Prototype v4's controls at 44 pt (MA-302):** the card actions, links,
+- **Prototype v4's controls at 44 pt (MA-302), closed:** the card actions, links,
   suggestion chips, segmented control and composer that MA-300's live
-  accessibility gate found under 44x44, brought in line with the picked v4
-  boards and Prototype v5.
+  accessibility gate found under 44x44. Closed by Arun on 2 Nov 2026:
+  Prototype v4 is superseded and its gate deleted; tap targets on the built
+  web app are MA-304's.
+- **Stop the checks on the design boards; plan-sync and the review ledger
+  faster and smarter (MA-303):** the six checks on `docs/design/` stopped
+  (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code
+  implemented"), nothing checks Prototype v5, and 104 ledger checks retired;
+  plan-sync's selftest is reused locally while its code and fixtures are
+  unchanged; CI runs it on every PR (about 9 s); Jira is compared since the
+  last sync, Confluence is read back by hash, and a PR's files are checked
+  against the stories that claim them. Plan-sync keeps its board-name check:
+  it reads each cited board's canvas titles only. QA on the code moves to
+  MA-304; MA-302 is closed (Prototype v4 superseded).
+- **QA on request for the web app (MA-304):** Playwright, axe and Argos on
+  the built web app, with the 25% contrast floors and the 320 to 1920 width
+  sweep; svelte-check, eslint and vitest run on every PR touching `web/`;
+  Playwright, axe and Argos run only when Arun asks (a manual run or a `qa`
+  label; MA-303, MA-304). Depends on MA-194.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
 **Tests:** the skeleton's gates on the empty project; `terraform validate`
-and a plan for both environments; the web shell's Playwright screenshots at
-390 and 1440 in both themes, with the association file served, not swallowed
-by the fallback (MA-194); the iOS shell's Jest and XCUITest runs, its first
+and a plan for both environments; the web shell at 390 and 1440 in both
+themes, with the association file served, not swallowed by the fallback
+(MA-194), its Playwright screenshots taken when Arun asks (MA-304); the iOS shell's Jest and XCUITest runs, its first
 bench (MA-165, MA-166), `maestro_local.py selftest`, `maestro_local.py check-syntax`,
 `TestIDs.swift` ↔ `test-ids.ts` parity and `p00_shell_smoke.yaml` across the five
 cloned Apple Silicon simulators (`375`, `402`, `834`, `1032`, `1376 pt`, MA-273),
@@ -889,8 +910,10 @@ arrives from phase 2.
   optional Face ID lock; signing out a device and leaving the household; the
   last figures offline with their time and messages sent once back online;
   VoiceOver, Dynamic Type to AX5 and the other accessibility settings on
-  every screen; every text and control legible in light and dark at 25% brightness, which
-  `scripts/contrast_check.py` measures on every PR (ARCHITECTURE §9.1).
+  every screen; every text and control legible in light and dark at 25% brightness
+  (ARCHITECTURE §9.1), measured on the built web app by MA-304, QA on request
+  (iOS QA comes after MA-165, with no story yet); MA-303 stopped
+  `scripts/contrast_check.py`, which measured it on the boards.
 - **Web Push (MA-200):** a reply or a check-in reaches the installed web app
   when it is closed, only on a device with no fresh presence, under the same
   privacy rule as Apple push; the VAPID private key is a write-only SSM
@@ -2122,7 +2145,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 50.25 (and 3.5 of yours) | 41 | Mon 2 Nov 2026 | Wed 6 Jan 2027 |
+| 0 Foundations at every door | 51.25 (and 3.5 of yours) | 41 | Mon 2 Nov 2026 | Wed 6 Jan 2027 |
 | 1 Talk: sign in and chat with the agent at every door | 109 (and 0.5 of yours) | 88 | Thu 7 Jan 2027 | Thu 13 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Fri 14 May 2027 | Fri 9 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Mon 12 Jul 2027 | Fri 30 Jul 2027 |
@@ -2166,8 +2189,10 @@ uv run pytest --cov --cov-fail-under=90
 terraform fmt -check -recursive infra
 for env in dev prod; do terraform -chdir=infra/$env validate; done
 tflint --recursive
-# when web/ changed (MA-194, MA-269): svelte-check, eslint, vitest, Playwright 1.64 + @axe-core/playwright WCAG 2.2 AA + Argos CI visual & ARIA snapshots at 390 and 1440 in both themes, pnpm audit
-(cd web && npm run check && npm run lint && npm test && npm run test:e2e && npm audit)
+# when web/ changed (MA-194): svelte-check, eslint and vitest run on every PR touching `web/`; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304)
+(cd web && npm run check && npm run lint && npm test && npm audit)
+# QA on request (MA-304): Playwright 1.64 + @axe-core/playwright WCAG 2.2 AA + Argos CI visual & ARIA snapshots at 390 and 1440 in both themes
+(cd web && npm run test:e2e)
 # when ios/ changed (MA-165, MA-166, MA-273): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks; Maestro syntax + local 5-simulator matrix
 python3 scripts/maestro_local.py check-syntax
 npm run lint --prefix ios && npm test --prefix ios
@@ -2179,8 +2204,8 @@ python3 scripts/maestro_local.py run --up-to-phase <N>
 
 Plus: golden tests for any engine or wealth maths change, the old tracker's
 cases included; a card change ships with both its simple and technical
-rendering at both doors, and a screen change its Playwright screenshots and
-its snapshot tests in both themes; the web budgets hold (INP ≤ 200 ms and
+rendering at both doors, and a screen change its snapshot tests in both
+themes (its Playwright screenshots when Arun asks for QA, MA-304); the web budgets hold (INP ≤ 200 ms and
 LCP ≤ 2.5 s on a mid phone, 60 fps scroll), and so do the iOS benches in
 `PERFORMANCE.md` (no dropped frames at 120 Hz); no secret anywhere; cost
 stated when a paid API is touched; every new write path, the in-place
