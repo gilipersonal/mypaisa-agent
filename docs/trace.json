@@ -8673,7 +8673,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Stop the checks on the design boards, and make plan-sync and the review ledger faster and smarter",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "9.1",
@@ -8682,13 +8682,13 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that. I need this checks as QA when I ask, but on actual code implemented (probably using playwright and Argos CI tool). Plan Sync is for keeping the Jira, confluence and implementation in sync. We can keep that but it needs to faster and smart. No need to any check on prototype v5.\" QA on code with Playwright and Argos, on request, follows with MA-194 and MA-165.",
+      "notes": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that. I need this checks as QA when I ask, but on actual code implemented (probably using playwright and Argos CI tool). Plan Sync is for keeping the Jira, confluence and implementation in sync. We can keep that but it needs to faster and smart. No need to any check on prototype v5.\" QA on code with Playwright and Argos, on request, follows with MA-194 and MA-165. Merged 2 Nov 2026 (PR #78) after review round 1; MA-305 folded its CI workflow into .github/workflows/ci.yml.",
       "code": [
         "scripts/plan_sync.py",
         "scripts/review_regress.py",
         "scripts/confluence_docs.py",
         ".claude/hooks/plan_sync_hook.py",
-        ".github/workflows/plan-sync.yml"
+        ".github/workflows/ci.yml"
       ]
     },
     {
@@ -8707,6 +8707,26 @@
       "design": "none",
       "boards": [],
       "notes": "Arun, 2 Nov 2026, in MA-303: \"I need this checks as QA when I ask, but on actual code implemented (probably using playwright and Argos CI tool)\". Runs only when Arun asks: a manual run of the QA workflow or a qa label on the PR. Brings the 25% brightness floors (MA-181) and the 320 to 1920 width sweep (MA-240) to the web app as built, Arun, 2 Nov 2026. Depends on MA-194."
+    },
+    {
+      "key": "MA-305",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "One CI workflow with named jobs in parallel, as mypaisaa-prediction has",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "18.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 2 Nov 2026: \"I see for all PR, 2 times it is running, why? See how MP has so nice steps on CI ... MA does not have anything like that\", then \"Yes, build it\". One workflow, CI, with Plan sync, Plan-sync selftest, Review tooling, Confluence receipts and Workflow lint in parallel; concurrency cancels a superseded run; actions pinned to commit SHAs; a description edit no longer reruns the checks. jira-key stays its own workflow (it reruns on a title edit). Web, Backend and iOS jobs join with MA-24, MA-194 and MA-165.",
+      "code": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/jira-key.yml"
+      ]
     }
   ],
   "others": [

@@ -124,7 +124,7 @@ done, take it to the merge question without stopping: commit, push, raise the
 PR, move the issue to In Review, wait for the checks. Then ask exactly once,
 naming the PR and its checks:
 
-> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key, plan-sync). Review it
+> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (CI, jira-key). Review it
 > first (lanes: scripts, trace, docs, rules; one round, each later round asked first), then merge,
 > or merge it into main now? (MA-7 goes to Done after the merge.)
 
