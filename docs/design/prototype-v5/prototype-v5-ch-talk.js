@@ -62,7 +62,7 @@
     '.pv5-talk-view{border-radius:16px;min-height:300px;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;color:var(--mp-ink-2);font:500 15px/20px var(--mp-font);background:repeating-linear-gradient(135deg,var(--mp-surface-2) 0 12px,var(--mp-surface) 12px 24px);box-shadow:inset 0 0 0 1px var(--mp-line)}',
     '.pv5-talk-chips{display:flex;gap:6px;flex-wrap:wrap}',
     '.pv5-talk-seg{display:inline-flex;gap:2px;background:var(--mp-surface-2);border-radius:10px;padding:2px}',
-    '.pv5-talk-seg button{min-height:40px;border:0;background:transparent;border-radius:8px;padding:0 12px;font:600 13px/18px var(--mp-font);color:var(--mp-ink-2);cursor:pointer}',
+    '.pv5-talk-seg button{min-height:44px;min-width:44px;border:0;background:transparent;border-radius:8px;padding:0 12px;font:600 13px/18px var(--mp-font);color:var(--mp-ink-2);cursor:pointer}',
     '.pv5-talk-seg button.on{background:var(--mp-seg-on);color:var(--mp-ink);box-shadow:var(--mp-shadow)}',
     '.pv5-talk-step2{display:flex;gap:10px;align-items:flex-start;font:400 14px/19px var(--mp-font)}',
     '.pv5-talk-step2 b{width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--mp-surface-2);font:700 12px/1 var(--mp-font)}',
@@ -179,9 +179,9 @@
       '<div class="pv5-talk-col">' + left + '</div><div class="pv5-talk-col">' + right + '</div>') + '</div>';
   }
   function swrow(o) {
-    return '<button type="button" class="mp-row rowbtn pv5-talk-swrow' + (o.ring ? ' pnext' : '') + '"' + K.go(o.go) + '>' + (o.icon ? '<span class="mp-icontile" style="background:var(--mp-surface-2)">' + K.ms(o.icon) + '</span>' : '') +
+    return '<button type="button" class="mp-row rowbtn pv5-talk-swrow' + (o.ring ? ' pnext' : '') + '" role="switch" aria-checked="' + !!o.on + '" aria-label="' + String(o.t).replace(/"/g, '&quot;') + '"' + K.go(o.go) + '>' + (o.icon ? '<span class="mp-icontile" style="background:var(--mp-surface-2)">' + K.ms(o.icon) + '</span>' : '') +
       '<div class="f1 fx col"><span class="mp-sub" style="font-weight:600">' + o.t + '</span>' + (o.s ? '<span class="mp-foot mp-ink2">' + o.s + '</span>' : '') + '</div>' +
-      '<span class="mp-switch' + (o.on ? ' on' : '') + '" role="switch" aria-checked="' + !!o.on + '"><span class="mp-switch-k"></span></span></button>';
+      '<span class="mp-switch' + (o.on ? ' on' : '') + '" aria-hidden="true"><span class="mp-switch-k"></span></span></button>';
   }
   function meter(frac, marks) {
     var m = (marks || []).map(function (p) { return '<b style="left:' + p + '%"></b>'; }).join('');

@@ -32,8 +32,10 @@ NW_SERIES = [
     ("Fri 23 Oct", 440180, "Fri close"),
     ("Sat 24 Oct", 440090, "weekend FX"),
     ("Sun 25 Oct", HH["totals_before_new_record"]["net_gbp"], "before savings"),
-    ("Mon 26 Oct", HH["totals_after_new_record"]["net_gbp"], "+£5,000 Monzo"),
+    ("Mon 26 Oct", HH["totals_after_new_record"]["net_gbp"], "{save} to Monzo"),
 ]
+SAVE_GBP = 5000  # Monday's recorded move to Monzo (household-v4.json)
+HIDDEN = "Hidden"  # what Privacy mode says in place of every amount and rate (DESIGN.md: aria-label="Hidden")
 AF = HH["totals_after_new_record"]
 BUD = HH["budget_oct"]
 FAN20 = [r for r in FP["R26"]["fan"] if r["year"] <= 2046]
@@ -42,7 +44,10 @@ SURP_R4 = [r for r in FP["forecast"]["R4"]["years"] if 2027 <= r["year"] <= 2046
 NQ = FC["nasdaq"]
 
 
-def gbp(n: float, sign: bool = False) -> str:
+def gbp(n: float, sign: bool = False, priv: bool = False) -> str:
+    """The one money formatter for plain text (aria-label, aria-valuetext, scrub payload): Privacy mode says Hidden."""
+    if priv:
+        return HIDDEN
     v = round(n)
     s = f"£{abs(v):,}"
     if v < 0:
@@ -52,8 +57,8 @@ def gbp(n: float, sign: bool = False) -> str:
     return s
 
 
-def gbp_m(n: float) -> str:
-    return f"£{n / 1_000_000:.2f}m"
+def gbp_m(n: float, priv: bool = False) -> str:
+    return HIDDEN if priv else f"£{n / 1_000_000:.2f}m"
 
 
 def pc(v: float, d: int = 0, plus: bool = True) -> str:
@@ -62,10 +67,21 @@ def pc(v: float, d: int = 0, plus: bool = True) -> str:
 
 
 def mask(text: str, priv: bool) -> str:
+    """The money formatter for drawn text: with Privacy on the figure never reaches the DOM, only a placeholder pill
+    that reads Hidden. Its bullets give the pill its line height (the canvas runtime drops a text node of blank
+    spaces, which left a zero-height, invisible mask); .mp-mask draws them in transparent ink, and they are no figure."""
     if not priv:
         return text
-    pad = "\u00a0" * max(4, min(8, len(text)))
-    return f'<span class="mp-mask" role="img" aria-label="hidden"><span aria-hidden="true">{pad}</span></span>'
+    pad = "•" * max(4, min(8, len(text)))
+    return f'<span class="mp-mask" role="img" aria-label="{HIDDEN}"><span aria-hidden="true">{pad}</span></span>'
+
+
+RATE = "£1 = ₹112.50"  # Fri 23 Oct close (ECB); ARCHITECTURE: privacy shows no amount and no rate (a rate with one amount gives the other away)
+
+
+def scrub_text(p: dict) -> str:
+    """The readout a scrub point shows; the same words become the slider's aria-valuetext."""
+    return f'{p["k"]} · {p["v"]}' + (f' ({p["s"]})' if p.get("s") else "")
 
 
 def ymap(v: float, lo: float, hi: float, pad_t: float = 8.0, pad_b: float = 8.0) -> float:
@@ -114,11 +130,17 @@ def smooth_d(pts: list[tuple[float, float]]) -> str:
     return " ".join(cmds)
 
 
-def scrub_attr(points: list[dict], priv: bool = False) -> str:
-    if priv:
-        return ""
-    raw = _html.escape(json.dumps(points, separators=(",", ":")), quote=True)
-    return f' data-scrub="{raw}" tabindex="0"'
+def scrub_attr(points: list[dict], label: str) -> str:
+    """A scrubbable chart: one focusable slider whose label is the chart's plain-language summary.
+    The points come from the formatters above, so with Privacy on every amount in them already says Hidden
+    while dates and percentages stay."""
+    raw = _html.escape(json.dumps(points, separators=(",", ":"), ensure_ascii=False), quote=True)
+    last = len(points) - 1
+    return (
+        f' data-scrub="{raw}" tabindex="0" role="slider" aria-label="{_html.escape(label, quote=True)}"'
+        f' aria-valuemin="0" aria-valuemax="{last}" aria-valuenow="{last}"'
+        f' aria-valuetext="{_html.escape(scrub_text(points[last]), quote=True)}"'
+    )
 
 
 def scrub_overlay() -> str:
@@ -144,13 +166,12 @@ def hero_block(mode: str, priv: bool = False, compact: bool = False) -> str:
     lo, hi = min(vals) - 650, max(vals) + 450
     pts = [(round(4 + i / (len(NW_SERIES) - 1) * 92, 2), ymap(v, lo, hi, 14, 16)) for i, (_, v, _) in enumerate(NW_SERIES)]
     scrub_pts = [
-        {"x": pts[i][0], "y": pts[i][1], "k": d, "v": gbp(v), "s": note}
+        {"x": pts[i][0], "y": pts[i][1], "k": d, "v": gbp(v, priv=priv), "s": note.format(save=gbp(SAVE_GBP, sign=True, priv=priv))}
         for i, (d, v, note) in enumerate(NW_SERIES)
     ]
     pulse_aria = (
-        "Recorded household net worth over 5 days (amounts hidden)."
-        if priv
-        else "Recorded household net worth from Thu 22 Oct £439,958 to Mon 26 Oct £444,951."
+        f"Recorded household net worth, from {gbp(NW_SERIES[0][1], priv=priv)} on {NW_SERIES[0][0]}"
+        f" to {gbp(NW_SERIES[-1][1], priv=priv)} on {NW_SERIES[-1][0]}."
     )
 
     if mode == "c":
@@ -185,8 +206,7 @@ def hero_block(mode: str, priv: bool = False, compact: bool = False) -> str:
             '<div class="fx jb ac gap8"><span class="mp-cap mp-hero-2">'
             + ("EDITORIAL RANGE · THU 22 TO MON 26 OCT" if mode == "b" else "LIVE PULSE · RECORDED NET WORTH")
             + f'</span><span class="mp-cap mp-hero-2">{mask("low £439,951 · high £444,951", priv)}</span></div>'
-            f'<div class="mp-chartbox hpulse-box"{scrub_attr(scrub_pts, priv)} role="img" '
-            f'aria-label="{pulse_aria}">'
+            f'<div class="mp-chartbox hpulse-box"{scrub_attr(scrub_pts, pulse_aria)}>'
             f'<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{grid}'
             + (f'<path class="harea" d="{d_area}"></path>' if mode == "a" else "")
             + f'<path class="hline" d="{d_line}"></path></svg>'
@@ -203,18 +223,22 @@ def hero_block(mode: str, priv: bool = False, compact: bool = False) -> str:
         "</div>"
     )
     seg = "" if compact else (
-        '<div class="mp-seg"><span class="mp-seg-i segc on">Household</span>'
-        '<span class="mp-seg-i segc">Me</span><span class="mp-seg-i segc">Asha</span></div>'
+        '<div class="mp-seg" role="group" aria-label="Whose view">'
+        + "".join(
+            f'<span class="mp-seg-i segc{" on" if i == 0 else ""}" role="button" tabindex="0" aria-pressed="{"true" if i == 0 else "false"}">{w}</span>'
+            for i, w in enumerate(("Household", "Me", "Asha"))
+        )
+        + "</div>"
     )
     return (
         f'<div class="mp-hero hero">{seg}'
         '<div class="fx jb ac gap8 wrapr"><span class="mp-over mp-hero-2">Household net worth · Mon 26 Oct</span>'
-        '<span class="mp-chip chip-s prc-h">£ GBP · ₹112.50</span></div>'
+        f'<span class="mp-chip chip-s prc-h">£ GBP · {mask("₹112.50", priv)}</span></div>'
         f'<div class="fx ac gap10 wrapr"><span class="mp-num-hero nowrap">{fig}</span>'
         f'<span class="mp-sub mp-w6 hup nowrap">▲ {gain} since Thu 22 Oct</span></div>'
         f"{pulse}{split}"
         '<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span>'
-        "<span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>"
+        f"<span>Fri 23 Oct close · {mask(RATE, priv)} (ECB) · drag any chart to inspect</span></div>"
         "</div>"
     )
 
@@ -305,11 +329,7 @@ def budget_card(mode: str, priv: bool = False) -> str:
         w_act = round(min(100.0, act / scale_max * 100.0), 1)
         w_plan = round(min(100.0, plan / scale_max * 100.0), 1)
         fill_col = "var(--mp-pause)" if over else "var(--mp-meter)"
-        bar_aria = (
-            f"{name}: amounts hidden ({round(act / plan * 100)}% of plan)"
-            if priv
-            else f"{name}: {gbp(act)} spent of {gbp(plan)} plan"
-        )
+        bar_aria = f"{name}: {gbp(act, priv=priv)} spent of {gbp(plan, priv=priv)} plan, {round(act / plan * 100)}% of plan"
 
         if mode == "c":
             lit = min(10, max(1, round(act / plan * 8)))
@@ -411,8 +431,8 @@ def projection_fan_card(mode: str = "a", priv: bool = False) -> str:
             "x": p50[i][0],
             "y": p50[i][1],
             "k": str(r["year"]),
-            "v": f"middle {gbp_m(r['p50'])}",
-            "s": f"8 in 10: {gbp_m(r['p10'])} to {gbp_m(r['p90'])}",
+            "v": f"middle {gbp_m(r['p50'], priv)}",
+            "s": f"8 in 10: {gbp_m(r['p10'], priv)} to {gbp_m(r['p90'], priv)}",
         }
         for i, r in enumerate(FAN20)
     ]
@@ -428,17 +448,15 @@ def projection_fan_card(mode: str = "a", priv: bool = False) -> str:
         mask_idx={0, 1, 2},
     )
     fan_aria = (
-        "20-year household wealth projection from 2026 to 2046 (amounts hidden)."
-        if priv
-        else "20-year household wealth projection from 2026 to 2046: middle path reaches £3,697,000, with 8 in 10 runs between £2,548,000 and £5,766,000."
+        f"20-year household wealth projection from 2026 to 2046: middle path reaches {gbp(end['p50'], priv=priv)},"
+        f" with 8 in 10 runs between {gbp(end['p10'], priv=priv)} and {gbp(end['p90'], priv=priv)}."
     )
     return (
         '<div class="mp-card oncard cpad">'
         '<div class="ctl"><span class="mp-hl">20-year wealth range (2026 to 2046)</span><span class="mp-foot mp-ink2">1,000 runs · today\'s pounds</span></div>'
         f'<p class="pp mp-foot mp-ink2">Starts at {mask(gbp(FP["R26"]["start"]), priv)} · 2036 middle path {mask(gbp(FAN20[10]["p50"]), priv)} · 2046 middle path {mask(gbp(end["p50"]), priv)}.</p>'
         f"{strip}"
-        f'<div class="mp-chartbox ch-164"{scrub_attr(scrub_pts, priv)} role="img" '
-        f'aria-label="{fan_aria}">'
+        f'<div class="mp-chartbox ch-164"{scrub_attr(scrub_pts, fan_aria)}>'
         f'<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{"".join(svg)}</svg>'
         f"{ylbls}{dots}{scrub_overlay()}</div>"
         f'<div class="mp-chartaxis">{ax}</div>'
@@ -486,9 +504,9 @@ def surplus_columns_card(mode: str = "a", run: str = "R1", priv: bool = False) -
             "x": cx,
             "y": top,
             "k": str(y["year"]),
-            "v": f"avg {gbp(avg_m, sign=True)}/mo",
-            "s": f"leanest {y['lowest_month']} {gbp(y['lowest_surplus'], sign=True)}"
-            + (f" · {y['below_floor']} mo below £500" if y["below_floor"] else " · clear of £500 floor"),
+            "v": f"avg {gbp(avg_m, sign=True, priv=priv)}/mo",
+            "s": f"leanest {y['lowest_month']} {gbp(y['lowest_surplus'], sign=True, priv=priv)}"
+            + (f" · {y['below_floor']} mo below {gbp(floor, priv=priv)}" if y["below_floor"] else f" · clear of {gbp(floor, priv=priv)} floor"),
         })
 
     ax = "".join(
@@ -496,10 +514,11 @@ def surplus_columns_card(mode: str = "a", run: str = "R1", priv: bool = False) -
         for k, idx in enumerate((0, 6, 12, 19))
     )
     title = "Monthly surplus by year · before rearranging" if run == "R1" else "Monthly surplus by year · after rearranging"
+    flr = mask("£500", priv)
     badge = (
-        f'<span class="mp-chip chip-s mp-pause">▲ {below_total} months below £500</span>'
+        f'<span class="mp-chip chip-s mp-pause">▲ {below_total} months below {flr}</span>'
         if below_total
-        else '<span class="mp-chip chip-s mp-add">0 months below £500</span>'
+        else f'<span class="mp-chip chip-s mp-add">0 months below {flr}</span>'
     )
     lean = min(years, key=lambda r: r["lowest_surplus"])
     strip = stats_strip(
@@ -512,21 +531,19 @@ def surplus_columns_card(mode: str = "a", run: str = "R1", priv: bool = False) -
         mask_idx={0, 1, 2},
     )
     surp_aria = (
-        f"{title}: {below_total} months below monthly floor between 2027 and 2046 (amounts hidden)."
-        if priv
-        else f'{title}: {below_total} months below the £500 monthly floor between 2027 and 2046; leanest month {lean["lowest_month"]} {gbp(lean["lowest_surplus"], sign=True)}.'
+        f"{title}: {below_total} months below the {gbp(floor, priv=priv)} monthly floor between 2027 and 2046;"
+        f' leanest month {lean["lowest_month"]} {gbp(lean["lowest_surplus"], sign=True, priv=priv)}.'
     )
     return (
         '<div class="mp-card oncard cpad">'
         f'<div class="ctl"><span class="mp-hl">{title}</span>{badge}</div>'
-        '<p class="pp mp-foot mp-ink2">Amber bars mark any year where a single month dips under the £500 buffer floor (even when the year\'s average stays positive).</p>'
+        f'<p class="pp mp-foot mp-ink2">Amber bars mark any year where a single month dips under the {flr} buffer floor (even when the year\'s average stays positive).</p>'
         f"{strip}"
-        f'<div class="mp-chartbox ch-136"{scrub_attr(scrub_pts, priv)} role="img" '
-        f'aria-label="{surp_aria}">'
+        f'<div class="mp-chartbox ch-136"{scrub_attr(scrub_pts, surp_aria)}>'
         f'<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{"".join(svg)}</svg>'
         f"{scrub_overlay()}</div>"
         f'<div class="mp-chartaxis">{ax}</div>'
-        '<div class="lgd"><span><i class="sw-ok"></i>every month ≥ £500</span><span><i class="sw-low"></i>has month below £500</span><span><i class="sw-flr"></i>£500 floor</span></div>'
+        f'<div class="lgd"><span><i class="sw-ok"></i>every month ≥ {flr}</span><span><i class="sw-low"></i>has month below {flr}</span><span><i class="sw-flr"></i>{flr} floor</span></div>'
         "</div>"
     )
 
@@ -638,8 +655,7 @@ def candles_card(mode: str = "a", priv: bool = False) -> str:
         '<div class="mp-card oncard cpad">'
         f'<div class="ctl"><span class="mp-hl">NASDAQ 100 ETF · 60d + 4w fan</span><span class="mp-foot mp-ink2">Asha · ISA · {val_txt}</span></div>'
         f"{strip}"
-        f'<div class="mp-chartbox ch-184"{scrub_attr(scrub_pts, priv)} role="img" '
-        'aria-label="NASDAQ 100 ETF daily candles for 60 trading days to Fri 23 Oct and 4-week conformal fan: 8 in 10 range −7% to +6%, double top and support near −1%.">'
+        f'<div class="mp-chartbox ch-184"{scrub_attr(scrub_pts, "NASDAQ 100 ETF daily candles for 60 trading days to Fri 23 Oct and 4-week conformal fan: 8 in 10 range −7% to +6%, double top and support near −1%.")}>'
         f'<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{"".join(svg)}</svg>'
         f"{ylbls}{flbls}{scrub_overlay()}</div>"
         f"{rhythm}"
@@ -667,8 +683,8 @@ def pillars_card(mode: str = "a") -> str:
             badge = f'<span class="mp-foot mp-w6 pval {"mp-up" if pos else "mp-dq"}">{val_s}</span>'
         rows.append(
             f'<div class="pil-row pil-{mode}"><span class="mp-foot mp-w6">{label}</span>'
-            f'<span class="mp-track pil-trk" role="img" aria-label="{label}: {val_s}">'
-            f'<i class="pil-zero"></i><i class="pil-bar {fill_cls}" style="{side_style}"></i></span>'
+            f'<span class="mp-track pil-trk has-tick" role="img" aria-label="{label}: {val_s}">'
+            f'<i class="pil-zero"></i><span class="mp-track-clip"><i class="pil-bar {fill_cls}" style="{side_style}"></i></span></span>'
             f"{badge}</div>"
         )
     return (
@@ -739,7 +755,7 @@ CHART_CSS = """
   .segc { display: grid; place-items: center; }
   .prc-h { color: var(--mp-hero-ink); background: var(--mp-hero-2); }
   .hup { color: var(--mp-hero-up); }
-  .t-dark .mp-ink3 { color: var(--mp-ink-2); }
+  .mp .mp-mask { line-height: 1; vertical-align: -0.12em; }
 
   /* Hero & recorded pulse */
   .hero { display: flex; flex-direction: column; gap: 11px; }
@@ -758,7 +774,7 @@ CHART_CSS = """
   .hpulse-bars { display: flex; align-items: flex-end; gap: 6px; height: 54px; padding-top: 4px; }
   .hpulse-col { flex: 1 1 0; min-height: 12px; border-radius: 6px 6px 3px 3px; background: var(--mp-hero-ink-2); opacity: 0.42; display: block; }
   .hpulse-col.is-now { background: var(--mp-coral); opacity: 1; }
-  .hpulse-ax { display: flex; justify-content: space-between; font: 500 11px/14px var(--mp-font); color: var(--mp-hero-ink-2); }
+  .hpulse-ax { display: flex; justify-content: space-between; font: 500 12px/14px var(--mp-font); color: var(--mp-hero-ink-2); }
   .hsplit3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; container-type: inline-size; }
   .hsplit3 > div { background: var(--mp-hero-2); border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   @container screen (max-width: 359px) { .hsplit3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -791,9 +807,9 @@ CHART_CSS = """
   .cb-b.up { fill: var(--mp-surface); stroke: var(--mp-up); stroke-width: 1.3; vector-effect: non-scaling-stroke; }
   .pneck { stroke: var(--mp-chart-4); stroke-width: 1.8; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; }
   .psup { stroke: var(--mp-chart-2); stroke-width: 1.8; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; }
-  .yl { position: absolute; left: 0; transform: translateY(-100%); padding-bottom: 1px; font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; pointer-events: none; }
-  .fl { position: absolute; right: 0; transform: translateY(-50%); font: 600 11px/14px var(--mp-font); color: var(--mp-ink); white-space: nowrap; pointer-events: none; }
-  .tdl { position: absolute; bottom: 2px; transform: translateX(calc(-100% - 4px)); font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; pointer-events: none; }
+  .yl { position: absolute; left: 0; transform: translateY(-100%); padding-bottom: 1px; font: 500 12px/14px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; pointer-events: none; }
+  .fl { position: absolute; right: 0; transform: translateY(-50%); font: 600 12px/14px var(--mp-font); color: var(--mp-ink); white-space: nowrap; pointer-events: none; }
+  .tdl { position: absolute; bottom: 2px; transform: translateX(calc(-100% - 4px)); font: 500 12px/14px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; pointer-events: none; }
   .mp-chartaxis { margin-top: 4px; }
   .mp-chartaxis > .ax0 { transform: none; }
   .mp-chartaxis > .ax1 { transform: translateX(-100%); }
@@ -833,6 +849,7 @@ CHART_CSS = """
   /* Zero-spine diverging pillars */
   .pil-row { display: grid; grid-template-columns: minmax(84px, 1.15fr) minmax(72px, 1fr) auto; align-items: center; gap: 8px; min-height: 28px; }
   .pil-trk { position: relative; height: 9px; }
+  .pil-trk > .mp-track-clip { position: relative; }
   .pil-zero { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1.5px; background: var(--mp-ink-2); display: block; }
   .pil-bar { position: absolute; top: 0; bottom: 0; border-radius: 999px; display: block; }
   .pfor { background: var(--mp-pillar-for); }
@@ -865,9 +882,9 @@ CHART_CSS = """
   .mp5-scrub.on { display: block; }
   .mp5-scrub-line { position: absolute; top: 0; bottom: 0; width: 1.5px; background: var(--mp-ink); opacity: 0.45; transform: translateX(-50%); }
   .mp5-scrub-dot { position: absolute; width: 11px; height: 11px; border-radius: 50%; background: var(--mp-coral); box-shadow: 0 0 0 2.5px var(--mp-surface); transform: translate(-50%, -50%); }
-  .mp5-scrub-pill { position: absolute; top: 4px; transform: translateX(-50%); padding: 4px 8px; border-radius: 8px; background: var(--mp-hero); color: var(--mp-hero-ink); font: 600 11px/14px var(--mp-font); white-space: nowrap; box-shadow: var(--mp-shadow); }
+  .mp5-scrub-pill { position: absolute; top: 4px; transform: translateX(-50%); padding: 4px 8px; border-radius: 8px; background: var(--mp-hero); color: var(--mp-hero-ink); font: 600 12px/14px var(--mp-font); white-space: nowrap; box-shadow: var(--mp-shadow); }
   .scrub-demo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); }
-  .scrub-sample { font: 600 11px/15px var(--mp-font); padding: 4px 9px; border-radius: 8px; background: var(--mp-hero); color: var(--mp-hero-ink); font-variant-numeric: tabular-nums; }
+  .scrub-sample { font: 600 12px/15px var(--mp-font); padding: 4px 9px; border-radius: 8px; background: var(--mp-hero); color: var(--mp-hero-ink); font-variant-numeric: tabular-nums; }
 
   /* iOS phone & iPad layout helpers */
   .lg > * { position: relative; z-index: 1; }
@@ -905,6 +922,7 @@ CHART_CSS = """
   .mp-side-i { cursor: default; }
   .wtabs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; }
   .mp-tab:not(.on) { color: var(--mp-ink-2); }
+  .wtabs .mp-tab { font-size: 12px; line-height: 14px; }
   .whose { flex: 0 1 280px; min-width: 210px; }
   .iconbtn.on { background: var(--mp-hero); color: var(--mp-hero-ink); }
   .pstat { display: none; }
@@ -928,12 +946,14 @@ CHART_CSS = """
   .kvl > :last-child { font-weight: 600; text-align: right; margin-left: auto; }
   .chcomp { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px 14px; border-top: 1px solid var(--mp-line); }
   .wchips { display: flex; gap: 8px; flex-wrap: wrap; }
-  .wchip { min-height: 34px; padding: 0 11px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; font: 600 13px/18px var(--mp-font); background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line); }
+  .wchip { position: relative; min-height: 34px; padding: 0 11px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px; font: 600 13px/18px var(--mp-font); background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line); }
   .wchip .ms { font-size: 17px; color: var(--mp-accent); }
+  .wchip::after { content: ""; position: absolute; inset: -5px 0; }
   .cfld { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 6px 0 14px; border-radius: 22px; background: var(--mp-surface); box-shadow: inset 0 0 0 1.5px var(--mp-ink-2); }
   .cfld .ph { flex: 1; font: 400 14px/19px var(--mp-font); color: var(--mp-ink-2); }
-  .sendb { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--mp-accent); color: var(--mp-on-accent); flex: none; }
+  .sendb { position: relative; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--mp-accent); color: var(--mp-on-accent); flex: none; }
   .sendb .ms { font-size: 19px; }
+  .sendb::after { content: ""; position: absolute; inset: -5px; }
   .mpm { display: block; flex: none; }
   .mpm-coin { fill: var(--mp-hero); }
   .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
@@ -944,82 +964,122 @@ CHART_CSS = """
 SCRUB_JS = """
       class Component extends DCLogic {
         componentDidMount() {
+          // Chart scrub: a [data-scrub] chart is one focusable slider. Its points were formatted at build time, so with
+          // Privacy on every amount in them already says Hidden; this code only shows them.
           const ptsOf = (box) => {
-            const raw = box && box.getAttribute('data-scrub');
-            if (!raw) return null;
-            try { const pts = JSON.parse(raw); return pts && pts.length ? pts : null; } catch (_) { return null; }
+            if (box.__pts !== undefined) return box.__pts;
+            let pts = null;
+            try { pts = JSON.parse(box.getAttribute('data-scrub') || ''); } catch (_) { pts = null; }
+            box.__pts = pts && pts.length ? pts : null;
+            return box.__pts;
           };
+          const say = (p) => p.k + ' · ' + p.v + (p.s ? ' (' + p.s + ')' : '');
           const renderIdx = (box, pts, idx) => {
             const ov = box.querySelector('.mp5-scrub');
             if (!ov) return;
             const i = Math.max(0, Math.min(pts.length - 1, idx));
+            const p = pts[i];
             box.setAttribute('data-scrub-idx', String(i));
-            const best = pts[i];
+            box.setAttribute('aria-valuenow', String(i));
+            box.setAttribute('aria-valuetext', say(p));
             ov.classList.add('on');
             const ln = ov.querySelector('.mp5-scrub-line');
             const dt = ov.querySelector('.mp5-scrub-dot');
             const pl = ov.querySelector('.mp5-scrub-pill');
-            if (ln) ln.style.left = best.x + '%';
-            if (dt) { dt.style.left = best.x + '%'; dt.style.top = best.y + '%'; }
-            if (pl) {
-              pl.textContent = best.k + ' · ' + best.v + (best.s ? ' (' + best.s + ')' : '');
-              pl.style.left = Math.max(18, Math.min(82, best.x)) + '%';
-            }
+            if (ln) ln.style.left = p.x + '%';
+            if (dt) { dt.style.left = p.x + '%'; dt.style.top = p.y + '%'; }
+            if (pl) { pl.textContent = say(p); pl.style.left = Math.max(18, Math.min(82, p.x)) + '%'; }
           };
-          const show = (box, clientX) => {
-            const pts = ptsOf(box);
-            if (!pts) return;
+          const idxAt = (box, pts, clientX) => {
             const r = box.getBoundingClientRect();
-            if (!r.width) return;
+            if (!r.width) return -1;
             const pct = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
             let bi = 0, bd = Math.abs(pts[0].x - pct);
-            for (let i = 1; i < pts.length; i++) {
-              const d = Math.abs(pts[i].x - pct);
-              if (d < bd) { bi = i; bd = d; }
-            }
-            renderIdx(box, pts, bi);
+            for (let i = 1; i < pts.length; i++) { const d = Math.abs(pts[i].x - pct); if (d < bd) { bi = i; bd = d; } }
+            return bi;
+          };
+          // pointer moves are drawn once a frame; a hide drops any frame still waiting for the same chart
+          let raf = 0, pend = null;
+          const queue = (box, clientX) => {
+            pend = { box, clientX };
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+              raf = 0;
+              const q = pend; pend = null;
+              if (!q) return;
+              const pts = ptsOf(q.box);
+              if (!pts) return;
+              const i = idxAt(q.box, pts, q.clientX);
+              if (i >= 0) renderIdx(q.box, pts, i);
+            });
           };
           const hide = (box) => {
-            const ov = box && box.querySelector('.mp5-scrub');
+            if (!box) return;
+            if (pend && pend.box === box) pend = null;
+            box.removeAttribute('data-scrub-idx');
+            const ov = box.querySelector('.mp5-scrub');
             if (ov) ov.classList.remove('on');
           };
-          document.addEventListener('pointermove', (e) => {
-            const box = e.target.closest && e.target.closest('[data-scrub]');
-            if (box) show(box, e.clientX);
-          });
+          const boxOf = (e) => (e.target && e.target.closest ? e.target.closest('[data-scrub]') : null);
           document.addEventListener('pointerdown', (e) => {
-            const box = e.target.closest && e.target.closest('[data-scrub]');
-            if (box) show(box, e.clientX);
+            const box = boxOf(e);
+            if (!box || !ptsOf(box)) return;
+            if (e.pointerType !== 'mouse') { try { box.setPointerCapture(e.pointerId); } catch (_) {} }
+            queue(box, e.clientX);
+          });
+          document.addEventListener('pointermove', (e) => {
+            const box = boxOf(e);
+            if (box && ptsOf(box)) queue(box, e.clientX);
           });
           document.addEventListener('pointerup', (e) => {
-            if (e.pointerType === 'touch') {
-              const box = e.target.closest && e.target.closest('[data-scrub]');
-              if (box) hide(box);
-            }
-          });
-          document.addEventListener('pointercancel', (e) => {
-            const box = e.target.closest && e.target.closest('[data-scrub]');
-            if (box) hide(box);
-          });
-          document.addEventListener('pointerout', (e) => {
-            const box = e.target.closest && e.target.closest('[data-scrub]');
-            if (box && (!e.relatedTarget || !box.contains(e.relatedTarget))) hide(box);
-          });
-          document.addEventListener('keydown', (e) => {
-            const box = e.target.closest && e.target.closest('[data-scrub]');
+            const box = boxOf(e);
             if (!box) return;
-            if (e.key === 'Escape') { hide(box); return; }
-            if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-            const pts = ptsOf(box);
-            if (!pts) return;
-            e.preventDefault();
-            const cur = parseInt(box.getAttribute('data-scrub-idx') || '-1', 10);
-            const next = cur < 0 ? (e.key === 'ArrowRight' ? 0 : pts.length - 1) : cur + (e.key === 'ArrowRight' ? 1 : -1);
-            renderIdx(box, pts, next);
+            try { box.releasePointerCapture(e.pointerId); } catch (_) {}
+            if (e.pointerType !== 'mouse') hide(box);
+          });
+          document.addEventListener('pointercancel', (e) => { hide(boxOf(e)); });
+          document.addEventListener('pointerout', (e) => {
+            const box = boxOf(e);
+            if (box && e.pointerType === 'mouse' && (!e.relatedTarget || !box.contains(e.relatedTarget))) hide(box);
           });
           document.addEventListener('focusout', (e) => {
-            const box = e.target.closest && e.target.closest('[data-scrub]');
-            if (box) hide(box);
+            const box = boxOf(e);
+            if (box && (!e.relatedTarget || !box.contains(e.relatedTarget))) hide(box);
+          });
+          const KEYS = ['ArrowLeft', 'ArrowRight', 'Home', 'End', 'Escape'];
+          document.addEventListener('keydown', (e) => {
+            const box = boxOf(e);
+            if (box && e.target === box) {
+              if (!KEYS.includes(e.key)) return;
+              const pts = ptsOf(box);
+              if (!pts) return;
+              e.preventDefault();
+              if (e.key === 'Escape') { hide(box); return; }
+              const cur = parseInt(box.getAttribute('data-scrub-idx') || '-1', 10);
+              let next;
+              if (e.key === 'Home') next = 0;
+              else if (e.key === 'End') next = pts.length - 1;
+              else if (cur < 0) next = e.key === 'ArrowRight' ? 0 : pts.length - 1;
+              else next = cur + (e.key === 'ArrowRight' ? 1 : -1);
+              renderIdx(box, pts, next);
+              return;
+            }
+            // drawn controls (role=button, link or tab on a span): Enter and Space press them; arrows move along a tab bar
+            const el = e.target;
+            if (!el || !el.getAttribute || el.tagName === 'BUTTON' || el.tagName === 'A') return;
+            const role = el.getAttribute('role');
+            if (role === 'tab' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+              const tabs = Array.from(el.closest('[role="tablist"]').querySelectorAll('[role="tab"]'));
+              const to = tabs[(tabs.indexOf(el) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+              tabs.forEach((t) => t.setAttribute('tabindex', t === to ? '0' : '-1'));
+              e.preventDefault();
+              to.focus();
+              return;
+            }
+            if ((role === 'button' || role === 'link' || role === 'tab') && (e.key === 'Enter' || (e.key === ' ' && role !== 'link'))) {
+              e.preventDefault();
+              el.click();
+            }
           });
         }
         renderVals() { return {}; }
@@ -1098,6 +1158,8 @@ def board_section(num: str, name: str, keys: str, lead: str, frames: list[str], 
 
 
 # ------------------------------------------------------------------ Device & Browser frame wrappers
+B = 'role="button" tabindex="0"'  # a drawn control: focusable, Enter and Space press it (SCRUB_JS)
+CUR = ' aria-current="page"'
 SB_ICONS = '<span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span>'
 IOS_TABS = [("chat_bubble", "Chat"), ("home", "Home"), ("insights", "Activity"), ("account_circle", "You")]
 IOS_SIDE = [("chat_bubble", "Chat"), ("home", "Home"), ("donut_small", "Assets"), ("credit_card", "Debts"), ("savings", "Budget"), ("trending_up", "Projection"), ("insights", "Activity"), ("history", "Audit")]
@@ -1106,8 +1168,12 @@ WEB_TABS = [("chat_bubble", "Chat", False), ("home", "Overview", True), ("donut_
 
 
 def ios_tabdock(on: str = "Home") -> str:
-    tabs = "".join(f'<span class="tab{" on" if l == on else ""}"><span class="ms" aria-hidden="true">{i}</span>{l}</span>' for i, l in IOS_TABS)
-    return f'<div class="edge-bot"></div><div class="tabdock"><div class="tabs lg">{tabs}</div><span class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div><div class="homebar"></div>'
+    tabs = "".join(
+        f'<span class="tab{" on" if l == on else ""}" role="tab" aria-selected="{"true" if l == on else "false"}" tabindex="{"0" if l == on else "-1"}">'
+        f'<span class="ms" aria-hidden="true">{i}</span>{l}</span>'
+        for i, l in IOS_TABS
+    )
+    return f'<div class="edge-bot"></div><div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist">{tabs}</div><span class="tabsearch lg" {B} aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div><div class="homebar"></div>'
 
 
 def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", priv: bool = False) -> str:
@@ -1115,8 +1181,8 @@ def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", priv: boo
     eye_cls = "gbtn lg on" if priv else "gbtn lg"
     nav = (
         f'<div class="nav"><span></span><span class="fx gap8">'
-        f'<span class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1" aria-hidden="true">{eye}</span></span>'
-        '<span class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>'
+        f'<span class="{eye_cls}" {B} aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1" aria-hidden="true">{eye}</span></span>'
+        f'<span class="gtext lg" {B}><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>'
     )
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
@@ -1130,10 +1196,13 @@ def iphone_frame(cap: str, theme: str, body: str, title: str = "Home", priv: boo
 
 
 def ipad_frame(cap: str, theme: str, left_col: str, right_col: str, hero: str, title: str = "Home") -> str:
-    side = "".join(f'<span class="side-i{" on" if l == "Home" else ""}"><span class="ms" aria-hidden="true">{i}</span>{l}</span>' for i, l in IOS_SIDE)
+    side = "".join(
+        f'<span class="side-i{" on" if l == "Home" else ""}" role="link" tabindex="0"{CUR if l == "Home" else ""}><span class="ms" aria-hidden="true">{i}</span>{l}</span>'
+        for i, l in IOS_SIDE
+    )
     chat = (
         '<div class="insp"><div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>'
-        '<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg" aria-label="New conversation"><span class="ms z1" aria-hidden="true">edit_square</span></span></div>'
+        f'<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg" {B} aria-label="New conversation"><span class="ms z1" aria-hidden="true">edit_square</span></span></div>'
         '<div class="chfadet"></div>'
         '<div class="ichat"><div class="chat">'
         '<div class="daysep">Mon 26 Oct</div>'
@@ -1142,15 +1211,15 @@ def ipad_frame(cap: str, theme: str, left_col: str, right_col: str, hero: str, t
         '<div class="ai-text">Net worth is £444,951 (+£4,993 since Thu 22 Oct), and October spending sits £436 under plan with a 40.6% savings rate. Drag any chart beside us to inspect a day or year.</div>'
         "</div></div></div></div>"
         '<div class="edge-bot"></div>'
-        '<div class="composer cb20"><div class="chips"><span class="gchip lg"><span class="ms" aria-hidden="true">savings</span><span>October pace</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">trending_up</span><span>2046 range</span></span></div>'
-        '<div class="cbar"><span class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></span></span></div></div></div>'
+        f'<div class="composer cb20"><div class="chips"><span class="gchip lg" {B}><span class="ms" aria-hidden="true">savings</span><span>October pace</span></span><span class="gchip lg" {B}><span class="ms" aria-hidden="true">trending_up</span><span>2046 range</span></span></div>'
+        f'<div class="cbar"><span class="cplus lg" {B} aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1" {B} aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></span></span></div></div></div>'
     )
     return (
         f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div>'
         f'<div class="dev dev-ipad-l mp ipad {theme}"><div class="scrn srow">'
-        f'<div class="sidebar sb lg"><div class="side-h sh0">MyPaisa</div>{side}<div class="side-h">Household</div><span class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>'
+        f'<div class="sidebar sb lg" role="navigation" aria-label="Sidebar"><div class="side-h sh0">MyPaisa</div>{side}<div class="side-h">Household</div><span class="side-i" role="link" tabindex="0"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>'
         f'<div class="main"><div class="sbar"><span>9:41 Mon 26 Oct</span><span></span></div>'
-        f'<div class="nav"><span class="largetitle navt">{title}</span><span class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></span></div>'
+        f'<div class="nav"><span class="largetitle navt">{title}</span><span class="gbtn lg" {B} aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span></div>'
         f'<div class="scroll"><div class="ipg">{hero}<div class="g2"><div class="dv-col" style="gap:14px">{left_col}</div><div class="dv-col" style="gap:14px">{right_col}</div></div></div></div>'
         f'<div class="edge-bot"></div></div>{chat}</div></div></div>'
     )
@@ -1158,11 +1227,11 @@ def ipad_frame(cap: str, theme: str, left_col: str, right_col: str, hero: str, t
 
 def browser_frame(cap: str, theme: str, width_cls: str, hero: str, col1: str, col2: str, title: str = "Overview", priv: bool = False) -> str:
     side_items = "".join(
-        f'<span class="mp-side-i{" on" if on else ""}"><span class="ms{" ms-fill" if on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
+        f'<span class="mp-side-i{" on" if on else ""}" role="link" tabindex="0"{CUR if on else ""}><span class="ms{" ms-fill" if on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
         for ic, lb, on in WEB_NAV
     )
     tabs = "".join(
-        f'<span class="mp-tab{" on" if on else ""}"><span class="ms{" ms-fill" if on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
+        f'<span class="mp-tab{" on" if on else ""}" role="link" tabindex="0"{CUR if on else ""}><span class="ms{" ms-fill" if on else ""}" aria-hidden="true">{ic}</span>{lb}</span>'
         for ic, lb, on in WEB_TABS
     )
     eye = "visibility_off" if priv else "visibility"
@@ -1178,7 +1247,7 @@ def browser_frame(cap: str, theme: str, width_cls: str, hero: str, col1: str, co
     )
     chat = (
         '<aside class="chatcol" aria-label="Chat">'
-        '<div class="chh"><span class="mp-hl">Chat</span><span class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></span></div>'
+        f'<div class="chh"><span class="mp-hl">Chat</span><span class="iconbtn" {B} aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></span></div>'
         '<div class="chl">'
         '<div class="daysep">Mon 26 Oct</div>'
         '<div class="wme">Show me our October pace and 2046 projection after the Monzo transfer.</div>'
@@ -1190,8 +1259,8 @@ def browser_frame(cap: str, theme: str, width_cls: str, hero: str, col1: str, co
         f'<div class="kvl"><span>2046 middle path</span><span>{mask("£3,697,000", priv)}</span></div>'
         "</div></div></div></div>"
         '<div class="chcomp">'
-        '<div class="wchips"><span class="wchip"><span class="ms" aria-hidden="true">savings</span>October pace</span><span class="wchip"><span class="ms" aria-hidden="true">trending_up</span>2046 fan</span></div>'
-        '<div class="cfld"><span class="ph">Ask MyPaisa about any figure</span><span class="sendb" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></span></div>'
+        f'<div class="wchips"><span class="wchip" {B}><span class="ms" aria-hidden="true">savings</span>October pace</span><span class="wchip" {B}><span class="ms" aria-hidden="true">trending_up</span>2046 fan</span></div>'
+        f'<div class="cfld"><span class="ph">Ask MyPaisa about any figure</span><span class="sendb" {B} aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></span></div>'
         "</div></aside>"
     )
     hero_blk = f"{hero}" if hero else ""
@@ -1202,9 +1271,9 @@ def browser_frame(cap: str, theme: str, width_cls: str, hero: str, col1: str, co
         '<div class="mp-shell">'
         f'<aside class="mp-side mp-shell-side side" aria-label="MyPaisa"><div class="fx ac gap12 brand">{mark_svg}<span class="mp-hl">MyPaisa</span></div>{side_items}<div style="flex:1"></div><div class="mp-foot mp-ink2 side-ft">Arun · admin<br />dashboard.mypaisapp.com</div></aside>'
         '<main class="mp-shell-main"><div class="mp-pagepad">'
-        f'<header class="mp-pagehead"><div><div class="mp-large">{title}</div><div class="mp-foot mp-ink2">Mon 26 Oct 2026 · Fri 23 Oct close · £1 = ₹112.50</div></div>'
-        f'<div class="fx ac gap8"><div class="mp-seg whose" role="group" aria-label="Whose view"><button class="mp-seg-i on" aria-pressed="true">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>'
-        f'<button class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms" aria-hidden="true">{eye}</span></button></div></header>'
+        f'<header class="mp-pagehead"><div><div class="mp-large">{title}</div><div class="mp-foot mp-ink2">Mon 26 Oct 2026 · Fri 23 Oct close · {mask(RATE, priv)}</div></div>'
+        f'<div class="fx ac gap8"><div class="mp-seg whose" role="group" aria-label="Whose view"><button type="button" class="mp-seg-i on" aria-pressed="true">Household</button><button type="button" class="mp-seg-i" aria-pressed="false">Me</button><button type="button" class="mp-seg-i" aria-pressed="false">Asha</button></div>'
+        f'<button type="button" class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms" aria-hidden="true">{eye}</span></button></div></header>'
         f'{hero_blk}<div class="mp-cols"><div class="mp-col">{col1}</div><div class="mp-col">{col2}</div></div>'
         '<span class="mp-foot mp-ink2">Illustrative figures from the engine and price registry; nothing here can trade.</span>'
         f"</div></main>{chat}</div>"
@@ -1396,13 +1465,13 @@ def build_ios_board() -> str:
         "S3",
         "iPhone · Dashboard charts, privacy on",
         "MA-295 · §9.1",
-        "With Privacy mode on, every pound and rupee figure in the hero, stat strips, meters and captions is masked with .mp-mask and interactive scrub tooltips are suppressed, while percentages, weekdays and chart geometry remain legible.",
+        "With Privacy mode on, every pound and rupee figure and the exchange rate in the hero, stat strips, meters and captions is masked with .mp-mask, and every chart summary and scrub readout says Hidden for each amount, while percentages, weekdays and chart geometry remain legible.",
         [
             iphone_frame("iPhone · Dashboard charts, privacy on · Light", LT, s3_body, priv=True),
             iphone_frame("iPhone · Dashboard charts, privacy on · Dark", DK, s3_body, priv=True),
         ],
         [
-            ("No scrub leak:", "data-scrub is omitted or masked when privacy is active so dragging a chart cannot reveal hidden balances."),
+            ("No scrub leak:", "the scrub points and every aria-label come from the same formatter as the drawn figures, so with privacy on dragging a chart, or VoiceOver reading it, gives the day and says Hidden for the amount."),
         ],
         rec=True,
     ))
@@ -1477,7 +1546,7 @@ def build_web_board() -> str:
         "W2",
         "Browser · Dashboard charts, privacy on",
         "MA-295 · §9.3",
-        "Privacy mode on desktop 1440 Light and phone web 390 Dark: every pound and rupee amount in the hero, stat strips, meters, legends and chat column is masked in .mp-mask, and hover scrubbing is suppressed.",
+        "Privacy mode on desktop 1440 Light and phone web 390 Dark: every pound and rupee amount and the exchange rate in the hero, stat strips, meters, legends and chat column is masked in .mp-mask, and hover or touch scrubbing shows the date and says Hidden for every amount.",
         [
             browser_frame("Browser · Dashboard charts, privacy on · 1440 Light", LT, "w1440", hero_block("a", priv=True, compact=True), w2_c1, w2_c2, priv=True),
             browser_frame("Browser · Dashboard charts, privacy on · 390 Dark", DK, "w390", hero_block("a", priv=True, compact=True), f"{wealth_mix_card('a', priv=True)}", w2_c2, priv=True),

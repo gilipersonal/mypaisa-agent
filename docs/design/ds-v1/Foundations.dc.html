@@ -128,6 +128,8 @@
           .mpm-dot { fill: var(--mp-coral); }
           .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
           .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+          /* canvas links: a 44 x 44 tap area around the drawn chip, nothing drawn (MA-300) */
+          .dv-idx a, .dv-tid, .dv-oid { position: relative; } .dv-idx a::after, .dv-tid::after, .dv-oid::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
         </style>
       </helmet>
 
@@ -243,7 +245,7 @@
               <div class="sub-h"><span class="mp-hl">Elevation</span><span class="lbl">--mp-shadow · sheet shadow</span></div>
               <div class="elev">
                 <div class="fx col gap8">
-                  <div class="mp-group"><div class="mp-row"><span class="mp-body">Balanced</span><span class="mp-foot mp-ink3" style="margin-left: auto">£18,640</span></div><div class="mp-row"><span class="mp-body">Cash pot</span><span class="mp-foot mp-ink3" style="margin-left: auto">£400</span></div></div>
+                  <div class="mp-group"><div class="mp-row"><span class="mp-body">Balanced</span><span class="mp-foot mp-ink2" style="margin-left: auto">£18,640</span></div><div class="mp-row"><span class="mp-body">Cash pot</span><span class="mp-foot mp-ink2" style="margin-left: auto">£400</span></div></div>
                   <div><div class="mp-foot mp-w6">Flat · grouped list</div><div class="mp-cap mp-ink3">surface on background, no shadow</div></div>
                 </div>
                 <div class="fx col gap8">
@@ -251,17 +253,17 @@
                   <div><div class="mp-foot mp-w6">Raised · card</div><div class="mp-cap mp-ink3">--mp-shadow, two soft layers</div></div>
                 </div>
                 <div class="fx col gap8">
-                  <div class="mp-sheet" style="padding-bottom: 14px"><div class="mp-grabber"></div><div class="mp-hl">Why PAUSE?</div><div class="mp-foot mp-ink3">Keep what you have.</div></div>
+                  <div class="mp-sheet" style="padding-bottom: 14px"><div class="mp-grabber"></div><div class="mp-hl">Why PAUSE?</div><div class="mp-foot mp-ink2">Keep what you have.</div></div>
                   <div><div class="mp-foot mp-w6">Overlay · sheet</div><div class="mp-cap mp-ink3">0 −8 40, 18% black, above everything</div></div>
                 </div>
               </div>
               <div class="sub-h"><span class="mp-hl">44 pt targets</span><span class="lbl">dashed = the tappable area</span></div>
               <div class="targets">
-                <div class="fx col gap8"><button class="iconbtn hit" aria-label="Privacy mode"><span class="ms" aria-hidden=\"true\">visibility</span></button><span class="mp-cap mp-ink3">Icon button · 44 × 44</span></div>
-                <div class="fx col gap8"><a class="mp-tab on hit" href="#space"><span class="ms ms-fill" aria-hidden=\"true\">home</span>Overview</a><span class="mp-cap mp-ink3">Tab · shares the bar, 48 high</span></div>
+                <div class="fx col gap8"><button class="iconbtn hit" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button><span class="mp-cap mp-ink3">Icon button · 44 × 44</span></div>
+                <div class="fx col gap8"><a class="mp-tab on hit" href="#space"><span class="ms ms-fill" aria-hidden="true">home</span>Overview</a><span class="mp-cap mp-ink3">Tab · shares the bar, 48 high</span></div>
                 <div class="fx col gap8"><div class="mp-seg hit" style="width: 160px" role="group" aria-label="Period"><button class="mp-seg-i on">6M</button><button class="mp-seg-i">1Y</button></div><span class="mp-cap mp-ink3">Segment · 40 in a 44 track</span></div>
               </div>
-              <div class="fx col gap8"><div class="mp-group hit" style="width: 358px"><div class="mp-row"><span class="mp-body">Technical details</span><span class="ms mp-ink3 ms-s" aria-hidden=\"true\" style="margin-left: auto">chevron_right</span></div></div><span class="mp-cap mp-ink3">Row · the full width × 44, the whole row taps</span></div>
+              <div class="fx col gap8"><div class="mp-group hit" style="width: 358px"><div class="mp-row"><span class="mp-body">Technical details</span><span class="ms mp-ink3 ms-s" aria-hidden="true" style="margin-left: auto">chevron_right</span></div></div><span class="mp-cap mp-ink3">Row · the full width × 44, the whole row taps</span></div>
             </div>
           </sc-for>
         </div>
@@ -296,13 +298,13 @@
                           <div class="mp-shell-side">
                             <nav class="mp-side bb" style="background: var(--mp-bg); border-right: 1px solid var(--mp-line)" aria-label="Sections">
                               <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                              <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
+                              <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
                             </nav>
                           </div>
                           <div class="mp-shell-main">
                             <div class="mp-pagepad">
                               <div class="mp-pagehead">
-                                <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink3">Prices to Friday's close · audited</div></div>
+                                <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink2">Prices to Friday's close · audited</div></div>
                                 <div class="mp-seg" style="min-width: 260px" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
                               </div>
                               <div class="mp-cols">
@@ -313,7 +315,7 @@
                                     <div class="mp-sub mp-hero-2">▲ £612 this month · ▼ 0.6% this week</div>
                                     <svg viewBox="0 0 300 70" preserveAspectRatio="none" style="display: block; width: 100%; height: 70px; margin-top: 12px" aria-hidden="true"><path d="{{ heroChart.area }}" fill="var(--mp-hero-area)"></path><path d="{{ heroChart.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" vector-effect="non-scaling-stroke"></path></svg>
                                   </div>
-                                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden=\"true\">check_circle</span><div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday.</div></div></div>
+                                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink2">Next review Saturday.</div></div></div>
                                 </div>
                                 <div class="mp-col">
                                   <div class="mp-group">
@@ -322,10 +324,10 @@
                                     </sc-for>
                                   </div>
                                   <div class="mp-stats">
-                                    <div class="mp-card"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 6px">84%</div><div class="mp-foot mp-ink3">in dollars</div></div>
-                                    <div class="mp-card"><div class="mp-over mp-ink3">Track record</div><div class="mp-num-l" style="margin-top: 6px">20 / 31</div><div class="mp-foot mp-ink3">held up</div></div>
-                                    <div class="mp-card"><div class="mp-over mp-ink3">Positions</div><div class="mp-num-l" style="margin-top: 6px">1.6 of 4</div><div class="mp-foot mp-ink3">effective</div></div>
-                                    <div class="mp-card"><div class="mp-over mp-ink3">AI cost</div><div class="mp-num-l" style="margin-top: 6px">£6.40</div><div class="mp-foot mp-ink3">of £50</div></div>
+                                    <div class="mp-card"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 6px">84%</div><div class="mp-foot mp-ink2">in dollars</div></div>
+                                    <div class="mp-card"><div class="mp-over mp-ink3">Track record</div><div class="mp-num-l" style="margin-top: 6px">20 / 31</div><div class="mp-foot mp-ink2">held up</div></div>
+                                    <div class="mp-card"><div class="mp-over mp-ink3">Positions</div><div class="mp-num-l" style="margin-top: 6px">1.6 of 4</div><div class="mp-foot mp-ink2">effective</div></div>
+                                    <div class="mp-card"><div class="mp-over mp-ink3">AI cost</div><div class="mp-num-l" style="margin-top: 6px">£6.40</div><div class="mp-foot mp-ink2">of £50</div></div>
                                   </div>
                                 </div>
                               </div>
@@ -334,7 +336,7 @@
                         </div>
                         <div class="mp-shell-tabs tabs-abs">
                           <nav class="mp-tabbar" style="flex: 1" aria-label="Sections">
-                            <sc-for list="{{ tabs }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                            <sc-for list="{{ tabs }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#layout"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
                           </nav>
                         </div>
                       </div>
@@ -397,9 +399,9 @@
                   <div class="demos">
                     <div class="demo">
                       <span class="lbl">.mp-rise · 350</span>
-                      <div class="mp-card mini mp-rise"><div class="mp-foot mp-w6">Balanced</div><div class="mp-cap mp-ink3">£18,640 · ▲ 0.4%</div></div>
-                      <div class="mp-card mini mp-rise d1"><div class="mp-foot mp-w6">NASDAQ 100</div><div class="mp-cap mp-ink3">£4,210 · ▼ 3.1%</div></div>
-                      <div class="mp-card mini mp-rise d2"><div class="mp-foot mp-w6">Physical Silver</div><div class="mp-cap mp-ink3">£820 · ▼ 6.2%</div></div>
+                      <div class="mp-card mini mp-rise"><div class="mp-foot mp-w6">Balanced</div><div class="mp-cap mp-ink2">£18,640 · ▲ 0.4%</div></div>
+                      <div class="mp-card mini mp-rise d1"><div class="mp-foot mp-w6">NASDAQ 100</div><div class="mp-cap mp-ink2">£4,210 · ▼ 3.1%</div></div>
+                      <div class="mp-card mini mp-rise d2"><div class="mp-foot mp-w6">Physical Silver</div><div class="mp-cap mp-ink2">£820 · ▼ 6.2%</div></div>
                     </div>
                     <div class="demo">
                       <span class="lbl">.mp-draw · 700</span>
@@ -440,12 +442,12 @@
               </div>
               <div class="sub-h"><span class="mp-hl">Sizes and fill</span><span class="lbl">.ms-s · .ms · .ms-l · .ms-fill</span></div>
               <div class="isizes">
-                <div class="isz"><span class="ms ms-s" aria-hidden=\"true\">chevron_right</span><span class="lbl">18 · rows</span></div>
-                <div class="isz"><span class="ms" aria-hidden=\"true\">home</span><span class="lbl">22 · default</span></div>
-                <div class="isz"><span class="ms ms-l" aria-hidden=\"true\">check_circle</span><span class="lbl">26 · cards</span></div>
-                <div class="isz"><span class="ms ms-fill mp-acc" aria-hidden=\"true\">home</span><span class="lbl">filled · tab</span></div>
-                <div class="isz"><span class="ms ms-fill mp-up ms-l" aria-hidden=\"true\">check_circle</span><span class="lbl">filled · status</span></div>
-                <div class="isz"><span class="ms mp-ink3" aria-hidden=\"true\">menu</span><span class="lbl">ink-3 · idle</span></div>
+                <div class="isz"><span class="ms ms-s" aria-hidden="true">chevron_right</span><span class="lbl">18 · rows</span></div>
+                <div class="isz"><span class="ms" aria-hidden="true">home</span><span class="lbl">22 · default</span></div>
+                <div class="isz"><span class="ms ms-l" aria-hidden="true">check_circle</span><span class="lbl">26 · cards</span></div>
+                <div class="isz"><span class="ms ms-fill mp-acc" aria-hidden="true">home</span><span class="lbl">filled · tab</span></div>
+                <div class="isz"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><span class="lbl">filled · status</span></div>
+                <div class="isz"><span class="ms mp-ink3" aria-hidden="true">menu</span><span class="lbl">ink-3 · idle</span></div>
               </div>
             </div>
           </sc-for>
@@ -495,7 +497,7 @@
               { name: 'Text', hint: 'Three inks, AA on every surface', tokens: [
                 T('--mp-ink', 'Primary text and figures', txt('ink'), ['#14171F', '17.9:1', 'on surface'], ['#F3F5F8', '15.7:1', 'on surface']),
                 T('--mp-ink-2', 'Secondary text, sub-lines, unselected segments', txt('ink-2'), ['#4E5462', '7.6:1', 'on surface'], ['#C5CCD7', '10.6:1', 'on surface']),
-                T('--mp-ink-3', 'Footnotes, captions, unselected tabs', txt('ink-3'), ['#646A78', '5.4:1', 'on surface; 4.6:1 on surface-2'], ['#ADB6C4', '8.4:1', 'on surface; 7.4:1 on surface-2'])
+                T('--mp-ink-3', 'Overlines, axis ticks, idle icons and chevrons, unselected tabs; never a sub-line or a sentence', txt('ink-3'), ['#646A78', '5.4:1', 'on surface; 4.6:1 on surface-2'], ['#ADB6C4', '8.4:1', 'on surface; 7.4:1 on surface-2'])
               ] },
               { name: 'Hero', hint: 'The navy card: one number, one line, one chart', tokens: [
                 T('--mp-hero', 'Hero card ground on the app and web Overview', txt('hero-ink', 'hero'), ['#13213A', '16.1:1', 'hero-ink on it'], ['#1A2944', '14.5:1', 'hero-ink on it']),

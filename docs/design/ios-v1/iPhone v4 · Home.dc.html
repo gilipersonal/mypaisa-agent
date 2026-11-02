@@ -16,7 +16,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .dv-turn { padding: 44px 48px 40px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
 .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -105,7 +105,13 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .roax .ax1 { transform: translateX(-100%); }
 .kvg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .kvg > div { background: var(--mp-surface-2); border-radius: 12px; padding: 10px 12px; min-width: 0; }
-.lnk { align-self: flex-start; margin: -6px 0 -8px -8px; }
+/* each summary card ends in the screens it opens: a 44 pt row per pushed screen, named by that screen's title (MA-300, P0-5) */
+.navrows { display: flex; flex-direction: column; margin: -2px -16px -16px; }
+.navrow { width: 100%; min-height: 44px; padding: 10px 16px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--mp-line); font: 600 15px/20px var(--mp-font); color: var(--mp-accent); text-align: left; }
+.navrow .ms { color: var(--mp-ink-2); flex: none; }
+.navrow:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: -3px; border-radius: 12px; }
+.qchip { position: relative; }
+.qchip::after { content: ""; position: absolute; inset: -4px 0; }   /* 36 drawn, 44 to tap */
 .edit { display: flex; flex-direction: column; gap: 10px; padding: 12px; margin: 4px -8px; border-radius: 14px; background: var(--mp-surface-2); box-shadow: inset 0 0 0 2px var(--mp-focus); }
 .efield { min-width: 120px; min-height: 44px; display: inline-flex; align-items: center; justify-content: flex-end; gap: 2px; padding: 0 12px; border-radius: 10px; background: var(--mp-surface); box-shadow: inset 0 0 0 1.5px var(--mp-ink-2); box-sizing: border-box; }
 .ecaret { display: inline-block; width: 2px; height: 20px; background: var(--mp-focus); }
@@ -143,6 +149,39 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .largetitle.navt { padding: 0 4px; font-size: 28px; line-height: 34px; }
 .cb20 { bottom: 20px; }
 .sbar.sbar-r { justify-content: flex-end; }
+/* MA-300: the drawn controls are real buttons (type="button"; the older plain <button>s keep their own look). A
+   zero-specificity reset strips the browser's button look, so every class rule (tokens.css, ios.css, this board) still draws them as before. */
+:where(button[type="button"]) {
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
+  align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* the household strip carries balances, so it is solid ledger, never glass (MA-300, P1-2) */
+.strip.solid { position: relative; background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line), 0 2px 10px rgba(0, 0, 0, 0.08); }
+.strip.solid .mp-up { color: var(--mp-up); }
+.strip.solid .mp-mask { background: var(--mp-mask); }
+/* Ask: the chat beside the screen from about 1133 pt; below that the column hides (tokens.css) and Ask brings it up as a sheet (MA-300, P1-6) */
+.askw { display: none; }
+@container screen (max-width: 1132px) { .mp.ipad .askw { display: inline-flex; } }
+/* AX5: Dynamic Type at its largest (MA-300, P1-5). Apple's AX5 sizes: large title 60, headline and body 53, subheadline 49,
+   footnote 44, caption 43. What sits side by side at the default size stacks; text wraps; a figure keeps one line. The glass
+   bars (the toolbar buttons, the tab bar) keep their size, as iOS's do: their labels show in the large content viewer. */
+.ax5 .largetitle { font-size: 60px; line-height: 68px; }
+.ax5 .pg { overflow-wrap: break-word; hyphens: auto; }
+.ax5 .pg .mp-hl, .ax5 .pg .mp-sub { font-size: 53px; line-height: 60px; }
+.ax5 .pg .mp-foot { font-size: 44px; line-height: 52px; }
+.ax5 .pg .mp-over { font-size: 43px; line-height: 50px; letter-spacing: 0.02em; }
+.ax5 .mp-over { white-space: normal; overflow-wrap: anywhere; hyphens: auto; min-width: 0; }
+.ax5 .pg .mp-num-hero { font-size: 52px; line-height: 60px; }
+.ax5 .hero .hsub .mp-sub { font-size: 44px; line-height: 52px; }
+.ax5 .pg .mp-seg { flex-direction: column; align-items: stretch; height: auto; }
+.ax5 .pg .mp-seg-i { font-size: 43px; line-height: 50px; padding: 6px 12px; }
+.ax5 .pg .ccy { flex-direction: row; align-self: flex-start; }
+.ax5 .pg .ccy .mp-seg-i { min-width: 88px; }
+.ax5 .hero > .fx, .ax5 .ctl, .ax5 .mrows .fx { flex-direction: column; align-items: flex-start; gap: 6px; }
+.ax5 .rate .ms { font-size: 40px; }
+.ax5 .mbar { height: 16px; }
+.ax5 .navrow { font-size: 53px; line-height: 60px; }
+.ax5 .navrow .ms { font-size: 44px; }
 </style>
 </helmet>
 <section class="dv-turn" id="t0" data-screen-label="iPhone v4 Home: intro">
@@ -168,25 +207,25 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="dev dev-iphone mp {{ f.cls }}" data-screen-label="{{ o.name }} · {{ f.lab }}">
 <div class="island"></div>
 <div class="scrn">
-<div class="sbar"><span>{{ f.p.time }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="sbar"><span>{{ f.p.time }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
 <!-- the Home tab -->
 <sc-if value="{{ f.p.isHome }}" hint-placeholder-val="{{ true }}">
-<div class="nav"><span class="navc">Home</span><span></span><span class="fx gap8"><span class="gbtn lg {{ f.p.eyeOn }}" aria-label="Privacy mode" aria-pressed="{{ f.p.priv }}"><span class="ms z1">{{ f.p.eye }}</span></span><span class="gtext lg"><span class="ms z1">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+<div class="nav"><span class="navc">Home</span><span></span><span class="fx gap8"><button type="button" class="gbtn lg {{ f.p.eyeOn }}" aria-label="Privacy mode" aria-pressed="{{ f.p.priv }}"><span class="ms z1" aria-hidden="true">{{ f.p.eye }}</span></button><button type="button" class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button></span></div>
 <div class="largetitle">Home</div>
 <div class="scroll"><div class="pg">
 <div class="mp-hero hero">
-<div class="mp-seg"><span class="mp-seg-i segc on">Household</span><span class="mp-seg-i segc">Me</span><span class="mp-seg-i segc">Asha</span></div>
-<div class="fx jb ac gap8"><span class="mp-over mp-hero-2">{{ f.p.h.over }}</span><span class="mp-seg ccy" role="group" aria-label="Show amounts in"><span class="mp-seg-i segc seg-s {{ f.p.h.gOn }}" aria-label="Pounds">£</span><span class="mp-seg-i segc seg-s {{ f.p.h.iOn }}" aria-label="Rupees">₹</span></span></div>
+<div class="mp-seg"><button type="button" class="mp-seg-i segc on">Household</button><button type="button" class="mp-seg-i segc">Me</button><button type="button" class="mp-seg-i segc">Asha</button></div>
+<div class="fx jb ac gap8"><span class="mp-over mp-hero-2">{{ f.p.h.over }}</span><span class="mp-seg ccy" role="group" aria-label="Show amounts in"><button type="button" class="mp-seg-i segc seg-s {{ f.p.h.gOn }}" aria-label="Pounds">£</button><button type="button" class="mp-seg-i segc seg-s {{ f.p.h.iOn }}" aria-label="Rupees">₹</button></span></div>
 <sc-if value="{{ f.p.h.isEmpty }}" hint-placeholder-val="{{ false }}"><span class="hempty">Nothing here yet</span><span class="mp-sub mp-hero-2">Tell MyPaisa about one thing you own or owe, in your own words. The engine does the sums.</span></sc-if>
 <sc-if value="{{ f.p.h.isFig }}" hint-placeholder-val="{{ true }}">
 <div class="fx ac gap10 wrap">
 <sc-if value="{{ f.p.h.plain }}" hint-placeholder-val="{{ true }}"><span class="mp-num-hero nowrap">{{ f.p.h.fig }}</span></sc-if>
-<sc-if value="{{ f.p.h.masked }}" hint-placeholder-val="{{ false }}"><span class="mp-num-hero nowrap"><span class="mp-mask" role="img" aria-label="hidden">{{ f.p.h.fig }}</span></span></sc-if>
+<sc-if value="{{ f.p.h.masked }}" hint-placeholder-val="{{ false }}"><span class="mp-num-hero nowrap"><span class="mp-mask" role="img" aria-label="Hidden">{{ f.p.h.fig }}</span></span></sc-if>
 <sc-if value="{{ f.p.h.roll }}" hint-placeholder-val="{{ false }}"><span class="mp-num-hero nowrap"><span data-roll-from="{{ f.p.h.from }}">{{ f.p.h.fig }}</span></span></sc-if>
 <sc-if value="{{ f.p.h.hasChip }}" hint-placeholder-val="{{ false }}"><span class="mp-chip {{ f.p.h.chipC }}">{{ f.p.h.chip }}</span></sc-if>
 </div>
-<div class="hsub"><span class="mp-sub mp-w6 hup"><span class="{{ f.p.h.sa.c }}">{{ f.p.h.sa.v }}</span></span><span class="mp-foot mp-hero-2">{{ f.p.h.st }}</span></div>
-<sc-if value="{{ f.p.h.hasSplit }}" hint-placeholder-val="{{ false }}"><div class="hsplit"><sc-for list="{{ f.p.h.split }}" as="s" hint-placeholder-count="2"><div><div class="mp-foot mp-hero-2">{{ s.k }}</div><div class="mp-hl nowrap"><span class="{{ s.a.c }}">{{ s.a.v }}</span></div></div></sc-for></div></sc-if>
+<div class="hsub"><span class="mp-sub mp-w6 hup"><span class="{{ f.p.h.sa.c }}" role="{{ f.p.h.sa.r }}" aria-label="{{ f.p.h.sa.l }}">{{ f.p.h.sa.v }}</span></span><span class="mp-foot mp-hero-2">{{ f.p.h.st }}</span></div>
+<sc-if value="{{ f.p.h.hasSplit }}" hint-placeholder-val="{{ false }}"><div class="hsplit"><sc-for list="{{ f.p.h.split }}" as="s" hint-placeholder-count="2"><div><div class="mp-foot mp-hero-2">{{ s.k }}</div><div class="mp-hl nowrap"><span class="{{ s.a.c }}" role="{{ s.a.r }}" aria-label="{{ s.a.l }}">{{ s.a.v }}</span></div></div></sc-for></div></sc-if>
 </sc-if>
 <div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>{{ f.p.h.rate }}</span></div>
 </div>
@@ -197,23 +236,23 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="icol">
 <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="2">
 <div class="mp-card cpad">
-<div class="ctl"><span class="mp-hl">{{ k.t }}</span><span class="mp-foot mp-ink2"><span class="{{ k.ra.c }}">{{ k.ra.v }}</span> {{ k.r }}</span></div>
+<div class="ctl"><span class="mp-hl">{{ k.t }}</span><span class="mp-foot mp-ink2"><span class="{{ k.ra.c }}" role="{{ k.ra.r }}" aria-label="{{ k.ra.l }}">{{ k.ra.v }}</span> {{ k.r }}</span></div>
 <sc-for list="{{ k.parts }}" as="q" hint-placeholder-count="1">
-<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx ac gap8 wrap"><span class="mp-num-l"><span class="{{ q.a.c }}">{{ q.a.v }}</span></span><span class="mp-foot mp-ink2"><span class="{{ q.b.c }}">{{ q.b.v }}</span> {{ q.s }}</span></div></sc-if>
-<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="mp-foot mp-ink2">{{ it.k }}</div><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isMeters }}" hint-placeholder-val="{{ false }}"><div class="mrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6">{{ it.l }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></span></div><div class="mp-track mbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span></div></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stk mp-track" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="lrow"><span class="sw" style="background: {{ it.col }}"></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.l }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span> {{ it.s2 }}</div></div><div class="mp-sub mp-w6 tr nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div></div></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx ac gap8 wrap"><span class="mp-num-l"><span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></span><span class="mp-foot mp-ink2"><span class="{{ q.b.c }}" role="{{ q.b.r }}" aria-label="{{ q.b.l }}">{{ q.b.v }}</span> {{ q.s }}</span></div></sc-if>
+<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="mp-foot mp-ink2">{{ it.k }}</div><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isMeters }}" hint-placeholder-val="{{ false }}"><div class="mrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6">{{ it.l }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span></div><div class="mp-track mbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stk mp-track" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="lrow"><span class="sw" style="background: {{ it.col }}"></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.l }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span> {{ it.s2 }}</div></div><div class="mp-sub mp-w6 tr nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div></div></sc-for></div></div></sc-if>
 <sc-if value="{{ q.isOver }}" hint-placeholder-val="{{ false }}"><div class="mp-over mp-ink2 dgrp {{ q.c }}">{{ q.t }}</div></sc-if>
-<sc-if value="{{ q.isDue }}" hint-placeholder-val="{{ false }}"><div class="drows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="drow"><div class="dtile {{ it.tc }}"><span class="mp-cap mp-w6">{{ it.wd }}</span><span class="mp-t3">{{ it.d }}</span><span class="mp-cap">{{ it.m }}</span><span class="mp-cap {{ it.yc }}">{{ it.y }}</span></div><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div><span class="mp-chip chip-s {{ it.cc }}">{{ it.chip }}</span></div></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isRunoff }}" hint-placeholder-val="{{ false }}"><div class="rorows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6 clip">{{ it.n }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></span></div><div class="mp-track rotk" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: var(--mp-meter)"></span></div><div class="fx jb gap8 mp-foot mp-ink2"><span>{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span></span><span class="nowrap">{{ it.end }}</span></div></div></sc-for><div class="mp-chartaxis roax" aria-hidden="true"><sc-for list="{{ q.ax }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isDue }}" hint-placeholder-val="{{ false }}"><div class="drows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="drow"><div class="dtile {{ it.tc }}"><span class="mp-cap mp-w6">{{ it.wd }}</span><span class="mp-t3">{{ it.d }}</span><span class="mp-cap">{{ it.m }}</span><span class="mp-cap {{ it.yc }}">{{ it.y }}</span></div><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><span class="mp-chip chip-s {{ it.cc }}">{{ it.chip }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isRunoff }}" hint-placeholder-val="{{ false }}"><div class="rorows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6 clip">{{ it.n }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span></div><div class="mp-track rotk" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: var(--mp-meter)"></span></div><div class="fx jb gap8 mp-foot mp-ink2"><span>{{ it.s }} <span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></span><span class="nowrap">{{ it.end }}</span></div></div></sc-for><div class="mp-chartaxis roax" aria-hidden="true"><sc-for list="{{ q.ax }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div></div></sc-if>
 <sc-if value="{{ q.isRows }}" hint-placeholder-val="{{ false }}"><div class="rows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4">
-<sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}"><div class="rrow"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="fx ac gap6 wrap mt2"><span class="mp-chip chip-s mp-neutral">{{ it.cc }}</span><sc-if value="{{ it.jt }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-hold">{{ it.sh }}</span></sc-if><span class="mp-foot mp-ink2">{{ it.s }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}">{{ it.b.v }}</span></div></div></div></sc-if>
+<sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}"><div class="rrow"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="fx ac gap6 wrap mt2"><span class="mp-chip chip-s mp-neutral">{{ it.cc }}</span><sc-if value="{{ it.jt }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-hold">{{ it.sh }}</span></sc-if><span class="mp-foot mp-ink2">{{ it.s }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></div></sc-if>
 <sc-if value="{{ it.isEdit }}" hint-placeholder-val="{{ false }}"><div class="edit"><div class="fx ac gap12"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="mp-foot mp-ink2">Correcting the value · your estimate</div></div><span class="efield" role="textbox" aria-label="New value"><span class="mp-sub mp-w6">{{ it.typed }}</span><span class="ecaret"></span></span></div><div class="mp-foot"><span class="mp-ink2">Before → after:</span> <span class="was">{{ it.before }}</span> → <b>{{ it.after }}</b><span class="mp-ink2"> · net worth {{ it.netB }} → {{ it.netA }}, from the engine</span></div><div class="eacts"><button class="mp-btn mp-btn-tinted mp-btn-small">Cancel</button><button class="mp-btn mp-btn-primary mp-btn-small">Save</button></div></div></sc-if>
 <sc-if value="{{ it.isAudit }}" hint-placeholder-val="{{ false }}"><div class="aline"><span class="ms ms-s" aria-hidden="true">history</span><span class="mp-foot mp-w6">{{ it.t }}</span><span class="mp-foot">{{ it.s }}</span></div></sc-if>
 </sc-for></div></sc-if>
 <sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }}</div></div><span class="mp-foot mp-acc nowrap">{{ it.e }}</span></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink2 pp">{{ q.t }} <span class="{{ q.a.c }}">{{ q.a.v }}</span> {{ q.t2 }}</p></sc-if>
-<sc-if value="{{ q.isLink }}" hint-placeholder-val="{{ false }}"><span class="mp-btn mp-btn-plain mp-btn-small lnk">{{ q.t }}<span class="ms ms-s" aria-hidden="true">chevron_right</span></span></sc-if>
+<sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink2 pp">{{ q.t }} <span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span> {{ q.t2 }}</p></sc-if>
+<sc-if value="{{ q.isNav }}" hint-placeholder-val="{{ false }}"><div class="navrows"><sc-for list="{{ q.items }}" as="nv" hint-placeholder-count="1"><button type="button" class="navrow"><span>{{ nv.t }}</span><span class="ms ms-s" aria-hidden="true">chevron_right</span></button></sc-for></div></sc-if>
 </sc-for>
 </div>
 </sc-for>
@@ -231,31 +270,31 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 </sc-if>
 <!-- the Chat tab -->
 <sc-if value="{{ f.p.isChat }}" hint-placeholder-val="{{ false }}">
-<div class="strip lg striprow"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">{{ f.p.strip.over }}</span><span class="fx ac gap8">
+<div class="strip solid striprow"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">{{ f.p.strip.over }}</span><span class="fx ac gap8">
 <sc-if value="{{ f.p.strip.plain }}" hint-placeholder-val="{{ true }}"><span class="strip-n">{{ f.p.strip.fig }}</span></sc-if>
 <sc-if value="{{ f.p.strip.roll }}" hint-placeholder-val="{{ false }}"><span class="strip-n"><span data-roll-from="{{ f.p.strip.from }}">{{ f.p.strip.fig }}</span></span><span class="mp-foot mp-up mp-w6">{{ f.p.strip.ch }}</span></sc-if>
 <sc-if value="{{ f.p.strip.none }}" hint-placeholder-val="{{ false }}"><span class="mp-hl">No records yet</span></sc-if>
-</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
 <div class="chfadet"></div>
 <div class="scroll chatscr"><div class="chat">
 <sc-for list="{{ f.p.chat }}" as="m" hint-placeholder-count="4">
 <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
-<sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me">{{ m.t }}<span class="{{ m.a.c }}">{{ m.a.v }}</span>{{ m.t2 }}</div></sc-if>
+<sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me">{{ m.t }}<span class="{{ m.a.c }}" role="{{ m.a.r }}" aria-label="{{ m.a.l }}">{{ m.a.v }}</span>{{ m.t2 }}</div></sc-if>
 <sc-if value="{{ m.isAi }}" hint-placeholder-val="{{ true }}"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
 <sc-if value="{{ m.hasText }}" hint-placeholder-val="{{ true }}"><div class="ai-text">{{ m.t }}</div></sc-if>
 <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ false }}"><div class="ccard">
-<div class="ccard-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="mp-hl">{{ m.title }}</span><sc-if value="{{ m.hasQ }}" hint-placeholder-val="{{ false }}"><span class="mp-sub">{{ m.q }}<span class="{{ m.qa.c }}">{{ m.qa.v }}</span>{{ m.q2 }}</span></sc-if></div>
-<div class="ccard-b"><sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if></div>
-<sc-if value="{{ m.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.btns }}" as="b" hint-placeholder-count="2"><span class="cbtn {{ b.c }}">{{ b.t }}</span></sc-for></div></sc-if>
+<div class="ccard-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="mp-hl">{{ m.title }}</span><sc-if value="{{ m.hasQ }}" hint-placeholder-val="{{ false }}"><span class="mp-sub">{{ m.q }}<span class="{{ m.qa.c }}" role="{{ m.qa.r }}" aria-label="{{ m.qa.l }}">{{ m.qa.v }}</span>{{ m.q2 }}</span></sc-if></div>
+<div class="ccard-b"><sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if></div>
+<sc-if value="{{ m.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.btns }}" as="b" hint-placeholder-count="2"><button type="button" class="cbtn {{ b.c }}">{{ b.t }}</button></sc-for></div></sc-if>
 </div></sc-if>
-<sc-if value="{{ m.hasChips }}" hint-placeholder-val="{{ false }}"><div class="qchips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><span class="qchip">{{ c }}</span></sc-for></div></sc-if>
+<sc-if value="{{ m.hasChips }}" hint-placeholder-val="{{ false }}"><div class="qchips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="qchip">{{ c }}</button></sc-for></div></sc-if>
 </div></div></sc-if>
 </sc-for>
 </div></div>
 <div class="edge-bot"></div>
-<div class="composer cmp"><div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="3"><span class="gchip lg"><span class="ms">{{ c.i }}</span><span>{{ c.t }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">{{ f.p.ph }}</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div>
+<div class="composer cmp"><div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">{{ f.p.ph }}</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </sc-if>
-<div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.p.tabs }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms z1">search</span></span></div>
+<div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.p.tabs }}" as="b" hint-placeholder-count="4"><button type="button" class="tab {{ b.on }}"><span class="ms" aria-hidden="true">{{ b.icon }}</span>{{ b.label }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div>
 <div class="homebar"></div>
 </div>
 </div>
@@ -266,17 +305,17 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="scrn srow">
 <div class="sidebar sb lg">
 <div class="side-h sh0">MyPaisa</div>
-<sc-for list="{{ padNav }}" as="n" hint-placeholder-count="8"><span class="side-i {{ n.cls }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</span></sc-for>
+<sc-for list="{{ padNav }}" as="n" hint-placeholder-count="8"><button type="button" class="side-i {{ n.cls }}"><span class="ms" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
 <div class="side-h">Admin</div>
-<span class="side-i"><span class="ms">shield_person</span>Admin center</span>
-<span class="side-i"><span class="ms">account_circle</span>You</span>
+<button type="button" class="side-i"><span class="ms" aria-hidden="true">shield_person</span>Admin center</button>
+<button type="button" class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</button>
 </div>
 <div class="main">
 <div class="sbar"><span>{{ f.p.time }} Mon 26 Oct</span><span></span></div>
-<div class="nav"><span class="largetitle navt">Home</span><span class="gbtn lg"><span class="ms z1">visibility</span></span></div>
+<div class="nav"><span class="largetitle navt">Home</span><span class="fx gap8"><button type="button" class="gtext lg askw" aria-label="Ask about this screen"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></button></span></div>
 <div class="ipg">
 <div class="mp-hero hero">
-<div class="fx jb ac gap12"><span class="mp-over mp-hero-2">{{ f.p.h.over }}</span><span class="mp-seg ccy"><span class="mp-seg-i segc seg-s on">£</span><span class="mp-seg-i segc seg-s">₹</span></span></div>
+<div class="fx jb ac gap12"><span class="mp-over mp-hero-2">{{ f.p.h.over }}</span><span class="mp-seg ccy"><button type="button" class="mp-seg-i segc seg-s on">£</button><button type="button" class="mp-seg-i segc seg-s">₹</button></span></div>
 <div class="fx ac gap12 wrap"><span class="mp-num-hero nowrap">{{ f.p.h.fig }}</span><span class="mp-sub mp-w6 hup">{{ f.p.h.sa.v }}</span></div>
 <div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>{{ f.p.h.rate }}</span></div>
 </div>
@@ -287,23 +326,23 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="icol">
 <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="2">
 <div class="mp-card cpad">
-<div class="ctl"><span class="mp-hl">{{ k.t }}</span><span class="mp-foot mp-ink2"><span class="{{ k.ra.c }}">{{ k.ra.v }}</span> {{ k.r }}</span></div>
+<div class="ctl"><span class="mp-hl">{{ k.t }}</span><span class="mp-foot mp-ink2"><span class="{{ k.ra.c }}" role="{{ k.ra.r }}" aria-label="{{ k.ra.l }}">{{ k.ra.v }}</span> {{ k.r }}</span></div>
 <sc-for list="{{ k.parts }}" as="q" hint-placeholder-count="1">
-<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx ac gap8 wrap"><span class="mp-num-l"><span class="{{ q.a.c }}">{{ q.a.v }}</span></span><span class="mp-foot mp-ink2"><span class="{{ q.b.c }}">{{ q.b.v }}</span> {{ q.s }}</span></div></sc-if>
-<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="mp-foot mp-ink2">{{ it.k }}</div><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isMeters }}" hint-placeholder-val="{{ false }}"><div class="mrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6">{{ it.l }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></span></div><div class="mp-track mbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span></div></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stk mp-track" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="lrow"><span class="sw" style="background: {{ it.col }}"></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.l }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span> {{ it.s2 }}</div></div><div class="mp-sub mp-w6 tr nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div></div></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx ac gap8 wrap"><span class="mp-num-l"><span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></span><span class="mp-foot mp-ink2"><span class="{{ q.b.c }}" role="{{ q.b.r }}" aria-label="{{ q.b.l }}">{{ q.b.v }}</span> {{ q.s }}</span></div></sc-if>
+<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="mp-foot mp-ink2">{{ it.k }}</div><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isMeters }}" hint-placeholder-val="{{ false }}"><div class="mrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6">{{ it.l }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span></div><div class="mp-track mbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stk mp-track" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="lrow"><span class="sw" style="background: {{ it.col }}"></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.l }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span> {{ it.s2 }}</div></div><div class="mp-sub mp-w6 tr nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div></div></sc-for></div></div></sc-if>
 <sc-if value="{{ q.isOver }}" hint-placeholder-val="{{ false }}"><div class="mp-over mp-ink2 dgrp {{ q.c }}">{{ q.t }}</div></sc-if>
-<sc-if value="{{ q.isDue }}" hint-placeholder-val="{{ false }}"><div class="drows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="drow"><div class="dtile {{ it.tc }}"><span class="mp-cap mp-w6">{{ it.wd }}</span><span class="mp-t3">{{ it.d }}</span><span class="mp-cap">{{ it.m }}</span><span class="mp-cap {{ it.yc }}">{{ it.y }}</span></div><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div><span class="mp-chip chip-s {{ it.cc }}">{{ it.chip }}</span></div></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isRunoff }}" hint-placeholder-val="{{ false }}"><div class="rorows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6 clip">{{ it.n }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></span></div><div class="mp-track rotk" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: var(--mp-meter)"></span></div><div class="fx jb gap8 mp-foot mp-ink2"><span>{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span></span><span class="nowrap">{{ it.end }}</span></div></div></sc-for><div class="mp-chartaxis roax" aria-hidden="true"><sc-for list="{{ q.ax }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div></div></sc-if>
+<sc-if value="{{ q.isDue }}" hint-placeholder-val="{{ false }}"><div class="drows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="drow"><div class="dtile {{ it.tc }}"><span class="mp-cap mp-w6">{{ it.wd }}</span><span class="mp-t3">{{ it.d }}</span><span class="mp-cap">{{ it.m }}</span><span class="mp-cap {{ it.yc }}">{{ it.y }}</span></div><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><span class="mp-chip chip-s {{ it.cc }}">{{ it.chip }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isRunoff }}" hint-placeholder-val="{{ false }}"><div class="rorows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6 clip">{{ it.n }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span></div><div class="mp-track rotk" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: var(--mp-meter)"></span></div><div class="fx jb gap8 mp-foot mp-ink2"><span>{{ it.s }} <span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></span><span class="nowrap">{{ it.end }}</span></div></div></sc-for><div class="mp-chartaxis roax" aria-hidden="true"><sc-for list="{{ q.ax }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div></div></sc-if>
 <sc-if value="{{ q.isRows }}" hint-placeholder-val="{{ false }}"><div class="rows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4">
-<sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}"><div class="rrow"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="fx ac gap6 wrap mt2"><span class="mp-chip chip-s mp-neutral">{{ it.cc }}</span><sc-if value="{{ it.jt }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-hold">{{ it.sh }}</span></sc-if><span class="mp-foot mp-ink2">{{ it.s }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}">{{ it.b.v }}</span></div></div></div></sc-if>
+<sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}"><div class="rrow"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="fx ac gap6 wrap mt2"><span class="mp-chip chip-s mp-neutral">{{ it.cc }}</span><sc-if value="{{ it.jt }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-hold">{{ it.sh }}</span></sc-if><span class="mp-foot mp-ink2">{{ it.s }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></div></sc-if>
 <sc-if value="{{ it.isEdit }}" hint-placeholder-val="{{ false }}"><div class="edit"><div class="fx ac gap12"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="mp-foot mp-ink2">Correcting the value · your estimate</div></div><span class="efield" role="textbox" aria-label="New value"><span class="mp-sub mp-w6">{{ it.typed }}</span><span class="ecaret"></span></span></div><div class="mp-foot"><span class="mp-ink2">Before → after:</span> <span class="was">{{ it.before }}</span> → <b>{{ it.after }}</b><span class="mp-ink2"> · net worth {{ it.netB }} → {{ it.netA }}, from the engine</span></div><div class="eacts"><button class="mp-btn mp-btn-tinted mp-btn-small">Cancel</button><button class="mp-btn mp-btn-primary mp-btn-small">Save</button></div></div></sc-if>
 <sc-if value="{{ it.isAudit }}" hint-placeholder-val="{{ false }}"><div class="aline"><span class="ms ms-s" aria-hidden="true">history</span><span class="mp-foot mp-w6">{{ it.t }}</span><span class="mp-foot">{{ it.s }}</span></div></sc-if>
 </sc-for></div></sc-if>
 <sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }}</div></div><span class="mp-foot mp-acc nowrap">{{ it.e }}</span></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink2 pp">{{ q.t }} <span class="{{ q.a.c }}">{{ q.a.v }}</span> {{ q.t2 }}</p></sc-if>
-<sc-if value="{{ q.isLink }}" hint-placeholder-val="{{ false }}"><span class="mp-btn mp-btn-plain mp-btn-small lnk">{{ q.t }}<span class="ms ms-s" aria-hidden="true">chevron_right</span></span></sc-if>
+<sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink2 pp">{{ q.t }} <span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span> {{ q.t2 }}</p></sc-if>
+<sc-if value="{{ q.isNav }}" hint-placeholder-val="{{ false }}"><div class="navrows"><sc-for list="{{ q.items }}" as="nv" hint-placeholder-count="1"><button type="button" class="navrow"><span>{{ nv.t }}</span><span class="ms ms-s" aria-hidden="true">chevron_right</span></button></sc-for></div></sc-if>
 </sc-for>
 </div>
 </sc-for>
@@ -315,26 +354,26 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 </div>
 </div>
 <div class="insp">
-<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div>
+<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New chat"><span class="ms z1" aria-hidden="true">edit_square</span></button></div>
 <div class="chfadet"></div>
 <div class="ichat"><div class="chat">
 <sc-for list="{{ f.p.chat }}" as="m" hint-placeholder-count="4">
 <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
-<sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me">{{ m.t }}<span class="{{ m.a.c }}">{{ m.a.v }}</span>{{ m.t2 }}</div></sc-if>
+<sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me">{{ m.t }}<span class="{{ m.a.c }}" role="{{ m.a.r }}" aria-label="{{ m.a.l }}">{{ m.a.v }}</span>{{ m.t2 }}</div></sc-if>
 <sc-if value="{{ m.isAi }}" hint-placeholder-val="{{ true }}"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
 <sc-if value="{{ m.hasText }}" hint-placeholder-val="{{ true }}"><div class="ai-text">{{ m.t }}</div></sc-if>
 <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ false }}"><div class="ccard">
-<div class="ccard-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="mp-hl">{{ m.title }}</span><sc-if value="{{ m.hasQ }}" hint-placeholder-val="{{ false }}"><span class="mp-sub">{{ m.q }}<span class="{{ m.qa.c }}">{{ m.qa.v }}</span>{{ m.q2 }}</span></sc-if></div>
-<div class="ccard-b"><sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if></div>
-<sc-if value="{{ m.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.btns }}" as="b" hint-placeholder-count="2"><span class="cbtn {{ b.c }}">{{ b.t }}</span></sc-for></div></sc-if>
+<div class="ccard-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="mp-hl">{{ m.title }}</span><sc-if value="{{ m.hasQ }}" hint-placeholder-val="{{ false }}"><span class="mp-sub">{{ m.q }}<span class="{{ m.qa.c }}" role="{{ m.qa.r }}" aria-label="{{ m.qa.l }}">{{ m.qa.v }}</span>{{ m.q2 }}</span></sc-if></div>
+<div class="ccard-b"><sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if></div>
+<sc-if value="{{ m.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.btns }}" as="b" hint-placeholder-count="2"><button type="button" class="cbtn {{ b.c }}">{{ b.t }}</button></sc-for></div></sc-if>
 </div></sc-if>
-<sc-if value="{{ m.hasChips }}" hint-placeholder-val="{{ false }}"><div class="qchips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><span class="qchip">{{ c }}</span></sc-for></div></sc-if>
+<sc-if value="{{ m.hasChips }}" hint-placeholder-val="{{ false }}"><div class="qchips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="qchip">{{ c }}</button></sc-for></div></sc-if>
 </div></div></sc-if>
 </sc-for>
 </div></div>
 <div class="edge-bot"></div>
-<div class="composer cb20"><div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="2"><span class="gchip lg"><span class="ms">{{ c.i }}</span><span>{{ c.t }}</span></span></sc-for></div><div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask about Home</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div>
+<div class="composer cb20"><div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask about Home</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </div>
 </div>
 </div>
@@ -395,11 +434,12 @@ const padNav = [['chat_bubble', 'Chat'], ['home', 'Home'], ['donut_small', 'Asse
 const tabsFor = (on) => [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((d) => ({ icon: d[0], label: d[1], on: d[1] === on ? 'on' : '' }));
 const page = (S) => {
 const F = FIG[S.fig || 'after'], inr = S.ccy === 'inr', priv = !!S.priv;
-const a = (v) => (v ? (priv ? { v: v, c: 'mp-mask' } : { v: v, c: '' }) : { v: '', c: 'hide' });
+// under privacy a mask never carries the figure: its digits drawn as 0 (same width, tabular figures), read as Hidden (MA-300, P0-2)
+const a = (v) => (v ? (priv ? { v: String(v).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden' } : { v: v, c: '', r: null, l: null }) : { v: '', c: 'hide', r: null, l: null });
 const M = (k) => (inr ? R(INR[k]) : G(F[k]));
 const none = a('');
 // the hero
-const h = { over: 'Household net worth', gOn: inr ? '' : 'on', iOn: inr ? 'on' : '', isEmpty: !!S.empty, isFig: !S.empty, fig: M('net'), plain: !priv && !S.roll, masked: priv, roll: !!S.roll, from: String(FIG.before.net), hasChip: false, chip: '', chipC: '', hasSplit: false, split: [], sa: none, st: '', rate: '£1 = ₹112.50 · ECB reference rate, Fri 23 Oct · prices at the Fri 23 Oct close' };
+const h = { over: 'Household net worth', gOn: inr ? '' : 'on', iOn: inr ? 'on' : '', isEmpty: !!S.empty, isFig: !S.empty, fig: priv ? M('net').replace(/[0-9]/g, '0') : M('net'), plain: !priv && !S.roll, masked: priv, roll: !!S.roll, from: String(FIG.before.net), hasChip: false, chip: '', chipC: '', hasSplit: false, split: [], sa: none, st: '', rate: '£1 = ₹112.50 · ECB reference rate, Fri 23 Oct · prices at the Fri 23 Oct close' };
 if (S.fig === 'before') { h.st = 'Across 20 records in the UK and India'; }
 else if (S.fig === 'saved') { h.sa = a('▲ ' + G(13000)); h.st = 'at 09:52 · Home, Reading corrected in place'; }
 else if (!S.empty) { h.sa = a('▲ ' + (inr ? R(5000 * FX) : G(5000))); h.st = 'at 09:41 · Instant access savings · Monzo, added in the chat' + (inr ? ' · about ₹5.01 crore in all' : ''); }
@@ -407,21 +447,24 @@ if (S.roll) { h.hasChip = true; h.chip = 'Just now'; h.chipC = 'upchip'; }
 if (S.opt === '1b') { h.hasSplit = true; h.split = [{ k: 'We own, both countries', a: a(M('own')) }, { k: 'We owe, both countries', a: a(M('owe')) }]; }
 // the cards
 const meters = (items) => ({ isMeters: true, items: items });
+// the rows each card ends in: the pushed screens it opens, by their titles (Assets, Debts, Budget, Projection; each draws ‹ Home)
+const nav = (...ts) => ({ isNav: true, items: ts.map((t) => ({ t: t })) });
+const AM = (k) => (priv ? 'Hidden' : M(k));
 const ownOwe = { t: 'What we own and owe', ra: none, r: P(F.owe, F.own) + ' of what we own is owed', parts: [meters([
-{ l: 'We own', a: a(M('own')), w: '100%', col: 'var(--mp-meter)', s: F.nrec - 4 + ' assets in the UK and India', b: none, aria: 'We own ' + M('own') },
-{ l: 'We owe', a: a(M('owe')), w: W(F.owe, F.own), col: 'var(--mp-down-quiet)', s: '3 loans and a card', b: none, aria: 'We owe ' + M('owe') + ', ' + P(F.owe, F.own) + ' of what we own' }])] };
+{ l: 'We own', a: a(M('own')), w: '100%', col: 'var(--mp-meter)', s: F.nrec - 4 + ' assets in the UK and India', b: none, aria: 'We own ' + AM('own') },
+{ l: 'We owe', a: a(M('owe')), w: W(F.owe, F.own), col: 'var(--mp-down-quiet)', s: '3 loans and a card', b: none, aria: 'We owe ' + AM('owe') + ', ' + P(F.owe, F.own) + ' of what we own' }]), nav('All assets', 'All debts')] };
 const byCountry = { t: 'By country', ra: none, r: inr ? 'in rupees' : 'in pounds', parts: [meters([
 { l: 'United Kingdom', a: a(M('uk')), w: W(F.uk, F.net), col: 'var(--mp-meter)', s: P(F.uk, F.net) + ' · 10 assets, 3 debts, held in pounds', b: none, aria: 'United Kingdom ' + P(F.uk, F.net) },
-{ l: 'India', a: a(M('ind')), w: W(F.ind, F.net), col: 'var(--mp-meter)', s: P(F.ind, F.net) + ' · 7 assets, 1 loan, held in rupees' + (inr ? '' : ':'), b: inr ? none : a('₹1,19,79,306'), aria: 'India ' + P(F.ind, F.net) }])] };
+{ l: 'India', a: a(M('ind')), w: W(F.ind, F.net), col: 'var(--mp-meter)', s: P(F.ind, F.net) + ' · 7 assets, 1 loan, held in rupees' + (inr ? '' : ':'), b: inr ? none : a('₹1,19,79,306'), aria: 'India ' + P(F.ind, F.net) }]), nav('All assets')] };
 if (F === FIG.before) byCountry.parts[0].items[0].s = P(F.uk, F.net) + ' · 9 assets, 3 debts, held in pounds';
 const byMember = { t: 'By member', ra: none, r: 'joint records by share', parts: [meters([
 { l: 'Arun', a: a(M('arun')), w: W(F.arun, F.net), col: 'var(--mp-meter)', s: P(F.arun, F.net) + ' · his own records and his half of the joint ones', b: none, aria: 'Arun ' + P(F.arun, F.net) },
 { l: 'Asha', a: a(M('asha')), w: W(F.asha, F.net), col: 'var(--mp-meter)', s: P(F.asha, F.net) + ' · her own records and her half of the joint ones', b: none, aria: 'Asha ' + P(F.asha, F.net) }]),
-{ isText: true, t: 'Joint: Home, Reading, the Pune flat, the mortgage and the Monzo pot, 50% each.', a: none, t2: '' }] };
+{ isText: true, t: 'Joint: Home, Reading, the Pune flat, the mortgage and the Monzo pot, 50% each.', a: none, t2: '' }, nav('All assets')] };
 const liquidity = { t: 'Liquid and locked', ra: none, r: P(F.lock, F.own) + ' is locked', parts: [{ isStack: true, aria: 'Liquid now ' + W(F.liq, F.own) + ', fixed term ' + W(F.fix, F.own) + ', locked ' + W(F.lock, F.own) + ' of what we own', items: [
 { l: 'Liquid now', a: a(M('liq')), w: W(F.liq, F.own), col: 'var(--mp-chart-2)', s: F.nliq + ' records: cash, savings, funds and shares', b: none, s2: '' },
 { l: 'Fixed term', a: a(M('fix')), w: W(F.fix, F.own), col: 'var(--mp-chart-5)', s: '4 pay out at maturity; next the saver,', b: a(G(10460)), s2: 'on Mon 14 Dec' },
-{ l: 'Locked', a: a(M('lock')), w: W(F.lock, F.own), col: 'var(--mp-chart-4)', s: 'two homes, and two pensions that unlock at 57', b: none, s2: '' }] }] };
+{ l: 'Locked', a: a(M('lock')), w: W(F.lock, F.own), col: 'var(--mp-chart-4)', s: 'two homes, and two pensions that unlock at 57', b: none, s2: '' }] }, nav('All assets')] };
 const dueItems = [
 { tc: 'today', wd: 'Today', d: '26', m: 'Oct', t: 'Valuation due: Home, Reading', s: 'Asks: still about', b: a(G(415000)), a: none, cc: 'mp-pause', chip: 'Asks you' },
 { tc: 'today', wd: 'Today', d: '26', m: 'Oct', t: 'Valuation overdue: Flat, Pune', s: 'Due since 15 Jul. Asks: still about', b: a('₹1,10,00,000'), a: none, cc: 'mp-pause', chip: 'Asks you' },
@@ -432,18 +475,18 @@ const dueItems = [
 { tc: '', wd: 'Fri', d: '20', m: 'Nov', t: 'Car loan · Close Brothers', s: 'UK · Arun', b: none, a: a(G(347)), cc: 'mp-neutral', chip: 'Autopay' }
 ];
 if (S.fig === 'saved') { dueItems[0] = Object.assign({}, dueItems[0], { t: 'Valuation: Home, Reading', s: 'Answered 09:52, corrected in place', b: none, cc: 'mp-add', chip: 'Done' }); }
-const due = { t: "What's due", ra: none, r: 'next 30 days', parts: [{ isDue: true, items: dueItems }, { isText: true, t: 'Also Fri 20 Nov: the Barclaycard bill, from the statement on Sun 1 Nov. Each check-in arrives in the chat; one tap records it.', a: none, t2: '' }] };
+const due = { t: "What's due", ra: none, r: 'next 30 days', parts: [{ isDue: true, items: dueItems }, { isText: true, t: 'Also Fri 20 Nov: the Barclaycard bill, from the statement on Sun 1 Nov. Each check-in arrives in the chat; one tap records it.', a: none, t2: '' }, nav('October budget')] };
 const runoff = { t: 'What we owe, and how it runs off', ra: a(M('owe')), r: 'in all', parts: [{ isRunoff: true, items: [
 { n: 'Car loan · Close Brothers', a: a(G(8939)), w: W(28, 228), s: 'UK · Arun ·', b: a(G(347) + ' a month'), end: 'paid off Tue 20 Feb 2029', aria: 'Car loan, 28 months left' },
 { n: 'Home loan · HDFC, the Pune flat', a: a('₹15,13,257'), w: W(45, 228), s: 'India · Arun ·', b: a('₹39,390 a month'), end: 'paid off Fri 5 Jul 2030', aria: 'HDFC home loan, 45 months left' },
 { n: 'Mortgage · Nationwide', a: a(G(224353)), w: '100%', s: 'UK · joint 50% each · fixed 4.39% to 30 Jun 2028 ·', b: a(G(1456) + ' a month'), end: 'paid off Sun 1 Oct 2045', aria: 'Mortgage, 228 months left' }],
 ax: [{ l: 'Now', left: '0%', c: 'ax0' }, { l: '2030', left: W(39, 228), c: '' }, { l: '2035', left: W(99, 228), c: '' }, { l: '2040', left: W(159, 228), c: '' }, { l: 'Oct 2045', left: '100%', c: 'ax1' }] },
-{ isText: true, t: 'Barclaycard: nothing owed; October\'s', a: a(G(1240)), t2: 'was paid in full on Tue 20 Oct. Each loan frees its payment when it ends.' }] };
+{ isText: true, t: 'Barclaycard: nothing owed; October\'s', a: a(G(1240)), t2: 'was paid in full on Tue 20 Oct. Each loan frees its payment when it ends.' }, nav('All debts')] };
 const maturing = { t: 'Maturing next', ra: none, r: 'what the fixed terms pay', parts: [{ isDue: true, items: [
 { tc: '', wd: 'Mon', d: '14', m: 'Dec', y: '2026', t: 'Fixed-rate saver · Nationwide', s: 'UK · Asha · 4.6% · now', b: a(G(10000)), a: a(G(10460)), cc: 'mp-pause', chip: 'Asks you' },
 { tc: '', wd: 'Sat', d: '10', m: 'Mar', y: '2029', t: 'Fixed deposit · SBI', s: 'India · Arun · 7.1% · now', b: a('₹5,17,908'), a: a('₹6,17,538'), cc: 'mp-pause', chip: 'Asks you' },
 { tc: '', wd: 'Fri', d: '28', m: 'Mar', y: '2031', t: 'LIC Jeevan Anand', s: 'India · Asha · sum assured', b: a('₹10,00,000'), a: none, cc: 'mp-neutral', chip: 'Policy' },
-{ tc: '', wd: 'Mon', d: '31', m: 'Mar', y: '2031', t: 'PPF · SBI', s: 'India · Arun · 7.1% · now', b: a('₹6,80,000'), a: none, cc: 'mp-neutral', chip: 'PPF' }] }] };
+{ tc: '', wd: 'Mon', d: '31', m: 'Mar', y: '2031', t: 'PPF · SBI', s: 'India · Arun · 7.1% · now', b: a('₹6,80,000'), a: none, cc: 'mp-neutral', chip: 'PPF' }] }, nav('20-year projection and plans')] };
 const row = (lead, n, cc, jt, s, va, vb) => ({ isRow: true, lead: lead, n: n, cc: cc, jt: !!jt, sh: jt ? 'Arun 50% · Asha 50%' : '', s: s, a: a(va), b: a(vb || '') });
 const homeVal = S.fig === 'saved' ? G(428000) : G(415000);
 const homeRow = row('HM', 'Home, Reading', 'UK · £', true, S.fig === 'saved' ? 'your estimate, 26 Oct' : 'valued 30 Apr', homeVal, inr ? R(415000 * FX) : '');
@@ -453,7 +496,7 @@ row('FP', 'Flat, Pune', 'India · ₹', true, 'valued 15 Jan · overdue', '₹1,
 row('AV', 'Workplace pension · Aviva', 'UK · £', false, 'Arun · unlocks at 57', G(86400), inr ? R(86400 * FX) : ''),
 row('VG', 'SIPP · Vanguard', 'UK · £', false, 'Asha · unlocks at 57', G(31250), inr ? R(31250 * FX) : ''),
 row('BA', 'Balanced (BlackRock MyMap 5)', 'UK · £', false, 'Arun · ISA · Monzo', G(22925), inr ? R(22925 * FX) : '')] },
-{ isText: true, t: '12 more records,', a: a(G(S.fig === 'saved' ? 38341 : 38341)), t2: 'in all.' }, { isLink: true, t: 'All assets' }] };
+{ isText: true, t: '12 more records,', a: a(G(S.fig === 'saved' ? 38341 : 38341)), t2: 'in all.' }, nav('All assets')] };
 if (S.fig === 'saved') largest.parts[0].items.splice(1, 0, { isAudit: true, t: 'Corrected in place · 09:52 · Arun', s: 'was £415,000 · your estimate · in the audit log' });
 // the rows of cards, by option
 let rows;
@@ -471,11 +514,11 @@ rows = [{ cls: 'one', cols: [{ cards: [{ t: 'Say it the way you would to a frien
 const uk = { t: 'United Kingdom', ra: none, r: 'in pounds · 10 assets, 3 debts', parts: [{ isBig: true, a: a(G(F.uk)), b: none, s: 'net' }, { isKV: true, items: [{ k: 'Own', a: a(G(571760)) }, { k: 'Owe', a: a(G(233292)) }] }, { isRows: true, items: [
 row('HM', 'Home, Reading', 'UK · £', true, 'property', G(415000)), row('AV', 'Workplace pension · Aviva', 'UK · £', false, 'Arun', G(86400)), row('VG', 'SIPP · Vanguard', 'UK · £', false, 'Asha', G(31250)), row('BA', 'Balanced (BlackRock MyMap 5)', 'UK · £', false, 'Arun · ISA', G(22925)),
 row('NW', 'Fixed-rate saver · Nationwide', 'UK · £', false, 'Asha', G(10000)), row('MZ', 'Instant access savings · Monzo', 'UK · £', false, 'Arun · new', G(5000)), row('+4', 'Three ETFs and the Monzo pot', 'UK · £', false, '4 records', G(1185)),
-row('MG', 'Mortgage · Nationwide', 'UK · £', true, 'owed', '−' + G(224353)), row('CL', 'Car loan · Close Brothers', 'UK · £', false, 'owed', '−' + G(8939)), row('BC', 'Barclaycard', 'UK · £', false, 'paid in full', G(0))] }] };
+row('MG', 'Mortgage · Nationwide', 'UK · £', true, 'owed', '−' + G(224353)), row('CL', 'Car loan · Close Brothers', 'UK · £', false, 'owed', '−' + G(8939)), row('BC', 'Barclaycard', 'UK · £', false, 'paid in full', G(0))] }, nav('All assets', 'All debts')] };
 const ind = { t: 'India', ra: none, r: 'in rupees · 7 assets, 1 loan', parts: [{ isBig: true, a: a('₹1,19,79,306'), b: a('≈ ' + G(F.ind)), s: 'net' }, { isKV: true, items: [{ k: 'Own', a: a('₹1,34,92,563') }, { k: 'Owe', a: a('₹15,13,257') }] }, { isRows: true, items: [
 row('FP', 'Flat, Pune', 'India · ₹', true, 'property', '₹1,10,00,000'), row('PF', 'PPF · SBI', 'India · ₹', false, 'Arun', '₹6,80,000'), row('PP', 'Parag Parikh Flexi Cap', 'India · ₹', false, 'Asha · SIP', '₹5,61,995'), row('FD', 'Fixed deposit · SBI', 'India · ₹', false, 'Arun', '₹5,17,908'),
 row('LI', 'LIC Jeevan Anand', 'India · ₹', false, 'Asha · surrender value', '₹3,40,000'), row('NR', 'NRE savings · HDFC', 'India · ₹', false, 'Arun', '₹2,15,000'), row('IN', 'Infosys', 'India · ₹', false, 'Arun · 120 shares', '₹1,77,660'),
-row('HL', 'Home loan · HDFC', 'India · ₹', false, 'owed', '−₹15,13,257')] }] };
+row('HL', 'Home loan · HDFC', 'India · ₹', false, 'owed', '−₹15,13,257')] }, nav('All assets', 'All debts')] };
 rows = [{ cls: 'even', cols: [{ cards: [uk] }, { cards: [ind] }] }, { cls: 'even', cols: [{ cards: [byMember] }, { cards: [due] }] }];
 } else if (S.opt === '1c') {
 const next = { t: "What's next", ra: none, r: 'due, maturing and ending, in date order', parts: [
@@ -486,7 +529,7 @@ const next = { t: "What's next", ra: none, r: 'due, maturing and ending, in date
 { tc: '', wd: 'Tue', d: '20', m: 'Feb', y: '2029', t: 'Car loan paid off', s: 'frees', b: a(G(347) + ' a month'), a: none, cc: 'mp-neutral', chip: 'Ends' },
 maturing.parts[0].items[1],
 { tc: '', wd: 'Fri', d: '5', m: 'Jul', y: '2030', t: 'HDFC home loan paid off', s: 'frees', b: a('₹39,390 a month'), a: none, cc: 'mp-neutral', chip: 'Ends' },
-{ tc: '', wd: 'Sun', d: '1', m: 'Oct', y: '2045', t: 'Mortgage paid off', s: 'frees', b: a(G(1456) + ' a month'), a: none, cc: 'mp-neutral', chip: 'Ends' }] }] };
+{ tc: '', wd: 'Sun', d: '1', m: 'Oct', y: '2045', t: 'Mortgage paid off', s: 'frees', b: a(G(1456) + ' a month'), a: none, cc: 'mp-neutral', chip: 'Ends' }] }, nav('October budget', '20-year projection and plans')] };
 rows = [{ cls: 'one', cols: [{ cards: [next] }] }, { cls: '', cols: [{ cards: [byCountry, byMember] }, { cards: [liquidity, ownOwe] }] }];
 } else {
 rows = [{ cls: '', cols: [{ cards: [ownOwe, byCountry, byMember] }, { cards: [liquidity, due] }] }, { cls: '', cols: [{ cards: [runoff] }, { cards: [maturing] }] }, { cls: 'one', cols: [{ cards: [largest] }] }];
@@ -532,10 +575,11 @@ p.rows[0] = Object.assign({}, p.rows[0], { cls: 'pager' + (S.swiped ? ' swiped' 
 p.rows = p.rows.map((rw) => Object.assign({ hasDots: false, d1: '', d2: '' }, rw));
 if (S.pad) { const r = p.rows[0]; p.rows = [Object.assign({}, r, { cls: 'igrid' })]; }
 if (S.edit) p.rows = [p.rows[p.rows.length - 1]];  // the keyboard is up: the page has scrolled the field to the top
+if (S.ax5) p.rows = [{ cls: 'one', cols: [{ cards: [p.rows[0].cols[0].cards[0]] }], hasDots: false, d1: '', d2: '' }];  // AX5: the hero, then the first card, own and owe
 return p;
 };
 const L = { cls: 't-light', n: 'light' }, D = { cls: 't-dark', n: 'dark' };
-const fr = (th, S, what) => ({ lab: 'iPhone · ' + what + ' · ' + th.n, cls: th.cls + (S.end || S.edit ? ' atend' : '') + (S.edit ? ' kbopen' : ''), isPhone: true, isPad: false, p: pageI(S) });
+const fr = (th, S, what) => ({ lab: 'iPhone · ' + what + ' · ' + th.n, cls: th.cls + (S.end || S.edit ? ' atend' : '') + (S.edit ? ' kbopen' : '') + (S.ax5 ? ' ax5' : ''), isPhone: true, isPad: false, p: pageI(S) });
 const padFr = (th) => ({ lab: 'iPad · landscape · 1180 × 820 · ' + th.n, cls: th.cls, isPhone: false, isPad: true, p: pageI({ opt: '1a', pad: true }) });
 const both = (S, what) => ({ fs: [fr(L, S, what), fr(D, S, what)] });
 const n = (b, t) => ({ b: b, t: t });
@@ -577,7 +621,11 @@ notes: [n('£428,000 is Arun\'s estimate,', 'labelled so: the figure set\'s corr
 { id: 's13', name: 'iPad · Whole wealth with the chat beside it', keys: 'MA-208 · MA-95 · MA-213', isOpt: false,
 why: 'iPad landscape, from about 1133 pt: the glass sidebar, Home in two columns, and the chat as a column beside it, with this morning\'s check-in and the Monzo savings saved at 09:41.',
 views: [{ fs: [padFr(L), padFr(D)] }],
-notes: [n('Same cards, same order', 'as the browser\'s 1a: the make-up on the left, liquid and locked and what is due on the right.'), n('The chat knows the screen:', 'its composer reads Ask about Home.')] }
+notes: [n('Same cards, same order', 'as the browser\'s 1a: the make-up on the left, liquid and locked and what is due on the right.'), n('The chat knows the screen:', 'its composer reads Ask about Home.'), n('Ask in the bar', 'from about 600 to 1133 pt, where the chat column gives way and comes up as a sheet.')] },
+{ id: 's15', name: 'AX5 · iPhone · Home, largest text', keys: 'MA-208 · MA-95', isOpt: false,
+why: 'Dynamic Type at its largest accessibility size, AX5: the same Home at 09:41, every line of text at Apple\'s AX5 size (body and headline 53 pt, footnote 44, caption 43, the large title 60). Rows that sit side by side at the default size stack: the lens, the overline and the £/₹ switch, each card\'s title and its note, each meter\'s label and its figure. Text wraps, figures never break or truncate, and nothing is cut.',
+views: [{ fs: [fr(L, { opt: '1a', ax5: true }, 'AX5, as it opens'), fr(L, { opt: '1a', ax5: true, end: true }, 'AX5, scrolled to the end of the first card'), fr(D, { opt: '1a', ax5: true }, 'AX5, as it opens'), fr(D, { opt: '1a', ax5: true, end: true }, 'AX5, scrolled to the end of the first card')] }],
+notes: [n('Stacked, not shrunk:', 'at an accessibility size a row of two becomes two rows; the hero\'s figure keeps one line, at 52 pt.'), n('The glass bars keep their size:', 'the tab bar, the eye and Ask; a long press shows each label in the large content viewer, as iOS does.'), n('Each card still ends in its screens:', 'All assets and All debts, 44 pt or taller at any size.')] }
 ];
 const all = opts.concat(states);
 const keypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫'].map((t) => ({ t: t, c: t === '' || t === '⌫' ? 'fn' : '' }));
@@ -586,7 +634,7 @@ index: all.map((b) => ({ id: b.id, n: b.name, k: b.keys })),
 padNav: padNav, keypad: keypad,
 turns: [
 { id: 't1', tag: '1', label: 'Turn 1: options for Home', title: 'Turn 1 · Three ways to open Home', lead: 'The same three structures as the browser boards, on iPhone in light and dark, as it opens and further down. 1a is recommended.', boards: opts, next: 'Try next: "1a with what is due first" · "1b\'s pager inside 1a\'s By country card"' },
-{ id: 't2', tag: '2', label: "Turn 2: 1a's states", title: "Turn 2 · 1a's states, drawn ahead of the pick", lead: 'The recommended option on iPhone and iPad: rupees, privacy, before and after the first record, empty, a figure corrected in place, and iPad landscape with the chat beside it.', boards: states, next: 'Try next: "the Me lens" · "Dynamic Type at AX5" · "the foldable, open"' }
+{ id: 't2', tag: '2', label: "Turn 2: 1a's states", title: "Turn 2 · 1a's states, drawn ahead of the pick", lead: 'The recommended option on iPhone and iPad: rupees, privacy, before and after the first record, empty, a figure corrected in place, iPad landscape with the chat beside it, and the largest text size, AX5.', boards: states, next: 'Try next: "the Me lens" · "the foldable, open"' }
 ]
 };
 }

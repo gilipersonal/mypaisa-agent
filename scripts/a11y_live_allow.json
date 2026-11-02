@@ -1,0 +1,36 @@
+{
+ "about": "What scripts/a11y_live.js does not count as a fault, and why (MA-300). Each allowance names its board (the end of its path under docs/design/; alternatives split by |), its fault types (tick-clipped, small-target, not-focusable, aria-hidden-invalid, icon-not-hidden, privacy-leak, privacy-toggle-missing, did-not-render), a regular expression on the element's path (el), one on the fault's text (text), optionally one on the frame's label (frames), and its reason (why). An allowance that matches nothing in a run that covers its board is reported (NOTE), so the list stays true. Fix the board first; add an allowance only for what is drawn on purpose or what an open issue carries, naming the issue. None is needed for the faults MA-300's own lanes are fixing.",
+ "allow": [
+  {
+   "board": "Web v4 · Consolidated options.dc.html|iPhone v4 · Consolidated options.dc.html",
+   "types": [
+    "small-target",
+    "not-focusable",
+    "privacy-leak",
+    "icon-not-hidden"
+   ],
+   "el": "",
+   "text": "",
+   "why": "The record of MA-279's options round, kept as drawn (Arun picked 1a); the picked boards are the spec, and they pass this gate."
+  },
+  {
+   "board": "Prototype v4.dc.html",
+   "types": [
+    "small-target"
+   ],
+   "el": "",
+   "text": "",
+   "why": "Prototype v4's card actions, links, chips, segmented control and composer inputs are under 44 pt; MA-302 brings them in line."
+  },
+  {
+   "board": "Web v4 · Check-ins.dc.html",
+   "types": [
+    "privacy-leak"
+   ],
+   "el": "",
+   "text": "₹39,390|£1,458",
+   "frames": "several due at once",
+   "why": "Drawn on purpose: Show amounts on this card reveals one card's figures while Privacy Mode stays on (Arun, 2 Nov 2026, MA-300)."
+  }
+ ]
+}

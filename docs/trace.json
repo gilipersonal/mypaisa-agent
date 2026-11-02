@@ -4109,7 +4109,7 @@
           "board": "iPhone · Chat home & Home sheet · Light"
         }
       ],
-      "notes": "Arun picked 1a, Chat first, on 26 Oct 2026; 1b and 1c stay on Shell options as the record, marked not picked. The flow boards are drawn in 1a's shell. Drawn: the glass household strip tapped in the chat: Home opening as a sheet over the conversation on iPhone, as MA-163's acceptance asks. Drawn: the iPad and foldable boards follow the width rule where they differ: Foldable · Open and Foldable · Open, Audit draw the chat beside the screen at 880 pt, and Foldable · Folded's caption says unfolding puts the sidebar and Home back beside the chat, that the chat column becomes the Chat tab, and that folding morphs the three columns back, where ARCHITECTURE 9.1 makes it a tab bar at the top and a sheet; MA-163's own design-first round redraws all three (MA-70 and MA-71 clear their items from it), and the rule wins over the boards until then. Drawn: its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279).",
+      "notes": "Arun picked 1a, Chat first, on 26 Oct 2026; 1b and 1c stay on Shell options as the record, marked not picked. The flow boards are drawn in 1a's shell. Drawn: the glass household strip tapped in the chat: Home opening as a sheet over the conversation on iPhone, as MA-163's acceptance asks. Drawn: the iPad and foldable boards follow the width rule where they differ: Foldable · Open and Foldable · Open, Audit draw the chat beside the screen at 880 pt, and Foldable · Folded's caption says unfolding puts the sidebar and Home back beside the chat, that the chat column becomes the Chat tab, and that folding morphs the three columns back, where ARCHITECTURE 9.1 makes it a tab bar at the top and a sheet; MA-163's own design-first round redraws all three (MA-70 and MA-71 clear their items from it), and the rule wins over the boards until then. Drawn: its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279). MA-300 (2 Nov 2026): the household strip is drawn solid, not glass, on every board that carries a balance: PRODUCT.md and DESIGN.md keep Liquid Glass to floating controls and never on figures (rule 6: the plan settles it; the deep scan's P1-2). The 'Drawn:' line above names the strip as it was first drawn.",
       "undrawn": [
         "the iPad from about 900 to 1133 pt with the chat's sheet open over the screen beside the sidebar, opened from the sidebar's Chat (the landscape boards draw it closed, the chat column put away by tokens.css; the sheet itself is drawn at 820 pt on iPad · Holding, portrait); MA-163's design-first round draws it (MA-240, Arun 27 Oct 2026)"
       ]
@@ -8612,6 +8612,67 @@
         "docs/design/argos-visual-a11y.html",
         "docs/design/argos-visual-a11y/*.gif"
       ]
+    },
+    {
+      "key": "MA-300",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Close the Impeccable deep scan's remaining P0, P1 and P3 findings, and its motion and performance fixes, across DS v1, iOS v1, Web v4 and Prototype v5",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "9.1",
+        "9.3",
+        "9.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 2 Nov 2026: \"complete the tasks from antigravity for the UI work\", from docs/handoffs/2026-10-31-impeccable-deep-scan.md and its deep-scan report. Bug and conformance fixes on picked boards (no options round, per /design-first); the redesign items are MA-301.",
+      "code": [
+        "docs/design/ds-v1/tokens.css",
+        "docs/design/prototype-v5/",
+        "docs/design/reviews/MA-295/build_boards.py",
+        "docs/design/reviews/MA-279/"
+      ]
+    },
+    {
+      "key": "MA-301",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Design options for the deep scan's redesign items: calmer Projection and statement Confirm, nested cards, a web-only join, the type and icon stack and the Cmd+K palette",
+      "status": "In Progress",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.1",
+        "9.3",
+        "9.4"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "Arun, 2 Nov 2026, from the deep scan's P2-2, P2-3, P2-4, P2-5 and P1-7: drawn as a /design-first options round in docs/design/reviews/MA-301/ and published as a private Claude Artifact; no board is picked until Arun picks."
+    },
+    {
+      "key": "MA-302",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Prototype v4's controls reach 44 pt, as the picked v4 boards and Prototype v5 now do",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.3",
+        "9.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Found by MA-300's live accessibility gate (scripts/a11y_live.js): 14 controls in Prototype v4 under 44x44 (card actions, links, suggestion chips, a segmented control, the composer inputs). Allowed in scripts/a11y_live_allow.json, naming this issue, until it lands."
     }
   ],
   "others": [

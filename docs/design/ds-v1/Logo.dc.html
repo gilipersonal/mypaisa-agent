@@ -14,7 +14,7 @@
         <style>
           html { background: #ECEAE6; }
           body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           .dv-turn { padding: 44px 48px 36px; }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
           .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -175,25 +175,27 @@
           .chl-head { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
           .chl-head b { font: 600 17px/22px var(--mp-font); }
           .chl-a { color: var(--mp-accent); font-size: 17px; min-width: 44px; }
-          .chl-search { margin: 0 12px 8px; height: 36px; border-radius: 10px; background: var(--mp-surface-2); color: var(--mp-ink-3); display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 16px; }
+          .chl-search { margin: 0 12px 8px; height: 36px; border-radius: 10px; background: var(--mp-surface-2); color: var(--mp-ink-2); display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 16px; }
           .chl-row { display: flex; gap: 12px; align-items: center; padding: 6px 12px 0 12px; }
           .chl-av { width: 58px; height: 58px; flex: none; display: block; border-radius: 50%; }
           .chl-ini { display: grid; place-items: center; color: #FFFFFF; font: 600 22px/1 var(--mp-font); }
           .av-a { background: #2453C9; } .av-f { background: #6B3FB8; }
           .chl-txt { flex: 1; min-width: 0; padding: 4px 0 10px; border-bottom: 0.5px solid var(--mp-line); }
           .chl-name { font: 600 16px/21px var(--mp-font); }
-          .chl-time { font-size: 14px; line-height: 18px; color: var(--mp-ink-3); }
+          .chl-time { font-size: 14px; line-height: 18px; color: var(--mp-ink-2); }
           .chl-prev { font-size: 15px; line-height: 20px; color: var(--mp-ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
           .chead { height: 52px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; background: var(--mp-surface); border-top: 8px solid var(--mp-bg); border-bottom: 0.5px solid var(--mp-line); }
           .back { min-width: 72px; min-height: 44px; display: flex; align-items: center; color: var(--mp-accent); font-size: 17px; }
           .back .ms { font-size: 22px; }
           .ctitle { flex: 1; display: flex; flex-direction: column; align-items: center; }
           .cname { font: 600 16px/20px var(--mp-font); }
-          .csub { font-size: 13px; line-height: 16px; color: var(--mp-ink-3); }
+          .csub { font-size: 13px; line-height: 16px; color: var(--mp-ink-2); }
           .cav { width: 36px; height: 36px; flex: none; display: block; margin-left: 36px; }
           .chmsgs { padding: 10px 10px 14px; display: flex; flex-direction: column; gap: 6px; }
           .chbub { background: var(--mp-surface); border-radius: 16px 16px 16px 6px; padding: 10px 12px 8px; max-width: 320px; font-size: 15px; line-height: 20px; box-shadow: var(--mp-shadow); }
-          .chtime { font-size: 11px; line-height: 13px; color: var(--mp-ink-3); text-align: right; margin-top: 4px; }
+          .chtime { font-size: 12px; line-height: 13px; color: var(--mp-ink-2); text-align: right; margin-top: 4px; }
+          /* canvas links: a 44 x 44 tap area around the drawn chip, nothing drawn (MA-300) */
+          .dv-idx a, .dv-tid, .dv-oid { position: relative; } .dv-idx a::after, .dv-tid::after, .dv-oid::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
         </style>
       </helmet>
 
@@ -211,14 +213,14 @@
       </svg>
 
       <section class="dv-turn" id="t1" data-screen-label="Turn 1: three animated marks">
-        <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">MyPaisa logo: three animated marks</span><button class="btn-r" style="margin-left: 16px; align-self: center" onClick="{{ replayAll }}"><span class="ms">replay</span>Replay all</button></div>
+        <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">MyPaisa logo: three animated marks</span><button class="btn-r" style="margin-left: 16px; align-self: center" onClick="{{ replayAll }}"><span class="ms" aria-hidden="true">replay</span>Replay all</button></div>
         <p class="dv-intro">MA-103. Arun asked for a motion-animated brand. Three different ideas, each drawn by hand on a 48 grid in DS v1 Warm ledger: the hero navy (#13213A, #1A2944 on dark), coral (#FF6B4F, #FF7A5E on dark), ink, white and the warm ground #F6F4F1, with the hero card's own inner tones where a coin sits on navy. Each option shows the mark from 512 to 16 px in light and dark, the app icon and the chat avatar circle crop, the lockups with a clear-space rule, its intro (one play, at most 1.2 s, with Replay and a six-frame storyboard), and the mark at work: the app opening on iPhone and phone web, the sign-in page, the chat list and chat header, and a browser tab. Under Reduce Motion every intro shows its last frame at once. Figures are illustrative.</p>
-        <div class="dv-picked"><span class="ms ms-fill">check_circle</span><span><b>Picked: <a class="dv-oid" href="#1c">1c</a> Watcher (Arun, 24 Oct 2026).</b> It is now the MyPaisa mark: the repo's docs/mark.svg family and every Claude Design screen use it (the sidebar, the sign-in pages, the bot's avatar and the bot's PNG footers). <a class="dv-oid" href="#1a">1a</a> and <a class="dv-oid" href="#1b">1b</a> stay below as the record. <i>The record, as written before the pick:</i> this page recommended <a class="dv-oid" href="#1a">1a</a> Stance line, because it is the one mark here that could not belong to another app. It is made of things MyPaisa already shows: the navy hero card, the coral line on every chart and every PNG the bot sends, and the ringed stance dot. So the brand and the product say the same thing, and the intro is the product in one second: a line drawn calmly, then one view placed. It holds at 16 px with its own small cut, and it needs no £, so it stays right if the household ever holds more than sterling. <a class="dv-oid" href="#1c">1c</a> is the safe evolution of today's coin; <a class="dv-oid" href="#1b">1b</a> is the plainest and the sharpest at 16 px, but the hardest to own.</span></div>
+        <div class="dv-picked"><span class="ms ms-fill" aria-hidden="true">check_circle</span><span><b>Picked: <a class="dv-oid" href="#1c">1c</a> Watcher (Arun, 24 Oct 2026).</b> It is now the MyPaisa mark: the repo's docs/mark.svg family and every Claude Design screen use it (the sidebar, the sign-in pages, the bot's avatar and the bot's PNG footers). <a class="dv-oid" href="#1a">1a</a> and <a class="dv-oid" href="#1b">1b</a> stay below as the record. <i>The record, as written before the pick:</i> this page recommended <a class="dv-oid" href="#1a">1a</a> Stance line, because it is the one mark here that could not belong to another app. It is made of things MyPaisa already shows: the navy hero card, the coral line on every chart and every PNG the bot sends, and the ringed stance dot. So the brand and the product say the same thing, and the intro is the product in one second: a line drawn calmly, then one view placed. It holds at 16 px with its own small cut, and it needs no £, so it stays right if the household ever holds more than sterling. <a class="dv-oid" href="#1c">1c</a> is the safe evolution of today's coin; <a class="dv-oid" href="#1b">1b</a> is the plainest and the sharpest at 16 px, but the hardest to own.</span></div>
 
         <div class="ov">
           <sc-for list="{{ opts }}" as="o" hint-placeholder-count="3">
             <div class="ovc">
-              <div class="ovh"><a class="dv-oid" href="#{{ o.id }}">{{ o.id }}</a><b>{{ o.name }}</b><sc-if value="{{ o.pick }}" hint-placeholder-val="{{ false }}"><span class="dv-rec">Picked · 24 Oct</span></sc-if><sc-if value="{{ o.notPick }}" hint-placeholder-val="{{ true }}"><span class="dv-not">Not picked · kept as the record</span></sc-if><button class="btn-r" style="margin-left: auto" onClick="{{ o.replay }}"><span class="ms">replay</span>Replay</button></div>
+              <div class="ovh"><a class="dv-oid" href="#{{ o.id }}">{{ o.id }}</a><b>{{ o.name }}</b><sc-if value="{{ o.pick }}" hint-placeholder-val="{{ false }}"><span class="dv-rec">Picked · 24 Oct</span></sc-if><sc-if value="{{ o.notPick }}" hint-placeholder-val="{{ true }}"><span class="dv-not">Not picked · kept as the record</span></sc-if><button class="btn-r" style="margin-left: auto" onClick="{{ o.replay }}"><span class="ms" aria-hidden="true">replay</span>Replay</button></div>
               <div class="ovs">
                 <sc-for list="{{ o.ovStages }}" as="c" hint-placeholder-count="2">
                   <div class="stg s-ov {{ c.cls }}" data-play="{{ c.play }}" data-screen-label="{{ o.id }} intro {{ c.label }}">
@@ -307,7 +309,7 @@
                 </div>
 
                 <div>
-                  <div class="sh"><b>4 · Motion</b><button class="btn-r" onClick="{{ o.replay }}"><span class="ms">replay</span>Replay</button><span>{{ o.timing }} Transform, opacity and stroke drawing only, on --mp-ease, played once. The strips are the real animation frozen at each time.</span></div>
+                  <div class="sh"><b>4 · Motion</b><button class="btn-r" onClick="{{ o.replay }}"><span class="ms" aria-hidden="true">replay</span>Replay</button><span>{{ o.timing }} Transform, opacity and stroke drawing only, on --mp-ease, played once. The strips are the real animation frozen at each time.</span></div>
                   <div class="fx col gap16">
                     <sc-for list="{{ o.mrows }}" as="mr" hint-placeholder-count="3">
                       <div class="mrow">
@@ -354,11 +356,11 @@
                                   </sc-for>
                                 </div>
                                 <nav class="mp-tabbar tabs-abs" aria-label="Sections">
-                                  <span class="mp-tab on"><span class="ms ms-fill">home</span>Overview</span>
-                                  <span class="mp-tab"><span class="ms">donut_small</span>Holdings</span>
-                                  <span class="mp-tab"><span class="ms">join_inner</span>Overlap</span>
-                                  <span class="mp-tab"><span class="ms">insights</span>Record</span>
-                                  <span class="mp-tab"><span class="ms">menu</span>More</span>
+                                  <span class="mp-tab on"><span class="ms ms-fill" aria-hidden="true">home</span>Overview</span>
+                                  <span class="mp-tab"><span class="ms" aria-hidden="true">donut_small</span>Holdings</span>
+                                  <span class="mp-tab"><span class="ms" aria-hidden="true">join_inner</span>Overlap</span>
+                                  <span class="mp-tab"><span class="ms" aria-hidden="true">insights</span>Record</span>
+                                  <span class="mp-tab"><span class="ms" aria-hidden="true">menu</span>More</span>
                                 </nav>
                               </div>
                               <div class="sp k sp-out">
@@ -382,16 +384,16 @@
                         <div class="bw mp {{ t.cls }}" data-screen-label="{{ o.id }} sign-in {{ t.label }}">
                           <div class="bw-tabs">
                             <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                            <div class="tab on"><svg class="fav" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#m{{ o.id }}-s"></use></svg><span>MyPaisa · Sign in</span><span class="ms x">close</span></div>
-                            <div class="tab"><span class="ms g0">public</span><span>New tab</span></div>
+                            <div class="tab on"><svg class="fav" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#m{{ o.id }}-s"></use></svg><span>MyPaisa · Sign in</span><span class="ms x" aria-hidden="true">close</span></div>
+                            <div class="tab"><span class="ms g0" aria-hidden="true">public</span><span>New tab</span></div>
                           </div>
-                          <div class="bw-bar"><span class="ms">arrow_back</span><span class="ms">arrow_forward</span><span class="ms">refresh</span><div class="url"><span class="ms">lock</span>mypaisa.example/sign-in</div></div>
+                          <div class="bw-bar"><span class="ms" aria-hidden="true">arrow_back</span><span class="ms" aria-hidden="true">arrow_forward</span><span class="ms" aria-hidden="true">refresh</span><div class="url"><span class="ms" aria-hidden="true">lock</span>mypaisa.example/sign-in</div></div>
                           <div class="bw-page">
                             <div class="lhero {{ t.hero }}">
                               <div class="lk-h"><svg style="width: {{ o.heroPx }}; height: {{ o.heroPx }}" viewBox="0 0 48 48" overflow="visible" role="img" aria-label="{{ o.aria }}"><use href="#{{ o.lockSym }}"></use></svg><span class="wm">MyPaisa</span></div>
                               <div class="fx col gap12">
                                 <h1 class="tagline">Your household's money, in one calm place.</h1>
-                                <p class="mp-sub mp-hero-2" style="margin: 0">Holdings, stances and the track record for your household, to read in the browser. Every change still happens in the chat.</p>
+                                <p class="mp-sub mp-hero-2" style="margin: 0">Holdings, stances and the track record for your household, with the same chat as the app. Every change is a card you confirm.</p>
                               </div>
                               <div class="mp-foot mp-hero-2">Illustrative</div>
                             </div>
@@ -399,10 +401,10 @@
                               <div class="lbox">
                                 <div class="mp-t1">Sign in</div>
                                 <div class="mp-sub mp-ink2" style="margin-bottom: 10px">For your household, on the web and on iPhone and iPad.</div>
-                                <a class="mp-btn mp-btn-primary" href="#{{ o.id }}"><span class="ms">key</span>Sign in with a passkey</a>
+                                <a class="mp-btn mp-btn-primary" href="#{{ o.id }}"><span class="ms" aria-hidden="true">key</span>Sign in with a passkey</a>
                                 <a class="mp-btn mp-btn-tinted" href="#{{ o.id }}"><span class="gbadge" aria-hidden="true">G</span>Sign in with Google</a>
-                                <div class="lnote mp-foot mp-ink2" style="margin-top: 6px"><span class="ms ms-s mp-ink3">smartphone</span><span>Passkey, Apple or Google — no password stored.</span></div>
-                                <div class="lnote mp-foot mp-ink2"><span class="ms ms-s mp-ink3">lock</span><span>Read-only: every change happens in the chat.</span></div>
+                                <div class="lnote mp-foot mp-ink2" style="margin-top: 6px"><span class="ms ms-s mp-ink3" aria-hidden="true">smartphone</span><span>Passkey, Apple or Google — no password stored.</span></div>
+                                <div class="lnote mp-foot mp-ink2"><span class="ms ms-s mp-ink3" aria-hidden="true">lock</span><span>Records are created in the chat and corrected in place.</span></div>
                               </div>
                             </div>
                           </div>
@@ -417,8 +419,8 @@
                         <p class="dv-cap">App chat header · {{ t.label }}</p>
                         <div class="chp mp {{ t.cls }}" data-screen-label="{{ o.id }} Chat header {{ t.label }}">
                           <div class="chl">
-                            <div class="chl-head"><span class="chl-a">Edit</span><b>Chats</b><span class="chl-a" style="text-align: right" aria-label="New message"><span class="ms">edit_square</span></span></div>
-                            <div class="chl-search"><span class="ms ms-s">search</span>Search</div>
+                            <div class="chl-head"><span class="chl-a">Edit</span><b>Chats</b><span class="chl-a" style="text-align: right" aria-label="New message"><span class="ms" aria-hidden="true">edit_square</span></span></div>
+                            <div class="chl-search"><span class="ms ms-s" aria-hidden="true">search</span>Search</div>
                             <sc-for list="{{ chats }}" as="c" hint-placeholder-count="3">
                               <div class="chl-row">
                                 <sc-if value="{{ c.isBot }}" hint-placeholder-val="{{ true }}"><svg class="chl-av mk-n" viewBox="0 0 48 48" role="img" aria-label="MyPaisa avatar"><circle class="ic-bg" cx="24" cy="24" r="24"></circle><g class="x{{ o.id }}-av"><use href="#m{{ o.id }}"></use></g></svg></sc-if>
@@ -427,7 +429,7 @@
                               </div>
                             </sc-for>
                           </div>
-                          <div class="chead"><span class="back"><span class="ms">arrow_back_ios_new</span>Chats</span><div class="ctitle"><span class="cname">MyPaisa</span><span class="csub">household agent</span></div><svg class="cav mk-n" viewBox="0 0 48 48" role="img" aria-label="MyPaisa avatar"><circle class="ic-bg" cx="24" cy="24" r="24"></circle><g class="x{{ o.id }}-avs"><use href="#m{{ o.id }}-s"></use></g></svg></div>
+                          <div class="chead"><span class="back"><span class="ms" aria-hidden="true">arrow_back_ios_new</span>Chats</span><div class="ctitle"><span class="cname">MyPaisa</span><span class="csub">household agent</span></div><svg class="cav mk-n" viewBox="0 0 48 48" role="img" aria-label="MyPaisa avatar"><circle class="ic-bg" cx="24" cy="24" r="24"></circle><g class="x{{ o.id }}-avs"><use href="#m{{ o.id }}-s"></use></g></svg></div>
                           <div class="chmsgs">
                             <div class="chbub"><b>Morning brief · Fri 30 Oct</b><div style="margin-top: 2px">Nothing to do this week. Your household is at £25,800, ▲ 2.4% this month. Next review Saturday.</div><div class="chtime">07:31</div></div>
                           </div>
@@ -441,10 +443,10 @@
                           <div class="t1x mp {{ t.cls }}" data-screen-label="{{ o.id }} browser tab {{ t.label }}">
                             <div class="bw-tabs">
                               <div class="tab pin" aria-label="MyPaisa, pinned"><svg class="fav" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#m{{ o.id }}-s"></use></svg></div>
-                              <div class="tab on"><svg class="fav" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#m{{ o.id }}-s"></use></svg><span>MyPaisa · Overview</span><span class="ms x">close</span></div>
-                              <div class="tab"><span class="ms g0">public</span><span>New tab</span></div>
+                              <div class="tab on"><svg class="fav" viewBox="0 0 48 48" overflow="visible" aria-hidden="true"><use href="#m{{ o.id }}-s"></use></svg><span>MyPaisa · Overview</span><span class="ms x" aria-hidden="true">close</span></div>
+                              <div class="tab"><span class="ms g0" aria-hidden="true">public</span><span>New tab</span></div>
                             </div>
-                            <div class="bw-bar"><span class="ms">arrow_back</span><div class="url"><span class="ms">lock</span>mypaisa.example/overview</div></div>
+                            <div class="bw-bar"><span class="ms" aria-hidden="true">arrow_back</span><div class="url"><span class="ms" aria-hidden="true">lock</span>mypaisa.example/overview</div></div>
                           </div>
                         </div>
                       </sc-for>

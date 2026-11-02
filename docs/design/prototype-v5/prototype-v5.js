@@ -215,7 +215,7 @@
   }
   function themeCls() { return 'mp' + (st.dark ? ' t-dark' : ' t-light') + (st.priv ? ' privon' : '') + ' charts-' + st.charts; }
   function moreDrawer(ctx, active) {
-    var h = '<div class="dim"' + K.go('more:close') + '></div><nav class="w-more" role="dialog" aria-modal="true" aria-label="All sections">' +
+    var h = '<div class="dim" aria-hidden="true"' + K.go('more:close') + '></div><nav class="w-more" role="dialog" aria-modal="true" aria-label="All sections">' +
       '<div class="w-more-h"><span class="mp-hl">Sections</span><button type="button" class="iconbtn" aria-label="Close sections"' + K.go('more:close') + '>' + K.ms('close') + '</button></div>' +
       '<div class="w-more-b"><button type="button" class="mp-side-i' + (active === 'search' ? ' on' : '') + '"' + K.go('nav:search') + '>' + K.ms('search') + '<span>Search</span></button>';
     NAV.forEach(function (g) {
@@ -230,8 +230,8 @@
     var sheet = (!st.sheetOff && ctx.step && ctx.step.sheet) ? ctx.step.sheet(ctx) : null;
     if (sheet) {
       var closeKey = (ctx.step && ctx.step.sheetClose) || 'sheet:dismiss';
-      if (ctx.web) h += '<div class="dim"' + K.go(closeKey) + '></div><div class="sheet w-sheet" role="dialog" aria-modal="true">' + sheet + '</div>';
-      else h += '<div class="dim"' + K.go(closeKey) + '></div><div class="sheet lg" role="dialog" aria-modal="true"><div class="sheet-grab"></div>' + sheet + '</div>';
+      if (ctx.web) h += '<div class="dim" aria-hidden="true"' + K.go(closeKey) + '></div><div class="sheet w-sheet" role="dialog" aria-modal="true">' + sheet + '</div>';
+      else h += '<div class="dim" aria-hidden="true"' + K.go(closeKey) + '></div><div class="sheet lg" role="dialog" aria-modal="true"><div class="sheet-grab"></div>' + sheet + '</div>';
     }
     if (ctx.web && st.moreOpen) h += moreDrawer(ctx, active);
     if (st.toast) h += '<div class="mp-toast" role="status" aria-live="polite" style="position:absolute;left:50%;bottom:120px;transform:translateX(-50%);z-index:60;max-width:80%">' + st.toast + '</div>';
@@ -305,12 +305,68 @@
     return h;
   }
 
+  /* ---------- focus (MA-300 P2-4, P0-8) ----------
+     render() redraws the whole root, so the element that had focus is replaced: before the redraw, note it by what
+     it does (its data-go, which of that kind it is, or the chart it scrubs); after, focus the one that does the same.
+     A dialog (a sheet, the More drawer) takes focus when it opens and keeps Tab inside it; when it closes, focus goes
+     back to what opened it. Focus is moved only while a member is using the prototype (focus already inside it), so a
+     frame drawn by a script or a gate is left as drawn. */
+  var FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+  var opener = null;
+  function focusKey(root) {
+    var a = document.activeElement;
+    if (!a || a === document.body || !root.contains(a)) return null;
+    var go = a.getAttribute('data-go'), inFrame = !!a.closest('.pframe');
+    if (go) {
+      var same = root.querySelectorAll('[data-go="' + go.replace(/"/g, '\\"') + '"]');
+      return { go: go, i: Array.prototype.indexOf.call(same, a), inFrame: inFrame };
+    }
+    if (a.hasAttribute('data-scrub')) return { scrub: Array.prototype.indexOf.call(root.querySelectorAll('[data-scrub]'), a), inFrame: inFrame };
+    return { any: true, inFrame: inFrame };
+  }
+  function dialogIn(root) { return root.querySelector('.pframe [role="dialog"][aria-modal="true"]'); }
+  function restoreFocus(root, k, wasDialog) {
+    if (!k) return;
+    var dlg = dialogIn(root), el = null;
+    if (k.go) { var same = root.querySelectorAll('[data-go="' + k.go.replace(/"/g, '\\"') + '"]'); el = same[Math.min(k.i, same.length - 1)] || null; }
+    else if (k.scrub != null) el = root.querySelectorAll('[data-scrub]')[k.scrub] || null;
+    /* the walk-through's own control bar keeps its focus (Next stays on Next); a member inside the product is taken
+       into a dialog that opens */
+    if (dlg && k.inFrame && (!el || !dlg.contains(el))) {
+      /* a dialog that has just opened, or one that holds focus: its first control */
+      if (!wasDialog) opener = k;
+      el = dlg.querySelector(FOCUSABLE);
+      if (!el) { dlg.setAttribute('tabindex', '-1'); el = dlg; }
+    } else if (!dlg && wasDialog && opener) {
+      /* the dialog closed: back to what opened it, if it is still drawn */
+      var o = opener; opener = null;
+      if (o.go) { var s2 = root.querySelectorAll('[data-go="' + o.go.replace(/"/g, '\\"') + '"]'); el = s2[Math.min(o.i, s2.length - 1)] || el; }
+    }
+    if (!el && k.inFrame) el = root.querySelector('.pframe ' + FOCUSABLE.split(', ')[0]);
+    if (el && el.focus) el.focus({ preventScroll: true });
+  }
+  function trapTab(e) {
+    if (e.key !== 'Tab' || !root) return;
+    var dlg = dialogIn(root), a = document.activeElement;
+    if (!dlg) return;
+    var fr = root.querySelector('.pframe');
+    if (!fr || !a || !fr.contains(a)) return;   /* the prototype's own control bar sits outside the product */
+    var list = Array.prototype.filter.call(dlg.querySelectorAll(FOCUSABLE), function (x) { return x.offsetParent !== null || x === document.activeElement; });
+    if (!list.length) { e.preventDefault(); dlg.setAttribute('tabindex', '-1'); dlg.focus({ preventScroll: true }); return; }
+    var first = list[0], last = list[list.length - 1];
+    if (!dlg.contains(a)) { e.preventDefault(); first.focus({ preventScroll: true }); }
+    else if (e.shiftKey && (a === first || a === dlg)) { e.preventDefault(); last.focus({ preventScroll: true }); }
+    else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus({ preventScroll: true }); }
+  }
+  MP5.trapTab = trapTab;
+
   /* ---------- render ---------- */
   var root = null, lastKey = null;
   function render() {
     if (!root) return;
     var c = cur(), ctx = ctxFor(c.ch, c.step), d = door(st.door);
     if (!c.ch) { root.innerHTML = '<div class="pv5"><div class="pstage">Loading…</div></div>'; return; }
+    var fk = focusKey(root), wasDialog = !!dialogIn(root);
     var pid = pageId(ctx), p = drawPage(ctx, pid);
     var focus = st.pane || (c.step && c.step.focus) || (c.step && c.step.page ? 'page' : 'chat');
     var frame = (d.web ? frameWeb : frameApp)(ctx, p, focus, d);
@@ -341,6 +397,7 @@
       if (anchor) { var a = e.querySelector('#' + anchor); if (a) { e.scrollTop = Math.max(0, a.offsetTop - 120); return; } }
       if (k === 'chat') e.scrollTop = e.scrollHeight;
     });
+    restoreFocus(root, fk, wasDialog);
   }
   MP5.render = render;
   function fit(d) {
@@ -406,6 +463,15 @@
   }
   MP5.act = act;
   MP5.go = function (ci, si) { goStep(ci, si); render(); };
+  /* whether a key does something on this step, rather than the walk-through's "not part of this" toast: the gate
+     reads it to prove every sheet's close control and backdrop close it (MA-300 P0-8) */
+  MP5.handles = function (key) {
+    var s = cur().step || {};
+    if (!key) return false;
+    return /^(door|charts|viewer|ch|st|nav|tab|fold|open):/.test(key) ||
+      ['theme:dark', 'theme:light', 'priv', 'next', 'prev', 'restart', 'more:close', 'sheet:dismiss', 'back'].indexOf(key) >= 0 ||
+      !!(s.on && s.on[key] != null) || key === s.target;
+  };
 
   function parseScrub(box) {
     if (st.priv || !box) return null;
@@ -479,12 +545,21 @@
     if (/[?&]priv=1\b/.test(location.search)) st.priv = true;
     root.addEventListener('click', function (e) { var t = e.target.closest('[data-go]'); if (t && root.contains(t)) { e.preventDefault(); act(t.getAttribute('data-go')); } });
     var activeBox = null;
+    /* a scrub follows the pointer once a frame (requestAnimationFrame), never once per move event */
+    var rafId = 0, rafBox = null, rafX = 0;
+    function scrubSoon(b, x) {
+      rafBox = b; rafX = x;
+      if (rafId) return;
+      rafId = requestAnimationFrame(function () { rafId = 0; if (rafBox && root.contains(rafBox) && activeBox === rafBox) showScrub(rafBox, rafX); });
+    }
+    function scrubEnd() { if (rafId) { cancelAnimationFrame(rafId); rafId = 0; } if (activeBox) { hideScrub(activeBox); activeBox = null; } }
+    MP5.scrubEnd = scrubEnd;
     if (location.search.indexOf('static=1') < 0) {
       root.addEventListener('pointermove', function (e) {
         var b = e.target.closest && e.target.closest('[data-scrub]');
         if (activeBox && activeBox !== b) hideScrub(activeBox);
         activeBox = b;
-        if (b && root.contains(b)) showScrub(b, e.clientX);
+        if (b && root.contains(b)) scrubSoon(b, e.clientX);
       });
       root.addEventListener('pointerdown', function (e) {
         var b = e.target.closest && e.target.closest('[data-scrub]');
@@ -492,24 +567,26 @@
         activeBox = b;
         if (b && root.contains(b)) showScrub(b, e.clientX);
       });
-      root.addEventListener('pointerup', function (e) {
-        if (e.pointerType === 'touch' && activeBox) { hideScrub(activeBox); activeBox = null; }
-      });
-      root.addEventListener('pointercancel', function () { if (activeBox) { hideScrub(activeBox); activeBox = null; } });
-      root.addEventListener('pointerleave', function () { if (activeBox) { hideScrub(activeBox); activeBox = null; } });
+      /* a finger lifted, a scroll that took the gesture over, or the pointer gone: the pill goes, so it never sticks */
+      root.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') scrubEnd(); });
+      root.addEventListener('pointercancel', scrubEnd);
+      root.addEventListener('pointerleave', scrubEnd);
       root.addEventListener('focusout', function (e) {
         var b = e.target.closest && e.target.closest('[data-scrub]');
         if (b && (!e.relatedTarget || !b.contains(e.relatedTarget))) { hideScrub(b); if (activeBox === b) activeBox = null; }
       });
     }
     window.addEventListener('keydown', function (e) {
+      trapTab(e);
+      if (e.defaultPrevented && e.key === 'Tab') return;
       var b = e.target && e.target.closest && e.target.closest('[data-scrub]');
-      if (b && root && root.contains(b) && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+      if (b && root && root.contains(b) && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) {
         var sc = parseScrub(b);
         if (sc) {
           e.preventDefault();
           var curIdx = parseInt(b.getAttribute('data-scrub-idx') || '-1', 10);
-          var nextIdx = curIdx < 0 ? (e.key === 'ArrowRight' ? 0 : sc.pts.length - 1) : curIdx + (e.key === 'ArrowRight' ? 1 : -1);
+          var nextIdx = e.key === 'Home' ? 0 : e.key === 'End' ? sc.pts.length - 1
+            : curIdx < 0 ? (e.key === 'ArrowRight' ? 0 : sc.pts.length - 1) : curIdx + (e.key === 'ArrowRight' ? 1 : -1);
           activeBox = b;
           renderScrubPt(b, sc.ui, sc.pts, nextIdx);
           return;

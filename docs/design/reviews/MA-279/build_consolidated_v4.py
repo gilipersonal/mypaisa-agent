@@ -39,6 +39,7 @@ from v4_cards import (  # noqa: E402
 from v4_kit import (  # noqa: E402
     DK,
     LT,
+    ask_sheet,
     board_section,
     browser_frame,
     card_box,
@@ -48,19 +49,47 @@ from v4_kit import (  # noqa: E402
     hero_1a,
     intro_turn,
     ipad_frame,
+    mask,
+    money,
     iphone_frame,
     pillars_card,
     stage_manager_frame,
 )
 
 
-def _sheet_overlay(title: str, text: str) -> str:
+def _household_strip(ccy: str = "GBP", priv: bool = False) -> str:
+    """The household strip at the top of the chat: solid (a balance is never drawn on glass); a tap opens Home as a sheet."""
     return (
-        '<div class="sheet-card" role="dialog" aria-label="' + title + '">'
-        '<span class="sheet-grab" aria-hidden="true"></span>'
-        f'<div class="fx jb ac gap8"><span class="mp-sub mp-w6">{title}</span><span class="mp-chip chip-s mp-neutral">Sheet</span></div>'
-        f'<div class="mp-foot mp-ink2">{text}</div></div>'
+        '<button type="button" class="hstrip" aria-haspopup="dialog">'
+        '<span class="grow"><span class="mp-cap mp-ink2">Household · Mon 26 Oct</span>'
+        f'<span class="mp-hl tnum">{mask(money(444951, ccy), priv)}</span></span>'
+        f'<span class="mp-foot mp-up mp-w6">▲ {mask(money(4993, ccy), priv)}</span>'
+        '<span class="ms" aria-hidden="true">chevron_right</span></button>'
     )
+
+
+def _chat_turn(q: str, a: str) -> str:
+    return (
+        f'<div class="chat askchat"><div class="daysep">Mon 26 Oct</div><div class="me">{q}</div>'
+        f'<div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{a}</div></div></div></div>'
+    )
+
+
+def _home_sheet(inner: str) -> str:
+    """Home opened over the conversation: one solid sheet, never a second sheet stacked on it."""
+    return (
+        '<div class="dim"></div>'
+        '<div class="sheet full homesheet" role="dialog" aria-modal="true" aria-label="Home">'
+        '<span class="sheet-grab" aria-hidden="true"></span>'
+        '<div class="sheet-h"><span class="mp-hl">Home</span><button type="button" class="xbtn" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>'
+        f"{inner}</div>"
+    )
+
+
+ASK_Q = "What changed in our household this week?"
+ASK_A = "Household net worth is £444,951, up £4,993 since Thu 22 Oct: Monzo Savings +£5,000 on Mon 26 Oct. Balanced shows Buy (78%)."
+AUDIT_Q = "Who changed the Pune flat estimate?"
+AUDIT_A = "Arun corrected it in place on Mon 26 Oct at 08:55: ₹95,00,000 → ₹96,50,000, audit row #1843."
 
 
 # ---------------------------------------------------------------------------
@@ -93,10 +122,10 @@ def ios_signin_and_invite() -> str:
                     tab="You",
                     dev_cls="dev-iphone z80",
                     overlay=(
-                        '<div class="dim"></div><div class="sysalert lg lg-strong apple">'
+                        '<div class="dim"></div><div class="sysalert lg lg-strong apple" role="alertdialog" aria-modal="true" aria-label="MyPaisa wants to use google.com to sign in">'
                         '<span class="mp-hl">“MyPaisa” Wants to Use “google.com” to Sign In</span>'
                         '<span class="mp-foot mp-ink2">This allows the app and website to share information about you.</span>'
-                        '<div class="fx gap8" style="margin-top:10px"><span class="sab">Cancel</span><span class="sab iosb">Continue</span></div></div>'
+                        '<div class="fx gap8" style="margin-top:10px"><button type="button" class="sab">Cancel</button><button type="button" class="sab iosb">Continue</button></div></div>'
                     ),
                 ),
             ],
@@ -129,26 +158,25 @@ def ios_signin_and_invite() -> str:
 
 
 def ios_chat_and_flows() -> str:
-    strip_sheet = _sheet_overlay("Household Home Sheet · £444,951", "Tapped the glass household strip in Chat: opens Home as a sheet over the active conversation (UK £338,468 · India £106,483).")
     out = [
         intro_turn(
             "iOS",
             "MyPaisa iOS v1 · Chat and guided flows (v4)",
-            "Consolidated 1a Chat home, glass household strip sheet, guided flows with long-list picker, 1b currency check, screenshot valuation Confirm, Buy/BUY research cards, week-6 amber alert, monthly split and commands.",
+            "Consolidated 1a Chat home, household strip opening Home as a sheet, guided flows with long-list picker, 1b currency check, screenshot valuation Confirm, Buy/BUY research cards, week-6 amber alert, monthly split and commands.",
             "MA-34..39 · MA-63..69 · MA-80 · MA-91 · MA-125 · MA-145 · MA-156 · MA-163 · MA-169",
             "ARCHITECTURE §1, §2, §4.6, §8, §9.1..9.4, §11, §12",
-            [("b1", "1 · Chat home & glass strip"), ("b2", "2 · Guided flows"), ("b3", "3 · Currency check 1b & screenshots"), ("b4", "4 · Buy/BUY cards & commands")],
+            [("b1", "1 · Chat home & household strip"), ("b2", "2 · Guided flows"), ("b3", "3 · Currency check 1b & screenshots"), ("b4", "4 · Buy/BUY cards & commands")],
         ),
         board_section(
             "1",
-            "Chat home, streaming reply and glass household strip",
+            "Chat home, streaming reply and household strip",
             "MA-34 · MA-36 · MA-163",
-            "Chat-first home on the £444,951 household with the tappable glass household strip opening Home as a sheet over the conversation.",
+            "Chat-first home on the £444,951 household: the household strip at the top of the chat opens Home as a sheet over the conversation (UK £338,468 · India £106,483).",
             [
-                iphone_frame("iPhone · Chat home & Home sheet · Light", LT, hero_1a("GBP") + strip_sheet, title="Chat", tab="Chat"),
+                iphone_frame("iPhone · Chat home & Home sheet · Light", LT, _household_strip() + _chat_turn(ASK_Q, ASK_A), title="Chat", tab="Chat", overlay=_home_sheet(hero_1a("GBP"))),
                 iphone_frame("iPhone · Chat home & streaming · Dark", DK, hero_1a("GBP") + guided_flows_card("GBP"), title="Chat", tab="Chat"),
             ],
-            [("1a Chat first:", "Chat is the first tab on iPhone and opens Home over the conversation when the household strip is tapped.")],
+            [("1a Chat first:", "Chat is the first tab on iPhone and opens Home over the conversation when the household strip is tapped."), ("No glass on figures:", "the strip carries the balance, so it is a solid card; Liquid Glass stays on the floating controls (the bar buttons and the tab bar).")],
         ),
         board_section(
             "2",
@@ -312,9 +340,8 @@ def ios_admin_center() -> str:
                     title="Admin · Spend",
                     tab="You",
                     overlay=(
-                        '<div class="dim"></div><div class="sheet lg lg-strong apple" style="z-index:60">'
-                        '<div class="sheet-grab"></div>'
-                        '<div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="xbtn"><span class="ms" aria-hidden="true">close</span></span></div>'
+                        '<div class="dim"></div><div class="sheet lg lg-strong apple" style="z-index:60" role="dialog" aria-modal="true" aria-label="Sign in with Apple">'
+                        '<div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><button type="button" class="xbtn" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>'
                         '<div class="fx ac gap12"><span class="fx col grow"><span class="mp-hl">MyPaisa</span>'
                         '<span class="mp-foot mp-ink2">Continue as Arun Dutta · Face ID second check</span></span></div></div>'
                     ),
@@ -338,7 +365,8 @@ def ios_admin_center() -> str:
 
 
 def ipad_and_foldable_v4() -> str:
-    chat_sheet = _sheet_overlay("Chat Sheet (600–1133 pt rule)", "Between 600 and 1133 pt, Chat opens as a sheet over the screen rather than squeezing a third column beside it (ARCHITECTURE §9.1).")
+    home_ask = ask_sheet(ASK_Q, ASK_A)
+    audit_ask = ask_sheet(AUDIT_Q, AUDIT_A)
     out = [
         intro_turn(
             "iPad & Foldable",
@@ -346,7 +374,7 @@ def ipad_and_foldable_v4() -> str:
             "Follows the picked 1a width rule across every window: chat beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over).",
             "MA-70 · MA-71 · MA-78 · MA-79 · MA-124 · MA-163 · MA-240",
             "ARCHITECTURE §9.1, §19.4, §19.7",
-            [("b1", "1 · iPad Wide (1133+ pt) & Forecaster Proof"), ("b2", "2 · iPad Portrait / Regular & Foldable Open (880 pt)"), ("b3", "3 · Foldable Folded & iPhone Landscape (Compact)")],
+            [("b1", "1 · iPad Wide (1133+ pt) & Forecaster Proof"), ("b2", "2 · iPad Portrait / Regular & Foldable Open (880 pt)"), ("b3", "3 · Foldable Folded & iPhone Landscape (Compact)"), ("b4", "4 · iPad 13-inch Portrait (1032 pt)")],
         ),
         board_section(
             "1",
@@ -357,7 +385,7 @@ def ipad_and_foldable_v4() -> str:
                 ipad_frame("iPad · Wide · Home, Register & Overlap", LT, register_and_india_full_card("GBP", False, show_edit=False), brief_overlap_reports_card("GBP", False), hero=hero_1a("GBP"), title="Home", side_on="Home"),
                 ipad_frame("iPad · Wide · Forecaster Proof & Admin", DK, forecaster_1a_card("GBP"), forecaster_proof_and_states_card("GBP") + admin_spend_and_aws_card("GBP"), title="Forecast & Proof", side_on="Forecast"),
             ],
-            [("Width threshold:", "below 1133 pt the right Chat column hides automatically and opens as a modal sheet from Chat.")],
+            [("Width threshold:", "below about 1133 pt the chat column gives way: Ask in the bar opens the chat as a sheet (board 2 and board 4)."), ("Ask everywhere:", "Ask sits in the bar at every width, so the chat is one tap away whether it is beside the screen or a sheet away.")],
         ),
         board_section(
             "2",
@@ -365,12 +393,12 @@ def ipad_and_foldable_v4() -> str:
             "MA-70 · MA-71 · MA-163 · MA-240",
             "At 820 pt (iPad portrait) and 880 pt (unfolded foldable), navigation sits in a top tab bar and Chat opens as a sheet over Home or Audit — never as a cramped side column.",
             [
-                fold_or_portrait_frame("iPad · Portrait 820 pt · Chat sheet & Sign-in", LT, "dev-ipad-p", signin_welcome_card() + chat_sheet + register_and_india_full_card("GBP", False, show_edit=False), title="Home", active_tab="Home"),
-                fold_or_portrait_frame("Foldable · Open 880 pt · Home & Chat sheet", LT, "dev-fold-open", hero_1a("GBP") + chat_sheet, title="Home", active_tab="Home"),
-                fold_or_portrait_frame("Foldable · Open 880 pt · Audit & Chat sheet", DK, "dev-fold-open", audit_activity_files_card("GBP", False) + chat_sheet, title="Audit", active_tab="Audit"),
+                fold_or_portrait_frame("iPad · Portrait 820 pt · Chat sheet & Sign-in", LT, "dev-ipad-p", signin_welcome_card() + register_and_india_full_card("GBP", False, show_edit=False), title="Home", active_tab="Home", overlay=home_ask),
+                fold_or_portrait_frame("Foldable · Open 880 pt · Home & Chat sheet", LT, "dev-fold-open", hero_1a("GBP") + register_and_india_full_card("GBP", False, show_edit=False), title="Home", active_tab="Home", overlay=home_ask),
+                fold_or_portrait_frame("Foldable · Open 880 pt · Audit & Chat sheet", DK, "dev-fold-open", audit_activity_files_card("GBP", False), title="Audit", active_tab="Audit", overlay=audit_ask),
                 stage_manager_frame("iPad · Stage Manager · a 700 × 600 window · Light", LT, hero_1a("GBP")),
             ],
-            [("ARCHITECTURE §9.1:", "clears MA-70 and MA-71: at 880 pt the unfolded foldable uses the top tab bar and a Chat sheet.")],
+            [("ARCHITECTURE §9.1:", "clears MA-70 and MA-71: at 880 pt the unfolded foldable uses the top tab bar, never three columns, and Ask in the bar opens the chat as a sheet."), ("One sheet:", "the chat sheet is solid (it carries the conversation, so no glass) and nothing is stacked on it; the Stage Manager window (700 pt) also asks from the bar.")],
         ),
         board_section(
             "3",
@@ -382,6 +410,16 @@ def ipad_and_foldable_v4() -> str:
                 iphone_frame("iPhone · Landscape · Compact tab bar", LT, register_and_india_full_card("GBP", False, show_edit=False), title="Home", tab="Home", dev_cls="dev-iphone-l"),
             ],
             [("Always compact on iPhone:", "an iPhone keeps its compact tab bar in both portrait and landscape.")],
+        ),
+        board_section(
+            "4",
+            "iPad 13-inch portrait (1032 pt): sidebar, Ask in the bar and the chat as a sheet",
+            "MA-70 · MA-163 · MA-240",
+            "A 13-inch iPad held upright is 1032 pt wide, inside the band from about 900 to 1132 pt: the sidebar and the two-column screen stay, the chat column does not fit beside them, and Ask in the bar opens the chat as a sheet over the screen.",
+            [
+                ipad_frame("iPad · 13-inch portrait 1032 pt · Ask sheet · Light", LT, register_and_india_full_card("GBP", False, show_edit=False), brief_overlap_reports_card("GBP", False), hero=hero_1a("GBP"), title="Home", side_on="Home", dev_cls="dev-ipad-p dev-ipad-13p", overlay=ask_sheet(ASK_Q, ASK_A)),
+            ],
+            [("Width rule:", "chat beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)."), ("Never crushed:", "the chat column is not drawn beside the screen at 1032 pt, so the screen keeps its two columns.")],
         ),
     ]
     return doc_wrap("MyPaisa iOS v1 · Adaptive iPad and foldable shell (v4)", "\n".join(out), include_ios=True)
@@ -577,12 +615,12 @@ def web_audit_activity_files() -> str:
     pdf_viewer_ovl = (
         '<div class="ovl"><div class="viewer" role="dialog" aria-modal="true" aria-label="CAS-Oct-2026.pdf">'
         '<div class="vprev"><div class="vbar">'
-        '<div class="vgrp"><span class="vbtn" role="button" aria-label="Previous page"><span class="ms" aria-hidden="true">chevron_left</span></span>'
+        '<div class="vgrp"><button type="button" class="vbtn" aria-label="Previous page"><span class="ms" aria-hidden="true">chevron_left</span></button>'
         '<span class="mp-foot mp-ink2 nowrap">Page 1 of 4</span>'
-        '<span class="vbtn" role="button" aria-label="Next page"><span class="ms" aria-hidden="true">chevron_right</span></span></div>'
-        '<div class="vgrp"><span class="vbtn" role="button" aria-label="Zoom out"><span class="ms" aria-hidden="true">zoom_out</span></span>'
+        '<button type="button" class="vbtn" aria-label="Next page"><span class="ms" aria-hidden="true">chevron_right</span></button></div>'
+        '<div class="vgrp"><button type="button" class="vbtn" aria-label="Zoom out"><span class="ms" aria-hidden="true">zoom_out</span></button>'
         '<span class="mp-foot mp-ink2">Fit</span>'
-        '<span class="vbtn" role="button" aria-label="Zoom in"><span class="ms" aria-hidden="true">zoom_in</span></span></div></div>'
+        '<button type="button" class="vbtn" aria-label="Zoom in"><span class="ms" aria-hidden="true">zoom_in</span></button></div></div>'
         '<div class="vstage"><div class="ph-page"><span class="mp-sub mp-w6">CAS-Oct-2026.pdf</span>'
         '<span class="mp-foot mp-ink2">Parag Parikh Flexi Cap · 46 SIP rows verified</span></div></div></div>'
         '<div class="vside"><span class="mp-hl">Extracted records</span>'

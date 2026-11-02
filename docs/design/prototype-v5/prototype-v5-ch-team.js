@@ -42,7 +42,7 @@
     '.pv5-team-tile .ms { font-size: 20px; }',
     '.pv5-team-set { display: flex; flex-direction: column; gap: 3px; padding: 10px 0; width: 100%; border: 0; background: transparent; text-align: left; color: inherit; font: inherit; cursor: pointer; min-height: 44px; }',
     '.pv5-team-set + .pv5-team-set { box-shadow: inset 0 1px 0 var(--mp-line); }',
-    '.pv5-team-set.on { box-shadow: inset 3px 0 0 var(--mp-accent); padding-left: 10px; }',
+    '.pv5-team-set.on { background: var(--mp-surface-2); border-radius: 10px; padding-left: 10px; padding-right: 10px; box-sizing: border-box; }',
     '.pv5-team-set .pv5-team-r1 { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }',
     '.pv5-team-set .pv5-team-r1 > :last-child { font-weight: 600; text-align: right; }',
     '.pv5-team-hist { display: flex; flex-direction: column; }',
@@ -748,7 +748,7 @@
       chat: function (ctx) { return chat18(ctx, 3); }, composer: COMP18, target: 'req:approve:cr-27', open: ['why-cr-27'], scroll: { page: 'req-cr-27', chat: 'card-cr-27' } },
     { id: 'p18-check', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:28', t: 'Approve behind the second check', draft: true, page: 'team/approvals/cr-27', focus: 'page',
       g: 'Approving needs the second check: in the app a fresh Sign in with Apple or passkey under Face ID, in a browser a passkey. It is bound to this one approval and checked by the server; a failing safety case would block it.',
-      chat: function (ctx) { return chat18(ctx, 4); }, composer: COMP18, target: 'check:ok', scroll: { page: 'req-cr-27', chat: 'card-cr-27' }, on: { 'check:alt': 'next', 'check:cancel': 'st:3' },
+      chat: function (ctx) { return chat18(ctx, 4); }, composer: COMP18, target: 'check:ok', scroll: { page: 'req-cr-27', chat: 'card-cr-27' }, on: { 'check:alt': 'next', 'check:cancel': 'st:3' }, sheetClose: 'check:cancel',
       sheet: function (ctx) { return checkSheet(ctx, 'Approve request cr-27: a PAUSE on exhaustion alone asks for 3 flags, not 2, from tonight’s engine run.', 'check:cancel'); } },
     { id: 'p18-done', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:29', t: 'Approved, audited, reversible', draft: true, page: 'team/settings/engine.pause.exhaustion_min', focus: 'page',
       g: '“Approved at 08:29 by You.” The change is a new version of its setting, never an edit, with its audit row; Roll back writes another. The old value stays ready and comes back on its own if the new rule slips. Tap Incidents.',
@@ -765,7 +765,7 @@
   M.chapter({ key: 'p19', n: '19', order: 19, title: 'Indian markets and the existing Indian portfolio', short: 'India', steps: [
     { id: 'p19-cas', d: 'Mon 26 Oct', tm: '20:40', t: 'Asha sends her CAS', draft: true, viewer: 'asha', page: 'india', focus: 'chat',
       g: 'Asha sends the detailed Consolidated Account Statement for her Indian mutual funds. The file is kept first, then read by code. It is locked, so MyPaisa asks once for its password: typed here, used once on this device, never stored, logged or sent. Tap Unlock.',
-      chat: function (ctx) { return chat19(ctx, 0); }, composer: COMP19, target: 'cas:unlock',
+      chat: function (ctx) { return chat19(ctx, 0); }, composer: COMP19, target: 'cas:unlock', sheetClose: 'cas:cancel', on: { 'cas:cancel': 'sheet:dismiss' },
       sheet: function (ctx) {
         var C = D().india.cas;
         return '<div class="pv5-team-sheet"><div class="sheet-h"><span class="mp-hl">Unlock the statement</span>' + K.draft() + '</div><span class="mp-foot mp-ink2">' + K.esc(C.file) + ' · ' + C.size + '</span>' +
@@ -778,7 +778,7 @@
       chat: function (ctx) { return chat19(ctx, 1); }, composer: COMP19, target: 'cas:confirm', scroll: { chat: 'card-dry' } },
     { id: 'p19-check', d: 'Mon 26 Oct', tm: '20:42', t: 'Confirm with the second check', draft: true, viewer: 'asha', page: 'india', focus: 'chat',
       g: 'Confirm asks for the second check, as every import does; the import gets one id, so it can be rolled back whole.',
-      chat: function (ctx) { return chat19(ctx, 2); }, composer: COMP19, target: 'check:ok', scroll: { chat: 'card-dry' }, on: { 'check:alt': 'next', 'check:cancel': 'st:1' },
+      chat: function (ctx) { return chat19(ctx, 2); }, composer: COMP19, target: 'check:ok', scroll: { chat: 'card-dry' }, on: { 'check:alt': 'next', 'check:cancel': 'st:1' }, sheetClose: 'check:cancel',
       sheet: function (ctx) { return checkSheet(ctx, 'Import the history of 1 fund, 46 transactions, from CAS-Oct-2026.pdf into your Parag Parikh Flexi Cap record.', 'check:cancel'); } },
     { id: 'p19-india', d: 'Mon 26 Oct', tm: '20:43', t: 'The Indian accounts, in rupees with pounds beside', draft: true, viewer: 'asha', page: 'india', focus: 'page',
       g: 'Every Indian figure in rupees with its pounds beside, by account: the demat account, the mutual fund folio, the NRE savings, the PPF, and the rest of what the household holds in India. Tap the Parag Parikh fund.',

@@ -88,6 +88,9 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-295 | Design livelier dashboard graphs and charts at every door, following Apple HIG and Monzo's modular warmth on Warm ledger | Done | §6.2, §6.5, §9.1, §9.3, §9.4, §16, §19.7 | picked | Chart options.dc.html: 1a · Monzo Pulse; iPhone v4 · Chart options.dc.html: 1a · iPhone · Dashboard charts, Monzo Pulse; iPhone v4 · Chart options.dc.html: S1 · iPhone · Projection and Budget forecast charts; iPhone v4 · Chart options.dc.html: S2 · iPhone · Market candles, fan and pillars; iPhone v4 · Chart options.dc.html: S3 · iPhone · Dashboard charts, privacy on; Web v4 · Chart options.dc.html: 1a · Browser · Dashboard charts, Monzo Pulse; Web v4 · Chart options.dc.html: W1 · Browser · Projection, Budget forecast and Forecaster charts; Web v4 · Chart options.dc.html: W2 · Browser · Dashboard charts, privacy on |
 | MA-298 | Harden DS v1, Prototype v5, Impeccable context and design gates for all P0 and shared P1 best-practices gaps | Done | §9.1, §9.3, §9.4 | none |  |
 | MA-299 | The SvelteKit 3 web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI are recorded in the plan and Confluence with block diagrams | Done | §9.4, §18.4 | none |  |
+| MA-300 | Close the Impeccable deep scan's remaining P0, P1 and P3 findings, and its motion and performance fixes, across DS v1, iOS v1, Web v4 and Prototype v5 | In Progress | §9.1, §9.3, §9.4 | none |  |
+| MA-301 | Design options for the deep scan's redesign items: calmer Projection and statement Confirm, nested cards, a web-only join, the type and icon stack and the Cmd+K palette | In Progress | §9.1, §9.3, §9.4 | todo |  |
+| MA-302 | Prototype v4's controls reach 44 pt, as the picked v4 boards and Prototype v5 now do | To Do | §9.3, §9.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

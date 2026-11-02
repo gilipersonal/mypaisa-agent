@@ -44,11 +44,11 @@
     '.pv5-forecast .fcl{position:absolute;inset:0}',
     '.pv5-forecast .fcl>svg{display:block;width:100%;height:100%;overflow:visible}',
     '.pv5-forecast .fcl path,.pv5-forecast .fcl line{vector-effect:non-scaling-stroke}',
-    '.pv5-forecast .fyl{position:absolute;left:0;transform:translateY(-100%);padding-bottom:1px;font:500 11px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap}',
-    '.pv5-forecast .ffl{position:absolute;right:0;transform:translateY(-50%);font:600 11px/14px var(--mp-font);color:var(--mp-ink);white-space:nowrap}',
-    '.pv5-forecast .ftdl{position:absolute;bottom:2px;transform:translateX(calc(-100% - 4px));font:500 11px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap}',
-    '.pv5-forecast .fnxt{position:absolute;top:0;transform:translateX(6px);font:600 11px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap}',
-    '.pv5-forecast .fpmk{position:absolute;transform:translate(-50%,-100%);font:600 11px/14px var(--mp-font);padding:1px 6px;border-radius:6px;background:var(--mp-surface);color:var(--mp-ink);white-space:nowrap}',
+    '.pv5-forecast .fyl{position:absolute;left:0;transform:translateY(-100%);padding-bottom:1px;font:500 12px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap}',
+    '.pv5-forecast .ffl{position:absolute;right:0;transform:translateY(-50%);font:600 12px/14px var(--mp-font);color:var(--mp-ink);white-space:nowrap}',
+    '.pv5-forecast .ftdl{position:absolute;bottom:2px;transform:translateX(calc(-100% - 4px));font:500 12px/14px var(--mp-font);color:var(--mp-ink-2);white-space:nowrap}',
+    '.pv5-forecast .fnxt{position:absolute;top:0;transform:translateX(6px);max-width:calc(31% - 48px);font:600 12px/14px var(--mp-font);color:var(--mp-ink-2);white-space:normal}',
+    '.pv5-forecast .fpmk{position:absolute;transform:translate(-50%,-100%);font:600 12px/14px var(--mp-font);padding:1px 6px;border-radius:6px;background:var(--mp-surface);color:var(--mp-ink);white-space:nowrap}',
     '.pv5-forecast .fpmk.a{box-shadow:inset 0 0 0 1.5px var(--mp-chart-4)}',
     '.pv5-forecast .fpmk.b{box-shadow:inset 0 0 0 1.5px var(--mp-chart-2);transform:translate(-50%,0)}',
     '.pv5-forecast .fptk{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--mp-surface);box-shadow:0 0 0 2px var(--mp-chart-4)}',
@@ -103,15 +103,16 @@
     '.pv5-forecast .fsw{display:flex;gap:12px;align-items:flex-start}',
     '.pv5-forecast .fnow{font:600 12px/16px var(--mp-font);padding:2px 8px;border-radius:999px;background:var(--mp-surface-2);color:var(--mp-ink-2);margin-left:6px}',
     '.pv5-forecast .fdate{width:44px;flex:none;display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 0;border-radius:10px;background:var(--mp-surface-2)}',
-    '.pv5-forecast .fdate b{font:700 18px/22px var(--mp-font-round);font-variant-numeric:tabular-nums}',
-    '.pv5-forecast .fdate span{font:600 11px/14px var(--mp-font);color:var(--mp-ink-2)}',
+    '.pv5-forecast .fdate b{font:700 18px/26px var(--mp-font-round);font-variant-numeric:tabular-nums}',
+    '.pv5-forecast .fdate span{font:600 12px/16px var(--mp-font);color:var(--mp-ink-2)}',
+    '.pv5-forecast .fdate>*{display:block;flex:none;min-height:0}',
     '.pv5-forecast .fbl{display:flex;flex-direction:column;gap:3px;padding:8px 0 0;border-top:1px solid var(--mp-line)}',
     '.pv5-forecast .mp-chartbox svg{width:100%}',
     '.pv5-forecast .fbtns .cbtn{padding:0 12px}',
-    '.pv5-forecast .fmidl{position:absolute;right:0;transform:translateY(-130%);font:600 11px/14px var(--mp-font);color:var(--mp-ink);background:var(--mp-surface);border-radius:6px;padding:1px 6px;white-space:nowrap}',
+    '.pv5-forecast .fmidl{position:absolute;right:0;transform:translateY(-130%);font:600 12px/14px var(--mp-font);color:var(--mp-ink);background:var(--mp-surface);border-radius:6px;padding:1px 6px;white-space:nowrap}',
     '.pv5-forecast .fmood{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}',
     '.pv5-forecast .fscale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}',
-    '.pv5-forecast .fscale>span{font:600 11px/14px var(--mp-font);text-align:center;padding:6px 2px;border-radius:6px;background:var(--mp-surface-2);color:var(--mp-ink-2);min-width:0}',
+    '.pv5-forecast .fscale>span{font:600 12px/14px var(--mp-font);text-align:center;padding:6px 2px;border-radius:6px;background:var(--mp-surface-2);color:var(--mp-ink-2);min-width:0}',
     '.pv5-forecast .fscale>span.on{background:var(--mp-hold-bg);color:var(--mp-hold)}',
     '.pv5-forecast .fmbar{display:flex;gap:2px;height:12px;border-radius:999px;overflow:hidden}',
     '.pv5-forecast .fmbar>i{display:block;height:100%}',
@@ -122,7 +123,7 @@
     '.pv5-forecast .fdbar>i{position:absolute;top:0;bottom:0;display:block;border-radius:999px}',
     '.pv5-forecast .fdbar>i.for{background:var(--mp-pillar-for)}.pv5-forecast .fdbar>i.ag{background:var(--mp-pillar-against)}',
     '.pv5-forecast .fdv{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}',
-    '.pv5-forecast .fsheet{width:100%;max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px;max-height:620px;overflow-y:auto;scrollbar-width:none;padding:4px;box-sizing:border-box}',
+    '.pv5-forecast .fsheet{width:100%;max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px;max-height:620px;overflow-y:auto;padding:4px;box-sizing:border-box}',
     '.pv5-forecast .fsheet::-webkit-scrollbar{display:none}',
     '.pv5-forecast .fsheet-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}',
     '.pv5-forecast .fx44{width:44px;height:44px;border-radius:999px;border:0;background:var(--mp-surface-2);color:var(--mp-ink);display:grid;place-items:center;flex:none;cursor:pointer}',
@@ -600,7 +601,7 @@
       '<div class="fnov">' + K.ms('power_settings_new') + '<span>The Forecaster is off for this holding</span></div>' +
       K.p('Its live record was worse than the base rate for four weeks running, so it stopped itself and told the owner. The rules engine’s call stands on its own; the Forecaster’s rows wait for the next monthly model, which starts in practice again.') +
       K.kv('Shown', 'no Forecaster figures, here or in the Saturday review', 'fkvw') + K.kv('The owner is told', 'in the chat, with its four weeks of grades', 'fkvw') + K.kv('Back on', 'a new version, after its own lab report and 8 weeks in practice', 'fkvw') +
-      '<div class="fbtns">' + K.cbtn('Done', 'fc:done', 'primary') + '</div>', 'fc:done');
+      '<div class="fbtns">' + K.cbtn('Done', 'fc:done', 'primary') + '</div>', 'fc:offclose');
   }
 
   /* ---------- the valuation tab: a share's valuation snapshot and earnings analysis (MA-99, draft) ---------- */
@@ -792,7 +793,7 @@
     { id: 'p14-story', d: 'Mon 26 Oct', tm: '08:37', t: 'One story, matched by exposure', viewer: 'arun', focus: 'page', page: 'news', draft: true,
       g: 'Haiku tagged the story; its weight on each holding is that holding’s exposure to what it names, and anything under the floor is dropped (Balanced, at 0.03). The past effect is the event study’s. Close the sheet, or press Next.',
       chat: function (ctx) { var N = NS(ctx); return [K.daysep('Today'), K.ai(NEWS_IN, { cards: N ? [briefCard(ctx, N)] : [] })]; },
-      sheet: function (ctx) { return ctx.has('fcsheetx') ? null : storySheet(ctx, 'chips'); },
+      sheet: function (ctx) { return ctx.has('fcsheetx') ? null : storySheet(ctx, 'chips'); }, sheetClose: 'fc:sheet:close',
       on: { 'fc:sheet:close': function (st) { st.open.fcsheetx = true; } } },
     { id: 'p14-tilt', d: 'Mon 26 Oct', tm: '08:40', t: 'How a tilt works, in shadow', viewer: 'arun', focus: 'chat', page: 'news', draft: true, open: ['tilt'], scroll: { page: 'fc-mood' },
       g: 'Sentiment may move a call one notch, only when the price pillars lean the same way, and in shadow it changes nothing you see. Today it would move one call: the Robotics ETF from HOLD to PAUSE. News alone never sends a red alert.',
@@ -868,7 +869,7 @@
     { id: 'p17-sheet', d: 'Mon 26 Oct', tm: '10:14', t: 'A row’s sheet: similar days', viewer: 'asha', focus: 'page', page: function () { return hp('nasdaq', 'forecast'); }, draft: true, open: ['fcs_similar'], scroll: { page: 'fc-why' },
       g: 'Each row opens its sheet with the chart or table behind it (a draft: no pick covers the sheets). The 30 days since 2015 most like today, and what followed: 18 higher, the middle +1.8%. Try the other rows, then How it proves itself.',
       chat: function (ctx) { return chatForecast(ctx); }, composer: FC_COMPOSER,
-      sheet: function (ctx) { var w = openSheet(ctx); return w ? rowSheet(ctx, 'nasdaq', w) : null; },
+      sheet: function (ctx) { var w = openSheet(ctx); return w ? rowSheet(ctx, 'nasdaq', w) : null; }, sheetClose: 'fc:sheet:close',
       target: 'nav:proof/nasdaq', on: sheetOn('nasdaq') },
     { id: 'p17-proof', d: 'Mon 26 Oct', tm: '10:16', t: 'How it proves itself', viewer: 'asha', focus: 'page', page: 'proof/nasdaq', picked: PICK,
       g: 'A lab first: the rules engine replayed over ten years against buy-and-hold and a trend rule. Then walk-forward tests, one fold missed. Then the live gate: 8 weeks beating both, graded each Friday. Tap Off in the switch-off.',
@@ -876,7 +877,7 @@
     { id: 'p17-off', d: 'Mon 26 Oct', tm: '10:17', t: 'The switch-off', viewer: 'asha', focus: 'page', page: 'proof/nasdaq', draft: true, scroll: { page: 'fc-switch' },
       g: 'It switches itself off after four weeks worse than the base rate, and the owner is told. The sheet draws how the Forecast tab would read then: a draft, a state, not today’s figures.',
       chat: function (ctx) { return chatForecast(ctx); }, composer: FC_COMPOSER,
-      sheet: function (ctx) { return ctx.has('offx') ? null : offSheet(ctx); }, target: 'fc:done', on: { 'fc:off': function (st) { delete st.open.offx; } } },
+      sheet: function (ctx) { return ctx.has('offx') ? null : offSheet(ctx); }, sheetClose: 'fc:offclose', target: 'fc:done', on: { 'fc:off': function (st) { delete st.open.offx; }, 'fc:offclose': function (st) { st.open.offx = true; } } },
     { id: 'p17-chat', d: 'Mon 26 Oct', tm: '10:20', t: 'The chat’s answer while it is in practice', viewer: 'asha', focus: 'chat', page: function () { return hp('nasdaq', 'forecast'); }, picked: PICK,
       g: 'In practice, the chat gives the rules engine’s call and points to the Forecast tab; the Forecaster’s own view never appears in a chat answer until its 8 live weeks are up.',
       chat: function (ctx) {

@@ -33,7 +33,7 @@
     p { margin: 0; text-wrap: pretty; }
     .hero { background: var(--hero); color: var(--hero-ink); border-radius: 24px; padding: 28px 34px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
     .hero::after { content: ""; position: absolute; left: 34px; right: 34px; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--coral); }
-    .eyebrow { font: 600 11px/15px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--hero-ink-2); }
+    .eyebrow { font: 600 12px/16px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--hero-ink-2); }
     .hero h1 { font-size: clamp(24px, 3vw, 34px); line-height: 1.15; }
     .hero p { color: var(--hero-ink-2); max-width: 82ch; }
     .links { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
@@ -42,7 +42,7 @@
 
     .toolbar { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; box-shadow: var(--shadow); position: sticky; top: 12px; z-index: 20; }
     .tgrp { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-    .tlbl { font: 600 11px/14px var(--font-mono); text-transform: uppercase; color: var(--ink-3); margin-right: 4px; }
+    .tlbl { font: 600 12px/16px var(--font-mono); text-transform: uppercase; color: var(--ink-2); margin-right: 4px; }
     .pill { border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font: 600 12.5px/16px var(--font); padding: 7px 12px; border-radius: 999px; cursor: pointer; }
     .pill.on { background: var(--hero); color: var(--hero-ink); border-color: var(--hero); }
 
@@ -52,7 +52,7 @@
     .ocard.rec { box-shadow: inset 0 0 0 2px var(--coral), var(--shadow); }
     .ohead { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
     .oid { font: 700 12px/16px var(--font-mono); padding: 3px 8px; border-radius: 6px; background: var(--surface-2); }
-    .obadge { font: 700 11px/14px var(--font-mono); padding: 4px 9px; border-radius: 999px; background: var(--hero); color: var(--hero-ink); }
+    .obadge { font: 700 12px/16px var(--font-mono); padding: 4px 9px; border-radius: 999px; background: var(--hero); color: var(--hero-ink); }
     .odesc { font-size: 13.5px; line-height: 19px; color: var(--ink-2); }
     .frame-wrap { width: 100%; height: 690px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
     .frame-wrap iframe { width: 100%; height: 100%; border: 0; display: block; }
@@ -62,7 +62,7 @@
     table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; line-height: 20px; }
     th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
     tr:last-child th, tr:last-child td { border-bottom: 0; }
-    thead th { font: 600 12px/16px var(--font-mono); color: var(--ink-3); background: var(--surface-2); }
+    thead th { font: 600 12px/16px var(--font-mono); color: var(--ink-2); background: var(--surface-2); }
     tbody th { width: 18%; font-weight: 600; }
     td.rec-col { background: var(--rec-bg); }
   </style>
@@ -84,24 +84,24 @@
     <div class="toolbar" role="region" aria-label="Live comparison controls">
       <div class="tgrp" id="grp-step">
         <span class="tlbl">Screen</span>
-        <button class="pill on" data-step="p2-saved">Home &amp; Pulse</button>
-        <button class="pill" data-step="p6-close">Budget Pace</button>
-        <button class="pill" data-step="p7-fan">20-Yr Projection Fan</button>
-        <button class="pill" data-step="p10-overview">Holding &amp; Pillars</button>
-        <button class="pill" data-step="p17-forecast">Market Candles &amp; Fan</button>
+        <button type="button" class="pill on" aria-pressed="true" data-step="p2-saved">Home &amp; Pulse</button>
+        <button type="button" class="pill" aria-pressed="false" data-step="p6-close">Budget Pace</button>
+        <button type="button" class="pill" aria-pressed="false" data-step="p7-fan">20-Yr Projection Fan</button>
+        <button type="button" class="pill" aria-pressed="false" data-step="p10-overview">Holding &amp; Pillars</button>
+        <button type="button" class="pill" aria-pressed="false" data-step="p17-forecast">Market Candles &amp; Fan</button>
       </div>
       <div class="tgrp" id="grp-door">
         <span class="tlbl">Door</span>
-        <button class="pill on" data-door="ios">iPhone</button>
-        <button class="pill" data-door="desk">Desktop</button>
-        <button class="pill" data-door="ipad">iPad</button>
-        <button class="pill" data-door="pweb">Phone web</button>
+        <button type="button" class="pill on" aria-pressed="true" data-door="ios">iPhone</button>
+        <button type="button" class="pill" aria-pressed="false" data-door="desk">Desktop</button>
+        <button type="button" class="pill" aria-pressed="false" data-door="ipad">iPad</button>
+        <button type="button" class="pill" aria-pressed="false" data-door="pweb">Phone web</button>
       </div>
       <div class="tgrp">
         <span class="tlbl">Appearance</span>
-        <button class="pill on" id="btn-light">Light</button>
-        <button class="pill" id="btn-dark">Dark</button>
-        <button class="pill" id="btn-priv">Privacy: Off</button>
+        <button type="button" class="pill on" aria-pressed="true" id="btn-light">Light</button>
+        <button type="button" class="pill" aria-pressed="false" id="btn-dark">Dark</button>
+        <button type="button" class="pill" aria-pressed="false" id="btn-priv">Privacy: Off</button>
       </div>
     </div>
 
@@ -204,37 +204,38 @@
         });
         syncLinks();
       }
+      function press(grp, b) { grp.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('on', p === b); p.setAttribute('aria-pressed', p === b ? 'true' : 'false'); }); }
+      function pressTheme(b) { ['btn-light', 'btn-dark'].forEach(function (id) { var p = document.getElementById(id); p.classList.toggle('on', p === b); p.setAttribute('aria-pressed', p === b ? 'true' : 'false'); }); }
       document.getElementById('grp-step').addEventListener('click', function (e) {
         var b = e.target.closest('[data-step]');
         if (!b) return;
         state.step = b.getAttribute('data-step');
-        this.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('on', p === b); });
+        press(this, b);
         syncFrames();
       });
       document.getElementById('grp-door').addEventListener('click', function (e) {
         var b = e.target.closest('[data-door]');
         if (!b) return;
         state.door = b.getAttribute('data-door');
-        this.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('on', p === b); });
+        press(this, b);
         syncFrames();
       });
       document.getElementById('btn-light').addEventListener('click', function () {
         state.theme = 'light';
         document.documentElement.setAttribute('data-theme', 'light');
-        this.classList.add('on');
-        document.getElementById('btn-dark').classList.remove('on');
+        pressTheme(this);
         syncFrames();
       });
       document.getElementById('btn-dark').addEventListener('click', function () {
         state.theme = 'dark';
         document.documentElement.setAttribute('data-theme', 'dark');
-        this.classList.add('on');
-        document.getElementById('btn-light').classList.remove('on');
+        pressTheme(this);
         syncFrames();
       });
       document.getElementById('btn-priv').addEventListener('click', function () {
         state.priv = !state.priv;
         this.classList.toggle('on', state.priv);
+        this.setAttribute('aria-pressed', state.priv ? 'true' : 'false');
         this.textContent = 'Privacy: ' + (state.priv ? 'On' : 'Off');
         syncFrames();
       });

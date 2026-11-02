@@ -40,7 +40,7 @@
       '.pv5-wealth .c1 { background: var(--mp-chart-line); } .pv5-wealth .c2 { background: var(--mp-chart-2); } .pv5-wealth .c3 { background: var(--mp-chart-3); } .pv5-wealth .c4 { background: var(--mp-chart-4); } .pv5-wealth .c5 { background: var(--mp-chart-5); }',
       '.pv5-wealth .due { display: flex; gap: 12px; align-items: center; padding: 8px 0; }',
       '.pv5-wealth .due + .due { box-shadow: inset 0 1px 0 var(--mp-line); }',
-      '.pv5-wealth .due-d { width: 44px; flex: none; display: flex; flex-direction: column; align-items: center; border-radius: 10px; background: var(--mp-surface-2); padding: 4px 0; font: 600 11px/14px var(--mp-font); color: var(--mp-ink-2); }',
+      '.pv5-wealth .due-d { width: 44px; flex: none; display: flex; flex-direction: column; align-items: center; border-radius: 10px; background: var(--mp-surface-2); padding: 4px 0; font: 600 12px/14px var(--mp-font); color: var(--mp-ink-2); }',
       '.pv5-wealth .due-d b { font: 800 18px/20px var(--mp-font-round); color: var(--mp-ink); }',
       '.pv5-wealth .due-d.today { background: var(--mp-accent); color: var(--mp-on-accent); } .pv5-wealth .due-d.today b { color: var(--mp-on-accent); }',
       '.pv5-wealth .cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px 16px; }',
@@ -87,10 +87,10 @@
       '.pv5-wealth .lean-bar.low { background: var(--mp-ink-3); }',
       '.pv5-wealth .lean-bar.past { background: var(--mp-chart-line); opacity: 0.55; }',
       '.pv5-wealth .lean-bar.sel { box-shadow: 0 0 0 2px var(--mp-focus); }',
-      '.pv5-wealth .lean-y { position: absolute; left: -34px; transform: translateY(-50%); font: 500 11px/14px var(--mp-font); color: var(--mp-ink-2); }',
+      '.pv5-wealth .lean-y { position: absolute; left: -34px; transform: translateY(-50%); font: 500 12px/14px var(--mp-font); color: var(--mp-ink-2); }',
       '.pv5-wealth .lean-line { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--mp-chart-grid); }',
       '.pv5-wealth .lean-floor { border-top: 2px dashed var(--mp-pause); }',
-      '.pv5-wealth .lean-mk { position: absolute; transform: translate(-50%, 0); font: 700 11px/14px var(--mp-font); color: var(--mp-pause); }',
+      '.pv5-wealth .lean-mk { position: absolute; transform: translate(-50%, 0); font: 700 12px/14px var(--mp-font); color: var(--mp-pause); }',
       '.pv5-wealth .lean-x { position: relative; height: 16px; margin-left: 34px; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); }',
       '.pv5-wealth .lean-x span { position: absolute; transform: translateX(-50%); white-space: nowrap; }',
       '.pv5-wealth .yr { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; align-items: baseline; }',
@@ -134,7 +134,7 @@
       '.pv5-wealth .ctile b { font: 700 15px/20px var(--mp-font-round); font-variant-numeric: tabular-nums; }',
       '.pv5-wealth .ctile > span { font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }',
       '.pv5-wealth.fx > .mp-row { padding-left: 0; padding-right: 0; }',
-      '.pv5-wealth .ctile .amber { align-self: flex-start; font: 600 11px/16px var(--mp-font); }',
+      '.pv5-wealth .ctile .amber { align-self: flex-start; font: 600 12px/16px var(--mp-font); }',
       '.pv5-wealth .btable { display: flex; flex-direction: column; }',
       '.pv5-wealth .brow { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 4px 0; font: 400 14px/19px var(--mp-font); }',
       '.pv5-wealth .brow > :not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }',
@@ -163,7 +163,7 @@
       '.pv5-wealth .hpulse-bars { position: relative; display: flex; gap: 6px; height: 58px; align-items: flex-end; padding: 6px 0 0; box-sizing: border-box; }',
       '.pv5-wealth .hpulse-col { flex: 1 1 0; min-width: 0; border-radius: 5px 5px 2px 2px; background: var(--mp-hero-2); box-shadow: inset 0 2px 0 var(--mp-hero-ink-2); min-height: 14px; display: block; }',
       '.pv5-wealth .hpulse-col.now { background: color-mix(in srgb, var(--mp-coral) 38%, var(--mp-hero-2)); box-shadow: inset 0 3px 0 var(--mp-coral); }',
-      '.pv5-wealth .hb-pill { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; background: var(--mp-surface-2); color: var(--mp-ink-2); font: 600 11.5px/16px var(--mp-font); font-variant-numeric: tabular-nums; margin-left: 6px; vertical-align: 1px; }',
+      '.pv5-wealth .hb-pill { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; background: var(--mp-surface-2); color: var(--mp-ink-2); font: 600 12px/16px var(--mp-font); font-variant-numeric: tabular-nums; margin-left: 6px; vertical-align: 1px; }',
       '.charts-a .pv5-wealth .stack { gap: 4px; height: 14px; background: transparent; border-radius: 0; overflow: visible; }',
       '.charts-a .pv5-wealth .stack > i { border-radius: 999px; }',
       '.charts-b .pv5-wealth .stack { height: 14px; border-radius: 4px; padding: 2px; gap: 2px; background: var(--mp-track); box-shadow: inset 0 0 0 1px var(--mp-line); box-sizing: border-box; }',
@@ -1279,7 +1279,7 @@
       meta: ok ? 'list_kinds · describe_kind · propose_kind · in the audit log 10:14' : 'list_kinds found no kind for it · propose_kind, the admin’s alone', icon: 'shield_person' }));
     return out;
   }
-  function secondCheck() {
+  function secondCheck(ctx) {
     return '<div class="pv5-wealth sheetc"><div class="fx ac jb"><span class="mp-hl">Check it’s you</span><button type="button" class="' + (ctx.web ? 'iconbtn' : 'gbtn lg') + '" aria-label="Close"' + K.go('kind:close') + '><span class="ms z1" aria-hidden="true">close</span></button></div>' +
       overline('Admin change') + '<span class="mp-t3">Add a new kind: NS&amp;I Premium Bonds</span>' + K.kv('Built from', 'Cash: the last figure given') + K.kv('Asked for by', 'Asha, 10:12') +
       K.foot('The server binds a challenge to this change; Apple signs you in again to answer it. A passkey under Face ID answers it too.') +
@@ -1404,7 +1404,7 @@
       chat: function (ctx) { return monChat(ctx, 5); }, on: on() },
     { id: 'p2-kind', d: 'Sat 31 Oct', tm: '10:13', viewer: 'arun', t: 'A new kind for the admin: Premium Bonds', page: 'home', focus: 'chat', draft: true,
       g: 'Asha asked for her NS&I Premium Bonds at 10:12; no kind fits, so it comes to Arun, the admin. Approve opens the second check: Sign in with Apple. Then the kind is data, versioned and audited; Asha’s record still waits for her own Confirm.',
-      chat: satChat, target: 'kind:approve', sheet: function (ctx) { return ctx.has('check') ? secondCheck() : null; },
+      chat: satChat, target: 'kind:approve', sheet: function (ctx) { return ctx.has('check') ? secondCheck(ctx) : null; }, sheetClose: 'kind:close',
       on: on({ 'kind:approve': openK('check'), 'kind:close': function (st) { st.open.check = false; }, 'kind:apple': function (st) { st.open.check = false; st.open.ok = true; }, 'x:reject': toast('Reject tells Asha it can’t be added yet. This walk-through approves it.') }), scroll: { chat: 'w-kind' } }
   ] });
 

@@ -1,7 +1,9 @@
 {
   "detector": {
     "ignoreRules": [],
-    "ignoreFiles": [],
+    "ignoreFiles": [
+      "docs/design/app-v1/PrototypeV4*.dc.html"
+    ],
     "ignoreValues": [
       {
         "rule": "overused-font",
@@ -168,46 +170,32 @@
           "docs/design/app-v1/Web v4 · Admin center.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.661Z",
-        "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding"
+        "reason": "Claude (MA-264): the flagged boxes are the kit's controls (mp-seg segments, glass buttons, icon tiles, chips, the composer field, the tab bar's search), which centre their content in a 44 pt or 44 px target by design (HIG); text cards keep 12 to 16 px of padding The detector (engine 0.1.18) carries no value for this rule, so a value or selector ignore cannot narrow it (MA-300: 17 value forms tried, from class names to the snippet; none suppressed a finding); the file scope is the narrowest it takes.",
+        "updatedAt": "2026-11-02T00:00:00.000Z"
       },
       {
         "rule": "undersized-ui-text",
         "value": "*",
         "files": [
-          "docs/design/app-v1/Web v4 · Budget forecast.dc.html",
           "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html",
-          "docs/design/app-v1/Web v4 · Plans in the chat.dc.html",
           "docs/design/ios-v1/iPhone v4 · Plans in the chat.dc.html",
-          "docs/design/app-v1/Web v4 · Plans tab.dc.html",
           "docs/design/ios-v1/iPhone v4 · Plans tab.dc.html",
-          "docs/design/app-v1/Web v4 · Budget forecast 1a states.dc.html",
           "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html",
-          "docs/design/app-v1/Web v4 · Plans in the chat 2a states.dc.html",
-          "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html",
           "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html",
           "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html",
-          "docs/design/ds-v1/Chart options.dc.html",
           "docs/design/ios-v1/iPhone v4 · Chart options.dc.html",
-          "docs/design/app-v1/Web v4 · Chart options.dc.html",
           "docs/design/ios-v1/iPhone v4 · Consolidated options.dc.html",
-          "docs/design/app-v1/Web v4 · Consolidated options.dc.html",
           "docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html",
           "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html",
           "docs/design/ios-v1/iPhone v4 · Market, holdings and India.dc.html",
           "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html",
           "docs/design/ios-v1/iPhone v4 · You and settings.dc.html",
           "docs/design/ios-v1/iPhone v4 · Admin center.dc.html",
-          "docs/design/ios-v1/iPad v4 · Adaptive shell and foldable.dc.html",
-          "docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html",
-          "docs/design/app-v1/Web v4 · Register.dc.html",
-          "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html",
-          "docs/design/app-v1/Web v4 · Forecast.dc.html",
-          "docs/design/app-v1/Web v4 · Chat and guided flows.dc.html",
-          "docs/design/app-v1/Web v4 · Audit, activity and files.dc.html",
-          "docs/design/app-v1/Web v4 · Admin center.dc.html"
+          "docs/design/ios-v1/iPad v4 · Adaptive shell and foldable.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.678Z",
-        "reason": "Claude (MA-264): the 10 px text is the canvas's own board-id chip (an annotation, not product UI) and the kit's tab-bar labels (tokens.css .mp-tab, 10 pt as the iOS tab bar draws them)"
+        "reason": "Claude (MA-264, narrowed MA-300): on the iOS boards only, the 10 pt text is the kit's tab-bar labels (tokens.css .mp-tab, as the iOS tab bar draws them) and the canvas's board-id chip. The web boards and DS v1 are no longer covered: the web's 10 px phone tab bar and any new text under 11 px there show (deep scan P1, text under 12 px). The detector (engine 0.1.18) carries no value for this rule, so a value or selector ignore cannot narrow it (MA-300: 17 value forms tried, from class names to the snippet; none suppressed a finding); the file scope is the narrowest it takes.",
+        "updatedAt": "2026-11-02T00:00:00.000Z"
       },
       {
         "rule": "tight-leading",
@@ -246,7 +234,8 @@
           "docs/design/app-v1/Web v4 · Admin center.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.695Z",
-        "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text"
+        "reason": "Claude (MA-264): the 1.23x to 1.27x leading is on the canvas's board titles (26/32 display headings), not body text The detector (engine 0.1.18) carries no value for this rule, so a value or selector ignore cannot narrow it (MA-300: 17 value forms tried, from class names to the snippet; none suppressed a finding); the file scope is the narrowest it takes.",
+        "updatedAt": "2026-11-02T00:00:00.000Z"
       },
       {
         "rule": "cream-palette",
@@ -286,46 +275,8 @@
           "docs/design/app-v1/Web v4 · Admin center.dc.html"
         ],
         "createdAt": "2026-10-28T21:16:09.712Z",
-        "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101)"
-      },
-      {
-        "rule": "clipped-overflow-container",
-        "value": "*",
-        "files": [
-          "docs/design/app-v1/Web v4 · Budget forecast.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html",
-          "docs/design/app-v1/Web v4 · Plans in the chat.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Plans in the chat.dc.html",
-          "docs/design/app-v1/Web v4 · Plans tab.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Plans tab.dc.html",
-          "docs/design/app-v1/Web v4 · Budget forecast 1a states.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html",
-          "docs/design/app-v1/Web v4 · Plans in the chat 2a states.dc.html",
-          "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Plans in the chat 2a states.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html",
-          "docs/design/ds-v1/Chart options.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Chart options.dc.html",
-          "docs/design/app-v1/Web v4 · Chart options.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Consolidated options.dc.html",
-          "docs/design/app-v1/Web v4 · Consolidated options.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Market, holdings and India.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html",
-          "docs/design/ios-v1/iPhone v4 · You and settings.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Admin center.dc.html",
-          "docs/design/ios-v1/iPad v4 · Adaptive shell and foldable.dc.html",
-          "docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html",
-          "docs/design/app-v1/Web v4 · Register.dc.html",
-          "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html",
-          "docs/design/app-v1/Web v4 · Forecast.dc.html",
-          "docs/design/app-v1/Web v4 · Chat and guided flows.dc.html",
-          "docs/design/app-v1/Web v4 · Audit, activity and files.dc.html",
-          "docs/design/app-v1/Web v4 · Admin center.dc.html"
-        ],
-        "createdAt": "2026-10-28T21:16:09.730Z",
-        "reason": "Claude (MA-264): device and browser frames clip their screen by design; board_fit measures every scroller and frame for cut content"
+        "reason": "Claude (MA-264): #ECEAE6 is the design canvas's backdrop behind the frames, as on every v4 board; the screens are DS v1 Warm ledger, Arun's pick (MA-101) The detector (engine 0.1.18) carries no value for this rule, so a value or selector ignore cannot narrow it (MA-300: 17 value forms tried, from class names to the snippet; none suppressed a finding); the file scope is the narrowest it takes.",
+        "updatedAt": "2026-11-02T00:00:00.000Z"
       },
       {
         "rule": "side-tab",
@@ -336,21 +287,11 @@
           "docs/design/app-v1/Web v4 · Projection.dc.html",
           "docs/design/ios-v1/iPhone v4 · Projection.dc.html",
           "docs/design/app-v1/Web v4 · Plans tab 3a states.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html",
-          "docs/design/app-v1/PrototypeV4Pages.dc.html"
+          "docs/design/ios-v1/iPhone v4 · Plans tab 3a states.dc.html"
         ],
         "createdAt": "2026-10-28T21:23:44.480Z",
-        "reason": "Claude (MA-264): the only match is .utab.on, the underline under the selected Projection tab (Net worth, Plans, Budget forecast) that the brief draws on desktop and iPad; the selected plan row's left stripe was removed"
-      },
-      {
-        "rule": "nested-cards",
-        "value": "*",
-        "files": [
-          "docs/design/ios-v1/iPhone v4 · Budget forecast.dc.html",
-          "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
-        ],
-        "createdAt": "2026-10-28T21:31:21.105Z",
-        "reason": "Claude (MA-264): 17 matches are the device bezel's box-shadow from the shared ios.css kit, on every iOS board; the 18th is the solid card inside 1c's glass sheet, which keeps figures and the sentence off the glass (glass carries labels only)"
+        "reason": "Claude (MA-264): the only match is .utab.on, the underline under the selected Projection tab (Net worth, Plans, Budget forecast) that the brief draws on desktop and iPad; the selected plan row's left stripe was removed (MA-300: PrototypeV4Pages left this list for ignoreFiles, with the other parts Prototype v4 mounts.) The detector (engine 0.1.18) carries no value for this rule, so a value or selector ignore cannot narrow it (MA-300: 17 value forms tried, from class names to the snippet; none suppressed a finding); the file scope is the narrowest it takes.",
+        "updatedAt": "2026-11-02T00:00:00.000Z"
       },
       {
         "rule": "repeated-container-text",
@@ -359,7 +300,8 @@
           "docs/design/ios-v1/iPhone v4 · Budget forecast 1a states.dc.html"
         ],
         "createdAt": "2026-10-28T22:38:17.434Z",
-        "reason": "Claude (MA-264): the tab bar's labels, one template placeholder repeated per tab"
+        "reason": "Claude (MA-264): the tab bar's labels, one template placeholder repeated per tab The detector (engine 0.1.18) carries no value for this rule, so a value or selector ignore cannot narrow it (MA-300: 17 value forms tried, from class names to the snippet; none suppressed a finding); the file scope is the narrowest it takes.",
+        "updatedAt": "2026-11-02T00:00:00.000Z"
       }
     ]
   }

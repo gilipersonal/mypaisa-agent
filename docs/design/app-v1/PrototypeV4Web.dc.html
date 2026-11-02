@@ -96,10 +96,10 @@
 </style>
 </helmet>
 <div class="pw mp mp-app {{ themeCls }} {{ privCls }}">
-<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url"><span class="ms">lock</span>dashboard.mypaisapp.com</span><span class="chrome-r"></span></div></sc-if>
-<sc-if value="{{ isPweb }}" hint-placeholder-val="{{ false }}"><div class="sbar"><span>{{ time }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div></sc-if>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url"><span class="ms" aria-hidden="true">lock</span>dashboard.mypaisapp.com</span><span class="chrome-r"></span></div></sc-if>
+<sc-if value="{{ isPweb }}" hint-placeholder-val="{{ false }}"><div class="sbar"><span>{{ time }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div></sc-if>
 <sc-if value="{{ isSignin }}" hint-placeholder-val="{{ false }}">
-<sc-if value="{{ isPweb }}" hint-placeholder-val="{{ false }}"><div class="purl"><span class="ms">lock</span>dashboard.mypaisapp.com</div></sc-if>
+<sc-if value="{{ isPweb }}" hint-placeholder-val="{{ false }}"><div class="purl"><span class="ms" aria-hidden="true">lock</span>dashboard.mypaisapp.com</div></sc-if>
 <div class="login">
 <div class="lhero">
 <div class="fx ac gap12"><svg class="mpm mpm-hero" width="44" height="44" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div>
@@ -111,8 +111,8 @@
 <div class="mp-sub mp-ink2" style="margin-bottom: 12px">With the account you use in the MyPaisa app.</div>
 <button class="siwa {{ signinCls }}" type="button" onclick="{{ signinGo }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>Sign in with Apple</button>
 <button class="gsi" type="button" onclick="{{ nopeGo }}"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>Sign in with Google</button>
-<button class="mp-btn mp-btn-plain" type="button" onclick="{{ nopeGo }}"><span class="ms">passkey</span>Sign in with a passkey</button>
-<div class="lnote mp-foot mp-ink2" style="margin-top: 8px"><span class="ms ms-s">key</span><span>No password. A passkey works after your first sign-in with Apple or Google.</span></div>
+<button class="mp-btn mp-btn-plain" type="button" onclick="{{ nopeGo }}"><span class="ms" aria-hidden="true">passkey</span>Sign in with a passkey</button>
+<div class="lnote mp-foot mp-ink2" style="margin-top: 8px"><span class="ms ms-s" aria-hidden="true">key</span><span>No password. A passkey works after your first sign-in with Apple or Google.</span></div>
 </div></div>
 </div>
 </sc-if>
@@ -120,28 +120,28 @@
 <div class="shl"><div class="mp-shell sh-a {{ shlCls }}" style="height: 100%">
 <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><button class="mp-side-i {{ n.cls }}" type="button" onclick="{{ n.go }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><button class="mp-side-i {{ n.cls }}" type="button" onclick="{{ n.go }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
 <div class="side-sep"></div>
-<button class="mp-side-i" type="button" onclick="{{ nopeGo }}"><span class="ms">admin_panel_settings</span>Admin center</button>
+<button class="mp-side-i" type="button" onclick="{{ nopeGo }}"><span class="ms" aria-hidden="true">admin_panel_settings</span>Admin center</button>
 <div class="f1"></div>
 <div class="mp-foot mp-ink2 side-ft">{{ user }}<br />Signed in with Apple</div>
 </aside>
 <main class="mp-shell-main main"><div class="pscroll" data-scroll="page"><dc-import name="PrototypeV4Pages" dc-props="{{ pagep }}" hint-size="100%,900px"></dc-import></div></main>
 <section class="chatcol" aria-label="Chat">
-<div class="chd"><div class="fx col"><span class="mp-hl">Chat</span><span class="mp-foot mp-ink2">{{ chdSub }}</span></div><button class="iconbtn" type="button" aria-label="Hide the chat" onclick="{{ nopeGo }}"><span class="ms">right_panel_close</span></button></div>
-<button class="wstrip" type="button" onclick="{{ strip.go }}"><span class="fx col f1"><span class="mp-foot mp-ink2">{{ strip.lbl }}</span><sc-if value="{{ strip.hasN }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><span class="wstrip-n mny">{{ strip.n }}</span><sc-if value="{{ strip.hasUp }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-up mp-w6 mny">{{ strip.up }}</span></sc-if></span></sc-if><sc-if value="{{ strip.hasSub }}" hint-placeholder-val="{{ false }}"><span class="mp-hl">{{ strip.sub }}</span></sc-if></span><span class="ms mp-ink2">chevron_right</span></button>
+<div class="chd"><div class="fx col"><span class="mp-hl">Chat</span><span class="mp-foot mp-ink2">{{ chdSub }}</span></div><button class="iconbtn" type="button" aria-label="Hide the chat" onclick="{{ nopeGo }}"><span class="ms" aria-hidden="true">right_panel_close</span></button></div>
+<button class="wstrip" type="button" onclick="{{ strip.go }}"><span class="fx col f1"><span class="mp-foot mp-ink2">{{ strip.lbl }}</span><sc-if value="{{ strip.hasN }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><span class="wstrip-n mny">{{ strip.n }}</span><sc-if value="{{ strip.hasUp }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-up mp-w6 mny">{{ strip.up }}</span></sc-if></span></sc-if><sc-if value="{{ strip.hasSub }}" hint-placeholder-val="{{ false }}"><span class="mp-hl">{{ strip.sub }}</span></sc-if></span><span class="ms mp-ink2" aria-hidden="true">chevron_right</span></button>
 <div class="chwrap"><div class="pscroll" data-scroll="chat"><dc-import name="PrototypeV4Chat" dc-props="{{ chatp }}" hint-size="100%,600px"></dc-import></div></div>
 <div class="wsugg">
-<sc-if value="{{ composer.hasSug }}" hint-placeholder-val="{{ false }}"><button class="sg sug {{ composer.sugCls }}" type="button" onclick="{{ composer.sugGo }}"><span class="ms">north_east</span>{{ composer.sug }}</button></sc-if>
-<sc-for list="{{ composer.chips }}" as="s" hint-placeholder-count="4"><button class="sg" type="button" onclick="{{ s.go }}"><span class="ms">{{ s.icon }}</span>{{ s.t }}</button></sc-for>
+<sc-if value="{{ composer.hasSug }}" hint-placeholder-val="{{ false }}"><button class="sg sug {{ composer.sugCls }}" type="button" onclick="{{ composer.sugGo }}"><span class="ms" aria-hidden="true">north_east</span>{{ composer.sug }}</button></sc-if>
+<sc-for list="{{ composer.chips }}" as="s" hint-placeholder-count="4"><button class="sg" type="button" onclick="{{ s.go }}"><span class="ms" aria-hidden="true">{{ s.icon }}</span>{{ s.t }}</button></sc-for>
 </div>
 <div class="wcomp">
-<button class="wplus {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><span class="ms">add</span></button>
-<sc-if value="{{ composer.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="wfield att"><sc-for list="{{ composer.files }}" as="f" hint-placeholder-count="2"><div class="wfile"><span class="wftile"><span class="ms">picture_as_pdf</span></span><span class="fx col f1"><span class="wfname">{{ f.name }}</span><span class="wfmeta">{{ f.meta }}</span></span></div></sc-for><div class="attline"><span class="f1 mp-sub">{{ composer.filesText }}</span><button class="wsend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><span class="ms">arrow_upward</span></button></div></div></sc-if>
-<sc-if value="{{ composer.notFiles }}" hint-placeholder-val="{{ true }}"><div class="wfield"><input class="win" type="text" autocomplete="off" aria-label="Message" placeholder="{{ composer.ph }}" value="{{ composer.typed }}" onchange="{{ composer.onType }}" onkeydown="{{ composer.onKey }}" /><button class="wsend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><span class="ms">arrow_upward</span></button></div></sc-if>
+<button class="wplus {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><span class="ms" aria-hidden="true">add</span></button>
+<sc-if value="{{ composer.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="wfield att"><sc-for list="{{ composer.files }}" as="f" hint-placeholder-count="2"><div class="wfile"><span class="wftile"><span class="ms" aria-hidden="true">picture_as_pdf</span></span><span class="fx col f1"><span class="wfname">{{ f.name }}</span><span class="wfmeta">{{ f.meta }}</span></span></div></sc-for><div class="attline"><span class="f1 mp-sub">{{ composer.filesText }}</span><button class="wsend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><span class="ms" aria-hidden="true">arrow_upward</span></button></div></div></sc-if>
+<sc-if value="{{ composer.notFiles }}" hint-placeholder-val="{{ true }}"><div class="wfield"><input class="win" type="text" autocomplete="off" aria-label="Message" placeholder="{{ composer.ph }}" value="{{ composer.typed }}" onchange="{{ composer.onType }}" onkeydown="{{ composer.onKey }}" /><button class="wsend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><span class="ms" aria-hidden="true">arrow_upward</span></button></div></sc-if>
 </div>
 </section>
-<nav class="mp-tabbar mp-shell-tabs wtabs" aria-label="Sections"><sc-for list="{{ tabs }}" as="n" hint-placeholder-count="4"><span class="tabw"><button class="mp-tab {{ n.cls }}" type="button" onclick="{{ n.go }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</button></span></sc-for></nav>
+<nav class="mp-tabbar mp-shell-tabs wtabs" aria-label="Sections"><sc-for list="{{ tabs }}" as="n" hint-placeholder-count="4"><span class="tabw"><button class="mp-tab {{ n.cls }}" type="button" onclick="{{ n.go }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></span></sc-for></nav>
 </div></div>
 </sc-if>
 </div>

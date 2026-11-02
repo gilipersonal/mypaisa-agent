@@ -72,6 +72,7 @@ PAIRS = [
     ("presence", "track", "add-bg"),  # a bar on a success tint (MA-240 round 2)
     ("presence", "band", "hero"), ("presence", "band", "surface"),  # a chart's range band, as the Projection draws its 8 in 10 runs (MA-240)
     ("ui", "coral", "band+hero"), ("ui", "chart-line", "band+surface"),  # the line drawn over the band (a ground "a+b" is a over b)
+    ("body", "ink", "hold-bg"),  # selected text: tokens.css's ::selection (MA-300)
 ] + [("ui", t, b) for t in ("ccy-usd", "ccy-gbp", "ccy-inr", "ccy-eur", "ccy-jpy", "ccy-other", "asset-shares", "asset-bonds",
                             "asset-silver", "asset-cash", "meter", "chart-line") for b in ("surface", "track")]
 # Labels on glass (glass carries labels only, never body copy): the fill composited over the worst backdrop the bar
@@ -284,6 +285,107 @@ def token_refs_and_hovers() -> list[str]:
     return bad
 
 
+# Hover states (MA-300, P3-3). Every :hover rule in tokens.css, ios.css and motion.css that paints a colour, a background or
+# a filter is measured as a text pair in both themes: its label on its ground, as the rule draws them. A colour or ground
+# the hover rule does not set comes from its control's own rule (the selector without :hover and :not(), then without
+# its last state class), else the page's ink on a card. A control that sits on Liquid Glass, or on the canvas, says so
+# here; any value the gate cannot read is a failure, never a skip.
+HOVER_GROUND = {".side-i": "glass", ".menu-i": "glass", ".tab": "glass", ".tab.on": "glass", ".mo-replay": "#ECEAE6"}
+SHARED = ("tokens.css", "ios.css", "motion.css")
+
+
+def _decls(body: str) -> dict[str, str]:
+    out = {}
+    for k, v in re.findall(r"([\w-]+)\s*:\s*([^;]+)", body):
+        out[k.strip().lower()] = v.strip()
+    return out
+
+
+def hovers() -> list[str]:
+    themes, rules = parse(), []
+    for name in SHARED:
+        p = DESIGN / "ds-v1" / name
+        if p.exists():
+            rules += [(name, sel, _decls(body)) for sel, body, _ in blocks_at(p.read_text(), name)]
+    by_part: dict[str, list[tuple[str, dict]]] = {}
+    for name, sel, d in rules:
+        for part in (" ".join(x.split()) for x in sel.split(",")):
+            by_part.setdefault(part, []).append((name, d))
+
+    def paint(d: dict, key: str) -> str | None:
+        if key == "color":
+            return d.get("color")
+        v = d.get("background-color") or d.get("background")
+        return v
+
+    def base_of(part: str) -> list[str]:
+        b = re.sub(r":hover\b|:not\([^)]*\)", "", part).strip()
+        chain = [b]
+        while re.search(r"\.[\w-]+\.[\w-]+$", chain[-1]):
+            chain.append(re.sub(r"\.[\w-]+$", "", chain[-1]))
+        return chain
+
+    def resolve(v: str, theme: str, glass: dict) -> tuple | None:
+        v = re.sub(r"\s*!important\s*$", "", v.strip())
+        m = re.fullmatch(r"var\(--(mp|lg)-([\w-]+)\)", v)
+        if m:
+            src = themes[theme] if m.group(1) == "mp" else glass
+            key = m.group(2) if m.group(1) == "mp" else "lg-" + m.group(2)
+            return resolve(src[key], theme, glass) if key in src else None
+        try:
+            return rgba(v)
+        except ValueError:
+            return None
+
+    bad = []
+    for part, entries in by_part.items():
+        if ":hover" not in part:
+            continue
+        merged: dict[str, str] = {}
+        for _, d in entries:
+            merged.update(d)
+        fg_v, bg_v = paint(merged, "color"), paint(merged, "bg")
+        filt = merged.get("filter")
+        if fg_v is None and bg_v is None and filt is None:
+            continue   # a hover that only moves (a lift, a press) changes no colour
+        chain = base_of(part)
+        for b in chain:
+            for _, d in by_part.get(b, []):
+                fg_v = fg_v or paint(d, "color")
+                if bg_v is None:
+                    bg_v = paint(d, "bg")
+        ground_name = next((HOVER_GROUND[b] for b in chain if b in HOVER_GROUND), "surface")
+        for theme, tok in themes.items():
+            lg = ios_glass(theme)
+            surface = rgba(tok["surface"])
+            if ground_name == "glass":
+                ground = over(rgba(lg["lg-fill"]), rgba(tok[GLASS_BACKDROP]))
+            elif ground_name.startswith("#"):
+                ground = rgba(ground_name)
+            else:
+                ground = over(rgba(tok[ground_name]), surface)
+            fg = resolve(fg_v or "var(--mp-ink)", theme, lg)
+            bg = ground if bg_v in (None, "transparent", "none") else resolve(bg_v, theme, lg)
+            if fg is None or bg is None:
+                bad.append(f"hover {part}: cannot measure its label {fg_v!r} on {bg_v!r} ({theme}); use a token")
+                break
+            bg = over(bg, ground)
+            fg = over(fg, bg)
+            k = 1.0
+            if filt:
+                m = re.fullmatch(r"brightness\(([\d.]+)\)", filt.strip())
+                if not m:
+                    bad.append(f"hover {part}: cannot measure its filter {filt!r}")
+                    break
+                k = float(m.group(1))
+                fg, bg = tuple(c * k for c in fg[:3]) + (1.0,), tuple(c * k for c in bg[:3]) + (1.0,)
+            lo_full, lo_dim = LIMITS["text"]
+            full, dim = ratio(fg, bg), ratio(fg, bg, DIM)
+            if full < lo_full or dim < lo_dim:
+                bad.append(f"{theme:7} hover {part}: {full:.2f}:1, {dim:.2f}:1 at 25% (needs {lo_full}, {lo_dim})")
+    return bad
+
+
 def copies() -> list[str]:
     """Each board folder's copy of a shared file that is missing or differs from ds-v1's."""
     bad = []
@@ -339,6 +441,14 @@ SELFTEST = {  # case: (file, pattern, replacement, the FAIL line it must produce
     "dark-media-mismatch": ("ds-v1/tokens.css", r"(@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\.t-light\):not\(\.t-dark\) \{\s*--mp-bg: )#[0-9A-Fa-f]{6};", r"\1#111827;", r"prefers-color-scheme: dark.*tokens\.css disagrees.*--mp-bg"),
     "undefined-var-token": ("ds-v1/tokens.css", r"\Z", "\n.x { color: var(--mp-uk); }\n", r"ds-v1/tokens\.css references undefined token --mp-uk"),
     "unscoped-a-hover": ("ds-v1/tokens.css", r"\Z", "\na:hover { color: var(--mp-accent); }\n", r"ds-v1/tokens\.css has unscoped 'a:hover' setting color"),
+    # MA-300: an undefined token where a board or the prototype applies it (lesson 27), and the hover states
+    "undefined-var-board": ("ios-v1/iPhone v4 · Forecast.dc.html", r"</style>", ".mp5-x { background: var(--mp-in); }\n</style>", r"iPhone v4 · Forecast\.dc\.html references undefined token --mp-in"),
+    "undefined-var-prototype": ("prototype-v5/prototype-v5.css", r"\Z", "\n.mp5-x { color: var(--mp-uk); }\n", r"prototype-v5/prototype-v5\.css references undefined token --mp-uk"),
+    "hover-label-lost": ("ds-v1/tokens.css", r"\.mp-btn-primary:hover \{ color: var\(--mp-on-accent\);", ".mp-btn-primary:hover { color: var(--mp-accent);", r"hover \.mp-btn-primary:hover: 1\.00:1"),
+    "hover-tab-faint": ("ds-v1/tokens.css", r"\.mp-tab:hover \{ color: var\(--mp-ink-2\); \}", ".mp-tab:hover { color: var(--mp-line); }", r"t-light hover \.mp-tab:hover:"),
+    "hover-glass-faint": ("ds-v1/ios.css", r"\.tab:hover \{ color: var\(--mp-ink\); \}", ".tab:hover { color: var(--mp-ink-3); }", r"hover \.tab:hover:"),
+    "hover-darkened": ("ds-v1/tokens.css", r"(\.mp-btn-tinted:hover  \{ color: var\(--mp-ink\); filter: brightness\()0\.97", r"\g<1>0.2", r"t-dark +hover \.mp-btn-tinted:hover:"),
+    "hover-unmeasurable": ("ds-v1/tokens.css", r"\Z", "\n.mp-chip:hover { color: color-mix(in srgb, var(--mp-ink) 40%, transparent); }\n", r"hover \.mp-chip:hover: cannot measure"),
 }
 
 
@@ -365,6 +475,11 @@ def mutate(root: Path, rel: str | None, pat: str | None, rep: str | None, before
 
 
 def _apply(target: Path, pat: str | None, rep: str | None) -> bool:
+    if not target.exists() and pat is not None:
+        # a board's or the prototype's own file: the copy starts from the repo's, then takes the fault
+        src = DESIGN / target.relative_to(target.parents[1])
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(src, target)
     if pat is None:
         target.unlink()
         return True
@@ -451,6 +566,9 @@ def main(argv: list[str]) -> int:
         bad += 1
         print(f"FAIL {why}")
     for why in token_refs_and_hovers():
+        bad += 1
+        print(f"FAIL {why}")
+    for why in hovers():
         bad += 1
         print(f"FAIL {why}")
     for path in copies():

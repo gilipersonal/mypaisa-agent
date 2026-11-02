@@ -19,7 +19,7 @@
    (Web v4 · Shell and chat, 1a), the phone's browser at 390, and the iPhone (shell 1a, Chat first, 402 × 874 as the
    iPhone v4 boards draw it). One journey, one clock, one figure set; the bar above the frame is the prototype's own. */
 html, body { margin: 0; height: 100%; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .pv4 { min-height: 100vh; display: flex; flex-direction: column; }
 .ptop { flex: none; display: flex; flex-direction: column; gap: 8px; padding: 10px 20px 10px; background: #F9F8F6; border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: #14171F; position: relative; z-index: 5; }
 .prow1 { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
@@ -81,18 +81,18 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <span class="pname"><span class="pkey">MA-193</span>MyPaisa · Prototype v4</span>
 <span class="pgrp"><span class="plbl">Door</span><span class="pseg" role="group" aria-label="Door"><sc-for list="{{ doors }}" as="d" hint-placeholder-count="3"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
 <span class="pgrp"><span class="plbl">Theme</span><span class="pseg" role="group" aria-label="Theme"><sc-for list="{{ themes }}" as="d" hint-placeholder-count="2"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
-<button class="pbtn {{ privCls }}" type="button" aria-pressed="{{ privP }}" onclick="{{ privGo }}"><span class="ms">{{ privIcon }}</span>Privacy</button>
+<button class="pbtn {{ privCls }}" type="button" aria-pressed="{{ privP }}" onclick="{{ privGo }}"><span class="ms" aria-hidden="true">{{ privIcon }}</span>Privacy</button>
 <span class="pgrp"><span class="plbl">Viewer</span><span class="pseg" role="group" aria-label="Viewer"><sc-for list="{{ viewers }}" as="d" hint-placeholder-count="2"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
 <span class="pf1"></span>
-<button class="pbtn" type="button" onclick="{{ restartGo }}"><span class="ms">restart_alt</span>Restart</button>
+<button class="pbtn" type="button" onclick="{{ restartGo }}"><span class="ms" aria-hidden="true">restart_alt</span>Restart</button>
 </div>
 <nav class="psteps" aria-label="The journey"><sc-for list="{{ steps }}" as="s" hint-placeholder-count="10"><button class="pst {{ s.cls }}" type="button" aria-current="{{ s.cur }}" onclick="{{ s.go }}"><b>{{ s.n }}</b>{{ s.t }}</button></sc-for></nav>
 <div class="pguide" aria-live="polite">
 <span class="pgt">{{ guideT }}</span>
 <span class="pgh">{{ guideH }}</span>
-<sc-if value="{{ hasFill }}" hint-placeholder-val="{{ false }}"><button class="pbtn" type="button" onclick="{{ fillGo }}"><span class="ms">keyboard</span>Type it for me</button></sc-if>
-<sc-if value="{{ hasBranch }}" hint-placeholder-val="{{ false }}"><button class="pbtn {{ branchCls }}" type="button" onclick="{{ branchGo }}"><span class="ms">{{ branchIcon }}</span>{{ branchT }}</button></sc-if>
-<sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}"><button class="pbtn go {{ nextCls }}" type="button" onclick="{{ nextGo }}">{{ nextT }}<span class="ms">arrow_forward</span></button></sc-if>
+<sc-if value="{{ hasFill }}" hint-placeholder-val="{{ false }}"><button class="pbtn" type="button" onclick="{{ fillGo }}"><span class="ms" aria-hidden="true">keyboard</span>Type it for me</button></sc-if>
+<sc-if value="{{ hasBranch }}" hint-placeholder-val="{{ false }}"><button class="pbtn {{ branchCls }}" type="button" onclick="{{ branchGo }}"><span class="ms" aria-hidden="true">{{ branchIcon }}</span>{{ branchT }}</button></sc-if>
+<sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}"><button class="pbtn go {{ nextCls }}" type="button" onclick="{{ nextGo }}">{{ nextT }}<span class="ms" aria-hidden="true">arrow_forward</span></button></sc-if>
 </div>
 </header>
 <main class="pstage">
@@ -101,7 +101,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="pframe mp {{ frameCls }} {{ themeCls }}" style="left: {{ frL }}; top: {{ frL }}; width: {{ frW }}; height: {{ frH }}; transform: scale({{ sc }})" data-screen-label="{{ frameLabel }}">
 <sc-if value="{{ isWeb }}" hint-placeholder-val="{{ true }}"><dc-import name="PrototypeV4Web" dc-props="{{ webp }}" hint-size="100%,100%"></dc-import></sc-if>
 <sc-if value="{{ isIos }}" hint-placeholder-val="{{ false }}"><dc-import name="PrototypeV4Phone" dc-props="{{ iosp }}" hint-size="100%,100%"></dc-import></sc-if>
-<sc-if value="{{ hasDate }}" hint-placeholder-val="{{ false }}"><div class="pdate"><span class="ms">calendar_month</span>{{ dateT }}</div></sc-if>
+<sc-if value="{{ hasDate }}" hint-placeholder-val="{{ false }}"><div class="pdate"><span class="ms" aria-hidden="true">calendar_month</span>{{ dateT }}</div></sc-if>
 <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}"><div class="ptoast mp-toast">{{ toastT }}</div></sc-if>
 </div>
 </div>

@@ -15,7 +15,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-300: a bare link only; never recolours a button drawn as a link */
 /* ---------- canvas ---------- */
 .dv-turn { padding: 44px 48px 36px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
@@ -34,9 +34,9 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .bnotes b { color: #14171F; }
 /* ---------- frames: the desktop board (1440) and the phone-web door (390) ---------- */
 .board { width: 1440px; border-radius: 14px; overflow: hidden; background: var(--mp-bg); box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
-.pweb { width: 390px; height: 844px; border-radius: 46px; overflow: hidden; position: relative; display: flex; flex-direction: column; background: var(--mp-bg); box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); flex: none; }
-.psbar { height: 47px; flex: none; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 28px 6px 36px; font: 600 16px/20px var(--mp-font); color: var(--mp-ink); }
-.psbar .ms { font-size: 17px; }
+.pweb { width: 390px; height: 844px; border-radius: 20px; overflow: hidden; position: relative; display: flex; flex-direction: column; background: var(--mp-bg); box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 24px 52px rgba(0,0,0,.18); flex: none; }   /* a phone browser, not an iPhone bezel (MA-300) */
+.psbar { height: 47px; flex: none; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 16px; box-sizing: border-box; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }   /* the browser's address bar, not an iPhone status bar (MA-300) */
+.psbar .ms { font-size: 15px; }
 .pweb .mp-shell { flex: 1; min-height: 0; overflow: hidden; }
 .endv .mp-shell-main { justify-content: flex-end; }
 .side { background: var(--mp-bg); border-right: 1px solid var(--mp-line); }
@@ -55,7 +55,12 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; }
 .tabs-abs .mp-tab { color: var(--mp-ink-2); }
 .tabs-abs .mp-tab.on { color: var(--mp-accent); }
-/* the chat beside the page, over 1024 */
+.tabs-abs .mp-tab { font-size: 12px; line-height: 14px; }   /* no product text under 12 px (MA-300) */
+/* MA-300: an acting control is a button; this reset (no specificity) keeps it drawn exactly as the span was */
+:where(button.send4) { appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; text-transform: none; box-sizing: content-box; cursor: pointer; }
+.audit4 a.mp-link { position: relative; } .audit4 a.mp-link::after { content: ""; position: absolute; inset: -13px 0; }   /* 18 drawn, 44 to tap (MA-300) */
+.edfield:focus-visible, .comp4 .ph:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+/* the chat beside every screen from about 1133 px (MA-240, MA-300) */
 .chat4 { width: 380px; flex: none; display: flex; flex-direction: column; border-left: 1px solid var(--mp-line); background: var(--mp-surface); }
 .chat4-h { display: flex; align-items: center; gap: 10px; padding: 18px 20px 14px; border-bottom: 1px solid var(--mp-line); }
 .aim { width: 28px; height: 28px; border-radius: 50%; background: var(--mp-hero); display: grid; place-items: center; flex: none; }
@@ -129,7 +134,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .hline { fill: none; stroke: var(--mp-coral); stroke-width: 2.5; stroke-linejoin: round; } .harea { fill: var(--mp-hero-area); }
 .cline { fill: none; stroke: var(--mp-chart-line); stroke-width: 2.5; stroke-linejoin: round; } .carea { fill: var(--mp-chart-area); }
 .cdash { fill: none; stroke: var(--mp-ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
-.gy4 { position: absolute; left: 0; transform: translateY(-100%); margin-top: -3px; font: 500 11px/14px var(--mp-font); white-space: nowrap; }
+.gy4 { position: absolute; left: 0; transform: translateY(-100%); margin-top: -3px; font: 500 12px/14px var(--mp-font); white-space: nowrap; }   /* 12 px floor (MA-300) */
 .gy-h { color: var(--mp-hero-ink-2); } .gy-c { color: var(--mp-ink-2); }
 .gy4.mp-mask { min-width: 34px; color: transparent; }
 .ax-h { color: var(--mp-hero-ink-2); } .ax-c { color: var(--mp-ink-2); }
@@ -155,7 +160,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .colb > span { display: block; width: 100%; border-radius: 3px; }
 .colb.cplan > span { opacity: 0.5; }
 .colw.now .mp-cap { color: var(--mp-ink); font-weight: 700; }
-.colw .mp-cap { color: var(--mp-ink-2); white-space: nowrap; font-size: 11px; }
+.colw .mp-cap { color: var(--mp-ink-2); white-space: nowrap; font-size: 12px; }   /* 12 px floor (MA-300) */
 .filerow { display: flex; align-items: center; gap: 10px; padding: 0 0 0 10px; border-radius: 12px; background: var(--mp-surface-2); min-height: 56px; }
 .filerow .mp-icontile { background: var(--mp-surface); color: var(--mp-ink-2); }
 .tb4 { display: grid; align-items: stretch; }
@@ -206,11 +211,11 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div>
 <p class="dv-cap">{{ f.cap }}</p>
 <div class="fr4 {{ f.fcls }} mp mp-app {{ f.theme }} {{ f.endv }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
-<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="psbar"><span>{{ f.time }}</span><span class="fx ac gap4" aria-hidden="true"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_full</span></span></div></sc-if>
+<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="psbar" aria-hidden="true"><span class="ms" aria-hidden="true">lock</span><span>dashboard.mypaisapp.com</span></div></sc-if>
 <div class="mp-shell">
 <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#{{ bd.id }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
+<sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#{{ bd.id }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
 <div style="flex: 1"></div>
 <div class="mp-foot mp-ink2 side-ft">Arun · owner<br />dashboard.mypaisapp.com</div>
 </aside>
@@ -218,8 +223,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-pagepad">
 <sc-if value="{{ f.p.hasHead }}" hint-placeholder-val="{{ true }}">
 <header class="ph4">
-<div><sc-if value="{{ f.p.hasCrumb }}" hint-placeholder-val="{{ true }}"><a class="crumb" href="#{{ bd.id }}"><span class="ms ms-s">arrow_back_ios_new</span>{{ f.p.crumb }}</a></sc-if><div class="{{ f.p.tcls }} ttl">{{ f.p.title }}</div><sc-if value="{{ f.p.hasMeta }}" hint-placeholder-val="{{ true }}"><div class="mp-foot mp-ink2 mt4">{{ f.p.meta }}</div></sc-if></div>
-<div class="fx ac gap8"><sc-if value="{{ f.p.hasFiltBtn }}" hint-placeholder-val="{{ false }}"><button class="iconbtn mp-only-compact" type="button" aria-label="Filters"><span class="ms">tune</span></button></sc-if><button class="iconbtn" type="button" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.p.pressed }}"><span class="ms">{{ f.p.eyeI }}</span></button></div>
+<div><sc-if value="{{ f.p.hasCrumb }}" hint-placeholder-val="{{ true }}"><a class="crumb" href="#{{ bd.id }}"><span class="ms ms-s" aria-hidden="true">arrow_back_ios_new</span>{{ f.p.crumb }}</a></sc-if><div class="{{ f.p.tcls }} ttl">{{ f.p.title }}</div><sc-if value="{{ f.p.hasMeta }}" hint-placeholder-val="{{ true }}"><div class="mp-foot mp-ink2 mt4">{{ f.p.meta }}</div></sc-if></div>
+<div class="fx ac gap8"><sc-if value="{{ f.p.hasFiltBtn }}" hint-placeholder-val="{{ false }}"><button class="iconbtn mp-only-compact" type="button" aria-label="Filters"><span class="ms" aria-hidden="true">tune</span></button></sc-if><button class="iconbtn" type="button" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.p.pressed }}"><span class="ms" aria-hidden="true">{{ f.p.eyeI }}</span></button></div>
 </header>
 </sc-if>
 <sc-if value="{{ f.p.hasFilt }}" hint-placeholder-val="{{ false }}"><div class="filt4" role="group" aria-label="Filters"><sc-for list="{{ f.p.filters.items }}" as="fi" hint-placeholder-count="4"><button class="fb4 {{ fi.on }}" type="button"><span class="fv"><span class="mp-foot mp-ink2">{{ fi.k }}</span><span class="mp-sub mp-w6">{{ fi.v }}</span></span><span class="ms ms-s" aria-hidden="true">expand_more</span></button></sc-for><sc-if value="{{ f.p.filters.hasClear }}" hint-placeholder-val="{{ false }}"><button class="mp-btn mp-btn-plain mp-btn-small fclr" type="button">Clear filters</button></sc-if></div></sc-if>
@@ -266,13 +271,13 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-card cpad {{ k.cc }}">
 <sc-if value="{{ k.hasHead }}" hint-placeholder-val="{{ true }}"><div class="chead"><span class="mp-hl">{{ k.title }}</span><span class="mp-foot mp-ink2">{{ k.right }}</span></div></sc-if>
 <sc-for list="{{ k.parts }}" as="q" hint-placeholder-count="2">
-<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx col gap4"><sc-if value="{{ q.hasOver }}" hint-placeholder-val="{{ true }}"><span class="mp-over mp-ink2">{{ q.over }}</span></sc-if><div class="bigr"><span class="mp-num-l {{ q.edc }}"><span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></span><sc-if value="{{ q.ed }}" hint-placeholder-val="{{ false }}"><button class="edbtn" type="button" aria-label="Correct this figure"><span class="ms ms-s">edit</span></button></sc-if><span class="mp-sub mp-ink2"><span class="{{ q.b.c }}" role="{{ q.b.r }}" aria-label="{{ q.b.l }}">{{ q.b.v }}</span></span></div></div></sc-if>
-<sc-if value="{{ q.isEdit }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8"><span class="mp-over mp-ink2">{{ q.over }}</span><label class="mp-foot mp-ink2">{{ q.label }}</label><div class="edfield" role="textbox" aria-label="{{ q.label }}"><span>£</span><span>{{ q.val }}</span><span class="cur" aria-hidden="true"></span></div><div class="ba4"><span class="mp-ink2">Before</span><s>{{ q.before }}</s><span class="ms ms-s" aria-hidden="true">arrow_forward</span><span class="mp-ink2">After</span><span class="mp-w6">{{ q.after }}</span><span class="mp-chip chip-s mp-add">{{ q.delta }}</span></div><div class="btns4"><button class="mp-btn mp-btn-primary mp-btn-small" type="button"><span class="ms ms-s" aria-hidden="true">check</span>Save</button><button class="mp-btn mp-btn-plain mp-btn-small" type="button">Cancel</button></div><p class="mp-foot mp-ink2 pp">{{ q.hint }}</p></div></sc-if>
+<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx col gap4"><sc-if value="{{ q.hasOver }}" hint-placeholder-val="{{ true }}"><span class="mp-over mp-ink2">{{ q.over }}</span></sc-if><div class="bigr"><span class="mp-num-l {{ q.edc }}"><span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></span><sc-if value="{{ q.ed }}" hint-placeholder-val="{{ false }}"><button class="edbtn" type="button" aria-label="Correct this figure"><span class="ms ms-s" aria-hidden="true">edit</span></button></sc-if><span class="mp-sub mp-ink2"><span class="{{ q.b.c }}" role="{{ q.b.r }}" aria-label="{{ q.b.l }}">{{ q.b.v }}</span></span></div></div></sc-if>
+<sc-if value="{{ q.isEdit }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8"><span class="mp-over mp-ink2">{{ q.over }}</span><label class="mp-foot mp-ink2">{{ q.label }}</label><div class="edfield" role="textbox" tabindex="0" aria-label="{{ q.label }}"><span>£</span><span>{{ q.val }}</span><span class="cur" aria-hidden="true"></span></div><div class="ba4"><span class="mp-ink2">Before</span><s>{{ q.before }}</s><span class="ms ms-s" aria-hidden="true">arrow_forward</span><span class="mp-ink2">After</span><span class="mp-w6">{{ q.after }}</span><span class="mp-chip chip-s mp-add">{{ q.delta }}</span></div><div class="btns4"><button class="mp-btn mp-btn-primary mp-btn-small" type="button"><span class="ms ms-s" aria-hidden="true">check</span>Save</button><button class="mp-btn mp-btn-plain mp-btn-small" type="button">Cancel</button></div><p class="mp-foot mp-ink2 pp">{{ q.hint }}</p></div></sc-if>
 <sc-if value="{{ q.isAudit }}" hint-placeholder-val="{{ false }}"><div class="audit4"><span class="ms ms-s ms-fill" data-mo="saved" aria-hidden="true">{{ q.icon }}</span><div class="fx col gap4"><span class="mp-foot">{{ q.t }}</span><a class="mp-foot mp-w6 mp-link" href="#{{ bd.id }}">{{ q.link }}</a></div></div></sc-if>
 <sc-if value="{{ q.isP }}" hint-placeholder-val="{{ false }}"><p class="mp-sub pp"><span class="mp-w6">{{ q.b }}</span> {{ q.t }}</p></sc-if>
 <sc-if value="{{ q.isFoot }}" hint-placeholder-val="{{ false }}"><div class="fx gap8 mp-foot mp-ink2"><sc-if value="{{ q.hasI }}" hint-placeholder-val="{{ true }}"><span class="ms ms-s" aria-hidden="true">{{ q.i }}</span></sc-if><p class="pp">{{ q.t }}</p></div></sc-if>
 <sc-if value="{{ q.isChips }}" hint-placeholder-val="{{ false }}"><div class="chipr"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><span class="mp-chip {{ it.c }}"><span class="ms" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</span></sc-for></div></sc-if>
-<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><span class="mp-foot mp-ink2">{{ it.k }}</span><span class="mp-hl {{ it.c }}"><span class="{{ it.edc }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><sc-if value="{{ it.ed }}" hint-placeholder-val="{{ false }}"><button class="edbtn edbtn-s" type="button" aria-label="Correct {{ it.k }}"><span class="ms ms-s">edit</span></button></sc-if></span><span class="mp-foot mp-ink2">{{ it.s }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><span class="mp-foot mp-ink2">{{ it.k }}</span><span class="mp-hl {{ it.c }}"><span class="{{ it.edc }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><sc-if value="{{ it.ed }}" hint-placeholder-val="{{ false }}"><button class="edbtn edbtn-s" type="button" aria-label="Correct {{ it.k }}"><span class="ms ms-s" aria-hidden="true">edit</span></button></sc-if></span><span class="mp-foot mp-ink2">{{ it.s }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="li4"><sc-if value="{{ it.hasI }}" hint-placeholder-val="{{ true }}"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span></sc-if><div class="rt"><span class="mp-sub">{{ it.name }}</span><span class="mp-foot mp-ink2">{{ it.sub }}</span><sc-if value="{{ it.hasX }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-w6 {{ it.xc }}"><span class="{{ it.x.c }}" role="{{ it.x.r }}" aria-label="{{ it.x.l }}">{{ it.x.v }}</span></span></sc-if></div><div class="rv"><sc-if value="{{ it.hasChip }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s {{ it.chipC }}">{{ it.chip }}</span></sc-if><span class="mp-sub mp-w6 {{ it.ac }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><span class="mp-foot mp-ink2"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></span></div></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isChart }}" hint-placeholder-val="{{ false }}">
 <div class="chart4 {{ q.ch.cv }}">
@@ -307,7 +312,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="msgs4">
 <sc-for list="{{ f.chat }}" as="m" hint-placeholder-count="3">
 <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><span class="day4">{{ m.t }}</span></sc-if>
-<sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me4w"><div class="me4">{{ m.t }}</div><span class="tm4">{{ m.time }}</span></div></sc-if>
+<sc-if value="{{ m.isMe }}" hint-placeholder-val="{{ false }}"><div class="me4w"><div class="me4">{{ m.t }}<span class="{{ m.a.c }}" role="{{ m.a.r }}" aria-label="{{ m.a.l }}">{{ m.a.v }}</span>{{ m.t2 }}</div><span class="tm4">{{ m.time }}</span></div></sc-if>
 <sc-if value="{{ m.isAi }}" hint-placeholder-val="{{ false }}"><div class="ai4"><span class="aim" aria-hidden="true"><i></i></span><div class="fx col gap4"><span>{{ m.t }}</span><span class="tm4">{{ m.time }}</span></div></div></sc-if>
 <sc-if value="{{ m.isCard }}" hint-placeholder-val="{{ false }}"><div class="cc4"><span class="mp-over mp-ink2">{{ m.card.over }}</span><span class="mp-hl">{{ m.card.title }}</span><sc-for list="{{ m.card.rows }}" as="cr" hint-placeholder-count="2"><div class="cc4-r"><span>{{ cr.k }}</span><span class="{{ cr.v.c }}" role="{{ cr.v.r }}" aria-label="{{ cr.v.l }}">{{ cr.v.v }}</span></div></sc-for><sc-if value="{{ m.card.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="btns4"><sc-for list="{{ m.card.btns }}" as="cb" hint-placeholder-count="2"><button class="mp-btn mp-btn-small {{ cb.c }}" type="button">{{ cb.t }}</button></sc-for></div></sc-if><sc-if value="{{ m.card.hasDone }}" hint-placeholder-val="{{ true }}"><span class="done4"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.card.done }}</span></sc-if></div></sc-if>
 <sc-if value="{{ m.isChips }}" hint-placeholder-val="{{ false }}"><div class="chips4"><sc-for list="{{ m.chips }}" as="ch" hint-placeholder-count="2"><button class="chip4" type="button"><span class="ms ms-s" aria-hidden="true">{{ ch.i }}</span>{{ ch.t }}</button></sc-for></div></sc-if>
@@ -315,15 +320,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </div>
 <span class="ctx4"><span class="ms ms-s" aria-hidden="true">visibility</span>{{ f.ctx }}</span>
 <div class="qchips4" role="group" aria-label="Shortcuts"><sc-for list="{{ f.qchips }}" as="qc" hint-placeholder-count="4"><button class="qchip4" type="button"><span class="ms ms-s" aria-hidden="true">{{ qc.i }}</span>{{ qc.t }}</button></sc-for></div>
-<div class="comp4"><span class="ph">Ask, or tell MyPaisa something new</span><span class="send4" aria-label="Send"><span class="ms">arrow_upward</span></span></div>
+<div class="comp4"><span class="ph" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask, or tell MyPaisa something new</span><button type="button" class="send4" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
 </aside>
 </sc-if>
 </div>
-<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#{{ bd.id }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav><span class="hind" aria-hidden="true"></span></sc-if>
+<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><nav class="mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#{{ bd.id }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden="true">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav></sc-if>
 <sc-if value="{{ f.hasSheet }}" hint-placeholder-val="{{ false }}">
 <div class="mp-scrim zs"></div>
-<div class="mp-sheet sheet4" role="dialog" aria-label="{{ f.sheet.title }}">
-<div class="mp-grabber"></div>
+<div class="mp-sheet sheet4" role="dialog" aria-modal="true" aria-label="{{ f.sheet.title }}">
 <div class="fx jb ac"><span class="mp-t3">{{ f.sheet.title }}</span><button class="mp-btn mp-btn-plain mp-btn-small" type="button">Clear</button></div>
 <sc-for list="{{ f.sheet.groups }}" as="sg" hint-placeholder-count="4"><div class="fx col gap8"><span class="mp-over mp-ink2">{{ sg.l }}</span><div class="fpills" role="group" aria-label="{{ sg.l }}"><sc-for list="{{ sg.segs }}" as="s" hint-placeholder-count="3"><button class="fpill {{ s.on }}" type="button" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div></div></sc-for>
 <button class="mp-btn mp-btn-primary" type="button">{{ f.sheet.btn }}</button>
@@ -359,7 +363,8 @@ const U = (y, m, d) => Date.UTC(y, m - 1, d);
 const dd = (t, yr) => { const d = new Date(t); return DW[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MN[d.getUTCMonth()] + (yr ? ' ' + d.getUTCFullYear() : ''); };
 const mon = (y, m, k) => { const d = new Date(Date.UTC(y, m - 1 + k, 1)); return MN[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); };
 /* ---------- privacy: an amount is a {v, c, r, l} the templates draw; masked, its digits become a pill ---------- */
-const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: s, c: '', r: null, l: null });
+const HID = (s) => String(s).replace(/[0-9£₹$€]/g, '\u2007').replace(/[,.]/g, '\u2008'); // MA-300: a mask keeps the figure's width, never its digits
+const V = (s, priv) => (priv ? { v: HID(s), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: s, c: '', r: null, l: null });
 const T = (s) => V(s, false);
 const E = T('');
 const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
@@ -404,10 +409,10 @@ if (s.area) areas.push({ d: d + ' L' + pts[pts.length - 1][0] + ',' + (H - bot) 
 const hero = !!o.hero;
 return {
 cv: o.cv || 'ch-m', aria: o.aria, lines: lines, areas: areas, gc: hero ? 'gl-h' : 'gl-c',
-grid: (o.grid || []).map((g) => ({ y: Y(g[0]), top: pcs((Y(g[0]) / H) * 100), l: o.priv ? g[1].replace(/[0-9]/g, '0') : g[1], m: (hero ? 'gy-h ' : 'gy-c ') + (o.priv ? 'mp-mask' : '') })),
+grid: (o.grid || []).map((g) => ({ y: Y(g[0]), top: pcs((Y(g[0]) / H) * 100), l: o.priv ? HID(g[1]) : g[1], m: (hero ? 'gy-h ' : 'gy-c ') + (o.priv ? 'mp-mask' : '') })),
 xs: (o.xs || []).map((x) => ({ left: pcs(X(x[0]) / 10), l: x[1], c: x[2] || (X(x[0]) < 40 ? 'ax-start' : '') })), hasAx: !!(o.xs && o.xs.length), ax: hero ? 'ax-h' : 'ax-c',
 dots: (o.dots || []).map((d) => ({ left: pcs(X(d[0]) / 10), top: pcs((Y(d[1]) / H) * 100), c: d[2] || (hero ? 'cd4 cd-h' : 'cd4') })),
-lbls: (o.lbls || []).map((d) => ({ left: pcs(X(d[0]) / 10), top: pcs((Y(d[1]) / H) * 100), t: o.priv && d[4] ? d[2].replace(/[0-9]/g, '0') : d[2], c: (hero ? 'cl4 cl-h ' : 'cl4 cl-c ') + (d[3] || '') + (o.priv && d[4] ? ' mp-mask' : '') })),
+lbls: (o.lbls || []).map((d) => ({ left: pcs(X(d[0]) / 10), top: pcs((Y(d[1]) / H) * 100), t: o.priv && d[4] ? HID(d[2]) : d[2], c: (hero ? 'cl4 cl-h ' : 'cl4 cl-c ') + (d[3] || '') + (o.priv && d[4] ? ' mp-mask' : '') })),
 keys: o.keys || [], hasKeys: !!(o.keys && o.keys.length), kc: hero ? 'mp-hero-2' : 'mp-ink2'
 };
 };
@@ -612,7 +617,7 @@ const valPts = [[0, 330000], [4.87, 415000]].concat(saved ? [[5.35, 428000]] : [
 const valChart = chartP({ cv: o.wide ? 'ch-m' : 'ch-s', n: 5.4, lo: 300000, hi: 450000, series: [{ pts: valPts.concat(saved ? [] : [[5.35, 415000]]), c: 'cline', area: 'carea', step: true }],
 grid: [[400000, '£400k']], xs: [[0, 'Jun 2021'], [2.54, '2024'], [5.35, 'Oct 2026', 'ax-end']], priv: priv,
 dots: valPts.map((p) => [p[0], p[1]]), lbls: [[0, 330000, 'Bought ' + gbp(330000), 'ar', 1]].concat(saved ? [[5.35, 428000, gbp(428000), 'al', 1]] : [[4.87, 415000, gbp(415000), 'al', 1]]),
-keys: [{ c: 'k-line', t: 'Value as recorded, a step at each valuation' }], aria: 'Home, Reading: bought for £330,000 in June 2021, valued at £415,000 in April 2026' + (saved ? ', corrected to £428,000 on 26 October 2026' : '') });
+keys: [{ c: 'k-line', t: 'Value as recorded, a step at each valuation' }], aria: priv ? 'Home, Reading: its value as recorded since June 2021; amounts hidden in privacy mode' : 'Home, Reading: bought for £330,000 in June 2021, valued at £415,000 in April 2026' + (saved ? ', corrected to £428,000 on 26 October 2026' : '') });
 const head = st === 'edit'
 ? [prt('Edit', { over: 'Property · UK · Arun and Asha, half each', label: 'Value of Home, Reading', val: '428,000', before: gbp(415000), after: gbp(428000), delta: '▲ £13,000', hint: 'Save writes a correction with its audit row. Nothing else on the record changes.' })]
 : [big(V(gbp(v), priv), T('your estimate, Mon 26 Oct'), { over: 'Property · UK · Arun and Asha, half each', hasOver: true, ed: true, edc: 'edf' }), prt('Audit', { icon: 'task_alt', saved: true, t: priv ? 'Corrected in place by Arun, ' + HT + ', as his estimate. Written as a correction with its audit row (via inline edit); privacy mode hides the before and after.' : 'Corrected in place by Arun, ' + HT + ': £415,000 → £428,000, his estimate. Written as a correction with its audit row (via inline edit). Net worth is now £457,951, the engine’s figure.', link: 'Open in Audit' })];
@@ -765,7 +770,7 @@ return { title: 'Car loan · Close Brothers', meta: 'UK · Arun’s · autopay o
 };
 
 /* ---------- the chat beside the page (web, desktop) ---------- */
-const CM = (o) => Object.assign({ isDay: false, isMe: false, isAi: false, isCard: false, isChips: false, t: '', time: '' }, o);
+const CM = (o) => Object.assign({ isDay: false, isMe: false, isAi: false, isCard: false, isChips: false, t: '', a: E, t2: '', time: '' }, o);
 const ccard = (o) => Object.assign({ over: '', title: '', rows: [], btns: [], hasBtns: false, done: '', hasDone: false }, o);
 const CV = (s, priv) => V(s, priv);
 const CHAT = (which, priv) => {
@@ -775,12 +780,12 @@ CM({ isChips: true, chips: [{ i: 'upload_file', t: 'Send the tradebook' }, { i: 
 if (which === 'est') return [CM({ isDay: true, t: 'Today' }), CM({ isAi: true, t: 'Infosys has no buy history here, so the engine can’t work out its XIRR. Send your tradebook, or give an estimate.', time: '10:11' }),
 CM({ isMe: true, t: 'Use 9.0%, the long-run figure for Indian shares', time: '10:12' }),
 CM({ isCard: true, card: ccard({ over: 'Estimate · Arun', title: 'Infosys: expected return', rows: [{ k: 'Return', v: T('9.0% a year') }, { k: 'Marked', v: T('your estimate') }, { k: 'Until', v: T('past buys arrive') }], done: 'Confirmed 10:12 · audit row written', hasDone: true }) })];
-const reg = [CM({ isMe: true, t: 'I’ve put £5,000 into a new Monzo instant access savings account', time: '09:40' }),
+const reg = [CM({ isMe: true, t: 'I’ve put ', a: M('£5,000'), t2: ' into a new Monzo instant access savings account', time: '09:40' }),
 CM({ isCard: true, card: ccard({ over: 'New record · Arun', title: 'Instant access savings · Monzo', rows: [{ k: 'Value', v: M('£5,000') }, { k: 'Liquidity', v: T('liquid') }], done: 'Confirmed 09:41 · audit row written', hasDone: true }) }),
 CM({ isAi: true, t: priv ? 'Added. Net worth has moved; privacy mode hides it.' : 'Added. Net worth is now £444,951, the engine’s figure.', time: '09:41' })];
 if (which === 'home') return [CM({ isDay: true, t: 'Today' }), CM({ isCard: true, card: ccard({ over: 'Check-in · 09:00', title: 'Valuation due: Home, Reading', rows: [{ k: 'Recorded', v: M('£415,000') }, { k: 'Valued', v: T('Thu 30 Apr') }], btns: [{ t: 'Still right', c: 'mp-btn-primary' }, { t: 'Change it', c: 'mp-btn-tinted' }], hasBtns: true }) }), CM({ isAi: true, t: 'Or correct the figure on the page itself: tap it and type.', time: '09:00' })].concat(reg);
 if (which === 'homeDone') return [CM({ isDay: true, t: 'Today' }), CM({ isCard: true, card: ccard({ over: 'Check-in · 09:00', title: 'Valuation due: Home, Reading', rows: [{ k: 'Recorded', v: M('£415,000') }, { k: 'Now', v: M('£428,000') }], done: 'Answered at 09:52 by your correction on the page', hasDone: true }) })].concat(reg, [CM({ isAi: true, t: priv ? 'Saved as a correction, your estimate. The next valuation check-in is in six months.' : 'Saved as a correction, your estimate. Net worth is now £457,951, the engine’s figure. The next valuation check-in is in six months.', time: '09:52' })]);
-return [CM({ isDay: true, t: 'Today' }), CM({ isMe: true, t: 'I’ve put £5,000 into a new Monzo instant access savings account', time: '09:40' }),
+return [CM({ isDay: true, t: 'Today' }), CM({ isMe: true, t: 'I’ve put ', a: M('£5,000'), t2: ' into a new Monzo instant access savings account', time: '09:40' }),
 CM({ isCard: true, card: ccard({ over: 'New record · Arun', title: 'Instant access savings · Monzo', rows: [{ k: 'Value', v: M('£5,000') }, { k: 'Liquidity', v: T('liquid') }], done: 'Confirmed 09:41 · audit row written', hasDone: true }) }),
 CM({ isAi: true, t: priv ? 'Added. Net worth has moved; privacy mode hides it.' : 'Added. Net worth is now £444,951, the engine’s figure.', time: '09:41' })];
 };
@@ -813,7 +818,7 @@ B({ id: 'w-as', name: 'Browser · Assets', arch: A1, intro: 'Everything the hous
 ['Each record in its own currency;', 'a rupee record shows pounds beside it at £1 = ₹112.50 (ECB, Fri 23 Oct).'],
 ['Liquid, notice or locked on every row,', 'in words with an icon, never colour alone. The household has no notice account, so Notice reads £0.'],
 ['The Monzo savings registered in the chat at 09:41', 'is in the list and in the totals: £691,694 owned, £37,596 of it liquid. The six group totals add to £691,694.'],
-['The chat sits beside the page over about 1024 px,', 'in whichever shell option is picked; it knows which page is open, and its composer carries the four shortcuts: Net worth, What’s due, Add anything, Send a statement.'],
+['The chat sits beside every screen from about 1133 px,', 'in whichever shell option is picked; it knows which page is open, and its composer carries the four shortcuts: Net worth, What’s due, Add anything, Send a statement.'],
 ['The Member filter’s choices are Arun, Asha and Joint,', 'the same owner chips the chat uses, with Everyone for the household.']]),
 B({ id: 'w-as-p', name: 'Browser · Assets, phone', arch: A1, intro: 'The same page at the phone-web door (390): one column, the chat a tab, Assets pushed from Home. As it opens, then the filter sheet with India and 1 to 5 years chosen.', keys: ['MA-217'] },
 [].concat(both(phone, 'Browser · Assets, phone', () => PG.assets({}), { nav: 'as', big: true, crumb: 'Home' }), both(phone, 'Browser · Assets, phone · filter sheet', () => PG.assets({}), { nav: 'as', big: true, crumb: 'Home', sheet: true })),
