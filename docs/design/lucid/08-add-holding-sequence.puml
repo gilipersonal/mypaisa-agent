@@ -1,6 +1,6 @@
 @startuml
-title Adding a record through the chat, and correcting a figure in place (figures illustrative)
-actor Member
+title An admin adds a record through the chat, and corrects a figure in place (figures illustrative)
+actor Admin
 participant "iOS app (React Native shell, SwiftUI core)" as app
 participant "web app (SvelteKit PWA)" as web
 participant "S3 documents (kept for good)" as s3
@@ -14,7 +14,7 @@ database "DynamoDB registry" as ddb
 participant "SQS outbox.fifo + sender λ" as out
 participant "stream log + stream λ (SSE on the api host)" as stream
 autonumber
-Member -> app : attaches factsheet.pdf in the chat
+Admin -> app : attaches factsheet.pdf in the chat
 app -> api : asks for an upload link
 api --> app : presigned PUT URL
 app -> s3 : PUT factsheet.pdf
@@ -38,7 +38,7 @@ worker -> out : what I read, unsure fields in amber; which account is it in? [IS
 deactivate worker
 out -> stream : appended to the stream log
 stream --> app : SSE: the card and its chips
-Member -> app : taps ISA · Monzo
+Admin -> app : taps ISA · Monzo
 app -> api : POST /v1/chat/actions (the chip, the flow id)
 api -> qin : queue the tap
 api --> app : acknowledged at once
@@ -49,7 +49,7 @@ agent -> out : ask_user: "How many units do you hold? Type them, or send a scree
 deactivate agent
 out -> stream : appended to the stream log
 stream --> app : SSE: the question
-Member -> app : types "1,234.5 units"
+Admin -> app : types "1,234.5 units"
 app -> api : POST /v1/chat/messages
 api -> qin : queue
 qin -> agent : the answer, in order
@@ -59,7 +59,7 @@ agent -> out : Confirm card: Balanced, in ISA · Monzo, Arun's, £22,925, the fi
 deactivate agent
 out -> stream : appended to the stream log
 stream --> app : SSE: the Confirm card
-Member -> app : taps Confirm
+Admin -> app : taps Confirm
 app -> api : POST /v1/chat/actions (Confirm, the draft's hash)
 api -> qin : queue the tap
 api --> app : acknowledged at once
@@ -72,12 +72,12 @@ out -> stream : appended to the stream log
 stream --> app : SSE: the confirmation
 stream --> web : SSE: records.changed, the laptop's dashboard moves
 group Correction in place
-Member -> web : taps Home, Reading's value, types 428,000
-web --> Member : £415,000 → £428,000 [Save]
-Member -> web : Save
+Admin -> web : taps Home, Reading's value, types 428,000
+web --> Admin : £415,000 → £428,000 [Save]
+Admin -> web : Save
 web -> api : PATCH /v1/records/{id} (value 428,000; the figure shown, 415,000), the session cookie
 activate api
-api -> ddb : write service: value is editable on the property kind, a number in range; has the record moved since 415,000?
+api -> ddb : write service: the caller is an admin; value is editable on the property kind, a number in range; has the record moved since 415,000?
 alt the record moved since the screen showed it
 api --> web : refused, nothing written; the new figure is shown
 else unchanged since the screen showed it
@@ -90,6 +90,6 @@ end
 deactivate api
 end
 note over agent, out : The Document and audit rows of a file are written when it arrives, before the docs job reads it, and stay whatever happens next (Cancel, an expired PendingAction, a failed read); the file opens from the Audit screen. A draft writes nothing: only Confirm, the tap on a check-in or a Save in place commits.
-note over api, ddb : One write service, the same code behind Confirm in the agent and the PATCH in the api: it checks the change against the kind spec and writes the event with its audit row in one transaction.
+note over api, ddb : Only an admin writes (MA-307, MA-308): a member who is not an admin is offered nothing to Confirm or Save. One write service, the same code behind Confirm in the agent and the PATCH in the api: it checks the change against the kind spec and writes the event with its audit row in one transaction.
 note over out, stream : A device with no fresh Presence gets Apple push or Web Push instead; on opening, a door resumes from its last event (Last-Event-ID).
 @enduml
