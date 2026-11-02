@@ -16,7 +16,7 @@
 </div>
 </section>
 <h2>🖼️ See it</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c59523e6-c007-43f2-b85c-9147a3929945" data-collection="contentId-1442042" data-alt="rec-a-registry--v4-state.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="8db010c6-af37-416d-b0b5-32cbdb825f3c" data-collection="contentId-1442042" data-alt="rec-a-registry--v4-state.png"></div>
 <figcaption>One table for state, one lake for the record, one store for secrets (Architecture v4)</figcaption></figure>
 <p><strong>📖 Contents</strong></p>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;3&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
@@ -70,7 +70,7 @@
 <p>Every item carries <code>schema_version</code>; a migration is a Lambda that rewrites items of an older version, run once from a script, never by hand. The household&#x27;s records need none: a kind&#x27;s new version is data, and its views are rebuilt from the events (§4.8).</p>
 <h3>4.2 Adding a holding, from the chat</h3>
 <p>The file goes straight from the phone to the documents bucket through a presigned upload, and every hop after that goes through a queue (§19): the message waits in the member&#x27;s lane, the document read is a job on the work queue run by the worker, and every reply goes out through the outbox to the member&#x27;s stream at every open door (§19.5), or by push when none is open. The sequence in Lucid: <a href="https://lucid.app/lucidchart/b50d49fd-c941-44a0-b623-7d3e99b57fd8/edit">open</a>. It adds a fund from its factsheet as a record (<code>draft_record</code>, <code>ask_user</code> and the Confirm card, §4.8), then corrects a figure in place at the other door; both go through the one write service, each change with its audit row in one transaction (§4.10).</p>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="520a4421-a663-467f-b5c3-da1251f4cbb8" data-collection="contentId-1442042" data-alt="rec-a-registry--lucid-08-add-holding-sequence.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="f721e8b5-0ee0-4210-ac45-e426683ac4f3" data-collection="contentId-1442042" data-alt="rec-a-registry--lucid-08-add-holding-sequence.png"></div>
 <figcaption>Adding a record through the chat, Lucid sequence</figcaption></figure>
 <p>Any field Claude is unsure of is shown in amber and asked about. A holding is never saved without the Confirm tap. The same path handles an ETF (ISIN and ticker from the factsheet), a share (ticker and exchange), or cash, and since v4 any kind of record, from a sentence, a screenshot or a statement (§4.8).</p>
 <h3>4.3 Kind profiles</h3>

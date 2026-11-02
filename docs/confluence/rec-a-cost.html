@@ -16,7 +16,7 @@
 </div>
 </section>
 <h2>🖼️ See it</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="b1106225-80ab-4de5-93dc-00b552c528d5" data-collection="contentId-1442062" data-alt="rec-a-cost--v4-models.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="848a413b-4deb-4c79-a5f4-aa9fa63c0602" data-collection="contentId-1442062" data-alt="rec-a-cost--v4-models.png"></div>
 <figcaption>Two Claude models, each where it earns its cost, and the spend ladder (Architecture v4)</figcaption></figure>
 <p><strong>📖 Contents</strong></p>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;3&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
@@ -79,7 +79,7 @@
 <p><strong>The backstop is the Console.</strong> Each workspace&#x27;s spend limit in the Claude Console is set by hand to its hard limit ($160 for prod and $40 for dev to start) and stops the key outright if the meter is ever wrong. The Admin center moves the ceiling anywhere from $10 to that hard limit; to go higher, raise the Console limit first and then type the new hard limit into the Admin center. The app holds no Console admin key, so it cannot change the Console itself.</p>
 <p><strong>One credit, two environments.</strong> The plan&#x27;s $200 credit pays for both workspaces, and the two workspace limits ($160 and $40) add up to it, so neither environment can eat the other&#x27;s share.</p>
 <h3>14.2 Caps and alerts, set by an admin in the Admin center (MA-137)</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="bbc0b4ad-d32d-4c76-ac67-f30bd0717534" data-collection="contentId-1442062" data-alt="rec-a-cost--lucid-07-agents-caps.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="da9a0f3c-fb49-4006-afc2-7e2deed0cf20" data-collection="contentId-1442062" data-alt="rec-a-cost--lucid-07-agents-caps.png"></div>
 <figcaption>The agent team, settings, caps and alerts, Lucid page 7</figcaption></figure>
 <p>Page 7: the two caps, the meters, the alert router and where each alert goes; the agent team and the settings service of §18 sit above them. <a href="https://lucid.app/lucidchart/3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4/edit">Open it in Lucid</a>. Every threshold below is a setting an admin changes in the Admin center&#x27;s Spend and Alerts pages (and, from phase 13, from an admin&#x27;s chat, §18.3), behind the second check, each change an audit row and a message in the admins&#x27; chat.</p>
 <p><strong>Claude.</strong> The ceiling per environment, the ladder&#x27;s steps (any ascending list; 70%, 85%, 95% and 100% by default), what each step does (§14.1), the member share, the daily guard, the calls per run, each agent&#x27;s share (§18.6) and the eval caps (§21.7, on the Evals page). Hard stops behind them: the Console workspace limits, then the credit itself.</p>
