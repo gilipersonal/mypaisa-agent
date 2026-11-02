@@ -20,7 +20,8 @@ after fixing a round, report it and ask before the next.
 
 As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
 
-- **Gates:** `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`
+- **Gates:** the `plan-sync` gate,
+  `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`
   (locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time, about 9 s), the story's
   other gates in `.claude/jira-flow.json`, and
   `python3 scripts/review_regress.py MA-<n>`. No gate runs on the boards
@@ -28,7 +29,11 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
   Lets stop that. I need this checks as QA when I ask, but on actual code
   implemented"). `board_fit.js` with its drawn-size diff, `a11y_live.js`,
   `prototype_smoke.js`, `contrast_check.py`, plan_sync's board-content readers
-  and the generators' `--check` are gone. Arun judges a design round by eye.
+  and the generators' `--check` are gone; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303).
+  Arun judges a design round by eye. The same checks come back as QA on the
+  built code when Arun asks: MA-304 for the web app (Playwright, axe and
+  Argos, with the 25% contrast floors and the 320 to 1920 width sweep; it
+  depends on MA-194), and the iOS app's after MA-165, with no story yet.
 - **The runner's exits.** `review_regress.py` skips a ledger entry marked
   `retired` and counts it; every command has a timeout, and its process group
   is killed when it runs over; a FAIL shows the tail of its output; identical
@@ -48,7 +53,7 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
   since the previous round, `git diff <previous reviewed_sha>..HEAD`, and their
   direct joins, never the whole PR again. Five rounds at most, unless Arun
   asks for more (ship-autopilot's round-6 question); the range of each is
-  recorded in `state.json`.
+  recorded in `state.json` as the round's `range`.
 - **The ledger** is per story: `review/MA-<n>/fixed.json` (each fixed blocking
   finding, and any owner decision the review must keep, with a check that tests
   the behaviour, not the code's text; a story with no ledger yet has nothing to
@@ -57,15 +62,26 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
   checks; a `manual` check is one the exit-3 verifier looks at. A check is
   never deleted from the ledger; the owner retires it (lesson 41).
 - **The state file**, `review/MA-<n>/state.json`, holds for each round:
-  `round`, `reviewed_sha` and the range it covered; `review_approval`, Arun's
-  words that allowed the round (and any round past five); `gate_results`,
+  `round`, `reviewed_sha` and `range`, the `git diff` range it covered;
+  `review_approval`, Arun's words that allowed the round (and any round past
+  five); `gate_results`,
   each gate's command and result; `deferred_gates`, any gate not run and why;
   `findings[]`, each with `id` (`R<round>-<lane letter><n>`, as `R2-a3`),
   `severity` (P0 to P3), `blocking` (true or false), `lane`, `anchor`
   (`file:line`), `evidence` and `status` (open, fixed, wontfix, or deferred
   with its issue key); and `next_round`, what the next round covers.
   `python3 scripts/review_regress.py --state MA-<n>` validates it, and a round
-  does not start on a state file it refuses.
+  does not start on a state file it refuses. It may run before round 1: a
+  story with no state file has had no rounds yet, and that passes. The
+  per-round fields (`range`, `review_approval`, `gate_results`,
+  `deferred_gates`, `findings`, `next_round`) are type-checked whenever
+  present, and required on every round from MA-303's own rounds on; older
+  stories' rounds may lack them.
+- **Ledger ids.** An entry in `fixed.json` for a fixed finding has the id
+  `r<round>-<lane letter><n>` (as `r1-d2`), matched in any case, so `R1-d2`
+  names the same entry; round 0 holds fixes made before round 1, and an owner
+  decision carries no round (`o1`). Every round a ledger id names must be in
+  the state file's history.
 
 ## The reviewer brief
 
@@ -82,11 +98,13 @@ findings at the same `file:line` into one id, naming both lanes.
 Added the day each was learned; reviewers check every item. Each keeps its
 number, so a reference to it holds wherever it now sits.
 
-1. **A board is checked against its story's acceptance, line by line.** Every
-   screen or state the acceptance needs is drawn on a listed board or named in
-   the row's `undrawn` list, including the messages a change sends and the
-   failure outcomes (PR #32, rounds 2 to 8: MA-35, MA-39, MA-80, MA-116,
-   MA-130, MA-137, MA-145).
+1. **Every screen or state a story's acceptance needs is on a board its
+   trace row lists, or named in the row's `undrawn` list,** including the
+   messages a change sends and the failure outcomes (PR #32, rounds 2 to 8:
+   MA-35, MA-39, MA-80, MA-116, MA-130, MA-137, MA-145). This is the record
+   half of lesson 1, checked on the trace row and the board names; the half
+   that judged what a board draws against the acceptance is under the
+   design-board heading below (MA-303).
 
 2. **A wording change is searched across line breaks and in every page** that
    repeats the docs, the explainer pages included (PR #32 round 8: "an
@@ -128,15 +146,7 @@ number, so a reference to it holds wherever it now sits.
    rounds 1 and 2: 1a's buttons left on the Journey and Market pages; boards 4
    and 5 still "Planned" and pointing into 1a).
 
-9. **Every change drawn on a board shows its card, Confirm and the audit row,
-   with the second check where ARCHITECTURE asks for one, cancelling included, and no state is drawn that the
-   docs make impossible** (PR #35 round 1: "Leave it out saves the rest" with
-   no Confirm; an invite cancelled at once; "already linked" on a page nobody
-   is signed in to). A board fix not made in the same change goes into
-   each affected story's `undrawn` list, naming the issue that carries it
-   (MA-160).
-
-(Lessons 10 and 11: under the design-board heading below.)
+(Lessons 9 to 11: under the design-board heading below.)
 
 12. **A gate fails closed, and its selftest proves it bites:** a file it cannot
     find, a block or selector it cannot parse, or a value in a form it does not
@@ -194,7 +204,12 @@ number, so a reference to it holds wherever it now sits.
     next element and lost thirteen dates; the stray check passed a second
     `.t-dark`; motion.js moved two browser labels the board never marked).
 
-(Lesson 21: under the design-board heading below.)
+21. **A fix to one story is carried to every story built from the same
+    boards the same round,** in each one's trace row and Jira story (MA-161
+    round 3: the web Admin center's old check listed on four of ten
+    stories). This is the story and trace half of lesson 21; the half that
+    carried a fix across boards and frames is under the design-board heading
+    below (MA-303).
 
 22. **A rewritten check keeps every refusal the old one made:** before a
     check is narrowed or rebuilt, its old cases are run against the new code
@@ -261,11 +276,50 @@ number, so a reference to it holds wherever it now sits.
     deleted design checks are retired this way (Arun, 2 Nov 2026: "All the
     6 checks currently run on docs/design. Lets stop that.").
 
+42. **A gate that reads the branch must work on CI's checkout:** a pull
+    request is a detached merge commit, so the key comes from
+    `GITHUB_HEAD_REF` and a missing key fails closed (MA-303 round 1:
+    pr-files could never fail in CI).
+
+43. **An incremental sync moves its mark only for a read that answers the
+    query it saved; a narrower read records only its own keys** (MA-303
+    round 1: one story's read skipped two weeks of Jira).
+
+44. **A receipt is required once the publish path writes one:** a page
+    published under receipts with no read-back fails the check, only older
+    pages are notes (MA-303 round 1).
+
+45. **A retirement takes only the part of a check that ran a retired gate:**
+    a check whose records half still guards a rule is narrowed, not retired
+    (MA-303 round 1: the width-rule phrase lost its only guard).
+
+46. **An owner decision that stops a check is carried to every record that
+    runs or promises it, Jira descriptions and trace notes included, in the
+    same change** (MA-303 round 1).
+
 ## From the design-board era: the checklist for QA on code (MA-303)
 
-Kept for the Playwright and Argos QA of the built web and iOS apps (MA-194,
-MA-165), run when Arun asks; not applied to boards, which no gate or reviewer
-measures now.
+Kept for the QA of the built code, run when Arun asks: MA-304 for the web app
+(Playwright, axe and Argos, with the 25% contrast floors and the 320 to 1920
+width sweep; it depends on MA-194), and the iOS app's after MA-165, with no
+story yet. Not applied to boards, which no gate or reviewer measures now.
+Lessons 1 and 21 are split: their record halves stay in the checklist above.
+
+1. **A board is checked against its story's acceptance, line by line**
+   (the board half; the record half is lesson 1 above): every screen or state
+   the acceptance needs is drawn as the acceptance asks, including the
+   messages a change sends and the failure outcomes (PR #32, rounds 2 to 8:
+   MA-35, MA-39, MA-80, MA-116, MA-130, MA-137, MA-145).
+
+(Lessons 2 to 8: in the checklist above.)
+
+9. **Every change drawn on a board shows its card, Confirm and the audit row,
+   with the second check where ARCHITECTURE asks for one, cancelling included, and no state is drawn that the
+   docs make impossible** (PR #35 round 1: "Leave it out saves the rest" with
+   no Confirm; an invite cancelled at once; "already linked" on a page nobody
+   is signed in to). A board fix not made in the same change goes into
+   each affected story's `undrawn` list, naming the issue that carries it
+   (MA-160).
 
 10. **Illustrative figures add up, on every board and across boards:** a list
     sums to the total above it, a holding shows the same value on every board
@@ -312,12 +366,11 @@ measures now.
 
 (Lesson 20: in the checklist above.)
 
-21. **A fix to one board or story is carried to its neighbours the same
-    round:** the next board in the file, every story built from the same
-    boards, and every frame drawn after the change (MA-161 round 3: Foldable ·
-    Open fixed, Foldable · Open, Audit left; the web Admin center's old check
-    listed on four of ten stories; C15 at 21:12 still showing the buy
-    unconfirmed).
+21. **A fix to one board is carried to its neighbours the same round**
+    (the board half; the story and trace half is lesson 21 above): the next
+    board in the file and every frame drawn after the change (MA-161 round
+    3: Foldable · Open fixed, Foldable · Open, Audit left; C15 at 21:12 still
+    showing the buy unconfirmed).
 
 (Lessons 22 and 23: in the checklist above.)
 

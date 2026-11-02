@@ -65,9 +65,9 @@
   "finding": "Owner decision (Arun, 29 Oct 2026): while in practice the Forecaster also shows on the holding's Forecast tab, labelled in practice, and in no weekday card or chat answer; ARCHITECTURE 19.6, the glossary, PLAN F6 and its risk row and the Market Agent page say so, and the iPad's weekday chat answer carries no Forecaster figures (lanes boards and trace)",
   "check": {
    "type": "cmd",
-   "run": "python3 -c \"import pathlib, re; A = ' '.join(pathlib.Path('ARCHITECTURE.md').read_text().split()); P = ' '.join(pathlib.Path('PLAN.md').read_text().split()); M = pathlib.Path('docs/design/market-agent.html').read_text(); assert \\\"only on that holding's Forecast tab and in the Saturday review\\\" in A; assert \\\"only on the holding's Forecast tab and in the Saturday review, labelled in practice\\\" in P; assert 'appears only in the Saturday review, labelled' not in M; assert 'The Forecaster’s figures for the next four weeks' not in pathlib.Path('docs/design/ios-v1/iPhone v4 · Forecast.dc.html').read_text()\""
+   "run": "python3 -c \"import pathlib, re; A = ' '.join(pathlib.Path('ARCHITECTURE.md').read_text().split()); P = ' '.join(pathlib.Path('PLAN.md').read_text().split()); M = pathlib.Path('docs/design/market-agent.html').read_text(); assert \\\"only on that holding's Forecast tab and in the Saturday review\\\" in A; assert \\\"only on the holding's Forecast tab and in the Saturday review, labelled in practice\\\" in P; assert 'appears only in the Saturday review, labelled' not in M\""
   },
-  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
+  "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays"
  },
  {
   "id": "r1-8",
@@ -95,9 +95,9 @@
   "finding": "Similar days counted 31 against ARCHITECTURE 19.4's 30; the figure set, §19.7's example card and the Market Agent page now say 30, and the web board's 31 is listed for MA-279 (lanes trace and boards); the Market Agent's mock chart draws 30 similar-day lines, 18 at or above today",
   "check": {
    "type": "cmd",
-   "run": "python3 -c \"import json, pathlib; assert json.load(open('docs/design/figures/forecaster-v4.json'))['nasdaq']['similar']['n'] == 30; assert '31 since 2015' not in pathlib.Path('ARCHITECTURE.md').read_text() and '31 similar days' not in pathlib.Path('docs/design/market-agent.html').read_text() and '31 since 2015' not in pathlib.Path('docs/design/market-agent.html').read_text() and 'then 30 thin lines' in pathlib.Path('docs/design/market-agent.html').read_text()\""
+   "run": "python3 -c \"import pathlib; assert '31 since 2015' not in pathlib.Path('ARCHITECTURE.md').read_text() and '31 similar days' not in pathlib.Path('docs/design/market-agent.html').read_text() and '31 since 2015' not in pathlib.Path('docs/design/market-agent.html').read_text() and 'then 30 thin lines' in pathlib.Path('docs/design/market-agent.html').read_text()\""
   },
-  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
+  "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays"
  },
  {
   "id": "r1-11",

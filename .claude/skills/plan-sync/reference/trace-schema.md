@@ -63,8 +63,7 @@ hand.
 
 Git is the boards' only record (MA-296, 30 Oct 2026). `check` refuses a cited
 board file that is missing, a board folder that is not in the repo, and a
-board name that is not one of its canvas's titles. It reads no board's
-content: the checks on dates, tools, motion roles, strokes and Telegram on the
+board name that is not one of its canvas's titles; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). The checks on dates, tools, motion roles, strokes and Telegram on the
 boards were stopped by MA-303 (Arun, 2 Nov 2026: "All the 6 checks currently
 run on docs/design. Lets stop that"). A board drawn or changed is checked against the trace's `boards` in
 the same change. `docs/design/claude-design.json` (each file's bytes and

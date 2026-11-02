@@ -1,6 +1,6 @@
 ---
 name: plan-sync
-description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates; incrementally, from docs/jira-sync.json, or all of it with --all), with the board files the trace cites in docs/design/ (their files and board names, never their content; MA-303) and with the Confluence space mypaisaa-agent (pages, versions, read-back hashes, board previews); publish the pages rendered from the repo, fix or file every drift in one table, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
+description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates; incrementally, from docs/jira-sync.json, or all of it with --all), with the board files the trace cites in docs/design/ (their files and board names) and with the Confluence space mypaisaa-agent (pages, versions, read-back hashes, board previews); publish the pages rendered from the repo, fix or file every drift in one table, and render docs/TRACE.md; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
 ---
 
 # Plan sync
@@ -15,14 +15,17 @@ read incrementally, Confluence and the repo in full), `--all` (the full
 sweep, Jira included: weekly, or when unsure), `--jira`, `--design` or
 `--confluence` (one side only).
 
-Since MA-303 nothing here or in `scripts/plan_sync.py` reads a board's
-content. Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design.
+Since MA-303, plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design.
 Lets stop that... Plan Sync is for keeping the Jira, confluence and
 implementation in sync. We can keep that but it needs to faster and smart.
 No need to any check on prototype v5." What stays of the designs is the
 trace's link to them: a cited board file exists, its folder exists, its
 board name is one of its canvas's titles, and a UI story has a board before
-it starts.
+it starts. A board edit can leave a Confluence preview stale until the
+preview is composed again (2b): that is Confluence sync, not a check on the
+board. The checks that left the boards come back as QA on the built code when
+Arun asks: MA-304 for the web app, and the iOS app's after MA-165, with no
+story yet.
 
 Ids: Jira cloudId `81c51173-bbea-4905-bbc5-1a880fa348bb`, project `MA`,
 transitions in `.claude/jira-flow.json`. The board folders in
@@ -56,7 +59,8 @@ sync's time, the keys still drifting (`pending`), and per key a short hash of
 what Jira said (summary, parent, labels, status, due date) and of the
 trace's row.
 
-1. `python3 scripts/plan_sync.py jira-sync query` prints the JQL to run:
+1. `python3 scripts/plan_sync.py jira-sync query` prints the JQL to run,
+   and saves it:
    `project = MA AND (updated >= "<the day before the last sync>" OR key in
    (<pending, and rows changed in the repo since>))`, or the full
    `project = MA ORDER BY key ASC` when there is no last sync, the list would
@@ -72,7 +76,9 @@ trace's row.
 4. When fixed, `python3 scripts/plan_sync.py jira-sync record <file> --at
    <the time noted in 1>` (with `--all` on the full sweep): clean issues get
    their hashes, drifting ones stay in `pending` and are read again next
-   time, and `last_sync` moves on. Commit `docs/jira-sync.json` with the
+   time, and `last_sync` moves on only when the file answers the query `query`
+   saved; a narrower read, such as one story's `key = MA-<n>`, records only
+   its own keys and never moves `last_sync` (lesson 43). Commit `docs/jira-sync.json` with the
    trace.
 
 `/plan-sync --all` is the full sweep: weekly, or whenever a sync was missed
@@ -97,7 +103,7 @@ The boards are drawn in the repo and nowhere else, and git is their only
 record (rule 7, MA-260, MA-296). `python3 scripts/plan_sync.py check` checks
 only the trace's link to them: each cited board file exists, each folder
 under `claude_design` exists, and each board name is one of its canvas's
-titles. No board's content is checked (MA-303); Arun judges the boards by
+titles; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Arun judges the boards by
 eye in each design round. Then, by hand, against the branch's changes
 (`git diff main --stat -- docs/design/`):
 
@@ -167,11 +173,14 @@ made in Confluence.
      the body (`format: html`, `versionMessage` naming the story), and
      record what is live:
      `python3 scripts/confluence_docs.py set-page <slug> <id> <new version> published`.
-     Then read the page back (`getConfluenceContent`, `detail: full`, html),
-     write its body to a scratch file and record it:
+     Then read the page back: save getConfluenceContent's whole reply (detail
+     full, html) to a scratch file, the JSON exactly as it came, not just its
+     body, and record it:
      `python3 scripts/confluence_docs.py set-readback <slug> <file>`. The
      check refuses a page whose read-back differs from what was sent, so a
-     publish that Confluence changed or dropped is caught (MA-303).
+     publish that Confluence changed or dropped is caught, and a page
+     published but not read back fails the check (MA-303; pages published
+     before the receipts are notes, lesson 44).
      Big pages are best sent by sub-agents, a few pages each, each given the
      file paths and ids; check afterwards that every page in `pending` is
      gone.

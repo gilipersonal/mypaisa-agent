@@ -4,7 +4,7 @@
     plan_sync_hook.py after-edit   PostToolUse on Edit|Write|MultiEdit: after an edit to a record (the trace, the
                                    roadmap, PLAN, ARCHITECTURE, the Confluence pages, the code), run the check and
                                    tell the session about drift the edit introduced; editing a board in docs/design/
-                                   runs nothing (MA-303)
+                                   runs nothing (MA-303), editing its README or an explainer page there does (R1-a8)
     plan_sync_hook.py before-pr    PreToolUse on Bash: refuse `gh pr create` and `gh pr ready` while the check fails,
                                    says nothing of why, or cannot run (the boards are read from docs/design/ by the check
                                    itself; MA-296 retired their separate record and the Boards Artifact's stamp)
@@ -30,9 +30,12 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(os.environ.get("CLAUDE_PROJECT_DIR") or Path(__file__).resolve().parents[2])
-# docs/design/ is no record here: since MA-303 (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets
-# stop that") editing a board runs nothing; the PR hook's check still refuses a cited board that is gone.
+# The boards are no record here: since MA-303 (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets
+# stop that") editing a board (a .dc.html, a board's stylesheet or script, Prototype v5) runs nothing; the PR hook's
+# check still refuses a cited board that is gone. docs/design/README.md and the explainer pages at the top of
+# docs/design/ are records: the check reads their keys and the Confluence pages are drawn from them (R1-a8).
 RECORDS = re.compile(r"^(docs/trace\.json|docs/roadmap\.json|docs/confluence|PLAN\.md|ARCHITECTURE\.md|TECH_STACK\.md|README\.md"
+                     r"|docs/design/README\.md$|docs/design/[^/]+(?<!\.dc)\.html$"
                      r"|scripts/(plan_sync|roadmap|confluence_docs)\.py|web/|ios/|src/|infra/)")
 NEW_WORK = re.compile(r"\b(new (feature|screen|page|flow|design|card|story|kind)|redesign|design (a|the|for|new)|feature|mock-?up|wireframe"
                       r"|ux|ui change|board|add (a|an|the) .{0,40}(screen|page|button|card|chart|flow|tab)|can we (have|add|build)"
@@ -120,7 +123,12 @@ def selftest() -> int:
         # Each run prints a line of its own, so the hook's memory of drift already told cannot hide it.
         (gate / "scripts" / "plan_sync.py").write_text("import sys, uuid\nprint('DRIFT: ran ' + uuid.uuid4().hex)\nsys.exit(1)\n")
         edits = [("a board", "docs/design/ios-v1/iPhone v4 · Forecast.dc.html", False), ("a board's stylesheet", "docs/design/ds-v1/tokens.css", False),
-                 ("the trace", "docs/trace.json", True), ("a Confluence page", "docs/confluence/hub.html", True), ("the code", "web/src/app.ts", True)]
+                 ("the trace", "docs/trace.json", True), ("a Confluence page", "docs/confluence/hub.html", True), ("the code", "web/src/app.ts", True),
+                 # R1-a8: the design README and the explainer pages are records; a board anywhere in docs/design/ is not.
+                 ("the design README", "docs/design/README.md", True), ("an explainer page", "docs/design/agent-journey.html", True),
+                 ("a board at the top of docs/design", "docs/design/Overview.dc.html", False),
+                 ("a Prototype v5 page", "docs/design/prototype-v5/index.html", False), ("a board's script", "docs/design/ds-v1/motion.js", False),
+                 ("a page in a board folder", "docs/design/app-v1/notes.html", False)]
         for what, rel, want in edits:
             (gate / rel).parent.mkdir(parents=True, exist_ok=True)
             (gate / rel).write_text("x\n")

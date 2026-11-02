@@ -10,10 +10,12 @@ feature or phase document in Confluence.
 And on 2 Nov 2026 (MA-303): "All the 6 checks currently run on docs/design.
 Lets stop that... Plan Sync is for keeping the Jira, confluence and
 implementation in sync. We can keep that but it needs to faster and smart.
-No need to any check on prototype v5." So no check reads a board's content;
-plan-sync keeps only the trace's link to the boards (a cited file and its
-board name exist, a UI story has a board before it starts), and keeps Jira,
-Confluence and the code in step.
+No need to any check on prototype v5." So plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). What stays
+of the boards is the trace's link to them (a cited file and its board name
+exist, a UI story has a board before it starts); plan-sync keeps Jira,
+Confluence and the code in step. A board edit can leave a Confluence preview
+stale until the preview is composed again: that is Confluence sync, not a
+check on the board.
 
 These records describe the same planned work. They are kept in step, and a
 check says so before any story starts and before any PR.
@@ -62,8 +64,8 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    nowhere else; git is their only record, and a PR reviews them. There is
    no record file to update and no whole-set Artifact to republish (MA-296,
    Arun, 30 Oct 2026: "I dont need claude-design sync anymore"):
-   `python3 scripts/plan_sync.py check` reads the boards the trace cites on
-   disk (their files and board names, never their content; MA-303).
+   `python3 scripts/plan_sync.py check` finds the boards the trace cites on
+   disk; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303).
    Arun reviews each `/design-first` round as a private Claude Artifact: the
    round publishes its options as one and gives him its link. A round run in
    Google Antigravity, which cannot publish a Claude Artifact, shows the same
@@ -139,13 +141,17 @@ A hook reminds the session when a prompt talks about a new design or feature
 - A key in both `items` and `others`; a row, phase or entry that is not an object; a row with no key, summary, status or type; a phase with no epic or title; a field of the wrong type.
 - `docs/TRACE.md` not rendered from the current trace.
 - A traced story with no estimate in `docs/roadmap.json`, an estimate for an untraced key, a schedule not worked out from the current estimates, or PLAN.md's Timeline table not matching it (MA-228).
-- A Confluence page in `docs/confluence/` not rendered from the current records, a page with no Confluence id, a page changed in the repo but not published, a file there the generator does not make, a board preview not uploaded or older than its boards, a cited board file in no screen area, an interactive app older than the data it was made from, or the story explorer database (`docs/confluence/stories.csv`) stale or not published (MA-228); a page whose read-back, recorded after publishing, differs from what was sent (MA-303).
+- A Confluence page in `docs/confluence/` not rendered from the current records, a page with no Confluence id, a page changed in the repo but not published, a file there the generator does not make, a board preview not uploaded or older than its boards, a cited board file in no screen area, an interactive app older than the data it was made from, or the story explorer database (`docs/confluence/stories.csv`) stale or not published (MA-228); a page whose read-back, recorded after publishing, differs from what was sent, or a page published under the receipts but never read back (pages published before the receipts are listed as notes) (MA-303).
 - A Story In Review or Done that names no `code`, or a `code` path that matches nothing (MA-228).
 
-Nothing on a board's content is checked any more (MA-303): the weekday-and-date,
+Since MA-303, plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). The weekday-and-date,
 tool-name, motion-role, chart-label transform, shared-stroke and Telegram checks
 on the boards went, with `contrast_check.py`, `board_fit.js`, `a11y_live.js` and
-`prototype_smoke.js`. Arun judges each design round by eye.
+`prototype_smoke.js`. Arun judges each design round by eye. The same checks
+come back as QA on the built code when Arun asks: MA-304 for the web app
+(Playwright, axe and Argos, with the 25% contrast floors and the 320 to 1920
+width sweep; it depends on MA-194), and the iOS app's after MA-165, with no
+story yet.
 
 `python3 scripts/plan_sync.py pr-files [--base <ref>]` (default: the merge-base
 with `origin/main`) is the branch's own check, run before every PR: it lists the
@@ -154,7 +160,9 @@ uncommitted and untracked; a rename is its old path and its new one), maps each
 to the trace rows whose `code` claims it (a path, a folder, or a glob where `*`
 stays in a folder and `**` spans folders), and fails, on a branch with an MA key,
 on a file claimed only by another story, or by none. A deletion no story claims
-is no fault.
+is no fault. On CI's checkout, a detached merge commit with no branch, the key
+comes from `GITHUB_HEAD_REF`; on CI with no key it fails closed (exit 2), and
+CI passes `--base HEAD^1`, the merge commit's first parent (lesson 42).
 
 A UI story with no board, or with screens still to draw (`undrawn`), may sit
 in the backlog with a note (rule 2); the check lists it as a note and `start`
@@ -206,7 +214,10 @@ it there) need their MCP tools, so `/plan-sync` checks those. Jira is read
 incrementally: `docs/jira-sync.json` records the last sync and a short hash
 per key, so a normal `/plan-sync` asks only for the issues updated since, the
 keys still drifting and the rows changed in the repo, and `/plan-sync --all`
-reads the whole backlog (weekly, or when unsure). Drift is reported as one
+reads the whole backlog (weekly, or when unsure). `jira-sync query` saves the
+JQL it prints, and `record` moves the last sync only for a file that answers
+that query; a narrower read, such as one story's, records only its own keys
+(lesson 43). Drift is reported as one
 table: the item, the repo's value, Jira's or Confluence's, which wins and why,
 and the fix. The boards need
 no tool: they live only in the repo, so `scripts/plan_sync.py check` reads

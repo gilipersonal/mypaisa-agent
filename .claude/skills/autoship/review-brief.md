@@ -59,8 +59,15 @@ Give the reviewer this, word for word:
 - Records each in `review/MA-<n>/state.json` under `findings[]` (`id`,
   `severity`, `blocking`, `lane`, `anchor`, `evidence`, `status`), with the
   round's `review_approval`, `gate_results`, `deferred_gates` and
-  `next_round`, then runs `python3 scripts/review_regress.py --state MA-<n>`.
+  `next_round`, and the round's `range` (the `git diff` range it covered),
+  then runs `python3 scripts/review_regress.py --state MA-<n>`. Those
+  per-round fields are type-checked whenever present and required on every
+  round from MA-303's own rounds on; `--state` may run before round 1, since
+  a story with no state file has had no rounds yet.
 - Fixes the blocking findings, adds each to `fixed.json` with a check that
   tests what the fix does (lesson 3), and asks Arun before the next round.
+  A ledger entry's id is the finding's, `r<round>-<lane letter><n>` (as
+  `r1-d2`), matched in any case, so `R1-d2` names the same entry; an owner
+  decision carries no round (`o1`).
 - Turns a finding a command could have caught into a check the same day, and
   a new lesson into `.claude/rules/independent-review.md`.

@@ -118,7 +118,7 @@ builds it, phase by phase:
 | `tests/` | pytest: golden files for every signal and for the wealth maths (the old tracker's cases, MA-105), property tests for the FX split, moto for AWS, respx for HTTP, recorded Claude responses for rendering. |
 | `scripts/` | The plan's checks today (`plan_sync.py`, `confluence_docs.py`, `roadmap.py`, `review_regress.py`; the checks on the boards' content were stopped by MA-303); from phase 0, the local stack in `scripts/local/` (MA-198), the seed (`scripts/seed.sh local` or `dev`, which loads the design figure set's illustrative household through the write service, MA-110), `scripts/security_scan.py` (MA-267), `scripts/smoke.py` (MA-268), `scripts/regression.py` (MA-269), and `scripts/maestro_local.py` (MA-273). |
 | `infra/` | Every AWS resource, Terraform only: `modules/mypaisa` holds the stack once (the Lambdas and their images, the REST API with its streaming route, Cognito, the Scheduler rules, DynamoDB, S3, the web app's S3 and CloudFront, the DNS records, SSM parameters, the IAM roles, the budget and the alarms); `dev/` and `prod/` call it with their own settings and state; `bootstrap/` makes, once, the CI roles, the CodeBuild runner that builds the images and the ECR repository they go to (MA-237). `ARCHITECTURE.md` §18. |
-| `.github/workflows/` | The gates and a plan for both environments on every pull request, the iOS gates on a macOS runner when it touches `ios/` (MA-166), and svelte-check, eslint, vitest and Playwright when it touches `web/`; from `main`, build once, deploy dev, then prod after approval, and send MyPaisa Dev (`environment: dev`, Arun only) to TestFlight, then MyPaisa (`environment: prod`, Household Beta) after the same approval, plus `testflight-keepalive.yml` renewing the 90-day TestFlight lease at day 60 (MA-167); a nightly drift check; all through OIDC. |
+| `.github/workflows/` | The gates and a plan for both environments on every pull request, the iOS gates on a macOS runner when it touches `ios/` (MA-166), and svelte-check, eslint and vitest run on every PR touching `web/`; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304); from `main`, build once, deploy dev, then prod after approval, and send MyPaisa Dev (`environment: dev`, Arun only) to TestFlight, then MyPaisa (`environment: prod`, Household Beta) after the same approval, plus `testflight-keepalive.yml` renewing the 90-day TestFlight lease at day 60 (MA-167); a nightly drift check; all through OIDC. |
 | `docs/` | The mark, "Watcher" (MA-103): `mark.svg` and `mark-dark.svg` for light and dark grounds, `mark-animated.svg` and `mark-animated-dark.svg` for this page (the intro plays once, and Reduce Motion shows the final frame), `mark-small.svg` for 32 px and below and the favicon, `mark-icon.svg` and `mark-1024.png`, the source of the app icon (made in Icon Composer: default, dark, clear and tinted, MA-165), `mark-256.png` and `mark-64.png` for anywhere smaller. `docs/RESEARCH.md`, the research note. `docs/design/`, the design pages as source and the boards, drawn there (MA-260), the iOS boards in `ios-v1/` among them. |
 | `Dockerfile` | The container images for every Lambda, arm64, on the AWS Python 3.14 base, since pandas, numpy and pyarrow exceed the zip limit; the stream is its own build target, run through the Lambda Web Adapter. |
 
@@ -215,7 +215,7 @@ except these tools.
 | Xcode | 26 or later | `ios/`: the iOS and iPadOS 26 SDK, the simulators, and swift-format, which comes in its toolchain (`xcrun swift-format`) | the Mac App Store |
 | Maestro | 2.11 or later (with OpenJDK 17+) | `.maestro/`: local multi-simulator iOS and iPadOS E2E flows across all four width sub-bands (`scripts/maestro_local.py`, MA-273) | `brew install openjdk && curl -fsSL "https://get.maestro.mobile.dev" \| bash` |
 | pnpm | 12 | the web app's workspace | `corepack enable` |
-| Playwright's Chromium | with `web/`'s packages | the web app's tests at phone (390) and laptop (1440) widths, in both themes | `npx playwright install chromium`, in `web/` |
+| Playwright's Chromium | with `web/`'s packages | the web app's QA on request (MA-304) at phone (390) and laptop (1440) widths, in both themes | `npx playwright install chromium`, in `web/` |
 | playwright-core 1.63 with Chromium | pinned in `scripts/package.json` | `scripts/confluence_capture.js`, the board previews for Confluence | `npm ci --prefix scripts`, then `npx --prefix scripts playwright-core install chromium` |
 
 You also need, in the AWS account `545595341442`, a profile that can assume the operator role (`agent-toolkit`).
@@ -392,7 +392,7 @@ cd web && npm ci                              # the web app's packages, from the
 npm run dev                                   # in one terminal: the SvelteKit dev server on localhost:5173, against api-dev
 npm run check && npm run lint && npm test     # svelte-check, eslint, vitest
 npx playwright install chromium               # once
-npm run test:e2e                              # Playwright: every page at phone (390) and laptop (1440) widths, light and dark
+npm run test:e2e                              # QA on request (MA-304): Playwright, every page at 390 and 1440, light and dark
 ```
 
 Dev's api admits `http://localhost:5173`, and so does dev's Google web client, so signing in with Apple, Google or
@@ -459,14 +459,20 @@ breaks copies on purpose and expects the refusal; CI runs it on every PR (about 
 The checks on the boards' content (`board_fit.js`, `a11y_live.js`, `prototype_smoke.js`, `contrast_check.py`,
 the board readers in `plan_sync.py` and the generators' `--check`) were stopped by MA-303. Arun, 2 Nov 2026: "All
 the 6 checks currently run on docs/design. Lets stop that. I need this checks as QA when I ask, but on actual code
-implemented". QA on the code, with Playwright and Argos and only on request, comes with MA-194 (the web skeleton)
-and MA-165 (the iOS shell).
+implemented". The QA is measured on the built web app by MA-304, QA on request, with the 25% brightness floors
+and the 320 to 1920 width sweep; iOS QA comes after MA-165 (the iOS shell), with no story yet.
 
-A pull request that touches `web/` also runs svelte-check, eslint and vitest, and Playwright's flows and screenshots
-of every page at phone and laptop widths, in light and dark, with the sign-in cookie's refusals (MA-183, MA-185):
+Svelte-check, eslint and vitest run on every PR touching `web/`; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304). The PR gates:
 
 ```bash
-cd web && npm run check && npm run lint && npm test && npm run test:e2e
+cd web && npm run check && npm run lint && npm test
+```
+
+The QA, when Arun asks (MA-304): Playwright's flows and screenshots of every page at phone and laptop widths, in light
+and dark, with axe before each capture, Argos's diffs and the sign-in cookie's refusals (MA-183, MA-185):
+
+```bash
+cd web && npm run test:e2e
 ```
 
 A pull request that touches `ios/` also runs the app's gates on a macOS runner (MA-166) and locally across the five

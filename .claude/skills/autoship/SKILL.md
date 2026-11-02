@@ -32,12 +32,14 @@ Uncommitted files that belong to another story are left alone and named.
 1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
    red gate stops here: report it, raise nothing (offer a draft at most).
    No gates configured: say "no gates configured". The `plan-sync` gate
-   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`;
+   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`;
    locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time) always applies;
-   it keeps the trace, Jira, Confluence and the code in step, and checks
-   that every board a story cites is on disk. No gate measures the boards
-   themselves (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on
-   docs/design. Lets stop that."). Every time, run
+   its `check` keeps the trace, the docs, the recorded Confluence pages and
+   the code in step, and checks that every board a story cites is on disk;
+   Jira is compared by `/plan-sync`; `pr-files` checks that every product
+   file the branch changes is claimed by its story. No gate measures the
+   boards themselves (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently
+   run on docs/design. Lets stop that."): plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Every time, run
    `/plan-sync --confluence`, so every page the change re-rendered is
    published; and if the story changed a board, a phase or a story, run
    `/plan-sync MA-<n>` too, so the trace, Confluence and
@@ -79,7 +81,8 @@ says, in parallel lanes.
 
 1. **Gates first:** the configured gates, then
    `python3 scripts/review_regress.py MA-<n>` and
-   `python3 scripts/review_regress.py --state MA-<n>`. A FAIL is fixed before
+   `python3 scripts/review_regress.py --state MA-<n>` (it may run before
+   round 1: no state file means no rounds yet). A FAIL is fixed before
    any reviewer starts. Exit 3 means every command passed but `manual`
    checks remain: start one fresh verifier sub-agent with those items, the
    rules and the files they name (never the maker's notes); a broken item is

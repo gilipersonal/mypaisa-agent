@@ -42,7 +42,12 @@ jobs:
       - name: Trace, docs, roadmap, Confluence pages and cited boards agree
         run: python3 scripts/plan_sync.py check
 
+      # A pull_request run checks out the PR's merge commit, detached: its first
+      # parent is the base the PR merges into, so HEAD^1 is the base and the
+      # diff is the PR's own change. The story's key comes from the PR's head
+      # branch (GITHUB_HEAD_REF); with no key there it fails closed (CI is set),
+      # never passes every file (MA-303 review, R1-a1).
       - name: Every code file the PR changes belongs to its story
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: python3 scripts/plan_sync.py pr-files --base "$BASE_SHA"
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+        run: python3 scripts/plan_sync.py pr-files --base HEAD^1

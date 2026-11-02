@@ -31,14 +31,21 @@ An entry is never deleted from a ledger. When the owner stops a check, the entry
 the story>"`; the runner skips it, prints `RETIRED: <id> - <reason>` and counts it (MA-303 retired the checks on
 docs/design this way).
 
-Every command runs in its own process group with a time limit: 600 s, or the entry's `timeout` (seconds). A command
-that runs over has its whole group killed (SIGKILL, so a hung browser or a grandchild goes too) and FAILs with
-"timed out after N s"; any process a command leaves behind is killed when it ends. A FAIL prints the last 8 lines of
-the command's output (stdout and stderr together), indented. Identical commands (the same `run` string, or the same
-`argv`) run once per invocation, across stories under `--every`; later entries reuse the result and say so.
+Every command runs in its own process group with a time limit: 600 s, or the entry's `timeout` (seconds), and with
+PLAN_SYNC_SELFTEST_FORCE=1 in its environment, so `plan_sync.py selftest` re-runs in full rather than reuse a cached
+pass (the runner re-runs every check). The time limit is on the command itself: once it exits, its group is killed
+and the output still in the pipe is read for a few seconds, so a background child left holding stdout neither keeps
+the run waiting nor makes it a timeout. A command that runs over has its whole group killed (SIGKILL, so a hung
+browser or a grandchild goes too) and FAILs with "timed out after N s". Only the process group is covered: a daemon
+that calls setsid leaves the group and escapes the kill; if it still holds the pipe, the output after that point is
+lost and the line says so. A command that cannot start (an `argv` whose program does not exist) FAILs, for `cmd` and
+`cmd_fails` alike. A FAIL prints the last 8 lines of the command's output (stdout and stderr together), indented.
+Identical commands (the same `run` string, or the same `argv`, with the same `timeout`) run once per invocation,
+across stories under `--every`; later entries reuse the result and say so.
 
 Exit codes: 0 every check passed; 1 a check FAILed (a regression: fix it before the round starts), or `--state`
-found a fault, or the selftest went wrong; 2 a malformed ledger or a usage error; 3 nothing failed but `manual`
+found a fault, or the selftest went wrong; 2 a malformed ledger (an entry with no `finding`, a grep `pattern` that is
+not a valid regex, a check missing what its type needs) or a usage error, before anything runs; 3 nothing failed but `manual`
 checks remain, for one fresh verifier to look at before any lane starts (`.claude/rules/independent-review.md`).
 
 `--jobs N` (default 1) runs the checks in N threads; each line is still printed in the ledger's order, and the result
@@ -46,10 +53,12 @@ is the same as a serial run. `--only <id,id,...>` runs just those entries of one
 ledger does not hold fails the run (exit 2) rather than check nothing. `--every` runs every review/*/fixed.json as one
 pool, printing a section per story and one total.
 
-`--state MA-<n>` validates review/MA-<n>/state.json: `rounds` equals the number of `history` entries, numbered 1 to
-N with no gap; each round names its `reviewed_sha` (`sha` in the older files); the top `reviewed_sha` is the last
-round's; every ledger id `r<k>-...` names round 0 (fixes made before round 1) or a round in the history (owner
-decisions such as `o1` or `d1-...` carry no round); more than five rounds only where each round past five records
+`--state MA-<n>` validates review/MA-<n>/state.json. A story with no state file has had no rounds yet: that is ok
+(exit 0, as for a missing ledger), so long as its ledger names no round past 0. Otherwise `rounds` equals the number
+of `history` entries, numbered 1 to N with no gap; each round names its `reviewed_sha` (`sha` in the older files) and,
+when it records `blocking`, gives it as a whole number; the top `reviewed_sha` is the last round's, and there is none
+while the history is empty; every ledger id `r<k>-...` or `R<k>-...` names round 0 (fixes made before round 1) or a
+round in the history (owner decisions such as `o1` or `d1-...` carry no round); more than five rounds only where each round past five records
 Arun's word (its `review_approval`, `asked` or `arun`, or a top `note` naming that round). The optional fields
 `review_approval`, `gate_results`, `deferred_gates`, `findings`, `next_round` (top level or per round) and
 `owner_decisions` are type-checked when present.
@@ -67,6 +76,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
@@ -89,7 +99,9 @@ def cmd_text(c: dict) -> str:
 
 
 def cmd_key(c: dict) -> tuple:
-    return ("run", c["run"]) if "run" in c else ("argv", tuple(c["argv"]))
+    """Two entries share a run only when the command and its time limit are both the same."""
+    limit = c.get("timeout", DEFAULT_TIMEOUT)
+    return ("run", c["run"], limit) if "run" in c else ("argv", tuple(c["argv"]), limit)
 
 
 def _killpg(pgid: int) -> None:
@@ -99,35 +111,61 @@ def _killpg(pgid: int) -> None:
         pass
 
 
+DRAIN = 5  # seconds to read what is left in the pipe once the command has ended and its group is killed
+
+
 def run_command(c: dict) -> dict:
-    """Run a cmd entry's command in its own process group; kill the group on timeout and when it ends."""
+    """Run a cmd entry's command in its own process group. The time limit is on the command itself: once it exits
+    (or runs over and is killed) its group is killed, and the pipe is read for DRAIN seconds more. Only the group is
+    covered: a process that setsids away escapes the kill, and the output it holds back is reported lost."""
     limit = c.get("timeout", DEFAULT_TIMEOUT)
     shell = "run" in c
     start = time.monotonic()
-    p = subprocess.Popen(c["run"] if shell else c["argv"], shell=shell, cwd=ROOT, stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, text=True, errors="replace",
-                         start_new_session=True)
-    timed_out, out = False, ""
+    env = dict(os.environ, PLAN_SYNC_SELFTEST_FORCE="1")  # a selftest re-runs, never reuses a cached pass
     try:
-        out, _ = p.communicate(timeout=limit)
+        p = subprocess.Popen(c["run"] if shell else c["argv"], shell=shell, cwd=ROOT, stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, env=env, start_new_session=True)
+    except OSError as err:  # an argv whose program does not exist, or cannot be run
+        return {"rc": None, "timed_out": False, "timeout": limit, "output": "", "secs": time.monotonic() - start,
+                "error": f"could not start: {err}"}
+    chunks: list[bytes] = []
+    fd = p.stdout.fileno()
+
+    def drain() -> None:
+        while True:
+            try:
+                b = os.read(fd, 65536)
+            except OSError:
+                return
+            if not b:
+                return
+            chunks.append(b)
+
+    reader = threading.Thread(target=drain, daemon=True)
+    reader.start()
+    timed_out = False
+    try:
+        p.wait(timeout=limit)
     except subprocess.TimeoutExpired:
         timed_out = True
-        _killpg(p.pid)
-        try:
-            out, _ = p.communicate(timeout=10)
-        except subprocess.TimeoutExpired:  # an escaped process holds the pipe open
-            p.kill()
-            p.stdout.close()
-            p.wait()
-            out = "(output lost: a process outside the group held the pipe open)"
-    _killpg(p.pid)  # whatever the command left running in its group
-    return {"rc": p.returncode, "timed_out": timed_out, "timeout": limit, "output": out or "",
+    _killpg(p.pid)  # on a timeout the command and its group; otherwise whatever it left running in its group
+    if timed_out:
+        p.wait()
+    reader.join(timeout=DRAIN)
+    out = b"".join(chunks).decode(errors="replace")
+    if reader.is_alive():  # a process outside the group still holds the pipe open; leave the reader to it
+        out += "\n(output after this point lost: a process outside the group held the pipe open)"
+    else:
+        p.stdout.close()
+    return {"rc": p.returncode, "timed_out": timed_out, "timeout": limit, "output": out,
             "secs": time.monotonic() - start}
 
 
 def judge(c: dict, res: dict) -> tuple[bool, str, list[str]]:
     """A cmd or cmd_fails entry's verdict on a command's result: (ok, what, the output's tail on a failure)."""
     tail = [ln for ln in res["output"].rstrip("\n").splitlines()][-TAIL:]
+    if res.get("error"):  # never a pass, for cmd_fails either: nothing ran to fail
+        return False, f"{cmd_text(c)} ({res['error']})", tail
     if res["timed_out"]:
         return False, f"{cmd_text(c)} (timed out after {res['timeout']} s)", tail
     ok = (res["rc"] == 0) == (c["type"] == "cmd")
@@ -203,6 +241,8 @@ def entry_faults(e) -> list[str]:
     if not isinstance(eid, str) or not eid:
         return [f"an entry has no id: {json.dumps(e)[:80]}"]
     out = []
+    if not _nonempty(e.get("finding")):
+        out.append(f"{eid}: finding must say what the review found, a non-empty string")
     if "retired" in e and not (isinstance(e["retired"], str) and e["retired"].strip()):
         out.append(f"{eid}: retired must be the owner's words, a non-empty string")
     c = e.get("check")
@@ -224,6 +264,11 @@ def entry_faults(e) -> list[str]:
             out.append(f"{eid}: timeout must be a positive number of seconds, got {t!r}")
     elif kind == "grep" and not (isinstance(c.get("pattern"), str) and (c.get("files") or c.get("file"))):
         out.append(f"{eid}: a grep check needs a pattern and a file or files")
+    elif kind == "grep":
+        try:
+            re.compile(c["pattern"], re.M | (re.I if c.get("ignore_case") else 0))
+        except re.error as err:
+            out.append(f"{eid}: pattern {c['pattern']!r} is not a valid regex ({err})")
     elif kind == "trace" and not (isinstance(c.get("key"), str) and ("board" in c or "field" in c)):
         out.append(f"{eid}: a trace check needs a key and a field or a board")
     elif kind == "manual" and not isinstance(c.get("what"), str):
@@ -378,6 +423,9 @@ def optional_faults(where: str, d: dict, round_no: int | None) -> list[str]:
                         out.append(f"{at}: {k} must be a non-empty string")
                 if not (isinstance(f.get("status"), str) and STATUS.match(f["status"])):
                     out.append(f"{at}: status must be open, fixed, wontfix or deferred with its issue key, got {f.get('status')!r}")
+    if round_no is not None and "blocking" in d and (isinstance(d["blocking"], bool) or not isinstance(d["blocking"], int)
+                                                     or d["blocking"] < 0):
+        out.append(f"{where}: blocking must be a whole number of blocking findings, got {d['blocking']!r}")
     if "next_round" in d and not (d["next_round"] is None or _nonempty(d["next_round"]) or isinstance(d["next_round"], dict)):
         out.append(f"{where}: next_round must be a string, an object or null")
     if "owner_decisions" in d:
@@ -394,11 +442,27 @@ def optional_faults(where: str, d: dict, round_no: int | None) -> list[str]:
     return out
 
 
+LEDGER_ROUND = re.compile(r"^r(\d+)-", re.I)
+
+
+def ledger_round_faults(folder: Path, rounds: int) -> list[str]:
+    """Each ledger id r<k>- (or R<k>-) names round 0 or one of the history's rounds."""
+    ledger = folder / "fixed.json"
+    if not ledger.is_file():
+        return []
+    entries, out = load_ledger(ledger)
+    for e in entries:
+        m = LEDGER_ROUND.match(e.get("id", "") if isinstance(e, dict) and isinstance(e.get("id"), str) else "")
+        if m and int(m.group(1)) != 0 and int(m.group(1)) > rounds:
+            out.append(f"ledger id {e['id']} names round {m.group(1)}, which the history does not hold")
+    return out
+
+
 def state_faults(key: str) -> list[str]:
     folder = review_dir() / key
     path = folder / "state.json"
-    if not path.is_file():
-        return [f"no state file ({path})"]
+    if not path.is_file():  # no rounds yet: the ledger may hold only round 0's fixes and owner decisions
+        return ledger_round_faults(folder, 0)
     try:
         s = json.loads(path.read_text(encoding="utf-8"))
     except ValueError as err:
@@ -422,6 +486,8 @@ def state_faults(key: str) -> list[str]:
             out.append(f"round {h.get('round', i)} has no reviewed_sha (got {sha!r})")
         shas.append(sha)
         out += optional_faults(f"round {h.get('round', i)}", h, h.get("round") if isinstance(h.get("round"), int) else None)
+    if "reviewed_sha" in s and not hist:
+        out.append(f"reviewed_sha {s['reviewed_sha']!r} is set, but the history holds no round")
     if "reviewed_sha" in s and shas and s["reviewed_sha"] != shas[-1]:
         out.append(f"reviewed_sha {s['reviewed_sha']!r} is not the last round's ({shas[-1]!r})")
     note = s.get("note") if isinstance(s.get("note"), str) else ""
@@ -433,15 +499,7 @@ def state_faults(key: str) -> list[str]:
         if not (own or noted):
             out.append(f"round {i} is past five with no record of Arun's word (review_approval, asked, arun, or the note)")
     out += optional_faults("state", s, None)
-    ledger = folder / "fixed.json"
-    if ledger.is_file():
-        entries, faults = load_ledger(ledger)
-        out += faults
-        for e in entries:
-            m = re.match(r"^r(\d+)-", e.get("id", "") if isinstance(e, dict) else "")
-            if m and int(m.group(1)) != 0 and int(m.group(1)) > len(hist):
-                out.append(f"ledger id {e['id']} names round {m.group(1)}, which the history does not hold")
-    return out
+    return out + ledger_round_faults(folder, len(hist))
 
 
 # ---- selftest -------------------------------------------------------------------------------------------------
@@ -565,6 +623,88 @@ def selftest() -> int:
         ledger("MA-T12", [], bad)
         r = run("--state", "MA-T12")
         case("--state type-checks a finding", r.returncode == 1 and "severity" in r.stdout, r.stdout + r.stderr)
+
+        # 6. R1-a109, R1-d5, R1-d7: no state file is no rounds yet; a top reviewed_sha with no rounds, an R<k>- ledger
+        # id past the history, and a round's blocking that is not a whole number are refused
+        ledger("MA-T13", [{"id": "r0-1", "finding": "f", "check": {"type": "manual", "what": "w"}}])
+        r = run("--state", "MA-T13")
+        case("--state with no state file is no rounds yet, exit 0", r.returncode == 0 and "no rounds yet" in r.stdout,
+             r.stdout + r.stderr)
+        ledger("MA-T13", [{"id": "r1-1", "finding": "f", "check": {"type": "manual", "what": "w"}}])
+        r = run("--state", "MA-T13")
+        case("--state with no state file refuses a ledger id naming round 1", r.returncode == 1 and "r1-1" in r.stdout,
+             r.stdout + r.stderr)
+        ledger("MA-T14", [], {"rounds": 0, "reviewed_sha": "aaaaaaa", "history": []})
+        r = run("--state", "MA-T14")
+        case("--state refuses a top reviewed_sha with no rounds", r.returncode == 1 and "holds no round" in r.stdout,
+             r.stdout + r.stderr)
+        ledger("MA-T15", [{"id": "R3-a1", "finding": "f", "check": {"type": "manual", "what": "w"}}], good)
+        r = run("--state", "MA-T15")
+        case("--state refuses an upper-case R3- ledger id the history lacks", r.returncode == 1 and "R3-a1" in r.stdout,
+             r.stdout + r.stderr)
+        for bad_blocking in ("2", True, -1, 1.5):
+            ledger("MA-T16", [], dict(good, history=[{"round": 1, "reviewed_sha": "aaaaaaa", "blocking": 3},
+                                                     {"round": 2, "reviewed_sha": "bbbbbbb", "blocking": bad_blocking}]))
+            r = run("--state", "MA-T16")
+            case(f"--state refuses a round's blocking of {bad_blocking!r}",
+                 r.returncode == 1 and "round 2: blocking" in r.stdout, r.stdout + r.stderr)
+        ledger("MA-T16", [], dict(good, history=[{"round": 1, "reviewed_sha": "aaaaaaa", "blocking": 3},
+                                                 {"round": 2, "reviewed_sha": "bbbbbbb", "blocking": 0}]))
+        r = run("--state", "MA-T16")
+        case("--state accepts whole-number blocking counts", r.returncode == 0, r.stdout + r.stderr)
+
+        # 7. R1-a106: every command runs with PLAN_SYNC_SELFTEST_FORCE=1, so a cached selftest pass is never reused
+        shutil.rmtree(rev, ignore_errors=True)
+        forced = t / "forced"
+        ledger("MA-T17", [{"id": "r1-1", "finding": "f", "check": {"type": "cmd", "run": f"printf %s \"$PLAN_SYNC_SELFTEST_FORCE\" > {forced}"}}])
+        r = run("MA-T17")
+        case("a command runs with PLAN_SYNC_SELFTEST_FORCE=1",
+             r.returncode == 0 and forced.is_file() and forced.read_text() == "1", r.stdout + r.stderr)
+
+        # 8. R1-a102: a background child left holding stdout is killed, and the command is not a timeout
+        bg = t / "bg.pid"
+        ledger("MA-T18", [{"id": "r1-1", "finding": "f", "check": {
+            "type": "cmd", "timeout": 4, "run": f"sleep 30 & echo $! > {bg}; echo done; exit 0"}}])
+        start = time.monotonic()
+        r = run("MA-T18")
+        took = time.monotonic() - start
+        bgpid = int(bg.read_text()) if bg.is_file() else 0
+        deadline = time.monotonic() + 5
+        while bgpid and _alive(bgpid) and time.monotonic() < deadline:
+            time.sleep(0.1)
+        case("a background child holding stdout neither times the command out nor outlives it",
+             r.returncode == 0 and "timed out" not in r.stdout and took < 4 and bgpid and not _alive(bgpid),
+             r.stdout + r.stderr + f"\ntook {took:.1f} s")
+
+        # 9. R1-a104: the same command with another timeout is a separate run
+        counter = t / "count2"
+        ledger("MA-T19", [{"id": "r1-1", "finding": "a", "check": {"type": "cmd", "run": f"echo x >> {counter}"}},
+                          {"id": "r1-2", "finding": "b", "check": {"type": "cmd", "run": f"echo x >> {counter}", "timeout": 30}}])
+        r = run("MA-T19")
+        runs = len(counter.read_text().splitlines()) if counter.is_file() else 0
+        case("the same command with another timeout runs again", r.returncode == 0 and runs == 2 and "run once" not in r.stdout,
+             r.stdout + r.stderr)
+
+        # 10. R1-a105: a ledger is refused before anything runs for a bad regex or an empty finding; a program that
+        # does not exist FAILs, under cmd and cmd_fails alike
+        for name, bad in (("a grep pattern that is not a regex", {"id": "r1-2", "finding": "f", "check": {
+                              "type": "grep", "file": "README.md", "pattern": "([unclosed"}}),
+                          ("an entry with no finding", {"id": "r1-2", "check": {"type": "manual", "what": "w"}}),
+                          ("an entry with an empty finding", {"id": "r1-2", "finding": " ", "check": {"type": "manual", "what": "w"}})):
+            ran = t / "ran"
+            ran.unlink(missing_ok=True)
+            ledger("MA-T20", [{"id": "r1-1", "finding": "f", "check": {"type": "cmd", "run": f"touch {ran}"}}, bad])
+            r = run("MA-T20")
+            case(f"{name} exits 2 before anything runs", r.returncode == 2 and not ran.exists() and "r1-2" in r.stderr,
+                 r.stdout + r.stderr)
+            r = run("--every")
+            case(f"... and under --every", r.returncode == 2 and not ran.exists(), r.stdout + r.stderr)
+            shutil.rmtree(rev / "MA-T20")
+        for kind in CMD:
+            ledger("MA-T21", [{"id": "r1-1", "finding": "f", "check": {"type": kind, "argv": ["/nonexistent/mypaisa-no-such-program"]}}])
+            r = run("MA-T21")
+            case(f"a {kind} whose program does not exist FAILs", r.returncode == 1 and "FAIL" in r.stdout
+                 and "could not start" in r.stdout, r.stdout + r.stderr)
     print(f"review-regress selftest: {cases} cases, {len(wrong)} wrong")
     return 1 if wrong else 0
 
@@ -624,7 +764,8 @@ def main(argv: list[str]) -> int:
         faults = state_faults(o["state"])
         for f in faults:
             print(f"fault  {o['state']}: {f}")
-        print(f"review-regress --state {o['state']}: " + (f"{len(faults)} fault(s)" if faults else "ok"))
+        fresh = "" if (review_dir() / o["state"] / "state.json").is_file() else " (no state file: no rounds yet)"
+        print(f"review-regress --state {o['state']}: " + (f"{len(faults)} fault(s)" if faults else "ok") + fresh)
         return 1 if faults else 0
     if o["every"]:
         paths = sorted(review_dir().glob("*/fixed.json"))

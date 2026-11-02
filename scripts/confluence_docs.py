@@ -91,7 +91,7 @@ VPC_GIFS = [  # (gif in docs/design/aws-vpc-enterprise-lockdown, tab title, capt
 ARGOS_GIFS = [  # (gif in docs/design/argos-visual-a11y, tab title, caption): the SvelteKit 3 visual regression, ARIA snapshot & WCAG 2.2 AA pipeline, animated (MA-194, MA-269)
     ("01-one-helper-four-gates.gif", "1 · One helper, four gates", "One shared auditAndCapture() Playwright 1.64 fixture at 390x844 and 1440x900 in Light and Dark runs deterministic stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 AA before capture, landmark/focus checks, and argosScreenshot."),
     ("02-argos-cloud-diff-aria.gif", "2 · Cloud visual & ARIA diffing", "Tokenless GitHub App OIDC uploads 2x Retina PNGs (Light & Dark) and deduplicated YAML ariaSnapshot trees from ubuntu-24.04-arm (1x) to Argos CI, pairing pixel heatmaps with Git-style accessibility tree diffs against main."),
-    ("03-five-cost-guardrails.gif", "3 · Five £0/mo cost guardrails", "Strict web/** and cards/** path filtering, light-theme-only ariaSnapshot deduplication (saving 50% ARIA quota), fail-fast axe-core before Argos, cancel-in-progress concurrency, and repo-local static board gates (stopped by MA-303) trim 89% of naive snapshot volume."),
+    ("03-five-cost-guardrails.gif", "3 · Five £0/mo cost guardrails", "Strict web/** and cards/** path filtering, light-theme-only ariaSnapshot deduplication (saving 50% ARIA quota), fail-fast axe-core before Argos, cancel-in-progress concurrency, and repo-local static board gates trimmed 89% of naive snapshot volume until MA-303 stopped the board gates."),
     ("04-quota-math-scenarios.gif", "4 · 5,000/mo quota math", "Side-by-side monthly quota comparison showing Option 1 Selected at 3,600 snapshots/month (72.0% of the 5,000/month Free Hobby cap, 1,400 buffer, £0.00/month) versus Option 2 (4,800/mo, 96%) and Option 3 Naive (34,000/mo, $100/mo Pro)."),
 ]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
@@ -1124,7 +1124,7 @@ def render_sync(ctx: Ctx) -> str:
         "<li><strong>One source each.</strong> Estimates and dates live in docs/roadmap.json; stories, boards and code paths in docs/trace.json; the words in PLAN.md and ARCHITECTURE.md. Every page here is generated from them.</li>"
         "<li><strong>The check.</strong> <code>python3 scripts/plan_sync.py check</code> runs on every PR and in CI. It fails when a page in docs/confluence/ is stale or unpublished, a board preview is older than its board, the roadmap or PLAN's Timeline is stale, a board or a section a story cites is missing, or a story In Review or Done names no code, or code that does not exist.</li>"
         "<li><strong>The live side.</strong> <code>/plan-sync</code> compares each page's version here, each epic's due date and every story's key, epic, labels and status in Jira, and fixes or files what differs.</li>"
-        "<li><strong>The receipt</strong> (MA-303). A page sent by hand can arrive cut short (MA-300), so each page is read back from Confluence once it is published and compared with the file sent: <code>python3 scripts/confluence_docs.py set-readback</code> records the receipt, and the check fails while a page as read back differs from what was published.</li>"
+        "<li><strong>The receipt</strong> (MA-303). A page sent by hand can arrive cut short (MA-300), so each page is read back from Confluence once it is published and compared with the file sent: <code>python3 scripts/confluence_docs.py set-readback</code> records the receipt, and the check fails while a page published is not read back, or as read back differs from what was published.</li>"
         '<li><strong>The designs, in the repo</strong> (MA-260). Arun, 30 Oct 2026: "for all future design use Local folder and then Claude '
         'Artifact. Claude Design is going away, so no need to push to claude design". The boards are drawn and edited in docs/design/, and '
         "nothing is read from or written to Claude Design again. Git is the boards' only record (MA-296: \"I dont need claude-design sync "
@@ -1522,8 +1522,10 @@ RB_DROP = {"data-local-id", "data-icon-id", "data-icon-text", "data-status-style
            "data-width", "data-height", "data-width-type"}
 RB_VOID = {"area", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}
 # Inline marks: Confluence splits and reorders them (a <code> inside a <strong> comes back between two <strong>s), so
-# only their text is compared; a dropped word or a page cut short still differs.
-RB_INLINE = {"b", "code", "em", "i", "mark", "s", "span", "strong", "sub", "sup", "u"}
+# only their text is compared; a dropped word or a page cut short still differs. A strike-through is not one of them:
+# struck text that lost its strike reads as current, so <s> is compared as a tag (<del> and <strike> read as <s>).
+RB_INLINE = {"b", "code", "em", "i", "mark", "span", "strong", "sub", "sup", "u"}
+RB_SAME = {"del": "s", "strike": "s"}
 
 
 def _macro_params(raw: str) -> str:
@@ -1556,6 +1558,7 @@ class _Canon(HTMLParser):
             self.out.append(text)
 
     def handle_starttag(self, tag, attrs):  # noqa: ANN001
+        tag = RB_SAME.get(tag, tag)
         if self.muted():
             if tag not in RB_VOID:
                 self.stack.append((tag, True))
@@ -1583,6 +1586,7 @@ class _Canon(HTMLParser):
             self.handle_endtag(tag)
 
     def handle_endtag(self, tag):  # noqa: ANN001
+        tag = RB_SAME.get(tag, tag)
         if tag in RB_VOID:
             return
         if tag == "p":
@@ -1616,16 +1620,23 @@ def canonical(body: str) -> list[str]:
 
 
 def readback_body(raw: str) -> tuple[str, dict]:
-    """The page body in a read-back file: getConfluenceContent's whole reply (detail full, html), or the body alone."""
+    """The page body in a read-back file, which must be getConfluenceContent's whole reply (detail full, html): a bare
+    body is refused, since only the reply carries the page's id and version, and both are checked."""
     try:
         d = json.loads(raw)
     except ValueError:
-        return raw, {}
+        raise ValueError("the file is not JSON: a bare body names no page or version; save getConfluenceContent's "
+                         "whole reply (detail full, html), whose id and version are checked") from None
     d = d.get("data", d) if isinstance(d, dict) else {}
     body = d.get("body", {}) if isinstance(d, dict) else {}
     if not isinstance(body, dict) or not isinstance(body.get("value"), str):
         raise ValueError("the file is JSON but holds no body.value: save getConfluenceContent's reply (detail full, html)")
-    return body["value"], {"id": str(d.get("id", "")), "version": ((d.get("metadata") or {}).get("version") or {}).get("number")}
+    pid = d.get("id")
+    version = ((d.get("metadata") or {}).get("version") or {}).get("number")
+    if pid in (None, "") or isinstance(version, bool) or not isinstance(version, int):
+        raise ValueError(f"the reply has no page id or version number (id {pid!r}, version {version!r}): save "
+                         "getConfluenceContent's whole reply (detail full, html)")
+    return body["value"], {"id": str(pid), "version": version}
 
 
 def first_difference(want: list[str], got: list[str], around: int = 3) -> str:
@@ -1647,16 +1658,20 @@ def published_sha(rec: dict) -> str:
 
 
 def receipt_findings(recorded: dict, slugs: list[str]) -> tuple[list[str], list[str]]:
-    """(errors, notes) from the read-back receipts: a failed read-back of what is live is an error; a page published
-    with no read-back of what was published is a note (the pages published before MA-303 have none)."""
+    """(errors, notes) from the read-back receipts. A failed read-back of what is live is an error; so is a page
+    published under the receipts (its record holds source_sha256, from `set-page ... published`) with no read-back of
+    that publish. Only a page last published before MA-303 (sha256 alone, no source_sha256) with none is a note."""
     errs, unread = [], []
     for s in slugs:
         rec = recorded.get(s, {})
         src = published_sha(rec)
         if not src:
             continue
-        if rec.get("readback_source_sha256") != src:  # none yet, or one for an older publish: ignored
-            unread.append(s)
+        if rec.get("readback_source_sha256") != src:  # none yet, or one for an older publish
+            if rec.get("source_sha256"):
+                errs.append(f"confluence: page {s} is published but not read back: read it back and run set-readback")
+            else:
+                unread.append(s)
         elif not rec.get("readback_ok"):
             errs.append(f"confluence: page {s} as read back differs from what was published: re-publish it, then set-readback")
     notes = []
@@ -1695,10 +1710,10 @@ def record_readback(slug_: str, raw: str) -> int:
         print(f"set-readback {slug_}: docs/confluence/{slug_}.html is not what was last published; publish it and run "
               f"`set-page {slug_} <id> <version> published` first")
         return 2
-    if meta.get("id") and meta["id"] != str(rec.get("id")):
+    if meta["id"] != str(rec.get("id")):
         print(f"set-readback {slug_}: the read-back is page {meta['id']}, but {slug_} is page {rec.get('id')}")
         return 2
-    if meta.get("version") is not None and meta["version"] != rec.get("version"):
+    if meta["version"] != rec.get("version"):
         print(f"set-readback {slug_}: the read-back is version {meta['version']}, but version {rec.get('version')} is "
               f"recorded; read the page again, or record the version published with set-page")
         return 2
@@ -1758,14 +1773,22 @@ def selftest() -> int:
             record_page("p", "42", 3, "P", published=True)
             rec = lambda: load(MANIFEST)["pages"]["p"]  # noqa: E731
             expect("set-page records source_sha256", rec().get("source_sha256"), sha(page))
-            expect("a page published with no read-back is a note, not an error", receipt_findings(load(MANIFEST)["pages"], ["p"])[0], [])
-            expect("... and is noted", len(receipt_findings(load(MANIFEST)["pages"], ["p"])[1]), 1)
+            errs, notes = receipt_findings(load(MANIFEST)["pages"], ["p"])
+            expect("a page published under the receipts with no read-back is an error (R1-a101)",
+                   [e for e in errs if "published but not read back" in e and "set-readback" in e], errs[:1] or ["(none)"])
+            expect("... one error, and no note", (len(errs), notes), (1, []))
+            legacy = {"p": {"id": "42", "title": "P", "version": 3, "sha256": sha(page)}}  # last published before MA-303
+            expect("a page published before MA-303 (sha256 alone) with no read-back is a note, not an error",
+                   [len(x) for x in receipt_findings(legacy, ["p"])], [0, 1])
             out = sys.stdout
             sys.stdout = quiet
             try:
                 r_same = record_readback("p", envelope(live))
                 ok_same = rec().get("readback_ok")
-                r_ws = record_readback("p", page.replace("\n", "\n\n   ").replace("> <", ">  <"))
+                r_ws = record_readback("p", envelope(page.replace("\n", "\n\n   ").replace("> <", ">  <")))
+                r_bare = record_readback("p", live)
+                r_noid = record_readback("p", json.dumps({"data": {"body": {"value": live}, "metadata": {"version": {"number": 3}}}}))
+                r_nover = record_readback("p", json.dumps({"data": {"id": "42", "body": {"value": live}}}))
                 r_marks = record_readback("p", envelope(live.replace("<strong>MyPaisa&#39;s plan.</strong>",
                                                                      "<strong>MyPaisa&#39;s</strong> <code>plan.</code>")))
                 (PAGES / "p.html").write_text(page.replace("The news job", "<em>The news</em><em> job</em>"))
@@ -1779,6 +1802,14 @@ def selftest() -> int:
                 r_word = record_readback("p", envelope(live.replace("The news job", "The news")))
                 r_ver = record_readback("p", envelope(live, 2))
                 r_json = record_readback("p", '{"data": {}}')
+                struck = page.replace("The news job", "<s>The news job</s>")
+                (PAGES / "p.html").write_text(struck)
+                record_page("p", "42", 3, "P", published=True)
+                r_strike_lost = record_readback("p", envelope(live))
+                r_strike_del = record_readback("p", envelope(live.replace("The news job", "<del>The news job</del>")))
+                (PAGES / "p.html").write_text(page)
+                record_page("p", "42", 3, "P", published=True)
+                r_strike_added = record_readback("p", envelope(live.replace("The news job", "<s>The news job</s>")))
             finally:
                 sys.stdout = out
             expect("an identical body (Confluence's own ids, dates, cards and macro ids aside) passes", (r_same, ok_same), (0, True))
@@ -1790,12 +1821,21 @@ def selftest() -> int:
             expect("a changed word fails", r_word, 1)
             expect("a read-back of another version is refused", r_ver, 2)
             expect("a JSON file with no body is refused", r_json, 2)
+            expect("a bare body, not getConfluenceContent's whole reply, is refused (R1-a108)", r_bare, 2)
+            expect("a reply with no page id is refused", r_noid, 2)
+            expect("a reply with no version number is refused", r_nover, 2)
+            expect("struck text read back without its strike fails (R1-a107)", r_strike_lost, 1)
+            expect("a strike read back as <del> passes", r_strike_del, 0)
+            expect("a strike the source lacks fails", r_strike_added, 1)
             (PAGES / "p.html").write_text(page + "<p>More.</p>")
             record_page("p", "42", 4, "P", published=True)
             errs, notes = receipt_findings(load(MANIFEST)["pages"], ["p"])
-            expect("a stale read-back (for an older publish) is ignored: no error", errs, [])
-            expect("... and the page is noted as not read back", len(notes), 1)
+            expect("a stale read-back (for an older publish) does not count: the page is published but not read back",
+                   [len(errs), len(notes), "published but not read back" in "".join(errs)], [1, 0, True])
             expect("... while the stale receipt is kept", rec().get("readback_ok"), False)
+            legacy = {"p": {**rec(), "source_sha256": None}}
+            legacy["p"].pop("source_sha256")
+            expect("a stale read-back of a page published before MA-303 is a note", [len(x) for x in receipt_findings(legacy, ["p"])], [0, 1])
     finally:
         MANIFEST, PAGES = saved
     for f in fails:

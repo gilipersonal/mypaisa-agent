@@ -1,6 +1,6 @@
 ---
 name: design-first
-description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, a React Native shell whose every visible piece is SwiftUI, one spec in the MyPaisa iOS v1 boards in docs/design/ios-v1/, for iPhone, iPad and the foldable), the web app (web/, a SvelteKit 3 PWA with the chat, the dashboard and the Admin center, at desktop and phone width (390), from the browser boards in MyPaisa app v1, docs/design/app-v1/), the chat's cards, buttons, guided flows and in-place corrections, the charts (Swift Charts and the web's LayerChart in one house style), the motion, the design pages (the agent journey, the market agent) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps), drawn in the repo as .dc.html boards on MyPaisa DS v1 (docs/design/), keeping the record in docs/design/reviews/MA-<n>/; publish the round as a private Claude Artifact, give Arun its link and let him judge it by eye (no gates run on boards, MA-303); and build only the option Arun picks.
+description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, a React Native shell whose every visible piece is SwiftUI, one spec in the MyPaisa iOS v1 boards in docs/design/ios-v1/, for iPhone, iPad and the foldable), the web app (web/, a SvelteKit 3 PWA with the chat, the dashboard and the Admin center, at desktop and phone width (390), from the browser boards in MyPaisa app v1, docs/design/app-v1/), the chat's cards, buttons, guided flows and in-place corrections, the charts (Swift Charts and the web's LayerChart in one house style), the motion, the design pages (the agent journey, the market agent) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps), drawn in the repo as .dc.html boards on MyPaisa DS v1 (docs/design/), keeping the record in docs/design/reviews/MA-<n>/; publish the round as a private Claude Artifact, give Arun its link and let him judge it by eye (no gate measures the boards: plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303)); and build only the option Arun picks.
 ---
 
 # Design first
@@ -15,8 +15,10 @@ Every new UI or UX change to MyPaisa is designed before it is built, in four ste
    app v1, the web app's browser boards); the record stays in `docs/design/reviews/MA-<n>/`.
 2. **No gates on the boards** (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design. Lets stop
    that."). Open each board once to see that it loads, in light and dark, then go on; Arun judges the round by eye.
-   The glitch review at every size class (MA-101) and the board gates are retired; the same checks come back as QA on
-   the built code, with Playwright and Argos, when Arun asks.
+   plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). The glitch review at every size class (MA-101) and the board gates are retired; the same checks come
+   back as QA on the built code when Arun asks: MA-304 for the web app (Playwright, axe and Argos, with the 25%
+   contrast floors and the 320 to 1920 width sweep; it depends on MA-194), and the iOS app's after MA-165, with no
+   story yet.
 3. **Publish the round as a private Claude Artifact**, give Arun its link and ask for the pick. A round run in
    Google Antigravity, which cannot publish a Claude Artifact, shows its options as a local page instead (MA-297).
 4. **Arun picks one option.** Build only that option, and only after the pick, made in the current request.
@@ -135,7 +137,8 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   - every colour pair meets these, at full brightness and with the screen dimmed to 25% (primary text and figures
     7:1, and 4.5:1 dimmed; secondary and coloured text 4.5:1, and 3:1 dimmed; a chart line, a meter, a switch's ring
     or focus 3:1, and 1.8:1 dimmed); they are targets for the design and are measured on the built code when Arun
-    asks for QA, not by a gate on the boards (MA-303);
+    asks for QA (MA-304 for the web app; the iOS app's after MA-165, with no story yet), not by a gate on the boards
+    (MA-303);
   - no tertiary grey (`--mp-ink-3`) for anything a member must read: a figure, a label, a caption that carries
     meaning; it is for decoration and dividers only;
   - glass carries labels only, never body copy, and is measured over its worst backdrop.
@@ -236,8 +239,9 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 ## 3. Publish the round, then get the pick
 
 - **No gates on the boards** (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design. Lets stop
-  that."). Before publishing, run `python3 scripts/plan_sync.py check`, which keeps the trace, Jira and
-  Confluence in step and finds every board a story cites on disk; it reads nothing inside a board. Open each board
+  that."). Before publishing, run `python3 scripts/plan_sync.py check`, which keeps the trace, the docs, the recorded
+  Confluence pages and the code in step, and finds every board a story cites on disk; Jira is compared by
+  `/plan-sync`. plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Open each board
   once to see that it loads, in light and dark. Arun judges the round by eye, and no reviewer lane looks at boards
   (`.claude/rules/independent-review.md`).
 - **Publish the round** as a private Claude Artifact, the way MA-291 published Prototype v5

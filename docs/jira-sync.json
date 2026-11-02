@@ -1,7 +1,9 @@
 {
  "version": 1,
- "about": "Jira read incrementally by /plan-sync (MA-303): the last sync's time, the keys still drifting, and per key a short hash of what Jira said (summary, parent, labels, status, due date) and of the trace's row. Written only by `python3 scripts/plan_sync.py jira-sync record`; `/plan-sync --all` reads everything again.",
+ "about": "Jira read incrementally by /plan-sync (MA-303): the last sync's time, the keys still drifting, the trace keys Jira does not have (missing, kept out of the query and reported), the last query printed (its JQL, kind, the keys it names and its time), and per key a short hash of what Jira said (summary, parent, labels, status, due date) and of the trace's row. Written only by `python3 scripts/plan_sync.py jira-sync query` and `record`: `record <file> --for-query` moves last_sync to the query's time only when the file answers that query whole; `record <file> --keys MA-n` records those keys and never moves it. `/plan-sync --all` reads everything again.",
  "last_sync": null,
  "pending": [],
+ "missing": [],
+ "query": null,
  "issues": {}
 }

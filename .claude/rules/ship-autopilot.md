@@ -22,12 +22,14 @@ this repo on any change just before you merge the PR. just for this Repo".
   "Independent review"), in parallel lanes on the delta. Arun, 25 Oct 2026,
   after PR #32's seven one-reviewer rounds: "always use that approach for
   this repo and make it a global rule".
-  1. **Gates first:** `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`
+  1. **Gates first:** the `plan-sync` gate,
+     `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`
      (locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time, about 9 s), the story's
      other gates, and `python3 scripts/review_regress.py MA-<n>` once the
-     story has a ledger; `--state MA-<n>` validates its state file. No gate
-     runs on the boards (Arun, 2 Nov 2026, MA-303: "All the 6 checks
-     currently run on docs/design. Lets stop that."). An exit 3 from the
+     story has a ledger; `--state MA-<n>` validates its state file, and may
+     run before round 1 (no state file means no rounds yet). No gate
+     measures the boards (Arun, 2 Nov 2026, MA-303: "All the 6 checks
+     currently run on docs/design. Lets stop that."): plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). An exit 3 from the
      runner (every command passed, `manual` checks left) sends those items
      to one fresh verifier sub-agent before the lanes start. Reviewers spend
      time only on what no gate measures.

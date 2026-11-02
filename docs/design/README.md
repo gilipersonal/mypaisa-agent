@@ -144,9 +144,12 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   readers in `plan_sync.py` and the generators' `--check` no longer run, and
   nothing checks Prototype v5. Plan-sync still checks that a story's cited
   board file exists, that a UI story has a board before it starts, and that a
-  board name matches its canvas. QA on the code, with Playwright and Argos
-  and only on request, comes with MA-194 (the web skeleton) and MA-165 (the
-  iOS shell).
+  board name matches its canvas. The QA is measured on the built web app by
+  MA-304, QA on request, with the 25% brightness floors and the 320 to 1920
+  width sweep; iOS QA comes after MA-165 (the iOS shell), with no story yet.
+  svelte-check, eslint and vitest run on every PR touching `web/`;
+  Playwright, axe and Argos run only when Arun asks (a manual run or a `qa`
+  label; MA-303, MA-304).
 
 **Retired Telegram and Nocturne files.** In MA-278 (31 Oct 2026), the earlier Mini App, Telegram and Nocturne (`dashboard/`) files and frames were removed from the live design folders so every live board is for the iOS app or the web app in a browser; git history preserves the retired record.
 
