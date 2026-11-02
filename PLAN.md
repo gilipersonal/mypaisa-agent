@@ -649,6 +649,10 @@ Claude's:
   commit SHAs, and a description edit no longer reruns the checks. jira-key
   stays its own workflow. Web, Backend and iOS jobs join with MA-24, MA-194
   and MA-165.
+- **The review rule fits Antigravity (MA-306):** the design-board lessons
+  move, with their numbers, from `.claude/rules/independent-review.md` to
+  `docs/qa/checklist.md`, the checklist MA-304's QA applies, so the rule
+  stays under the 24 KB an Antigravity rule holds (Arun, 2 Nov 2026).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 

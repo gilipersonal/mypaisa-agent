@@ -199,8 +199,9 @@
   "finding": "Lessons 1 and 9 still told reviewers to judge boards from the active checklist",
   "check": {
    "type": "cmd",
-   "run": "python3 -c \"import sys; s=open('.claude/rules/independent-review.md').read(); h=s.index('## From the design-board era'); a=s.find('Every change drawn on a board shows its card'); b=s.find('A board is checked against its story'); sys.exit(0 if a>h and b>h else 'lesson 1 or 9 is in the active list')\""
-  }
+   "run": "python3 -c \"import sys; s=open('.claude/rules/independent-review.md').read(); q=open('docs/qa/checklist.md').read(); a='Every change drawn on a board shows its card'; b='A board is checked against its story'; sys.exit(0 if a not in s and b not in s and a in q and b in q else 'lesson 1 or 9 is in the active list, or missing from the QA checklist')\""
+  },
+  "amended": "MA-306 (2 Nov 2026): the design-board lessons moved out of the rule into docs/qa/checklist.md; the check reads both."
  },
  {
   "id": "r1-o1",
