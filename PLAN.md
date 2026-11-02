@@ -659,6 +659,11 @@ Claude's:
   views only (MA-308, MA-309). The plan, the architecture, the boards, the
   trace, Jira and Confluence changed together
   (`docs/design/reviews/MA-307/decision.md`).
+- **What MA-307 left to tidy (MA-310 to MA-313):** Prototype v5's phases 10
+  to 12 drawn again (MA-310); `make_talk.py` and `make_team_india.py` made to
+  write the wealth-only figures (MA-311); the Lucid drawing's market page 6
+  removed (MA-312); the explainer GIFs captured again from the rewritten
+  pages (MA-313).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 

@@ -1633,7 +1633,7 @@ def readback_body(raw: str) -> tuple[str, dict]:
     if pid in (None, "") or isinstance(version, bool) or not isinstance(version, int):
         raise ValueError(f"the reply has no page id or version number (id {pid!r}, version {version!r}): save "
                          "getConfluenceContent's whole reply (detail full, html)")
-    return body["value"], {"id": str(pid), "version": version}
+    return body["value"], {"id": str(pid), "version": version, "title": d.get("title")}
 
 
 def first_difference(want: list[str], got: list[str], around: int = 3) -> str:
@@ -1715,7 +1715,9 @@ def record_readback(slug_: str, raw: str) -> int:
               f"recorded; read the page again, or record the version published with set-page")
         return 2
     want, got = canonical(path.read_text()), canonical(body)
-    ok = want == got
+    # MA-307: a publish that sends the body alone leaves the old title live; the read-back checks the title too.
+    title_ok = meta["title"] is None or meta["title"] == rec.get("title")
+    ok = want == got and title_ok
     import datetime  # noqa: PLC0415
     receipt = {"readback_sha256": sha("\n".join(got)), "readback_source_sha256": published_sha(rec), "readback_ok": ok,
                "readback_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
@@ -1723,6 +1725,10 @@ def record_readback(slug_: str, raw: str) -> int:
     if ok:
         print(f"set-readback {slug_}: the read-back matches what was sent ({len(want)} parts)")
         return 0
+    if not title_ok:
+        print(f"set-readback {slug_}: the page is titled {meta['title']!r} in Confluence, not {rec.get('title')!r}; "
+              "re-publish it with its title")
+        return 1
     print(f"set-readback {slug_}: the read-back differs from what was sent; re-publish it\n{first_difference(want, got)}")
     return 1
 
@@ -1752,8 +1758,9 @@ def selftest() -> int:
             '<figure data-type="media-single" data-width="680" data-width-type="pixel"><div data-type="media" data-id="m1" '
             'data-height="919" data-width="1720"></div><figcaption>The web app</figcaption></figure><hr data-local-id="a6">'
             '<p style="font-size: 12px"><em>Generated from the repo.</em></p>')
-    envelope = lambda body, v=3: json.dumps({"data": {"id": "42", "body": {"format": "html", "value": body},  # noqa: E731
-                                                      "metadata": {"version": {"number": v}}}})
+    envelope = lambda body, v=3, title="P": json.dumps({"data": {"id": "42", "title": title,  # noqa: E731
+                                                                 "body": {"format": "html", "value": body},
+                                                                 "metadata": {"version": {"number": v}}}})
     fails: list[str] = []
     cases: list[str] = []
 
@@ -1807,6 +1814,8 @@ def selftest() -> int:
                 (PAGES / "p.html").write_text(page)
                 record_page("p", "42", 3, "P", published=True)
                 r_strike_added = record_readback("p", envelope(live.replace("The news job", "<s>The news job</s>")))
+                r_title_old = record_readback("p", envelope(live, title="P, the old title"))
+                ok_title_old = rec().get("readback_ok")
             finally:
                 sys.stdout = out
             expect("an identical body (Confluence's own ids, dates, cards and macro ids aside) passes", (r_same, ok_same), (0, True))
@@ -1824,6 +1833,8 @@ def selftest() -> int:
             expect("struck text read back without its strike fails (R1-a107)", r_strike_lost, 1)
             expect("a strike read back as <del> passes", r_strike_del, 0)
             expect("a strike the source lacks fails", r_strike_added, 1)
+            expect("a page whose live title is not the recorded title fails (MA-307: a body-only publish kept six old titles)",
+                   (r_title_old, ok_title_old), (1, False))
             (PAGES / "p.html").write_text(page + "<p>More.</p>")
             record_page("p", "42", 4, "P", published=True)
             errs, notes = receipt_findings(load(MANIFEST)["pages"], ["p"])

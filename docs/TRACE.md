@@ -95,6 +95,10 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-305 | One CI workflow with named jobs in parallel, as mypaisaa-prediction has | Done | §17.4 | none |  |
 | MA-306 | The review rule fits Antigravity's 24 KB: the design-board lessons move to MA-304's QA checklist | In Progress | §15 | none |  |
 | MA-307 | MyPaisa is a wealth tracker only: the market forecasts and the buy, add and sell calls are removed, and only admins write, through the chat | In Progress | §1, §4.10 | picked | iPhone v4 · Holdings and India.dc.html: iPhone · Register, Holdings & India · Light; iPhone v4 · Chat and guided flows.dc.html: iPhone · Alerts & commands · Light |
+| MA-310 | Prototype v5 shows phases 10 to 12 again: alerts and charts, asking about the household's wealth, and a new kind of holding | To Do |  | none |  |
+| MA-311 | The prototype's figure scripts make the wealth-only figures again, without the retired market sets | To Do |  | none |  |
+| MA-312 | The Lucid architecture drawings lose page 6, the market agent and learning loop | To Do |  | none |  |
+| MA-313 | The explainer GIFs on Confluence show the wealth-only app: recaptured from the rewritten explainer pages | To Do |  | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

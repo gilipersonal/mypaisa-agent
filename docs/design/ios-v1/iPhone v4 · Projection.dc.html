@@ -280,7 +280,7 @@
                           <div class="sech"><span class="mp-over mp-ink2">Plan items</span><span class="mp-foot mp-ink2">{{ f.d.piSub }}</span></div>
                           <div class="mp-group"><sc-for list="{{ f.d.pi }}" as="p" hint-placeholder-count="3"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ p.i }}</span></span><span class="grow"><span class="mp-sub mp-w6">{{ p.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="mk-sq"></i></span>{{ p.s }}</span></span><span class="fig {{ p.ed }}"><span class="{{ p.a.m }}" role="{{ p.a.ar }}" aria-label="{{ p.a.al }}">{{ p.a.v }}</span><sc-if value="{{ f.adm }}"><span class="ms" aria-hidden="true">edit</span></sc-if></span></div></sc-for></div>
                           <sc-if value="{{ f.adm }}"><button type="button" class="cbtn" style="align-self: flex-start"><span class="ms" aria-hidden="true">chat_bubble</span>Add a plan item in the chat</button></sc-if>
-                          <sc-if value="{{ f.mem }}"><div class="note"><span class="ms" aria-hidden="true">lock</span><span class="mp-foot mp-ink2">Plan items are Arun's, the admin's. Ask a what-if in the chat to try your own.</span></div></sc-if>
+                          <sc-if value="{{ f.mem }}"><div class="note"><span class="ms" aria-hidden="true">lock</span><span class="mp-foot mp-ink2">Plan items are kept by the admins. Ask a what-if in the chat to try your own.</span></div></sc-if>
                         </sc-if>
 
                         <!-- 1a scrolled: the assumptions -->
@@ -290,7 +290,7 @@
                           <sc-for list="{{ f.groups }}" as="g" hint-placeholder-count="2"><div class="sech"><span class="mp-over mp-ink2">{{ g.h }}</span><span></span></div>
                             <div class="mp-group"><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3"><div class="mp-row rowc"><span class="grow"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="src"><span class="ms" aria-hidden="true">{{ r.si }}</span>{{ r.src }}</span><sc-if value="{{ r.long }}"><span class="mp-foot mp-ink2">{{ r.why }}</span></sc-if></span><span class="fig {{ f.d.ed }}">{{ r.v }}<sc-if value="{{ f.adm }}"><span class="ms" aria-hidden="true">edit</span></sc-if></span></div></sc-for></div>
                           </sc-for>
-                          <sc-if value="{{ f.endnote }}"><p class="pp mp-foot mp-ink2" style="padding: 0 16px">Priors are the household's settings, each with its source; Arun sets them. The engine runs again whenever a figure changes.</p></sc-if>
+                          <sc-if value="{{ f.endnote }}"><p class="pp mp-foot mp-ink2" style="padding: 0 16px">Priors are the household's settings, each with its source; an admin sets them. The engine runs again whenever a figure changes.</p></sc-if>
                         </sc-if>
 
                         <!-- corrections in place -->
@@ -342,7 +342,7 @@
                         </div></div></sc-for>
                       </div></div>
                       <div class="edge-bot"></div>
-                      <div class="composer cmp"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="4"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.l }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                      <div class="composer cmp"><div class="chips"><sc-for list="{{ f.cchips }}" as="c" hint-placeholder-count="4"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.l }}</span></button></sc-for></div><div class="cbar"><sc-if value="{{ f.adm }}" hint-placeholder-val="{{ true }}"><button type="button" class="cplus lg" aria-label="Add"><span class="ms" aria-hidden="true">add</span></button></sc-if><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
                       <div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsChat }}" as="t" hint-placeholder-count="4"><button type="button" class="tab {{ t.on }}"><span class="ms" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div>
                     </sc-if>
                     <div class="homebar"></div>
@@ -486,7 +486,9 @@
           const scrolled = { large: false, small: true, ctl: false, off: 'top8' };
           const mA = { q: 'Has the Projection caught up with this morning’s changes?', qt: '10:03', a: 'Yes. The engine ran it again at 09:53, after the Monzo savings and the home’s new value. Ask what moves the line, or try a what-if.' };
           const mW = { q: 'What if we put £60,000 down on a second flat in June 2028?', qt: '10:20', a: 'Here’s the engine’s run with it.', wif: true };
-          const C = (b, c, o, clock) => T.map((t) => ({ cap: b + ' · ' + t[0], cls: t[1], chat: true, clock, adm: !o.mem, mem: !!o.mem, c }));
+          // MA-307: only admins write, so a member's chips are views only: no Add anything, no Send a statement.
+      const CCHIPS = (mem) => (mem ? [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['trending_up', 'Projection'], ['savings', 'Budget']] : [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']]).map((c) => ({ i: c[0], l: c[1] }));
+      const C = (b, c, o, clock) => T.map((t) => ({ cap: b + ' · ' + t[0], cls: t[1], chat: true, clock, adm: !o.mem, mem: !!o.mem, cchips: CCHIPS(!!o.mem), c }));
           const payRows = (s) => [
             s === 'a' ? { editing: true, n: 'Arun’s salary growth', field: 'A year · now 4.17%, his history blended with a prior', typed: '4.8', unit: '%', before: '4.17%', after: '4.8%', hint: 'His own 4.8% a year since 2022, without the UK’s 3.5% blended in.' }
               : { done: true, n: 'Arun’s salary growth', s: 'a year', v: '4.8%', src: 'Set by Arun', was: 'was 4.17%' },

@@ -89,7 +89,7 @@
 <sc-for list="{{ composer.chips }}" as="c" hint-placeholder-count="4"><button class="gchip lg" type="button" onclick="{{ c.go }}"><span class="ms" aria-hidden="true">{{ c.icon }}</span><span>{{ c.t }}</span></button></sc-for>
 </div>
 <div class="cbar">
-<button class="cplus lg {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><span class="ms" aria-hidden="true">add</span></button>
+<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}"><button class="cplus lg {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><span class="ms" aria-hidden="true">add</span></button></sc-if>
 <div class="cfield lg">
 <sc-if value="{{ composer.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><sc-for list="{{ composer.files }}" as="f" hint-placeholder-count="2"><span class="cfile"><span class="ms" aria-hidden="true">picture_as_pdf</span>{{ f.name }}</span></sc-for></div></sc-if>
 <sc-if value="{{ composer.notFiles }}" hint-placeholder-val="{{ true }}"><input class="cin" type="text" autocomplete="off" aria-label="Message" placeholder="{{ composer.ph }}" value="{{ composer.typed }}" onchange="{{ composer.onType }}" onkeydown="{{ composer.onKey }}" /></sc-if>

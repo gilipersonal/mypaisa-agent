@@ -135,7 +135,7 @@
 </table>
 <h2>🧵 One message is one trace, from the finger to the last word</h2>
 <p>The door makes a W3C <code>traceparent</code> for each action. API Gateway, the api, SQS and every Lambda carry it on, so nothing in the path starts a trace of its own. Each model call is a span named <code>chat &lt;model&gt;</code> in the OpenTelemetry GenAI conventions, with MyPaisa&#x27;s cost and ladder step beside it. Prompts, replies and figures never leave DynamoDB. Timings, tokens and costs below are illustrative; tap a span to read it.</p>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="3dda6b5c-2572-4435-b60d-d5a33659b8a4" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-trace.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="532250da-c668-42dc-8971-4daf0a3c02fd" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-trace.gif"></div>
 <figcaption>One message is one trace, from the finger to the last word (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Span</th><th>Service</th><th>From, to (ms)</th><th>Attributes</th></tr>
 </thead>
@@ -160,7 +160,7 @@
 </table>
 <h2>🔁 One Claude tool loop, with code doing every sum</h2>
 <p>The <code>agent</code> Lambda runs one tool loop on Sonnet 5.5. Before each call it reads the month&#x27;s spend and lets the ladder choose the model. It sends only the current conversation after a cached prefix, loops through strict tools until it can answer, ask one thing, or show a Confirm card. Only an admin&#x27;s turn can draft a change. A draft writes nothing: only a Confirm, a check-in&#x27;s tap or a Save in place commits, through the one write service; a delete also takes the second check.</p>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="4b2475a1-51b5-4590-acdf-7904b1e52754" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-loop.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="35826ea3-9277-4ad1-8d5e-bb7efc2b02e5" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-loop.gif"></div>
 <figcaption>One Claude tool loop, with code doing every sum (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Tools</th><th>Rule</th><th>The tools</th></tr>
 </thead>
@@ -173,7 +173,7 @@
 </table>
 <h2>👥 Six agents that never call each other</h2>
 <p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, delete data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1; the rest join it in phase 13. Together they keep the records, the budget and the wealth forecast current as the household&#x27;s numbers change.</p>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="761a0711-6227-4583-b702-3fad91f7775b" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-team.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="74a93eb4-07be-49e0-a50e-8238211e8cdb" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-team.gif"></div>
 <figcaption>Six agents that never call each other, around one event bus (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Agent</th><th>Kind</th><th>Models</th><th>Its job</th><th>On its own</th><th>Asks the admin</th><th>Budget share</th></tr>
 </thead>
@@ -232,11 +232,11 @@
 <tr><td>Reserve, the chat first</td><td>5%</td></tr>
 </tbody>
 </table>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e586a91c-e00d-4844-83e9-d02d3a4ae6a8" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-models.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7eccf7be-50e5-43e9-bbdd-8af47fada72d" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-models.png"></div>
 <figcaption>Three Claude models, each where it earns its cost, and the spend ladder (Architecture v4)</figcaption></figure>
 <h2>🗄️ One table for state, one lake for the record, one store for secrets</h2>
 <p>The household&#x27;s records are data, not code: kinds are versioned documents, records are documents, their history is append-only events, and the dashboard reads materialised views. Every change and its audit row are written in one DynamoDB transaction, chained by hash. A delete marks the record <code>deleted</code>: hidden from every view, restorable through the chat, its events, audit rows and files kept for good.</p>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ad146983-1f43-4f64-91bf-2a18b14cc16f" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-state.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="a2189b6d-8884-4172-9f8c-e7f385cad972" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-state.png"></div>
 <figcaption>One table for state, one lake for the record, one store for secrets (Architecture v4)</figcaption></figure>
 <p><strong>DynamoDB</strong>mypaisa-prod-* · single table · PITR in prod</p>
 <h5>The household</h5>
@@ -264,7 +264,7 @@
 <p><code>logs</code>14 days<code>spans</code>30 days, aws/spans<code>RunRecord</code>90 days<code>metrics</code>15 months<code>audit</code>never deleted</p>
 <h2>🚀 Terraform only, one image, prod after a person says yes</h2>
 <p>One AWS account, every component twice, kept apart by IAM: each Lambda&#x27;s role names only its own environment, and the developer role is denied anything tagged <code>env=prod</code>. CI reaches AWS through GitHub OIDC with no stored keys; the AWS MCP only reads.</p>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7f366106-12db-44a6-a37c-07f3fa186b39" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-delivery.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="54e8e639-d2ba-439f-8aa9-4337f38f2e2b" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-delivery.png"></div>
 <figcaption>Terraform only, one image, prod after a person says yes (Architecture v4)</figcaption></figure>
 <ol><li><strong>Gates</strong>ruff, pyright, pytest on moto, tflint, gitleaks, jira-key, the leak testevery PR</li>
 <li><strong>Plan</strong><code>terraform plan</code> for dev and prod, posted on the PRPRs touching infra/</li>
@@ -297,7 +297,7 @@
 <p>Safety</p>
 <p><code>prevent_destroy</code>, deletion protection, point-in-time recovery; nightly drift check</p>
 <h2>🛡️ Enforced in code, not in the prompt</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="148475fd-615b-41e7-b660-e039e6507645" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-rules.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="1c891f07-2121-43c1-90fa-efab4d56dc76" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-rules.png"></div>
 <figcaption>Enforced in code, not in the prompt (Architecture v4)</figcaption></figure>
 <h4>Claude never produces a number</h4>
 <p>Every figure comes from tested code: XIRR, CAGR, loan schedules, the Projection and the Budget forecast. Claude chooses what to say and how.</p>

@@ -391,7 +391,7 @@
                         </sc-for>
                       </div></div>
                       <div class="edge-bot"></div>
-                      <div class="composer {{ f.compc }}"><div class="chips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.l }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">{{ f.ph }}</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+                      <div class="composer {{ f.compc }}"><div class="chips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.l }}</span></button></sc-for></div><div class="cbar"><sc-if value="{{ f.adm }}" hint-placeholder-val="{{ true }}"><button type="button" class="cplus lg" aria-label="Add"><span class="ms" aria-hidden="true">add</span></button></sc-if><span class="cfield lg"><span class="ph">{{ f.ph }}</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
                       <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabsChat }}" as="t" hint-placeholder-count="4"><button type="button" class="tab {{ t.on }}"><span class="ms" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div></sc-if>
                     </div></sc-if>
                   </div>
@@ -582,7 +582,7 @@
           const refusePlan = card({ over: 'Not saved', title: 'Plans are the admins’', sub: '£300 a month for your gym from January, your words',
             blocks: [lock('Plan items are the admins’ alone; an admin adds them. Nothing is saved.'), foot('I can show it as a what-if instead: the engine runs it, and nothing in the plan moves.')],
             acts: [btn('Show it as a what-if', 'cbtn-primary'), btn('Tell Arun', '')] });
-          const refuseAsm = card({ over: 'Not saved', title: 'The saved assumptions are Arun’s', sub: 'UK inflation is 2.5% a year, the prior Arun keeps',
+          const refuseAsm = card({ over: 'Not saved', title: 'The saved assumptions are the admins’', sub: 'UK inflation is 2.5% a year, the prior Arun keeps',
             blocks: [lock('Only an admin can change a saved assumption. Nothing is saved.'), foot('I can run a what-if at 3% for you; nothing in the plan moves.')],
             acts: [btn('Show it at 3%', 'cbtn-primary')] });
           const S6 = [day, me('Can we afford the wedding?'), tm('21:20'),
@@ -631,7 +631,10 @@
           const n6 = 'iPhone · Plans in the chat 2a, Asha asks';
           const n7 = 'iPhone · Plans in the chat 2a, plans it cannot set up';
           const pad = (n) => n.replace('iPhone · ', 'iPad · ');
-          const asha = (f) => f;
+          // a member views only: her composer has no Add (+), and her chips only ask (MA-307)
+          const MCHIPS = [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['help', 'What if…']].map((c) => ({ i: c[0], l: c[1] }));
+          const MPADCHIPS = [['event', 'What’s due'], ['help', 'What if…']].map((c) => ({ i: c[0], l: c[1] }));
+          const asha = (f) => Object.assign({}, f, { chips: f.pad ? MPADCHIPS : MCHIPS, adm: false });
           const boards = [
             { anchor: 's1', id: 'S1', name: 'iPhone · Plans in the chat 2a, the two more ways opened', keys: 'MA-263 · MA-264',
               lead: 'At 20:44 Arun opens Two more ways on the 20:43 card: starting the fees in Jan 2032, which covers the gap only if the date can move, and pausing the SIP, which covers £3,436 of £19,058 and so has no Confirm of its own.',

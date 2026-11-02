@@ -556,7 +556,8 @@
     var back = bk('Assets', 'assets'), body = [], sub = '', chips = K.draft();
     var native = recValue(a), gbpBeside = a.ccy === 'INR' ? '<span class="mp-sub mp-ink2">≈ ' + g(a.gbp) + ' at ' + RATE() + '</span>' : '';
     if (id === 'home') {
-      var state = ctx.W.homeCorrected ? 'saved' : (ctx.has('homeEdit') || (ctx.step && ctx.step.homeEdit)) ? 'edit' : 'rest';
+      var state = ctx.W.homeCorrected ? 'saved' : !ctx.isAdmin ? 'view' : (ctx.has('homeEdit') || (ctx.step && ctx.step.homeEdit)) ? 'edit' : 'rest';
+      /* MA-307: only an admin corrects a figure in place; any other member views it */
       sub = 'Property · UK · Arun and Asha, half each · locked';
       var top;
       if (state === 'edit') {
@@ -566,8 +567,8 @@
           '<div class="btns">' + K.btn('Save', 'home:save', 'primary small') + K.btn('Cancel', 'home:cancel', 'tinted small') + '</div>' +
           K.foot('Save writes a correction with its audit row. Nothing else on the record changes.') + '</div>';
       } else {
-        top = '<button type="button" class="btn-reset fx ac g8" id="w-fig"' + K.go(state === 'rest' ? 'home:edit' : null) + '><span class="big">' + g(a.value) + '</span>' + K.ms(state === 'saved' ? 'check_circle' : 'edit', 'mp-ink2') + '</button>' +
-          '<span class="mp-foot mp-ink2">' + (state === 'saved' ? 'your estimate, Mon 26 Oct' : 'your figure, valued Thu 30 Apr. Tap the figure to correct it.') + '</span>' +
+        top = '<button type="button" class="btn-reset fx ac g8" id="w-fig"' + K.go(state === 'rest' ? 'home:edit' : null) + '><span class="big">' + g(a.value) + '</span>' + (state === 'view' ? '' : K.ms(state === 'saved' ? 'check_circle' : 'edit', 'mp-ink2')) + '</button>' +
+          '<span class="mp-foot mp-ink2">' + (state === 'saved' ? 'your estimate, Mon 26 Oct' : state === 'view' ? 'valued Thu 30 Apr. An admin corrects it, in place or in the chat.' : 'your figure, valued Thu 30 Apr. Tap the figure to correct it.') + '</span>' +
           (state === 'saved' ? okline('Corrected in place by Arun, Mon 26 Oct, 09:52: ' + g(415000) + ' → ' + g(428000) + ', his estimate. Written as a correction with its audit row (via inline edit). Net worth is now ' + g(457951) + ', the engine’s figure.') : '');
       }
       body.push(K.card({ t: 'Property · UK · Arun and Asha, half each', body: '<div class="fx col g10">' + top +

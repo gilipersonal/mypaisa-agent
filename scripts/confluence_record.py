@@ -507,7 +507,7 @@ JOURNEY_PAGES = [  # (slug, emoji, panel icon, colour, title, parent)
     ("rec-j-v4-parts", "🧩", ":jigsaw:", "#EAE6FF", "Architecture v4: every part, the trace, the loop, the agents and the models", "rec-journeys"),
     ("rec-j-inside", "🏠", ":house:", "#FFFAE6", "Inside MyPaisa: the admin's journey in nine steps", "rec-journeys"),
     ("rec-j-inside-more", "✉️", ":envelope_with_arrow:", "#E3FCEF", "Inside MyPaisa: one message, the agent team, the safety nets and a day", "rec-journeys"),
-    ("rec-j-flows", "🧭", ":compass:", "#FFEBE6", "The Agent Journey: twenty-four flows end to end", "rec-journeys"),
+    ("rec-j-flows", "🧭", ":compass:", "#FFEBE6", "The Agent Journey: twenty-three flows end to end", "rec-journeys"),
     ("rec-j-first", "📟", ":pager:", "#F4F5F7", "The first journeys, on the Telegram bot (kept for reference)", "rec-journeys"),
 ]
 MODEL_COLOUR = {"opus": "purple", "sonnet": "red", "haiku": "green", "haiku-batch": "green", "code": "neutral"}
@@ -1292,7 +1292,7 @@ def render_flows(ctx: cd.Ctx) -> str:
                 else:
                     out.append(blocks(n, shift=1) if n.tag != "p" else f"<p>{line(n)}</p>")
             i += 1
-    out.append("<h2>🗂️ The twenty-four flows</h2>"
+    out.append("<h2>🗂️ The twenty-three flows</h2>"
                '<table data-layout="full-width"><thead><tr><th>#</th><th>Flow</th><th>When</th><th>Recorded on</th></tr></thead><tbody>')
     titles = {s: t for s, t, _ in pages()}
     for g in FLOW_GROUPS:
@@ -1316,7 +1316,7 @@ def render_flow_group(ctx: cd.Ctx, g: tuple) -> str:
                                                                                                         ("External data", "neutral"), ("A note", "green"))) + "</p>"),
            toc(2)]
     out += [flow_blocks(ctx, slug, fid) for fid in fids]
-    out.append(f"<p>All twenty-four: {ctx.link('rec-j-flows', 'the Agent Journey')}.</p>")
+    out.append(f"<p>All twenty-three: {ctx.link('rec-j-flows', 'the Agent Journey')}.</p>")
     return "".join(out) + footer()
 
 
@@ -1340,7 +1340,7 @@ def render_first(ctx: cd.Ctx) -> str:
     root = dom(FIRST)
     out = [cd.cpanel("#F4F5F7", ":pager:", f"<p><strong>📟 {line(root.find('h1'))}</strong></p><p>{line(root.find('p', cls='lede'))}</p>"),
            '<div data-type="panel-warning"><p><strong>Kept for reference.</strong> Eight user journeys on a phone frame, in the Nocturne look, from '
-           f'23 Oct 2026 (<a href="{cd.gh(FIRST)}">journeys.html</a>). Superseded by the Agent Journey ({ctx.link("rec-j-flows", "its twenty-four flows")}); '
+           f'23 Oct 2026 (<a href="{cd.gh(FIRST)}">journeys.html</a>). Superseded by the Agent Journey ({ctx.link("rec-j-flows", "its twenty-three flows")}); '
            "the Telegram bot they show was superseded by the iOS app (MA-161), and the web app was kept beside it.</p></div>",
            pic(ctx, slug, "first-phone", media_caption("first-phone")), toc(2)]
     for j in first_journeys():

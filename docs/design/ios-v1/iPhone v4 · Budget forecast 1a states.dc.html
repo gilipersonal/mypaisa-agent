@@ -458,7 +458,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </sc-for>
 </div></div>
 <div class="edge-bot"></div>
-<div class="composer cb20"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+<div class="composer cb20"><div class="chips"><sc-for list="{{ f.v.cchips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><sc-if value="{{ f.v.admin }}" hint-placeholder-val="{{ true }}"><button type="button" class="cplus lg" aria-label="Add"><span class="ms z1" aria-hidden="true">add</span></button></sc-if><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </div>
 </div>
 </div>
@@ -592,7 +592,7 @@ const hideAll = (o, seen) => {
   Object.keys(o).forEach((k) => hideAll(o[k], seen));
   return o;
 };
-const base = (o) => Object.assign({ pl: false, who: 'Arun · admin', chatWho: 'Arun', admin: true, eye: 'visibility', eyeL: 'Privacy mode: hide amounts', eyeP: 'false', hz: hzL(20), cur: curL(false), tm: '', tmA: 'false', banner: false, empty: false, full: true, dim: '', mo: false, tr: false, chat: potChat }, o);
+const base = (o) => Object.assign({ pl: false, who: 'Arun · admin', chatWho: 'Arun', admin: true, cchips: [['event', 'What’s due'], ['add_circle', 'Add anything']].map((c) => ({ i: c[0], t: c[1] })), eye: 'visibility', eyeL: 'Privacy mode: hide amounts', eyeP: 'false', hz: hzL(20), cur: curL(false), tm: '', tmA: 'false', banner: false, empty: false, full: true, dim: '', mo: false, tr: false, chat: potChat }, o);
 
 const V = {
   pot: base({ pl: potLedger('gbp', false), meta: 'Each year to 2046, in pounds of each year · the engine’s run, ' + D.R2.run,
@@ -627,8 +627,8 @@ const V = {
   empty: base({ meta: 'No budget yet', who: 'Admin', chatWho: 'You', full: false, empty: true,
     chat: [{ day: 'Today' }, { ai: true, text: 'Hello. Tell me what comes in and what goes out each month, in your own words, or send a payslip or a statement, and I’ll set up your budget for you to confirm.' }],
     foot: 'An illustrative household before its first budget; nothing on this tab is made here.' }),
-  asha: base({ meta: 'Each year to 2046, in pounds of each year · the engine’s run, Thu 5 Nov 21:18', who: 'Asha · member', chatWho: 'Asha', admin: false,
-    chat: [{ day: 'Today' }, { ai: true, text: 'Hi Asha. Ask me anything about the household’s plans; Arun keeps them.' }],
+  asha: base({ meta: 'Each year to 2046, in pounds of each year · the engine’s run, Thu 5 Nov 21:18', who: 'Asha · member', chatWho: 'Asha', admin: false, cchips: [['event', 'What’s due'], ['help', 'Why below zero?']].map((c) => ({ i: c[0], t: c[1] })),
+    chat: [{ day: 'Today' }, { ai: true, text: 'Hi Asha. Ask me anything about the household’s plans; the admins keep them.' }],
     ch: chart(Wy, { mode: 'gbp', years: 20, sel: 2027, cash: true, whose: 'Arun’s', chips: [{ c: 'mp-alertchip', t: '▼ Cash below zero', s: D.W.short[0] + ' to Feb 2028, at worst ' + gbp(D.W.short[1]) + ' in ' + D.W.short[0] }],
       aria: 'No year below the floor. Cash goes below zero from ' + D.W.short[0] + ' to Feb 2028, when the extension is paid after the wedding.',
       notes: ['The wedding, £20,000 in Mar 2027, and the extension, £35,000 in Jun 2027, are paid from cash, which runs out in ' + D.W.short[0] + ' and is back above zero in ' + D.W.back + '.'] }),
@@ -690,7 +690,7 @@ const boards = [
 { id: 'i8', tag: 'S8', name: 'iPhone · Budget forecast 1a, empty', keyline: 'MA-262 · MA-224', intro: 'A household with no budget yet: the tab says what it needs and opens the chat. Illustrative, not this household’s evening. Draws: “the Budget forecast after a rearrangement (the School fees pot’s lines, no flags), and its loading, empty and error states” (empty).',
   frames: [PH(n8, 'Light', V.empty, '09:30'), PH(n8, 'Dark', V.empty, '09:30')], notes: N2([['Create in the chat,', 'never on the tab.']]) },
 { id: 'i9', tag: 'S9', name: 'iPhone · Budget forecast 1a, as Asha sees it', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 21:19, Asha’s session: cash below zero from Jun 2027 after the wedding and the extension; every figure, no Ways to cover it. Draws: “the Budget forecast as Asha sees it: the same figures, no Ways to cover it”.',
-  frames: [PH(n9, 'Light', asha, '21:19'), PH(n9, 'Dark', asha, '21:19'), PD(n9, 'Light', asha, '21:19')], notes: N2([['A cash flag,', 'a strip under the bars and a chip; the year card shows the one-offs paid from cash and the closing cash.'], ['No Admin in her sidebar,', 'and Ask about it opens her own chat.']]) },
+  frames: [PH(n9, 'Light', asha, '21:19'), PH(n9, 'Dark', asha, '21:19'), PD(n9, 'Light', asha, '21:19')], notes: N2([['A cash flag,', 'a strip under the bars and a chip; the year card shows the one-offs paid from cash and the closing cash.'], ['No Admin in her sidebar,', 'and Ask about it opens her own chat, whose composer offers questions only: no Add anything and no + for a file, since only admins write.']]) },
 { id: 'i10', tag: 'S10', name: 'iPhone · Budget forecast 1a, the trace on iPhone and iPad', keyline: 'MA-262 · MA-224', intro: 'Thu 5 Nov, 20:43, the picked board’s moment: Arun taps 2029’s spending. On iPhone its flows open in a sheet; on iPad, where the screen beside the sidebar and the chat is one column, the trace card opens under 2029’s lines. Draws: “1a’s trace on iPhone and iPad (drawn at the desktop only; below the fold on iOS)”.',
   frames: [PH(n10, 'Light', V.trace, '20:43', { sheet: true, dock: false, cap: n10 + ' · the sheet · Light' }), PD(n10, 'Dark', V.trace, '20:43', { cap: 'iPad · Budget forecast 1a, the trace on iPhone and iPad · landscape · Dark' })],
   notes: N2([['A solid sheet:', 'it holds figures and a sentence, so it is a content sheet, not glass; its grabber and Close are its controls.'], ['The figures:', 'R1’s 2029 spending, each category from October’s plan grown by its key, adding to −£34,722, as at the desktop.']]) }

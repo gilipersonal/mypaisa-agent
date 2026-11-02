@@ -360,7 +360,7 @@
                               <div class="ccard"><div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:59 · in the chat</div></div>
                             </div></div>
                           </sc-if>
-                          <sc-if value="{{ f.mem }}"><p class="pp mp-foot mp-ink2 chnote">Your own conversation with MyPaisa. Ask about any plan, or try a what-if; plans are Arun’s to change.</p></sc-if>
+                          <sc-if value="{{ f.mem }}"><p class="pp mp-foot mp-ink2 chnote">Your own conversation with MyPaisa. Ask about any plan, or try a what-if; plans are the admins’ to change.</p></sc-if>
                         </div></div>
                         <div class="edge-bot"></div>
                         <div class="composer cb20"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event</span><span>What’s due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>What if…</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask about the Projection</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
@@ -492,7 +492,7 @@
             const who = o.who || ARUN, priv = !!o.priv;
             const f = Object.assign({}, who, {
               cap: cap + ' · ' + theme[0], phone: door === 'iphone', pad: door === 'ipad', clock: o.clock, off: o.off || '0px', scrolled: !!o.scrolled,
-              meta: o.meta || ('Seven plans, Arun’s · the engine’s run of Thu 5 Nov ' + RUN[o.run][0]),
+              meta: o.meta || ('Seven plans, kept by the admins · the engine’s run of Thu 5 Nov ' + RUN[o.run][0]),
               eye: priv ? 'visibility_off' : 'visibility', eyeP: priv ? 'true' : 'false',
               head: o.head, sum: sumOf(o.run, priv), rows: rowsOf(o.ids || SEVEN, Object.assign({ priv }, o.rowo || {})),
               hasPaused: !!(o.rowo && o.rowo.paused && o.rowo.paused.length), banner: o.banner || null,
@@ -515,10 +515,10 @@
             saved: { clock: '21:11', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'fees2' }, sh: feesSheet('saved') },
             confirm: { clock: '21:13', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'car' },
               cf: { title: 'End Replace the car?', body: 'It stops counting from now, and the Projection runs again without it. It stays in its history and in Audit; a new plan starts in the chat.', label: 'A word for the audit (optional)', typed: 'we’re keeping the car' } },
-            ended: { clock: '21:13', run: 'R7', meta: 'Six plans, Arun’s, and one ended · the engine’s run of Thu 5 Nov 21:13', head: '6 plans · kept by the admins', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
+            ended: { clock: '21:13', run: 'R7', meta: 'Six plans, kept by the admins, and one ended · the engine’s run of Thu 5 Nov 21:13', head: '6 plans · kept by the admins', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
               banner: { c: 'ok-neutral', i: 'event_busy', t: 'Ended. The Projection runs again without it.', audit: 'Audit · Plan item ended · Replace the car · v3 → v4 · his words “we’re keeping the car” · Arun · Thu 5 Nov 21:13 · in place · run 21:11 → 21:13: 2046 middle path £3,037,000 → £3,091,000' } },
-            asha: { who: ASHA, clock: '21:19', run: 'W', head: '7 plans · Arun’s, the admin’s', ids: ['pot', 'bonus', 'wed', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
-              note: { h: 'Cash runs short', s: 'from the engine, run of 21:18', t: 'The wedding in Mar 2027 and the extension in Jun 2027 take cash £19,871 below zero that June; it is back above zero in Mar 2028. Ask in the chat to see the ways to cover it; applying one is Arun’s.' } }
+            asha: { who: ASHA, clock: '21:19', run: 'W', head: '7 plans · kept by the admins', ids: ['pot', 'bonus', 'wed', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
+              note: { h: 'Cash runs short', s: 'from the engine, run of 21:18', t: 'The wedding in Mar 2027 and the extension in Jun 2027 take cash £19,871 below zero that June; it is back above zero in Mar 2028. Ask in the chat to see the ways to cover it; applying one is an admin’s.' } }
           };
           // where each frame is scrolled to (a negative top margin on the page), measured so the state is on screen
           const SC = (o, off) => Object.assign({}, o, { off, scrolled: off !== '0px' });

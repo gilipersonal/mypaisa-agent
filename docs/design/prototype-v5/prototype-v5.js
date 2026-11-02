@@ -167,6 +167,13 @@
   function drawChat(ctx) {
     var s = ctx.step, msgs = [];
     try { msgs = s && s.chat ? s.chat(ctx) : []; } catch (e) { console.error('[pv5] chat ' + (s && s.id), e); msgs = [K.ai(K.note('error', K.esc(String(e && e.message || e))))]; }
+    /* MA-307: only admins write. A step's chat that draws the same conversation whoever views it is the admin's own
+       (its Confirm cards, approvals and undo); a member who is not an admin sees her own, view-only chat instead. */
+    if (!ctx.isAdmin && s && s.chat && msgs && msgs.length) {
+      var actx = Object.assign({}, ctx, { viewer: 'arun', isAdmin: true, who: 'Arun' }), amsgs = null;
+      try { amsgs = s.chat(actx); } catch (e2) { amsgs = null; }
+      if (amsgs && amsgs.join('') === msgs.join('')) msgs = [K.ai(ctx.who + '’s own conversation: ask anything about the household’s money. Adding, correcting and deleting are an admin’s, in the admin’s own chat; switch the Viewer to Arun to follow this step.')];
+    }
     if (!msgs || !msgs.length) msgs = [K.ai('Ask or tell MyPaisa anything about the household’s money.')];
     return '<div class="chat">' + msgs.join('') + '</div>';
   }
@@ -175,6 +182,8 @@
     var g = ctx.web ? '' : ' lg';
     var sendOn = (c.typed || c.files) ? (ctx.web ? ' on' : ' lg-tint') : '';
     var chips = c.chips || [['Add something', 'add', 'chip:add'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']];
+    /* MA-307: a member who is not an admin views only, so her composer offers no Add */
+    if (!ctx.isAdmin) chips = chips.filter(function (x) { return x[2] !== 'chip:add'; });
     var sug = c.sug ? '<button type="button" class="gchip' + g + '"' + K.go(c.sug[1]) + '>' + K.ms('north_east') + '<span>' + c.sug[0] + '</span></button>' : '';
     var typed = c.typed ? '<span class="txt">' + c.typed + '</span>' : '<span class="ph">' + (c.ph || 'Ask or tell MyPaisa…') + '</span>';
     var files = c.files ? '<span class="txt fx ac g6">' + c.files.map(function (f) { return K.ms('picture_as_pdf') + K.esc(f); }).join(' ') + '</span>' : '';
