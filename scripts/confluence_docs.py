@@ -1521,6 +1521,9 @@ def errors(ctx: Ctx | None = None) -> list[str]:
 RB_DROP = {"data-local-id", "data-icon-id", "data-icon-text", "data-status-style", "style",
            "data-width", "data-height", "data-width-type"}
 RB_VOID = {"area", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}
+# Inline marks: Confluence splits and reorders them (a <code> inside a <strong> comes back between two <strong>s), so
+# only their text is compared; a dropped word or a page cut short still differs.
+RB_INLINE = {"b", "code", "em", "i", "mark", "s", "span", "strong", "sub", "sup", "u"}
 
 
 def _macro_params(raw: str) -> str:
@@ -1560,6 +1563,8 @@ class _Canon(HTMLParser):
         if tag == "p":  # Confluence wraps every cell's and item's text in one; a paragraph break is a space
             self.buf.append(" ")
             return
+        if tag in RB_INLINE and not any(k in ("data-parameters", "data-type", "data-card-appearance") for k, _ in attrs):
+            return
         a = {k: v or "" for k, v in attrs if k not in RB_DROP and (k, v) != ("data-layout", "default")}
         self.flush()
         if (tag == "a" and "data-card-appearance" in a) or a.get("data-type") in ("block-card", "inline-card", "embed-card"):
@@ -1583,6 +1588,8 @@ class _Canon(HTMLParser):
         if tag == "p":
             if not self.muted():
                 self.buf.append(" ")
+            return
+        if tag in RB_INLINE and not any(t == tag for t, _ in self.stack):
             return
         if not any(t == tag for t, _ in self.stack):
             return
@@ -1759,6 +1766,8 @@ def selftest() -> int:
                 r_same = record_readback("p", envelope(live))
                 ok_same = rec().get("readback_ok")
                 r_ws = record_readback("p", page.replace("\n", "\n\n   ").replace("> <", ">  <"))
+                r_marks = record_readback("p", envelope(live.replace("<strong>MyPaisa&#39;s plan.</strong>",
+                                                                     "<strong>MyPaisa&#39;s</strong> <code>plan.</code>")))
                 r_cut = record_readback("p", envelope(live[: len(live) * 2 // 3]))
                 ok_cut = rec().get("readback_ok")
                 errs_cut = receipt_findings(load(MANIFEST)["pages"], ["p"])[0]
@@ -1769,6 +1778,7 @@ def selftest() -> int:
                 sys.stdout = out
             expect("an identical body (Confluence's own ids, dates, cards and macro ids aside) passes", (r_same, ok_same), (0, True))
             expect("whitespace-only differences pass", r_ws, 0)
+            expect("inline marks Confluence splits or reorders pass (a <code> moved out of a <strong>, MA-303's phase-00)", r_marks, 0)
             expect("a truncated body fails", (r_cut, ok_cut), (1, False))
             expect("a failed read-back of what is live is an error", len(errs_cut), 1)
             expect("a changed word fails", r_word, 1)

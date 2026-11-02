@@ -454,7 +454,7 @@ python3 scripts/maestro_local.py check-syntax             # from phase 0 (MA-273
 `plan_sync.py` keeps the plan, the trace, Jira's keys, the roadmap, the Confluence pages and the code in step
 (MA-155, MA-228). For the boards it checks only that a story's cited board file exists, that a UI story has a board
 before it starts, and that a board name matches its canvas; git is the boards' only record (MA-296). Its `selftest`
-breaks copies on purpose and expects the refusal; CI runs it only when plan-sync's own code changed.
+breaks copies on purpose and expects the refusal; CI runs it on every PR (about 9 s); locally it is reused while plan-sync's code and fixtures are unchanged.
 
 The checks on the boards' content (`board_fit.js`, `a11y_live.js`, `prototype_smoke.js`, `contrast_check.py`,
 the board readers in `plan_sync.py` and the generators' `--check`) were stopped by MA-303. Arun, 2 Nov 2026: "All

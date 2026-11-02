@@ -21,7 +21,7 @@ after fixing a round, report it and ask before the next.
 As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
 
 - **Gates:** `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`
-  (the selftest runs only when plan-sync's own code changed), the story's
+  (locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time, about 9 s), the story's
   other gates in `.claude/jira-flow.json`, and
   `python3 scripts/review_regress.py MA-<n>`. No gate runs on the boards
   (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design.

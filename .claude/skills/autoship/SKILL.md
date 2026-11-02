@@ -33,7 +33,7 @@ Uncommitted files that belong to another story are left alone and named.
    red gate stops here: report it, raise nothing (offer a draft at most).
    No gates configured: say "no gates configured". The `plan-sync` gate
    (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`;
-   the selftest runs only when plan-sync's own code changed) always applies;
+   locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time) always applies;
    it keeps the trace, Jira, Confluence and the code in step, and checks
    that every board a story cites is on disk. No gate measures the boards
    themselves (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on

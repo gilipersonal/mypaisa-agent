@@ -624,7 +624,7 @@ Claude's:
 - **Stop the checks on the design boards; plan-sync and the review ledger
   faster and smarter (MA-303):** the six checks on `docs/design/` stopped
   (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code
-  implemented"), nothing checks Prototype v5, and 136 ledger checks retired;
+  implemented"), nothing checks Prototype v5, and 113 ledger checks retired;
   plan-sync's selftest is faster and runs only when its code changed, Jira is
   compared since the last sync, Confluence is read back by hash, and a PR's
   files are checked against the stories that claim them. QA on the code, with

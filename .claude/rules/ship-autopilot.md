@@ -23,7 +23,7 @@ this repo on any change just before you merge the PR. just for this Repo".
   after PR #32's seven one-reviewer rounds: "always use that approach for
   this repo and make it a global rule".
   1. **Gates first:** `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`
-     (the selftest runs only when plan-sync's own code changed), the story's
+     (locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time, about 9 s), the story's
      other gates, and `python3 scripts/review_regress.py MA-<n>` once the
      story has a ledger; `--state MA-<n>` validates its state file. No gate
      runs on the boards (Arun, 2 Nov 2026, MA-303: "All the 6 checks
