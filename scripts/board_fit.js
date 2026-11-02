@@ -724,14 +724,16 @@ async function diff(ref, expectFile, out) {
     res = await diffDirs(path.join(tmp, 'docs', 'design'), design, expect.neutral || '', out, ONLY, engines, ref, new Set(skip.keys()));
   } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
   const { rows, list } = res;
-  const meant = (r) => (expect.changes || []).find((c) => c.board.split('|').some((b) => r.board.endsWith(b)) && new RegExp(c.frames).test(r.label));
+  // an entry may name the engines it holds for ("engines": ["webkit"]): a change one engine draws and the other does not
+  const inRun = (c) => !c.engines || c.engines.some((e) => engines.includes(e));
+  const meant = (r) => (expect.changes || []).find((c) => (!c.engines || c.engines.includes(r.engine)) && c.board.split('|').some((b) => r.board.endsWith(b)) && new RegExp(c.frames).test(r.label));
   let n = 0;
   for (const r of rows) {
     const m = meant(r);
     console.log(`${m ? 'ok  ' : 'FAIL'} ${r.board} · ${r.engine} · ${r.label} · ${r.what}${m ? ' · ' + m.why.slice(0, 80) : ''}`);
     if (!m) n++;
   }
-  for (const c of expect.changes || []) if (list.some((b) => c.board.split('|').some((x) => b.endsWith(x))) && !rows.some((r) => meant(r) === c)) { console.log(`FAIL a change the story meant no longer shows: ${c.board} · ${c.frames} · ${c.why.slice(0, 80)}`); n++; }
+  for (const c of expect.changes || []) if (inRun(c) && list.some((b) => c.board.split('|').some((x) => b.endsWith(x))) && !rows.some((r) => meant(r) === c)) { console.log(`FAIL a change the story meant no longer shows: ${c.board} · ${c.frames} · ${c.why.slice(0, 80)}`); n++; }
   console.log(`board-fit diff: ${list.length} boards against ${ref}, ${rows.length} frames changed, ${n} not meant`);
   process.exit(n ? 1 : 0);
 }

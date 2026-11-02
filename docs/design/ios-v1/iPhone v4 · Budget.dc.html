@@ -115,9 +115,9 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .cfile { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 10px; border-radius: 12px; background: var(--mp-surface-2); }
 .mp-foot .mp-mask { margin-top: 2px; }
 
-/* MA-300: the drawn controls are real buttons (type="button"; the older plain <button>s keep their own look). A
+/* MA-300: the drawn controls are real buttons (the reset skips the classes that were buttons already, so they draw as before) (type="button"; the older plain <button>s keep their own look). A
    zero-specificity reset strips the browser's button look, so every class rule (tokens.css, ios.css, this board) still draws them as before. */
-:where(button[type="button"]) {
+:where(button[type="button"]:not(.cbtn, .edf, .iconbtn, .mp-btn, .mp-seg-i)) {
   -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
   letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
   align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }

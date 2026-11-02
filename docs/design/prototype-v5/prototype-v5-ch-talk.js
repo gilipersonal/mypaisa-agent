@@ -179,9 +179,9 @@
       '<div class="pv5-talk-col">' + left + '</div><div class="pv5-talk-col">' + right + '</div>') + '</div>';
   }
   function swrow(o) {
-    return '<button type="button" class="mp-row rowbtn pv5-talk-swrow' + (o.ring ? ' pnext' : '') + '"' + K.go(o.go) + '>' + (o.icon ? '<span class="mp-icontile" style="background:var(--mp-surface-2)">' + K.ms(o.icon) + '</span>' : '') +
+    return '<button type="button" class="mp-row rowbtn pv5-talk-swrow' + (o.ring ? ' pnext' : '') + '" role="switch" aria-checked="' + !!o.on + '" aria-label="' + String(o.t).replace(/"/g, '&quot;') + '"' + K.go(o.go) + '>' + (o.icon ? '<span class="mp-icontile" style="background:var(--mp-surface-2)">' + K.ms(o.icon) + '</span>' : '') +
       '<div class="f1 fx col"><span class="mp-sub" style="font-weight:600">' + o.t + '</span>' + (o.s ? '<span class="mp-foot mp-ink2">' + o.s + '</span>' : '') + '</div>' +
-      '<span class="mp-switch' + (o.on ? ' on' : '') + '" role="switch" aria-checked="' + !!o.on + '"><span class="mp-switch-k"></span></span></button>';
+      '<span class="mp-switch' + (o.on ? ' on' : '') + '" aria-hidden="true"><span class="mp-switch-k"></span></span></button>';
   }
   function meter(frac, marks) {
     var m = (marks || []).map(function (p) { return '<b style="left:' + p + '%"></b>'; }).join('');

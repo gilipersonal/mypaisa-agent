@@ -26,6 +26,11 @@
 //                     A member at tabindex -1 of a composite widget (tablist, radiogroup, toolbar, menu, menubar,
 //                     listbox, grid, tree) is reachable by the roving tabindex when the composite holds at least one
 //                     shown member at tabindex 0 or above; a composite with none is refused.
+//                     A modal backdrop is a pointer convenience, not a control: an acting element that is
+//                     aria-hidden="true" is accepted only when it sits beside (a sibling of) a shown
+//                     [role=dialog][aria-modal=true] that holds a close control a keyboard reaches (shown, tabindex 0 or
+//                     above, not disabled, acting on the backdrop's own data-go or named Close, Cancel, Done or Dismiss).
+//                     Any other aria-hidden element that acts is refused.
 //   icon-not-hidden   a Material Symbols ligature (.ms) shown as an icon whose name a screen reader reads: neither it nor
 //                     an ancestor is aria-hidden="true" and no ancestor is role="img" with an aria-label (whose children
 //                     are presentational).
@@ -266,6 +271,15 @@ function pageScan({ fi, ticks, targets, acts, privMark, forcePriv, privAuto = tr
     if (e.hasAttribute('disabled') || e.getAttribute('aria-disabled') === 'true') continue;
     const host = e.parentElement && e.parentElement.closest('button, a[href], [tabindex]:not([tabindex="-1"])');
     if (host && f.contains(host)) continue;
+    // a modal backdrop (aria-hidden="true", beside an open modal dialog whose close control the keyboard reaches): the
+    // dialog's close control and Escape are the keyboard's way out, the backdrop only the pointer's
+    if (e.getAttribute('aria-hidden') === 'true' && e.parentElement) {
+      const go = e.getAttribute('data-go');
+      const closer = (d) => [...d.querySelectorAll('button, a[href], [role="button"], [tabindex]')].some((c) => c.tabIndex >= 0 && shown(c) && !c.hasAttribute('disabled') && c.getAttribute('aria-disabled') !== 'true' &&
+        ((go && c.getAttribute('data-go') === go) || /^(close|cancel|done|dismiss)\b/i.test(name(c))));
+      const dlg = [...e.parentElement.children].filter((d) => d !== e && d.matches('[role="dialog"][aria-modal="true"]') && shown(d));
+      if (dlg.some(closer)) continue;
+    }
     // a roving tabindex (WAI-ARIA composite widgets): inside a tablist, radiogroup, toolbar, menu, menubar, listbox, grid
     // or tree, one member takes tabindex 0 and the arrow keys move focus to the rest at -1. A member at -1 is reachable
     // when its composite holds at least one shown member at 0 or above; a composite with none is refused.
@@ -539,6 +553,9 @@ const FX_CASES = [
   { name: 'not-focusable-listener', mutate: [/<\/body>/, '<script>const q = document.querySelector(".mtr"); q.style.cursor = "pointer"; q.addEventListener("click", () => {});</script></body>'], expect: 'not-focusable', el: /mtr/ },
   { name: 'roving-tablist-accepted', mutate: [/tabindex="0">Month<\/span><span role="tab" aria-selected="false" tabindex="-1">Year/, 'tabindex="-1">Month</span><span role="tab" aria-selected="false" tabindex="0">Year'], none: 'not-focusable' },
   { name: 'roving-tablist-none-reachable', mutate: [/tabindex="0">Month/, 'tabindex="-1">Month'], expect: 'not-focusable', text: /^(Month|Year) \(no member of its role=tablist is reachable\)$/ },
+  { name: 'backdrop-hidden-accepted', mutate: [/ <\/div>\n<\/div>\n<div class="dev mp t-light" data-screen-label="Selftest · Home in Privacy Mode">/, ` </div>\n <div class="bd" aria-hidden="true" data-go="x:close" style="position:absolute;inset:0"></div><div role="dialog" aria-modal="true" aria-label="Sheet" style="position:absolute;left:0;right:0;bottom:0"><button type="button" data-go="x:close" style="width:64px;height:44px">Close</button></div>\n</div>\n<div class="dev mp t-light" data-screen-label="Selftest · Home in Privacy Mode">`], none: 'not-focusable' },
+  { name: 'aria-hidden-acting-refused', mutate: [/ <\/div>\n<\/div>\n<div class="dev mp t-light" data-screen-label="Selftest · Home in Privacy Mode">/, ` </div>\n <div class="bd" aria-hidden="true" data-go="x:close" style="position:absolute;inset:0"></div>\n</div>\n<div class="dev mp t-light" data-screen-label="Selftest · Home in Privacy Mode">`], expect: 'not-focusable', el: /div\.bd/ },
+  { name: 'backdrop-dialog-no-close-refused', mutate: [/ <\/div>\n<\/div>\n<div class="dev mp t-light" data-screen-label="Selftest · Home in Privacy Mode">/, ` </div>\n <div class="bd" aria-hidden="true" data-go="x:close" style="position:absolute;inset:0"></div><div role="dialog" aria-modal="true" aria-label="Sheet" style="position:absolute;left:0;right:0;bottom:0"><button type="button" data-go="x:other" style="width:64px;height:44px">Share</button></div>\n</div>\n<div class="dev mp t-light" data-screen-label="Selftest · Home in Privacy Mode">`], expect: 'not-focusable', el: /div\.bd/ },
   { name: 'icon-not-hidden', mutate: [/<span class="ms" aria-hidden="true">chat_bubble/, '<span class="ms">chat_bubble'], expect: 'icon-not-hidden', text: /^chat_bubble$/ },
   { name: 'aria-hidden-invalid', mutate: [/<span class="ms" aria-hidden="true">chat_bubble/, '<span class="ms" aria-hidden=\\"true\\">chat_bubble'], expect: 'aria-hidden-invalid', text: /^aria-hidden="(?!true")[^ ]*true[^ ]*" on chat_bubble$/ },
   { name: 'icon-hidden-by-a-bad-value', mutate: [/<span class="ms" aria-hidden="true">chat_bubble/, '<span class="ms" aria-hidden=\\"true\\">chat_bubble'], expect: 'icon-not-hidden', text: /^chat_bubble$/ },

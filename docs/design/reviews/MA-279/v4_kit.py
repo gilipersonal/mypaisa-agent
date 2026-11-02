@@ -106,6 +106,11 @@ def mask(text: str, priv: bool, on_hero: bool = False) -> str:
     return f'<span class="{cls}" role="img" aria-label="Hidden"><span aria-hidden="true">{pad}</span></span>'
 
 
+def fx_rates(priv: bool) -> str:
+    """The ECB rates line: Privacy Mode shows no rate (ARCHITECTURE), so it says the rates are hidden."""
+    return "rates hidden in Privacy mode" if priv else "£1 = ₹112.50 · $1.30 · €1.17"
+
+
 def ymap(v: float, lo: float, hi: float, pad_t: float = 8.0, pad_b: float = 8.0) -> float:
     span = hi - lo or 1.0
     return round(pad_t + (hi - v) / span * (100.0 - pad_t - pad_b), 2)
@@ -211,7 +216,7 @@ def hero_1a(ccy: str = "GBP", priv: bool = False, stale: bool = False, scope_idx
         f'<div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6">{owe_v}</span></div>'
         f'<div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6">{liq_v}</span></div></div>'
         '<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span>'
-        "<span>Fri 23 Oct ECB · £1 = ₹112.50 · $1.30 · €1.17 · figures from the engine</span></div></div>"
+        f"<span>Fri 23 Oct ECB · {fx_rates(priv)} · figures from the engine</span></div></div>"
     )
 
 
@@ -795,7 +800,7 @@ def browser_frame(
         '<div class="mp-shell">'
         f'<nav class="mp-side mp-shell-side side" aria-label="MyPaisa"><div class="fx ac gap12 brand">{mark_svg}<span class="mp-hl">MyPaisa</span></div>{side_items}<div style="flex:1"></div><div class="mp-foot mp-ink2 side-ft">Arun · owner<br />dashboard.mypaisapp.com</div></nav>'
         '<main class="mp-shell-main"><div class="mp-pagepad">'
-        f'<header class="mp-pagehead"><div><div class="mp-large">{title}</div><div class="mp-foot mp-ink2">Mon 26 Oct 2026 · Fri 23 Oct ECB · £1 = ₹112.50 · $1.30 · €1.17</div></div>'
+        f'<header class="mp-pagehead"><div><div class="mp-large">{title}</div><div class="mp-foot mp-ink2">Mon 26 Oct 2026 · Fri 23 Oct ECB · {fx_rates(priv)}</div></div>'
         f'<div class="fx ac gap8 wrapr">{ccy_pill_bar(ccy, hero=False)}'
         '<button type="button" class="iconbtn askw" aria-label="Open the chat" aria-haspopup="dialog"><span class="ms" aria-hidden="true">chat_bubble</span></button>'
         f'<button type="button" class="{eye_cls}" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms" aria-hidden="true">{eye}</span></button></div></header>'

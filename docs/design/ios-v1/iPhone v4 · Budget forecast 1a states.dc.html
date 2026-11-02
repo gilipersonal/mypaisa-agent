@@ -219,6 +219,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .bhit { position: absolute; top: 0; bottom: -20px; left: 50%; width: max(100%, 44px); transform: translateX(-50%); }
 .bc:first-child .bhit { left: 0; transform: none; }
 .bc:last-child .bhit { left: auto; right: 0; transform: none; }
+.mp .mp-mask { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }   /* zeros keep the hidden figure's width in WebKit too (MA-300) */
 </style>
 </helmet>
 
@@ -577,7 +578,7 @@ const potLedger = (mode, priv) => {
     tots: [{ k: 'Into the pot', v: M.fmt(into), m: m }, { k: 'Out of it, to ' + D.pot.drawLast, v: M.fmt(out), m: m }, { k: mode === 'gbp' ? 'The difference, its interest at 3%' : 'The difference: its interest, and the factor moving between the years', v: M.fmt(out - into), m: m }] };
 };
 /* privacy: every masked figure keeps only its width (figure spaces) and reads as Hidden; words, years and % stay */
-const HIDE = (t) => { const w = [...String(t)].map((ch) => (/[,.]/.test(ch) ? '\u2008' : '\u2007')).join(''); return w.length < 4 ? '\u2007'.repeat(4) : w; };
+const HIDE = (t) => String(t).replace(/[0-9]/g, '0');   // the figure never reaches the page; zeros keep its tabular width in every engine (MA-300)
 const hideAll = (o, seen) => {
   seen = seen || new Set();
   if (!o || typeof o !== 'object' || seen.has(o)) return o;

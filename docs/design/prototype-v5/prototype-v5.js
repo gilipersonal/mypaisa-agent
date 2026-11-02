@@ -215,7 +215,7 @@
   }
   function themeCls() { return 'mp' + (st.dark ? ' t-dark' : ' t-light') + (st.priv ? ' privon' : '') + ' charts-' + st.charts; }
   function moreDrawer(ctx, active) {
-    var h = '<div class="dim"' + K.go('more:close') + '></div><nav class="w-more" role="dialog" aria-modal="true" aria-label="All sections">' +
+    var h = '<div class="dim" aria-hidden="true"' + K.go('more:close') + '></div><nav class="w-more" role="dialog" aria-modal="true" aria-label="All sections">' +
       '<div class="w-more-h"><span class="mp-hl">Sections</span><button type="button" class="iconbtn" aria-label="Close sections"' + K.go('more:close') + '>' + K.ms('close') + '</button></div>' +
       '<div class="w-more-b"><button type="button" class="mp-side-i' + (active === 'search' ? ' on' : '') + '"' + K.go('nav:search') + '>' + K.ms('search') + '<span>Search</span></button>';
     NAV.forEach(function (g) {
@@ -230,8 +230,8 @@
     var sheet = (!st.sheetOff && ctx.step && ctx.step.sheet) ? ctx.step.sheet(ctx) : null;
     if (sheet) {
       var closeKey = (ctx.step && ctx.step.sheetClose) || 'sheet:dismiss';
-      if (ctx.web) h += '<div class="dim"' + K.go(closeKey) + '></div><div class="sheet w-sheet" role="dialog" aria-modal="true">' + sheet + '</div>';
-      else h += '<div class="dim"' + K.go(closeKey) + '></div><div class="sheet lg" role="dialog" aria-modal="true"><div class="sheet-grab"></div>' + sheet + '</div>';
+      if (ctx.web) h += '<div class="dim" aria-hidden="true"' + K.go(closeKey) + '></div><div class="sheet w-sheet" role="dialog" aria-modal="true">' + sheet + '</div>';
+      else h += '<div class="dim" aria-hidden="true"' + K.go(closeKey) + '></div><div class="sheet lg" role="dialog" aria-modal="true"><div class="sheet-grab"></div>' + sheet + '</div>';
     }
     if (ctx.web && st.moreOpen) h += moreDrawer(ctx, active);
     if (st.toast) h += '<div class="mp-toast" role="status" aria-live="polite" style="position:absolute;left:50%;bottom:120px;transform:translateX(-50%);z-index:60;max-width:80%">' + st.toast + '</div>';

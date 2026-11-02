@@ -225,6 +225,10 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 /* with Reduce Motion nothing in the prototype loops (MA-300 P2-1): the ring stays, still */
 @media (prefers-reduced-motion: reduce) { .pv5 *, .pv5 *::before, .pv5 *::after { animation-iteration-count: 1 !important; } }
 .pnext { outline: 2px solid var(--mp-focus); outline-offset: 2px; }
+/* a control the walk-through marks keeps its 44 by 44 hit area (MA-300 P1-3): the ring, .pnext::after, is that hit area,
+   drawn 4 px out as before (on any control 36 px or more across, 4 px out already reaches 44) and further out only on a
+   smaller one; it takes the pointer so a tap on it lands on the control. With Reduce Motion it is drawn bare, no ring */
+.pframe :is(.gchip, .csend, .cplus, .mp-seg-i, .tabsx button, .pg-back, .btn-reset, .pill, .fx44, .cbtn).pnext::after { content: ""; position: absolute; top: min(-4px, calc(50% - 22px)); bottom: min(-4px, calc(50% - 22px)); left: min(-4px, calc(50% - 22px)); right: min(-4px, calc(50% - 22px)); box-sizing: border-box; pointer-events: auto; }
 /* a draft screen's chip, inside the product's frame */
 .mp-draft { display: inline-flex; align-items: center; gap: 4px; font: 700 12px/16px var(--mp-font); color: var(--mp-pause); background: var(--mp-pause-bg); border-radius: 999px; padding: 4px 9px; letter-spacing: 0.02em; white-space: nowrap; }
 .mp-draft .ms { font-size: 14px; }

@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="motion.css" />
         <script src="motion.js"></script>
         <style>
+:where(button.gbtn,button.gtext,button.cbtn,button.gchip,button.cplus,button.csend){-webkit-appearance:none;appearance:none;margin:0;padding:0;border:0;background:none;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;text-align:inherit;cursor:pointer}/* the toolbar,chip and composer controls are buttons drawn as their spans were */
 html,body{margin:0;background:#ECEAE6}
 a{color:#C2381F}a:not([class]):hover{color:#8F2915}
 .dv-turn{padding:44px 48px 24px;border-bottom:1px solid rgba(0,0,0,.08)}
@@ -219,7 +220,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="kv kvw"><span>Pattern</span><span>Double top: lower after 20 days in 6 of 9 cases</span></div>
 <div class="kv kvw"><span>Main drivers</span><span>momentum fading, US yields rising, chip export news</span></div>
 </div>
-<div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Chart</span><span class="cbtn">Track record</span></div>
+<div class="ccard-acts"><button type="button" class="cbtn">Why?</button><button type="button" class="cbtn">Chart</button><button type="button" class="cbtn">Track record</button></div>
 <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden="true">expand_more</span></div>
 </div>
 </div>
@@ -227,8 +228,8 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 </div>
 </div>
 <div class="edge-bot"></div>
-<div class="composer cmpb"><div class="chips"><span class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></span></div>
-<div class="cbar"><span class="cplus lg"><span class="ms z1" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms" aria-hidden="true">mic</span></span></span></div>
+<div class="composer cmpb"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></button></div>
+<div class="cbar"><button type="button" class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div>
 </div>
 <div class="edge-bot"></div>
 <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
@@ -255,22 +256,22 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="kv kvw"><span>Pattern</span><span>Breakdown below the Sep low: lower after 20 days in 7 of 10</span></div>
 <div class="kv kvw"><span>Main drivers</span><span>momentum fading, chip export news</span></div>
 </div>
-<div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Chart</span><span class="cbtn">Track record</span></div>
+<div class="ccard-acts"><button type="button" class="cbtn">Why?</button><button type="button" class="cbtn">Chart</button><button type="button" class="cbtn">Track record</button></div>
 <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden="true">expand_more</span></div>
 </div>
 <div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">Silver ETC</span></div>
 <div class="ccard-b"><div class="kv"><span>Rules engine</span><span>HOLD · 62%</span></div>
 <div class="nov"><span class="ms" aria-hidden="true">blur_on</span><span class="mp-sub mp-w6">No clear view</span></div>
 <p class="pp mp-foot mp-ink2">Its chances are too close to the usual to count: 50% up, and 18% against a usual 17% for a fall over 5%.</p></div>
-<div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Track record</span></div>
+<div class="ccard-acts"><button type="button" class="cbtn">Why?</button><button type="button" class="cbtn">Track record</button></div>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="edge-bot"></div>
-<div class="composer cmpb"><div class="chips"><span class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></span></div>
-<div class="cbar"><span class="cplus lg"><span class="ms z1" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms" aria-hidden="true">mic</span></span></span></div>
+<div class="composer cmpb"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></button></div>
+<div class="cbar"><button type="button" class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div>
 </div>
 <div class="edge-bot"></div>
 <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
@@ -290,15 +291,15 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="ccard-b"><div class="kv"><span>Rules engine</span><span>HOLD · 62%</span></div>
 <div class="nov"><span class="ms" aria-hidden="true">blur_on</span><span class="mp-sub mp-w6">No clear view</span></div>
 <p class="pp mp-foot mp-ink2">Its chances are too close to the usual to count: 50% up, and 18% against a usual 17% for a fall over 5%.</p></div>
-<div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Track record</span></div>
+<div class="ccard-acts"><button type="button" class="cbtn">Why?</button><button type="button" class="cbtn">Track record</button></div>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="edge-bot"></div>
-<div class="composer cmpb"><div class="chips"><span class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></span></div>
-<div class="cbar"><span class="cplus lg"><span class="ms z1" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms" aria-hidden="true">mic</span></span></span></div>
+<div class="composer cmpb"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></button></div>
+<div class="cbar"><button type="button" class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div>
 </div>
 <div class="edge-bot"></div>
 <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
@@ -327,7 +328,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="kv kvw"><span>Main drivers</span><span>momentum fading, US yields rising, chip export news</span></div>
 </div>
 <div class="ccard-tech"><span>Forecast row · NASDAQ 100 ETF · Sat 24 Oct 06:10 · model 2026.10 · trained on data to 30 Sep</span><span>direction 0.52 (calibrated, conformal range p10 −7.0 · p50 +0.3 · p90 +6.0)</span><span>risk P(fall &gt; 5%) 0.21 · base rate 0.12</span><span>mood stressed 0.71 · choppy 0.18 · falling 0.07 · calm 0.04</span><span>pattern double top · n 9 · 20d mean −2.1% · 6 of 9 lower</span><span>gate week 5 of 8 · W1 to W5 beat base rate and rules engine</span></div>
-<div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Chart</span><span class="cbtn">Track record</span></div>
+<div class="ccard-acts"><button type="button" class="cbtn">Why?</button><button type="button" class="cbtn">Chart</button><button type="button" class="cbtn">Track record</button></div>
 <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden="true">expand_less</span></div>
 </div>
 </div>
@@ -335,8 +336,8 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 </div>
 </div>
 <div class="edge-bot"></div>
-<div class="composer cmpb"><div class="chips"><span class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></span></div>
-<div class="cbar"><span class="cplus lg"><span class="ms z1" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms" aria-hidden="true">mic</span></span></span></div>
+<div class="composer cmpb"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></button></div>
+<div class="cbar"><button type="button" class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div>
 </div>
 <div class="edge-bot"></div>
 <div class="tabdock"><div class="tabs lg"><span class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
@@ -354,8 +355,8 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
           <sc-for list="{{ p1 }}" as="t" hint-placeholder-count="4"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
 <div class="dev dev-iphone mp {{ t.c }}"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span class="gbtn lg" aria-label="Back to NASDAQ 100 ETF"><span class="ms z1" aria-hidden="true">chevron_left</span></span><sc-if value="{{ t.small }}"><span class="navc">How it proves itself</span></sc-if>
-<span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to NASDAQ 100 ETF"><span class="ms z1" aria-hidden="true">chevron_left</span></button><sc-if value="{{ t.small }}"><span class="navc">How it proves itself</span></sc-if>
+<button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></button></div>
 <sc-if value="{{ t.large }}"><div class="largetitle lt2">How it proves itself</div>
 </sc-if>
 <div class="scroll"><sc-if value="{{ t.small }}"><div class="fadet"></div>
@@ -411,8 +412,8 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
           <sc-for list="{{ f1 }}" as="t" hint-placeholder-count="3"><div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div>
 <div class="dev dev-iphone mp {{ t.c }}"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></span><sc-if value="{{ t.small }}"><span class="navc">Balanced</span></sc-if>
-<span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></button><sc-if value="{{ t.small }}"><span class="navc">Balanced</span></sc-if>
+<button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></button></div>
 <sc-if value="{{ t.large }}"><div class="largetitle lt2">Balanced</div>
 </sc-if>
 <div class="scroll"><sc-if value="{{ t.small }}"><div class="fadet"></div>
@@ -445,7 +446,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 </div>
 <div class="note inl"><span class="ms" aria-hidden="true">info</span><span class="mp-foot mp-ink2">One price a day, a day late (next-day pricing): no candles, so only the line patterns on its price.</span></div>
 </div>
-<div class="chiprow"><span class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</span><span class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</span></div>
+<div class="chiprow"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</button><button type="button" class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</button></div>
 <div class="sech"><span class="mp-over mp-ink2">Patterns on its price</span><span class="mp-foot mp-ink2">line patterns only</span></div>
 <div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pb"></i></span><span class="grow"><span class="mp-sub mp-w6">Higher lows since August</span><span class="mp-foot mp-ink2">A rising trend line through Wed 12 Aug, Fri 18 Sep and Fri 9 Oct</span><span class="mp-foot">Higher 20 days later in 8 of 12 cases since 2015 · average +0.9%</span></span><span class="ms chev" aria-hidden="true">chevron_right</span></div>
 </div>
@@ -482,7 +483,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
           <div class="dv-col" data-screen-label="iPhone · Forecast · privacy on · Dark"><div class="bd-theme">iPhone · Forecast · privacy on · Dark</div>
 <div class="dev dev-iphone mp t-dark"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></span><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="true"><span class="ms z1" aria-hidden="true">visibility_off</span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></button><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="true"><span class="ms z1" aria-hidden="true">visibility_off</span></button></div>
 <div class="largetitle lt2">NASDAQ 100 ETF</div>
 <div class="scroll"><div class="pg" style="margin-top: -0px"><div class="mp-foot mp-ink2 meta">iShares NASDAQ 100 UCITS ETF · Asha · ISA · <span class="mp-mask" role="img" aria-label="Hidden">£000</span></div>
 <div class="mp-seg" role="group" aria-label="Holding"><button class="mp-seg-i" aria-pressed="false">Overview</button><button class="mp-seg-i on" aria-pressed="true">Forecast</button><button class="mp-seg-i" aria-pressed="false">Track record</button></div>
@@ -511,7 +512,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="lgd oncard"><span><i class="sw-up"></i>▲ day up</span><span><i class="sw-dn"></i>▼ day down</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pa"></i>double top, neckline</span><span><i class="sw-pb"></i>support</span></div>
 </div>
 </div>
-<div class="chiprow"><span class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</span><span class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</span></div>
+<div class="chiprow"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</button><button type="button" class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</button></div>
 <div class="sech"><span class="mp-over mp-ink2">Patterns on the chart</span><span class="mp-foot mp-ink2">each measured on this ETF</span></div>
 <div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.2% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev" aria-hidden="true">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mk"><i class="mk-pb"></i></span><span class="grow"><span class="mp-sub mp-w6">Support near −1%</span><span class="mp-foot mp-ink2">The Wed 5 Aug low, tested Thu 22 Oct</span><span class="mp-foot">Held in 9 of 14 tests since 2015 · average +1.1% after 20 days</span></span><span class="ms chev" aria-hidden="true">chevron_right</span></div>
@@ -548,7 +549,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
           <div class="dv-col" data-screen-label="Foldable · Forecast · folded · Light"><div class="bd-theme">Foldable · Forecast · folded · Light</div>
 <div class="dev dev-fold-shut mp t-light"><div class="island"></div>
 <div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></span><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></button><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></button></div>
 <div class="largetitle lt2">NASDAQ 100 ETF</div>
 <div class="scroll"><div class="pg"><div class="mp-foot mp-ink2 meta">iShares NASDAQ 100 UCITS ETF · Asha · ISA · £512</div>
 <div class="mp-seg" role="group" aria-label="Holding"><button class="mp-seg-i" aria-pressed="false">Overview</button><button class="mp-seg-i on" aria-pressed="true">Forecast</button><button class="mp-seg-i" aria-pressed="false">Track record</button></div>
@@ -577,7 +578,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="lgd oncard"><span><i class="sw-up"></i>▲ day up</span><span><i class="sw-dn"></i>▼ day down</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pa"></i>double top, neckline</span><span><i class="sw-pb"></i>support</span></div>
 </div>
 </div>
-<div class="chiprow"><span class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</span><span class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</span></div>
+<div class="chiprow"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</button><button type="button" class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</button></div>
 <div class="sech"><span class="mp-over mp-ink2">Patterns on the chart</span><span class="mp-foot mp-ink2">each measured on this ETF</span></div>
 <div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.2% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev" aria-hidden="true">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mk"><i class="mk-pb"></i></span><span class="grow"><span class="mp-sub mp-w6">Support near −1%</span><span class="mp-foot mp-ink2">The Wed 5 Aug low, tested Thu 22 Oct</span><span class="mp-foot">Held in 9 of 14 tests since 2015 · average +1.1% after 20 days</span></span><span class="ms chev" aria-hidden="true">chevron_right</span></div>
@@ -608,7 +609,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="dev dev-fold-open mp t-light"><div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
 <div class="toptabs"><div class="tabs lg ttabs"><span class="ttab"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="ttab on"><span class="ms" aria-hidden="true">home</span>Home</span><span class="ttab"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="ttab"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
 </div>
-<div class="nav"><span class="navl"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></span><span class="largetitle navt">NASDAQ 100 ETF</span></span><span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+<div class="nav"><span class="navl"><button type="button" class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></button><span class="largetitle navt">NASDAQ 100 ETF</span></span><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></button><button type="button" class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button></span></div>
 <div class="scroll"><div class="ipg"><div class="mp-foot mp-ink2 meta">iShares NASDAQ 100 UCITS ETF · Asha · ISA · £512</div>
 <div class="mp-seg" role="group" aria-label="Holding"><button class="mp-seg-i" aria-pressed="false">Overview</button><button class="mp-seg-i on" aria-pressed="true">Forecast</button><button class="mp-seg-i" aria-pressed="false">Track record</button></div>
 <div class="mp-hero heroF"><div class="fx ac jb gap8 wrapr"><span class="mp-over mp-hero-2">Next 4 weeks · the Forecaster</span><span class="mp-chip prc-h"><span class="ms ms-s" aria-hidden="true">science</span>In practice · week 5 of 8</span></div>
@@ -636,7 +637,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#fff}
 <div class="lgd oncard"><span><i class="sw-up"></i>▲ day up</span><span><i class="sw-dn"></i>▼ day down</span><span><i class="sw-band"></i>8 in 10 end inside</span><span><i class="sw-mid"></i>the middle</span><span><i class="sw-pa"></i>double top, neckline</span><span><i class="sw-pb"></i>support</span></div>
 </div>
 </div>
-<div class="chiprow"><span class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</span><span class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</span></div>
+<div class="chiprow"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</button><button type="button" class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</button></div>
 <div class="g2"><div class="dv-col gap14"><div class="sech"><span class="mp-over mp-ink2">Patterns on the chart</span><span class="mp-foot mp-ink2">each measured on this ETF</span></div>
 <div class="mp-group"><div class="mp-row rowc"><span class="mk"><i class="mk-pa"></i></span><span class="grow"><span class="mp-sub mp-w6">Double top</span><span class="mp-foot mp-ink2">Peaks Thu 1 Oct and Wed 7 Oct, neckline +6.2% broken Wed 14 Oct</span><span class="mp-foot">Lower 20 days later in 6 of 9 cases since 2015 · average −2.1%</span></span><span class="ms chev" aria-hidden="true">chevron_right</span></div>
 <div class="mp-row rowc"><span class="mk"><i class="mk-pb"></i></span><span class="grow"><span class="mp-sub mp-w6">Support near −1%</span><span class="mp-foot mp-ink2">The Wed 5 Aug low, tested Thu 22 Oct</span><span class="mp-foot">Held in 9 of 14 tests since 2015 · average +1.1% after 20 days</span></span><span class="ms chev" aria-hidden="true">chevron_right</span></div>

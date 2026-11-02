@@ -221,6 +221,7 @@ button.edbtn { position: relative; } button.edbtn::after { content: ""; position
 .v-chat .chd { display: none; }
 .v-chat .strip { display: flex; }
 }
+          :where(button[type="button"].mp-btn) { letter-spacing: inherit; word-spacing: inherit; }   /* MA-300: spans made buttons keep the spacing they inherited; the older plain buttons keep theirs */
 </style>
 </helmet>
 

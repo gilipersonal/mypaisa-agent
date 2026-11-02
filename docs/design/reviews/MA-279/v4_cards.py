@@ -29,6 +29,11 @@ def invite_and_cancel_card() -> str:
     )
 
 
+
+def hide(text: str, priv: bool) -> str:
+    """An amount inside a sentence: drawn as plain text, masked with Privacy Mode on (the figure never in the DOM)."""
+    return mask(text, priv) if priv else text
+
 def signin_refused_and_setup_card() -> str:
     return card_box(
         "Sign-in refusals &amp; first-run setup",
@@ -53,8 +58,8 @@ def guided_flows_card(ccy: str = "GBP", priv: bool = False) -> str:
             ("2 · Add a holding", "Vanguard FTSE All-World UCITS ETF (VWRL · LSE · GBP · Arun ISA) → draft_record card ready to confirm.", '<span class="mp-chip chip-s mp-neutral">Draft</span>'),
             ("3 · Update a valuation", f"Pune flat estimate {pune_b} → {pune_a} · owner valuation note + Confirm.", '<span class="mp-chip chip-s mp-neutral">Confirm</span>'),
             ("4 · Change a setting", "Morning brief time 07:30 → 07:00 UK · preference card with Confirm &amp; audit row.", '<span class="mp-chip chip-s mp-neutral">Confirm</span>'),
-            ("5 · Check-in: Fixed saver matures", "1-Year Fixed Saver (£12,000 + £540 interest) · Rolled over / Moved to Monzo Savings / Something else.", '<span class="mp-chip chip-s mp-add">Check-in</span>'),
-            ("6 · Check-in: Asha's Parag Parikh SIP", "Monthly ₹10,000 SIP due Sun 1 Nov · Paid (with Undo) / Skipped / Changed amount.", '<span class="mp-chip chip-s mp-add">SIP</span>'),
+            ("5 · Check-in: Fixed saver matures", f"1-Year Fixed Saver ({hide('£12,000', priv)} + {hide('£540', priv)} interest) · Rolled over / Moved to Monzo Savings / Something else.", '<span class="mp-chip chip-s mp-add">Check-in</span>'),
+            ("6 · Check-in: Asha's Parag Parikh SIP", f"Monthly {hide('₹10,000', priv)} SIP due Sun 1 Nov · Paid (with Undo) / Skipped / Changed amount.", '<span class="mp-chip chip-s mp-add">SIP</span>'),
             ("7 · Weekly digest: Autopay assumed paid", "London mortgage &amp; car loan autopays assumed paid on schedule · one tap to Undo or correct.", '<span class="mp-chip chip-s mp-neutral">Digest</span>'),
         ]),
     )
@@ -70,7 +75,7 @@ def currency_check_1b_card(priv: bool = False) -> str:
         '<span class="mp-chip chip-s mp-neutral" data-mo="fade">ECB Fri 23 Oct</span>',
         kv_rows([
             ("Pounds typed against rupee holding", f"Typed {p_typed} into Parag Parikh Flexi Cap (INR folio) · asks currency &amp; converts at £1 = ₹112.50 → {r_rec}.", '<span class="mp-chip chip-s mp-add">1b Flow</span>'),
-            ('Ambiguous "$" &amp; two rupee holdings', 'Typed "$500": asks US dollar (USD), Australian or Singapore dollar; picks between Parag Parikh MF and Infosys NSE.', '<span class="mp-chip chip-s mp-pause">Clarify</span>'),
+            ('Ambiguous "$" &amp; two rupee holdings', f'Typed "{hide("$500", priv)}": asks US dollar (USD), Australian or Singapore dollar; picks between Parag Parikh MF and Infosys NSE.', '<span class="mp-chip chip-s mp-pause">Clarify</span>'),
             ("Before daily ECB rates load", "Question card offers enter exact ₹ amount or wait for ECB feed (no estimate button shown before rates load).", '<span class="mp-chip chip-s mp-neutral">Safe</span>'),
             ("Confirm, Cancel &amp; dual-amount audit", f"Confirm card masks figures when Privacy is on; Cancel leaves ledger ({nw_after}) untouched; Audit row #1844 stores typed {p_typed} and recorded {r_rec}.", '<span class="mp-chip chip-s mp-add">Recorded</span>'),
             ("Screenshot valuation · Leave it out", f"Unmatched row skipped: Leave it out shows the matched value ({s_val}) to Confirm first — never saves on tap.", '<span class="mp-chip chip-s mp-pause">Confirm</span>'),
@@ -123,7 +128,7 @@ def register_and_india_full_card(ccy: str = "GBP", priv: bool = False, show_edit
         '<div class="mrows"><div><div class="fx jb ac gap8"><span class="mp-foot mp-w6">UK 76.1% · India 23.9%</span><span class="mp-cap mp-ink2">14 records · 2 owners</span></div>'
         '<div class="mp-track mbar has-tick posr" role="img" aria-label="United Kingdom 76.1% and India 23.9% of household net worth"><span class="mp-track-clip"><span style="width:76.1%;background:var(--mp-chart-line)"></span></span><span class="bartick" style="left:75%"></span></div></div></div>'
         + kv_rows([
-            ("Monzo Instant Savings · UK Cash", "Household liquid reserve · +£5,000 recorded Mon 26 Oct", f'<span class="mp-sub mp-w6">{monzo_v}</span>'),
+            ("Monzo Instant Savings · UK Cash", f"Household liquid reserve · {hide('+£5,000', priv)} recorded Mon 26 Oct", f'<span class="mp-sub mp-w6">{monzo_v}</span>'),
             ("Balanced (BlackRock MyMap 5) · UK ISA", "Arun · Fri 6 Nov review · Ask in Chat / Update", f'<span class="mp-sub mp-w6">{bal_v}</span><span class="mp-chip chip-s mp-add">Buy · 78%</span>'),
             ("iShares NASDAQ 100 UCITS ETF · UK ISA", "Asha · 30 similar days since 2015", f'<span class="mp-sub mp-w6">{nq_v}</span><span class="mp-chip chip-s mp-hold">HOLD · 64%</span>'),
             ("Parag Parikh Flexi Cap · CAMS MF", f"Asha · 46 SIPs (CAS-Oct-2026.pdf) · XIRR 10.7% · {pp_c}", f'<span class="mp-sub mp-w6">{pp_inr}</span>'),
@@ -206,10 +211,10 @@ def audit_activity_files_card(ccy: str = "GBP", priv: bool = False) -> str:
         '<div class="mrows"><div><div class="fx jb ac gap8"><span class="mp-foot mp-w6">Tool-run trace &amp; token budget health</span><span class="mp-cap mp-ink2 tnum">68%</span></div>'
         '<div class="mp-track sr-t mbar" role="img" aria-label="Tool run budget 68%"><span class="mp-track-clip"><span style="width:68%;background:var(--mp-chart-line)"></span></span></div></div></div>'
         + kv_rows([
-            ("Audit #1844 · Monzo Savings +5,000", f"Mon 26 Oct 09:12 · Arun Confirmed in Chat · {monzo_d} (net worth £439,951 → £444,951).", '<span class="mp-chip chip-s mp-add">Confirmed</span>'),
-            ("Audit #1843 · Pune flat inline correction", "Mon 26 Oct 08:55 · via: inline_edit · ₹95,00,000 → ₹96,50,000 (Arun · owner).", '<span class="mp-chip chip-s mp-neutral">Inline edit</span>'),
+            ("Audit #1844 · Monzo Savings +5,000", f"Mon 26 Oct 09:12 · Arun Confirmed in Chat · {monzo_d} (net worth {hide('£439,951', priv)} → {hide('£444,951', priv)}).", '<span class="mp-chip chip-s mp-add">Confirmed</span>'),
+            ("Audit #1843 · Pune flat inline correction", f"Mon 26 Oct 08:55 · via: inline_edit · {hide('₹95,00,000', priv)} → {hide('₹96,50,000', priv)} (Arun · owner).", '<span class="mp-chip chip-s mp-neutral">Inline edit</span>'),
             ("Audit #1842 · CAS-Oct-2026.pdf imported", f"Sun 25 Oct 19:20 · 46 Parag Parikh SIPs ({sip_v}/mo) · tool extract_document → draft_record.", '<span class="mp-chip chip-s mp-neutral">PDF verified</span>'),
-            ("Activity run #912 · Morning brief", "Tools: get_networth, get_portfolio, get_stances, get_signals, chart_series · 1.8s · $0.04.", '<span class="mp-chip chip-s mp-add">0 errors</span>'),
+            ("Activity run #912 · Morning brief", f"Tools: get_networth, get_portfolio, get_stances, get_signals, chart_series · 1.8s · {hide('$0.04', priv)}.", '<span class="mp-chip chip-s mp-add">0 errors</span>'),
             ("Global Search · 'Parag Parikh'", "Matches 1 CAMS holding, 1 PDF file (CAS-Oct-2026.pdf) and 2 audit rows.", '<span class="mp-chip chip-s mp-neutral">4 hits</span>'),
         ]),
     )

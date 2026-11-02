@@ -232,7 +232,8 @@
             .mp .hzseg { flex: 1 1 100%; }
             .mp .ctlrow .ccyseg { flex: 1 1 150px; }
           }
-        </style>
+                  :where(button[type="button"].mp-btn) { letter-spacing: inherit; word-spacing: inherit; }   /* MA-300: spans made buttons keep the spacing they inherited; the older plain buttons keep theirs */
+</style>
       </helmet>
 
       <section class="dv-turn" id="t0" data-screen-label="Web v4 · Projection: intro">

@@ -1,5 +1,304 @@
 {
- "about": "What MA-300 meant to change at the boards' drawn sizes, for `node scripts/board_fit.js --diff main --expect review/MA-300/drawn-changes.json` (main is 387fc38 plus MA-300's planning commit: the boards as MA-279 left them). Every other frame is unchanged pixel for pixel.",
+ "about": "What MA-300 meant to change at the boards' drawn sizes, for `node scripts/board_fit.js --diff main --expect review/MA-300/drawn-changes.json` (main is 387fc38 plus MA-300's planning commit: the boards as MA-279 left them). Every other frame is unchanged pixel for pixel. An entry naming engines holds only for them (a change one engine draws and the other does not).",
  "neutral": "",
- "changes": []
+ "changes": [
+  {
+   "board": "Web v4 · Assets and debts.dc.html",
+   "frames": "^Browser · (Assets|An asset|An asset, no history|A deposit|Correct a value|Debts|A loan|Mortgage|Car loan), phone( · (filter sheet|the working|scrolled to the end|your estimate|saved|privacy on|the loans|the what-ifs and the split))? · (Light|Dark)$",
+   "why": "Web 390 frames: the iPhone bezel and status bar became a browser frame with the dashboard.mypaisapp.com address bar (content up ~6 px), the filter sheet lost its grab bar, web tab labels 10 -> 12 px, chart y/axis labels 11 -> 12 px, and privacy masks hold figures at the same width."
+  },
+  {
+   "board": "Web v4 · Assets and debts.dc.html",
+   "frames": "^Browser · (An asset|A deposit|Correct a value|Correct a value · saved|Debts|A loan|Mortgage|Car loan) · (Light|Dark)$",
+   "why": "Desktop frames: chart y-labels and axis labels 11 -> 12 px."
+  },
+  {
+   "board": "Web v4 · Assets and debts.dc.html",
+   "frames": "^Browser · Correct a value · privacy on · (Light|Dark)$",
+   "why": "Privacy on: the user's chat bubble '£5,000' is now masked, and the chart's masks hold figures at the same width; y-labels 12 px."
+  },
+  {
+   "board": "Web v4 · Dashboard.dc.html",
+   "frames": "^Phone web 390 · (as it opens|scrolled to the end|Chat, before, 09:40|Overview, after, 09:41|Overview, no records|Chat, the first question|editing, 09:52|saved, 09:52) · (light|dark)$",
+   "why": "Web 390 frames: the iPhone bezel and status bar became a browser frame with an address bar, web tab labels 10 -> 12 px, and the privacy toggle became a real button (same size, sub-pixel icon shift)."
+  },
+  {
+   "board": "Web v4 · Dashboard.dc.html",
+   "frames": "^Desktop 1440 · as it opens · (light|dark)$",
+   "why": "Privacy frame: the net-worth mask in the saved card now holds the figure at its own width (slightly wider)."
+  },
+  {
+   "board": "Web v4 · Shell and chat.dc.html",
+   "frames": "^Browser · (Shell 1a, Chat beside, phone · (Home|Chat) tab|Shell 1b, Chat first, phone · (Chat|Home tab)|Shell 1c, Ask bar, phone · docked|Chat, a reply streaming, phone|Chat, a Confirm card, phone · [12] of 2|Chat, sending a statement, phone · [12] of 2|Chat, offline, phone · [12] of 2|Home moves live, phone|Activity, phone|A run, phone) · (Light|Dark)$",
+   "why": "Web 390 frames: the iPhone bezel and status bar became a browser frame with an address bar, web tab labels 10 -> 12 px, household strip solid."
+  },
+  {
+   "board": "Web v4 · Shell and chat.dc.html",
+   "frames": "^Browser · Sign in, phone · (Light|Dark)$",
+   "why": "Sign in, phone: one address bar (the duplicate status bar and inner address bar gone), so the page moves up."
+  },
+  {
+   "board": "Web v4 · Check-ins.dc.html",
+   "frames": "^Browser · Check-ins?: .+ · (Light|Dark)$",
+   "why": "Phone frames swap the iPhone bezel and status bar for the browser frame with the dashboard.mypaisapp.com address bar (no home indicator), tab labels grow to 12 px, the household strip is solid, and chart axis labels grow from 11 to 12 px."
+  },
+  {
+   "board": "iPhone v4 · Check-ins.dc.html",
+   "frames": "^iPhone · dark( · .+)?$",
+   "why": "Dark frames only: the household strip is now a solid surface with a hairline instead of Liquid Glass."
+  },
+  {
+   "board": "iPhone v4 · Assets and debts.dc.html",
+   "frames": "^iPhone · (An asset|A deposit|Correct a value|Correct a value · saved|Correct a value · privacy on|Debts · scrolled to the end|A loan|A loan · the what-ifs and the split|A loan · scrolled to the end|Mortgage|Car loan) · (light|dark)$",
+   "why": "Chart y-axis labels and year captions grow from 11 to 12 px; in the privacy frame the axis label's mask grows with it."
+  },
+  {
+   "board": "iPhone v4 · Budget.dc.html",
+   "frames": "^iPhone · Statement answers a check-in · (Light · the note|Dark · the note|Dark · the check-in it confirmed)$",
+   "why": "The household strip is a solid surface with a hairline instead of Liquid Glass (plainly visible in dark, a hairline edge in light)."
+  },
+  {
+   "board": "iPhone v4 · Home.dc.html",
+   "frames": "^(iPhone · (as it opens|scrolled to the end|as it opens, the UK|swiped to India|saved, 09:52|Home, after, 09:41) · (light|dark)|iPad · landscape · 1180 × 820 · (light|dark))$",
+   "why": "New 44 pt link rows with chevrons at the foot of each summary card (All assets, All debts, October budget, 20-year projection and plans) replace the old inline link and push the content down; the iPad frame at 1180 shows the same rows."
+  },
+  {
+   "board": "iPhone v4 · Home.dc.html",
+   "frames": "^iPhone · Chat(, before, 09:40|, after Confirm, 09:41|, the first question) · (light|dark)$",
+   "why": "The chat's household strip is a solid surface with a hairline instead of Liquid Glass, so its gain figure takes the solid-surface green instead of the glass green (--lg-up)."
+  },
+  {
+   "board": "iPhone v4 · Home.dc.html",
+   "frames": "^$",
+   "why": "The board's frame count goes from 32 to 36 because the new AX5 · iPhone · Home, largest text boards were added."
+  },
+  {
+   "board": "Web v4 · Budget.dc.html",
+   "frames": "^Browser · .+, phone · (Light|Dark)( · .+)?$",
+   "why": "Only the web phone tab bar changed: its labels went from 10 px ink-3 to 12 px ink-2 and the icons moved up about 1 px (tokens.css .mp-tab)."
+  },
+  {
+   "board": "Web v4 · Chart options.dc.html",
+   "frames": "^(1[abc] · Desktop 1440 · (Light|Dark)|Browser · Analytical charts \\(R1 surplus\\) · 1440 Light|Browser · Analytical charts \\(R4 cleared\\) · 1440 Dark)$",
+   "why": "Axis, y, fan and today labels went from 11 to 12 px (small reflow), and on the analytical charts each pillar's zero spine now sticks out 2 px above and below its track."
+  },
+  {
+   "board": "Web v4 · Chart options.dc.html",
+   "frames": "^1a · Phone web 390 · Light$",
+   "why": "Axis labels 11 to 12 px and the web 390 tab labels 10 to 12 px in ink-2."
+  },
+  {
+   "board": "Web v4 · Chart options.dc.html",
+   "frames": "^Browser · Dashboard charts, privacy on · (1440 Light|390 Dark)$",
+   "why": "Privacy frame W2: mask pills now draw where blank space was, the rate in the subtitle, currency pill and ECB line is masked, so the content below moves down a little; 390 tab labels are 12 px."
+  },
+  {
+   "board": "Chart options.dc.html",
+   "frames": "^iPhone · DS Chart kit · 1[abc] [A-Za-z ]+ · (Light|Dark)$",
+   "why": "Chart axis labels went from 11 to 12 px; the rest is sub-pixel rasterisation from the DS panes widening 906 to 924 px, with no visible change."
+  },
+  {
+   "board": "iPhone v4 · Chart options.dc.html",
+   "frames": "^1[abc] · (iPhone|iPad) · (Light|Dark)$",
+   "why": "The chart's date axis labels went from 11 to 12 px."
+  },
+  {
+   "board": "iPhone v4 · Chart options.dc.html",
+   "frames": "^iPhone · Market candles & pillars · (Light|Dark)$",
+   "why": "Y labels, fan labels and the today label went from 11 to 12 px, and the pillar zero spine sticks out 2 px above and below the track."
+  },
+  {
+   "board": "iPhone v4 · Chart options.dc.html",
+   "frames": "^iPhone · Dashboard charts, privacy on · (Light|Dark)$",
+   "why": "Privacy frame S3: mask pills now draw (hero, gain, Own/Owe/Cash, country rows), the rate chip and the ECB line are masked, and the cards below move down to make room."
+  },
+  {
+   "board": "iPhone v4 · Plans in the chat.dc.html",
+   "frames": "^iPhone · Plans in the chat 2[abc], [^·]+ · 20:4[1236], .+$",
+   "why": "The net-worth strip is a solid surface with a hairline instead of Liquid Glass, and the chart's down flags went to 12 px in the impact frames."
+  },
+  {
+   "board": "Web v4 · Plans in the chat.dc.html",
+   "frames": "^Browser · Plans in the chat 2[abc], [^·]+(?:, phone · 20:43, the ways to cover it(?:, scrolled)? · (?:Light|Dark)| · 20:42, the impact · Light)$",
+   "why": "In the web 390 frames a browser frame with the dashboard.mypaisapp.com address bar replaces the iPhone bezel and status bar (the home indicator is gone), and tab labels are 12 px; and the chart's down flags went from 11 to 12 px (in Chromium the impact frame shows it; WebKit draws it the same)."
+  },
+  {
+   "board": "iPhone v4 · Register.dc.html",
+   "frames": "^iPhone · (light|dark)$",
+   "why": "Privacy frame: the user's '£5,000' in the chat bubble is now a mask; in dark the household strip is also solid instead of glass."
+  },
+  {
+   "board": "iPhone v4 · Register.dc.html",
+   "frames": "^iPhone · dark · ([12] of [23], .+|Arun's chat|after Approve, approved)$",
+   "why": "The household strip is a solid surface with a hairline instead of Liquid Glass."
+  },
+  {
+   "board": "iPad v4 · Budget, assets and debts.dc.html",
+   "frames": "^iPad · (An asset|Debts|A loan) · landscape · (light|dark)$",
+   "why": "Chart y labels went from 11 to 12 px."
+  },
+  {
+   "board": "iPad v4 · Budget, assets and debts.dc.html",
+   "frames": "^iPad · Assets · landscape · dark · privacy on$",
+   "why": "Privacy frame: amounts left unmasked before are dropped from the copy ('SIP ₹10,000' to 'SIP', '7 records · ₹1,34,92,563' to '7 records', 'premium ₹42,000 a year' to 'a yearly premium')."
+  },
+  {
+   "board": "Web v4 · Admin center.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Admin\\ ·\\ Spend\\ \\&\\ AWS\\ Cap\\ ·\\ Desktop\\ Light|Browser\\ ·\\ Admin\\ ·\\ Spend\\ \\&\\ AWS\\ Cap\\ ·\\ Phone\\ 390|Browser\\ ·\\ Admin\\ ·\\ People,\\ Routing\\ \\&\\ Replay\\ ·\\ Desktop\\ Dark|Browser\\ ·\\ Admin\\ ·\\ People,\\ Routing\\ \\&\\ Replay\\ ·\\ Phone\\ 390\\ Dark)$",
+   "why": "Shared generated-web changes: currency pills and tab labels ~1 px larger (12 px), composer field is an input; nothing else moves."
+  },
+  {
+   "board": "Web v4 · Audit, activity and files.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Audit,\\ Activity\\ \\&\\ Files\\ ·\\ Desktop\\ Light|Browser\\ ·\\ Audit,\\ Activity\\ \\&\\ Files\\ ·\\ Desktop\\ Dark|Browser\\ ·\\ Audit,\\ Activity\\ \\&\\ Files\\ ·\\ Phone\\ 390|Browser\\ ·\\ Audit\\ with\\ files\\ ·\\ PDF\\ viewer\\ open)$",
+   "why": "Shared generated-web changes: currency pills and tab labels ~1 px larger, composer is an input, PDF viewer zoom controls are real buttons."
+  },
+  {
+   "board": "Web v4 · Budget forecast 1a states.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ after\\ the\\ pot\\ ·\\ phone,\\ 390\\ ·\\ Light|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ after\\ the\\ pot\\ ·\\ phone,\\ 390\\ ·\\ Dark|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ in\\ today’s\\ money\\ ·\\ phone,\\ 390\\ ·\\ Light|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ in\\ today’s\\ money\\ ·\\ phone,\\ 390\\ ·\\ Dark|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ at\\ 5,\\ 10\\ and\\ 30\\ years\\ ·\\ 30\\ years\\ ·\\ phone,\\ 390\\ ·\\ Dark|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ privacy\\ on\\ ·\\ phone,\\ 390\\ ·\\ Light|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ privacy\\ on\\ ·\\ phone,\\ 390\\ ·\\ Dark|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ error\\ ·\\ phone,\\ 390\\ ·\\ Light|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ error\\ ·\\ phone,\\ 390\\ ·\\ Dark|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ as\\ Asha\\ sees\\ it\\ ·\\ phone,\\ 390\\ ·\\ Light)$",
+   "why": "Web phone tab bar labels 10 px ink-3 to 12 px ink-2 with icons up ~1 px (tokens.css .mp-tab)."
+  },
+  {
+   "board": "Web v4 · Budget forecast.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ the\\ surplus\\ first\\ ·\\ phone,\\ 390\\ ·\\ Light|Browser\\ ·\\ Budget\\ forecast\\ 1a,\\ the\\ surplus\\ first\\ ·\\ phone,\\ 390\\ ·\\ Dark|Browser\\ ·\\ Budget\\ forecast\\ 1b,\\ year\\ by\\ year\\ ·\\ phone,\\ 390\\ ·\\ Light|Browser\\ ·\\ Budget\\ forecast\\ 1b,\\ year\\ by\\ year\\ ·\\ phone,\\ 390\\ ·\\ Dark|Browser\\ ·\\ Budget\\ forecast\\ 1c,\\ the\\ ledger\\ table\\ ·\\ phone,\\ 390\\ ·\\ Light|Browser\\ ·\\ Budget\\ forecast\\ 1c,\\ the\\ ledger\\ table\\ ·\\ phone,\\ 390\\ ·\\ Dark)$",
+   "why": "Web phone tab labels 12 px and ▼ flags 12 px; in the 1c ledger sheet the web grab bar is gone so the sheet top drops and the flag above shows."
+  },
+  {
+   "board": "Web v4 · Chat and guided flows.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Guided\\ Flows\\ \\&\\ Currency\\ Check\\ 1b\\ ·\\ Desktop|Browser\\ ·\\ Guided\\ Flows\\ \\&\\ Currency\\ Check\\ 1b\\ ·\\ Phone\\ 390|Browser\\ ·\\ You\\ \\&\\ Member\\ What\\-if\\ ·\\ Desktop|Browser\\ ·\\ You\\ \\&\\ Member\\ What\\-if\\ ·\\ Phone\\ 390)$",
+   "why": "Shared generated-web changes (currency pills, tab labels, axis labels ~1 px larger, composer input) and privacy masks that now draw as placeholder bars."
+  },
+  {
+   "board": "Web v4 · Consolidated options.dc.html",
+   "frames": "^(?:Browser\\ ·\\ 1a\\ Unified\\ Whole\\-Wealth\\ Web\\ Shell,\\ Register\\ \\&\\ Forecast\\ 1a\\ ·\\ Phone\\ 390|Browser\\ ·\\ 1b\\ Jurisdiction\\-Split\\ Web\\ Ledger\\ \\&\\ Always\\-Open\\ Inspector\\ ·\\ Phone\\ 390|Browser\\ ·\\ 1c\\ Web\\ Bento\\ Command\\ Deck\\ \\&\\ Pinned\\ Action\\ Rail\\ ·\\ Phone\\ 390|Browser\\ ·\\ 1a\\ Privacy\\ mode\\ on\\ ·\\ Phone\\ 390\\ Dark)$",
+   "why": "Past round's record: only the shared web phone tab-label change (10 to 12 px)."
+  },
+  {
+   "board": "Web v4 · Forecast.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Holding\\ ·\\ Forecast\\ 1a\\ ·\\ Desktop\\ Light|Browser\\ ·\\ Holding\\ ·\\ Forecast\\ 1a\\ ·\\ Desktop\\ Dark|Browser\\ ·\\ Holding\\ ·\\ Forecast\\ 1a\\ ·\\ Phone\\ 390|Browser\\ ·\\ Forecaster\\ ·\\ Proof\\ \\&\\ States\\ ·\\ Desktop|Browser\\ ·\\ Forecaster\\ ·\\ Privacy\\ on\\ ·\\ Phone\\ 390)$",
+   "why": "Generated-web text under 12 px raised to 12 px (axis/fan labels, event headers, currency pills, tab labels) with small reflow; privacy frame masks now draw."
+  },
+  {
+   "board": "Web v4 · Login, invite and responsive.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Login,\\ Refusals\\ \\&\\ Invite\\ Landing\\ ·\\ Desktop|Browser\\ ·\\ Login,\\ Refusals\\ \\&\\ Invite\\ Landing\\ ·\\ Phone\\ 390|Browser\\ ·\\ Responsive\\ Overview\\ \\&\\ PWA\\ ·\\ 1024|Browser\\ ·\\ Responsive\\ Overview\\ ·\\ Phone\\ 390)$",
+   "why": "At 1024 the chat column is gone and a chat button sits in the page header (chat beside only from 1133); elsewhere currency pills, axis and tab labels ~1 px larger."
+  },
+  {
+   "board": "Web v4 · Market, holdings and India.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Market,\\ Overlap\\ \\&\\ India\\ ·\\ Desktop\\ Light|Browser\\ ·\\ Market,\\ Overlap\\ \\&\\ India\\ ·\\ Phone\\ 390|Browser\\ ·\\ Reports\\ in\\ USD\\ \\(\\$578,436\\)\\ ·\\ Desktop|Browser\\ ·\\ Reports\\ ·\\ Privacy\\ on\\ ·\\ Phone\\ 390)$",
+   "why": "Currency pills, axis and tab labels ~1 px larger with small downward shift; privacy frame masks now draw at value width."
+  },
+  {
+   "board": "Web v4 · Plans in the chat 2a states.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ the\\ wedding,\\ cash\\ below\\ zero,\\ phone\\ ·\\ 21:16,\\ the\\ ways\\ to\\ cover\\ it\\ ·\\ Light|Browser\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ the\\ wedding,\\ cash\\ below\\ zero,\\ phone\\ ·\\ 21:16,\\ the\\ ways\\ to\\ cover\\ it\\ ·\\ Dark|Browser\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ Asha\\ asks,\\ phone\\ ·\\ 21:20\\ ·\\ Light|Browser\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ Asha\\ asks,\\ phone\\ ·\\ 21:21\\ ·\\ Dark)$",
+   "why": "Web 390 frames: browser frame with dashboard.mypaisapp.com address bar replaces the iPhone bezel and status bar; tab labels 12 px."
+  },
+  {
+   "board": "Web v4 · Plans tab 3a states.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Plans\\ tab\\ 3a,\\ privacy\\ on\\ ·\\ phone\\ ·\\ Light|Browser\\ ·\\ Plans\\ tab\\ 3a,\\ a\\ plan\\ paused\\ ·\\ phone\\ ·\\ paused\\ ·\\ Light|Browser\\ ·\\ Plans\\ tab\\ 3a,\\ a\\ plan\\ resumed\\ ·\\ phone\\ ·\\ Light|Browser\\ ·\\ Plans\\ tab\\ 3a,\\ a\\ plan\\ corrected\\ in\\ place\\ ·\\ phone\\ ·\\ editing\\ ·\\ Light|Browser\\ ·\\ Plans\\ tab\\ 3a,\\ a\\ plan\\ corrected\\ in\\ place\\ ·\\ phone\\ ·\\ saved\\ ·\\ Light|Browser\\ ·\\ Plans\\ tab\\ 3a,\\ a\\ plan\\ ended\\ ·\\ phone\\ ·\\ ended\\ ·\\ Light|Browser\\ ·\\ Plans\\ tab\\ 3a,\\ as\\ Asha\\ sees\\ it\\ ·\\ phone\\ ·\\ Light)$",
+   "why": "Web 390 frames: browser address bar replaces the iPhone bezel, web sheet grab bar removed, tab labels 12 px; span controls now buttons."
+  },
+  {
+   "board": "Web v4 · Plans tab.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Plans\\ tab\\ 3a,\\ bars\\ on\\ a\\ timeline,\\ phone\\ ·\\ Light|Browser\\ ·\\ Plans\\ tab\\ 3a,\\ bars\\ on\\ a\\ timeline,\\ phone\\ ·\\ Dark|Browser\\ ·\\ Plans\\ tab\\ 3b,\\ a\\ timeline\\ down\\ the\\ page,\\ phone\\ ·\\ Light|Browser\\ ·\\ Plans\\ tab\\ 3b,\\ a\\ timeline\\ down\\ the\\ page,\\ phone\\ ·\\ Dark|Browser\\ ·\\ Plans\\ tab\\ 3b,\\ a\\ timeline\\ down\\ the\\ page,\\ phone\\ ·\\ Close\\ the\\ HDFC\\ home\\ loan\\ opened\\ ·\\ Light)$",
+   "why": "Web 390 frames: browser address bar replaces the iPhone bezel, web sheet grab bar removed, tab labels 12 px."
+  },
+  {
+   "board": "Web v4 · Projection.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Projection,\\ privacy\\ on\\ ·\\ Light|Browser\\ ·\\ Projection,\\ privacy\\ on\\ ·\\ Dark|Browser\\ ·\\ Projection,\\ the\\ Net\\ worth\\ tab,\\ phone\\ ·\\ Light|Browser\\ ·\\ Projection,\\ the\\ Net\\ worth\\ tab,\\ phone\\ ·\\ Dark|Browser\\ ·\\ Plan\\ item\\ in\\ the\\ chat,\\ phone\\ ·\\ Light\\ ·\\ the\\ card|Browser\\ ·\\ Plan\\ item\\ in\\ the\\ chat,\\ phone\\ ·\\ Dark\\ ·\\ the\\ card|Browser\\ ·\\ Plan\\ item\\ in\\ the\\ chat,\\ phone\\ ·\\ Light\\ ·\\ confirmed|Browser\\ ·\\ Plan\\ item\\ in\\ the\\ chat,\\ phone\\ ·\\ Dark\\ ·\\ confirmed)$",
+   "why": "Privacy frames: milestone sub-lines reflow onto one line with masks inline (empty 64 px masks removed); web 390 frames get the browser address bar and 12 px tab labels."
+  },
+  {
+   "board": "Web v4 · Register.dc.html",
+   "frames": "^(?:Browser\\ ·\\ Web\\ v4\\ Register\\ ·\\ Desktop\\ Light|Browser\\ ·\\ Web\\ v4\\ Register\\ ·\\ Phone\\ 390|Browser\\ ·\\ Web\\ v4\\ Register\\ in\\ INR\\ ·\\ Desktop\\ Dark|Browser\\ ·\\ Web\\ v4\\ Register\\ ·\\ Privacy\\ on\\ ·\\ Phone\\ 390)$",
+   "why": "Currency pills, axis and tab labels ~1 px larger with small downward shift; privacy frame masks now draw."
+  },
+  {
+   "board": "iOS kit.dc.html",
+   "frames": "^(?:light|dark)$",
+   "why": "Accessibility section: the chip's dashed box hugs its real 44 pt tap area and the label reads '36 drawn / 44 tall to tap'."
+  },
+  {
+   "board": "iPad v4 · Adaptive shell and foldable.dc.html",
+   "frames": "^(?:|its\\ frames\\ differ:\\ 8\\ at\\ main,\\ 9\\ now|\\ ·\\ its\\ frames\\ differ:\\ 8\\ at\\ main,\\ 9\\ now|iPad\\ ·\\ Wide\\ ·\\ Home,\\ Register\\ \\&\\ Overlap|iPad\\ ·\\ Wide\\ ·\\ Forecaster\\ Proof\\ \\&\\ Admin|iPad\\ ·\\ Portrait\\ 820\\ pt\\ ·\\ Chat\\ sheet\\ \\&\\ Sign\\-in|Foldable\\ ·\\ Open\\ 880\\ pt\\ ·\\ Home\\ \\&\\ Chat\\ sheet|Foldable\\ ·\\ Open\\ 880\\ pt\\ ·\\ Audit\\ \\&\\ Chat\\ sheet|iPad\\ ·\\ Stage\\ Manager\\ ·\\ a\\ 700\\ ×\\ 600\\ window\\ ·\\ Light|Foldable\\ ·\\ Folded\\ 380\\ pt\\ ·\\ Compact\\ tab\\ bar)$",
+   "why": "820 and foldable 880 frames show Ask (+ privacy) with a dimmed screen and centred Ask sheet instead of the Chat sheet card; foldable Home gains Register; wide, Stage Manager and folded frames gain Ask or 12 px labels; new 1032 pt section adds a frame."
+  },
+  {
+   "board": "iPhone v4 · Admin center.dc.html",
+   "frames": "^(?:iPhone\\ ·\\ Admin\\ ·\\ Second\\ check\\ Apple\\ sheet)$",
+   "why": "Apple second-check sheet lost its grabber."
+  },
+  {
+   "board": "iPhone v4 · Audit, activity and files.dc.html",
+   "frames": "^(?:iPhone\\ ·\\ Audit\\ \\&\\ Files\\ ·\\ Privacy\\ on)$",
+   "why": "Privacy frame: amounts now masked with placeholder bars at the same width."
+  },
+  {
+   "board": "iPhone v4 · Budget forecast.dc.html",
+   "frames": "^(?:iPhone\\ ·\\ Budget\\ forecast\\ 1c,\\ the\\ ledger\\ table\\ ·\\ Light|iPhone\\ ·\\ Budget\\ forecast\\ 1c,\\ the\\ ledger\\ table\\ ·\\ Dark)$",
+   "why": "1c ledger sheet's inner Close is now a lens circle."
+  },
+  {
+   "board": "iPhone v4 · Chat and guided flows.dc.html",
+   "frames": "^(?:iPhone\\ ·\\ Chat\\ home\\ \\&\\ Home\\ sheet\\ ·\\ Light|iPhone\\ ·\\ Chat\\ home\\ \\&\\ streaming\\ ·\\ Dark|iPhone\\ ·\\ Guided\\ flows\\ ·\\ Privacy\\ on\\ ·\\ Dark|iPhone\\ ·\\ Currency\\ check\\ 1b\\ ·\\ Privacy\\ on|iPhone\\ ·\\ Stance\\ cards\\ ·\\ Privacy\\ on\\ ·\\ Dark)$",
+   "why": "Home opens as a full sheet with a close button over a solid household strip; elsewhere currency pills and axis labels 12 px; privacy masks now draw."
+  },
+  {
+   "board": "iPhone v4 · Market, holdings and India.dc.html",
+   "frames": "^(?:iPhone\\ ·\\ Home\\ in\\ INR\\ \\(₹5,00,56,988\\)\\ ·\\ Light|iPhone\\ ·\\ Home\\ in\\ USD\\ \\(\\$578,436\\)\\ ·\\ Dark|iPhone\\ ·\\ Home\\ ·\\ Privacy\\ on\\ ·\\ EUR|iPhone\\ ·\\ Reports\\ \\&\\ Overlap\\ ·\\ Privacy\\ on\\ ·\\ Dark)$",
+   "why": "Currency pills and axis labels 12 px (small downward shift); privacy frames now mask the hero, change and range with placeholder bars."
+  },
+  {
+   "board": "iPhone v4 · Plans in the chat 2a states.dc.html",
+   "frames": "^(?:iPhone\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ the\\ salary\\ step\\ ·\\ 20:53,\\ saved,\\ technical\\ ·\\ Dark|iPhone\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ the\\ HDFC\\ closure\\ ·\\ 20:59,\\ saved,\\ technical\\ ·\\ Dark|iPhone\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ the\\ wedding,\\ cash\\ below\\ zero\\ ·\\ 21:16,\\ the\\ ways\\ to\\ cover\\ it ?|iPhone\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ the\\ wedding,\\ cash\\ below\\ zero\\ ·\\ 21:17,\\ way\\ 1\\ applied\\ ·\\ Light|iPhone\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ the\\ wedding,\\ cash\\ below\\ zero\\ ·\\ 21:18,\\ undone\\ ·\\ Dark|iPhone\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ Asha\\ asks\\ ·\\ 21:21\\ ·\\ Dark|iPhone\\ ·\\ Plans\\ in\\ the\\ chat\\ 2a,\\ plans\\ it\\ cannot\\ set\\ up\\ ·\\ 21:22\\ ·\\ Dark)$",
+   "why": "Net-worth strip is a solid surface with a hairline instead of Liquid Glass."
+  },
+  {
+   "board": "iPhone v4 · Projection.dc.html",
+   "frames": "^(?:iPhone\\ ·\\ Projection,\\ privacy\\ on\\ ·\\ Light|iPhone\\ ·\\ Projection,\\ privacy\\ on\\ ·\\ Dark|iPhone\\ ·\\ Chat,\\ a\\ what\\-if\\ ·\\ Dark|iPhone\\ ·\\ Chat,\\ a\\ what\\-if\\ as\\ Asha\\ asks\\ it\\ ·\\ Dark|iPhone\\ ·\\ Chat,\\ adding\\ a\\ plan\\ item\\ ·\\ the\\ card\\ ·\\ Dark|iPhone\\ ·\\ Chat,\\ adding\\ a\\ plan\\ item\\ ·\\ confirmed\\ ·\\ Dark)$",
+   "why": "Net-worth strip solid instead of glass; privacy frames mask a value that was blank."
+  },
+  {
+   "board": "Prototype v5.dc.html",
+   "frames": "^(?:Desktop\\ ·\\ Foundations\\ at\\ every\\ door\\ ·\\ MyPaisa,\\ and\\ MyPaisa\\ Dev)$",
+   "why": "Prototype desktop text 10-11.5 px raised to 12 px with small reflow, chips larger, thin themed scrollbars visible."
+  },
+  {
+   "board": "Web v4 · Shell and chat.dc.html",
+   "frames": "^Browser\\ ·\\ Shell\\ 1c,\\ Ask\\ bar,\\ phone\\ ·\\ drawer\\ open\\ ·\\ Light$",
+   "why": "The drawer's header is shorter without the web grab bar (P1-2), so the next day label shows under it: content under a bar is the scroll edge (lesson 26)."
+  },
+  {
+   "board": "Web v4 · Shell and chat.dc.html",
+   "frames": "^Browser\\ ·\\ Shell\\ 1c,\\ Ask\\ bar,\\ phone\\ ·\\ drawer\\ open\\ ·\\ Dark$",
+   "why": "The drawer's header is shorter without the web grab bar (P1-2), so the next day label shows under it: content under a bar is the scroll edge (lesson 26)."
+  },
+  {
+   "board": "iPhone v4 · Register.dc.html",
+   "frames": "^iPhone\\ ·\\ light\\ ·\\ 3\\ of\\ 3,\\ saved$",
+   "why": "The household strip is a solid surface now (P1-2), so its gain takes the surface's green (--mp-up) instead of the glass green (--lg-up); the pair is checked by contrast_check."
+  },
+  {
+   "board": "iPhone v4 · Register.dc.html",
+   "frames": "^iPhone\\ ·\\ dark\\ ·\\ 3\\ of\\ 3,\\ saved$",
+   "why": "The household strip is a solid surface now (P1-2), so its gain takes the surface's green (--mp-up) instead of the glass green (--lg-up); the pair is checked by contrast_check."
+  },
+  {
+   "board": "iPhone v4 · Budget.dc.html",
+   "frames": "^iPhone · (Statement review · (Light|Dark) · (1, sent|2, the amber lines|3, by category|4, recognised and Confirm)|Month-end check-in · (Light|Dark) · (1, plan against actual|2, the question|3, closed))$",
+   "why": "The household strip is a solid surface, not glass (P1-2): plain in dark, nearly the same in light; the card buttons below draw as on main."
+  },
+  {
+   "board": "iPhone v4 · Budget forecast.dc.html",
+   "frames": "^iPad · Budget forecast 1[abc], (the surplus first|year by year|the ledger table) · landscape · (Light|Dark)$",
+   "why": "On the iPad frames, drawn scaled, the Months and Ways to cover it labels render about 1 px wider after the shared type moved to rem (P1-5); nothing else moves."
+  },
+  {
+   "board": "iPhone v4 · Budget forecast 1a states.dc.html",
+   "engines": [
+    "webkit"
+   ],
+   "frames": "^iPhone · Budget forecast 1a, privacy on · (Light|Dark)$",
+   "why": "In WebKit the total's privacy mask on the last row draws about 12 px wider: the mask holds zeros now, never the figure (P0-2); Chromium draws it as on main."
+  }
+ ]
 }

@@ -233,7 +233,8 @@
           :where(button.cbtn, button.wsend, button.iconbtn, button.pmi) { appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; text-transform: none; box-sizing: content-box; cursor: pointer; }
           button.wsend { position: relative; } button.wsend::after { content: ""; position: absolute; inset: -4px; }   /* 36 drawn, 44 to tap */
           .mp-switch:focus-visible, .fig.ed:focus-visible, .edin:focus-visible, .afield:focus-visible, .wfield .rtx:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
-        </style>
+                  :where(button[type="button"].mp-btn) { letter-spacing: inherit; word-spacing: inherit; }   /* MA-300: spans made buttons keep the spacing they inherited; the older plain buttons keep theirs */
+</style>
       </helmet>
 
       <section class="dv-turn" id="t0" data-screen-label="Web v4 · Plans tab 3a states: intro">
