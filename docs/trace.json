@@ -8612,6 +8612,50 @@
         "docs/design/argos-visual-a11y.html",
         "docs/design/argos-visual-a11y/*.gif"
       ]
+    },
+    {
+      "key": "MA-300",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Close the Impeccable deep scan's remaining P0, P1 and P3 findings, and its motion and performance fixes, across DS v1, iOS v1, Web v4 and Prototype v5",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "9.1",
+        "9.3",
+        "9.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 2 Nov 2026: \"complete the tasks from antigravity for the UI work\", from docs/handoffs/2026-10-31-impeccable-deep-scan.md and its deep-scan report. Bug and conformance fixes on picked boards (no options round, per /design-first); the redesign items are MA-301.",
+      "code": [
+        "docs/design/ds-v1/tokens.css",
+        "docs/design/prototype-v5/",
+        "docs/design/reviews/MA-295/build_boards.py",
+        "docs/design/reviews/MA-279/"
+      ]
+    },
+    {
+      "key": "MA-301",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Design options for the deep scan's redesign items: calmer Projection and statement Confirm, nested cards, a web-only join, the type and icon stack and the Cmd+K palette",
+      "status": "In Progress",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "9.1",
+        "9.3",
+        "9.4"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "Arun, 2 Nov 2026, from the deep scan's P2-2, P2-3, P2-4, P2-5 and P1-7: drawn as a /design-first options round in docs/design/reviews/MA-301/ and published as a private Claude Artifact; no board is picked until Arun picks."
     }
   ],
   "others": [

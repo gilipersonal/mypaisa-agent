@@ -603,6 +603,20 @@ Claude's:
   **£0.00/month**, with interactive explainer `docs/design/argos-visual-a11y.html`,
   four animated GIFs, and the Confluence page Web visual regression, ARIA
   snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI.
+- **The Impeccable deep scan's remaining fixes (MA-300):** every P0, P1 and
+  P3 finding MA-298, MA-278 and MA-279 left open, checked against the boards as
+  they are now and fixed on the picked boards: Privacy Mode leaks and clipped
+  ticks in the Chart options boards and Prototype v5, button hover contrast,
+  iPhone Home's links to Budget, Assets and debts and Projection, the foldable
+  open at 880 pt, real buttons, inputs, switches and dialogs, Liquid Glass kept
+  to floating controls, 44 pt targets and touch scrub, `rem` type and the 12 px
+  floor, `Ask` on iPad, the motion and JS performance fixes, and the gates
+  widened to catch each one again.
+- **The deep scan's redesign items, as an options round (MA-301):** a calmer
+  Projection and Plans header, a lighter statement Confirm, flatter cards and
+  shorter overlines, a browser-only `/join/<token>` sign-in, a self-hosted type
+  and icon stack and the `Cmd+K` palette, drawn as options and published as a
+  private Claude Artifact for Arun to pick before anything is built.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
