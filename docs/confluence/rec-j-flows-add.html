@@ -4,7 +4,7 @@
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h2>03 · Adding a holding from a factsheet or a screenshot</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Attach the fund&#x27;s factsheet PDF from Files, then a screenshot of its value in the Monzo app from Photos (or take either with the camera or a document scan). Claude reads them; code checks them; nothing is saved until the member taps Confirm. Anything Claude is unsure of comes back in amber.</p>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Attach the fund&#x27;s factsheet PDF from Files, then a screenshot of its value in the Monzo app from Photos (or take either with the camera or a document scan). Claude reads them; code checks them; nothing is saved until an admin taps Confirm. Adding is an admin&#x27;s, and only in the chat. Anything Claude is unsure of comes back in amber.</p>
 <p><em><strong>Trigger</strong> a PDF or a picture attached in the chat, or <code>/add</code></em> <span data-type="status" data-color="blue">Phase 2 (reading a file)</span> <span data-type="status" data-color="blue">Phase 5 (a fund)</span></p>
 </div>
 <h3>🛤️ The path</h3>
@@ -13,14 +13,14 @@
 <tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap <strong>+</strong> in the composer and pick the Balanced fund&#x27;s factsheet PDF from Files (or <code>/add</code> first)</td></tr>
 <tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app asks for a presigned upload link and sends the PDF straight into the private <strong>S3</strong> documents bucket, then posts the message naming the file to <code>/v1/chat/messages</code> with its client id</td></tr>
 <tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>Your lane on the updates queue, then <strong>agent λ</strong>. The file is kept for good, with a <strong>Document</strong> row and an audit row, and a document read goes on the <strong>SQS work</strong> queue; <strong>worker λ</strong> runs the docs job</td></tr>
-<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The PDF and a schema: name, ISIN, charge, allocation, top holdings, benchmark, currency</td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The PDF and a schema: name, ISIN, charge, allocation, top holdings, currency</td></tr>
 <tr><td data-background="#EAE6FF"><strong>5</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>Structured JSON, a citation for each figure and a confidence for each field</td></tr>
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to App</td><td>A card of what was read, from the agent&#x27;s JSON, low-confidence fields in amber, with <strong>Confirm</strong>, <strong>Edit</strong> and <strong>Cancel</strong></td></tr>
 <tr><td data-background="#FFEBE6"><strong>7</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Confirm; the tap is posted to <code>/v1/chat/actions</code> and acknowledged at once</td></tr>
 <tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Instrument</strong> saved in <strong>DynamoDB</strong> with an audit row carrying the factsheet&#x27;s <code>document_id</code> (its <strong>Document</strong> row was written when it arrived); price sources resolved from the ISIN (the Yahoo id, the BlackRock page)</td></tr>
 <tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS to App</td><td><em>Added. How much do you hold? Send a screenshot or type it.</em></td></tr>
 <tr><td data-background="#FFEBE6"><strong>10</strong></td><td data-background="#FFEBE6">Member to App</td><td>You attach a screenshot of the Monzo valuation from Photos; it uploads the same way and the same docs job reads it with Claude</td></tr>
-<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS</td><td>After Confirm: <strong>Position</strong>, <strong>Valuation</strong> (source <code>user_screenshot</code>) and <strong>Transaction</strong>, each with an audit row that names the screenshot it came from. The Position keeps the currency this card showed, confirmed once (flow 15). The screenshot stays in S3 and opens from the Audit screen</td></tr>
+<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS</td><td>After Confirm: <strong>Position</strong>, <strong>Valuation</strong> (source <code>user_screenshot</code>) and <strong>Transaction</strong>, each with an audit row that names the screenshot it came from. The Position keeps the currency this card showed, confirmed once (flow 14). The screenshot stays in S3 and opens from the Audit screen</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
@@ -78,7 +78,7 @@
 </tbody>
 </table>
 <h2>04 · Logging money in plain words</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Type it the way you would say it, in any currency. When the sentence has everything and its currency matches the holding&#x27;s, it goes straight to a Confirm card; with no currency named, the holding&#x27;s own is assumed and said on the card. When something is missing, MyPaisa asks for that one thing on a card with buttons, edited in place so the chat stays tidy. Rupees typed for a pound holding take the currency check of flow 15.</p>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Type it the way you would say it, in any currency. When the sentence has everything and its currency matches the holding&#x27;s, it goes straight to a Confirm card; with no currency named, the holding&#x27;s own is assumed and said on the card. When something is missing, MyPaisa asks for that one thing on a card with buttons, edited in place so the chat stays tidy. Rupees typed for a pound holding take the currency check of flow 14.</p>
 <p><em><strong>Trigger</strong> &quot;I put £200 into Balanced today&quot;, &quot;1.5 lakh into my Nifty 50 index fund&quot;, &quot;I want to log a transaction&quot;, or the <strong>Log money</strong> chip</em> <em>Phase 5 (pound and rupee holdings)</em></p>
 </div>
 <h3>🛤️ The path</h3>
@@ -95,7 +95,7 @@
 <tr><td data-background="#FFEBE6"><strong>9</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Confirm</td></tr>
 <tr><td data-background="#DEEBFF"><strong>10</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The tap goes to <code>/v1/chat/actions</code>, acknowledged at once and queued in your lane like a message</td></tr>
 <tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Transaction</strong> and the <strong>Position</strong>&#x27;s units saved with an audit row, in one transaction; the card edits in place</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Missing a detail? <code>ask_user</code> ends the turn with one question on a card with its buttons. The next tap resumes the flow from the PendingAction; whatever was already said is skipped; a day of silence clears it. An amount in another currency than the holding&#x27;s is not saved as typed: it takes the currency check of flow 15.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Missing a detail? <code>ask_user</code> ends the turn with one question on a card with its buttons. The next tap resumes the flow from the PendingAction; whatever was already said is skipped; a day of silence clears it. An amount in another currency than the holding&#x27;s is not saved as typed: it takes the currency check of flow 14.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
@@ -111,12 +111,12 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Numbers from code</strong></strong></p>
-<p>Claude fills the fields when the wording is free; a parser in code reads the amount, and the units and the NAV come from code. The figure is always the member&#x27;s own, echoed back.</p>
+<p>Claude fills the fields when the wording is free; a parser in code reads the amount, and the units and the NAV come from code. The figure is always the admin&#x27;s own, echoed back.</p>
 </div>
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The holding&#x27;s own currency</strong></strong></p>
-<p>Every position keeps the currency from the Confirm card that added it. An amount in another currency goes to the check of flow 15, never straight in.</p>
+<p>Every position keeps the currency from the Confirm card that added it. An amount in another currency goes to the check of flow 14, never straight in.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Nothing asked twice</strong></strong></p>

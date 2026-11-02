@@ -1,5 +1,5 @@
 <div data-type="panel-custom" data-icon=":jigsaw:" data-color="#EAE6FF"><p><strong>🧩 Every part of Architecture v4</strong></p>
-<p>The system map's parts as its inspector describes them, one message as an OpenTelemetry trace, the concierge's tool loop and its tools, the nine agents with the kind of agent each is and the model it uses, the three Claude models and the spend ladder, where the data lives, delivery and the guardrails.</p>
+<p>The system map's parts as its inspector describes them, one message as an OpenTelemetry trace, the concierge's tool loop and its tools, the agents with the kind of agent each is and the model it uses, the three Claude models and the spend ladder, where the data lives, delivery and the guardrails.</p>
 <p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/architecture-v4.html">architecture-v4.html</a> (MA-244). Timings, tokens, costs and the bus events are illustrative.</p>
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
@@ -38,7 +38,7 @@
 <li>No amounts on the lock screen</li>
 </ul>
 </td></tr>
-<tr><td data-background="#FFE6F2"><strong>outbox.fifo</strong><br>lane per member</td><td>App integration</td><td>Every message, card, card edit, check-in and record change MyPaisa sends, one FIFO lane per member so a brief arrives in order.</td><td><ul><li>Consumer: sender</li>
+<tr><td data-background="#FFE6F2"><strong>outbox.fifo</strong><br>lane per member</td><td>App integration</td><td>Every message, card, card edit, check-in and record change MyPaisa sends, one FIFO lane per member so each reply arrives in order.</td><td><ul><li>Consumer: sender</li>
 <li>5 tries, then its DLQ</li>
 </ul>
 </td></tr>
@@ -52,7 +52,7 @@
 <li>/v1/admin/... behind the second check</li>
 </ul>
 </td></tr>
-<tr><td data-background="#FFF0E6"><strong>api λ</strong><br>chat · data · admin</td><td>Compute</td><td>The chat routes queue what you send and answer 202 at once. Apart from them, the one correction route and the owner&#x27;s admin actions, it can only read.</td><td><ul><li>Adopts the door&#x27;s traceparent</li>
+<tr><td data-background="#FFF0E6"><strong>api λ</strong><br>chat · data · admin</td><td>Compute</td><td>The chat routes queue what you send and answer 202 at once. Apart from them, the one correction route (admins only) and the admin actions, it can only read.</td><td><ul><li>Adopts the door&#x27;s traceparent</li>
 <li>202 + x-mypaisa-trace-id</li>
 <li>Calls Cognito for /auth/*</li>
 </ul>
@@ -62,7 +62,7 @@
 <li>Member told it was kept</li>
 </ul>
 </td></tr>
-<tr><td data-background="#FFF0E6"><strong>agent λ</strong><br>the concierge</td><td>Compute</td><td>The one Claude tool loop that talks to members. It reads the spend meter before every call, lets the ladder pick the model, and proposes changes with a Confirm card.</td><td><ul><li>Sonnet 5.5, Haiku for small turns</li>
+<tr><td data-background="#FFF0E6"><strong>agent λ</strong><br>the concierge</td><td>Compute</td><td>The one Claude tool loop that talks to members. It reads the spend meter before every call, lets the ladder pick the model, and, for an admin only, proposes an add, a correction or a delete with a Confirm card.</td><td><ul><li>Sonnet 5.5, Haiku for small turns</li>
 <li>At most 8 model calls a run</li>
 <li>Strict tools, append-only history</li>
 </ul>
@@ -85,20 +85,20 @@
 <li>PITR and deletion protection in prod</li>
 </ul>
 </td></tr>
-<tr><td data-background="#EDF5E1"><strong>S3 lake</strong><br>Parquet · DuckDB</td><td>Storage</td><td>The market side&#x27;s record: each source&#x27;s raw answer, curated data with the date it was known, features, predictions, outcomes and models, in Parquet.</td><td><ul><li>mypaisa-prod-lake, versioned</li>
+<tr><td data-background="#EDF5E1"><strong>S3 lake</strong><br>Parquet · DuckDB</td><td>Storage</td><td>The record of every price that values a holding: each source&#x27;s raw answer, and curated prices with the date each became known, in Parquet.</td><td><ul><li>mypaisa-prod-lake, versioned</li>
 <li>raw/ 90 days, the rest for good</li>
 </ul>
 </td></tr>
-<tr><td data-background="#FFE6F2"><strong>Scheduler</strong><br>Europe/London</td><td>App integration</td><td>EventBridge Scheduler, every schedule in Europe/London, each with its own retry policy and dead-letter queue. The tick is the root of the job&#x27;s trace.</td><td><ul><li>07:15 brief · 21:15 wrap</li>
+<tr><td data-background="#FFE6F2"><strong>Scheduler</strong><br>Europe/London</td><td>App integration</td><td>EventBridge Scheduler, every schedule in Europe/London, each with its own retry policy and dead-letter queue. The tick is the root of the job&#x27;s trace.</td><td><ul><li>Nightly prices, the 1st&#x27;s month close</li>
 <li>Daily check-ins, nightly views</li>
 <li>Dev&#x27;s schedules off by default</li>
 </ul>
 </td></tr>
-<tr><td data-background="#FFE6F2"><strong>work queue</strong><br>background jobs</td><td>App integration</td><td>Background jobs: each instrument&#x27;s ingest, each news feed, each document read, the engine, briefs, scoring, check-ins, the nightly views and Projection runs.</td><td><ul><li>5 tries, 30 s → 30 min backoff</li>
+<tr><td data-background="#FFE6F2"><strong>work queue</strong><br>background jobs</td><td>App integration</td><td>Background jobs: each instrument&#x27;s prices, each document read, check-ins, the month close, the nightly views and Projection runs.</td><td><ul><li>5 tries, 30 s → 30 min backoff</li>
 <li>Concurrency keeps free APIs in limits</li>
 </ul>
 </td></tr>
-<tr><td data-background="#FFF0E6"><strong>worker λ</strong><br>each job by type</td><td>Compute</td><td>The same image, running each job by its type. A finished job can queue the next: ingest, then engine, then brief.</td><td><ul><li>Haiku through Batches</li>
+<tr><td data-background="#FFF0E6"><strong>worker λ</strong><br>each job by type</td><td>Compute</td><td>The same image, running each job by its type. A finished job can queue the next: prices, then the nightly views.</td><td><ul><li>Haiku through Batches</li>
 <li>Code decides every check-in</li>
 <li>A RunRecord per run</li>
 </ul>
@@ -114,10 +114,10 @@
 <tr><td data-background="#FFE6F2"><strong>dead-letter</strong><br>14 days + S3</td><td>App integration</td><td>A dead-letter queue behind each queue and the scheduler. An alarm fires the moment one holds anything, and a copy of every message goes to raw/dlq/ for good.</td><td><ul><li>redrive.sh, then Replay, then the ops warden</li>
 </ul>
 </td></tr>
-<tr><td data-background="#FFE6F2"><strong>Step Functions</strong><br>the daily run</td><td>App integration</td><td>Phase 18: ingest, engine, Forecaster, grade, calibrate and brief as one state machine with retries on every step and idempotent writes.</td><td><ul><li>One trace per day&#x27;s run</li>
+<tr><td data-background="#FFE6F2"><strong>Step Functions</strong><br>the daily run</td><td>App integration</td><td>Phase 13: prices, the nightly views, the Projection runs and each closed month&#x27;s grade as one state machine with retries on every step and idempotent writes.</td><td><ul><li>One trace per day&#x27;s run</li>
 </ul>
 </td></tr>
-<tr><td data-background="#FFE6F2"><strong>EventBridge bus</strong><br>agent events</td><td>App integration</td><td>Phase 18: the agents never call each other. They publish events on mypaisa-&lt;env&gt;-events and leave work in DynamoDB.</td><td><ul><li>Each agent its own role and budget share</li>
+<tr><td data-background="#FFE6F2"><strong>EventBridge bus</strong><br>agent events</td><td>App integration</td><td>Phase 13: the agents never call each other. They publish events on mypaisa-&lt;env&gt;-events and leave work in DynamoDB.</td><td><ul><li>Each agent its own role and budget share</li>
 </ul>
 </td></tr>
 <tr><td data-background="#F4F5F7"><strong>Apple push · Web Push</strong><br></td><td>Outside AWS</td><td>Apple push over HTTP/2 with a token key for the iOS app, and Web Push for an installed web app, each only to a device with no fresh presence on the stream.</td><td><ul><li>No figures on the lock screen</li>
@@ -128,7 +128,7 @@
 <li>PDF and image input with citations</li>
 </ul>
 </td></tr>
-<tr><td data-background="#F4F5F7"><strong>Free market data</strong><br></td><td>Outside AWS</td><td>One plugin per feed and a chain per kind, set in Terraform. EODHD only when the data steward shows no free source can serve a holding and the admin approves.</td><td><ul><li>lse_etf: yfinance → twelvedata → issuer_page → stale</li>
+<tr><td data-background="#F4F5F7"><strong>Free price data</strong><br></td><td>Outside AWS</td><td>Prices only value holdings; nothing predicts a market. One plugin per feed and a chain per kind, set in Terraform. EODHD only when the data steward shows no free source can serve a holding and the admin approves.</td><td><ul><li>lse_etf: yfinance → twelvedata → issuer_page → stale</li>
 </ul>
 </td></tr>
 </tbody>
@@ -159,56 +159,41 @@
 </tbody>
 </table>
 <h2>🔁 One Claude tool loop, with code doing every sum</h2>
-<p>The <code>agent</code> Lambda runs one tool loop on Sonnet 5.5. Before each call it reads the month&#x27;s spend and lets the ladder choose the model. It sends only the current conversation after a cached prefix, loops through strict tools until it can answer, ask one thing, or show a Confirm card. A draft writes nothing: only a Confirm, a check-in&#x27;s tap or a Save in place commits, through the one write service.</p>
+<p>The <code>agent</code> Lambda runs one tool loop on Sonnet 5.5. Before each call it reads the month&#x27;s spend and lets the ladder choose the model. It sends only the current conversation after a cached prefix, loops through strict tools until it can answer, ask one thing, or show a Confirm card. Only an admin&#x27;s turn can draft a change. A draft writes nothing: only a Confirm, a check-in&#x27;s tap or a Save in place commits, through the one write service; a delete also takes the second check.</p>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="4b2475a1-51b5-4590-acdf-7904b1e52754" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-loop.gif"></div>
 <figcaption>One Claude tool loop, with code doing every sum (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Tools</th><th>Rule</th><th>The tools</th></tr>
 </thead>
 <tbody><tr><td><strong>Read the records and views</strong></td><td>Look up rather than ask.</td><td><code>get_portfolio</code> <code>get_holding(id)</code> <code>get_networth(view)</code> <code>get_commitments(window)</code> <code>get_budget(month)</code> <code>get_audit(filter)</code> <code>list_kinds</code> <code>describe_kind</code> <code>chart_series(id, days)</code> <code>query_ledger</code> <code>query_ledger_sql</code> <code>get_spend</code></td></tr>
-<tr><td><strong>Read the market side</strong></td><td>The engine&#x27;s output, never re-derived by the model.</td><td><code>get_signals(id)</code> <code>get_history(id, days)</code> <code>get_macro</code> <code>get_events</code> <code>get_sentiment</code> <code>get_stances</code> <code>get_scorecard</code></td></tr>
 <tr><td><strong>Compute, never saved</strong></td><td>Typed overrides through code.</td><td><code>run_scenario</code> <code>run_projection(overrides)</code></td></tr>
-<tr><td><strong>Draft and propose</strong></td><td>Writes nothing until Confirm; the draft is hashed.</td><td><code>draft_record(kind, fields)</code> <code>draft_event(record, type, fields)</code> <code>propose_change(entity, patch)</code> <code>log_decision</code></td></tr>
+<tr><td><strong>Draft and propose</strong></td><td>Admins only, enforced in code. Writes nothing until Confirm; the draft is hashed; a delete also takes the second check.</td><td><code>draft_record(kind, fields)</code> <code>draft_event(record, type, fields)</code> <code>propose_change(entity, patch)</code></td></tr>
 <tr><td><strong>Ask, read, search</strong></td><td>Server tools are Anthropic&#x27;s, with citations.</td><td><code>ask_user(question, options[])</code> <code>extract_document(s3_key, schema)</code> <code>web_search</code> <code>web_fetch</code></td></tr>
-<tr><td><strong>The admin only</strong></td><td>Enforced in code; propose_kind takes the second check, plan and budget changes take Confirm.</td><td><code>propose_kind</code> <code>propose_plan_item</code> <code>rearrange_budget</code></td></tr>
+<tr><td><strong>Kinds, plan and budget</strong></td><td>Admins only, enforced in code; propose_kind takes the second check, plan and budget changes take Confirm.</td><td><code>propose_kind</code> <code>propose_plan_item</code> <code>rearrange_budget</code></td></tr>
 </tbody>
 </table>
-<h2>👥 Nine agents that never call each other</h2>
-<p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, delete data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1; the rest join it in phase 18.</p>
+<h2>👥 Six agents that never call each other</h2>
+<p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, delete data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1; the rest join it in phase 13. Together they keep the records, the budget and the wealth forecast current as the household&#x27;s numbers change.</p>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="761a0711-6227-4583-b702-3fad91f7775b" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-team.gif"></div>
-<figcaption>Nine agents that never call each other, around one event bus (Architecture v4)</figcaption></figure>
+<figcaption>Six agents that never call each other, around one event bus (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Agent</th><th>Kind</th><th>Models</th><th>Its job</th><th>On its own</th><th>Asks the admin</th><th>Budget share</th></tr>
 </thead>
-<tbody><tr><td><strong>Concierge</strong><br>Conversational tool-loop agent · the agent Lambda</td><td><span data-type="status" data-color="red">Claude tool loop</span></td><td><span data-type="status" data-color="red">Sonnet 5.5</span> <span data-type="status" data-color="green">Haiku 5.5</span></td><td>Talks to members in the chat; routes the admin&#x27;s instructions to the admin desk.</td><td>Answers, reads, proposes changes to records with a Confirm card.</td><td>Nothing: members confirm their own records.</td><td>55% of the ceiling</td></tr>
-<tr><td><strong>Admin desk</strong><br>Approval router, the human in the loop</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="neutral">Code</span> <span data-type="status" data-color="green">Haiku 5.5</span></td><td>The one channel between the agents and the admin, in the owner&#x27;s chat and the Admin center.</td><td>Queues, batches into one daily digest, reminds, expires.</td><td>It is the asking: approvals take the second check.</td><td>5% of the ceiling</td></tr>
-<tr><td><strong>Budget keeper</strong><br>Spend governor</td><td><span data-type="status" data-color="neutral">Code only, no model</span></td><td><span data-type="status" data-color="neutral">Code</span></td><td>The meter, the ladder and the guards on every model call.</td><td>Steps down the ladder and back up.</td><td>Ceilings and shares are the admin&#x27;s.</td><td>no Claude share</td></tr>
-<tr><td><strong>Data steward</strong><br>Data reliability agent</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="neutral">Code</span> <span data-type="status" data-color="green">Haiku 5.5</span></td><td>Keeps prices flowing from free sources; watches freshness, gaps, disagreement and free quotas.</td><td>Fails over within the chain, retries, fills gaps, labels stale data.</td><td>A new or reordered source, any paid feed, a source&#x27;s terms.</td><td>5%, shared with the ops warden</td></tr>
+<tbody><tr><td><strong>Concierge</strong><br>Conversational tool-loop agent · the agent Lambda</td><td><span data-type="status" data-color="red">Claude tool loop</span></td><td><span data-type="status" data-color="red">Sonnet 5.5</span> <span data-type="status" data-color="green">Haiku 5.5</span></td><td>Talks to every member in the chat and answers anything about the household&#x27;s wealth; routes an admin&#x27;s instructions to the admin desk.</td><td>Answers and reads for everyone; for an admin, proposes an add, a correction or a delete with a Confirm card.</td><td>Nothing: an admin confirms each change on its card.</td><td>75% of the ceiling</td></tr>
+<tr><td><strong>Admin desk</strong><br>Approval router, the human in the loop</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="neutral">Code</span> <span data-type="status" data-color="green">Haiku 5.5</span></td><td>The one channel between the agents and the admins, in their chat and the Admin center.</td><td>Queues, batches into one daily digest, reminds, expires.</td><td>It is the asking: approvals take the second check.</td><td>5% of the ceiling</td></tr>
+<tr><td><strong>Budget keeper</strong><br>Spend governor</td><td><span data-type="status" data-color="neutral">Code only, no model</span></td><td><span data-type="status" data-color="neutral">Code</span></td><td>The meter, the ladder and the guards on every model call.</td><td>Steps down the ladder and back up.</td><td>Ceilings and shares are the admins&#x27;.</td><td>no Claude share</td></tr>
+<tr><td><strong>Data steward</strong><br>Data reliability agent</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="neutral">Code</span> <span data-type="status" data-color="green">Haiku 5.5</span></td><td>Keeps prices flowing from free sources, only to value holdings; watches freshness, gaps, disagreement and free quotas.</td><td>Fails over within the chain, retries, fills gaps, labels stale data.</td><td>A new or reordered source, any paid feed, a source&#x27;s terms.</td><td>5%, shared with the ops warden</td></tr>
 <tr><td><strong>Ops warden</strong><br>Self-healing operator</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="neutral">Code</span> <span data-type="status" data-color="green">Haiku 5.5</span></td><td>Runs the daily pipeline and repairs it; finds the cause when a dead-letter queue fills.</td><td>Retries, catches up, replays at most three times, rolls back to the last good version.</td><td>Anything it cannot fix: an incident with what was tried.</td><td>5%, shared with the data steward</td></tr>
-<tr><td><strong>News scout</strong><br>Batch tagger and matcher</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="green">Haiku 5.5 · Batches</span> <span data-type="status" data-color="neutral">Code</span></td><td>Collects news and events, tags them, and matches them to holdings through each one&#x27;s exposure map.</td><td>Tags and matches; code scores relevance.</td><td>A new feed or event type.</td><td>10% of the ceiling</td></tr>
-<tr><td><strong>Analyst</strong><br>Deterministic rules engine</td><td><span data-type="status" data-color="neutral">Code only, no model</span></td><td><span data-type="status" data-color="neutral">Code</span></td><td>The rules engine: indicators, pillars, the holder&#x27;s cascade and confidence.</td><td>Runs daily.</td><td>Any rule threshold change, through the tuner.</td><td>no Claude share</td></tr>
-<tr><td><strong>Forecaster</strong><br>ML forecaster, a second engine</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="neutral">Code</span> <span data-type="status" data-color="red">Sonnet 5.5</span></td><td>Market mood, risk, similar days, event impacts and direction, four weeks out.</td><td>Runs daily; switches itself off when its record slips.</td><td>Promotions, through the tuner.</td><td>10% of the ceiling</td></tr>
-<tr><td><strong>Grader and tuner</strong><br>Evaluation and calibration loop</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="neutral">Code</span> <span data-type="status" data-color="red">Sonnet 5.5</span></td><td>Grades every prediction daily, calibrates within bounds, and tests challengers in shadow.</td><td>Grades, moves calibration at most two points a day, rolls back a worse map.</td><td>Promoting a challenger, any change to rules or models.</td><td>10% of the ceiling</td></tr>
+<tr><td><strong>Grader and tuner</strong><br>The household&#x27;s forecasts, graded against its actuals</td><td><span data-type="status" data-color="yellow">Code decides, Claude writes or tags</span></td><td><span data-type="status" data-color="neutral">Code</span> <span data-type="status" data-color="red">Sonnet 5.5</span></td><td>Grades each closed month&#x27;s Budget forecast, and once a year the Projection, against what happened; proposes inputs from the household&#x27;s own history.</td><td>Grades each closed month and writes the month&#x27;s review.</td><td>Every household assumption it proposes, such as a category&#x27;s run rate or a salary&#x27;s growth.</td><td>10% of the ceiling</td></tr>
 </tbody>
 </table>
-<h2>🧠 Three Claude models, each where it earns its cost</h2>
-<p>Sonnet carries the conversation, Haiku files and filters at volume, Opus thinks once a week. All three go through one wrapper that meters every call from the API&#x27;s own <code>usage</code> counts, so the cost on the span is what will be billed. Prompt caching covers the system prompt, the tool list and the card rubrics. Prices are as <code>TECH_STACK.md</code> records them, per million tokens in and out.</p>
-<section data-type="layout-three-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":sparkles:" data-color="#EAE6FF"><h3>Opus 5.5</h3>
-<p><code>claude-opus-5-5</code></p>
-<p><strong>Thinks once a week.</strong></p>
-<ul><li>The Saturday review, from phase 13: what MyPaisa told you this week, the scoreboard, and a reflection over the last four weeks of stances and their grades</li>
-<li>Web search and fetch with citations for the review</li>
-<li>From 85% of the ceiling, the review moves to Sonnet</li>
-</ul>
-<p>$4 in · $20 out per million tokens</p>
-</div>
-</div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":sparkles:" data-color="#FFEBE6"><h3>Sonnet 5.5</h3>
+<h2>🧠 Two Claude models, each where it earns its cost</h2>
+<p>Sonnet carries the conversation and Haiku files and filters at volume. Both go through one wrapper that meters every call from the API&#x27;s own <code>usage</code> counts, so the cost on the span is what will be billed. Prompt caching covers the system prompt, the tool list and the card rubrics. Prices are as <code>TECH_STACK.md</code> records them, per million tokens in and out.</p>
+<section data-type="layout-three-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":sparkles:" data-color="#FFEBE6"><h3>Sonnet 5.5</h3>
 <p><code>claude-sonnet-5-5</code></p>
 <p><strong>Carries the conversation.</strong></p>
 <ul><li>The concierge&#x27;s tool loop: the chat, its cards and guided flows, about 1.5p to 3p a message</li>
-<li>The 07:15 brief and the 21:15 wrap, from the engine&#x27;s numbers</li>
 <li>Reading a factsheet or a screenshot sent in the chat, with citations</li>
-<li>The “Why?” button with web search</li>
-<li>Phase 18: the Forecaster&#x27;s explanations and the grader&#x27;s weekly and monthly reviews</li>
+<li>Web search and fetch with citations, when a member asks</li>
+<li>Phase 13: the grader and tuner&#x27;s review of each closed month</li>
 </ul>
 <p>$2 in · $10 out per million tokens</p>
 </div>
@@ -216,32 +201,31 @@
 <div data-type="column"><div data-type="panel-custom" data-icon=":sparkles:" data-color="#E3FCEF"><h3>Haiku 5.5</h3>
 <p><code>claude-haiku-5-5</code></p>
 <p><strong>Files and filters at volume.</strong></p>
-<ul><li>Tagging the day&#x27;s news and the nightly sentiment index, through Message Batches at half price</li>
-<li>Statement merchants the memory has not seen</li>
+<ul><li>Statement merchants the memory has not seen, through Message Batches at half price</li>
 <li>A one-line note on each closed conversation; the alerts&#x27; repeat filter; small chat turns</li>
-<li>Phase 18: the data steward&#x27;s requests, the ops warden&#x27;s incident summaries, the admin desk&#x27;s drafts</li>
+<li>Phase 13: the data steward&#x27;s requests, the ops warden&#x27;s incident summaries, the admin desk&#x27;s drafts</li>
 <li>Chat answers at the 95% step</li>
 </ul>
 <p>$0.10 in · $0.50 out per million tokens</p>
 </div>
 </div>
+<div data-type="column"><p></p>
+</div>
 </section>
 <h3>🪜 The spend ladder</h3>
 <table data-layout="full-width"><thead><tr><th>From</th><th>Step</th><th>What happens</th></tr>
 </thead>
-<tbody><tr><td data-background="#FFEBE6"><strong>100%</strong> of the ceiling</td><td>Claude stops</td><td>Claude stops until the cycle renews or the owner raises the ceiling. Every card goes out as its plain template; buttons and guided flows work as before. Alerts are never dropped: a template needs no model.</td></tr>
-<tr><td data-background="#FFF0E6"><strong>95%</strong> of the ceiling</td><td>Essentials only</td><td>Chat answers on Haiku; the brief, the wrap and alerts go out as their plain templates with the engine&#x27;s numbers. Reading a factsheet or screenshot still works. The owner is told.</td></tr>
-<tr><td data-background="#FFFAE6"><strong>85%</strong> of the ceiling</td><td>Savers</td><td>The bull/bear debate is skipped, the Saturday review runs on Sonnet instead of Opus, “Why?” searches are limited to three a day, and the nightly sentiment scoring pauses. The owner is told.</td></tr>
-<tr><td data-background="#DEEBFF"><strong>70%</strong> of the ceiling</td><td>Owner told</td><td>One message to the owner: what is spent, on what, and the days left. Nothing changes.</td></tr>
+<tbody><tr><td data-background="#FFEBE6"><strong>100%</strong> of the ceiling</td><td>Claude stops</td><td>Claude stops until the cycle renews or an admin raises the ceiling. Every card goes out as its plain template; buttons and guided flows work as before. Alerts are never dropped: a template needs no model.</td></tr>
+<tr><td data-background="#FFF0E6"><strong>95%</strong> of the ceiling</td><td>Essentials only</td><td>Chat answers on Haiku; alerts and check-in cards go out as their plain templates with code&#x27;s numbers. Reading a factsheet or screenshot still works. The admins are told.</td></tr>
+<tr><td data-background="#FFFAE6"><strong>85%</strong> of the ceiling</td><td>Savers</td><td>Web searches are limited to three a day, and a memory note is written only when a member asks MyPaisa to remember. The admins are told.</td></tr>
+<tr><td data-background="#DEEBFF"><strong>70%</strong> of the ceiling</td><td>Admins told</td><td>One message to the admins: what is spent, on what, and the days left. Nothing changes.</td></tr>
 <tr><td data-background="#E3FCEF"><strong>0%</strong> of the ceiling</td><td>Normal</td><td>Every job runs on its usual model.</td></tr>
 </tbody>
 </table>
 <h3>🍰 Each agent's share of the ceiling</h3>
 <table><thead><tr><th>Who</th><th>Share</th></tr>
 </thead>
-<tbody><tr><td>Concierge</td><td>55%</td></tr>
-<tr><td>Forecaster</td><td>10%</td></tr>
-<tr><td>News scout</td><td>10%</td></tr>
+<tbody><tr><td>Concierge</td><td>75%</td></tr>
 <tr><td>Grader and tuner</td><td>10%</td></tr>
 <tr><td>Admin desk</td><td>5%</td></tr>
 <tr><td>Data steward and ops warden</td><td>5%</td></tr>
@@ -251,7 +235,7 @@
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e586a91c-e00d-4844-83e9-d02d3a4ae6a8" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-models.png"></div>
 <figcaption>Three Claude models, each where it earns its cost, and the spend ladder (Architecture v4)</figcaption></figure>
 <h2>🗄️ One table for state, one lake for the record, one store for secrets</h2>
-<p>The household&#x27;s records are data, not code: kinds are versioned documents, records are documents, their history is append-only events, and the dashboard reads materialised views. Every change and its audit row are written in one DynamoDB transaction, chained by hash.</p>
+<p>The household&#x27;s records are data, not code: kinds are versioned documents, records are documents, their history is append-only events, and the dashboard reads materialised views. Every change and its audit row are written in one DynamoDB transaction, chained by hash. A delete marks the record <code>deleted</code>: hidden from every view, restorable through the chat, its events, audit rows and files kept for good.</p>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ad146983-1f43-4f64-91bf-2a18b14cc16f" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-state.png"></div>
 <figcaption>One table for state, one lake for the record, one store for secrets (Architecture v4)</figcaption></figure>
 <p><strong>DynamoDB</strong>mypaisa-prod-* · single table · PITR in prod</p>
@@ -263,11 +247,11 @@
 <p><code>ChatTurn · 90 d</code><code>PendingAction · 24 h</code><code>TurnBuffer</code><code>LiveHead</code><code>StreamEvent · 7 d+</code></p>
 <h5>Truth and money</h5>
 <p><code>AuditEvent · hash-chained</code><code>RunRecord · 90 d</code><code>SpendMonth</code><code>BudgetSettings</code></p>
-<h5>Market side and the team</h5>
-<p><code>Signal</code><code>Stance</code><code>Forecast</code><code>Setting</code><code>ConfigVersion</code><code>ChangeRequest</code><code>Incident</code><code>ScoreDaily</code><code>CalibrationMap</code></p>
+<h5>Prices, grades and the team</h5>
+<p><code>Price</code><code>MonthGrade</code><code>Setting</code><code>ConfigVersion</code><code>ChangeRequest</code><code>Incident</code></p>
 <p><strong>S3</strong>versioned · Parquet · DuckDB</p>
 <h5>mypaisa-prod-lake</h5>
-<p><code>raw/&lt;source&gt;/</code>each answer as fetched, for replay<code>curated/</code>with the date each fact was known<code>features/</code>each day&#x27;s snapshot<code>predictions/</code>every stance and forecast as made<code>outcomes/</code>every grade<code>models/</code>model files, calibration maps<code>raw/dlq/</code>every dead letter, for good</p>
+<p><code>raw/&lt;source&gt;/</code>each answer as fetched, for replay<code>curated/</code>with the date each fact was known<code>raw/dlq/</code>every dead letter, for good</p>
 <h5>mypaisa-prod-documents</h5>
 <p>Every file a member sends, before anything reads it; no expiry; opened through five-minute links after a role check.</p>
 <h5>The dashboard site</h5>
@@ -316,29 +300,29 @@
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="148475fd-615b-41e7-b660-e039e6507645" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-rules.png"></div>
 <figcaption>Enforced in code, not in the prompt (Architecture v4)</figcaption></figure>
 <h4>Claude never produces a number</h4>
-<p>Every figure comes from tested code: XIRR, loan schedules, the Projection, the engine&#x27;s pillars. Claude chooses what to say and how.</p>
-<p>§1 rule 1 · wealth/ · the engine</p>
+<p>Every figure comes from tested code: XIRR, CAGR, loan schedules, the Projection and the Budget forecast. Claude chooses what to say and how.</p>
+<p>§1 rule 1 · wealth/</p>
 <h4>The app cannot trade</h4>
-<p>No broker login and no orders. No tool can trade, spend beyond a search, delete data or message anyone but the member it answers.</p>
-<p>§1 rule 2 · §8 guardrails</p>
+<p>No broker login and no orders, and nothing says buy or sell. No tool can trade, spend beyond a search, erase data or message anyone but the member it answers.</p>
+<p>§1 rule 2 · §7 guardrails</p>
 <h4>A policy gate before every tool call</h4>
 <p>Code checks the agent&#x27;s manifest, the member&#x27;s role and household, the arguments (an amount stays the member&#x27;s own words) and the run&#x27;s caps, and fails closed. Third-party text is data only; a chat that has read it loses its outbound tools, and the server tools run in a call with no household figure.</p>
-<p>§23.2 · MA-247, MA-253</p>
+<p>§21.2 · MA-247, MA-253</p>
 <h4>Tested on change, watched live</h4>
 <p>T0 replays on every pull request; T1 live, three trials, when a prompt, tool, guard, loop, routing, kind or the SDK changes; T2 on a model change before release. Every live run checked by code; flagged runs and 10% judged overnight; judges calibrated by the admin. <a href="https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT">The explainer</a>.</p>
-<p>§23.3 to §23.5 · MA-246, MA-250 to MA-255</p>
-<h4>One write service</h4>
-<p>New things are created only in the chat, with a card and a Confirm; a figure is corrected in place with Save. Both validate against the kind and write the audit row.</p>
-<p>§4.10 · PATCH /v1/records/{id}</p>
+<p>§21.3 to §21.5 · MA-246, MA-250 to MA-255</p>
+<h4>Only admins write, through one service</h4>
+<p>Several admins; the owner grants or takes back the role in the chat. An admin adds and deletes only in the chat, with a card and a Confirm (a delete also takes the second check and marks the record <code>deleted</code>, restorable); a figure is corrected in the chat or in place with Save. Every other member views only. Each write validates against the kind and writes the audit row.</p>
+<p>§4.10 · PATCH /v1/records/{id} · MA-308, MA-309</p>
 <h4>Admin actions take a second check</h4>
 <p>A fresh, server-verified Sign in with Apple, passkey or Google, bound to the action. A local Face ID alone never authorises anything on the server.</p>
 <p>§4.5 · MA-76</p>
 <h4>Nothing is lost</h4>
 <p>Every hand-off is an SQS queue; handlers are idempotent; a dead letter alarms at once and replays safely. An old Confirm whose flow expired is refused.</p>
-<p>§21 · Powertools idempotency</p>
+<p>§19 · Powertools idempotency</p>
 <h4>Nothing private in CloudWatch</h4>
 <p>No prompt, reply, amount, name, token or account number on any span, log or metric; members are hashed. A leak test replays a conversation in CI to hold the line.</p>
-<p>§10.9 · MA-232</p>
+<p>§9.9 · MA-232</p>
 <div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong>🛡️ The guardrails and evals</strong> have a page of their own, with their own explainer and diagrams: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1540178">Guardrails and evals</a> (ARCHITECTURE §23).</p>
 </div>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>MyPaisa Market Agent</title>
+<title>MyPaisa architecture, v2</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -203,35 +203,35 @@ pre.tree .c { color: var(--faint); }
 <div class="frame">
   <div class="brand"><div class="coin" aria-hidden="true"><span>£</span><span>$</span><span>€</span></div><b>MyPaisa</b><span class="eyebrow">· design v2, 23 Oct 2026</span></div>
   <div class="prose">
-    <h1>MyPaisa Market Agent</h1>
-    <p class="lede">One Python agent on AWS Lambda that keeps the record of what you hold, watches it, takes a stance with a confidence score, and talks to you through a private Telegram bot built for a layman. Python does the maths (an engine ported from the Agentic Trading Desk); Claude, through the Anthropic API, explains it, reads your factsheets and screenshots, and answers questions by calling the same code as tools.</p>
+    <h1>MyPaisa architecture, v2</h1>
+    <p class="lede">One Python agent on AWS Lambda that keeps the record of what the household holds, values it every day, works out its returns (XIRR and CAGR from the dated ledger), and talks to you through a private Telegram bot built for a layman. Python does the maths; Claude, through the Anthropic API, explains it, reads your factsheets and screenshots, and answers questions by calling the same code as tools. Everything is driven by the chat.</p>
+    <p class="lede" style="font-size:15px;color:var(--muted)">An early design record (v2, 23 Oct 2026): the Telegram bot and the £50 cap came before the app, the web app and the agent team. MA-307, 2 Nov 2026: the market side was retired; MyPaisa is a wealth tracker only.</p>
     <ul class="chips">
       <li>Base currency <b>GBP</b></li>
-      <li>Markets <b>UK · US · EU</b></li>
+      <li>Prices <b>UK · US · EU</b>, only to value holdings</li>
       <li>Holdings today <b>Monzo: BlackRock fund · NASDAQ 100 · Robotics · Silver</b></li>
-      <li>Add more by <b>factsheet + screenshot</b> in the chat</li>
+      <li>Add, correct, delete <b>in the chat, admins only</b></li>
+      <li>Returns <b>XIRR · CAGR</b> from the dated ledger</li>
       <li>Budget cap <b>£50 / month</b></li>
       <li>Its own repo <b>mypaisa-agent</b></li>
       <li>Claude via the <b>Anthropic API</b>, key in SSM, spend limit set</li>
-      <li>Stances <b>ADD · HOLD · PAUSE · TRIM</b> with confidence</li>
     </ul>
   </div>
 
   <h2 id="arch">How a message moves through the system</h2>
-  <p class="prose">One Lambda does the thinking (<code>agent λ</code>). It wakes two ways: on a schedule, to produce briefs and alerts, and on a webhook, when you message the bot or send it a file. Pick a scenario to watch the request travel.</p>
+  <p class="prose">One Lambda does the thinking (<code>agent λ</code>). It wakes two ways: on a schedule, to value the holdings and send what is due, and on a webhook, when you message the bot or send it a file. Pick a scenario to watch the request travel.</p>
 
   <div class="stage" id="stage">
     <div class="stage-bar">
       <span class="eyebrow">Scenario</span>
-      <button class="scn" data-s="brief" aria-pressed="true">Morning brief · 07:15</button>
+      <button class="scn" data-s="value" aria-pressed="true">Valuing the holdings · daily</button>
       <button class="scn" data-s="chat" aria-pressed="false">You ask a question</button>
-      <button class="scn" data-s="alert" aria-pressed="false">Alert after the US close</button>
-      <button class="scn" data-s="add" aria-pressed="false">You add a holding</button>
+      <button class="scn" data-s="add" aria-pressed="false">An admin adds a holding</button>
       <button class="ghost" id="replay">↻ Replay</button>
     </div>
     <div class="stage-body">
       <div class="stage-svg">
-<svg viewBox="0 0 1240 640" role="img" aria-label="Architecture: Telegram app and Bot API on the left, webhook Lambda and EventBridge Scheduler in the middle, one agent Lambda plus ingest and engine Lambdas, and DynamoDB, S3, market data and the Anthropic API on the right. Scenarios animate a packet along the path each request takes." id="arch-svg">
+<svg viewBox="0 0 1240 640" role="img" aria-label="Architecture: Telegram app and Bot API on the left, webhook Lambda and EventBridge Scheduler in the middle, one agent Lambda and an ingest Lambda, and DynamoDB, S3, price data and the Anthropic API on the right. Scenarios animate a packet along the path each request takes." id="arch-svg">
   <defs>
     <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
   </defs>
@@ -255,10 +255,7 @@ pre.tree .c { color: var(--faint); }
   <path id="e-sched-ingest" class="edge" d="M440,485 H482" marker-end="url(#ah)"/>
   <path id="e-mkt-ingest" class="edge" d="M566,560 V526" marker-end="url(#ah)"/>
   <path id="e-ingest-s3" class="edge" d="M652,500 C690,500 690,585 718,585" marker-end="url(#ah)"/>
-  <path id="e-ingest-sig" class="edge" d="M652,485 H718" marker-end="url(#ah)"/>
-  <path id="e-sig-dyn" class="edge" d="M892,485 C960,485 960,330 1018,330" marker-end="url(#ah)"/>
-  <path id="e-sig-agent" class="edge" d="M805,446 V206" marker-end="url(#ah)"/>
-  <path id="e-dyn-sig" class="edge" d="M1018,350 C975,350 975,505 892,505" marker-end="url(#ah)"/>
+  <path id="e-ingest-dyn" class="edge" d="M652,485 C960,485 960,330 1018,330" marker-end="url(#ah)"/>
 
   <!-- edge labels -->
   <text class="lbl" x="229" y="286" text-anchor="middle">message</text>
@@ -269,10 +266,8 @@ pre.tree .c { color: var(--faint); }
   <text class="lbl" x="980" y="178" text-anchor="middle">tool_use / text</text>
   <text class="lbl" x="560" y="250" text-anchor="middle">sendMessage · sendPhoto</text>
   <text class="lbl" x="461" y="478" text-anchor="middle">fire</text>
-  <text class="lbl" x="685" y="478" text-anchor="middle">EOD + FX</text>
+  <text class="lbl" x="800" y="478" text-anchor="middle">EOD + FX · valuations</text>
   <text class="lbl" x="700" y="560" text-anchor="middle">parquet</text>
-  <text class="lbl" x="962" y="420" text-anchor="middle">signals · forecasts</text>
-  <text class="lbl" x="792" y="330" text-anchor="middle" transform="rotate(-90 792 330)">alert candidates</text>
   <text class="lbl" x="590" y="552" text-anchor="middle">fetch</text>
 
   <!-- nodes -->
@@ -284,20 +279,18 @@ pre.tree .c { color: var(--faint); }
     <text class="t" x="496" y="138">webhook λ</text><text class="s" x="496" y="157">Function URL · 128 MB</text><text class="m" x="496" y="176">verify · dedupe · ack 200</text></g>
   <g class="node" id="n-agent"><rect x="718" y="98" width="224" height="118" rx="10"/>
     <text class="t" x="732" y="124">agent λ</text><text class="s" x="732" y="143">Claude tool loop · Python 3.14</text>
-    <text class="m" x="732" y="165">tools: registry · engine · cards</text><text class="m" x="732" y="181">docs: factsheet + screenshot</text><text class="m" x="732" y="197">search_news · 1024 MB · 120 s</text></g>
+    <text class="m" x="732" y="165">tools: registry · returns · cards</text><text class="m" x="732" y="181">docs: factsheet + screenshot</text><text class="m" x="732" y="197">1024 MB · 120 s</text></g>
   <g class="node ext" id="n-claude"><rect x="1018" y="112" width="192" height="76" rx="10"/>
     <text class="t" x="1032" y="138">Anthropic API</text><text class="s" x="1032" y="157">Claude Haiku · Sonnet · Opus 5.5</text><text class="m" x="1032" y="176">key in SSM · web search · batches</text></g>
   <g class="node" id="n-dyn"><rect x="1018" y="246" width="192" height="118" rx="10"/>
     <text class="t" x="1032" y="272">DynamoDB</text><text class="s" x="1032" y="291">on-demand, one table</text>
-    <text class="m" x="1032" y="312">registry · valuations · prefs</text><text class="m" x="1032" y="328">signals · stances · alert state</text><text class="m" x="1032" y="344">chat memory · decisions</text></g>
+    <text class="m" x="1032" y="312">registry · valuations · prefs</text><text class="m" x="1032" y="328">dated ledger · budget · alerts</text><text class="m" x="1032" y="344">chat memory · audit log</text></g>
   <g class="node" id="n-sched"><rect x="258" y="446" width="182" height="78" rx="10"/>
-    <text class="t" x="272" y="472">EventBridge Scheduler</text><text class="s" x="272" y="491">tz Europe/London</text><text class="m" x="272" y="510">07:15 · 21:15 · Sat 08:00</text></g>
+    <text class="t" x="272" y="472">EventBridge Scheduler</text><text class="s" x="272" y="491">tz Europe/London</text><text class="m" x="272" y="510">daily valuation · check-ins</text></g>
   <g class="node" id="n-ingest"><rect x="482" y="446" width="170" height="78" rx="10"/>
     <text class="t" x="496" y="472">ingest λ</text><text class="s" x="496" y="491">closes · NAV · FX · calendars</text><text class="m" x="496" y="510">EODHD · Twelve Data · yfinance</text></g>
   <g class="node ext" id="n-mkt"><rect x="482" y="560" width="170" height="40" rx="10"/>
-    <text class="t" x="496" y="585">Market data</text></g>
-  <g class="node" id="n-sig"><rect x="718" y="446" width="174" height="78" rx="10"/>
-    <text class="t" x="732" y="472">engine λ</text><text class="s" x="732" y="491">pandas · ported from the desk</text><text class="m" x="732" y="510">pillars · flags · macro · stance</text></g>
+    <text class="t" x="496" y="585">Price data</text></g>
   <g class="node" id="n-s3"><rect x="718" y="560" width="174" height="40" rx="10"/>
     <text class="t" x="732" y="585">S3 · price history</text></g>
 </svg>
@@ -312,7 +305,7 @@ pre.tree .c { color: var(--faint); }
 
   <div class="prose">
     <h3>Why one agent Lambda and not three</h3>
-    <p>The brief, the alert and the chat answer all need the same things: your positions, today's signals, your preferences, and the record of what the bot already told you. Putting them in one Lambda with one set of tools means the morning brief and your 3 pm question are answered from the same facts. The webhook Lambda stays tiny on purpose: Telegram resends an update if it waits more than a few seconds, so it verifies the <code>secret_token</code> header, rejects any <code>chat_id</code> that isn't yours, writes the <code>update_id</code> to DynamoDB so a retry is ignored, invokes the agent asynchronously and returns 200.</p>
+    <p>A check-in, an alert and a chat answer all need the same things: the holdings and their valuations, the dated ledger, your preferences, and the record of what the bot already told you. Putting them in one Lambda with one set of tools means a check-in and your 3 pm question are answered from the same facts. The webhook Lambda stays tiny on purpose: Telegram resends an update if it waits more than a few seconds, so it verifies the <code>secret_token</code> header, rejects any <code>chat_id</code> that isn't the household's, writes the <code>update_id</code> to DynamoDB so a retry is ignored, invokes the agent asynchronously and returns 200.</p>
   </div>
 
   <h2 id="loop">How the agent thinks</h2>
@@ -320,7 +313,7 @@ pre.tree .c { color: var(--faint); }
 
   <div class="loop">
     <div class="loop-svg">
-<svg viewBox="0 0 560 400" role="img" aria-label="Claude in the middle, calling six of its tools: get_portfolio, get_signals, run_scenario, get_scorecard, propose_change and search_news. Each tool reads the registry, S3 or the web and returns JSON." id="loop-svg">
+<svg viewBox="0 0 560 400" role="img" aria-label="Claude in the middle, calling six of its tools: get_portfolio, get_returns, run_projection, get_budget, propose_change and web_search. Each tool reads the registry, the dated ledger or the web and returns JSON." id="loop-svg">
   <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
   <g class="node" id="l-claude"><rect x="24" y="150" width="170" height="100" rx="10"/>
     <text class="t" x="38" y="176">Claude</text><text class="s" x="38" y="195">system prompt: your prefs,</text><text class="s" x="38" y="211">horizon, what not to say</text><text class="m" x="38" y="234">strict tools · effort low–med</text></g>
@@ -330,9 +323,9 @@ pre.tree .c { color: var(--faint); }
   <path id="l-outp" class="edge" d="M109,250 V300" marker-end="url(#ah2)"/>
 
   <g class="tool" id="t-get_positions"><rect x="300" y="44" width="150" height="40" rx="8"/><text class="m" x="312" y="68">get_portfolio()</text></g>
-  <g class="tool" id="t-get_signals"><rect x="300" y="96" width="150" height="40" rx="8"/><text class="m" x="312" y="120">get_signals(id)</text></g>
-  <g class="tool" id="t-run_scenario"><rect x="300" y="148" width="150" height="40" rx="8"/><text class="m" x="312" y="172">run_scenario(...)</text></g>
-  <g class="tool" id="t-get_scorecard"><rect x="300" y="200" width="150" height="40" rx="8"/><text class="m" x="312" y="224">get_scorecard()</text></g>
+  <g class="tool" id="t-get_returns"><rect x="300" y="96" width="150" height="40" rx="8"/><text class="m" x="312" y="120">get_returns(id)</text></g>
+  <g class="tool" id="t-run_projection"><rect x="300" y="148" width="150" height="40" rx="8"/><text class="m" x="312" y="172">run_projection(...)</text></g>
+  <g class="tool" id="t-get_budget"><rect x="300" y="200" width="150" height="40" rx="8"/><text class="m" x="312" y="224">get_budget()</text></g>
   <g class="tool" id="t-update_pref"><rect x="300" y="252" width="150" height="40" rx="8"/><text class="m" x="312" y="276">propose_change(...)</text></g>
   <g class="tool" id="t-web_search"><rect x="300" y="304" width="150" height="40" rx="8"/><text class="m" x="312" y="328">web_search (server tool)</text></g>
 
@@ -341,9 +334,9 @@ pre.tree .c { color: var(--faint); }
   <text class="lbl" x="240" y="130" text-anchor="middle" id="l-lbl">tool_use → result</text>
 
   <text class="m" x="470" y="68">registry</text>
-  <text class="m" x="470" y="120">engine output</text>
-  <text class="m" x="470" y="172">pandas, in-process</text>
-  <text class="m" x="470" y="224">graded stances</text>
+  <text class="m" x="470" y="120">dated ledger</text>
+  <text class="m" x="470" y="172">code, in-process</text>
+  <text class="m" x="470" y="224">plan vs actuals</text>
   <text class="m" x="470" y="276">saved after Confirm</text>
   <text class="m" x="470" y="328">untrusted text</text>
 </svg>
@@ -351,14 +344,12 @@ pre.tree .c { color: var(--faint); }
     <div class="trace">
       <div class="trace-head"><span class="eyebrow">Example turn</span><button class="ghost" id="run-trace">▶ Run the example</button></div>
       <ol id="trace">
-        <li class="user" data-tool=""><span class="k">you ›</span> why did Balanced drop today?</li>
+        <li class="user" data-tool=""><span class="k">you ›</span> how has Balanced done since I bought it?</li>
         <li class="call" data-tool="get_positions"><span class="k">tool_use</span> <span class="n">get_portfolio</span>()</li>
         <li data-tool="get_positions"><span class="k">result</span> [{"id":"monzo-balanced","name":"BlackRock MyMap (Monzo Balanced)","kind":"oeic","ccy":"GBP","value_gbp":22925,"weight":0.71},{"id":"cndx","name":"iShares NASDAQ 100","kind":"etf","listing":"XLON/GBP","value_gbp":5210,"weight":0.16},…]</li>
-        <li class="call" data-tool="get_signals"><span class="k">tool_use</span> <span class="n">get_signals</span>(id="monzo-balanced")</li>
-        <li data-tool="get_signals"><span class="k">result</span> {"nav_d1":-0.92,"proxy_intraday":-0.4,"fx_part":-0.55,"local_part":-0.37,"trend_50_200":"up","vol_20d_pct":68,"drawdown_from_high":-2.1,"driver":"GBPUSD +0.7%"}</li>
-        <li class="call" data-tool="web_search"><span class="k">tool_use</span> <span class="n">web_search</span>("sterling dollar 22 October 2026")</li>
-        <li data-tool="web_search"><span class="k">result</span> 3 results · BoE comments lifted GBP; US equities flat</li>
-        <li class="final" data-tool=""><span class="k">claude ›</span> Balanced fell 0.9%. Most of that was the pound: GBP/USD rose 0.7% after BoE comments, which shrinks the sterling value of the fund's US holdings. The underlying markets were about flat. Nothing has changed in the trend, and volatility is normal. No action suggested.</li>
+        <li class="call" data-tool="get_returns"><span class="k">tool_use</span> <span class="n">get_returns</span>(id="monzo-balanced")</li>
+        <li data-tool="get_returns"><span class="k">result</span> {"value_gbp":22925,"paid_in_gbp":20400,"first_dated":"2023-03-14","xirr":0.061,"cagr":0.058,"fx_part_1y":-0.012,"basis":"dated ledger, 31 transactions"}</li>
+        <li class="final" data-tool=""><span class="k">claude ›</span> Balanced is worth £22,925 against £20,400 paid in since March 2023. That is 6.1% a year as XIRR, which counts when each payment went in; the plain CAGR is 5.8%. Over the last year the pound took about 1.2% off. Both returns are worked out by code from your dated ledger.</li>
       </ol>
     </div>
   </div>
@@ -367,256 +358,118 @@ pre.tree .c { color: var(--faint); }
     <h3>What each tool does</h3>
     <div class="scroll"><table class="tbl">
       <tr><th>Tool</th><th>Returns</th><th>Who else uses it</th></tr>
-      <tr><td><code>get_portfolio</code> · <code>get_holding(id)</code></td><td>The registry: instruments, positions, latest valuations, weights, in GBP</td><td>Every card; later the wealth-tracker backend</td></tr>
-      <tr><td><code>get_signals(id)</code> · <code>get_macro</code> · <code>get_history</code></td><td>Pillars, flags, indicators, volatility percentile, drawdown, local-vs-FX split, model ranges; the macro regime; closes for charts</td><td>engine λ writes them; the brief reads them</td></tr>
-      <tr><td><code>run_scenario</code></td><td>"If the Nasdaq falls 10% and GBP/USD goes to 1.20, what happens to me?" from look-through exposure</td><td>Chat only</td></tr>
-      <tr><td><code>get_stances</code> · <code>get_scorecard</code></td><td>Open and graded stances; hit rate, calibration, return vs doing nothing</td><td>Saturday review, the holding card</td></tr>
-      <tr><td><code>get_events</code> · <code>get_sentiment</code></td><td>Upcoming MPC, FOMC, ECB, CPI, earnings of top holdings; the news tone per holding</td><td>Brief, stance card</td></tr>
-      <tr><td><code>extract_document</code></td><td>Structured facts from a factsheet PDF or a screenshot, with the source line and a confidence per field</td><td>Adding or updating a holding</td></tr>
-      <tr><td><code>propose_change</code> · <code>log_decision</code></td><td>A structured change to the registry or your preferences, saved only after you tap Confirm; a record of what you did</td><td>Chat only</td></tr>
-      <tr><td><code>web_search</code> · <code>web_fetch</code></td><td>Anthropic's server-side tools: results with citations and page text, treated as untrusted</td><td>Saturday review, "Why?"</td></tr>
+      <tr><td><code>get_portfolio</code> · <code>get_holding(id)</code></td><td>The registry: instruments, positions, latest valuations, weights, in GBP</td><td>Every card</td></tr>
+      <tr><td><code>get_returns(id)</code> · <code>get_history</code></td><td>XIRR and CAGR from the dated ledger, money paid in and taken out, the local-vs-FX split of a change; closes for charts</td><td>The Portfolio card, the holding card</td></tr>
+      <tr><td><code>run_projection</code></td><td>"If I add £300 a month and the pound falls 10%, where am I in ten years?" The Projection, from actual numbers: the household's own XIRR and CAGR, contractual rates, salaries, debts and plans</td><td>Chat, the Projection card</td></tr>
+      <tr><td><code>get_budget</code></td><td>The budget against actuals, and the Budget forecast</td><td>Check-ins, the month close</td></tr>
+      <tr><td><code>extract_document</code></td><td>Structured facts from a factsheet PDF or a screenshot, with the source line and a confidence per field</td><td>Adding or correcting a holding</td></tr>
+      <tr><td><code>propose_change</code> · <code>propose_delete</code></td><td>A record added, corrected or deleted, shown as a card and saved only after an admin taps Confirm (a delete also needs a second check, and marks the record <code>deleted</code>: hidden, restorable through the chat); every write is an audit row</td><td>Chat only (an admin may also correct a figure in place)</td></tr>
+      <tr><td><code>web_search</code> · <code>web_fetch</code></td><td>Anthropic's server-side tools: results with citations and page text, treated as untrusted</td><td>A fund's details the factsheet lacks</td></tr>
       <tr><td><code>render_chart</code></td><td>A PNG in the house style for the card</td><td>Every card with a chart</td></tr>
     </table></div>
-    <p>Model routing keeps the cost down without changing the answer quality where it matters: Haiku 5.5 decides whether an alert is worth a ping and scores news, Sonnet 5.5 writes briefs, cards and chat, Opus 5.5 does the Saturday review. A stance above 70% confidence also gets a two-call bull-versus-bear debate with a judge, a pattern borrowed from TradingAgents.</p>
+    <p>Model routing keeps the cost down without changing the answer quality where it matters: Haiku 5.5 decides whether an alert is worth a ping and turns short messages into records, Sonnet 5.5 writes cards and chat, Opus 5.5 reads the hard statements.</p>
   </div>
 
   <h2 id="registry">The holdings registry: fed from the chat, generic by design</h2>
   <div class="prose">
-    <p>You add a holding by sending the bot its factsheet and a screenshot of your Monzo valuation, or by typing what it is. Claude reads the PDF and the image, fills a structured card with the source line for each figure and marks anything it is unsure of in amber, and nothing is saved until you tap <b>Confirm</b>. From then on the bot prices it every day. Every holding is an <code>Instrument</code> with a <code>kind</code>, and a kind is a bundle of defaults (price chain, look-through source, how the engine weighs the pillars, how eager the stance is), so a new ETF, a US or UK share, or a commodity adds a row of data, not code.</p>
+    <p>An admin adds a holding by sending the bot its factsheet and a screenshot of the Monzo valuation, or by typing what it is. Claude reads the PDF and the image, fills a structured card with the source line for each figure and marks anything it is unsure of in amber, and nothing is saved until an admin taps <b>Confirm</b>. From then on the bot values it every day. Every holding is an <code>Instrument</code> with a <code>kind</code>, and a kind is a bundle of defaults (price chain, look-through source, how its value and returns are worked out), so a new ETF, a US or UK share, or a commodity adds a row of data, not code.</p>
+    <p>Only admins write, and there can be several: the owner grants or takes back the role in the chat. Adding and deleting happen only in the chat; an admin corrects a figure in the chat or in place on a screen. A delete marks the record <code>deleted</code>: hidden from every view, restorable through the chat, its events, audit rows and files kept for good. Every other member views only.</p>
   </div>
   <div class="scroll"><table class="tbl">
-    <tr><th>Kind</th><th>Price chain</th><th>Look-through</th><th>Engine</th><th>Stance temperament</th></tr>
-    <tr><td><code>oeic</code> (the Monzo BlackRock funds)</td><td>Daily NAV: yfinance <code>0P…L</code> → BlackRock page → FT → proxy basket → your screenshot</td><td>Factsheet, then the product page</td><td>All pillars; macro from exposure weights</td><td>Patient: ADD on a steady trend, PAUSE on exhaustion</td></tr>
-    <tr><td><code>etf</code></td><td>Exchange close: EODHD → Twelve Data (US) → yfinance; issuer NAV as a check</td><td>iShares holdings download, daily</td><td>All pillars</td><td>Patient</td></tr>
-    <tr><td><code>stock</code></td><td>Exchange close</td><td>The company: sector, country, currency</td><td>Adds the Valuation pillar and the stock cards</td><td>Cautious: single-name risk raises the bar for ADD; earnings dates freeze changes</td></tr>
-    <tr><td><code>bond_etf</code></td><td>Exchange close</td><td>Duration, credit quality, currency</td><td>Trend and momentum downweighted; risk reads duration × rate moves</td><td>Slow</td></tr>
-    <tr><td><code>commodity_etc</code></td><td>Exchange close; metal spot × FX as a check</td><td>The metal and its pricing currency</td><td>No valuation; risk pillar ×2; macro from the dollar and real yields</td><td>Slowest to ADD, quickest to PAUSE; wider drawdown band (12%)</td></tr>
-    <tr><td><code>cash</code></td><td>FX only</td><td>The currency</td><td>None</td><td>Where contributions come from</td></tr>
+    <tr><th>Kind</th><th>Price chain</th><th>Look-through</th></tr>
+    <tr><td><code>oeic</code> (the Monzo BlackRock funds)</td><td>Daily NAV: yfinance <code>0P…L</code> → BlackRock page → FT → your screenshot</td><td>Factsheet, then the product page</td></tr>
+    <tr><td><code>etf</code></td><td>Exchange close: EODHD → Twelve Data (US) → yfinance; issuer NAV as a check</td><td>iShares holdings download, daily</td></tr>
+    <tr><td><code>stock</code></td><td>Exchange close</td><td>The company: sector, country, currency</td></tr>
+    <tr><td><code>bond_etf</code></td><td>Exchange close</td><td>Duration, credit quality, currency</td></tr>
+    <tr><td><code>commodity_etc</code></td><td>Exchange close; metal spot × FX as a check</td><td>The metal and its pricing currency</td></tr>
+    <tr><td><code>cash</code></td><td>FX only</td><td>The currency</td></tr>
   </table></div>
 
   <h3>Worked example: what you hold today</h3>
   <div class="scroll"><table class="tbl">
     <tr><th>Instrument</th><th>Kind</th><th>ISIN</th><th>Listing recorded</th><th>Exposure</th><th>Note</th></tr>
-    <tr><td>BlackRock MyMap (Monzo "Balanced")</td><td><code>oeic</code></td><td>from the factsheet</td><td>none, daily NAV</td><td>~66% shares, ~34% bonds; mostly USD underneath</td><td>proxy basket from its top holdings</td></tr>
+    <tr><td>BlackRock MyMap (Monzo "Balanced")</td><td><code>oeic</code></td><td>from the factsheet</td><td>none, daily NAV</td><td>~66% shares, ~34% bonds; mostly USD underneath</td><td>valued from its daily NAV</td></tr>
     <tr><td>iShares NASDAQ 100 UCITS ETF (Acc)</td><td><code>etf</code></td><td>IE00B53SZB19</td><td>XLON <code>CNX1</code> GBP (USD line <code>CNDX</code>)</td><td>100% USD, US large-cap tech</td><td>charge 0.30%</td></tr>
     <tr><td>iShares Automation &amp; Robotics UCITS ETF (Acc)</td><td><code>etf</code></td><td>IE00BYZK4552</td><td>XLON <code>RBTX</code> GBP (USD line <code>RBOT</code>)</td><td>global, roughly equal-weighted small and mid caps; USD, JPY, EUR, TWD</td><td>charge 0.40%; overlaps the NASDAQ ETF in a few names, computed not assumed</td></tr>
     <tr><td>iShares Physical Silver ETC</td><td><code>commodity_etc</code></td><td>IE00B4NCWG09</td><td>XLON <code>ISLN</code> GBP (USD line <code>SSLN</code>)</td><td>silver, priced in USD</td><td>not a fund: a debt security backed by bars; charge ~0.20%</td></tr>
     <tr><td>Monzo pot</td><td><code>cash</code></td><td>—</td><td>—</td><td>GBP</td><td>where contributions come from</td></tr>
   </table></div>
   <div class="prose">
-    <p>Three traps the example writes down. The ISIN is shared by the USD and GBP lines, so the listing is stored separately and the bot asks which line when the factsheet does not say. London GBP lines are often quoted in pence, so the price plugin normalises to pounds and a test guards the 100× error. And every holding here is a dollar asset in a sterling wrapper: one move in GBP/USD moves all of them, so the FX line in the brief is a portfolio-level item and the US macro basket matters far more than the UK one. The exchange calendars (XLON, XETR, XNYS) and ECB reference rates come free; the scheduler runs in <code>Europe/London</code> so the clock-change weeks take care of themselves.</p>
-  </div>
-
-  <h2 id="engine">The engine: pillars, a holder's stance, a confidence you can check</h2>
-  <div class="prose">
-    <p>The maths is ported from the Agentic Trading Desk, a Claude Code skill whose rule is "the scripts perform the deterministic calculations; the model fetches data and talks to the user". Its indicators and pillar scores carry over with their own self-tests as golden files. Its decision cascade does not: it rotates capital for a trading account, and an ISA holder accumulates with care. So the pillars and flags are the desk's; the stance is ours.</p>
-  </div>
-  <div class="two">
-    <div>
-      <div class="scroll"><table class="tbl">
-        <tr><th>Pillar (−2..+2)</th><th>From</th><th>Source</th></tr>
-        <tr><td>Trend</td><td>price vs EMA20, EMA20&gt;50, EMA50&gt;200, EMA200 slope</td><td>desk</td></tr>
-        <tr><td>Momentum</td><td>Wilder RSI-14 zones, MACD histogram, TRIX vs signal</td><td>desk</td></tr>
-        <tr><td>Macro</td><td>cross-asset regime (breadth, credit, size, equity vs bonds, sector rotation, the yield curve) per region, weighted by look-through; for silver, the dollar and real yields</td><td>desk + ours</td></tr>
-        <tr><td>Risk</td><td>volatility percentile, drawdown, proxy gap, bars present, NAV age</td><td>ours</td></tr>
-        <tr><td>Valuation</td><td>P/E, P/S, FCF yield vs sector; stocks only, later</td><td>toolbelt</td></tr>
-      </table></div>
-      <p style="font-size:14px;color:var(--muted);margin-top:10px">Flags from the desk: exhaustion, relentless-bearish, rebound, death-cross. Partial data is labelled, never silently scored. A failing self-test blocks scoring that day and tells you.</p>
-    </div>
-    <div>
-      <div class="scroll"><table class="tbl">
-        <tr><th>Stance</th><th>When</th></tr>
-        <tr><td><b>ADD</b></td><td>trend and momentum ≥ 0, or a rebound after a drawdown with healthy structure; risk not elevated</td></tr>
-        <tr><td><b>HOLD</b></td><td>the default; nothing to do</td></tr>
-        <tr><td><b>PAUSE</b></td><td>exhaustion ≥ 2, or risk elevated, or adverse macro: keep what you have, delay new money</td></tr>
-        <tr><td><b>TRIM</b></td><td>drift past target by more than the band, or relentless-bearish with a death-cross, and the holding is not protected; never "sell everything"</td></tr>
-        <tr><td><b>REBALANCE</b></td><td>portfolio drift: move the next contributions, not the holdings</td></tr>
-        <tr><td><b>WATCH</b></td><td>not held; the trigger that would change it</td></tr>
-      </table></div>
-      <div class="msg" style="margin-top:12px">confidence = 0.50
-  + agreement   pillars pointing the same way, ±0.05 each
-  + persistence bars the state has held, up to +0.10
-  − quality     stale, partial, provisional, proxy gap &gt;1%: −0.10
-  ± history     hit-rate of past stances in this state, once 20 exist
-clamp 0 … 0.95 · below 55% the card says "no clear view"
-calibrated weekly: Brier score, reliability table by bucket</div>
-    </div>
+    <p>Three traps the example writes down. The ISIN is shared by the USD and GBP lines, so the listing is stored separately and the bot asks which line when the factsheet does not say. London GBP lines are often quoted in pence, so the price plugin normalises to pounds and a test guards the 100× error. And every holding here is a dollar asset in a sterling wrapper: one move in GBP/USD moves all of them, so the FX line on the Portfolio card is a portfolio-level item. The exchange calendars (XLON, XETR, XNYS) and ECB reference rates come free; the scheduler runs in <code>Europe/London</code> so the clock-change weeks take care of themselves.</p>
   </div>
 
   <h2 id="chat">What you see in the chat</h2>
-  <p class="prose">A persistent keyboard with four buttons (Portfolio · Today · Ask · Settings), a menu of commands, and cards that are plain on top with a collapsed <b>Technical details</b> section underneath. Telegram's 2026 rich messages carry the table and the collapsible section; where they are unavailable the same card is HTML with a Technical button that edits the message in place. Every term in a technical section has a one-line glossary behind a tap. A read-only Mini App dashboard with interactive charts opens from the Portfolio card.</p>
+  <p class="prose">A persistent keyboard with four buttons (Portfolio · Today · Ask · Settings), a menu of commands, and cards that are plain on top with a collapsed <b>Technical details</b> section underneath. Telegram's 2026 rich messages carry the table and the collapsible section; where they are unavailable the same card is HTML with a Technical button that edits the message in place. Every term in a technical section has a one-line glossary behind a tap. A read-only Mini App dashboard with interactive charts opens from the Portfolio card. Only admins see Correct and the add and delete flows; every other member sees the same cards, read only.</p>
   <div class="two">
     <div>
       <div class="msg">📊 Portfolio · Thu 23 Oct · £31,280  ▲0.4% today  ▲2.1% month
 ────────────────────────────────────────
-Balanced (Monzo)        £22,925  ▲0.6%  HOLD  71%
-iShares NASDAQ 100       £5,210  ▲1.1%  HOLD  66%
-Automation &amp; Robotics    £1,960  ▲0.2%  ADD   61%
-Physical Silver            £940  ▼1.8%  PAUSE 58%
-Cash (Monzo pot)           £245     —      —
+Balanced (Monzo)        £22,925  ▲0.6%  XIRR  6.1%
+iShares NASDAQ 100       £5,210  ▲1.1%  XIRR 14.2%
+Automation &amp; Robotics    £1,960  ▲0.2%  XIRR  4.8%
+Physical Silver            £940  ▼1.8%  XIRR  9.3%
+Cash (Monzo pot)           £245     —       —
 ────────────────────────────────────────
 FX: the pound explains −0.3% of today.
-Nothing to do this week. Next review Saturday.
+XIRR and CAGR from the dated ledger.
 <div class="btns"><span>Today</span><span>Open dashboard</span><span>Technical ▾</span><span>Ask</span></div></div>
     </div>
     <div>
       <div class="msg">iShares NASDAQ 100 · £5,210
-Stance: HOLD · 2 weeks · confidence 66%
-Why: uptrend intact; volatility a little above normal
-after last week; Nvidia and Apple report next week.
-Would change if: a 6% fall from here, or the Fed
-surprises on Wednesday.
-Your HOLD calls so far: 9 made, 7 held up.
-<div class="btns"><span>Why?</span><span>What if?</span><span>Technical ▾</span><span>I acted</span></div>
+Paid in £4,300 since Jun 2024 · 7 buys
+XIRR 14.2% · CAGR 13.6%
+This month ▲£180, of which FX −£40
+<div class="btns"><span>Show chart</span><span>Projection</span><span>Technical ▾</span><span>Correct</span></div>
    ▾ Technical details
-   Trend +2 · Momentum +1 (RSI 61, MACD hist&gt;0, TRIX mixed)
-   Macro US +1 Broadening · Risk −1 (vol 72nd pct)
-   Drawdown −2.4% · range 1m −6.1% … +5.0% · P(fall&gt;5%) 14%
+   412 units × £12.646 (XLON CNX1, 22 Oct close)
+   Ledger: 7 dated transactions, first 3 Jun 2024
    Data: EODHD CNX1 ✓ · ECB ✓ · iShares NAV ✓ (22 Oct)</div>
     </div>
   </div>
   <div class="scroll"><table class="tbl">
-    <tr><th>Card</th><th>For</th><th>Verdict</th></tr>
-    <tr><td><code>stance</code></td><td>any holding</td><td>ADD · HOLD · PAUSE · TRIM · REBALANCE · WATCH, with confidence and horizon</td></tr>
-    <tr><td><code>holding-profile</code></td><td>fund, ETF</td><td>what it is, cost, where it invests, its role in the portfolio</td></tr>
-    <tr><td><code>overlap-review</code></td><td>the portfolio</td><td>concentration, effective positions, look-through overlap, currency exposure; the weakest link; gaps (the toolbelt's portfolio-review, rebuilt for funds)</td></tr>
-    <tr><td><code>fund-vs-benchmark</code></td><td>fund, ETF</td><td>on track · lagging · ahead, with tracking difference and cost drag including the Monzo platform fee</td></tr>
-    <tr><td><code>bear-vs-bull</code></td><td>any</td><td>three arguments each, a judge, the key debate</td></tr>
-    <tr><td><code>scenario</code></td><td>the portfolio</td><td>impact of index and FX shocks from look-through</td></tr>
+    <tr><th>Card</th><th>For</th><th>Shows</th></tr>
+    <tr><td><code>portfolio</code></td><td>the household</td><td>every holding's value in GBP, today's and the month's change, the FX part, XIRR</td></tr>
+    <tr><td><code>holding</code></td><td>any holding</td><td>value, money paid in, XIRR and CAGR from the dated ledger, the source of each figure</td></tr>
+    <tr><td><code>projection</code></td><td>the household</td><td>the Projection from actual numbers, and a what-if on it</td></tr>
+    <tr><td><code>budget</code></td><td>the household</td><td>the budget against actuals, and the Budget forecast</td></tr>
+    <tr><td><code>confirm</code></td><td>an admin's add, correction or delete</td><td>what would be written, with Confirm; a delete adds a second check</td></tr>
   </table></div>
 
   <h2 id="notify">When the bot speaks</h2>
-  <p class="prose">You asked me to choose. About ten messages a week, two of them with sound at most, and nothing between 22:00 and 07:00. Briefs are silent pushes; only a red alert makes a noise.</p>
+  <p class="prose">You asked me to choose. A few messages a week at most, and nothing between 22:00 and 07:00. Check-ins and budget alerts are silent pushes; only a red alert makes a noise. On the 1st, the month close sums the month up.</p>
   <div class="scroll"><div class="week" role="table" aria-label="Weekly message schedule">
     <div class="h"></div><div class="h">Mon</div><div class="h">Tue</div><div class="h">Wed</div><div class="h">Thu</div><div class="h">Fri</div><div class="h">Sat</div><div class="h">Sun</div>
-    <div class="r">07:15 brief</div><div class="c q">silent</div><div class="c q">silent</div><div class="c q">silent</div><div class="c q">silent</div><div class="c q">silent</div><div class="c none">—</div><div class="c none">—</div>
-    <div class="r">21:15 wrap</div><div class="c">only if &gt;0.75% or an alert</div><div class="c">same</div><div class="c">same</div><div class="c">same</div><div class="c">same</div><div class="c none">—</div><div class="c none">—</div>
-    <div class="r">Alerts</div><div class="c l">🔴 sound, max 2/wk</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div><div class="c none">—</div><div class="c none">—</div>
-    <div class="r">Review</div><div class="c none">—</div><div class="c none">—</div><div class="c none">—</div><div class="c none">—</div><div class="c none">—</div><div class="c q">08:00 deep dive + scorecard</div><div class="c none">—</div>
+    <div class="r">Check-ins</div><div class="c q">if one is due</div><div class="c q">same</div><div class="c q">same</div><div class="c q">same</div><div class="c q">same</div><div class="c q">same</div><div class="c q">same</div>
+    <div class="r">Alerts</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div><div class="c y">🟡 silent</div>
   </div></div>
 
   <div class="two">
     <div>
       <div class="tiers">
-        <div class="tier"><i style="background:var(--loss)"></i><div><b>🔴 Red, with sound</b><small>Drawdown past your threshold (default 8% from high), trend break on a holding over 20% of the portfolio, or a fund NAV move over 3% in a day. Cooldown 3 days per instrument.</small></div></div>
-        <div class="tier"><i style="background:var(--warn)"></i><div><b>🟡 Amber, silent</b><small>Volatility doubles in two weeks, allocation drifts over 5% from target, or GBP moves over 1.5% against USD or EUR in a day. Cooldown 7 days.</small></div></div>
-        <div class="tier"><i style="background:var(--faint)"></i><div><b>⚪ Digest only</b><small>Everything else goes into the next brief. Haiku reads the candidate list and demotes anything that repeats what you were told this week.</small></div></div>
+        <div class="tier"><i style="background:var(--loss)"></i><div><b>🔴 Red, with sound</b><small>A job that failed and could not repair itself. It goes to the admins.</small></div></div>
+        <div class="tier"><i style="background:var(--warn)"></i><div><b>🟡 Amber, silent</b><small>A budget category past its plan, or a check-in left unanswered. Cooldown 7 days.</small></div></div>
+        <div class="tier"><i style="background:var(--faint)"></i><div><b>⚪ Month close only</b><small>Everything else waits for the 1st. Haiku reads the candidate list and demotes anything that repeats what you were told this week.</small></div></div>
       </div>
     </div>
     <div>
-      <div class="msg">🌅 Morning brief · Mon 26 Oct
-Portfolio ▲0.4% d/d   (FX −0.2%, GBP/USD)
-
-Balanced (MyMap 5)   ▲0.6%  trend ↑  vol normal
-  proxy basket now   ▲0.3%  (fund NAV lands tomorrow)
-  drift vs target    −1.1%
-
-1-month model range (not advice)
-80%: −5%…+4% · P(fall &gt;5%) 9% (usual 8%)
-
-US opens 13:30 UK this week (clock gap)
-<div class="btns"><span>Explain</span><span>Snooze 7d</span><span>Mute</span><span>I acted</span></div></div>
+      <div class="msg">🗓 Check-in · Sat 1 Nov
+Your £300 to Balanced (Monzo) was due today.
+Did it go in?
+<div class="btns"><span>Yes, £300</span><span>A different amount</span><span>Not this month</span></div></div>
     </div>
   </div>
-  <p class="prose">The buttons matter more than they look. "I acted" writes a decision record; the Saturday review then compares what you did with what the signals said, which is the only honest way to find out whether the bot helps.</p>
-
-  <h2 id="predict">Prediction: news, sentiment and events feeding a call</h2>
-  <div class="prose">
-    <p>Sentiment has a small, real edge over days to a few weeks, mostly around events; it has almost none over a single day, and headlines are priced in within minutes. So the agent does not guess tomorrow's close. It takes a <b>stance</b> with a horizon, a confidence and an invalidation rule, suggests only actions that are safe inside an ISA, and paper-trades every call so the Saturday scorecard can tell you whether the sentiment layer is earning its keep.</p>
-  </div>
-
-  <div class="stage">
-    <div class="stage-bar"><span class="eyebrow">News → sentiment → call, runs every evening</span><button class="ghost" id="replay2">↻ Replay</button></div>
-    <div class="stage-svg">
-<svg viewBox="0 0 1240 420" role="img" aria-label="Pipeline: RSS feeds and an event calendar feed a news ingest Lambda, which stores articles in S3; a nightly Haiku run scores them with structured outputs into a sentiment index in DynamoDB; the call engine combines price signals, the sentiment index and upcoming events into a stance, logs it as a paper trade, and the Saturday scorecard grades it." id="pred-svg">
-  <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
-
-  <path id="p-rss-ing" class="edge" d="M196,96 H244" marker-end="url(#ah3)"/>
-  <path id="p-cal-ing" class="edge" d="M196,196 C220,196 220,118 244,118" marker-end="url(#ah3)"/>
-  <path id="p-ing-s3" class="edge" d="M416,106 H464" marker-end="url(#ah3)"/>
-  <path id="p-s3-batch" class="edge" d="M636,106 H684" marker-end="url(#ah3)"/>
-  <path id="p-batch-idx" class="edge" d="M856,106 H904" marker-end="url(#ah3)"/>
-  <path id="p-idx-call" class="edge" d="M990,146 V206" marker-end="url(#ah3)"/>
-  <path id="p-sig-call" class="edge" d="M636,246 H904" marker-end="url(#ah3)"/>
-  <path id="p-cal-call" class="edge" d="M196,216 C300,216 300,330 440,330 H900 C920,330 920,262 904,262" marker-end="url(#ah3)"/>
-  <path id="p-call-log" class="edge" d="M1076,246 H1124 V300" marker-end="url(#ah3)"/>
-  <path id="p-log-score" class="edge" d="M1080,350 H940" marker-end="url(#ah3)"/>
-  <path id="p-score-you" class="edge" d="M770,350 H360" marker-end="url(#ah3)"/>
-
-  <text class="lbl" x="220" y="88" text-anchor="middle">every 3 h</text>
-  <text class="lbl" x="440" y="98" text-anchor="middle">dedupe</text>
-  <text class="lbl" x="660" y="98" text-anchor="middle">overnight</text>
-  <text class="lbl" x="880" y="98" text-anchor="middle">JSON scores</text>
-  <text class="lbl" x="770" y="238" text-anchor="middle">trend · vol · drift · ranges</text>
-  <text class="lbl" x="640" y="322" text-anchor="middle">FOMC · MPC · ECB · CPI · earnings of top-10 holdings</text>
-  <text class="lbl" x="1010" y="342" text-anchor="middle">graded at horizon</text>
-  <text class="lbl" x="560" y="342" text-anchor="middle">Saturday review + weekday brief line</text>
-
-  <g class="node ext" id="q-rss"><rect x="26" y="66" width="170" height="60" rx="10"/><text class="t" x="40" y="90">News feeds</text><text class="s" x="40" y="110">RSS: BoE, Fed, ECB, FT, Reuters</text></g>
-  <g class="node ext" id="q-cal"><rect x="26" y="166" width="170" height="60" rx="10"/><text class="t" x="40" y="190">Event calendar</text><text class="s" x="40" y="210">known dates, pulled weekly</text></g>
-  <g class="node" id="q-ing"><rect x="244" y="66" width="172" height="80" rx="10"/><text class="t" x="258" y="90">news ingest λ</text><text class="s" x="258" y="109">fetch, dedupe, map to</text><text class="s" x="258" y="125">instruments by holdings</text></g>
-  <g class="node" id="q-s3"><rect x="464" y="66" width="172" height="80" rx="10"/><text class="t" x="478" y="90">S3 · articles</text><text class="s" x="478" y="109">≈200 a day, text only</text><text class="m" x="478" y="130">90-day lifecycle rule</text></g>
-  <g class="node ext" id="q-batch"><rect x="684" y="66" width="172" height="80" rx="10"/><text class="t" x="698" y="90">Batches · Haiku 5.5</text><text class="s" x="698" y="109">structured outputs, strict</text><text class="m" x="698" y="130">half price · back by 06:00</text></g>
-  <g class="node" id="q-idx"><rect x="904" y="66" width="172" height="80" rx="10"/><text class="t" x="918" y="90">Sentiment index</text><text class="s" x="918" y="109">per instrument, per day</text><text class="m" x="918" y="130">DynamoDB · novelty-weighted</text></g>
-  <g class="node" id="q-sig"><rect x="464" y="206" width="172" height="80" rx="10"/><text class="t" x="478" y="230">Price signals</text><text class="s" x="478" y="249">from signals λ</text><text class="m" x="478" y="270">same table</text></g>
-  <g class="node" id="q-call"><rect x="904" y="206" width="172" height="80" rx="10"/><text class="t" x="918" y="230">Call engine</text><text class="s" x="918" y="249">rules + Sonnet 5.5</text><text class="m" x="918" y="270">stance · horizon · confidence</text></g>
-  <g class="node" id="q-log"><rect x="1080" y="300" width="130" height="80" rx="10"/><text class="t" x="1094" y="324">Paper-trade</text><text class="t" x="1094" y="342">log</text><text class="m" x="1094" y="364">entry px, exit px</text></g>
-  <g class="node" id="q-score"><rect x="770" y="310" width="170" height="60" rx="10"/><text class="t" x="784" y="334">Scorecard</text><text class="s" x="784" y="354">hit rate · calibration · vs baseline</text></g>
-  <g class="node" id="q-you"><rect x="190" y="310" width="170" height="60" rx="10"/><text class="t" x="204" y="334">You, on Telegram</text><text class="s" x="204" y="354">the call and its track record</text></g>
-</svg>
-    </div>
-    <div class="caption" id="caption2">News arrives all day; scoring runs overnight; the call is made before the UK open and graded when its horizon ends.</div>
-  </div>
-
-  <div class="two">
-    <div>
-      <h3>What a call looks like</h3>
-      <div class="msg">📌 Stance · Balanced (Monzo) · Thu 29 Oct
-PAUSE · horizon 2 weeks · confidence 58%
-
-Why
-• Hawkish BoE minutes, 3 sources, novelty high
-• CPI Thursday, options imply ±1.4% on the day
-• 20-day vol rising, trend still up
-
-Would change if
-• CPI prints under 3.0%, or GBP/USD under 1.25
-
-What I'd do (ISA-safe)
-• Keep what you have. Move this month's top-up to Friday.
-
-PAUSE calls so far: 11 made, 7 right,
-avg +0.6% vs doing nothing. Calibration 0.55 → ok.
-<div class="btns"><span>Why?</span><span>I'll follow it</span><span>Ignore</span><span>Stop these</span></div></div>
-    </div>
-    <div>
-      <h3>How a score is made</h3>
-      <p style="font-size:14px">Each article is scored once by Haiku 5.5 with a strict JSON schema, so the output always parses:</p>
-<pre class="tree">{
-  "instruments": ["monzo-balanced"],
-  "direction": -1,            <span class="c">-1 · 0 · +1</span>
-  "magnitude": 0.4,           <span class="c">0..1</span>
-  "horizon_days": 10,
-  "novelty": 0.8,             <span class="c">vs last 7 days of scores</span>
-  "event": "BoE MPC minutes",
-  "confidence": 0.7,
-  "quote": "…will act if inflation…"
-}</pre>
-      <p style="font-size:14px;color:var(--muted)">The index for a day is the novelty-weighted sum, decayed over the horizon. The call engine only lets sentiment move a stance when the price signals do not contradict it; news alone never triggers a red alert. Everything Claude reads from the web is treated as untrusted text.</p>
-    </div>
-  </div>
+  <p class="prose">The buttons matter more than they look. One tap records the contribution as a dated transaction, so XIRR and CAGR stay right without waiting for a statement. The tap is an admin's; every other member sees the result, not the buttons.</p>
 
   <h3>Claude features the agent uses</h3>
   <div class="scroll"><table class="tbl">
     <tr><th>Feature</th><th>Used for</th><th>Why it fits</th></tr>
-    <tr><td>Structured outputs and strict tools</td><td>Every card, article score and stance; every tool input</td><td>Guaranteed-valid JSON; no parsing failures at 3 am</td></tr>
+    <tr><td>Structured outputs and strict tools</td><td>Every card and every tool input</td><td>Guaranteed-valid JSON; no parsing failures at 3 am</td></tr>
     <tr><td>PDF and image input</td><td>The factsheet and the valuation screenshot</td><td>The only ingestion path a layman will actually use</td></tr>
     <tr><td>Citations</td><td>Extracted figures</td><td>Each number carries the line it came from, shown on the Confirm card</td></tr>
     <tr><td>Prompt caching</td><td>System prompt, tool list, rubrics, your preferences</td><td>Paid once per hour, not per message</td></tr>
-    <tr><td>Adaptive thinking with effort</td><td>Low for filters and scoring, medium for chat and cards, high on Saturday</td><td>Spend where judgment matters</td></tr>
-    <tr><td>Server-side web search and web fetch</td><td>"Why?", the Saturday review</td><td>Live sources with citations, $10 per 1,000 searches; results arrive marked untrusted; no separate search key</td></tr>
-    <tr><td>Playbooks as prompt files in the repo</td><td><code>read-central-bank-statement</code> · <code>map-headline-to-holdings</code> · <code>write-stance</code> · <code>grade-stance</code></td><td>Loaded into the prompt only when the task matches; versioned with the code</td></tr>
-    <tr><td>Message Batches</td><td>Nightly sentiment scoring</td><td>Half price; latency does not matter overnight</td></tr>
+    <tr><td>Adaptive thinking with effort</td><td>Low for filters, medium for chat and cards, high for a hard statement</td><td>Spend where judgment matters</td></tr>
+    <tr><td>Server-side web search and web fetch</td><td>A fund's details the factsheet lacks</td><td>Live sources with citations, $10 per 1,000 searches; results arrive marked untrusted; no separate search key</td></tr>
+    <tr><td>Playbooks as prompt files in the repo</td><td><code>read-factsheet</code> · <code>read-statement</code> · <code>write-check-in</code> · <code>explain-returns</code></td><td>Loaded into the prompt only when the task matches; versioned with the code</td></tr>
     <tr><td>A Console spend limit on the key</td><td>The hard stop</td><td>The key stops working at the limit, whatever the code does; AWS Budgets covers the rest</td></tr>
   </table></div>
 
@@ -635,7 +488,7 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
     <div class="budget-legend">
       <span><i style="background:var(--faint)"></i>AWS <b id="v-aws"></b></span>
       <span><i style="background:var(--accent)"></i>Claude <b id="v-ai"></b></span>
-      <span><i style="background:var(--accent2)"></i>Market data <b id="v-data"></b></span>
+      <span><i style="background:var(--accent2)"></i>Price data <b id="v-data"></b></span>
       <span><i style="border:1px dashed var(--faint)"></i>Headroom <b id="v-room"></b></span>
     </div>
     <p class="budget-total">Estimated <b id="v-total"></b> a month of £50. <span id="v-note" style="color:var(--muted)"></span></p>
@@ -644,19 +497,17 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
     <tr><th>Line</th><th>Lean</th><th>Standard</th><th>Full</th><th>Basis</th></tr>
     <tr><td>Lambda, Scheduler, DynamoDB, Function URL, SSM</td><td>£0</td><td>£0</td><td>£0</td><td>Always-free tiers: 1M Lambda requests and 400k GB-s a month; this runs about 5k</td></tr>
     <tr><td>S3, CloudWatch Logs (14-day), ECR image</td><td>£0.10</td><td>£0.10</td><td>£0.20</td><td>A few hundred MB</td></tr>
-    <tr><td>Claude: briefs and alerts</td><td>£3</td><td>£5</td><td>£9</td><td>22 days × 2 runs; Haiku/Sonnet vs Opus; prompt caching on the system prompt</td></tr>
+    <tr><td>Claude: alerts and check-ins</td><td>£1</td><td>£1</td><td>£2</td><td>Only when one is due; Haiku writes them, Sonnet when a card needs it; prompt caching on the system prompt</td></tr>
     <tr><td>Claude: chat and cards</td><td>£2</td><td>£4</td><td>£8</td><td>3–5 questions a day, 2–3 tool calls each</td></tr>
-    <tr><td>Claude: Saturday review</td><td>£2</td><td>£3</td><td>£4</td><td>Opus 5.5 with the reflection step and the bull/bear debate</td></tr>
-    <tr><td>Claude: nightly sentiment scoring</td><td>£1.50</td><td>£2.50</td><td>£2.50</td><td>≈200 articles a day on Haiku 5.5 via Batches, cached rubric</td></tr>
     <tr><td>Claude: factsheet and screenshot extraction</td><td>£0.20</td><td>£0.20</td><td>£0.20</td><td>A few documents a month</td></tr>
     <tr><td>Claude: web search</td><td>£0.50</td><td>£0.50</td><td>£1</td><td>About 60 searches a month at $10 per 1,000</td></tr>
-    <tr><td>Twelve Data</td><td>£0</td><td>£0</td><td>£0</td><td>Free tier: US closes, the macro basket, the earnings calendar; ~25 of 800 calls a day</td></tr>
-    <tr><td>Market data for London and Frankfurt</td><td>£0</td><td>£16</td><td>£16</td><td>yfinance when lean; EODHD All World EOD at $19.99 for dependable LSE and Xetra closes; news feeds are free RSS</td></tr>
-    <tr><td><b>Total</b></td><td><b>£9</b></td><td><b>£31</b></td><td><b>£41</b></td><td>All under the cap; start lean, pay for data when yfinance breaks. Each further household member adds £2–5; a single share would add about £46 for a fundamentals feed, decided only then.</td></tr>
+    <tr><td>Twelve Data</td><td>£0</td><td>£0</td><td>£0</td><td>Free tier: US closes, to value holdings; a handful of 800 calls a day</td></tr>
+    <tr><td>Price data for London and Frankfurt</td><td>£0</td><td>£16</td><td>£16</td><td>yfinance when lean; EODHD All World EOD at $19.99 for dependable LSE and Xetra closes</td></tr>
+    <tr><td><b>Total</b></td><td><b>£4</b></td><td><b>£22</b></td><td><b>£27</b></td><td>All under the cap; start lean, pay for data when yfinance breaks. Each further household member adds £2–5.</td></tr>
   </table></div>
 
   <h2 id="repo">Its own codebase: mypaisa-agent</h2>
-  <p class="prose">A separate repository, its own Terraform state key and its own IAM role. It shares nothing with the wealth tracker at first; later the tracker's backend reads the positions table through a small read-only role. One trap from the tracker's history: the OIDC subject claim embeds the repository's numeric id, so the new repo needs a trust policy with <b>its</b> id, not a copy of the tracker's.</p>
+  <p class="prose">A separate repository, its own Terraform state key and its own IAM role. One trap from the older wealth tracker's history: the OIDC subject claim embeds the repository's numeric id, so the new repo needs a trust policy with <b>its</b> id, not a copy of the old one's.</p>
   <div class="two">
     <div>
 <pre class="tree">mypaisa-agent/
@@ -665,19 +516,18 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
 ├── src/mypaisa_agent/
 │   ├── registry/            <span class="c">instruments, positions, valuations, documents; kind profiles</span>
 │   ├── data/                <span class="c">price chain: eodhd · twelvedata · yfinance · fund_nav · ecb_fx; hygiene</span>
-│   ├── engine/              <span class="c">indicators · pillars · flags · macro · cascade · confidence; ported from the desk</span>
-│   ├── cards/               <span class="c">stance · holding_profile · overlap_review · bear_vs_bull · scenario</span>
+│   ├── returns/             <span class="c">XIRR · CAGR from the dated ledger · the Projection · the Budget forecast</span>
+│   ├── cards/               <span class="c">portfolio · holding · projection · budget · confirm</span>
 │   ├── docs/                <span class="c">factsheet and screenshot extraction via Claude</span>
-│   ├── news/  events/       <span class="c">rss · dedupe · score; calendar · earnings</span>
-│   ├── calls/               <span class="c">ledger (hash-chained) · grader · scorecard · calibration</span>
+│   ├── audit/               <span class="c">hash-chained audit log: every add, correction and delete</span>
 │   ├── tools/               <span class="c">one file per Claude tool</span>
-│   ├── agent.py             <span class="c">tool loop, model routing, caching, debate</span>
+│   ├── agent.py             <span class="c">tool loop, model routing, caching</span>
 │   ├── telegram.py          <span class="c">rich messages with HTML fallback, buttons, files, Mini App auth</span>
-│   └── handlers/            <span class="c">webhook · agent · ingest · engine · news · score · docs</span>
+│   └── handlers/            <span class="c">webhook · agent · ingest · docs</span>
 ├── playbooks/               <span class="c">prompt files loaded when a task matches</span>
 ├── miniapp/                 <span class="c">static dashboard, lightweight-charts, Nocturne look</span>
-├── tests/                   <span class="c">golden files from the desk's self-tests; fixtures for extraction</span>
-├── Dockerfile               <span class="c">one arm64 image, seven handlers</span>
+├── tests/                   <span class="c">golden files for XIRR and CAGR; fixtures for extraction</span>
+├── Dockerfile               <span class="c">one arm64 image, four handlers</span>
 ├── infra/terraform/         <span class="c">lambda · scheduler · dynamodb · s3 · iam · ssm · budget</span>
 └── .github/workflows/deploy.yml   <span class="c">lint · tests · plan on PRs · deploy via OIDC</span></pre>
     </div>
@@ -685,16 +535,15 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
       <ol class="phases">
         <li><b>Prerequisites.</b> Terraform bootstrap with the budgets and the OIDC role, which makes each secret's SSM parameter with a write-only placeholder; then dev's bot token, Anthropic API key (with a Console spend limit), Twelve Data key and Google client put over it by hand (prod's after prod's first apply); factsheets exported.</li>
         <li><b>Registry and ingestion.</b> Holdings added from the chat by factsheet and screenshot with Confirm; the Portfolio card from your own figures. No analysis yet.</li>
-        <li><b>Prices and the engine.</b> The source chain, the desk's maths ported with golden tests, pillars, the holder's cascade, confidence v0, stances in shadow.</li>
-        <li><b>Briefs, alerts, charts, technical mode.</b> Claude writes on top of numbers that work; every card with its technical section.</li>
-        <li><b>Chat, cards, scenarios.</b> The tool loop, the research cards, web search with citations, natural-language preferences.</li>
+        <li><b>Prices and returns.</b> The source chain values every holding daily; XIRR and CAGR from the dated ledger, with golden tests.</li>
+        <li><b>Alerts, check-ins, charts, technical mode.</b> Claude writes on top of numbers that work; every card with its technical section.</li>
+        <li><b>Chat and the Projection.</b> The tool loop, a what-if on the Projection, web search with citations, natural-language preferences.</li>
+        <li><b>The budget and the Budget forecast.</b> Plan against actuals, closed on the 1st.</li>
         <li><b>Mini App dashboard.</b> Read-only, interactive charts, opened from the Portfolio card.</li>
-        <li><b>Track record and calibration.</b> Graders, the reliability table, confidence v1, the Saturday review with reflection.</li>
-        <li><b>News and sentiment.</b> RSS, nightly scoring, the event calendar, a one-notch tilt when price agrees.</li>
-        <li><b>Stances go live</b> after 8 weeks above baseline; <b>wealth tracker integration</b>; <b>new kinds of holding</b> as you add them.</li>
+        <li><b>New kinds of holding</b> as you add them.</li>
       </ol>
       <h3>Rules it inherits</h3>
-      <p style="font-size:14px;color:var(--muted)">IAM only in Terraform, deploy by OIDC with a role pinned to this repository's own numeric id, no AWS keys anywhere, the Anthropic API key in SSM with a spend limit. Each function gets a small IAM role: one table, one bucket, its SSM path, its model ARNs. The bot holds no broker login and cannot trade. Nothing is saved without Confirm. Privacy mode hides £ amounts, since bot chats are not end-to-end encrypted.</p>
+      <p style="font-size:14px;color:var(--muted)">IAM only in Terraform, deploy by OIDC with a role pinned to this repository's own numeric id, no AWS keys anywhere, the Anthropic API key in SSM with a spend limit. Each function gets a small IAM role: one table, one bucket, its SSM path, its model ARNs. The bot holds no broker login and cannot trade. Nothing is saved without an admin's Confirm: only admins add, correct and delete, and every other member views only. Privacy mode hides £ amounts, since bot chats are not end-to-end encrypted.</p>
     </div>
   </div>
 </div>
@@ -706,55 +555,38 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
   var svg = document.getElementById('arch-svg');
 
   var SCEN = {
-    brief: { title: 'Morning brief · 07:15 UK', steps: [
-      { nodes: ['n-sched'], text: '<b>07:15 Europe/London.</b> Scheduler fires the daily brief. Weekdays only; it skips UK bank holidays by reading the XLON calendar.' },
+    value: { title: 'Valuing the holdings · daily', steps: [
+      { nodes: ['n-sched'], text: '<b>After the closes, Europe/London.</b> Scheduler fires the daily valuation. It reads the exchange calendars, so a holiday is skipped, not guessed.' },
       { edge: 'e-sched-ingest', nodes: ['n-ingest'], text: '<b>ingest λ</b> starts. It works out which exchanges closed since the last run and which fund NAVs are due.' },
-      { edge: 'e-mkt-ingest', nodes: ['n-mkt', 'n-ingest'], rev: true, text: 'Fetches yesterday\'s closes for every listing, the Monzo fund NAV by ISIN, and ECB reference rates for GBP, USD, EUR.' },
+      { edge: 'e-mkt-ingest', nodes: ['n-mkt', 'n-ingest'], rev: true, text: 'Fetches the closes for every listing the household holds, the Monzo fund NAV by ISIN, and ECB reference rates for GBP, USD, EUR.' },
       { edge: 'e-ingest-s3', nodes: ['n-s3'], text: 'Appends to the parquet history in S3. Idempotent: a re-run for the same date overwrites, never duplicates.' },
-      { edge: 'e-ingest-sig', nodes: ['n-sig'], text: '<b>engine λ</b> runs its self-tests, then computes the pillars (trend, momentum, macro, risk), the flags, drift, the local-vs-FX split, the 1-month range, and a shadow stance with its confidence. Plain pandas, no model guesses.' },
-      { edge: 'e-sig-dyn', nodes: ['n-dyn'], text: 'Writes today\'s signals and any alert candidates to DynamoDB, plus the forecast it just made, so it can be scored later.' },
-      { edge: 'e-sig-agent', nodes: ['n-agent'], text: '<b>agent λ</b> is invoked with the prompt "write the morning brief" and the signals as data.' },
-      { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Sonnet 5.5 turns the numbers into six lines in your context: horizon, targets, what you were already told this week. The system prompt is cached.' },
-      { edge: 'e-claude-agent', nodes: ['n-agent'], text: 'Text comes back. The agent renders a small chart with matplotlib if a holding moved more than usual.' },
-      { edge: 'e-agent-bot', nodes: ['n-bot'], text: '<code>sendMessage</code> with <code>disable_notification=true</code> and four inline buttons. The sent message id is stored, so "Explain" can quote it.' },
-      { edge: 'e-bot-you', nodes: ['n-you'], text: 'Silent push. You read it with your coffee. Total run: about 8 seconds, under a penny.' }
+      { edge: 'e-ingest-dyn', nodes: ['n-dyn'], text: 'Writes a valuation per holding to DynamoDB, and code works out XIRR and CAGR again from the dated ledger. Prices are here only to value what the household holds; nothing is predicted.' },
+      { nodes: ['n-dyn'], text: 'Nothing is sent unless a check-in is due or a job failed. A quiet day is a quiet phone.' }
     ]},
-    chat: { title: 'You ask: "why did Balanced drop today?"', steps: [
+    chat: { title: 'You ask: "how has Balanced done since I bought it?"', steps: [
       { edge: 'e-you-bot', nodes: ['n-you', 'n-bot'], text: 'You type a question. Telegram delivers it to the Bot API.' },
       { edge: 'e-bot-hook', nodes: ['n-hook'], text: 'Telegram POSTs the update to the Lambda Function URL. <b>webhook λ</b> checks the <code>X-Telegram-Bot-Api-Secret-Token</code> header and that <code>chat_id</code> is yours. Anyone else gets a 200 and silence.' },
       { nodes: ['n-hook', 'n-dyn'], edge: 'e-agent-dyn', text: 'It writes the <code>update_id</code> to DynamoDB with a conditional put. A Telegram retry of the same update is dropped here.' },
       { edge: 'e-hook-agent', nodes: ['n-agent'], text: 'Async invoke of <b>agent λ</b>, then return 200 within 100 ms. The agent sends a "typing…" action so the wait looks alive.' },
       { edge: 'e-agent-dyn', nodes: ['n-dyn'], text: 'Loads your preferences and the last 20 turns of chat memory.' },
       { edge: 'e-dyn-agent', nodes: ['n-agent'], text: 'Builds the request: cached system prompt, memory, your question, and the tool definitions with <code>strict: true</code>.' },
-      { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Sonnet 5.5 replies with <code>tool_use: get_portfolio</code>, then <code>get_signals("monzo-balanced")</code>. The agent runs them locally and sends the results back. Two loops, about 3 seconds.' },
-      { edge: 'e-claude-agent', nodes: ['n-agent'], text: 'Claude runs one <code>web_search</code> (its server-side tool, with citations) on the FX driver, then writes the answer: most of the fall was the pound, trend unchanged, no action. The technical section is attached, collapsed.' },
+      { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Sonnet 5.5 replies with <code>tool_use: get_portfolio</code>, then <code>get_returns("monzo-balanced")</code>. The agent runs them locally and sends the results back. Two loops, about 3 seconds.' },
+      { edge: 'e-claude-agent', nodes: ['n-agent'], text: 'Claude writes the answer from the figures code returned: value, money paid in, XIRR and CAGR from the dated ledger, and how much the pound took off. The technical section is attached, collapsed.' },
       { edge: 'e-agent-dyn', nodes: ['n-dyn'], text: 'The turn is appended to chat memory, with the tool results, so a follow-up ("and last week?") has context.' },
-      { edge: 'e-agent-bot', nodes: ['n-bot'], text: '<code>sendMessage</code> as a reply to your message, with "Show chart" and "Set alert for this" buttons.' },
+      { edge: 'e-agent-bot', nodes: ['n-bot'], text: '<code>sendMessage</code> as a reply to your message, with "Show chart" and "Projection" buttons.' },
       { edge: 'e-bot-you', nodes: ['n-you'], text: 'Answer arrives, about 6 seconds after you sent the question. Cost: roughly 2p.' }
     ]},
-    alert: { title: 'Alert after the US close · 21:15 UK', steps: [
-      { nodes: ['n-sched'], text: '<b>21:15 Europe/London.</b> The wrap run fires after the NYSE close. Nothing is sent unless there is something to say.' },
-      { edge: 'e-sched-ingest', nodes: ['n-ingest'], text: '<b>ingest λ</b> pulls the US closes and the latest GBP/USD. The Monzo fund NAV is not out yet; the proxy basket stands in.' },
-      { edge: 'e-ingest-sig', nodes: ['n-sig'], text: '<b>engine λ</b> finds the silver ETC down 9% from its high (inside its wider 12% band) and the NASDAQ ETF\'s 20-day volatility doubled. Two alert candidates.' },
-      { edge: 'e-dyn-sig', nodes: ['n-dyn', 'n-sig'], text: 'Checks alert state: was a red alert for this instrument sent in the last 3 days? Is it quiet hours? Has the weekly red budget (2) been spent?' },
-      { edge: 'e-sig-agent', nodes: ['n-agent'], text: 'Candidates go to <b>agent λ</b> with the rule outcome: one red (drawdown), one amber (vol).' },
-      { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Haiku 5.5 reads the candidates against this week\'s sent messages and decides what is new. It demotes the vol alert because Monday\'s brief already flagged elevated vol.' },
-      { edge: 'e-claude-agent', nodes: ['n-agent'], text: 'Sonnet 5.5 writes the red alert: what moved, how much is FX, what the model range now says, and that it is not advice.' },
-      { edge: 'e-agent-dyn', nodes: ['n-dyn'], text: 'Alert state updated: cooldown starts, red budget decremented, forecast logged.' },
-      { edge: 'e-agent-bot', nodes: ['n-bot'], red: true, text: '<code>sendMessage</code> with sound on, plus a chart of the last 60 days with the drawdown line.' },
-      { edge: 'e-bot-you', nodes: ['n-you'], red: true, text: '🔴 Your phone buzzes once. The buttons: Explain, Snooze 7d, I acted.' }
-    ]},
-    add: { title: 'You add a holding: a factsheet and a screenshot', steps: [
-      { edge: 'e-you-bot', nodes: ['n-you', 'n-bot'], text: 'You send the factsheet PDF from the Monzo app. Telegram stores the file and delivers an update with its file id.' },
-      { edge: 'e-bot-hook', nodes: ['n-hook'], text: '<b>webhook λ</b> verifies the secret token and your chat_id, dedupes the update, hands off, returns 200.' },
+    add: { title: 'An admin adds a holding: a factsheet and a screenshot', steps: [
+      { edge: 'e-you-bot', nodes: ['n-you', 'n-bot'], text: 'An admin sends the factsheet PDF from the Monzo app. Telegram stores the file and delivers an update with its file id.' },
+      { edge: 'e-bot-hook', nodes: ['n-hook'], text: '<b>webhook λ</b> verifies the secret token and the chat_id, dedupes the update, hands off, returns 200.' },
       { edge: 'e-hook-agent', nodes: ['n-agent'], text: '<b>agent λ</b> downloads the PDF with <code>getFile</code> into the private bucket and calls <code>extract_document</code> with the factsheet schema.' },
       { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'Sonnet 5.5 reads the PDF: name, ISIN, charge, asset allocation, top holdings, benchmark, currency, each with the line it came from and a confidence.' },
       { edge: 'e-claude-agent', nodes: ['n-agent'], text: 'The agent resolves the ISIN to a listing (Twelve Data or EODHD lookup) and finds two lines, USD and GBP. It picks GBP as likely and marks it amber.' },
       { edge: 'e-agent-bot', nodes: ['n-bot'], text: 'A card: "iShares Automation & Robotics UCITS ETF · IE00BYZK4552 · charge 0.40% · line: RBTX (GBP)?" with Confirm, Edit, Cancel.' },
-      { edge: 'e-bot-you', nodes: ['n-you'], text: 'You read it, tap <b>Confirm</b>. Nothing was saved before this tap.' },
+      { edge: 'e-bot-you', nodes: ['n-you'], text: 'The admin reads it, taps <b>Confirm</b>. Nothing was saved before this tap, and only an admin sees the button.' },
       { edge: 'e-you-bot', nodes: ['n-you', 'n-bot'], text: 'The callback query travels the same path. The agent asks: "How much do you hold? Send a screenshot or type it."' },
       { edge: 'e-agent-claude', nodes: ['n-claude'], text: 'You send a screenshot of the Monzo holdings screen. Claude reads the value and date; the agent works out the units from the last close.' },
-      { edge: 'e-agent-dyn', nodes: ['n-dyn'], text: 'After your second Confirm: Instrument, Document, Position, Valuation (source: user_screenshot) and Transaction are written. The screenshot is deleted unless you said keep.' },
+      { edge: 'e-agent-dyn', nodes: ['n-dyn'], text: 'After the second Confirm: Instrument, Document, Position, Valuation (source: user_screenshot) and Transaction are written, with an audit row. The screenshot is kept for good and opens from the audit log.' },
       { edge: 'e-agent-bot', nodes: ['n-bot'], text: '"Added. It will be priced from tomorrow\'s close. Here is your Portfolio card." The whole thing took about a minute and two taps.' }
     ]}
   };
@@ -763,7 +595,7 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
   var capEl = document.getElementById('caption');
   var titleEl = document.getElementById('steps-title');
   var runId = 0;
-  var current = 'brief';
+  var current = 'value';
 
   function clearStage() {
     svg.querySelectorAll('.edge').forEach(function (e) { e.classList.remove('on', 'was'); });
@@ -852,7 +684,7 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
   var lsvg = document.getElementById('loop-svg');
   var traceItems = Array.prototype.slice.call(document.querySelectorAll('#trace li'));
   var traceRun = 0;
-  var toolY = { get_positions: 64, get_signals: 116, run_scenario: 168, get_scorecard: 220, update_pref: 272, web_search: 324 };
+  var toolY = { get_positions: 64, get_returns: 116, run_projection: 168, get_budget: 220, update_pref: 272, web_search: 324 };
   function setCallPath(tool) {
     var y = toolY[tool];
     lsvg.getElementById('l-call').setAttribute('d', 'M194,185 C250,185 250,' + y + ' 300,' + y);
@@ -905,9 +737,9 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
 
   /* ── Budget ── */
   var BUD = {
-    lean: { aws: 0.1, ai: 9, data: 0, note: 'Free data: yfinance and Twelve Data\'s free tier. yfinance is unofficial and breaks a few times a year; the bot tells you when it does.' },
-    std:  { aws: 0.1, ai: 15, data: 16, note: 'EODHD All World EOD for dependable London and Frankfurt closes. If Twelve Data\'s free tier turns out to cover the LSE, this drops to about £15.' },
-    full: { aws: 0.2, ai: 25, data: 16, note: 'Opus 5.5 for every message and heavy daily chat. Still £9 under the cap.' }
+    lean: { aws: 0.1, ai: 3.7, data: 0, note: 'Free data: yfinance and Twelve Data\'s free tier. yfinance is unofficial and breaks a few times a year; the bot tells you when it does.' },
+    std:  { aws: 0.1, ai: 5.7, data: 16, note: 'EODHD All World EOD for dependable London and Frankfurt closes. If Twelve Data\'s free tier turns out to cover the LSE, this drops to about £6.' },
+    full: { aws: 0.2, ai: 11.2, data: 16, note: 'Opus 5.5 for every message and heavy daily chat. Still about £23 under the cap.' }
   };
   function fmt(n) { return '£' + (n < 1 ? n.toFixed(2) : Math.round(n)); }
   function budget(key) {
@@ -925,66 +757,9 @@ avg +0.6% vs doing nothing. Calibration 0.55 → ok.
   document.querySelectorAll('button.scn[data-b]').forEach(function (b) { b.addEventListener('click', function () { budget(b.dataset.b); }); });
   budget('std');
 
-  /* ── Prediction pipeline: loops on its own ── */
-  var psvg = document.getElementById('pred-svg');
-  var cap2 = document.getElementById('caption2');
-  var PRED = [
-    { edge: 'p-rss-ing', nodes: ['q-rss', 'q-ing'], text: 'Every 3 hours the ingest pulls the feeds, drops duplicates, and tags each article with the instruments it touches by looking through the fund\'s holdings.' },
-    { edge: 'p-cal-ing', nodes: ['q-cal', 'q-ing'], text: 'The event calendar adds what is coming: MPC, FOMC, ECB, CPI, and earnings for the fund\'s top ten holdings.' },
-    { edge: 'p-ing-s3', nodes: ['q-s3'], text: 'Text only goes to S3, about 200 articles a day, deleted after 90 days.' },
-    { edge: 'p-s3-batch', nodes: ['q-batch'], text: 'At 23:30 the score Lambda sends the day\'s articles to Haiku 5.5 as one Message Batch with a strict JSON schema and a cached rubric. Half price; the results are back by 06:00, before the brief.' },
-    { edge: 'p-batch-idx', nodes: ['q-idx'], text: 'Scores roll up into a per-instrument sentiment index, weighted by novelty so the same story in five outlets counts once.' },
-    { edge: 'p-sig-call', nodes: ['q-sig', 'q-call'], text: 'The call engine starts from the price signals: trend, volatility, drawdown, the model range.' },
-    { edge: 'p-idx-call', nodes: ['q-idx', 'q-call'], text: 'Sentiment may tilt the stance only when the price signals do not contradict it.' },
-    { edge: 'p-cal-call', nodes: ['q-cal', 'q-call'], text: 'Upcoming events widen the expected range and set the horizon. Sonnet 5.5 writes the stance, the reasons and the invalidation rule.' },
-    { edge: 'p-call-log', nodes: ['q-log'], text: 'Every call is logged as a paper trade with the entry price. Nothing is sent to you until phase 6 says the record is good enough.' },
-    { edge: 'p-log-score', nodes: ['q-score'], text: 'When the horizon ends the call is graded: right or wrong, return vs doing nothing, and whether 60% confidence meant 60% hit rate.' },
-    { edge: 'p-score-you', nodes: ['q-you'], text: 'The Saturday review shows the scorecard; weekday briefs carry one line. If calls stop beating the baseline, the bot says so and offers to switch them off.' }
-  ];
-  var predRun = 0;
-  function playPred() {
-    var my = ++predRun;
-    psvg.querySelectorAll('.edge').forEach(function (e) { e.classList.remove('on', 'was'); });
-    psvg.querySelectorAll('.node').forEach(function (n) { n.classList.remove('on', 'was'); });
-    psvg.querySelectorAll('.pkt').forEach(function (p) { p.remove(); });
-    if (reduce) {
-      PRED.forEach(function (st) { psvg.getElementById(st.edge).classList.add('was'); st.nodes.forEach(function (n) { psvg.getElementById(n).classList.add('was'); }); });
-      return;
-    }
-    var i = 0;
-    function next() {
-      if (my !== predRun) return;
-      if (i > 0) {
-        var prev = PRED[i - 1];
-        var pe = psvg.getElementById(prev.edge); pe.classList.remove('on'); pe.classList.add('was');
-        prev.nodes.forEach(function (n) { var el = psvg.getElementById(n); el.classList.remove('on'); el.classList.add('was'); });
-      }
-      if (i >= PRED.length) { cap2.innerHTML = '<b>Done.</b> One day of the pipeline. Press ↻ to run it again.'; return; }
-      var st = PRED[i];
-      psvg.getElementById(st.edge).classList.add('on');
-      st.nodes.forEach(function (n) { psvg.getElementById(n).classList.add('on'); });
-      // packet on this svg
-      var c = document.createElementNS(NS, 'circle'); c.setAttribute('r', '6'); c.setAttribute('class', 'pkt');
-      var am = document.createElementNS(NS, 'animateMotion'); am.setAttribute('dur', '1300ms'); am.setAttribute('fill', 'freeze'); am.setAttribute('begin', 'indefinite');
-      var mp = document.createElementNS(NS, 'mpath'); mp.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + st.edge); mp.setAttribute('href', '#' + st.edge);
-      am.appendChild(mp); c.appendChild(am); psvg.appendChild(c);
-      try { am.beginElement(); } catch (e) {}
-      setTimeout(function () { c.remove(); }, 1360);
-      cap2.innerHTML = st.text;
-      i++;
-      setTimeout(next, 2900);
-    }
-    next();
-  }
-  document.getElementById('replay2').addEventListener('click', playPred);
-  var predStarted = false;
-  if ('IntersectionObserver' in window && !reduce) {
-    new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && !predStarted) { predStarted = true; playPred(); } }); }, { threshold: 0.3 }).observe(psvg);
-  } else { playPred(); }
-
-  /* first frame: everything visible, then the brief plays */
+  /* first frame: everything visible, then the daily valuation plays */
   resetTrace(true);
-  play('brief');
+  play('value');
 })();
 </script>
 </body>

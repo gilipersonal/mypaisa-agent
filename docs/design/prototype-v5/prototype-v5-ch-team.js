@@ -1,12 +1,12 @@
-/* MyPaisa · Prototype v5 (MA-291): phases 18, 19 and 20, drawn by the Team builder.
-   18 · the agent team: nine agents, the admin desk in the owner's chat and the Admin center, the learning loop
-        (graded daily, calibrated within bounds), a model and a rule changed on evidence behind the second check,
+/* MyPaisa · Prototype v5 (MA-291): phases 13, 14 and 15, drawn by the Team builder.
+   13 · the agent team: six agents, the admin desk in the owner's chat and the Admin center, a request on evidence,
         self-healing and an incident, the budgets, each agent's notes (ARCHITECTURE §20, §10.8, §24.4).
-   19 · India: Asha's CAS import (a dry run, one summary card, Confirm with the second check), the Indian accounts
-        in rupees with pounds beside, wrapper-aware copy and the tax flag, the engine's view in shadow (§22).
-   20 · beyond the chat: the widget, a factsheet shared from Files, Siri, the Shortcut, a Live Activity (PLAN 20).
+   14 · India: Asha's CAS imported by Arun, an admin (a dry run, one summary card, Confirm with the second check),
+        the Indian accounts in rupees with pounds beside, each account described, and the tax flag (§22).
+   15 · beyond the chat: the widget, a factsheet shared from Files, Siri, the Shortcut, a Live Activity.
    Every figure comes from MP5D.teamIndia (figures/team-india-v5.json, written and checked by make_team_india.py)
-   and the household's ledger as of each step's time. None of these screens is picked yet: each is a draft. */
+   and the household's ledger as of each step's time. None of these screens is picked yet: each is a draft.
+   MA-307, 2 Nov 2026: the market side was retired; MyPaisa is a wealth tracker only. */
 (function () {
   'use strict';
   var M = window.MP5, K = window.MP5K;
@@ -57,7 +57,7 @@
     '.pv5-team-pw { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border-radius: 14px; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line); font: 600 17px/22px var(--mp-font); letter-spacing: 0.2em; }',
     '.pv5-team-file { overflow-wrap: anywhere; }',
     '.pv5-team-file .ms { font-size: 18px; vertical-align: -4px; margin-right: 4px; }',
-    /* the system surfaces of phase 20: the Lock Screen, the Home Screen, Siri, the share sheet */
+    /* the system surfaces of phase 15: the Lock Screen, the Home Screen, Siri, the share sheet */
     '.pv5-team-wall { position: absolute; inset: 0; z-index: 21; }',
     '.pv5-team-scr { position: absolute; inset: 0; z-index: 22; display: flex; flex-direction: column; color: var(--mp-hero-ink); font-family: var(--mp-font); }',
     '.pv5-team-ink { color: var(--mp-ink); }',
@@ -157,7 +157,6 @@
   function checks(list) { return '<div class="pv5-team-checks">' + list.map(function (c) { return '<div>' + K.ms('check_circle') + '<span>' + c + '</span></div>'; }).join('') + '</div>'; }
   function tile(icon) { return '<span class="pv5-team-tile">' + K.ms(icon) + '</span>'; }
   function file(name, size) { return '<span class="pv5-team-file">' + K.ms('picture_as_pdf') + K.esc(name) + (size ? ' · ' + K.esc(size) : '') + '</span>'; }
-  function brier(n) { return n.toFixed(3); }
   /* the second check (§4.5, MA-76): a fresh Sign in with Apple or passkey under Face ID in the app; a passkey or a
      fresh sign-in in a browser; bound to the action, checked by the server, an audit row */
   function how(ctx) { return ctx.app ? 'with Face ID' : 'with your passkey'; }
@@ -215,55 +214,20 @@
   }
   function reqTitle(r) { return mz(r.title).replace('{gbp}', K.gbp(r.money, { dp: 2 })); }
   function incOpen(t) { var i = D().team.incident; return t.slice(0, 10) === DAY && t >= i.opened && t < i.closed; }
-  function ruleVal(t) { var r = reqById('cr-27'); return t >= r.approved_at && t.slice(0, 10) >= DAY ? r.rule.to : r.rule.from; }
-  function settingValue(s, t) {
-    if (s.key === 'engine.pause.exhaustion_min') return String(ruleVal(t));
-    if (s.key === 'learn.calibration.map') return t >= T('05:40') ? 'refitted today 05:40' : 'refitted Sat 24 Oct 05:40';
-    return s.value;
-  }
+  function settingValue(s, t) { return s.value; }
 
   /* ---------- the request, in full and as a chat card ---------- */
   function evidence(r, ctx, full) {
-    var d = D(), out = '';
-    if (r.id === 'cr-25') {
-      out += dl([['Why', r.why.map(mz).join(' ')], ['Cost', K.gbp(r.money, { dp: 2 }) + ' a month, counted in the AWS and others cap: ' + K.gbp(r.aws.used_gbp, { dp: 2 }) + ' of ' + K.gbp(r.aws.cap_gbp) + ' used this month, ' + K.gbp(r.aws.forecast_gbp, { dp: 2 }) + ' forecast. With it, about ' + K.gbp(r.aws_with, { dp: 2 }) + ' a month, ' + K.gbp(r.aws.cap_gbp - r.aws_with, { dp: 2 }) + ' under the cap.']]);
-      return out;
-    }
-    if (r.id === 'cr-26') {
-      out += sec('Brier score, lower is better');
-      out += tbl('minmax(0,1.6fr) 1fr 1fr', ['Tested over', 'v8', 'v7'], [['Held-out years', brier(r.brier.held_out[0]), brier(r.brier.held_out[1])], ['8 live weeks', brier(r.brier.live[0]), brier(r.brier.live[1])]]);
-      out += checks(['Beats v7 in the held-out years by ' + brier(r.brier.held_out[1] - r.brier.held_out[0]) + ', over the margin of ' + d.team.margin, 'And over 8 live weeks, by ' + brier(r.brier.live[1] - r.brier.live[0]), 'The Forecaster’s safety suite passed in dev: ' + r.safety[0] + ' of ' + r.safety[1] + ' cases']);
-      return out;
-    }
-    /* cr-27: the analyst's rule, proposed on the graded record */
-    var ho = r.held_out, f = r.folds;
-    out += sec('The calls it would have changed, held-out years');
-    out += tbl('minmax(0,1.7fr) 1fr 1fr 1fr', ['Fold', 'Changed', 'New held', 'Old held'], f.map(function (x) { return [x[0] + (x[3] > x[2] ? ' · worse' : ''), x[1], x[2], x[3]]; }),
-      ['All six', f.reduce(function (s, x) { return s + x[1]; }, 0), f.reduce(function (s, x) { return s + x[2]; }, 0), f.reduce(function (s, x) { return s + x[3]; }, 0)]);
-    out += K.foot('Calls on the four UK holdings that held up over the held-out years: ' + K.num(ho.held_new) + ' of ' + K.num(ho.calls) + ' with the new rule (' + K.pct(ho.held_new / ho.calls * 100, { dp: 1 }) + '), against ' + K.num(ho.held_now) + ' now (' + K.pct(ho.held_now / ho.calls * 100, { dp: 1 }) + ').');
-    out += sec('And over 8 live weeks in shadow, the household’s calls');
-    out += tbl('minmax(0,1.5fr) minmax(0,1.3fr) 1fr', ['Review · holding', 'Now → new', 'By the next review'], r.live.map(function (c) {
-      return [c.day + ' · ' + c.name, K.stanceLabel(c.old) + ' → ' + K.stanceLabel(c.new), (c.move >= 0 ? 'rose ' : 'fell ') + K.pct(Math.abs(c.move), { dp: 1 }) + ' · ' + (c.new_held ? '<span class="pv5-team-ok">new held</span>' : '<span class="pv5-team-no">old held</span>')];
-    }));
-    if (full) {
-      out += sec('Brier score, lower is better');
-      out += tbl('minmax(0,1.6fr) 1fr 1fr', ['Tested over', 'New rule', 'Now'], [['Held-out years', brier(r.brier.held_out[0]), brier(r.brier.held_out[1])], ['8 live weeks', brier(r.brier.live[0]), brier(r.brier.live[1])]]);
-      out += sec('Inside the bands §20.4 sets');
-      out += checks(['Inside its range, ' + r.rule.range[0] + ' to ' + r.rule.range[1] + ', and one step: ' + r.rule.from + ' → ' + r.rule.to,
-        'Beats the current rule in the held-out years by ' + brier(r.brier.held_out[1] - r.brier.held_out[0]) + ', over the margin of ' + d.team.margin,
-        'And over 8 live weeks in shadow, by ' + brier(r.brier.live[1] - r.brier.live[0]),
-        'The analyst’s safety suite passed in dev: ' + r.safety[0] + ' of ' + r.safety[1] + ' cases',
-        mz(r.today)]);
-    }
-    return out;
+    if (r.id !== 'cr-25') return '';
+    return dl([['Why', r.why.map(mz).join(' ')], ['Cost', K.gbp(r.money, { dp: 2 }) + ' a month, counted in the AWS and others cap: ' + K.gbp(r.aws.used_gbp, { dp: 2 }) + ' of ' + K.gbp(r.aws.cap_gbp) + ' used this month, ' + K.gbp(r.aws.forecast_gbp, { dp: 2 }) + ' forecast. With it, about ' + K.gbp(r.aws_with, { dp: 2 }) + ' a month, ' + K.gbp(r.aws.cap_gbp - r.aws_with, { dp: 2 }) + ' under the cap.']]);
   }
   function reqDetail(ctx, r, t) {
     var st = reqState(r, t), d = D();
     var acts = st === 'waiting'
       ? '<div class="fx g8 wrap">' + K.btn('Approve', 'req:approve:' + r.id, 'primary', 'check') + K.btn('Reject', 'req:reject:' + r.id, 'tinted') + K.btn('Why?', 'req:why:' + r.id, 'plain') + K.btn('Later', 'req:later:' + r.id, 'plain') + '</div>' +
-        K.foot('Approve needs the second check. Why? opens the agent’s reasons in plain words, with the scoreboard behind them.')
+        K.foot('Approve needs the second check. Why? opens the agent’s reasons in plain words, with the evidence behind them.')
       : st === 'later' ? K.note('schedule', 'Later, at ' + hm(r.later_at) + ': it comes back in tonight’s 19:00 digest and waits here until ' + r.expires_label + '. Unanswered by then, nothing changes.')
-        : K.note('check_circle', 'Approved at ' + hm(r.approved_at) + ' by You, ' + how(ctx) + '. It serves from ' + mz(r.serves) + '; 2 flags stays ready. Audit: setting engine.pause.exhaustion_min, v1 → v2.');
+        : K.note('check_circle', 'Approved at ' + hm(r.approved_at) + ' by You, ' + how(ctx) + '. The old value stays ready; the audit row names the setting and both versions.');
     return K.card({ id: 'req-' + r.id, body: '<div class="fx col g12">' +
       '<div class="fx ac jb wrap g8"><span class="fx ac g6 mp-sub" style="font-weight:600">' + tile(r.icon) + K.esc(r.who) + ' asks' + (r['for'] ? ', for ' + mz(r['for']) : '') + '</span>' + stateChip(r, st, t) + '</div>' +
       '<span class="mp-t3">' + reqTitle(r) + '</span><span class="mp-foot mp-ink2">Asked ' + when(r.asked, t) + ' · request ' + r.id + '</span>' +
@@ -274,13 +238,10 @@
     var st = reqState(r, t), open = ctx.has('why-' + r.id);
     var body = '';
     if (r.id === 'cr-25') body = K.p(r.why.map(mz).join(' ')) + K.kv('AWS and others', K.gbp(r.aws.used_gbp, { dp: 2 }) + ' of ' + K.gbp(r.aws.cap_gbp)) + K.kv('Undo', mz(r.undo)) + K.kv('Expires', r.expires_label);
-    else if (r.id === 'cr-26') body = K.p(mz(r.why[0])) + tbl('minmax(0,1.6fr) 1fr 1fr', ['Brier', 'v8', 'v7'], [['Held-out years', brier(r.brier.held_out[0]), brier(r.brier.held_out[1])], ['8 live weeks', brier(r.brier.live[0]), brier(r.brier.live[1])]]) + K.kv('Undo', 'v7 stays ready');
-    else body = K.p(r.why.map(mz).join(' ')) + tbl('minmax(0,1.6fr) 1fr 1fr', ['Brier', 'New', 'Now'], [['Held-out years', brier(r.brier.held_out[0]), brier(r.brier.held_out[1])], ['8 live weeks', brier(r.brier.live[0]), brier(r.brier.live[1])]]) +
-      K.kv('Today’s stances', 'none changes') + K.kv('Undo', 'Roll back; 2 stays ready');
+    else body = K.p(r.why.map(mz).join(' ')) + K.kv('Undo', mz(r.undo));
     var acts = st === 'waiting' ? [K.cbtn('Approve', 'req:approve:' + r.id, 'primary'), K.cbtn('Reject', 'req:reject:' + r.id, 'ghost'), K.cbtn('Why?', 'fold:why-' + r.id, 'ghost'), K.cbtn('Later', 'req:later:' + r.id, 'ghost')] : [];
     if (st === 'later') body += K.note('schedule', 'Later: back in tonight’s 19:00 digest.');
     if (st === 'approved') body += K.note('check_circle', 'Approved at ' + hm(r.approved_at) + ' by You, ' + how(ctx) + '.');
-    if (open && r.id === 'cr-27') body += evidence(r, ctx, false);
     if (open && r.id === 'cr-25') body += K.foot('The data steward has failed over within the free chain three days running. A paid source is never switched on without you; the free ones stay behind it.');
     return K.ccard({ id: 'card-' + r.id, chip: K.chip(K.ms(r.icon) + K.esc(r.who) + ' asks', 'mp-neutral') + K.draft(), h: reqTitle(r), sub: 'Request ' + r.id + ' · ' + when(r.asked, t) + (r['for'] ? ' · for ' + mz(r['for']) : ''), body: body, acts: acts });
   }
@@ -292,8 +253,8 @@
     var d = D();
     if (!d) return { title: 'Agent team', body: K.card({ body: K.note('hourglass_top', 'The team’s figures are not loaded.') }) };
     var tab = args[0] || '', tt = teamT(ctx), t = tt.t;
-    if (!ctx.isAdmin) return { title: 'Agent team', sub: 'Admin center', chip: K.draft(), body: K.card({ body: K.note('admin_panel_settings', 'The Agent team is the admin’s alone: Asha, as a member, never sees the desk, its requests or its settings.') }) };
-    var p = { title: 'Agent team', sub: 'Admin center · owner only · ' + wd(t) + ', ' + hm(t), chip: K.draft(), tabs: teamTabs(tab) };
+    if (!ctx.isAdmin) return { title: 'Agent team', sub: 'Admin center', chip: K.draft(), body: K.card({ body: K.note('admin_panel_settings', 'The Agent team is for admins: Asha, a member who views only, never sees the desk, its requests or its settings.') }) };
+    var p = { title: 'Agent team', sub: 'Admin center · admins only · ' + wd(t) + ', ' + hm(t), chip: K.draft(), tabs: teamTabs(tab) };
     var body = lateNote(tt);
     if (tab === '') body += overview(ctx, t);
     else if (tab === 'approvals') body += approvals(ctx, t, args[1]);
@@ -301,7 +262,7 @@
     else if (tab === 'agents') body += agentsPage(ctx, t);
     else if (tab === 'incidents') body += incidentsPage(ctx, t);
     else if (tab === 'notes') body += notesPage(ctx, t);
-    p.body = '<div class="fx col g16">' + body + K.foot('Code decides, Claude explains: every figure here comes from the scoreboards, the meter or the settings store. Outside its band, an agent asks.') + '</div>';
+    p.body = '<div class="fx col g16">' + body + K.foot('Code decides, Claude explains: every figure here comes from the meter, the heartbeats or the settings store. Outside its band, an agent asks.') + '</div>';
     return p;
   }
   M.page('team', teamPage);
@@ -315,32 +276,10 @@
     return rows;
   }
   function overview(ctx, t) {
-    var d = D(), L = d.team.learning, b = d.team.budget, h = '';
+    var d = D(), b = d.team.budget, h = '';
     var wait = waitingRows(t), inc = incOpen(t);
-    h += K.card({ t: 'Waiting for you', r: K.chip(String(wait.length + (inc ? 1 : 0)), wait.length || inc ? 'mp-pause' : 'mp-neutral'), body: K.list((inc ? [K.row({ lead: tile('error'), t: 'The news scout is silent', s: 'inc-7 · opened ' + hm(d.team.incident.opened) + ' by the ops warden', vs: K.chip('Incident', 'mp-alertchip'), go: 'nav:team/incidents' })] : []).concat(wait.length ? wait : [K.row({ icon: 'check_circle', t: 'Nothing waits for you' })])) });
-    /* the learning loop: Friday's grades */
-    var calls = L.calls.map(function (c) {
-      return K.row({ lead: K.stance(c.call), t: K.esc(c.name), s: (c.move < 0 ? 'Fell ' : 'Rose ') + K.pct(Math.abs(c.move), { dp: 1 }) + ' by Friday’s close', vs: c.held ? '<span class="pv5-team-ok">Held up</span>' : '<span class="pv5-team-no">Did not</span>' });
-    });
-    h += K.card({ id: 'loop', t: 'Graded daily · ' + L.graded_label, body: K.tiles([{ k: 'Sat 17 Oct’s calls', v: L.held + ' of ' + L.of, s: 'held up, graded against waiting' }, { k: 'Forecaster, in practice', v: L.forecaster.beat + ' of ' + L.forecaster.week, s: 'weeks beat both, week ' + L.forecaster.week + ' of ' + L.forecaster.of }]) +
-      '<div style="margin-top:12px">' + K.list(calls) + '</div>' +
-      sec('The scoreboard, rules engine') + tbl('minmax(0,1.3fr) 1fr 1fr', ['Rolling', 'Held up', 'Brier'], L.scoreboard.map(function (s) { return [s.window, K.pct(s.pct), brier(s.brier)]; })) +
-      K.foot('A PAUSE holds up if waiting was better by the next review; a HOLD if staying in was. Graded after each close, never before a call’s horizon; a late price adds a regraded row, nothing is overwritten. Next: after Monday’s close.') });
-    /* calibration within bounds */
-    var C = L.calibration;
-    h += K.card({ id: 'calib', t: 'Calibrated daily · refitted ' + (t >= C.at ? 'today ' + hm(C.at) : wd(C.at) + ' ' + hm(C.at)), r: K.chip(K.ms('rule') + '±' + C.max_move + ' points a day', 'mp-neutral'),
-      body: tbl('minmax(0,1.4fr) 0.8fr 0.9fr 1.2fr', ['Said', 'Cases', 'Held up', 'Map'], C.buckets.map(function (c) { return [c.bucket, c.cases, K.pct(c.held), c.was + ' → ' + c.now + (c.move ? ' (' + (c.move > 0 ? '+' : '−') + Math.abs(c.move) + ')' : '')]; })) +
-        K.foot('No bucket moves more than ' + C.max_move + ' points in a day (60 to 65% wanted 3); a bucket needs ' + C.min_cases + ' graded cases (75 to 80% has 12, so it stays). The new map beat the old on the held-back part of the window, ' + brier(C.held_back.new) + ' against ' + brier(C.held_back.old) + ', so it serves from ' + mz(C.serves_from) + ', on probation for ' + C.probation_days + ' trading days to ' + C.probation_ends + ', and rolls back on its own if it does worse. Silver ETC’s map rolled back on ' + wd(L.rolled_back.at) + ', day ' + L.rolled_back.day + ' of ' + C.probation_days + '.') });
-    /* challengers in shadow */
-    var r26 = reqById('cr-26'), r27 = reqById('cr-27');
-    var ch = [
-      K.row({ lead: tile('online_prediction'), t: 'Risk model v8', s: '8 live weeks in shadow · beats v7', vs: t >= r26.asked ? 'Asked you · cr-26' : 'Ready', go: t >= r26.asked ? 'nav:team/approvals/cr-26' : null }),
-      K.row({ lead: tile('rule'), t: 'A PAUSE on 3 exhaustion flags, not 2', s: 'The analyst’s rule · 8 live weeks in shadow', vs: t >= r27.asked ? 'Asked you · cr-27' : 'The tuner is writing it', go: 'nav:team/approvals' }),
-      K.row({ lead: tile('stacked_line_chart'), t: 'A sequence model over the candles', s: 'Week 3 of 8 live weeks in shadow', vs: 'Not yet' })
-    ];
-    h += K.card({ id: 'challengers', t: 'Challengers, in shadow', body: K.list(ch) + K.foot('Tested over ten years, then run live in shadow. One is proposed only when it beats the current version in the held-out years and over 8 live weeks by more than the margin; a new model earns its place by its record, never by being newer.') });
+    h += K.card({ t: 'Waiting for you', r: K.chip(String(wait.length + (inc ? 1 : 0)), wait.length || inc ? 'mp-pause' : 'mp-neutral'), body: K.list((inc ? [K.row({ lead: tile('error'), t: K.esc(d.team.incident.title), s: d.team.incident.id + ' · opened ' + hm(d.team.incident.opened) + ' by the ops warden', vs: K.chip('Incident', 'mp-alertchip'), go: 'nav:team/incidents' })] : []).concat(wait.length ? wait : [K.row({ icon: 'check_circle', t: 'Nothing waits for you' })])) });
     h += budgetCard(ctx);
-    h += K.viewNotAdvice();
     return h;
   }
   function budgetCard(ctx) {
@@ -365,27 +304,12 @@
     return '<div class="pv5-team-split"><div class="fx col g16">' + left + '</div><div class="fx col g16">' + (pick ? reqDetail(ctx, pick, t) : '') + '</div></div>';
   }
   function settingsPage(ctx, t, sel) {
-    var d = D(), S = d.team.settings, key = sel || 'engine.pause.exhaustion_min', s = null;
+    var d = D(), S = d.team.settings, key = sel || 'data.chain.oeic', s = null;
     S.rows.forEach(function (x) { if (x.key === key) s = x; });
-    if (!s) { s = S.rows[11]; key = s.key; }
-    var r27 = reqById('cr-27'), after = t >= r27.approved_at && t.slice(0, 10) >= DAY;
+    if (!s) { s = S.rows[0]; key = s.key; }
     var mode = function (x) { var m = S.modes[x.mode]; return K.chip(K.ms(m[0]) + m[1], 'mp-neutral'); };
-    var detail;
-    if (key === 'engine.pause.exhaustion_min') {
-      var hist = S.history[key].filter(function (v) { return !v.at || v.at <= t; }).slice().reverse();
-      detail = K.card({ id: 'set-detail', t: 'Engine · ' + '<span class="pv5-team-key" style="text-transform:none">' + key + '</span>', body: '<div class="fx col g12"><span class="mp-t3">Exhaustion flags for a PAUSE</span>' +
-        K.p('The holder’s cascade (§6.3): a PAUSE when exhaustion reaches this many flags, or risk is elevated, or the macro is adverse.') +
-        dl([['Value now · ' + (after ? 'v2' : 'v1'), '<span class="mp-t2 mp-num">' + ruleVal(t) + '</span> flags'], ['Range', s.range + '. A rule threshold moves only on evidence, through the tuner, with your approval.'], ['Automatic band', 'None: no agent moves it on its own.'], ['Read by', 'The analyst’s engine run, after each close, through a cache of a minute at most.']]) +
-        sec('Version history') + '<div class="pv5-team-hist">' + hist.map(function (v, i) {
-          return '<div><span class="mp-chip ' + (i === 0 ? 'mp-add' : 'mp-neutral') + '">' + v.v + '</span><div class="fx col g4"><span class="mp-sub" style="font-weight:600">' + (v.at ? 'Mon 26 Oct ' + hm(v.at) + (i === 0 ? ' · current' : '') : 'The default' + (i === 0 ? ' · current' : '')) + '</span>' +
-            '<span class="mp-foot mp-ink2">' + mz(v.who) + (v.at ? ', ' + how(ctx) : '') + ': ' + mz(v.what) + '</span>' + (i > 0 ? '<div>' + K.btn('Roll back to ' + v.v, 'set:rollback:' + v.v, 'tinted small', 'history') + '</div>' : '') + '</div></div>';
-        }).join('') + '</div>' +
-        K.foot('Rolling back writes a new version after the second check, and says what changes before you confirm. Versions are never edited; a snapshot goes to S3 every day. After a change the old value stays ready and comes back on its own if the new one slips.') +
-        (incOpen(t) ? K.row({ lead: tile('error'), t: 'One incident is open', s: 'inc-7 · the news scout is silent', go: 'nav:team/incidents' }) : '') + '</div>' });
-    } else {
-      detail = K.card({ id: 'set-detail', t: K.esc(s.group) + ' · <span class="pv5-team-key" style="text-transform:none">' + K.esc(key) + '</span>', body: '<div class="fx col g12"><span class="mp-t3">' + mz(s.name) + '</span>' +
+    var detail = K.card({ id: 'set-detail', t: K.esc(s.group) + ' · <span class="pv5-team-key" style="text-transform:none">' + K.esc(key) + '</span>', body: '<div class="fx col g12"><span class="mp-t3">' + mz(s.name) + '</span>' +
         dl([['Value now', '<span class="mp-hl">' + mz(settingValue(s, t)) + '</span>'], ['Range', mz(s.range)], ['Automatic band', mz(s.band === 'none' ? 'None: no agent moves it on its own.' : s.band)], ['Approval', mode(s)]]) + '</div>' });
-    }
     var groups = [], by = {};
     S.rows.forEach(function (x) { if (!by[x.group]) { by[x.group] = []; groups.push(x.group); } by[x.group].push(x); });
     var list = groups.map(function (g) {
@@ -394,7 +318,7 @@
           '<span class="pv5-team-key">' + K.esc(x.key) + '</span><span class="mp-foot mp-ink2">Range ' + mz(x.range) + ' · band ' + mz(x.band) + ' · ' + S.modes[x.mode][1] + '</span></button>';
       }).join('') });
     }).join('');
-    var head = K.card({ body: '<div class="fx ac jb wrap g8"><span class="mp-hl">Every behaviour, as a setting</span>' + K.chip(S.rows.length + ' settings · ' + (after ? S.changed_week_after : S.changed_week_before) + ' changed this week', 'mp-neutral') + '</div>' +
+    var head = K.card({ body: '<div class="fx ac jb wrap g8"><span class="mp-hl">Every behaviour, as a setting</span>' + K.chip(S.rows.length + ' settings · ' + S.changed_week_before + ' changed this week', 'mp-neutral') + '</div>' +
       K.foot('Each has a range, an automatic band (how far an agent may move it without asking, often none) and an approval rule. Defaults live in config/defaults.yaml, checked in CI; a setting may name a secret, never hold one.') });
     return '<div class="pv5-team-split"><div class="fx col g16">' + detail + '</div><div class="fx col g16">' + head + list + '</div></div>';
   }
@@ -426,7 +350,7 @@
         K.foot('Each choice needs the second check and writes an audit row; the incident card in your chat updates too.') + '</div>' });
     } else {
       var closed = t.slice(0, 10) === DAY && t >= i.closed;
-      h += K.card({ id: 'inc', t: 'Open incidents', body: K.note('check_circle', closed ? i.id + ', the news scout, closed at ' + hm(i.closed) + ': you chose Skip the story, ' + how(ctx) + '. It ran again without the story, and its heartbeat is back.' : 'No incident is open.') });
+      h += K.card({ id: 'inc', t: 'Open incidents', body: K.note('check_circle', closed ? i.id + ', the data steward, closed at ' + hm(i.closed) + ': you chose Skip the page, ' + how(ctx) + '. It ran again without the page, and its heartbeat is back.' : 'No incident is open.') });
     }
     var fixed = d.team.fixed.filter(function (f) { return f.at <= t; }).slice().reverse();
     h += K.card({ t: 'Fixed on its own', r: K.chip('in tonight’s 19:00 digest', 'mp-neutral'), body: K.list(fixed.map(function (f) { return K.row({ lead: tile(f.icon), t: mz(f.t), s: when(f.at, t) + ' · ' + mz(f.d) }); })) });
@@ -444,7 +368,7 @@
     return draftNote() + K.card({ body: K.p('Each agent keeps its own notes on its own work and reads them at the start of a run (MA-289). A note never changes behaviour: that is a setting inside its band, or a request you approve. Correcting or clearing one needs the second check and writes an audit row.') + K.foot('The concierge’s notes are each member’s own, in You; they are not listed here.') }) + cards;
   }
 
-  /* ---------- India (phase 19): india, india/ppfas, india/infosys ---------- */
+  /* ---------- India (phase 14): india, india/ppfas, india/infosys ---------- */
   function asset(id) { var a = null; (HH().assets || []).forEach(function (x) { if (x.id === id) a = x; }); return a; }
   function debt(id) { var a = null; (HH().debts || []).forEach(function (x) { if (x.id === id) a = x; }); return a; }
   function dlong(iso) { var p = iso.split('-'); return (+p[2]) + ' ' + MON[+p[1] - 1] + ' ' + p[0]; }
@@ -471,17 +395,10 @@
       h += K.card({ id: 'acct-' + ac.type, t: K.esc(ac.label) + ' <span class="mp-ink2" style="text-transform:none">· ' + K.esc(ac.mask) + '</span>', r: K.chip(ac.type, 'mp-neutral'), body: K.list(ac.holdings.map(rowFor)) + K.note(ac.type === 'demat' ? 'account_balance' : ac.type === 'mf_folio' ? 'folder_open' : 'info', mz(ac.wrap)) });
     });
     h += K.card({ t: 'Also in India', body: K.list(I.also.map(rowFor).concat([K.row({ lead: tile('home_work'), t: K.esc(hd.name), s: 'Arun · ' + K.pct(hd.rate * 100, { dp: 1 }) + ' · ends Jul 2030', v: K.inr(-owe, { sign: true }), vs: K.gbp(-owe / K.FX, { sign: true }) })])) });
-    h += K.card({ id: 'in-engine', t: 'The engine’s view', r: K.shadow('In shadow'), body: engineView(ctx) });
     h += K.note('flag', mz(I.tax_line) + ': the Parag Parikh fund. ' + mz(I.share_text));
     h += K.foot('Rupees first, pounds beside, at the ECB rate for Fri 23 Oct. The household’s total stays in pounds, with the rupee view one tap away on Home. Privacy mode hides rupees as it hides pounds.');
-    h += K.viewNotAdvice();
+    h += K.fromCode();
     return { title: 'India', sub: 'Indian accounts · NSE’s close and AMFI’s NAVs, Fri 23 Oct', chip: K.draft(), body: '<div class="fx col g16">' + h + '</div>' };
-  }
-  function engineView(ctx) {
-    var E = D().india.engine;
-    return '<div class="fx col g10">' + K.p('The rules engine reads the Parag Parikh fund and Infosys from ' + E.reads_from + ', with an India basket in its macro pillar: ' + E.basket.join(', ') + '.') +
-      K.kv('Calls graded', 'none yet') + K.kv('Shown', 'from ' + E.first_review + '’s review, in shadow') +
-      K.foot('Its calls stay in shadow, paper-traded and graded, until they beat doing nothing for 8 weeks; until then they show only in the Saturday review. The Forecaster takes the Indian holdings on the same terms: nothing is shown until its gates are passed.') + '</div>';
   }
   function indiaHolding(ctx, id) {
     var d = D(), I = d.india, a = asset(id), t = ctx.t;
@@ -490,7 +407,7 @@
     var h = K.hero({ k: id === 'ppfas' ? 'Asha’s folio, at Friday’s NAV' : 'Arun’s shares, at NSE’s close', v: K.inr(a.value), s: K.gbp(a.value / K.FX) + ' · ' + (id === 'ppfas' ? 'NAV ₹87.30, AMFI, Fri 23 Oct' : '₹1,480.50 a share, NSE’s close, Fri 23 Oct').replace(/₹([\d,.]+)/, function (_, n) { return K.mny('₹' + n); }) });
     if (I.tax[id]) h += K.card({ id: 'tax', body: '<div class="fx col g8">' + K.chip(K.ms('flag') + mz(I.tax_line), 'mp-pause pv5-team-wrapchip') + K.p(mz(I.tax_text)) + '</div>' });
     else h += K.note('info', mz(I.share_text));
-    h += K.card({ t: 'Suits this account', body: K.note(ac.icon, mz(ac.wrap)) + K.foot('A suggestion here names only what suits the account it is about. MyPaisa still never trades: it is a view, never a button.') });
+    h += K.card({ t: 'The account', body: K.note(ac.icon, mz(ac.wrap)) });
     var pos;
     if (id === 'ppfas') {
       var c = I.cas.matched[0], im = imported(t);
@@ -500,14 +417,12 @@
       pos = dl([['Shares', String(a.units)], ['Value', K.inrGbp(a.value)], ['XIRR', 'Not yet: no buys on record. Zerodha’s tradebook, sent to the chat, would add them.']]);
     }
     h += K.card({ t: 'The position', body: pos });
-    h += K.card({ t: 'The engine’s view', r: K.shadow('In shadow'), body: engineView(ctx) });
-    h += K.card({ t: 'Data', body: K.list(I.engine.sources[id].map(function (s) { return K.row({ icon: 'check_circle', t: mz(s) }); })) });
-    h += K.viewNotAdvice();
+    h += K.fromCode();
     return { title: K.esc(a.name), sub: owner(a) + ' · ' + K.esc(ac.label) + ' · ' + K.esc(ac.mask) + ' · INR', back: { t: 'India', go: 'nav:india' }, chip: K.draft(), body: '<div class="fx col g16">' + h + '</div>' };
   }
   M.page('india', indiaPage);
 
-  /* ---------- phase 20 at the web doors and beside the chat: what the member sees there ---------- */
+  /* ---------- phase 15 at the web doors and beside the chat: what the member sees there ---------- */
   function dayMove() { return D().beyond.day_move; }
   function widgetBody(ctx, hidden) {
     var dm = dayMove(), B = D().beyond;
@@ -541,7 +456,7 @@
   }
   M.page('beyond', beyondPage);
 
-  /* ---------- phase 20's system surfaces at the iPhone, iPad and foldable doors ---------- */
+  /* ---------- phase 15's system surfaces at the iPhone, iPad and foldable doors ---------- */
   function sysWrap(ctx, inner, o) {
     o = o || {};
     var big = ctx.door !== 'ios';
@@ -621,18 +536,18 @@
     return sysWrap(ctx, lockScreen(ctx, { open: false, bottom: la }) + island);
   }
 
-  /* ---------- the chat, phase 18: Arun's own conversation with MyPaisa ---------- */
+  /* ---------- the chat, phase 13: Arun's own conversation with MyPaisa ---------- */
   function digestCard(ctx) {
     var r = reqById('cr-25');
-    return K.ccard({ chip: K.chip(K.ms('summarize') + 'Your daily digest · 19:00', 'mp-neutral') + K.draft(), h: '1 request waits, 2 fixed on their own',
-      body: K.p('The data steward asks to switch on EODHD Historian (' + r.id + '). Fixed on their own: Silver ETC failed over to the FT page on Friday at 21:40, and a calibration map rolled back on Saturday at 05:40.'), acts: [K.cbtn('Approvals', 'nav:team/approvals', 'ghost')] });
+    return K.ccard({ chip: K.chip(K.ms('summarize') + 'Your daily digest · 19:00', 'mp-neutral') + K.draft(), h: '1 request waits, 1 fixed on its own',
+      body: K.p('The data steward asks to switch on EODHD Historian (' + r.id + '). Fixed on their own: Silver ETC failed over to the FT page on Friday at 21:40.'), acts: [K.cbtn('Approvals', 'nav:team/approvals', 'ghost')] });
   }
   function incidentCard(ctx, t) {
     var i = D().team.incident, open = incOpen(t);
     return K.ccard({ id: 'card-inc', chip: K.chip(K.ms(open ? 'error' : 'check_circle') + (open ? 'Incident · ' : 'Closed · ') + i.id, open ? 'mp-alertchip' : 'mp-add') + K.draft(), h: K.esc(i.title),
       sub: hm(i.raised) + ' · from the ops warden · sent silently: quiet hours until 07:00', body: K.p(mz(i.meanwhile)), acts: [K.cbtn('Open it', 'nav:team/incidents', 'ghost')] });
   }
-  function chat18(ctx, n) {
+  function chat13(ctx, n) {
     var d = D(), t = ctx.t, m = [];
     m.push(K.daysep('Yesterday'));
     m.push(K.ai('', { cards: [digestCard(ctx)] }));
@@ -640,8 +555,8 @@
     m.push(K.ai('', { cards: [incidentCard(ctx, t)] }));
     m.push(K.me('Who’s on the team this morning, and is anything wrong?', '06:10'));
     var stats = d.team.agents.map(function (a) { return agentAt(a, T('06:10')); });
-    m.push(K.ai('Nine agents, each with one job: the concierge talks to you in this chat; the data steward keeps prices flowing; the news scout matches the news; the analyst runs the rules engine; the Forecaster runs its models; the grader and tuner grade every call and calibrate; the ops warden repairs the daily run; the budget keeper watches the meter; and the admin desk brings their questions to you. ' +
-      'One is wrong: the news scout has been silent since 03:12, and the ops warden could not fix it (inc-7). ' + stats.filter(function (s) { return s.st[0] === 'Running'; }).length + ' are running. One request waits: the data steward’s.',
+    m.push(K.ai('Six agents, each with one job: the concierge talks to you in this chat; the data steward keeps prices flowing, to value the holdings; the grader and tuner grade each closed month against the Budget forecast and the Projection; the ops warden repairs the daily run; the budget keeper watches the meter; and the admin desk brings their questions to you. ' +
+      'One is wrong: the data steward has been silent since 03:12, and the ops warden could not fix it (inc-7). ' + stats.filter(function (s) { return s.st[0] === 'Running'; }).length + ' are running. One request waits: the data steward’s.',
       { meta: 'From the agents’ heartbeats and the admin desk’s queue, read by code', icon: 'groups', cards: n === 0 ? [K.ccard({ body: K.p('Outside its band, an agent asks you; inside it, it acts and tells you in the digest.'), acts: [K.cbtn('Show me the steward’s request', 'desk:open', 'primary')] })] : [] }));
     if (n >= 1) {
       m.push(K.me('Show me the steward’s request.', '06:12'));
@@ -649,33 +564,16 @@
     }
     if (n >= 2) {
       m.push(K.ai('Later, then. It comes back in tonight’s 19:00 digest and waits in Approvals until Sun 1 Nov 18:20.', { icon: 'schedule', meta: 'Admin desk' }));
-      var L = d.team.learning;
-      m.push(K.me('How did the engines do on Friday?', '06:40'));
-      m.push(K.ai('Graded after Friday’s close: ' + L.held + ' of Sat 17 Oct’s ' + L.of + ' calls held up. The NASDAQ 100 ETF’s PAUSE did: it fell ' + K.pct(Math.abs(L.calls[0].move), { dp: 1 }) + ' by Friday. The Robotics ETF’s HOLD did not: it fell ' + K.pct(Math.abs(L.calls[2].move), { dp: 1 }) + '. The Forecaster, in practice, beat both the base rate and the rules engine for the ' + L.forecaster.week + 'th week of ' + L.forecaster.of + '. ' +
-        'This morning’s calibration moved ' + ['no', 'one', 'two', 'three', 'four', 'five'][L.calibration.buckets.filter(function (b) { return b.move; }).length] + ' buckets, none by more than two points. The grader and tuner has just asked you to promote the risk model v8 over v7 (cr-26): it is in Approvals now, and in tonight’s digest.',
-        { meta: 'From get_scorecard: the grader’s scoreboard, graded after Friday’s close', cards: [K.ccard({ chip: K.chip('Graded daily', 'mp-neutral'), body: K.kv('Held up, 30 days', K.pct(L.scoreboard[0].pct)) + K.kv('Held up, 90 days', K.pct(L.scoreboard[1].pct)) + K.kv('Brier, 90 days', brier(L.scoreboard[1].brier)), acts: [K.cbtn('The loop', 'nav:team', 'ghost'), K.cbtn('Approvals', 'nav:team/approvals', 'ghost')] })] }));
     }
-    if (n >= 3) {
-      m.push(K.me('Why does the tuner want 3 flags for a PAUSE?', '08:26'));
-      var r = reqById('cr-27');
-      m.push(K.ai('It read the graded record. A PAUSE made on exactly two exhaustion flags, with risk and the macro calm, often came just before prices kept rising, so the HOLD would have held up. It asks for one step, 2 to 3, inside the setting’s range; a PAUSE still comes at once when risk is elevated or the macro is adverse. None of today’s four stances changes.',
-        { meta: 'From the grader and tuner’s request ' + r.id + '; every figure is the scoreboard’s', icon: 'grading', cards: [reqCard(ctx, r, t)] }));
-    }
-    if (n >= 5) {
-      var r2 = reqById('cr-27');
-      m.push(K.ai('', { cards: [K.ccard({ id: 'card-approved', chip: K.chip(K.ms('check_circle') + 'Approved', 'mp-add') + K.draft(), h: 'Approved at ' + hm(r2.approved_at) + ' by You, ' + how(ctx) + '.',
-        body: K.p('From ' + mz(r2.serves) + ', a PAUSE on exhaustion alone needs 3 flags. 2 stays ready, and comes back on its own if the new rule slips.') + K.kv('Audit', 'Setting changed · v1 → v2') + K.kv('Request', r2.id + ' · decided here and in the Admin center'),
-        acts: [K.cbtn('Roll back', 'set:rollback:v1', 'ghost', 'history'), K.cbtn('The setting', 'nav:team/settings/engine.pause.exhaustion_min', 'ghost')] })] }));
-    }
-    if (n >= 7) {
-      m.push(K.ai('Skipped at 08:31 by You, ' + how(ctx) + ': the story is marked bad and left out, and the news scout ran again. Its heartbeat is back; inc-7 is closed. The ops warden and the scout each noted what worked.', { icon: 'check_circle', meta: 'Ops warden · inc-7' }));
+    if (n >= 4) {
+      m.push(K.ai('Skipped at 08:31 by You, ' + how(ctx) + ': the page is marked bad and left out, and the data steward ran again. Its heartbeat is back; inc-7 is closed. The ops warden and the steward each noted what worked.', { icon: 'check_circle', meta: 'Ops warden · inc-7' }));
     }
     return m;
   }
-  var COMP18 = { chips: [['Approvals', 'how_to_reg', 'nav:team/approvals'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']], ph: 'Ask, or tell the team…' };
+  var COMP13 = { chips: [['Approvals', 'how_to_reg', 'nav:team/approvals'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']], ph: 'Ask, or tell the team…' };
 
-  /* ---------- the chat, phase 19: Asha's conversation ---------- */
-  function chat19(ctx, n) {
+  /* ---------- the chat, phase 14: Arun imports Asha's statement (she views only) ---------- */
+  function chat14(ctx, n) {
     var d = D(), C = d.india.cas, pp = asset('ppfas'), m = [];
     m.push(K.daysep('Today'));
     m.push(K.me(file(C.file, C.size), '20:40'));
@@ -695,19 +593,19 @@
     }
     if (n >= 3) {
       m.push(K.ai('', { cards: [K.ccard({ id: 'card-saved', chip: K.chip(K.ms('check_circle') + 'Import · saved', 'mp-add') + K.draft(), h: 'Saved as import ' + C.import_id + ', ' + how(ctx),
-        body: K.p(K.esc(pp.name) + ': ' + c.sips + ' SIPs, from ' + C.file + '. Left out: 1 closed scheme. Tell me what it was and I will ask you again.') + K.kv('Audit', 'Import · Asha · ' + hm(C.saved) + ' · run ' + C.run),
+        body: K.p(K.esc(pp.name) + ': ' + c.sips + ' SIPs, from ' + C.file + '. Left out: 1 closed scheme. Tell me what it was and I will ask you again.') + K.kv('Audit', 'Import · Arun, for Asha · ' + hm(C.saved) + ' · run ' + C.run),
         acts: [K.cbtn('India', 'nav:india', 'ghost'), K.cbtn('Undo this import', 'cas:undo', 'ghost', 'undo')] })] }));
     }
     if (n >= 4) {
-      m.push(K.me('Can this fund go into my ISA?', '20:45'));
-      m.push(K.ai('No. It is a mutual fund folio in rupees, outside any ISA: it cannot go into your ISA, and MyPaisa cannot trade. A SIP or a top-up is made with the fund house, by you. One flag: it may not be a UK reporting fund, so gains may be taxed differently; check with a tax adviser. MyPaisa flags it and goes no further.',
+      m.push(K.me('Can Asha’s fund go into her ISA?', '20:45'));
+      m.push(K.ai('No. It is a mutual fund folio in rupees, outside any ISA: it cannot go into her ISA, and MyPaisa cannot trade. A SIP or a top-up is made with the fund house, by its owner. One flag: it may not be a UK reporting fund, so gains may be taxed differently; check with a tax adviser. MyPaisa flags it and goes no further.',
         { meta: 'From get_holding: the registry’s record and its account', icon: 'function' }));
     }
     return m;
   }
 
-  /* ---------- the chat, phase 20 ---------- */
-  function chat20(ctx, k) {
+  /* ---------- the chat, phase 15 ---------- */
+  function chat15(ctx, k) {
     var B = D().beyond, dm = B.day_move, m = [K.daysep('Today')];
     var answer = function (time) { return K.ai('The household is worth ' + K.gbp(ctx.W.T.net_gbp) + ' at Friday’s close. It rose ' + K.gbp(Math.round(dm.gbp)) + ' on Friday, mostly ' + mz(dm.most) + '.', { meta: 'From get_portfolio, prices at the Fri 23 Oct close', icon: 'function' }); };
     if (k === 'home' || k === 'lock') { m.push(K.me('How are we doing today?', B.widget.at.slice(11, 16))); m.push(answer()); }
@@ -733,39 +631,26 @@
   }
 
   /* ---------- the chapters ---------- */
-  M.chapter({ key: 'p18', n: '18', order: 18, title: 'The agent team: configured, approved, self-healing, self-learning', short: 'Agent team', steps: [
-    { id: 'p18-team', d: 'Mon 26 Oct', tm: '06:10', t: 'Nine agents, one job each', draft: true, viewer: 'arun', page: 'team/agents', focus: 'page',
-      g: 'Arun is the household’s one admin. The Agent team in the Admin center lists the nine agents with each one’s heartbeat, last run, spend and status, and the budgets as shares of prod’s $160. The news scout has been silent since 03:12. Tap Open the steward’s request.',
-      chat: function (ctx) { return chat18(ctx, 0); }, composer: COMP18, target: 'desk:open' },
-    { id: 'p18-desk', d: 'Mon 26 Oct', viewer: 'arun', tm: '06:12', t: 'The admin desk, in your chat', draft: true, page: 'team/approvals/cr-25', focus: 'chat',
-      g: 'A request arrives as a card in the owner’s own chat: what changes, why with its evidence, the cost and the budget left, the undo, when it expires. Approve, Reject, Why? or Later. Arun taps Later: it waits for tonight’s digest.',
-      chat: function (ctx) { return chat18(ctx, 1); }, composer: COMP18, target: 'req:later:cr-25', scroll: { chat: 'card-cr-25', page: 'req-cr-25' } },
-    { id: 'p18-loop', d: 'Mon 26 Oct', viewer: 'arun', tm: '06:40', t: 'Graded daily, calibrated within bounds', draft: true, page: 'team', focus: 'page',
-      g: 'The learning loop. After Friday’s close every call whose horizon had passed was graded against what prices did; this morning the calibration map was refitted, no bucket moving more than two points, on 10 trading days of probation. Two challengers have beaten the current versions in shadow. Tap the rule’s row.',
-      chat: function (ctx) { return chat18(ctx, 2); }, composer: COMP18, target: 'nav:team/approvals' },
-    { id: 'p18-rule', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:26', t: 'A rule change, proposed on the graded record', draft: true, page: 'team/approvals/cr-27', focus: 'page',
-      g: 'Arun’s idea in practice: the grader and tuner read the graded record and propose a change to the analyst’s rule, with the calls it would have changed and how they turned out, inside the bands §20.4 sets. Tap Approve.',
-      chat: function (ctx) { return chat18(ctx, 3); }, composer: COMP18, target: 'req:approve:cr-27', open: ['why-cr-27'], scroll: { page: 'req-cr-27', chat: 'card-cr-27' } },
-    { id: 'p18-check', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:28', t: 'Approve behind the second check', draft: true, page: 'team/approvals/cr-27', focus: 'page',
-      g: 'Approving needs the second check: in the app a fresh Sign in with Apple or passkey under Face ID, in a browser a passkey. It is bound to this one approval and checked by the server; a failing safety case would block it.',
-      chat: function (ctx) { return chat18(ctx, 4); }, composer: COMP18, target: 'check:ok', scroll: { page: 'req-cr-27', chat: 'card-cr-27' }, on: { 'check:alt': 'next', 'check:cancel': 'st:3' }, sheetClose: 'check:cancel',
-      sheet: function (ctx) { return checkSheet(ctx, 'Approve request cr-27: a PAUSE on exhaustion alone asks for 3 flags, not 2, from tonight’s engine run.', 'check:cancel'); } },
-    { id: 'p18-done', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:29', t: 'Approved, audited, reversible', draft: true, page: 'team/settings/engine.pause.exhaustion_min', focus: 'page',
-      g: '“Approved at 08:29 by You.” The change is a new version of its setting, never an edit, with its audit row; Roll back writes another. The old value stays ready and comes back on its own if the new rule slips. Tap Incidents.',
-      chat: function (ctx) { return chat18(ctx, 5); }, composer: COMP18, target: 'nav:team/incidents' },
-    { id: 'p18-incident', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:30', t: 'Fixed on its own, and one incident', draft: true, page: 'team/incidents', focus: 'page',
-      g: 'Self-healing: a failover, a calibration map rolled back, a run retried, each fixed on its own and told in the digest. What it cannot fix is an incident: inc-7, with what happened, what was tried, what goes on meanwhile and the choices. Tap Skip the story.',
-      chat: function (ctx) { return chat18(ctx, 6); }, composer: COMP18, target: 'inc:skip' },
-    { id: 'p18-notes', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:31', t: 'The agents’ notes', draft: true, page: 'team/notes', focus: 'page',
-      g: 'Each agent keeps notes on its own work and reads them first in every run: a source’s quirks, the fix that worked, why a request was approved or rejected. A note never changes behaviour; the admin reads, corrects or clears them behind the second check (MA-289).',
-      chat: function (ctx) { return chat18(ctx, 7); }, composer: COMP18 }
+  M.chapter({ key: 'p13', n: '13', order: 13, title: 'The agent team: configured, approved, self-healing, self-learning', short: 'Agent team', steps: [
+    { id: 'p13-team', d: 'Mon 26 Oct', tm: '06:10', t: 'Six agents, one job each', draft: true, viewer: 'arun', page: 'team/agents', focus: 'page',
+      g: 'Arun is an admin. The Agent team in the Admin center lists the six agents with each one’s heartbeat, last run, spend and status, and the budgets as shares of prod’s $160. The data steward has been silent since 03:12. Tap Open the steward’s request.',
+      chat: function (ctx) { return chat13(ctx, 0); }, composer: COMP13, target: 'desk:open' },
+    { id: 'p13-desk', d: 'Mon 26 Oct', viewer: 'arun', tm: '06:12', t: 'The admin desk, in your chat', draft: true, page: 'team/approvals/cr-25', focus: 'chat',
+      g: 'A request arrives as a card in the admin’s own chat: what changes, why with its evidence, the cost and the budget left, the undo, when it expires. Approve, Reject, Why? or Later. Arun taps Later: it waits for tonight’s digest.',
+      chat: function (ctx) { return chat13(ctx, 1); }, composer: COMP13, target: 'req:later:cr-25', scroll: { chat: 'card-cr-25', page: 'req-cr-25' } },
+    { id: 'p13-incident', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:30', t: 'Fixed on its own, and one incident', draft: true, page: 'team/incidents', focus: 'page',
+      g: 'Self-healing: a failover and a fill-in from the next source, each fixed on its own and told in the digest. What it cannot fix is an incident: inc-7, with what happened, what was tried, what goes on meanwhile and the choices. Tap Skip the page.',
+      chat: function (ctx) { return chat13(ctx, 2); }, composer: COMP13, target: 'inc:skip' },
+    { id: 'p13-notes', d: 'Mon 26 Oct', viewer: 'arun', tm: '08:31', t: 'The agents’ notes', draft: true, page: 'team/notes', focus: 'page',
+      g: 'Each agent keeps notes on its own work and reads them first in every run: a source’s quirks, the fix that worked, why a request was approved or rejected. A note never changes behaviour; an admin reads, corrects or clears them behind the second check (MA-289).',
+      chat: function (ctx) { return chat13(ctx, 4); }, composer: COMP13 }
   ] });
 
-  var COMP19 = { chips: [['India', 'currency_rupee', 'nav:india'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']] };
-  M.chapter({ key: 'p19', n: '19', order: 19, title: 'Indian markets and the existing Indian portfolio', short: 'India', steps: [
-    { id: 'p19-cas', d: 'Mon 26 Oct', tm: '20:40', t: 'Asha sends her CAS', draft: true, viewer: 'asha', page: 'india', focus: 'chat',
-      g: 'Asha sends the detailed Consolidated Account Statement for her Indian mutual funds. The file is kept first, then read by code. It is locked, so MyPaisa asks once for its password: typed here, used once on this device, never stored, logged or sent. Tap Unlock.',
-      chat: function (ctx) { return chat19(ctx, 0); }, composer: COMP19, target: 'cas:unlock', sheetClose: 'cas:cancel', on: { 'cas:cancel': 'sheet:dismiss' },
+  var COMP14 = { chips: [['India', 'currency_rupee', 'nav:india'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']] };
+  M.chapter({ key: 'p14', n: '14', order: 14, title: 'Indian holdings and the existing Indian portfolio', short: 'India', steps: [
+    { id: 'p14-cas', d: 'Mon 26 Oct', tm: '20:40', t: 'Arun sends Asha’s CAS', draft: true, viewer: 'arun', page: 'india', focus: 'chat',
+      g: 'Asha views only, so Arun, an admin, sends the detailed Consolidated Account Statement for her Indian mutual funds. The file is kept first, then read by code. It is locked, so MyPaisa asks once for its password: typed here, used once on this device, never stored, logged or sent. Tap Unlock.',
+      chat: function (ctx) { return chat14(ctx, 0); }, composer: COMP14, target: 'cas:unlock', sheetClose: 'cas:cancel', on: { 'cas:cancel': 'sheet:dismiss' },
       sheet: function (ctx) {
         var C = D().india.cas;
         return '<div class="pv5-team-sheet"><div class="sheet-h"><span class="mp-hl">Unlock the statement</span>' + K.draft() + '</div><span class="mp-foot mp-ink2">' + K.esc(C.file) + ' · ' + C.size + '</span>' +
@@ -773,43 +658,43 @@
           K.note('shield', 'Used once, on this device, to open the file; never stored, logged or sent.') +
           '<div class="pv5-team-btns">' + K.btn('Unlock', 'cas:unlock', 'primary', 'lock_open') + K.btn('Cancel', 'cas:cancel', 'plain') + '</div></div>';
       } },
-    { id: 'p19-dry', d: 'Mon 26 Oct', tm: '20:41', t: 'The dry run: one summary card', draft: true, viewer: 'asha', page: 'india', focus: 'chat',
+    { id: 'p14-dry', d: 'Mon 26 Oct', tm: '20:41', t: 'The dry run: one summary card', draft: true, viewer: 'arun', page: 'india', focus: 'chat',
       g: 'One summary card, nothing saved yet: what matched by ISIN, the history it adds, what was left out (listed, never guessed), and that nothing can be added twice. The total does not change: the import brings the fund’s history, not new money. Tap Confirm.',
-      chat: function (ctx) { return chat19(ctx, 1); }, composer: COMP19, target: 'cas:confirm', scroll: { chat: 'card-dry' } },
-    { id: 'p19-check', d: 'Mon 26 Oct', tm: '20:42', t: 'Confirm with the second check', draft: true, viewer: 'asha', page: 'india', focus: 'chat',
+      chat: function (ctx) { return chat14(ctx, 1); }, composer: COMP14, target: 'cas:confirm', scroll: { chat: 'card-dry' } },
+    { id: 'p14-check', d: 'Mon 26 Oct', tm: '20:42', t: 'Confirm with the second check', draft: true, viewer: 'arun', page: 'india', focus: 'chat',
       g: 'Confirm asks for the second check, as every import does; the import gets one id, so it can be rolled back whole.',
-      chat: function (ctx) { return chat19(ctx, 2); }, composer: COMP19, target: 'check:ok', scroll: { chat: 'card-dry' }, on: { 'check:alt': 'next', 'check:cancel': 'st:1' }, sheetClose: 'check:cancel',
-      sheet: function (ctx) { return checkSheet(ctx, 'Import the history of 1 fund, 46 transactions, from CAS-Oct-2026.pdf into your Parag Parikh Flexi Cap record.', 'check:cancel'); } },
-    { id: 'p19-india', d: 'Mon 26 Oct', tm: '20:43', t: 'The Indian accounts, in rupees with pounds beside', draft: true, viewer: 'asha', page: 'india', focus: 'page',
+      chat: function (ctx) { return chat14(ctx, 2); }, composer: COMP14, target: 'check:ok', scroll: { chat: 'card-dry' }, on: { 'check:alt': 'next', 'check:cancel': 'st:1' }, sheetClose: 'check:cancel',
+      sheet: function (ctx) { return checkSheet(ctx, 'Import the history of 1 fund, 46 transactions, from CAS-Oct-2026.pdf into Asha’s Parag Parikh Flexi Cap record.', 'check:cancel'); } },
+    { id: 'p14-india', d: 'Mon 26 Oct', tm: '20:43', t: 'The Indian accounts, in rupees with pounds beside', draft: true, viewer: 'arun', page: 'india', focus: 'page',
       g: 'Every Indian figure in rupees with its pounds beside, by account: the demat account, the mutual fund folio, the NRE savings, the PPF, and the rest of what the household holds in India. Tap the Parag Parikh fund.',
-      chat: function (ctx) { return chat19(ctx, 3); }, composer: COMP19, target: 'nav:india/ppfas' },
-    { id: 'p19-engine', d: 'Mon 26 Oct', tm: '20:45', t: 'Wrapper-aware, the tax flag, the engine in shadow', draft: true, viewer: 'asha', page: 'india/ppfas', focus: 'page',
-      g: '“ISA-safe” becomes wrapper-aware: a suggestion names only what suits the account, and MyPaisa never trades. The tax flag says, in plain words, to check with a tax adviser. The engine reads the Indian holdings in shadow: none graded yet.',
-      chat: function (ctx) { return chat19(ctx, 4); }, composer: COMP19 }
+      chat: function (ctx) { return chat14(ctx, 3); }, composer: COMP14, target: 'nav:india/ppfas' },
+    { id: 'p14-tax', d: 'Mon 26 Oct', tm: '20:45', t: 'The account, and the tax flag', draft: true, viewer: 'arun', page: 'india/ppfas', focus: 'page',
+      g: 'Each Indian account says what it is: a folio in rupees, outside any ISA, and MyPaisa never trades. The tax flag says, in plain words, to check with a tax adviser. Asha sees the same page, to view.',
+      chat: function (ctx) { return chat14(ctx, 4); }, composer: COMP14 }
   ] });
 
-  var COMP20 = { chips: [['Add something', 'add', 'chip:add'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']] };
-  M.chapter({ key: 'p20', n: '20', order: 20, title: 'The app beyond the chat: widgets, Siri, the share sheet, Live Activities', short: 'Beyond the chat', steps: [
-    { id: 'p20-home', d: 'Mon 26 Oct', tm: '12:30', t: 'The Home Screen widget', draft: true, viewer: 'arun', page: 'beyond/widget', focus: 'page',
+  var COMP15 = { chips: [['Add something', 'add', 'chip:add'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']] };
+  M.chapter({ key: 'p15', n: '15', order: 15, title: 'The app beyond the chat: widgets, Siri, the share sheet, Live Activities', short: 'Beyond the chat', steps: [
+    { id: 'p15-home', d: 'Mon 26 Oct', tm: '12:30', t: 'The Home Screen widget', draft: true, viewer: 'arun', page: 'beyond/widget', focus: 'page',
       g: 'The household’s total and the day’s move, from the last fetch with its time: prices are at Friday’s close, so the move is Friday’s. Turn Privacy on above: the widget shows the mark and Hidden. On the web, Home’s first line carries the same figures.',
-      chat: function (ctx) { return chat20(ctx, 'home'); }, composer: COMP20, system: sysHomeWidget, target: 'next' },
-    { id: 'p20-lock', d: 'Mon 26 Oct', tm: '12:41', t: 'The Lock Screen widget, and privacy', draft: true, viewer: 'arun', page: 'beyond/lock', focus: 'page',
+      chat: function (ctx) { return chat15(ctx, 'home'); }, composer: COMP15, system: sysHomeWidget, target: 'next' },
+    { id: 'p15-lock', d: 'Mon 26 Oct', tm: '12:41', t: 'The Lock Screen widget, and privacy', draft: true, viewer: 'arun', page: 'beyond/lock', focus: 'page',
       g: 'The same figures on the Lock Screen, once Face ID has recognised Arun; with privacy mode on, the mark and Hidden. Notifications and Live Activities on the Lock Screen never carry an amount.',
-      chat: function (ctx) { return chat20(ctx, 'lock'); }, composer: COMP20, system: sysLockWidget, target: 'next' },
-    { id: 'p20-share', d: 'Mon 26 Oct', tm: '13:05', t: 'A factsheet shared from Files', draft: true, viewer: 'arun', page: 'beyond/share', focus: 'page',
+      chat: function (ctx) { return chat15(ctx, 'lock'); }, composer: COMP15, system: sysLockWidget, target: 'next' },
+    { id: 'p15-share', d: 'Mon 26 Oct', tm: '13:05', t: 'A factsheet shared from Files', draft: true, viewer: 'arun', page: 'beyond/share', focus: 'page',
       g: 'Arun shares the Robotics ETF’s factsheet from Files. MyPaisa is in the share sheet; it opens the chat on the reading card. On the web, the same file is dropped on the chat. Tap MyPaisa.',
-      chat: function (ctx) { return chat20(ctx, 'share'); }, composer: { files: ['Robotics-ETF-factsheet-Sep-2026.pdf'], send: 'share:mypaisa' }, system: sysShare, target: 'share:mypaisa' },
-    { id: 'p20-reading', d: 'Mon 26 Oct', tm: '13:05', t: 'The chat opens on the reading card', draft: true, viewer: 'arun', page: 'beyond/share', focus: 'chat',
+      chat: function (ctx) { return chat15(ctx, 'share'); }, composer: { files: ['Robotics-ETF-factsheet-Sep-2026.pdf'], send: 'share:mypaisa' }, system: sysShare, target: 'share:mypaisa' },
+    { id: 'p15-reading', d: 'Mon 26 Oct', tm: '13:05', t: 'The chat opens on the reading card', draft: true, viewer: 'arun', page: 'beyond/share', focus: 'chat',
       g: 'The reading card: what the file says, matched to its record, with nothing saved before Confirm. Confirm writes it with an audit row naming the file; the file itself is kept either way.',
-      chat: function (ctx) { return chat20(ctx, 'reading'); }, composer: COMP20, target: 'share:confirm', scroll: { chat: 'card-read' } },
-    { id: 'p20-siri', d: 'Mon 26 Oct', tm: '18:10', t: 'Siri: How is the portfolio today?', draft: true, viewer: 'arun', page: 'beyond/siri', focus: 'page',
+      chat: function (ctx) { return chat15(ctx, 'reading'); }, composer: COMP15, target: 'share:confirm', scroll: { chat: 'card-read' } },
+    { id: 'p15-siri', d: 'Mon 26 Oct', tm: '18:10', t: 'Siri: How is the portfolio today?', draft: true, viewer: 'arun', page: 'beyond/siri', focus: 'page',
       g: 'Siri answers with the household’s total and the day’s move, from the same figures as the app, once the iPhone is unlocked. With privacy mode on it says only to open MyPaisa.',
-      chat: function (ctx) { return chat20(ctx, 'siri'); }, composer: COMP20, system: sysSiri, target: 'next' },
-    { id: 'p20-shortcut', d: 'Mon 26 Oct', tm: '18:20', t: 'The Shortcut starts the guided flow', draft: true, viewer: 'arun', page: 'beyond/siri', focus: 'chat',
+      chat: function (ctx) { return chat15(ctx, 'siri'); }, composer: COMP15, system: sysSiri, target: 'next' },
+    { id: 'p15-shortcut', d: 'Mon 26 Oct', tm: '18:20', t: 'The Shortcut starts the guided flow', draft: true, viewer: 'arun', page: 'beyond/siri', focus: 'chat',
       g: 'The Shortcut “Log money into MyPaisa” opens the chat on the guided flow, one question at a time. It never writes on its own: nothing is saved without Confirm in the app.',
-      chat: function (ctx) { return chat20(ctx, 'shortcut'); }, composer: COMP20, target: 'flow:bought', scroll: { chat: 'card-flow' } },
-    { id: 'p20-live', d: 'Mon 26 Oct', tm: '20:41', t: 'A Live Activity follows the import', draft: true, viewer: 'asha', page: 'beyond/live', focus: 'page',
-      g: 'While Asha’s CAS is read (phase 19), a Live Activity follows it on her Lock Screen and in the Dynamic Island: the file, its steps and its counts, never an amount. Open MyPaisa to Confirm.',
-      chat: function (ctx) { return chat20(ctx, 'live'); }, composer: COMP20, system: sysLive }
+      chat: function (ctx) { return chat15(ctx, 'shortcut'); }, composer: COMP15, target: 'flow:bought', scroll: { chat: 'card-flow' } },
+    { id: 'p15-live', d: 'Mon 26 Oct', tm: '20:41', t: 'A Live Activity follows the import', draft: true, viewer: 'arun', page: 'beyond/live', focus: 'page',
+      g: 'While Asha’s CAS is read (phase 14), a Live Activity follows it on Arun’s Lock Screen and in the Dynamic Island: the file, its steps and its counts, never an amount. Open MyPaisa to Confirm.',
+      chat: function (ctx) { return chat15(ctx, 'live'); }, composer: COMP15, system: sysLive }
   ] });
 })();

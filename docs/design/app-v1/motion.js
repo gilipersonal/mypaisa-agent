@@ -146,7 +146,7 @@
 
 /* Axis labels thin themselves where they would touch (MA-240), as Swift Charts and LayerChart do: on a chart narrower
    than drawn, a label that would sit within 2 px of the one kept before it, or of the last, is hidden; the first and
-   the last always stay. A meter's labels and the market mood strip's segment labels (.mlab) thin the same way, the
+   the last always stay. A meter's labels and a segment strip's labels (.mlab) thin the same way, the
    strip's colours keeping their legend. Labels that fit are never touched, so every chart keeps its drawn axis. This
    is layout, not motion, so it runs under Reduce Motion and ?static=1 too, and again whenever an axis changes width. */
 (function () {

@@ -150,10 +150,10 @@
           </sc-for>
         </div>
         <div class="notes">
-          <div class="note"><b>Tab bar</b>Five tabs: Overview, Holdings, Overlap, Record, More (Activity, Audit and settings). Tabs share the bar (flex 1, at most 120 wide, 48 high), so five fit at 320: a 22 icon over a 10/12 medium label. More is <code>menu</code>, opening the remaining sections in a sheet. <code>--mp-material</code> with a 20 px blur, a half-pixel hairline on top, 22 below for the home indicator.</div>
+          <div class="note"><b>Tab bar</b>Five tabs: Overview, Holdings, Budget, Projection, More (Activity, Audit and settings). Tabs share the bar (flex 1, at most 120 wide, 48 high), so five fit at 320: a 22 icon over a 10/12 medium label. More is <code>menu</code>, opening the remaining sections in a sheet. <code>--mp-material</code> with a 20 px blur, a half-pixel hairline on top, 22 below for the home indicator.</div>
           <div class="note"><b>Tab states</b>Selected: <code>--mp-accent</code> with the icon filled, <code>aria-current="page"</code>. Others: ink-3, outlined (5.3:1 and 5.9:1 on the material). Focus: the 3 px ring.</div>
           <div class="note"><b>Sidebar</b>248 wide including its padding (20 14); the coin and name on top, six items, who is signed in at the foot. Items 44 high, radius 10, 15/20 medium in ink-2; selected lifts onto the surface with <code>--mp-shadow</code>, semibold ink, accent icon.</div>
-          <div class="note"><b>Which one</b>The tab bar in compact and regular, the sidebar in wide (1024 and over); <code>.mp-shell</code> swaps them from one markup. The labels differ only where space does: Record and More on the tab bar, Track record, Activity and Audit in the sidebar.</div>
+          <div class="note"><b>Which one</b>The tab bar in compact and regular, the sidebar in wide (1024 and over); <code>.mp-shell</code> swaps them from one markup. The labels are the same words in both; only More differs: on the tab bar it holds what the sidebar lists, Activity and Audit.</div>
           <div class="note"><b>Pushing a page</b>A row or card that opens a page pushes it in from the right over 350 ms on <code>--mp-ease-sheet</code>; Back pops it. Tabs switch without motion.</div>
         </div>
       </section>
@@ -161,7 +161,7 @@
       <!-- ================= 9 SHEET AND TOAST ================= -->
       <section class="dv-turn" id="overlays" data-screen-label="Components 9: Sheet and toast">
         <div class="dv-thd"><a class="dv-tid" href="#overlays">9</a><span class="dv-tname">Sheet and toast</span></div>
-        <p class="dv-intro">A sheet explains, in place, without leaving the page: "Why PAUSE?" in plain words first, the detail a tap further. It never asks for a decision. A toast confirms something that just happened on this page and then gets out of the way.</p>
+        <p class="dv-intro">A sheet explains, in place, without leaving the page: "How XIRR works" in plain words first, the detail a tap further. It never asks for a decision. A toast confirms something that just happened on this page and then gets out of the way.</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Sheet and toast {{ t.label }}">
@@ -169,22 +169,22 @@
               <div class="specs">
                 <div class="spec w390" style="gap: 16px">
                   <span class="lbl">Bottom sheet · .mp-sheet over .mp-scrim</span>
-                  <div class="phonefrag" data-screen-label="Sheet: Why PAUSE?">
+                  <div class="phonefrag" data-screen-label="Sheet: How XIRR works">
                     <div class="fx col gap12" style="padding: 14px 16px">
                       <div><div class="mp-large">NASDAQ 100</div><div class="mp-foot mp-ink2">iShares · ISA · London CNX1</div></div>
-                      <div class="mp-card fx ac jb gap8"><div style="min-width: 0"><div class="mp-num-l">£4,210</div><div class="mp-foot mp-dq">▼ 1.2% Friday · ▼ 3.1% this week · ▼ 8.4% from its high</div></div><span class="mp-chip mp-pause">PAUSE 61%</span></div>
+                      <div class="mp-card fx ac jb gap8"><div style="min-width: 0"><div class="mp-num-l">£4,210</div><div class="mp-foot mp-dq">▼ 1.2% Friday · ▼ 3.1% this week · ▼ 8.4% from its high</div></div><span class="mp-chip mp-neutral">XIRR 14.2%</span></div>
                     </div>
                     <div class="mp-scrim"></div>
-                    <div class="mp-sheet sheet-abs mp-sheet-in fx col gap12" role="dialog" aria-label="Why PAUSE?">
+                    <div class="mp-sheet sheet-abs mp-sheet-in fx col gap12" role="dialog" aria-label="How XIRR works">
                       <div class="mp-grabber" style="margin-bottom: 0"></div>
-                      <div class="fx ac jb"><span class="mp-t3">Why PAUSE?</span><button class="mp-btn mp-btn-plain" style="margin-right: -8px">Done</button></div>
-                      <div class="fx ac gap8" style="margin-top: -10px"><span class="mp-chip chip-s mp-pause">PAUSE 61%</span><span class="mp-foot mp-ink2">for about 2 weeks · a view, not advice</span></div>
-                      <div class="mp-body">Keep what you have; hold this month's top-up until the trend settles. Not a reason to sell.</div>
+                      <div class="fx ac jb"><span class="mp-t3">How XIRR works</span><button class="mp-btn mp-btn-plain" style="margin-right: -8px">Done</button></div>
+                      <div class="fx ac gap8" style="margin-top: -10px"><span class="mp-chip chip-s mp-neutral">XIRR 14.2%</span><span class="mp-foot mp-ink2">21 dated buys · since Mar 2021</span></div>
+                      <div class="mp-body">The yearly return that makes every dated buy and today's value add up. A buy in 2021 counts for longer than last month's.</div>
                       <div>
-                        <div class="mp-over mp-ink3" style="margin-bottom: 6px">Would change if</div>
-                        <ul class="wlist mp-sub"><li>A close back above the 20-day average</li><li>Two calm sessions after the Fed</li></ul>
+                        <div class="mp-over mp-ink3" style="margin-bottom: 6px">What it counts</div>
+                        <ul class="wlist mp-sub"><li>Every buy and sale, on its own date</li><li>Today's value at Friday's close</li></ul>
                       </div>
-                      <div class="mp-foot mp-ink2">PAUSE calls on this holding: 3 made, 2 right.</div>
+                      <div class="mp-foot mp-ink2">CAGR over the same years: 13.6%.</div>
                       <div class="fx gap8"><a class="mp-btn mp-btn-primary" href="#overlays" style="flex: 1"><span class="ms" aria-hidden="true">chat</span>Ask in the chat</a><a class="mp-btn mp-btn-tinted" href="#overlays">Technical</a></div>
                     </div>
                   </div>
@@ -204,7 +204,7 @@
         </div>
         <div class="notes">
           <div class="note"><b>Sheet</b><code>.mp-sheet</code>: surface, top corners 16, padding 8 16 24, shadow 0 −8 40 at 18%. A 36 × 5 grabber; a title in Title 3 with a plain Done on the right, so the keyboard and VoiceOver can close it too.</div>
-          <div class="note"><b>Order inside</b>Summary first: the stance chip and horizon, the plain sentence, "Would change if", the track record. Technical detail is one tap away; Ask in the chat is the way on.</div>
+          <div class="note"><b>Order inside</b>Summary first: the figure and what it covers, the plain sentence, "What it counts", the figure beside it. Technical detail is one tap away; Ask in the chat is the way on.</div>
           <div class="note"><b>Motion and scrim</b>Rises over 420 ms on <code>--mp-ease-sheet</code> (<code>.mp-sheet-in</code>); the page behind dims under <code>.mp-scrim</code>, a deep navy-black at 42%, covering the page behind the sheet. Drag down, tap the scrim or tap Done to close.</div>
           <div class="note"><b>Toast</b><code>.mp-toast</code>: inverse, ink fill with background-colour text (16.3:1 and 17.6:1), radius 14, 15/20 medium, an 18 icon. One line where it can, two at most.</div>
           <div class="note"><b>Toast behaviour</b>Sits 16 above the tab bar (or bottom-centre on the browser), fades in over 200 ms, leaves after 4 seconds, <code>role="status"</code>. Never the only place something important is said.</div>
@@ -289,16 +289,16 @@
       <!-- ================= 11 CHARTS ================= -->
       <section class="dv-turn" id="charts" data-screen-label="Components 11: Charts and tracks">
         <div class="dv-thd"><a class="dv-tid" href="#charts">11</a><span class="dv-tname">Charts and tracks</span></div>
-        <p class="dv-intro">Charts tell one thing each and carry their number above them, not on an axis. One line in the accent, one quiet area, a hairline grid; stance colours only where a stance is marked; fixed colours for currencies; category hues for mixes, always named in a legend. The SVG only draws lines and areas; every dot, label and axis tick is HTML on top (<code>.mp-chartbox</code>). Meters and progress sit on <code>.mp-track</code>.</p>
+        <p class="dv-intro">Charts tell one thing each and carry their number above them, not on an axis. One line in the accent, one quiet area, a hairline grid; status colours only where an event is marked; fixed colours for currencies; category hues for mixes, always named in a legend. The SVG only draws lines and areas; every dot, label and axis tick is HTML on top (<code>.mp-chartbox</code>). Meters and progress sit on <code>.mp-track</code>.</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Charts {{ t.label }}">
               <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
               <div class="grid2">
                 <div class="mp-card ccard fx col gap8">
-                  <div class="fx jb ac gap8"><span class="mp-over mp-ink3">Household · 6 months</span><span class="lbl">line · area · stances</span></div>
+                  <div class="fx jb ac gap8"><span class="mp-over mp-ink3">Household · 6 months</span><span class="lbl">line · area · events</span></div>
                   <div class="mp-num-l">£25,800</div>
-                  <div class="mp-chartbox chart-a" role="img" aria-label="Six months of value from £24,100 to £25,800, with three past stances marked: ADD, HOLD and PAUSE">
+                  <div class="mp-chartbox chart-a" role="img" aria-label="Six months of value from £24,100 to £25,800, with three events marked: a bonus in, an ISA top-up and a roof repair">
                     <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="mp-fade" aria-hidden="true">
                       <line x1="0" x2="100" y1="16" y2="16" class="cg"></line>
                       <line x1="0" x2="100" y1="53" y2="53" class="cg"></line>
@@ -311,18 +311,13 @@
                   <div class="mp-chartaxis mp-ink3"><sc-for list="{{ ca.axis }}" as="a" hint-placeholder-count="6"><span style="left: {{ a.x }}">{{ a.k }}</span></sc-for></div>
                 </div>
                 <div class="mp-card ccard fx col gap8">
-                  <div class="fx jb ac gap8"><span class="mp-over mp-ink3">NASDAQ 100 · 90 days</span><span class="lbl">alert line · horizon</span></div>
-                  <div class="fx ac gap8"><span class="mp-num-l">£4,210</span><span class="mp-chip chip-s mp-pause">PAUSE 61%</span></div>
+                  <div class="fx jb ac gap8"><span class="mp-over mp-ink3">NASDAQ 100 · 90 days</span><span class="lbl">line · dated buys</span></div>
+                  <div class="fx ac gap8"><span class="mp-num-l">£4,210</span><span class="mp-chip chip-s mp-neutral">XIRR 14.2%</span></div>
                   <div class="mp-foot mp-dq">▼ 1.2% Friday · ▼ 3.1% this week · ▼ 8.4% from its high</div>
-                  <div class="mp-chartbox chart-b" role="img" aria-label="NASDAQ 100 over 14 Friday closes: up to £4,596 on 25 September, then down to £4,210, just under your 8% alert at £4,228. HOLD on 11 September, ADD on 25 September, PAUSE now; the next two weeks are shaded for PAUSE.">
+                  <div class="mp-chartbox chart-b" role="img" aria-label="NASDAQ 100 over 14 Friday closes: up to £4,596 on 25 September, then down to £4,210. Three monthly buys of £200 are marked on their dates.">
                     <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="mp-fade" aria-hidden="true">
-                      <rect x="{{ cb.hx }}" y="1" width="{{ cb.hw }}" height="98" class="hz" vector-effect="non-scaling-stroke"></rect>
-                      <line x1="0" x2="{{ cb.hx }}" y1="{{ cb.ay }}" y2="{{ cb.ay }}" class="calert"></line>
                       <path d="{{ cb.line }}" class="cline"></path>
-                      <line x1="{{ cb.ex }}" x2="100" y1="{{ cb.ey }}" y2="{{ cb.ey }}" class="cproj"></line>
                     </svg>
-                    <span class="mp-chartlbl c-pause lbl-tr">PAUSE · next 2 weeks</span>
-                    <span class="mp-chartlbl mp-ink2 lbl-under" style="top: {{ cb.ayp }}">Your 8% alert · £4,228</span>
                     <sc-for list="{{ cb.marks }}" as="m" hint-placeholder-count="3"><span class="mp-chartdot {{ m.dot }}" style="left: {{ m.x }}; top: {{ m.y }}"></span><span class="mp-chartlbl {{ m.lbl }}" style="left: {{ m.x }}; top: {{ m.y }}">{{ m.word }}</span></sc-for>
                   </div>
                   <div class="mp-chartaxis mp-ink3"><span style="left: 14%">Aug</span><span style="left: 44%">Sep</span><span style="left: 72%">Oct</span></div>
@@ -357,10 +352,10 @@
                   <div class="fx jb mp-foot mp-ink2"><span>13% used</span><span>£43.60 left</span></div>
                 </div>
                 <div class="mp-card ccard fx col gap8">
-                  <div class="fx jb ac gap8"><span class="mp-over mp-ink3">Go-live</span><span class="lbl">progress · .mp-track</span></div>
-                  <div class="mp-num-l">6 of 8 <span class="mp-sub mp-ink2 numnote">weeks above doing nothing</span></div>
-                  <div class="mp-track trk" role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="6" aria-label="Go-live: 6 of 8 weeks above doing nothing"><div class="bfill mp-grow" style="width: 75%; background: var(--mp-meter)"></div></div>
-                  <div class="mp-foot mp-ink2">Two more and stance chips go live on weekday cards.</div>
+                  <div class="fx jb ac gap8"><span class="mp-over mp-ink3">Check-ins this month</span><span class="lbl">progress · .mp-track</span></div>
+                  <div class="mp-num-l">3 of 4 <span class="mp-sub mp-ink2 numnote">check-ins answered</span></div>
+                  <div class="mp-track trk" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" aria-label="Check-ins this month: 3 of 4 answered"><div class="bfill mp-grow" style="width: 75%; background: var(--mp-meter)"></div></div>
+                  <div class="mp-foot mp-ink2">One left: the HDFC EMI, due Sun 1 Nov.</div>
                 </div>
               </div>
             </div>
@@ -369,8 +364,8 @@
         <div class="notes">
           <div class="note"><b>The chart box</b><code>.mp-chartbox</code> holds an SVG on a 0 to 100 viewBox with <code>preserveAspectRatio="none"</code>, so it stretches with its card while <code>vector-effect: non-scaling-stroke</code> keeps the line at 2.5 px. Dots (<code>.mp-chartdot</code>), labels (<code>.mp-chartlbl</code>) and ticks (<code>.mp-chartaxis</code>) are HTML placed by % on top. Never a template value inside SVG text: it does not render.</div>
           <div class="note"><b>Line and area</b><code>--mp-chart-line</code> on surfaces (coral over <code>--mp-hero-area</code> on the hero); <code>--mp-chart-area</code> under it; three grid lines at most in <code>--mp-chart-grid</code>; months in ink-3, mid-month. The figure above carries the number, so there is no y-axis on the phone. The chart fades in over 200 ms (<code>.mp-fade</code>): <code>.mp-draw</code> works only on a path that scales with its viewBox, so it breaks under a non-scaling stroke.</div>
-          <div class="note"><b>Stance markers</b>At the close each stance was made on, the current one included: a surface dot with a 2.5 px ring in the stance colour, and the word beside it in the same colour (4.6:1 or more). Labels move above, below or to the upper left so they never sit on the line.</div>
-          <div class="note"><b>Alert line and horizon</b>The alert is 1 px, dashed 4 4, ink-3, labelled with its level in words in ink-2; it marks your threshold and is never red. The horizon is the future: the next two weeks after the last close, light amber with a dashed amber edge, a dotted projection from the last point, labelled "PAUSE · next 2 weeks".</div>
+          <div class="note"><b>Event markers</b>On the day each event happened (a bonus, a buy, a big one-off): a surface dot with a 2.5 px ring in its status colour, and the word beside it in the same colour (4.6:1 or more). Labels move above, below or to the upper left so they never sit on the line.</div>
+          <div class="note"><b>Threshold line</b>A level you set (a cash floor, a budget plan) is 1 px, dashed 4 4, ink-3, labelled with its level in words in ink-2; it marks your threshold and is never red. A forecast (the Projection, the Budget forecast) is drawn as its own chart, never as a tail on a price line.</div>
           <div class="note"><b>Bars and tracks</b>Bars are 12 high on <code>.mp-track</code>, whose inset ring keeps the empty part visible. Currencies always use <code>--mp-ccy-*</code>; meters and progress use <code>--mp-meter</code>, with <code>role="meter"</code> or <code>progressbar</code>. Values at the end, tabular. Grow in over 700 ms.</div>
           <div class="note"><b>Categories</b>Fixed encodings first: an asset mix always uses <code>--mp-asset-*</code> (shares blue, bonds purple, silver grey, cash amber), currencies <code>--mp-ccy-*</code>. Never <code>--mp-chart-3</code> or coral for a category: green means gains and coral is the line. 2 px gaps between segments, every segment named in a legend with its value, and a text alternative that states the point.</div>
         </div>
@@ -383,8 +378,8 @@
           const sections = [
             { icon: 'home', side: 'Overview', tab: 'Overview' },
             { icon: 'donut_small', side: 'Holdings', tab: 'Holdings' },
-            { icon: 'join_inner', side: 'Overlap', tab: 'Overlap' },
-            { icon: 'insights', side: 'Track record', tab: 'Record' },
+            { icon: 'savings', side: 'Budget', tab: 'Budget' },
+            { icon: 'trending_up', side: 'Projection', tab: 'Projection' },
             { icon: 'history', side: 'Activity', tab: '' },
             { icon: 'fact_check', side: 'Audit', tab: '' }
           ];
@@ -395,15 +390,14 @@
           const lo6 = Math.min.apply(null, s6), hi6 = Math.max.apply(null, s6);
           const pA = s6.map((v, i) => [+(2 + i * 96 / 11).toFixed(2), +(16 + (1 - (v - lo6) / (hi6 - lo6)) * 74).toFixed(2)]);
           const lineA = 'M' + pA.map((p) => p.join(',')).join(' L');
-          const markA = [[3, 'ADD', 'add', 'lbl-ul'], [7, 'HOLD', 'hold', ''], [10, 'PAUSE', 'pause', 'lbl-below']].map((m) => ({ x: pA[m[0]][0] + '%', y: pA[m[0]][1] + '%', word: m[1], dot: 'dk-' + m[2], lbl: 'c-' + m[2] + ' ' + m[3] }));
+          const markA = [[3, 'Bonus in', 'add', 'lbl-ul'], [7, 'ISA top-up', 'hold', ''], [10, 'Roof repair', 'pause', 'lbl-below']].map((m) => ({ x: pA[m[0]][0] + '%', y: pA[m[0]][1] + '%', word: m[1], dot: 'dk-' + m[2], lbl: 'c-' + m[2] + ' ' + m[3] }));
           const months = ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'].map((k, m) => ({ k: k, x: (2 + (2 * m + 0.5) * 96 / 11).toFixed(1) + '%' }));
-          // chart b: NASDAQ 100, 14 Friday closes on a 0..15 domain; the line ends at 13, the last two are the PAUSE horizon
+          // chart b: NASDAQ 100, 14 Friday closes across the width, with the monthly buys marked
           const s90 = [4280, 4330, 4310, 4380, 4420, 4450, 4493, 4540, 4596, 4530, 4470, 4410, 4345, 4210];
-          const xB = (i) => +(i * 100 / 15).toFixed(2);
+          const xB = (i) => +(i * 100 / 13).toFixed(2);
           const yB = (v) => +(18 + (4650 - v) / 500 * 70).toFixed(2);
           const pB = s90.map((v, i) => [xB(i), yB(v)]);
-          const alert = 4228;
-          const markB = [[6, 'HOLD 66%', 'hold', 'lbl-ul'], [8, 'ADD 64%', 'add', ''], [13, 'PAUSE 61%', 'pause', 'lbl-below']].map((m) => ({ x: pB[m[0]][0] + '%', y: pB[m[0]][1] + '%', word: m[1], dot: 'dk-' + m[2], lbl: 'c-' + m[2] + ' ' + m[3] }));
+          const markB = [[2, '+£200', 'add', 'lbl-ul'], [6, '+£200', 'add', 'lbl-ul'], [11, '+£200', 'add', 'lbl-below']].map((m) => ({ x: pB[m[0]][0] + '%', y: pB[m[0]][1] + '%', word: m[1], dot: 'dk-' + m[2], lbl: 'c-' + m[2] + ' ' + m[3] }));
           return {
             themes: [{ label: 'Light', cls: 'mp t-light', sel: '.mp.t-light' }, { label: 'Dark', cls: 'mp t-dark', sel: '.mp.t-dark' }],
             peek: [
@@ -426,7 +420,7 @@
               { lead: 'AG', name: 'Physical Silver', val: '£820' }
             ],
             ca: { line: lineA, area: lineA + ' L' + pA[11][0] + ',100 L' + pA[0][0] + ',100 Z', marks: markA, axis: months },
-            cb: { line: 'M' + pB.map((p) => p.join(',')).join(' L'), ex: pB[13][0], ey: pB[13][1], hx: xB(13), hw: +(100 - xB(13)).toFixed(2), ay: yB(alert), ayp: yB(alert) + '%', marks: markB },
+            cb: { line: 'M' + pB.map((p) => p.join(',')).join(' L'), marks: markB },
             fx: [
               { k: 'USD', v: '84%', w: '84%', d: '', c: 'var(--mp-ccy-usd)' },
               { k: 'GBP', v: '9%', w: '9%', d: 'd1', c: 'var(--mp-ccy-gbp)' },

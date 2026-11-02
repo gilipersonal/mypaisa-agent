@@ -1,0 +1,170 @@
+{
+  "about": "Prototype v5's daily prices that value the household's holdings (MA-291; MA-307 kept only these): from make_engine.py's engine-v5.json. Illustrative.",
+  "instruments": {
+    "balanced": {
+      "name": "Balanced",
+      "full": "BlackRock MyMap 5 Select ESG",
+      "short": "Balanced",
+      "kind": "oeic",
+      "owner": "arun",
+      "wrapper": "ISA",
+      "platform": "Monzo",
+      "isin": "GB00BMDQ4Y43",
+      "ticker": "0P0001L8YT.L",
+      "nav_note": "one NAV a day, published the next morning",
+      "price": 18.57,
+      "chain": [
+        "yfinance",
+        "issuer_page",
+        "ft",
+        "proxy",
+        "screenshot"
+      ],
+      "units": 1234.518
+    },
+    "nasdaq": {
+      "name": "NASDAQ 100 ETF",
+      "full": "iShares NASDAQ 100 UCITS ETF",
+      "short": "NASDAQ 100",
+      "kind": "etf",
+      "owner": "asha",
+      "wrapper": "ISA",
+      "platform": null,
+      "isin": "IE00B53SZB19",
+      "ticker": "CNX1",
+      "price": 1027.4,
+      "chain": [
+        "yfinance",
+        "twelvedata",
+        "issuer_page",
+        "stale"
+      ],
+      "units": 0.4983
+    },
+    "robotics": {
+      "name": "Robotics ETF",
+      "full": "iShares Automation & Robotics UCITS ETF",
+      "short": "Robotics",
+      "kind": "etf",
+      "owner": "arun",
+      "wrapper": "GIA",
+      "platform": null,
+      "isin": "IE00BYZK4552",
+      "ticker": "RBOT",
+      "price": 12.64,
+      "chain": [
+        "yfinance",
+        "twelvedata",
+        "issuer_page",
+        "stale"
+      ],
+      "units": 24.0506
+    },
+    "silver": {
+      "name": "Silver ETC",
+      "full": "iShares Physical Silver ETC",
+      "short": "Silver",
+      "kind": "commodity_etc",
+      "owner": "arun",
+      "wrapper": "GIA",
+      "platform": null,
+      "isin": "IE00B4NCWG09",
+      "ticker": "SSLN",
+      "price": 31.33,
+      "chain": [
+        "yfinance",
+        "twelvedata",
+        "issuer_page",
+        "stale"
+      ],
+      "units": 6.0006
+    }
+  },
+  "values_23_oct": {
+    "balanced": 22925,
+    "nasdaq": 512,
+    "robotics": 304,
+    "silver": 188,
+    "pot": 181
+  },
+  "day": {
+    "at": "Fri 23 Oct close",
+    "by": {
+      "balanced": {
+        "gbp": -2,
+        "gbp_exact": -2.29,
+        "pct": -0.01
+      },
+      "nasdaq": {
+        "gbp": 5,
+        "gbp_exact": 4.61,
+        "pct": 0.91
+      },
+      "robotics": {
+        "gbp": -7,
+        "gbp_exact": -6.52,
+        "pct": -2.1
+      },
+      "silver": {
+        "gbp": -3,
+        "gbp_exact": -2.67,
+        "pct": -1.4
+      },
+      "pot": {
+        "gbp": 0,
+        "gbp_exact": 0.0,
+        "pct": 0.0
+      }
+    },
+    "total": {
+      "gbp": -7,
+      "pct": -0.03
+    }
+  },
+  "fri_6_nov": {
+    "at": "Fri 6 Nov close",
+    "by": {
+      "balanced": {
+        "value": 23131,
+        "change": 206,
+        "pct_since_23_oct": 0.9,
+        "day_gbp": 23,
+        "day_pct": 0.1
+      },
+      "nasdaq": {
+        "value": 505,
+        "change": -7,
+        "pct_since_23_oct": -1.37,
+        "day_gbp": -2,
+        "day_pct": -0.37
+      },
+      "robotics": {
+        "value": 295,
+        "change": -9,
+        "pct_since_23_oct": -2.96,
+        "day_gbp": 1,
+        "day_pct": 0.45
+      },
+      "silver": {
+        "value": 191,
+        "change": 3,
+        "pct_since_23_oct": 1.6,
+        "day_gbp": -1,
+        "day_pct": -0.3
+      },
+      "pot": {
+        "value": 181,
+        "change": 0,
+        "pct_since_23_oct": 0.0,
+        "day_gbp": 0,
+        "day_pct": 0.0
+      }
+    },
+    "total": {
+      "value": 24303,
+      "change": 193,
+      "day_gbp": 21,
+      "day_pct": 0.09
+    }
+  }
+}

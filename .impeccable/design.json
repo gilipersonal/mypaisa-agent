@@ -40,9 +40,9 @@
         "canonical": "#14171F",
         "tonalRamp": ["#14171F", "#1E2430", "#323846", "#4E5462", "#646A78", "#ADB6C4", "#C5CCD7", "#F3F5F8"]
       },
-      "stance-hold": {
+      "focus": {
         "role": "secondary",
-        "displayName": "Hold & Focus Blue",
+        "displayName": "Focus / Meter Blue",
         "canonical": "#2453C9",
         "tonalRamp": ["#0E204F", "#17347D", "#1E44A3", "#2453C9", "#4D79E6", "#8FB2FF", "#C2D5FF", "#E5ECFB"]
       },
@@ -64,7 +64,7 @@
       "headline": { "displayName": "Screen Title", "purpose": "Large navigation titles (.mp-large 34/41) and primary headings (.mp-t1 28/34)." },
       "title": { "displayName": "Row & Card Headline", "purpose": "Grouped row titles and card headers (.mp-hl 17/22 semibold)." },
       "body": { "displayName": "Dynamic Type Large Body", "purpose": "Conversational messages and ledger copy (.mp-body 17/22, .mp-sub 15/20)." },
-      "label": { "displayName": "Chip & Footnote Label", "purpose": "Stance chips, metadata footnotes (.mp-foot 13/18), and captions (.mp-cap 12/16)." }
+      "label": { "displayName": "Chip & Footnote Label", "purpose": "Filter and status chips, metadata footnotes (.mp-foot 13/18), and captions (.mp-cap 12/16)." }
     },
     "shadows": [
       { "name": "mp-shadow", "value": "0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06)", "purpose": "Soft ambient elevation on .mp-card, .ccard, and active web rail items." },
@@ -102,12 +102,12 @@
       "css": ".ds-btn-tinted { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; background: var(--mp-surface-2, #F0EDE8); color: var(--mp-ink, #14171F); font: 600 17px/22px -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; } .ds-btn-tinted:hover { filter: brightness(0.97); color: var(--mp-ink, #14171F); } .ds-btn-tinted:focus-visible { outline: 3px solid var(--mp-focus, #2453C9); outline-offset: 2px; }"
     },
     {
-      "name": "Stance & Status Chip",
+      "name": "Filter & Status Chip",
       "kind": "chip",
-      "refersTo": "chip-stance",
-      "description": "Semantic stance pill (.mp-chip.mp-add / .mp-hold / .mp-pause) tested at 25% brightness.",
-      "html": "<span class=\"ds-chip-add\">▲ Add · 78%</span>",
-      "css": ".ds-chip-add { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 10px; background: var(--mp-add-bg, #E2F2E7); color: var(--mp-add, #1D7A3E); font: 600 13px/18px -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; font-variant-numeric: tabular-nums; }"
+      "refersTo": "chip-filter",
+      "description": "Filter and status pill (.mp-chip, .gchip) on the raised warm fill, legible at 25% brightness.",
+      "html": "<span class=\"ds-chip\">Paid · Oct</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 10px; background: var(--mp-surface-2, #F0EDE8); color: var(--mp-ink-2, #4E5462); font: 600 13px/18px -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; font-variant-numeric: tabular-nums; }"
     },
     {
       "name": "Navy Hero Net-Worth Card",
@@ -137,7 +137,7 @@
       "Layout-stable Privacy Mode (••••) that redacts every currency balance, chart callout, scrub tooltip, and accessible aria-label in place."
     ],
     "rules": [
-      { "name": "The Quiet Drawdown Rule", "body": "Green (positive with ▲) is reserved for gains, while routine daily market dips use quiet secondary ink (ink-secondary with ▼); crimson (alert) appears only on genuine red-tier alerts and destructive actions.", "section": "colors" },
+      { "name": "The Quiet Drawdown Rule", "body": "Green (positive with ▲) is reserved for gains, while a routine daily fall in a holding's value uses quiet secondary ink (ink-secondary with ▼); crimson (alert) appears only on genuine red-tier alerts and destructive actions.", "section": "colors" },
       { "name": "The 25% Brightness Rule", "body": "Every colour token lives in the top-level :root, .t-light and .t-dark blocks of tokens.css (and .mp / .t-dark .mp in ios.css) and must stay legible both at 100% and at 25% indoor screen luminance. The contrast_check.py gate that measured this on the boards was stopped by MA-303 (Arun, 2 Nov 2026); the rule is now measured on the built web app by MA-304, QA on request; iOS QA comes after MA-165, with no story yet.", "section": "colors" },
       { "name": "The Tabular Numerals Rule", "body": ".mp sets font-variant-numeric: tabular-nums globally so every currency figure, delta, percentage, share count, and scrub readout aligns without horizontal jitter.", "section": "typography" },
       { "name": "The No-Clip Reflow Rule", "body": "Flex and grid cells never rely on text-overflow: ellipsis for financial figures; below narrow container thresholds (374px, 359px, 699px), key-value pairs and table columns wrap or scroll horizontally inside their card.", "section": "typography" },

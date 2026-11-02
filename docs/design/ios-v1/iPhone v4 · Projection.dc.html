@@ -186,7 +186,7 @@
 
       <section class="dv-turn" id="intro" data-screen-label="iPhone v4 · Projection: intro">
         <div class="dv-thd"><a class="dv-tid" href="#intro">P</a><span class="dv-tname">iPhone · Projection: where the household's net worth is heading</span></div>
-        <p class="dv-intro">The old wealth tracker's Forecast, renamed Projection (Forecast stays the market's word), in shell 1a, Chat first: pushed from Home, with the Liquid Glass tab bar. Three options for the screen, then the recommended option's states: milestones and plan items, the assumptions with their sources, Asha's view, rupees at 2026 prices, privacy, the admin's corrections in place, and the chat's what-if and plan item cards. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start): since MA-264, run month by month (future-plans-v4.json, R26 and what_if_26), which replaced the v4 figure set's yearly sketch. Since MA-261 the Projection has three tabs and opens at 20 years; 1a and its states draw them, and P11 and P12 add the iPad and the evening of Thu 5 Nov, after Arun's plans. The browser boards are Web v4 · Projection in MyPaisa app v1.</p>
+        <p class="dv-intro">The old wealth tracker's Forecast, renamed Projection, in shell 1a, Chat first: pushed from Home, with the Liquid Glass tab bar. Three options for the screen, then the recommended option's states: milestones and plan items, the assumptions with their sources, Asha's view, rupees at 2026 prices, privacy, the admin's corrections in place, and the chat's what-if and plan item cards. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start): since MA-264, run month by month (future-plans-v4.json, R26 and what_if_26), which replaced the v4 figure set's yearly sketch. Since MA-261 the Projection has three tabs and opens at 20 years; 1a and its states draw them, and P11 and P12 add the iPad and the evening of Thu 5 Nov, after Arun's plans. The browser boards are Web v4 · Projection in MyPaisa app v1.</p>
         <div class="plan"><b>Jira</b><span class="plan-k">MA-224</span><span>the screen</span><span class="plan-k">MA-222</span><span>plan items</span><span class="plan-k">MA-223</span><span>what-ifs and the story</span><span class="plan-k">MA-221</span><span>priors and sources</span><span class="plan-k">MA-219</span><span>the engine, its fan</span></div>
       </section>
 
@@ -326,7 +326,7 @@
                               <p class="pp mp-foot down">▼ Cash goes £14,462 below zero in Jun 2028, when the deposit is paid; back above zero in Nov 2028. Code’s flag.</p>
                               <p class="pp mp-foot mp-ink2">The engine's figures; nothing is saved. £60,000 and June 2028 are your words.</p>
                             </div>
-                            <div class="ccard-acts"><sc-if value="{{ f.adm }}"><button type="button" class="cbtn cbtn-primary"><span class="ms" aria-hidden="true">bookmark_add</span>Save as a plan item</button></sc-if><button type="button" class="cbtn">Change it</button><sc-if value="{{ f.mem }}"><span class="lockl"><span class="ms" aria-hidden="true">lock</span>Only Arun can save it as a plan item.</span></sc-if></div>
+                            <div class="ccard-acts"><sc-if value="{{ f.adm }}"><button type="button" class="cbtn cbtn-primary"><span class="ms" aria-hidden="true">bookmark_add</span>Save as a plan item</button></sc-if><button type="button" class="cbtn">Change it</button><sc-if value="{{ f.mem }}"><span class="lockl"><span class="ms" aria-hidden="true">lock</span>Only an admin can save it as a plan item.</span></sc-if></div>
                             <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden="true">expand_more</span></div>
                           </div></sc-if>
                           <sc-if value="{{ msg.ask }}"><div class="ccard">
@@ -463,9 +463,9 @@
                 sq: o.r4 ? MS4.filter((m) => m[4] === 'mk-sq').map((m) => c.P(tOf(m[5], m[6]), 2)) : PI.filter((p) => p[4] && p[4] <= last).map((p) => c.P(tOf(p[4], p[5]), 2)) },
               ms, ms2: ms.slice(0, 2),
               pi: o.r4 ? PI4.map((p) => ({ i: p[0], w: p[1], s: p[2], a: mk(p[3]), ed: o.mem ? '' : 'ed' })) : PI.map((p) => ({ i: p[0], w: p[1], s: p[2], a: mk((p[3] > 0 ? '+' : '') + gbp(p[3])), ed: o.mem ? '' : 'ed' })),
-              piSub: o.mem ? 'Arun’s, the admin’s' : 'yours alone, as the admin',
+              piSub: o.mem ? 'kept by the admins' : 'yours, as an admin',
               ed: o.mem ? '' : 'ed', asmI: o.mem ? 'lock' : 'edit',
-              asmNote: o.mem ? 'Arun keeps these figures. Ask in the chat to see what other figures would do.' : 'Tap a figure to correct it. Only you can, as the admin; each change is audited.'
+              asmNote: o.mem ? 'The admins keep these figures. Ask in the chat to see what other figures would do.' : 'Tap a figure to correct it. Only an admin can; each change is audited.'
             };
           };
           const cw = chart(W0, 10, 2e6, 3e5), cb = chart(F0.slice(0, 11), 10, 2e6, 3e5);
@@ -515,7 +515,7 @@
               head: { n: '2', t: 'In 1a: the lists, the member, the switches, privacy, corrections and the chat', p: 'Mon 26 Oct: 10:05 the screen, 10:06 rupees, 10:08 Asha, 10:20 Arun’s what-if, 10:26 Asha’s, 10:40 and 10:44 Arun’s corrections. The plan item added in the chat is Sun 25 Oct, the evening before.' },
               lead: 'Scrolled: the eight milestones from the records, each with its shape and what it frees, then the three plan items, each figure a tappable pill for the admin, and Add a plan item in the chat.',
               frames: P('iPhone · Projection, milestones and plan items', { list: true, plans: true }, {}, Object.assign({}, scrolled, { off: 'off110' })),
-              notes: [{ h: 'Plan items are the admin’s alone:', t: 'created only in the chat (P10), corrected in place (P7). Members see them without the pill (P3) (MA-222).' }, { h: 'Milestones come from the records,', t: 'not from a guess: a maturity date, a loan’s last payment, Arun’s retirement at 60.' }] },
+              notes: [{ h: 'Plan items are the admins’ alone:', t: 'created only in the chat (P10), corrected in place (P7). Members see them without the pill (P3) (MA-222).' }, { h: 'Milestones come from the records,', t: 'not from a guess: a maturity date, a loan’s last payment, Arun’s retirement at 60.' }] },
             { anchor: 'p2', id: 'P2', name: 'iPhone · Projection, the assumptions', keys: 'MA-224 · MA-221',
               lead: 'Each figure with its source: Contract for the FD and PPF; a prior for UK shares, property and prices; history shrunk toward a prior for Parag Parikh (10.7% to 9.06%) and for pay (Arun’s 4.8% blended with the UK’s 3.5% to 4.17%).',
               frames: P('iPhone · Projection, the assumptions', { asm: true, groups: ASM.slice(0, 2) }, {}, scrolled).concat(P('iPhone · Projection, the assumptions · scrolled to the end', { asm: true, groups: ASM.slice(1), endnote: true }, {}, Object.assign({}, scrolled, { off: 'off40' }))),
@@ -545,7 +545,7 @@
               frames: C('iPhone · Chat, a what-if', { net: '£457,951', day: 'Today', low: 'low', msgs: [mA, mW] }, {}, '10:20'),
               notes: [{ h: 'The engine’s figures:', t: '£1,417,000 against £1,508,000 in 2036, £91,000 lower, and code’s flag: cash £14,462 below zero in Jun 2028, back above zero in Nov 2028 (the run month by month, MA-264). The agent fills a typed override from his words and calls run_projection (MA-223).' }, { h: 'Save as a plan item', t: 'opens the plan item card (P10); nothing changes until Confirm.' }] },
             { anchor: 'p9', id: 'P9', name: 'iPhone · Chat, a what-if as Asha asks it', keys: 'MA-223',
-              lead: 'Asha asks the same at 10:26 in her own conversation: the same figures, no Save, and a line saying only Arun can make it a plan item.',
+              lead: 'Asha asks the same at 10:26 in her own conversation: the same figures, no Save, and a line saying only an admin can make it a plan item.',
               frames: C('iPhone · Chat, a what-if as Asha asks it', { net: '£457,951', day: 'Today', low: 'low', msgs: [{ q: 'What is the shaded band?', qt: '10:08', a: 'It is where 8 in 10 of the engine’s runs land; the line through it is the middle one. Shares swing the most, so the band widens with the years.' }, Object.assign({}, mW, { qt: '10:26' })] }, { mem: true }, '10:26'),
               notes: [{ h: 'Members ask, never save', t: '(§6.6). The card is otherwise the admin’s card, figure for figure.' }] },
             { anchor: 'p10', id: 'P10', name: 'iPhone · Chat, adding a plan item', keys: 'MA-222',

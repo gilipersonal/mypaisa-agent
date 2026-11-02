@@ -564,7 +564,7 @@
             effs: [{ t: '2046 · ' + w.mp, c: 'mp-neutral' }, { t: 'Cash never below zero', c: 'newchip' }],
             canApply: !member, bc: i ? '' : 'cbtn-primary', shut: i > 0, lock: '' }));
           const waysCash = (member) => card({ over: member ? 'Ways code found' : 'Cover the shortfall', title: 'Three ways, best fit first', sub: '£19,871 short in Jun 2027, when the extension is paid; back above zero in Mar 2028',
-            ways: WAYSC(member), blocks: member ? [lock('Only Arun can apply a way. Nothing here is saved; ask him, or ask me what any of them does.')] : null,
+            ways: WAYSC(member), blocks: member ? [lock('Only an admin can apply a way. Nothing here is saved; ask Arun, or ask me what any of them does.')] : null,
             foldsB: [fold('Technical')] });
           const wedApplied = card({ ok: true, over: 'Applied · way 1 of 3', title: 'Take it from Balanced (ISA) when cash runs short', sub: 'Balanced (ISA) pays £19,871 in Jun 2027',
             blocks: [kv('Cash in Jun 2027', '−£19,871 → £0'), kv('2046 middle path', '£3,040,000 → £3,041,000'),
@@ -579,11 +579,11 @@
           const S5d = [ai('', wedApplied), me('Undo'), tm('21:18'), ai('Undone. The wedding stays in the plan, and cash is flagged again in Jun 2027.', wedUndone)];
 
           // 21:20, Asha, a member, in her own conversation
-          const refusePlan = card({ over: 'Not saved', title: 'Plans are Arun’s', sub: '£300 a month for your gym from January, your words',
-            blocks: [lock('Plan items are the admin’s alone; Arun adds them. Nothing is saved.'), foot('I can show it as a what-if instead: the engine runs it, and nothing in the plan moves.')],
+          const refusePlan = card({ over: 'Not saved', title: 'Plans are the admins’', sub: '£300 a month for your gym from January, your words',
+            blocks: [lock('Plan items are the admins’ alone; an admin adds them. Nothing is saved.'), foot('I can show it as a what-if instead: the engine runs it, and nothing in the plan moves.')],
             acts: [btn('Show it as a what-if', 'cbtn-primary'), btn('Tell Arun', '')] });
           const refuseAsm = card({ over: 'Not saved', title: 'The saved assumptions are Arun’s', sub: 'UK inflation is 2.5% a year, the prior Arun keeps',
-            blocks: [lock('Only Arun can change a saved assumption. Nothing is saved.'), foot('I can run a what-if at 3% for you; nothing in the plan moves.')],
+            blocks: [lock('Only an admin can change a saved assumption. Nothing is saved.'), foot('I can run a what-if at 3% for you; nothing in the plan moves.')],
             acts: [btn('Show it at 3%', 'cbtn-primary')] });
           const S6 = [day, me('Can we afford the wedding?'), tm('21:20'),
             ai('It’s in Arun’s plan: £20,000 in Mar 2027. Cash goes £19,871 below zero in Jun 2027, when the extension is paid, and is back above zero in Mar 2028. These are the ways code found.', waysCash(true)),

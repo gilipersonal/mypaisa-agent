@@ -332,7 +332,7 @@
                               <sc-for list="{{ meet }}" as="m" hint-placeholder-count="4"><div class="mrow"><span class="mp-foot mp-w6 mp-ink2">{{ m.d }}</span><span class="mp-sub"><sc-for list="{{ m.t }}" as="s" hint-placeholder-count="3"><span class="sg {{ s.c }}">{{ s.t }}</span></sc-for></span></div></sc-for>
                             </div>
                           </sc-if>
-                          <p class="pp mp-foot mp-ink2">Illustrative figures from the future-plans figure set. Plans and their figures are the admin's alone; members see the tab without the pencils and save nothing.</p>
+                          <p class="pp mp-foot mp-ink2">Illustrative figures from the future-plans figure set. Plans and their figures are the admins' to change; members see the tab without the pencils and save nothing.</p>
                         </div>
                       </main>
 
@@ -513,7 +513,7 @@
           };
           const meetOf = (priv) => MEET.map((m) => ({ d: m[0], t: masked(m[1], priv) }));
           const ENDED = [{ i: 'directions_car', name: 'Replace the car', endsub: '−£25,000 once, Jun 2031 · ended by Arun, Thu 5 Nov 21:13' }];
-          const ADMIN_HEAD = '7 plans · yours alone, as the admin';
+          const ADMIN_HEAD = '7 plans · yours to change, as an admin';
           const st = {
             priv: { clock: '21:06', run: 'R4', head: ADMIN_HEAD, priv: true, meet: true },
             menu: { clock: '21:08', run: 'R4', head: ADMIN_HEAD, rowo: { sel: 'car', menu: 'car' } },
@@ -525,7 +525,7 @@
             saved: { clock: '21:11', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'fees2' }, sh: feesSheet('saved') },
             confirm: { clock: '21:13', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'car' },
               cf: { title: 'End Replace the car?', body: 'It stops counting from now, and the Projection runs again without it. It stays in its history and in Audit; a new plan starts in the chat.', label: 'A word for the audit (optional)', typed: 'we’re keeping the car' } },
-            ended: { clock: '21:13', run: 'R7', meta: 'Six plans, Arun’s, and one ended · the engine’s run of Thu 5 Nov 21:13', head: '6 plans · yours alone, as the admin', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
+            ended: { clock: '21:13', run: 'R7', meta: 'Six plans, Arun’s, and one ended · the engine’s run of Thu 5 Nov 21:13', head: '6 plans · yours to change, as an admin', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
               banner: { c: 'ok-neutral', i: 'event_busy', t: 'Ended. The Projection runs again without it.', audit: 'Audit · Plan item ended · Replace the car · v3 → v4 · his words “we’re keeping the car” · Arun · Thu 5 Nov 21:13 · in place · run 21:11 → 21:13: 2046 middle path £3,037,000 → £3,091,000' } },
             asha: { who: ASHA, clock: '21:19', run: 'W', head: '7 plans · Arun’s, the admin’s', ids: ['pot', 'bonus', 'wed', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
               note: { h: 'Cash runs short', s: 'from the engine, run of 21:18', t: 'The wedding in Mar 2027 and the extension in Jun 2027 take cash £19,871 below zero that June; it is back above zero in Mar 2028. Ask in the chat to see the ways to cover it; applying one is Arun’s.' } }

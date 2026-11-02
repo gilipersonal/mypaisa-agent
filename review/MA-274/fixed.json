@@ -81,8 +81,9 @@
    "type": "trace",
    "key": "MA-167",
    "field": "arch",
-   "contains": "15.2"
-  }
+   "contains": "14.2"
+  },
+  "updated": "MA-307, 2 Nov 2026: ARCHITECTURE's §15.2 (the Admin center's alert router) is now §14.2; Phase 8 is still Phase 8"
  },
  {
   "id": "r1-b2-c7c",
@@ -99,8 +100,14 @@
   "finding": "PLAN.md Phases 0-20 Tests lines, ARCHITECTURE 9.1 and RESEARCH 7.4 did not carry the phase-by-phase Maestro packs and L1/L4 harness joins (lane B)",
   "check": {
    "type": "cmd",
-   "run": "python3 -c 'import pathlib; plan = pathlib.Path(\"PLAN.md\").read_text(); arch = pathlib.Path(\"ARCHITECTURE.md\").read_text(); res = pathlib.Path(\"docs/RESEARCH.md\").read_text(); missing = [f\"p{i:02d}\" for i in range(21) if f\"`p{i:02d}\" not in plan]; assert not missing, missing; assert \"MA-273\" in arch.split(\"### 9.1 \")[1].split(\"### 9.2\")[0]; s74 = res.split(\"### 7.4 \")[1].split(\"### 7.5\")[0]; assert \"maestro_local.py check-syntax\" in s74 and \"MA-273\" in s74'"
-  }
+   "argv": [
+    "python3",
+    "-I",
+    "-c",
+    "import pathlib, re\nplan = pathlib.Path('PLAN.md').read_text(); arch = pathlib.Path('ARCHITECTURE.md').read_text(); res = pathlib.Path('docs/RESEARCH.md').read_text()\nphases = sorted({int(n) for n in re.findall(r'^## Phase (\\d+) ', plan, re.M)})\nassert phases == list(range(len(phases))) and len(phases) >= 16, phases\nmissing = [f'p{i:02d}' for i in phases if f'`p{i:02d}' not in plan]; assert not missing, missing\nassert 'MA-273' in arch.split('### 8.1 ')[1].split('### 8.2')[0]\ns74 = res.split('### 7.4 ')[1].split('### 7.5')[0]; assert 'maestro_local.py check-syntax' in s74 and 'MA-273' in s74\n"
+   ]
+  },
+  "updated": "MA-307, 2 Nov 2026: PLAN now has phases 0 to 15, so the Maestro pack ids run p00 to p15 (the check reads the phases from PLAN's headings, at least 16); ARCHITECTURE's §9.1 (the iOS shell) is now §8.1"
  },
  {
   "id": "r1-b3b",

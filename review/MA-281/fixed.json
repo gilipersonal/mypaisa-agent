@@ -67,7 +67,8 @@
    "type": "cmd",
    "run": "python3 -c \"import pathlib, re; A = ' '.join(pathlib.Path('ARCHITECTURE.md').read_text().split()); P = ' '.join(pathlib.Path('PLAN.md').read_text().split()); M = pathlib.Path('docs/design/market-agent.html').read_text(); assert \\\"only on that holding's Forecast tab and in the Saturday review\\\" in A; assert \\\"only on the holding's Forecast tab and in the Saturday review, labelled in practice\\\" in P; assert 'appears only in the Saturday review, labelled' not in M\""
   },
-  "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays"
+  "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays",
+  "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
  },
  {
   "id": "r1-8",
@@ -78,7 +79,8 @@
    "key": "MA-124",
    "field": "open",
    "value": []
-  }
+  },
+  "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
  },
  {
   "id": "r1-9",
@@ -87,7 +89,8 @@
   "check": {
    "type": "cmd",
    "run": "python3 -c \"import pathlib; A = ' '.join(pathlib.Path('ARCHITECTURE.md').read_text().split()); assert 'a proof page per holding shows how the Forecaster earns its place' in A\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
  },
  {
   "id": "r1-10",
@@ -97,7 +100,8 @@
    "type": "cmd",
    "run": "python3 -c \"import pathlib; assert '31 since 2015' not in pathlib.Path('ARCHITECTURE.md').read_text() and '31 similar days' not in pathlib.Path('docs/design/market-agent.html').read_text() and '31 since 2015' not in pathlib.Path('docs/design/market-agent.html').read_text() and 'then 30 thin lines' in pathlib.Path('docs/design/market-agent.html').read_text()\""
   },
-  "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays"
+  "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays",
+  "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
  },
  {
   "id": "r1-11",
@@ -122,7 +126,8 @@
     "docs/design/figures/make_forecaster.py",
     "docs/design/reviews/MA-281/"
    ]
-  }
+  },
+  "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
  },
  {
   "id": "r1-13",
@@ -132,7 +137,8 @@
    "type": "cmd",
    "run": "python3 -c \"import json; r = {x['key']: x for x in json.load(open('docs/trace.json'))['items']}['MA-124']; assert r['design'] == 'planned' and any(b['file'] == 'iPhone v4 · Forecast.dc.html' for b in r['boards']); assert 'on iPhone · Forecast · 1a · Light, Dark' in r['notes'] and 'on iPhone · Forecaster · Proof' in r['notes']; assert ((\\\"the Forecaster's proof screen on iPad\\\" in r['undrawn'] or \\\"Drawn: the Forecaster's proof screen on iPad\\\" in r['notes']) or \\\"Drawn: the Forecaster's proof screen on iPad\\\" in r['notes']) and any(u.startswith(\\\"1a's error state\\\") for u in r['undrawn'])\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
  },
  {
   "id": "r1-14",
@@ -141,7 +147,8 @@
   "check": {
    "type": "cmd",
    "run": "python3 -c \"import pathlib; M = pathlib.Path('docs/design/market-agent.html').read_text(); assert '6 · Patterns' in M and 'F8 MA-280' in M and 'five models' not in M.lower()\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
  },
  {
   "id": "r1-15",
@@ -150,6 +157,7 @@
   "check": {
    "type": "manual",
    "what": "Read Jira MA-124, MA-281 and MA-279: the pick, the in-practice decision and the proof page appear in their descriptions, and MA-281 links to MA-124, MA-279 and MA-280."
-  }
+  },
+  "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
  }
 ]

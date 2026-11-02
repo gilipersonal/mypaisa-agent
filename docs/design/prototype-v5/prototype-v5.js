@@ -1,8 +1,9 @@
-/* MyPaisa · Prototype v5 (MA-291): the controller. One journey of chapters (one per phase, 0 to 20), each a
+/* MyPaisa · Prototype v5 (MA-291): the controller. One journey of chapters (one per phase walked: 0 to 9, 13 to 15), each a
    run of steps with its date and time; five doors (the web app at 1440 and at 390, the iPhone, the iPad in
    landscape with the chat beside, the foldable open); light and dark; privacy; Arun's or Asha's view.
-   Chapter files register pages and chapters (MP5.page, MP5.chapter, MP5.holdingTab); this file draws the
-   frames, the control bar and the ledger as of each step's time, and routes every click (data-go). */
+   Chapter files register pages and chapters (MP5.page, MP5.chapter); this file draws the frames, the control bar
+   and the ledger as of each step's time, and routes every click (data-go). MA-307, 2 Nov 2026: the market side was
+   retired; MyPaisa is a wealth tracker only. */
 (function () {
   'use strict';
   /* the board runtime may run its scripts twice: the controller is made once, so its state and its mount stay one */
@@ -13,16 +14,12 @@
   MP5.K = K;
   MP5.chapters = MP5.chapters || [];
   MP5.pages = MP5.pages || {};
-  MP5.tabsFor = MP5.tabsFor || {};
   /* the board runtime may run a script twice: a chapter registered again under its key replaces the first */
   MP5.chapter = function (def) {
     for (var i = 0; i < MP5.chapters.length; i++) if (MP5.chapters[i].key === def.key) { MP5.chapters[i] = def; return; }
     MP5.chapters.push(def);
   };
   MP5.page = function (id, fn) { MP5.pages[id] = fn; };
-  /* a holding page's tabs are drawn by more than one chapter file: Overview and Track record (phases 10 to 15),
-     Forecast (phase 17); holdingTab(id, {t: 'Forecast', order, draw(ctx, holdingId)}) */
-  MP5.holdingTab = function (id, def) { MP5.tabsFor[id] = def; };
 
   var DOORS = [
     { id: 'desk', t: 'Desktop', w: 1440, h: 900, web: true, wide: true },
@@ -37,7 +34,6 @@
   /* the web app's navigation, and the app's (shell 1a: Chat · Home · Activity · You, and the search circle) */
   var NAV = [
     { sec: 'Money', items: [['home', 'Home', 'home'], ['assets', 'Assets', 'account_balance_wallet'], ['debts', 'Debts', 'credit_card'], ['budget', 'Budget', 'pie_chart'], ['projection', 'Projection', 'show_chart'], ['plans', 'Plans', 'event_note'], ['reports', 'Reports', 'summarize']] },
-    { sec: 'Investing', items: [['holdings', 'Holdings', 'candlestick_chart'], ['overlap', 'Overlap', 'join'], ['track', 'Track record', 'fact_check'], ['news', 'News and events', 'newspaper']] },
     { sec: 'Household', items: [['activity', 'Activity', 'history'], ['audit', 'Audit', 'receipt_long'], ['files', 'Files', 'folder'], ['you', 'You', 'person']] },
     { sec: 'Admin', admin: true, items: [['admin', 'Admin center', 'admin_panel_settings'], ['team', 'Agent team', 'groups']] }
   ];
@@ -72,12 +68,12 @@
     W.homeValue = W.homeCorrected ? 428000 : 415000;
     W.pricesAt = 'Fri 23 Oct close';
     /* a record's value as of the time (W.value(id)): the registry's, and from Sat 7 Nov the investments at the
-       Fri 6 Nov close (engine-v5.json's fri_6_nov, phase 15), carried into every total so they still add up */
+       Fri 6 Nov close (the daily prices' fri_6_nov), carried into every total so they still add up */
     var vals = {};
     (h.assets || []).forEach(function (a) { vals[a.id] = a.value; });
     vals.home = W.homeValue;
     if (W.monzoSavings && h.new_record_in_prototype) vals[h.new_record_in_prototype.id] = h.new_record_in_prototype.value;
-    var E = D.engine;
+    var E = D.prices;
     if (E && E.fri_6_nov && t >= '2026-11-07T00:00') {
       var by = E.fri_6_nov.by, ch = 0, mem = {};
       Object.keys(by).forEach(function (id) {
@@ -95,7 +91,7 @@
       W.pricesAt = 'Fri 6 Nov close';
     }
     /* before Friday's close (the funds' prices land that evening), the investments are at the Thu 22 Oct close:
-       Friday's own move (engine-v5.json's day) taken back out of every total */
+       Friday's own move (the daily prices' day) taken back out of every total */
     if (E && E.day && t < '2026-10-23T21:00') {
       var dby = E.day.by, dch = 0, dmem = {};
       Object.keys(dby).forEach(function (id) {

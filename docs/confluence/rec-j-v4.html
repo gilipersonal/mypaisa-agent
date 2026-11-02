@@ -1,5 +1,5 @@
 <div data-type="panel-custom" data-icon=":satellite_orbital:" data-color="#DEEBFF"><p><strong>🛰️ From a tap at either door to <em>Claude</em> and back, on AWS, in one trace.</strong></p>
-<p>The household&#x27;s wealth agent end to end: the iOS app and the web app, the AWS services between them, the concierge&#x27;s tool loop on the Anthropic API, the nine agents of the team, and which Claude model each piece uses. Pick a journey below and press play to watch it move through the system.</p>
+<p>The household&#x27;s wealth tracker end to end, driven by the chat: the iOS app and the web app, the AWS services between them, the concierge&#x27;s tool loop on the Anthropic API, the six agents that keep the records, the budget and the wealth forecast current, and which Claude model each piece uses. Admins add, correct and delete through the chat; every other member views. The forecast comes from the household&#x27;s actual numbers: XIRR and CAGR from the dated ledger, the Projection and the Budget forecast. Pick a journey below and press play to watch it move through the system.</p>
 <p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/architecture-v4.html">architecture-v4.html</a> (MA-244), live at <a href="https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9">MyPaisa Architecture v4</a>, where each journey plays on demand and any part can be inspected.</p>
 </div>
 <h2>🗺️ Every hop a message makes, on the services that carry it</h2>
@@ -26,7 +26,7 @@
 </tbody>
 </table>
 <h2>📄 A factsheet: 9 steps</h2>
-<div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>A fund factsheet PDF sent from the iPhone becomes a holding, with one Confirm.</strong></p>
+<div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>An admin sends a fund factsheet PDF from the iPhone; it becomes a holding, with one Confirm.</strong></p>
 </div>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="f9ff9cd3-6083-4c0f-96aa-c83c26fa4629" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-file.gif"></div>
 <figcaption>A factsheet sent from the iPhone becomes a holding, with one Confirm (Architecture v4)</figcaption></figure>
@@ -39,12 +39,12 @@
 <tr><td><strong>5</strong></td><td><strong>Claude reads the PDF</strong></td><td>PDF input with citations: the name, ISIN, cost, top holdings and where it invests. Every figure carries its source line; no PAN, address or account number is kept.</td><td><code>document block · citations: enabled</code></td><td><span data-type="status" data-color="red">Sonnet 5.5</span></td></tr>
 <tr><td><strong>6</strong></td><td><strong>A draft, not a record</strong></td><td>Code parses and types each field against the kind. The draft is hashed in a PendingAction, so Confirm commits exactly what was shown.</td><td><code>PendingAction(flow_id, draft_hash) · expires in 24 h</code></td><td></td></tr>
 <tr><td><strong>7</strong></td><td><strong>The Confirm card</strong></td><td>The card shows what will be written, with the source a tap away. Nothing is saved yet.</td><td><code>card: holding.confirm · [Confirm] [Edit] [Cancel]</code></td><td></td></tr>
-<tr><td><strong>8</strong></td><td><strong>Confirm writes it, once</strong></td><td>The tap takes the same lane. The write service validates against the kind and writes the record with its hash-chained audit row in one transaction.</td><td><code>TransactWriteItems: Record + AuditEvent(via: factsheet, document_id)</code></td><td></td></tr>
+<tr><td><strong>8</strong></td><td><strong>Confirm writes it, once</strong></td><td>The tap takes the same lane. Code checks the member is an admin; the write service validates against the kind and writes the record with its hash-chained audit row in one transaction.</td><td><code>TransactWriteItems: Record + AuditEvent(via: factsheet, document_id)</code></td><td></td></tr>
 <tr><td><strong>9</strong></td><td><strong>The laptop moves too</strong></td><td>records.changed reaches every open door, so the dashboard on the laptop shows the new holding at once.</td><td><code>event: records.changed</code></td><td></td></tr>
 </tbody>
 </table>
 <h2>✅ A check-in: 6 steps</h2>
-<div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>Code decides an EMI is due; the owner taps Paid on the lock-screen push.</strong></p>
+<div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>Code decides an EMI is due; an admin taps Paid on the lock-screen push.</strong></p>
 </div>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="01f002c8-ed8c-4d90-9afb-effa60a2ef6a" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-checkin.gif"></div>
 <figcaption>Code decides an EMI is due; the owner taps Paid on the push (Architecture v4)</figcaption></figure>
@@ -52,27 +52,40 @@
 </thead>
 <tbody><tr><td><strong>1</strong></td><td><strong>The schedule ticks</strong></td><td>EventBridge Scheduler, in Europe/London, puts the daily check-ins job on the work queue. The tick is the root of the trace.</td><td><code>schedule: checkins-daily → work · job_id</code></td><td></td></tr>
 <tr><td><strong>2</strong></td><td><strong>Code decides what is due</strong></td><td>No model: the worker reads the commitments and finds November&#x27;s EMI on the HDFC car loan due. The CheckIn row is created once, by a conditional put.</td><td><code>get_commitments(window) → CheckIn(emi#2026-11-05)</code></td><td></td></tr>
-<tr><td><strong>3</strong></td><td><strong>A card that shows what a tap writes</strong></td><td>The check-in goes on the owner&#x27;s outbox lane. Its Paid is the Confirm, with Undo.</td><td><code>card: checkin · [Paid] [Not yet] [Different amount]</code></td><td></td></tr>
+<tr><td><strong>3</strong></td><td><strong>A card that shows what a tap writes</strong></td><td>The check-in goes on the admin&#x27;s outbox lane. Its Paid is the Confirm, with Undo.</td><td><code>card: checkin · [Paid] [Not yet] [Different amount]</code></td><td></td></tr>
 <tr><td><strong>4</strong></td><td><strong>Pushed, because no door is open</strong></td><td>The sender appends to the stream log and, with no fresh presence, sends Apple push. No amount shows on the lock screen.</td><td><code>APNs HTTP/2 · token key · retry-after honoured</code></td><td></td></tr>
 <tr><td><strong>5</strong></td><td><strong>Paid</strong></td><td>The tap is acknowledged at once and its effect queued, so the button never spins. The payment event and its audit row are written together.</td><td><code>Event(emi_paid) + AuditEvent(via: checkin)</code></td><td></td></tr>
 <tr><td><strong>6</strong></td><td><strong>Every door agrees</strong></td><td>records.changed reaches the open laptop: the loan&#x27;s balance and the Projection move.</td><td><code>event: records.changed</code></td><td></td></tr>
 </tbody>
 </table>
-<h2>🌅 The 07:15 brief: 8 steps</h2>
-<div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>Phase 10 onwards: prices in, the engine decides, Haiku files the news, Sonnet writes.</strong></p>
+<h2>💷 The nightly valuation: 6 steps</h2>
+<div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>Prices in, only to value holdings; code works out net worth, XIRR and CAGR from the dated ledger.</strong></p>
 </div>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="6cb34146-8966-4efe-9b83-de876c457d6a" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-brief.gif"></div>
-<figcaption>The 07:15 brief: prices in, the engine decides, Haiku files the news, Sonnet writes (Architecture v4)</figcaption></figure>
+<div data-type="panel-note"><p>Preview <code>rec-j-v4--v4-value.gif</code> is still to upload.</p>
+</div>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
-<tbody><tr><td><strong>1</strong></td><td><strong>Ingest, then engine, then brief</strong></td><td>Each finished job queues the next. Ingest runs each instrument&#x27;s chain of sources.</td><td><code>work: ingest → engine → brief</code></td><td></td></tr>
-<tr><td><strong>2</strong></td><td><strong>Free data first</strong></td><td>The first source that answers with fresh data wins, inside the free tiers&#x27; limits; stale is the last entry everywhere, labelled.</td><td><code>lse_etf: yfinance → twelvedata → issuer_page → stale</code></td><td></td></tr>
+<tbody><tr><td><strong>1</strong></td><td><strong>Prices, then the views</strong></td><td>Each finished job queues the next. The prices job runs each instrument&#x27;s chain of sources.</td><td><code>work: prices → views</code></td><td></td></tr>
+<tr><td><strong>2</strong></td><td><strong>Free data first</strong></td><td>The first source that answers with fresh data wins, inside the free tiers&#x27; limits; stale is the last entry everywhere, labelled. A price only values a holding; nothing predicts a market.</td><td><code>lse_etf: yfinance → twelvedata → issuer_page → stale</code></td><td></td></tr>
 <tr><td><strong>3</strong></td><td><strong>Kept as it was known</strong></td><td>Raw answers for replay, curated prices with the date each became known, in Parquet.</td><td><code>s3://mypaisa-prod-lake/raw/ · curated/</code></td><td></td></tr>
-<tr><td><strong>4</strong></td><td><strong>The engine decides</strong></td><td>Indicators, pillars from −2 to +2, the holder&#x27;s cascade and a confidence score: all code, with golden tests.</td><td><code>Signal · Stance(ADD | HOLD | PAUSE | TRIM, confidence)</code></td><td></td></tr>
-<tr><td><strong>5</strong></td><td><strong>Haiku filed the news overnight</strong></td><td>The day&#x27;s stories went through the Message Batches API at half price, tagged with the entities they name; code worked out each story&#x27;s weight on each holding.</td><td><code>ArticleScore(entities[], event_type, matches[])</code></td><td><span data-type="status" data-color="green">Haiku 5.5</span></td></tr>
-<tr><td><strong>6</strong></td><td><strong>Sonnet writes the brief</strong></td><td>A plain top and a technical underside, from the engine&#x27;s numbers. On a refusal or an error, the plain template goes out instead.</td><td><code>feature: brief · 07:15 Europe/London</code></td><td><span data-type="status" data-color="red">Sonnet 5.5</span></td></tr>
-<tr><td><strong>7</strong></td><td><strong>Delivered</strong></td><td>Through the outbox to each member who wants one, by push when no door is open.</td><td><code>outbox.fifo · one lane per member, in order</code></td><td></td></tr>
-<tr><td><strong>8</strong></td><td><strong>The 07:45 dead man&#x27;s switch</strong></td><td>If the brief has not gone out by 07:45, an alarm reaches the admin by email and in the chat.</td><td><code>alarm: brief-missing → admin-alerts</code></td><td></td></tr>
+<tr><td><strong>4</strong></td><td><strong>Code works out the figures</strong></td><td>Each holding&#x27;s value, net worth, and XIRR and CAGR from the dated ledger: all code, with golden tests. Claude is not called.</td><td><code>NetWorth view · xirr(ledger) · cagr(first, last, years)</code></td><td></td></tr>
+<tr><td><strong>5</strong></td><td><strong>Every open door moves</strong></td><td>records.changed reaches each open door, so the dashboard shows the new values at once.</td><td><code>event: records.changed</code></td><td></td></tr>
+<tr><td><strong>6</strong></td><td><strong>A late job is an alarm</strong></td><td>If the prices job has not finished by its deadline, an alarm reaches the admins by email and in the chat. The views keep the last good price, labelled stale.</td><td><code>alarm: prices-late → admin-alerts</code></td><td></td></tr>
+</tbody>
+</table>
+<h2>🗑️ A delete: 6 steps</h2>
+<div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>An admin deletes a closed account in the chat: a card, Confirm, the second check, an audit row.</strong></p>
+</div>
+<div data-type="panel-note"><p>Preview <code>rec-j-v4--v4-delete.gif</code> is still to upload.</p>
+</div>
+<table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
+</thead>
+<tbody><tr><td><strong>1</strong></td><td><strong>Asked in the chat</strong></td><td>“Delete the old Barclays saver.” The concierge sees the member is an admin; for anyone else it explains that only admins change records.</td><td><code>POST /v1/chat/messages · role: admin</code></td><td></td></tr>
+<tr><td><strong>2</strong></td><td><strong>Sonnet finds the record</strong></td><td>It looks the account up rather than asking, and drafts the delete. Nothing is written yet.</td><td><code>tool get_portfolio · draft hashed in a PendingAction</code></td><td><span data-type="status" data-color="red">Sonnet 5.5</span></td></tr>
+<tr><td><strong>3</strong></td><td><strong>The delete card</strong></td><td>The card names the record, its balance and what a delete keeps: its events, audit rows and files, for good.</td><td><code>card: record.delete · [Delete] [Cancel]</code></td><td></td></tr>
+<tr><td><strong>4</strong></td><td><strong>Confirm, then the second check</strong></td><td>A fresh, server-verified sign-in, bound to this action. A local Face ID alone never authorises it.</td><td><code>second check: fresh assertion · bound to flow_id</code></td><td></td></tr>
+<tr><td><strong>5</strong></td><td><strong>Marked deleted, not erased</strong></td><td>The record&#x27;s status becomes deleted, hidden from every view and restorable through the chat. The event and its hash-chained audit row are written together.</td><td><code>TransactWriteItems: Record(status: deleted) + AuditEvent(via: chat)</code></td><td></td></tr>
+<tr><td><strong>6</strong></td><td><strong>Every door agrees</strong></td><td>records.changed reaches every open door; the account leaves the dashboard and net worth moves.</td><td><code>event: records.changed</code></td><td></td></tr>
 </tbody>
 </table>
 <h2>🧯 A failure and its replay: 8 steps</h2>
@@ -86,8 +99,8 @@
 <tr><td data-background="#FFEBE6"><strong>2</strong></td><td data-background="#FFEBE6"><strong>The Anthropic API is overloaded</strong></td><td data-background="#FFEBE6">Haiku is asked about the merchants the memory has not seen, and the call fails.</td><td data-background="#FFEBE6"><code>529 overloaded_error · span status ERROR</code></td><td data-background="#FFEBE6"><span data-type="status" data-color="green">Haiku 5.5</span></td></tr>
 <tr><td data-background="#FFEBE6"><strong>3</strong></td><td data-background="#FFEBE6"><strong>Backoff, not hammering</strong></td><td data-background="#FFEBE6">The message comes back after a growing wait: five tries, from 30 seconds to 30 minutes.</td><td data-background="#FFEBE6"><code>maxReceiveCount 5 · backoff 30 s → 30 min</code></td><td data-background="#FFEBE6"></td></tr>
 <tr><td data-background="#FFEBE6"><strong>4</strong></td><td data-background="#FFEBE6"><strong>Kept, not lost</strong></td><td data-background="#FFEBE6">After the fifth try it moves to the dead-letter queue, kept 14 days, with a copy in the lake for good.</td><td data-background="#FFEBE6"><code>work-dlq · s3://…-lake/raw/dlq/</code></td><td data-background="#FFEBE6"></td></tr>
-<tr><td data-background="#FFEBE6"><strong>5</strong></td><td data-background="#FFEBE6"><strong>The admin hears at once</strong></td><td data-background="#FFEBE6">The alarm fires the moment a dead-letter queue holds anything: email through SNS, and from phase 1 a message in the owner&#x27;s chat.</td><td data-background="#FFEBE6"><code>alarm: work-dlq depth &gt; 0 → mypaisa-prod-admin-alerts</code></td><td data-background="#FFEBE6"></td></tr>
-<tr><td><strong>6</strong></td><td><strong>Replay</strong></td><td>Phase 1: scripts/redrive.sh. Phase 8: a Replay button behind the second check. Phase 18: the ops warden replays on its own once the API is healthy, at most three times.</td><td><code>redrive work-dlq → work · a new trace, linked by span link</code></td><td></td></tr>
+<tr><td data-background="#FFEBE6"><strong>5</strong></td><td data-background="#FFEBE6"><strong>The admin hears at once</strong></td><td data-background="#FFEBE6">The alarm fires the moment a dead-letter queue holds anything: email through SNS, and from phase 1 a message in the admins&#x27; chat.</td><td data-background="#FFEBE6"><code>alarm: work-dlq depth &gt; 0 → mypaisa-prod-admin-alerts</code></td><td data-background="#FFEBE6"></td></tr>
+<tr><td><strong>6</strong></td><td><strong>Replay</strong></td><td>Phase 1: scripts/redrive.sh. Phase 8: a Replay button behind the second check. Phase 13: the ops warden replays on its own once the API is healthy, at most three times.</td><td><code>redrive work-dlq → work · a new trace, linked by span link</code></td><td></td></tr>
 <tr><td><strong>7</strong></td><td><strong>It succeeds, once</strong></td><td>Handlers are idempotent, keyed by the job id and date, so a replay never does anything twice.</td><td><code>Powertools idempotency · job_id + date</code></td><td><span data-type="status" data-color="green">Haiku 5.5</span></td></tr>
 <tr><td><strong>8</strong></td><td><strong>The review card arrives</strong></td><td>Every line by category, the uncertain ones in amber, transfers and EMIs recognised by code, one Confirm.</td><td><code>card: statement.review</code></td><td></td></tr>
 </tbody>

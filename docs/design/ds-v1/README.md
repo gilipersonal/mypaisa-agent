@@ -3,8 +3,8 @@
 **Status: in force.** Arun picked direction 1a, Warm ledger, on 24 Oct 2026 (MA-101). Every MyPaisa screen is
 designed in this system from now on; 1b Native clarity and 1c Pot wall stay on the directions page as the record.
 
-The design system for MyPaisa: a household investment app, a chat and a dashboard in one, native on iPhone and
-iPad (MA-161), with the dashboard and the Admin center read-only on the web as a PWA. Monzo's warmth on Apple's
+The design system for MyPaisa: a household wealth tracker, a chat and a dashboard in one, native on iPhone and
+iPad (MA-161) and in the web app, a PWA. Monzo's warmth on Apple's
 Human Interface Guidelines bones, with Liquid Glass as the layer of controls in the app. The repo keeps a copy of
 `tokens.css` and the review record in `docs/design/reviews/MA-101/`.
 
@@ -12,7 +12,7 @@ Human Interface Guidelines bones, with Liquid Glass as the layer of controls in 
 
 | File | What |
 | --- | --- |
-| `tokens.css` | The single source: colour tokens (light and dark), type scale, spacing, radii, motion, component classes, fixed encodings (pillars, currencies, asset mix, meters, privacy masks), the chart pattern, the adaptive layout |
+| `tokens.css` | The single source: colour tokens (light and dark), type scale, spacing, radii, motion, component classes, fixed encodings (currencies, asset mix, meters, privacy masks; the stance and pillar tokens left from before MA-307 are not used for any call), the chart pattern, the adaptive layout |
 | `ios.css` | The iOS layer over `tokens.css` (MA-161): Liquid Glass (`.lg`, the tinted `.lg-tint`, Reduce Transparency's `.rt`), the device frames, navigation and large titles, the tab bar and sidebar, the chat and its cards, the composer, sheets, menus and alerts, the lock screen and notifications, the app icon, and the canvas furniture the iOS boards share |
 | `motion.css`, `motion.js` | The motion system as the boards draw it (MA-182): the curves, durations and stagger, each frame's arrival as it scrolls into view, figures rolling to their value, the sliding lens, a replay chip per frame; `?static=1` for still captures |
 | `MyPaisa DS v1.dc.html` | The three directions compared; 1a picked |
@@ -35,8 +35,8 @@ The web app's browser boards live in MyPaisa app v1 (`docs/design/app-v1/`); the
 3. In the app's boards, link `ios.css` after `tokens.css` and draw each screen in a `.dev` frame: glass (`.lg`)
    only on the controls, the content solid. The app lays itself out by size class: the glass tab bar when compact,
    the sidebar when regular, the chat beside every screen when wide. The iOS kit shows every part.
-4. Use the classes, not new colours: `.mp-hero`, `.mp-card`, `.mp-group` + `.mp-row`, `.mp-chip` + a stance
-   (`.mp-add` `.mp-hold` `.mp-pause` `.mp-trim` `.mp-reb` `.mp-watch`), `.mp-btn` variants, `.mp-seg`, `.mp-tabbar`,
+4. Use the classes, not new colours: `.mp-hero`, `.mp-card`, `.mp-group` + `.mp-row`, `.mp-chip` (never as a
+   stance or a buy, hold or sell call: MA-307 retired them), `.mp-btn` variants, `.mp-seg`, `.mp-tabbar`,
    `.mp-side`, `.mp-sheet`, `.mp-mask`, `.mp-track`. Text-only meaning colours: `.mp-up`, `.mp-dq`, `.c-add` … `.c-alert`.
 5. Charts: the SVG draws lines and areas only; dots, labels and axis ticks are HTML over it (`.mp-chartbox`,
    `.mp-chartdot`, `.mp-chartlbl`, `.mp-chartaxis`). Never a template value inside SVG `<text>`.
@@ -47,11 +47,12 @@ The web app's browser boards live in MyPaisa app v1 (`docs/design/app-v1/`); the
 
 ## Rules that hold everywhere
 
-- Read-only web; every change is a card and a Confirm tap in the chat. The one exception (MA-102): the owner's
-  security actions in the Admin center, behind a fresh check.
+- Only admins write. Adding and deleting happen only in the chat: a card and a Confirm tap, and the second check
+  for a delete (MA-309). An admin may also correct an existing figure in place on a screen. Every other member
+  views only (MA-308). The owner's security actions in the Admin center sit behind a fresh check (MA-102).
 - Summary first; the detail one tap away.
-- Every figure comes from the engine, never from the model.
-- MyPaisa never offers to trade. Stances are "a view, not advice".
+- Every figure comes from code, never from the model.
+- MyPaisa never offers to trade and never predicts a market: no stance and no buy, hold or sell call (MA-307).
 - Privacy mode hides pounds, keeps percentages.
 - Green means good: gains with ▲ and status-OK marks. Falls are quiet ink with ▼. Red only for alerts that ask
   for action. Never green for a category, a progress bar or a meter.

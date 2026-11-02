@@ -24,7 +24,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-99'][0]; sys.exit(0 if not any(q.startswith('EODHD Fundamentals'+chr(39)+' price') for q in r.get('open',[])) and 'Settled: EODHD Fundamentals'+chr(39)+' price' in r['notes'] and '59.99' in r['notes'] else 1)\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
   },
   {
     "id": "r1-B4",
@@ -32,8 +33,9 @@
     "finding": "the open questions of MA-57, MA-99 and MA-102 are on their Jira stories (rule 6)",
     "check": {
       "type": "manual",
-      "what": "Jira comments: MA-102 (sign-in after a pause, AdminDisableUser), MA-99 (settled at 59.99), MA-57 and MA-59 (stance gate settled by 11, boards annotated)"
-    }
+      "what": "Jira comments: MA-102 (sign-in after a pause, AdminDisableUser)"
+    },
+    "updated": "MA-307, 2 Nov 2026: MA-99 and MA-57 are retired and MA-59's stance gate went with the stances (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"); the verifier now reads MA-102's comment only"
   },
   {
     "id": "r1-B5",

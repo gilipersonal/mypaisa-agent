@@ -464,7 +464,7 @@
           ];
           const axis = [['Today', 0, 'ax0'], ['2031', 25, ''], ['2036', 50, ''], ['2041', 75, ''], ['2046', 100, 'ax1']].map((a) => ({ l: a[0], left: pc(a[1]), c: a[2] }));
           const FOOT_ADMIN = 'Tap a plan to correct its figures, pause it or end it. Nothing is added here: a new plan starts in the chat.';
-          const FOOT_MEMBER = 'Plans are Arun’s, the admin’s: you see them here, without pencils. Ask in the chat about any of them, or try a what-if.';
+          const FOOT_MEMBER = 'Plans are kept by the admins: you see them here, without pencils. Ask in the chat about any of them, or try a what-if.';
           const H1 = 'Plan item added · v1 · his words “£4,000 a month from Jan 2029 for my kid’s schooling” · Arun · Thu 5 Nov 20:43 · in the chat · run Thu 5 Nov 09:13 → 20:43: 2046 middle path £3,897,000 → £2,580,000';
           const H2 = 'Covered by the school fees pot · Arun · Thu 5 Nov 20:46 · in the chat';
           const H3 = 'Plan item corrected · ends Jul 2041 → Jul 2040 · v1 → v2 · Arun · Thu 5 Nov 21:11 · in place · run 21:09 → 21:11: 2046 middle path £2,923,000 → £3,037,000';
@@ -503,7 +503,7 @@
             return f;
           };
           const ENDED = [{ i: 'directions_car', name: 'Replace the car', endsub: '−£25,000 once, Jun 2031 · ended by Arun, Thu 5 Nov 21:13' }];
-          const ADMIN_HEAD = '7 plans · yours alone, as the admin';
+          const ADMIN_HEAD = '7 plans · kept by the admins';
           const st = {
             priv: { clock: '21:06', run: 'R4', head: ADMIN_HEAD, priv: true, meet: true },
             menu: { clock: '21:08', run: 'R4', head: ADMIN_HEAD, rowo: { sel: 'car', menu: 'car' } },
@@ -515,7 +515,7 @@
             saved: { clock: '21:11', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'fees2' }, sh: feesSheet('saved') },
             confirm: { clock: '21:13', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'car' },
               cf: { title: 'End Replace the car?', body: 'It stops counting from now, and the Projection runs again without it. It stays in its history and in Audit; a new plan starts in the chat.', label: 'A word for the audit (optional)', typed: 'we’re keeping the car' } },
-            ended: { clock: '21:13', run: 'R7', meta: 'Six plans, Arun’s, and one ended · the engine’s run of Thu 5 Nov 21:13', head: '6 plans · yours alone, as the admin', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
+            ended: { clock: '21:13', run: 'R7', meta: 'Six plans, Arun’s, and one ended · the engine’s run of Thu 5 Nov 21:13', head: '6 plans · kept by the admins', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
               banner: { c: 'ok-neutral', i: 'event_busy', t: 'Ended. The Projection runs again without it.', audit: 'Audit · Plan item ended · Replace the car · v3 → v4 · his words “we’re keeping the car” · Arun · Thu 5 Nov 21:13 · in place · run 21:11 → 21:13: 2046 middle path £3,037,000 → £3,091,000' } },
             asha: { who: ASHA, clock: '21:19', run: 'W', head: '7 plans · Arun’s, the admin’s', ids: ['pot', 'bonus', 'wed', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
               note: { h: 'Cash runs short', s: 'from the engine, run of 21:18', t: 'The wedding in Mar 2027 and the extension in Jun 2027 take cash £19,871 below zero that June; it is back above zero in Mar 2028. Ask in the chat to see the ways to cover it; applying one is Arun’s.' } }

@@ -13,12 +13,12 @@
         "docs/trace.json",
         "docs/TRACE.md",
         "docs/design/README.md",
-        "docs/design/agent-journey.html",
-        "docs/design/market-agent.html"
+        "docs/design/agent-journey.html"
       ],
       "pattern": "BotFather|/telegram/webhook|/auth/telegram|initData|Login Widget",
       "present": false
-    }
+    },
+    "updated": "MA-307, 2 Nov 2026: docs/design/market-agent.html was deleted; the other records still carry the guard"
   },
   {
     "id": "o2",
@@ -27,10 +27,11 @@
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "### 9\\.4 The web app: the dashboard and the Admin center in a browser\\n(?:(?!\\n### )[\\s\\S])*?installable as a\\s+Progressive Web App(?:(?!\\n### )[\\s\\S])*?\\*\\*The chat\\*\\*",
+      "pattern": "### 8\\.4 The web app: the dashboard and the Admin center in a browser\\n(?:(?!\\n### )[\\s\\S])*?installable as a\\s+Progressive Web App(?:(?!\\n### )[\\s\\S])*?\\*\\*The chat\\*\\*",
       "present": true
     },
-    "amended": "MA-186, 26 Oct 2026: superseded only 'read-only, with no chat'; the PWA, the dashboard and the Admin center in a browser stay, and the check now also needs the chat in 9.4"
+    "amended": "MA-186, 26 Oct 2026: superseded only 'read-only, with no chat'; the PWA, the dashboard and the Admin center in a browser stay, and the check now also needs the chat in 9.4",
+    "updated": "MA-307, 2 Nov 2026: ARCHITECTURE's §9.4 (the web app) is now §8.4"
   },
   {
     "id": "o3",
@@ -143,9 +144,10 @@
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "import's Confirm and rolling an import back \\(§18\\.5, §22\\.2\\), leaving the\\s+household \\(MA-172\\), approving a new kind \\(`propose_kind`, §4\\.8; Arun, 26 Oct\\s+2026, MA-197: a kind changes what every member can register\\), and nothing else"
+      "pattern": "import's Confirm and rolling an import back \\(§17\\.5, §20\\.2\\), deleting a record\\s+and restoring one \\(MA-309, §4\\.10\\), granting or taking back the admin role\\s+\\(MA-308\\), leaving the\\s+household \\(MA-172\\), approving a new kind \\(`propose_kind`, §4\\.8; Arun, 26 Oct\\s+2026, MA-197: a kind changes what every member can register\\), and nothing else"
     },
-    "amended": "MA-227, 26 Oct 2026: Arun settled MA-197's question (approving a new kind needs the second check), so the closed list gains that item and stays closed"
+    "amended": "MA-227, 26 Oct 2026: Arun settled MA-197's question (approving a new kind needs the second check), so the closed list gains that item and stays closed",
+    "updated": "MA-307, 2 Nov 2026: §18.5 and §22.2 are now §17.5 and §20.2; the closed list gains deleting and restoring a record (MA-309) and granting or taking back the admin role (MA-308), Arun's decisions that day: Arun, 2 Nov 2026 (MA-307, MA-308): \"Only admins can do all these. Others users can view only.\"; and his answer the same day (docs/design/reviews/MA-307/decision.md): \"Several. The owner grants or takes back the admin role through the chat ... Admins add, correct and delete; every other member views only\"; and \"Even Deletion will have to go throw AI chat\". The list stays closed"
   },
   {
     "id": "r1-b2-jira",
@@ -264,14 +266,14 @@
         "TECH_STACK.md",
         "PLAN.md",
         "docs/design/agent-journey.html",
-        "docs/design/market-agent.html",
         "docs/design/lucid/gen_aws_architecture.py",
         "docs/design/lucid/aws-architecture.lucid.json",
         "docs/design/reviews/MA-161/decision.md"
       ],
       "pattern": "auth(-dev)?\\.mypaisapp\\.com",
       "present": false
-    }
+    },
+    "updated": "MA-307, 2 Nov 2026: docs/design/market-agent.html was deleted; the other records still carry the guard"
   },
   {
     "id": "r1-c4",
@@ -371,12 +373,18 @@
   {
     "id": "r1-e10",
     "round": 1,
-    "finding": "The iPad Audit, Activity, Overlap and Scorecard boards are on MA-71 and MA-70",
+    "finding": "The iPad Audit, Activity, Overlap and Scorecard boards are on MA-71 and MA-70; since MA-307, the Audit and Activity boards on MA-71",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ({'iPad · Wide · Forecaster Proof & Admin','Foldable · Open 880 pt · Audit & Chat sheet'} <= {b['board'] for b in t['MA-71']['boards']} and 'iPad · Wide · Home, Register & Overlap' in {b['board'] for b in t['MA-70']['boards']}) else 1)\""
+      "argv": [
+        "python3",
+        "-I",
+        "-c",
+        "import json, sys\nt = {i['key']: i for i in json.load(open('docs/trace.json'))['items']}\nhave = {b['board'] for b in t['MA-71']['boards']}\nwant = {'iPad · Wide · Returns & Admin', 'Foldable · Open 880 pt · Audit & Chat sheet'}\nsys.exit('MA-71 lacks ' + ', '.join(sorted(want - have)) if want - have else 0)\n"
+      ]
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "updated": "MA-307, 2 Nov 2026: Overlap and Scorecard (MA-78, on MA-70) are retired (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"), so that part goes (lesson 45); 'iPad · Wide · Forecaster Proof & Admin' is now 'iPad · Wide · Returns & Admin'"
   },
   {
     "id": "r1-e11",
@@ -385,7 +393,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if ((any('Open chat' in x for x in t['MA-183'].get('undrawn',[])) or 'Drawn: Browser · Overview' in t['MA-183'].get('notes','')) and (any('Telegram Desktop' in x for x in t['MA-183'].get('undrawn',[])) or 'Drawn: Responsive' in t['MA-183'].get('notes',''))) else 1)\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
   },
   {
     "id": "r1-d1",
@@ -695,12 +704,13 @@
   {
     "id": "r2-c4",
     "round": 2,
-    "finding": "The second check covers the owner's admin actions from the Admin center or the admin's chat",
+    "finding": "The second check covers the owner's admin actions from the Admin center or the admin's chat; since MA-307, any admin's, from the Admin center or an admin's chat",
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "the owner's admin actions \\(§9\\.3\\), from the Admin\\s+center or the admin's chat \\(§20\\.3\\)"
-    }
+      "pattern": "the admin actions \\(§8\\.3\\), from the Admin\\s+center or an admin's chat \\(§18\\.3\\)"
+    },
+    "updated": "MA-307, 2 Nov 2026: the admin actions are no longer the owner's alone (Arun, 2 Nov 2026 (MA-307, MA-308): \"Only admins can do all these. Others users can view only.\"; and his answer the same day (docs/design/reviews/MA-307/decision.md): \"Several. The owner grants or takes back the admin role through the chat ... Admins add, correct and delete; every other member views only\"); §9.3 and §20.3 are now §8.3 and §18.3"
   },
   {
     "id": "r2-c5",
@@ -714,14 +724,14 @@
         "README.md",
         "TECH_STACK.md",
         "docs/design/agent-journey.html",
-        "docs/design/market-agent.html",
         "docs/design/reviews/MA-161/decision.md",
         "docs/design/lucid/gen_aws_architecture.py"
       ],
       "pattern": "(?:Sign in with Apple(?:</b>)?(?: again)?(?: under Face ID)?,? or (?:a |the )?(?:<b>)?passkey(?:</b>)?(?: under Face ID)?(?![^.;]*Google))|second check is a fresh assertion under Face ID",
       "present": false,
       "ignore_case": true
-    }
+    },
+    "updated": "MA-307, 2 Nov 2026: docs/design/market-agent.html was deleted; the other records still carry the guard"
   },
   {
     "id": "r2-d1",
@@ -765,8 +775,14 @@
     "finding": "The web boards' redraw to the iOS household and ledger is listed on MA-183 and MA-149, or drawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (all(any(x.startswith(\\\"the browser boards (Browser, Audit and files) redrawn\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: the browser boards (Browser, Audit and files) redrawn\\\" in t[k].get('notes','') for k in (\\\"MA-183\\\", \\\"MA-149\\\", \\\"MA-184\\\", \\\"MA-84\\\")) and (any(\\\"Browser 2's Audit and Activity\\\" in x for x in t['MA-184'].get('undrawn',[])) or \\\"Drawn: the browser boards (Browser, Audit and files) redrawn\\\" in t['MA-184'].get('notes',''))) else 1)\""
-    }
+      "argv": [
+        "python3",
+        "-I",
+        "-c",
+        "import json, sys\nt = {i['key']: i for i in json.load(open('docs/trace.json'))['items']}\nneed = 'the browser boards (Browser, Audit and files) redrawn'\nok = lambda k: any(x.startswith(need) for x in t[k].get('undrawn', [])) or 'Drawn: ' + need in t[k].get('notes', '')\nbad = [k for k in ('MA-149', 'MA-184') if not ok(k)]\nif not (any(\"Browser 2's Audit and Activity\" in x for x in t['MA-184'].get('undrawn', [])) or 'Drawn: ' + need in t['MA-184'].get('notes', '')):\n    bad.append(\"MA-184 (Browser 2's Audit and Activity)\")\nsys.exit('neither listed nor drawn: ' + ', '.join(bad) if bad else 0)\n"
+      ]
+    },
+    "updated": "MA-307, 2 Nov 2026: MA-183 (a holding's market view) and MA-84 (/scorecard) are retired (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"); the check keeps MA-149 and MA-184"
   },
   {
     "id": "r2-e3",
@@ -807,8 +823,14 @@
     "finding": "Foldable · Open, Audit is listed to redraw to the width rule on MA-71, and MA-78 and MA-163 say the rule wins until both foldable boards are redrawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; t={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; sys.exit(0 if (all(any(x.startswith(\\\"Foldable · Open, Audit redrawn to the width rule\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: Foldable · Open, Audit redrawn to the width rule\\\" in t[k].get('notes','') for k in (\\\"MA-71\\\",)) and all(any(x.startswith(\\\"the iPad and foldable boards follow the width rule\\\") for x in t[k].get('undrawn',[])) or \\\"Drawn: the iPad and foldable boards follow the width rule\\\" in t[k].get('notes','') for k in (\\\"MA-78\\\", \\\"MA-163\\\", \\\"MA-79\\\")) and all('Foldable · Folded' in x for k in ('MA-78','MA-163','MA-79') for x in t[k].get('undrawn',[]) if x.startswith('the iPad and foldable boards follow the width rule'))) else 1)\""
-    }
+      "argv": [
+        "python3",
+        "-I",
+        "-c",
+        "import json, sys\nt = {i['key']: i for i in json.load(open('docs/trace.json'))['items']}\na, b = 'Foldable · Open, Audit redrawn to the width rule', 'the iPad and foldable boards follow the width rule'\nok = lambda k, s: any(x.startswith(s) for x in t[k].get('undrawn', [])) or 'Drawn: ' + s in t[k].get('notes', '')\nbad = [k for k in ('MA-71',) if not ok(k, a)] + [k for k in ('MA-163', 'MA-79') if not ok(k, b)]\nbad += [k for k in ('MA-163', 'MA-79') for x in t[k].get('undrawn', []) if x.startswith(b) and 'Foldable · Folded' not in x]\nsys.exit('neither listed nor drawn: ' + ', '.join(bad) if bad else 0)\n"
+      ]
+    },
+    "updated": "MA-307, 2 Nov 2026: MA-78 (Overlap and Scorecard) is retired (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"); the check keeps MA-71, MA-163 and MA-79"
   },
   {
     "id": "r3-b8",

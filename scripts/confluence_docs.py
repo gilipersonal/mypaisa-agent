@@ -50,7 +50,6 @@ ARTIFACTS = {
     "Inside MyPaisa": "https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5",
     "MyPaisa Architecture v4": "https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9",
     "MyPaisa Agent Journey": "https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7",
-    "MyPaisa Market Agent": "https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb",
     "MyPaisa Guardrails and Evals": "https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT",
 }
 GUARDRAILS_GIFS = [  # (gif in docs/design/guardrails-evals, tab title, caption): the explainer's diagrams, animated (MA-258)
@@ -96,14 +95,13 @@ ARGOS_GIFS = [  # (gif in docs/design/argos-visual-a11y, tab title, caption): th
 ]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
     ("01-overview.png", "System overview", "4ae817c6-847f-45f8-a10c-4509971c9c09", "§3"),
-    ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§18"),
+    ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§17"),
     ("03-identity.png", "Identity and sign-in", "c23040ec-b253-47e2-a614-612dab962292", "§4.5"),
-    ("04-queues.png", "Queues, retries and replay", "ddc9bde5-18d4-468b-af6e-c1f86d7d7647", "§21"),
-    ("05-data.png", "Where the data lives", "674e3574-9c79-403c-9157-72769a8d5fce", "§20.6"),
-    ("06-market-agent.png", "The market agent and the learning loop", "6f1b4c75-353c-49e5-b6e7-29fd2c18d356", "§19, §22"),
-    ("07-agents-caps.png", "The agent team, settings, caps and alerts", "3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4", "§15.2, §20"),
+    ("04-queues.png", "Queues, retries and replay", "ddc9bde5-18d4-468b-af6e-c1f86d7d7647", "§19"),
+    ("05-data.png", "Where the data lives", "674e3574-9c79-403c-9157-72769a8d5fce", "§18.5"),
+    ("07-agents-caps.png", "The agent team, settings, caps and alerts", "3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4", "§14.2, §18"),
     ("08-add-holding-sequence.png", "Adding a record (sequence)", "b50d49fd-c941-44a0-b623-7d3e99b57fd8", "§4.2, §4.10"),
-    ("09-observability.png", "One trace from the door to the model", "3692ebe8-3794-4ff5-9658-83a8da565dfb", "§10"),
+    ("09-observability.png", "One trace from the door to the model", "3692ebe8-3794-4ff5-9658-83a8da565dfb", "§9"),
 ]
 # The screen areas, each a page; every board file a story cites belongs to exactly one.
 AREAS = [
@@ -114,10 +112,10 @@ AREAS = [
       "iPhone v4 · Chat and guided flows.dc.html", "iPhone v4 · Sign-in and invite.dc.html",
       "iPhone v4 · You and settings.dc.html", "iPad v4 · Adaptive shell and foldable.dc.html"]),
     ("home", "Home and the dashboard",
-     "Net worth first, across the UK and India: the Overview in the browser, Home on iPhone and iPad, the consolidated 1a whole-wealth options and market/India views across every door (MA-279), and the livelier chart options (MA-295).",
+     "Net worth first, across the UK and India: the Overview in the browser, Home on iPhone and iPad, the consolidated 1a whole-wealth options and the holdings and India views across every door (MA-279), and the livelier chart options (MA-295).",
      ["Web v4 · Dashboard.dc.html", "iPhone v4 · Home.dc.html",
       "Web v4 · Consolidated options.dc.html", "iPhone v4 · Consolidated options.dc.html",
-      "Web v4 · Market, holdings and India.dc.html", "iPhone v4 · Market, holdings and India.dc.html",
+      "Web v4 · Holdings and India.dc.html", "iPhone v4 · Holdings and India.dc.html",
       "Web v4 · Chart options.dc.html", "iPhone v4 · Chart options.dc.html"]),
     ("register", "Registering and check-ins",
      "Anything new is created in the chat: a sentence, a screenshot or a statement, the questions only for what is missing, a Confirm card and the audit row. Check-ins ask when a payment, a maturity or a valuation is due, and one tap records it.",
@@ -129,20 +127,19 @@ AREAS = [
     ("budget", "Budget and statements",
      "Each member's income, a plan per category, plan against actual, statements read and categorised, and the month closed on the 1st.",
      ["Web v4 · Budget.dc.html", "iPhone v4 · Budget.dc.html"]),
-    ("projection", "Projection, Budget forecast and the stock Forecaster",
-     "The Projection of the household's net worth over the years (the fan, its milestones and the editable assumptions), its Plans and Budget forecast tabs, a plan made in the admin's chat with the budget rearranged on Confirm (MA-264's options, Arun's picks 1a, 2a and 3a, and their states), and the Forecaster's view of a holding on the market side across web and iOS (Arun picked 1a, MA-281 and MA-279) with the chat's card and the proof page.",
+    ("projection", "Projection and the Budget forecast",
+     "The Projection of the household's net worth over the years (the fan, its milestones and the editable assumptions), its Plans and Budget forecast tabs, a plan made in the admin's chat with the budget rearranged on Confirm (MA-264's options, Arun's picks 1a, 2a and 3a, and their states).",
      ["Web v4 · Projection.dc.html", "iPhone v4 · Projection.dc.html", "Web v4 · Budget forecast.dc.html",
       "iPhone v4 · Budget forecast.dc.html", "Web v4 · Plans in the chat.dc.html", "iPhone v4 · Plans in the chat.dc.html",
       "Web v4 · Plans tab.dc.html", "iPhone v4 · Plans tab.dc.html", "Web v4 · Budget forecast 1a states.dc.html",
       "iPhone v4 · Budget forecast 1a states.dc.html", "Web v4 · Plans in the chat 2a states.dc.html",
       "iPhone v4 · Plans in the chat 2a states.dc.html", "Web v4 · Plans tab 3a states.dc.html",
-      "iPhone v4 · Plans tab 3a states.dc.html", "Web v4 · Forecast.dc.html", "iPhone v4 · Forecast.dc.html",
-      "iPhone v4 · Forecaster proof and chat.dc.html"]),
+      "iPhone v4 · Plans tab 3a states.dc.html"]),
     ("audit", "Activity, Audit and files",
      "What the agent did and what it cost, every change with who and when, and the file behind it.",
      ["iPhone v4 · Audit, activity and files.dc.html", "Web v4 · Audit, activity and files.dc.html"]),
     ("admin", "The Admin center",
-     "The owner's controls, behind the second check: people and their devices, the Claude and AWS caps, alerts and replay.",
+     "The admins' controls, behind the second check: people, their roles and their devices, the Claude and AWS caps, alerts and replay.",
      ["Web v4 · Admin center.dc.html", "iPhone v4 · Admin center.dc.html"]),
     ("system", "The design system, the mark and the iOS kit",
      "Warm ledger (MA-101): the tokens, the components, the chart style and its three redesign options (MA-295), the mark (MA-103), the iOS kit on Liquid Glass (MA-161) and the options for a colourful icon for each kind of holding, asset and debt (MA-241).",
@@ -243,7 +240,7 @@ def arch_sections() -> dict[str, str]:
     return out
 
 
-GUARDRAILS = ("23", "Guardrails and evals")  # the ARCHITECTURE section the guardrails page shows, and its title (MA-245)
+GUARDRAILS = ("21", "Guardrails and evals")  # the ARCHITECTURE section the guardrails page shows, and its title (MA-245)
 
 
 def arch_text(num: str) -> tuple[str, str]:
@@ -455,7 +452,7 @@ def pages(ctx: Ctx) -> list[tuple[str, str, str | None]]:
     """Every page: (slug, title, parent slug), parents first."""
     out = [("home", "mypaisaa-agent", None),
            ("hub", "MyPaisa: the build plan", "home"),
-           ("roadmap", "Roadmap: the journey from phase 0 to phase 20", "hub"),
+           ("roadmap", "Roadmap: the journey from phase 0 to phase 15", "hub"),
            ("phases", "The phases, one page each", "hub")]
     out += [(phase_slug(p["phase"]), f"Phase {p['phase']} · {p['title']}", "phases") for p in ctx.phases]
     out.append(("screens", "Screens, area by area", "hub"))
@@ -607,10 +604,10 @@ def app_prompt(ctx: Ctx, name: str) -> str:
             prev = p["phase"]
         miles = "\n".join(f"- {ctx.schedule[str(n)]['end']}: {what}" for n, what in (
             (0, "Empty shells at every door"), (2, "The first record, moving live"), (4, "Debts kept by check-ins"),
-            (7, "The Projection"), (9, "The whole wealth on prod; the old tracker retired"), (15, "Stances go live"), (20, "The app beyond the chat")))
+            (7, "The Projection"), (9, "The whole wealth on prod; the old tracker retired"), (13, "The agent team"), (15, "The app beyond the chat")))
         return ("Make an interactive Gantt chart of MyPaisa's build roadmap. Do not show any visible title on the app or the chart.\n"
                 "One task per phase, in this order, with exactly these labels, dates and groups; each phase starts after the one before it ends. "
-                "Colour the bars by group (three groups: Foundations and talk, The whole wealth, The market side) with a legend. On hover, show the epic "
+                "Colour the bars by group (three groups: Foundations and talk, The whole wealth, The agents and beyond) with a legend. On hover, show the epic "
                 "key, the build days and the dates. Keep the axis in months.\n" + "\n".join(lines) +
                 "\nMilestones (diamonds on their date, with these labels):\n" + miles +
                 "\nPhase 16 (New kinds of holding) is built on demand and has no dates; leave it out.")
@@ -705,9 +702,9 @@ def explorer_link(ctx: Ctx) -> str:
 GROUPS = [  # (phases, name, panel colour, cell colour, emoji shortname)
     (range(0, 2), "Foundations and talk", "#EAE6FF", "#EAE6FF", ":bricks:"),
     (range(2, 10), "The whole wealth", "#E3FCEF", "#E3FCEF", ":moneybag:"),
-    (range(10, 21), "The market side", "#DEEBFF", "#DEEBFF", ":chart_with_upwards_trend:"),
+    (range(10, 16), "The agents and beyond", "#DEEBFF", "#DEEBFF", ":robot:"),
 ]
-PHASE_EMOJI = ["🧱", "💬", "🗂️", "🏦", "🧾", "📈", "🧮", "🔭", "🛡️", "🏠", "⚙️", "📰", "❓", "🎯", "🗞️", "🚦", "🧩", "🔮", "🤖", "🇮🇳", "📱"]
+PHASE_EMOJI = ["🧱", "💬", "🗂️", "🏦", "🧾", "📈", "🧮", "🔭", "🛡️", "🏠", "🔔", "❓", "🧩", "🤖", "🇮🇳", "📱"]
 STATUS_CELL = {"Done": "#E3FCEF", "In Review": "#DEEBFF", "In Progress": "#FFFAE6"}
 DESIGN_CELL = {"picked": "#E3FCEF", "planned": "#DEEBFF", "todo": "#FFEBE6"}
 
@@ -826,7 +823,8 @@ def render_hub(ctx: Ctx) -> str:
     out = [
         cpanel("#DEEBFF", ":house:", "<p><strong>MyPaisa</strong> keeps one household's whole wealth across the UK and India, registered and kept "
                "through a chat, with no forms: what the family owns and owes, each member's income and spending, a Projection of where it is "
-               "heading, and later a market agent for the investments. Every phase ships at both doors at once: the web app (a SvelteKit 3 "
+               "heading from the household's actual numbers (XIRR and CAGR), and a team of agents that keeps it all current. Only admins write, "
+               "through the chat; every other member views. MyPaisa gives no buy, sell or hold calls and never predicts a market (MA-307). Every phase ships at both doors at once: the web app (a SvelteKit 3 "
                "PWA at dashboard.mypaisapp.com, desktop and phone) and the iOS app (a React Native shell with a native SwiftUI core, iPhone "
                "and iPad).</p>"),
         '<section data-type="layout-three-equal">'
@@ -850,7 +848,7 @@ def render_hub(ctx: Ctx) -> str:
         '<section data-type="layout-three-equal">'
         + "".join(f'<div data-type="column">{cpanel(c, i, f"<h3>{ctx.link(sl, t)}</h3><p>{esc(d)}</p>")}</div>' for sl, t, d, c, i in (
             ("decisions", "Design decisions", "Every design round: the question, the options drawn, the pick and why.", "#FFEBE6", ":dart:"),
-            ("explainers", "Explainers", "The Inside MyPaisa, Architecture v4, Agent Journey, Market Agent and Guardrails and Evals pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
+            ("explainers", "Explainers", "The Inside MyPaisa, Architecture v4, Agent Journey and Guardrails and Evals pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
             ("sync", "Staying in step", "How this space, Jira, the boards, the plan and the code are kept the same.", "#F4F5F7", ":link:")))
         + "</section>",
         cpanel("#E3FCEF", ":shield:", f"<h3>{ctx.link('guardrails', 'Guardrails and evals')}</h3><p>How every agent is guarded in code, "
@@ -860,14 +858,14 @@ def render_hub(ctx: Ctx) -> str:
                "single-table DynamoDB versus DocumentDB; the agent framework comparison) and end-to-end tracing and LLM observability with monthly costing (MA-265, MA-266).</p>"),
         cpanel("#FFFAE6", ":rocket:", f"<h3>{ctx.link('cicd', 'CI/CD, vulnerability scanning, smoke and regression architecture')}</h3><p>"
                "The GitHub Actions + AWS CodeBuild arm64 + ECR delivery pipeline for dev and prod, the seven-layer vulnerability scanning gate, the "
-               "phase-progressive smoke runner with &lt;5s auto-rollback, the five-layer regression pyramid across Phases 0 to 20, and the £0/month Option D runner cost model (MA-267 to MA-272).</p>"),
+               "phase-progressive smoke runner with &lt;5s auto-rollback, the five-layer regression pyramid across Phases 0 to 15, and the £0/month Option D runner cost model (MA-267 to MA-272).</p>"),
         cpanel("#EAE6FF", ":iphone:", f"<h3>{ctx.link('maestro', 'Local iOS and iPadOS Maestro testing and private TestFlight beta plan')}</h3><p>"
                "The local Apple Silicon Maestro architecture (cloned simulator pool with flock isolation from interactive MCP), the React Native 0.88 + SwiftUI "
-               "selector contract, the four-sub-band iOS and iPadOS adaptive matrix, the phase-by-phase rollout across Phases 0 to 20 at £0/month, and the "
+               "selector contract, the four-sub-band iOS and iPadOS adaptive matrix, the phase-by-phase rollout across Phases 0 to 15 at £0/month, and the "
                "100% private 90-day (3-month) evergreen TestFlight household beta plan (MA-167, MA-273, MA-274).</p>"),
         cpanel("#FFEBE6", ":lock:", f"<h3>{ctx.link('vpc', 'Optional AWS VPC enterprise lockdown, data perimeter and costing')}</h3><p>"
                "The optional end-of-roadmap seven-layer AWS VPC enterprise lockdown and three-way aws:SourceVpce Data Perimeter across dev and prod "
-               "(decided last after Phase 20, enable_vpc_lockdown = false by default), comparing Option 1 (£729.91/mo), Option 2A/2B (£149.01 and £70.39/mo) "
+               "(decided last after Phase 15, enable_vpc_lockdown = false by default), comparing Option 1 (£729.91/mo), Option 2A/2B (£149.01 and £70.39/mo) "
                "and Preferred Option 3 (+£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod, staying inside the £50/mo AWS cap; MA-283, MA-284).</p>"),
         cpanel("#E3FCEF", ":sparkles:", f"<h3>{ctx.link('argos', 'Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI')}</h3><p>"
                "How the built SvelteKit 3 (web/) app runs Playwright 1.64, fail-closed @axe-core/playwright 4.14 WCAG 2.2 AA and Argos CI (@argos-ci/playwright, "
@@ -903,7 +901,7 @@ def render_roadmap(ctx: Ctx) -> str:
     for n, what in ((0, "Empty shells at every door, with the seed household"), (1, "Talking to the agent at three doors, replies streaming"),
                     (2, "The first record registered by chat, moving live"), (4, "Debts kept current by check-ins"),
                     (7, "The Projection, with a what-if"), (9, "The whole wealth on prod; the old tracker retired"),
-                    (15, "Stances go live after the shadow weeks"), (20, "The app beyond the chat")):
+                    (13, "The agent team, running the household's records"), (15, "The app beyond the chat")):
         out.append(f'<li data-type="decision-item" data-state="DECIDED">{emoji(n)} {date(s.get(str(n), {}).get("end"))}: phase {n}, {esc(what)}</li>')
     out.append("</ul><h2>📅 Phase by phase</h2>"
                '<table data-layout="full-width"><thead><tr><th>Phase</th><th>Epic</th><th>Build days</th><th>Working days</th><th>Starts</th>'
@@ -922,7 +920,7 @@ def render_roadmap(ctx: Ctx) -> str:
                f"<li><strong>Buffer.</strong> Each phase adds {rm['buffer']:.0%} for review rounds, the demo and fixes.</li>"
                f"<li><strong>Side by side.</strong> The web app and the iOS app are built in parallel, so a phase's working days are its build days with the buffer, divided by {rm['parallel']:g}.</li>"
                "<li><strong>Days off.</strong> English bank holidays and a Christmas break each year.</li>"
-               f"<li><strong>Order.</strong> Build order from {date(rm['start'])}. Phase 15 waits for 8 weeks of shadow stances after phase 10; phase 16 is built when a new kind of holding is added.</li>"
+               f"<li><strong>Order.</strong> Build order from {date(rm['start'])}. Phase 12 is built when a new kind of holding is added.</li>"
                "<li><strong>Your tasks</strong> (label manual) run beside the build and are due before their phase starts.</li></ul>")
     manual = [i for i in ctx.items if "manual" in (i.get("labels") or []) and i.get("status") != "Done"]
     if manual:
@@ -1082,12 +1080,11 @@ def render_explainers(ctx: Ctx) -> str:
            f'<p>Kept in the repo as <a href="{gh("docs/design/inside-mypaisa.html")}">inside-mypaisa.html</a> (the whole architecture in plain words, MA-239), '
            f'<a href="{gh("docs/design/architecture-v4.html")}">architecture-v4.html</a> (the same architecture, technical and animated, MA-244), '
            f'<a href="{gh("docs/design/agent-journey.html")}">agent-journey.html</a>, '
-           f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a>, '
            f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258), '
            f'<a href="{gh("docs/design/tech-stack-observability.html")}">tech-stack-observability.html</a> (the implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks and end-to-end observability, MA-265; see {ctx.link("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability")}), '
            f'<a href="{gh("docs/design/cicd-security-regression.html")}">cicd-security-regression.html</a> (the CI/CD pipeline, seven-layer security gate, smoke suite, phase-wise regression pyramid and runner cost analysis, MA-267 to MA-272; see {ctx.link("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture")}), '
            f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}), '
-           f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">aws-vpc-enterprise-lockdown.html</a> (the optional seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing, decided last after Phase 20, MA-283, MA-284; see {ctx.link("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing")}) and '
+           f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">aws-vpc-enterprise-lockdown.html</a> (the optional seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing, decided last after Phase 15, MA-283, MA-284; see {ctx.link("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing")}) and '
            f'<a href="{gh("docs/design/argos-visual-a11y.html")}">argos-visual-a11y.html</a> (the SvelteKit 3 web visual regression, YAML ariaSnapshot diffing and fail-closed @axe-core/playwright WCAG 2.2 AA pipeline with Argos CI at £0/month, MA-194, MA-269; see {ctx.link("argos", "Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI")}); '
            'the first five are also published as Claude artifacts below, while the stack, CI/CD, Maestro, VPC and Argos CI explainers embed their animated block diagrams directly on their Confluence pages.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
@@ -1272,7 +1269,7 @@ def render_cicd(ctx: Ctx) -> str:
         cpanel("#FFFAE6", ":rocket:", '<p>Arun, 28 Oct 2026 (MA-267 to MA-272): the end-to-end GitHub Actions + AWS CodeBuild arm64 + ECR delivery '
                "pipeline for dev and prod, the seven-layer open-source vulnerability scanning gate, the phase-progressive smoke runner "
                "(<code>scripts/smoke.py</code>) with prod read-only safety and under-five-second Lambda <code>:live</code> alias rollback, the five-layer "
-               "regression pyramid (<code>scripts/regression.py</code>) across Phases 0 to 20, and the GitHub Actions versus AWS CodeBuild runner cost "
+               "regression pyramid (<code>scripts/regression.py</code>) across Phases 0 to 15, and the GitHub Actions versus AWS CodeBuild runner cost "
                "analysis showing how Option D stays at £0.00 a month inside both free tiers. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7 and '
                f'{arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
@@ -1310,7 +1307,7 @@ def render_maestro(ctx: Ctx) -> str:
                "with Maestro (<code>scripts/maestro_local.py</code>, five cloned simulators guarded by <code>flock</code> so automated runs never collide "
                "with interactive Maestro MCP sessions, one shared <code>mp.*</code> ID schema across Playwright and SwiftUI, four adaptive width sub-bands "
                "and live rotation across 1133 pt, <code>xcrun simctl</code> and host Local File Provider bridges for Face ID, APNs push, Universal Links, Photos images, PDFs/workbooks and AX5, and a "
-               "phase-by-phase rollout across Phases 0 to 20 at £0.00/month), together with the 100% private 90-day (3-month) evergreen TestFlight "
+               "phase-by-phase rollout across Phases 0 to 15 at £0.00/month), together with the 100% private 90-day (3-month) evergreen TestFlight "
                "household beta plan (<code>testFlightInternalTestingOnly = true</code>, least-privilege App Store Connect roles, silent overnight updates "
                "preserving Keychain and MMKV, and a day-60 keepalive rebuild). "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §8, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a> §2 and §4, and '
@@ -1349,12 +1346,12 @@ def render_vpc(ctx: Ctx) -> str:
     out = [
         cpanel("#FFEBE6", ":lock:", '<p>Arun, 29 Oct 2026 (MA-283, MA-284): optional end-of-roadmap AWS VPC enterprise lockdown and seven-layer '
                "data perimeter across dev and prod in <code>us-east-1</code> (<code>enable_vpc_lockdown = false</code> by default; serverless IAM/tag "
-               "isolation at £3.50/month stands across Phases 0 to 20, and whether to turn VPC lockdown on is <strong>decided last, after Phase 20</strong>). "
+               "isolation at £3.50/month stands across Phases 0 to 15, and whether to turn VPC lockdown on is <strong>decided last, after Phase 15</strong>). "
                "Records all five costing options side by side — Option 1 Bank-Grade Hub &amp; Spoke (£729.91/month), Option 2A/2B AWS-Managed Serverless "
                "NAT Gateway VPC (£149.01/month and £70.39/month), Option 3A Leanest Zero-Trust VPC (+£13.32/month), and <strong>Preferred Option 3B Lean "
                "Zero-Trust VPC + CloudFront Pro bundled AWS WAF on prod (+£24.86/month = +$32.32/month, keeping total MyPaisa AWS spend at ~£28.36/month "
                "inside the £50/month AWS cap)</strong> — together with the four serverless VPC operational gotchas and the five-step zero-lockout rollout. "
-               f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §9, <a href="{gh("PLAN.md")}">PLAN.md</a> Phase 0 and Phase 20, and '
+               f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §9, <a href="{gh("PLAN.md")}">PLAN.md</a> Phase 0 and Phase 15, and '
                f'{arch_link("14", ctx.sections)}, {arch_link("15", ctx.sections)}, {arch_link("18.1", ctx.sections)} and {arch_link("18.4", ctx.sections)} of '
                f'<a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
                f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">docs/design/aws-vpc-enterprise-lockdown.html</a>.</p>'),
@@ -1373,7 +1370,7 @@ def render_vpc(ctx: Ctx) -> str:
         image(ctx, "vpc-04-five-option-cost-rollout.gif", VPC_GIFS[3][2], 100),
         "<h2>📖 Full blueprint, seven-layer architecture, serverless gotchas &amp; five-option costing (docs/RESEARCH.md §9)</h2>",
         md(sec9, shift=-1),
-        "<h2>🧩 The stories that record, join with or implement it</h2><p>Every story in the trace that records, joins with or optionally builds the VPC enterprise perimeter, in phase order (MA-283 sits in Phase 20, decided last).</p>",
+        "<h2>🧩 The stories that record, join with or implement it</h2><p>Every story in the trace that records, joins with or optionally builds the VPC enterprise perimeter, in phase order (MA-283 sits in Phase 15, decided last).</p>",
         story_rows(ctx, items),
         jira_macro("project = MA AND key in (" + ", ".join(i["key"] for i in items) + ") ORDER BY key") if items else "",
     ]

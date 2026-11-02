@@ -4,7 +4,7 @@
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h2>01 · Joining by invite</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The owner types <code>/invite</code> in the chat. MyPaisa answers with a one-time link, which the owner shares from iOS&#x27;s share sheet. Asha taps it on her own iPhone, MyPaisa opens on the invite, and signing in with Apple or Google makes her a member of the same household, with her own chat, her own accounts and her own preferences.</p>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The owner types <code>/invite</code> in the chat. MyPaisa answers with a one-time link, which the owner shares from iOS&#x27;s share sheet. Asha taps it on her own iPhone, MyPaisa opens on the invite, and signing in with Apple or Google makes her a member of the same household, with her own chat, her own accounts and her own preferences. She views and asks; only an admin writes, and the owner can make her one later, in the chat (MA-308).</p>
 <p><em><strong>Trigger</strong> the owner types <code>/invite</code> (or <code>/invite viewer</code>)</em> <span data-type="status" data-color="blue">Phase 1</span></p>
 </div>
 <h3>🛤️ The path</h3>
@@ -21,7 +21,7 @@
 <tr><td data-background="#DEEBFF"><strong>9</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app sends the token and the invite to <code>/auth/apple</code></td></tr>
 <tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Cognito</strong>&#x27;s custom-auth Lambdas check Apple&#x27;s token against Apple&#x27;s published keys, then the invite: unused, under 24 hours old, this household. It is marked used; Asha&#x27;s <strong>Member</strong> row and her Cognito user in <code>mypaisa-prod-users</code> are created, linked to her Apple account&#x27;s stable id, each with an audit row</td></tr>
 <tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Her tokens go to the Keychain; the welcome and the first of three setup questions arrive over her stream</td></tr>
-<tr><td data-background="#FFEBE6"><strong>12</strong></td><td data-background="#FFEBE6">Member to App</td><td>Asha answers with the cards&#x27; buttons: base currency, what she holds, how often to be told things; then iOS asks to allow notifications</td></tr>
+<tr><td data-background="#FFEBE6"><strong>12</strong></td><td data-background="#FFEBE6">Member to App</td><td>Asha answers with the cards&#x27; buttons: base currency, amounts in notifications, which alerts reach her; then iOS asks to allow notifications</td></tr>
 </tbody>
 </table>
 <h3>👀 What the members see</h3>
@@ -147,7 +147,7 @@
 <p>A second sign-in</p>
 <p>From You, Sign-in methods, a member adds Apple or Google, or a passkey, to their own identity while signed in, with a fresh sign-in on the new account and no second check (Arun, 29 Oct 2026). Every link and unlink is an audit row, and the first sign-in with it on a new device sends the new-device message.</p>
 <p>Each device and browser</p>
-<p>A <code>Device</code> row: name, model, last seen, push token; a browser session is listed beside them. A member signs their own out from You; the owner signs out one or all of a member&#x27;s from the Admin center.</p>
+<p>A <code>Device</code> row: name, model, last seen, push token; a browser session is listed beside them. A member signs their own out from You; an admin signs out one or all of a member&#x27;s from the Admin center.</p>
 <p>Face ID, two ways</p>
 <p>The optional app lock (Face ID or the passcode on opening and after five minutes away) is a comfort on the device. The second check is the server&#x27;s: a fresh sign-in bound to the action.</p>
 <h3>👀 What the member sees</h3>

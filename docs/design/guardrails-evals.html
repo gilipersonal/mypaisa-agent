@@ -221,7 +221,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
 
 <header class="mast">
   <div class="wrap">
-    <div class="eyebrow">MyPaisa · ARCHITECTURE §23 · MA-245</div>
+    <div class="eyebrow">MyPaisa · ARCHITECTURE §21 · MA-245</div>
     <h1>Guarded in code. Tested on every change. Watched live.</h1>
     <p class="lede">MyPaisa's agents read your statements, answer your questions and, later, propose changes to their own rules. This page shows the fences that stop them doing what they must not, and the tests that check they still do what they should whenever something changes.</p>
     <ul class="rules" aria-label="The rules">
@@ -262,7 +262,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     </div>
     <div class="copy tech">
       <p>Claude model ids are <strong>pinned snapshots</strong>, so behaviour changes only when a prompt, a tool, a guard, the agent loop, the model routing, a kind template, the SDK or a model id changes, and each of those arrives through a pull request. A scheduled rerun of an unchanged golden set measures sampling noise and breeds alert fatigue.</p>
-      <p>Offline evals are therefore gated on change (T0, T1, T2). What changes without a pull request, member traffic and Anthropic's own classifiers and server tools, is covered by online evals: code checks on every run and a judged sample overnight (§23.1, rule 2).</p>
+      <p>Offline evals are therefore gated on change (T0, T1, T2). What changes without a pull request, member traffic and Anthropic's own classifiers and server tools, is covered by online evals: code checks on every run and a judged sample overnight (§21.1, rule 2).</p>
     </div>
   </div>
 </section>
@@ -278,18 +278,18 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <ul>
         <li><strong>Least agency.</strong> There is no tool that can trade, delete, read a secret or message anyone else. Nothing is saved until you tap Confirm.</li>
         <li><strong>The policy gate.</strong> Code checks every tool call before it runs.</li>
-        <li><strong>Untrusted text.</strong> What is written in a file, a web page or a news story is read as data, never as an instruction.</li>
+        <li><strong>Untrusted text.</strong> What is written in a file or a web page is read as data, never as an instruction.</li>
         <li><strong>What it says.</strong> Every figure in a reply must come from a tool or from your own words; out-of-scope asks get a plain refusal.</li>
         <li><strong>Limits.</strong> The monthly Claude ceiling, the per-run caps and <code>/pause</code>.</li>
       </ul>
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Least agency</strong> (§8, §4.10): no trade, delete, secret or cross-member message tool; drafts write nothing; Confirm commits exactly the draft whose hash <code>PendingAction</code> holds; the SQL copy runs DuckDB read only, external access off, configuration locked, over the asker's views (§12.1); admin actions behind the second check.</li>
+        <li><strong>Least agency</strong> (§7, §4.10): no trade, delete, secret or cross-member message tool; drafts write nothing; Confirm commits exactly the draft whose hash <code>PendingAction</code> holds; the SQL copy runs DuckDB read only, external access off, configuration locked, over the asker's views (§11.1); admin actions behind the second check.</li>
         <li><strong>Policy gate</strong> (MA-247): manifest, role and household scope, strict schema with amounts as the member's text, run caps, taint; fails closed.</li>
         <li><strong>Untrusted text</strong> (MA-253): third-party text only as a JSON-encoded, labelled tool result, or a labelled document or image block; a quarantined extractor with no tools returns strict JSON with each field's source line; a conversation that has read such text, with its notes and summaries, loses every outbound tool.</li>
         <li><strong>Output checks</strong> (MA-248, MA-249): figures grounded in the tool results and the member's words after normalising unit, currency and rounding; one regeneration, then the plain template; scope refusals; no remote images.</li>
-        <li><strong>Limits</strong> (§15.1): the ceiling's ladder, member, day and run guards, the tool-call cap, <code>/pause</code>. Mapped to the OWASP LLM (2025) and Agentic (2026) top tens in §23.2.</li>
+        <li><strong>Limits</strong> (§14.1): the ceiling's ladder, member, day and run guards, the tool-call cap, <code>/pause</code>. Mapped to the OWASP LLM (2025) and Agentic (2026) top tens in §21.2.</li>
       </ul>
     </div>
     <figure class="fig" id="fig-layers">
@@ -333,7 +333,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <p>If the gate itself breaks or is slow, the answer is no.</p>
     </div>
     <div class="copy tech">
-      <p>Before every call of one of our own tools (MA-247): the tool is in the calling agent's manifest; the member's role and household scope allow it (§4.5); arguments match the strict schema and ranges, an amount being the member's own text parsed by code (§4.7), a typed override only taking minor units and an ISO 4217 code (§6.6); the run is under its tool-call cap and not repeating a call; and once untrusted text is in the conversation, tools whose side effect is external are removed for it and for every note or summary drawn from it.</p>
+      <p>Before every call of one of our own tools (MA-247): the tool is in the calling agent's manifest; the member's role and household scope allow it (§4.5); arguments match the strict schema and ranges, an amount being the member's own text parsed by code (§4.7), a typed override only taking minor units and an ISO 4217 code (§6); the run is under its tool-call cap and not repeating a call; and once untrusted text is in the conversation, tools whose side effect is external are removed for it and for every note or summary drawn from it.</p>
       <p>It fails closed: an error or a timeout refuses. Each decision is a span attribute and an entry in <code>RunRecord.checks</code>. Anthropic's server tools (<code>web_search</code>, <code>web_fetch</code>) run inside one API request where no code can stop a call, so they are given only to a call holding no household figure (a name and ISIN, never an amount), with <code>max_uses</code> set.</p>
     </div>
     <figure class="fig" id="fig-gate">
@@ -422,7 +422,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     </div>
     <div class="copy tech">
       <p>Each run's <code>RunRecord.checks</code> hold the gate's decisions, the figure check, refusal, template fallback, tool errors, loop length and cost, and member signals (a question asked twice; from phase 2, a cancelled proposal and a correction within seven days of a Confirm).</p>
-      <p>Nightly, every flagged run plus a random 10% are judged by the T1 judges on Haiku through the Batches API, within 3% of prod's ceiling, metered as the feature <code>evals</code> and pausing from the 85% step; verdicts are <code>EvalResult</code> rows. Each rate is compared a week at a time with its eight-week band; outside it, an alert goes to the owner's outbox (§10.6), through the alert router from phase 8. The rest is listed in Activity. Judges stay advisory until calibrated (MA-255). No CloudWatch metric is added.</p>
+      <p>Nightly, every flagged run plus a random 10% are judged by the T1 judges on Haiku through the Batches API, within 3% of prod's ceiling, metered as the feature <code>evals</code> and pausing from the 85% step; verdicts are <code>EvalResult</code> rows. Each rate is compared a week at a time with its eight-week band; outside it, an alert goes to the owner's outbox (§9.6), through the alert router from phase 8. The rest is listed in Activity. Judges stay advisory until calibrated (MA-255). No CloudWatch metric is added.</p>
     </div>
     <figure class="fig" id="fig-live">
       <div class="scroll">
@@ -553,7 +553,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <table>
         <thead><tr><th>Job</th><th>When</th><th>Why then</th></tr></thead>
         <tbody>
-          <tr><td>Grading predictions and calibrating confidence (§20.4)</td><td><span class="pill on">daily</span></td><td>Its answer key, the day's prices, is new every day</td></tr>
+          <tr><td>Grading the Budget forecast against the closed month (§18.8)</td><td><span class="pill on">monthly</span></td><td>Its answer key, the month's actual figures, arrives when the month closes on the 1st</td></tr>
           <tr><td>The overnight judges and the rates</td><td><span class="pill on">nightly</span></td><td>They read the day's new conversations, compared a week at a time</td></tr>
           <tr><td>Your calibration of the judges</td><td><span class="pill on">monthly + on change</span></td><td>People are the slow, careful grader, kept for checking the fast ones</td></tr>
           <tr><td>The golden set of tests</td><td><span class="pill never">never on a timer</span></td><td>What it tests changes only through a pull request</td></tr>
@@ -577,7 +577,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     </div>
     <div class="copy">
       <p class="plain">The test workspace's $30 sits on top of the $160 for the live app and $40 for testing. With no card on file, the plan's $200 credit is still the last stop, and a normal month uses well under $80.</p>
-      <p class="tech">The three Console limits sum to $230 against the $200 credit; with no card on file the credit stays the last stop, so the Admin center's warning compares only prod's and dev's ceilings (§15.1, §23.7). The key is <code>/mypaisa-agent/dev/anthropic/evals_key</code>, read only by the <code>ci-evals</code> role.</p>
+      <p class="tech">The three Console limits sum to $230 against the $200 credit; with no card on file the credit stays the last stop, so the Admin center's warning compares only prod's and dev's ceilings (§14.1, §21.7). The key is <code>/mypaisa-agent/dev/anthropic/evals_key</code>, read only by the <code>ci-evals</code> role.</p>
     </div>
   </div>
 </section>
@@ -592,7 +592,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <table>
         <thead><tr><th>Story</th><th>Phase</th><th>What</th></tr></thead>
         <tbody>
-          <tr><td class="k">MA-245</td><td>0</td><td>The record: ARCHITECTURE §23</td></tr>
+          <tr><td class="k">MA-245</td><td>0</td><td>The record: ARCHITECTURE §21</td></tr>
           <tr><td class="k">MA-246</td><td>0</td><td>The manifest, the Inspect AI harness, T0 and the coverage check</td></tr>
           <tr><td class="k">MA-21</td><td>0</td><td>The evals workspace with its $30 limit and its key, set up by Arun</td></tr>
           <tr><td class="k">MA-258</td><td>0</td><td>This page and the explainer pages</td></tr>
@@ -625,7 +625,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <dt>pass^k</dt><dd>Passing every one of k trials, not just one of them. Safety cases need it.</dd>
       <dt>T0, T1, T2</dt><dd>The three tiers: recorded tests on every change; live tests when what the agent rests on changes; the full suite on a new model.</dd>
       <dt>True-positive and true-negative rates</dt><dd>How often a judge agrees with you on the failures, and on the passes, counted apart so a rare failure is not hidden by many passes.</dd>
-      <dt>Untrusted text</dt><dd>Anything written by someone outside the chat: a statement, a factsheet, a web page, a news story, a shop's name.</dd>
+      <dt>Untrusted text</dt><dd>Anything written by someone outside the chat: a statement, a factsheet, a web page, a shop's name.</dd>
       <dt>Quarantined extractor</dt><dd>The step that reads a file. It has no tools at all, so whatever the file says, it can only fill in the form it was given.</dd>
       <dt>Manifest</dt><dd>The one list of every agent and tool, what each may do, and the tests that prove it.</dd>
       <dt>Second check</dt><dd>A fresh Face ID, passkey or sign-in that the server checks before an admin action.</dd>
@@ -636,7 +636,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
 </div>
 </main>
 <footer>
-  <div class="wrap">From <span class="mono">ARCHITECTURE.md</span> §23 and <span class="mono">docs/RESEARCH.md</span> §5 in the MyPaisa repository, 28 Oct 2026 (MA-245, MA-258). Figures are the plan's defaults; the admin moves the caps.</div>
+  <div class="wrap">From <span class="mono">ARCHITECTURE.md</span> §21 and <span class="mono">docs/RESEARCH.md</span> §5 in the MyPaisa repository, 28 Oct 2026 (MA-245, MA-258). Figures are the plan's defaults; the admin moves the caps.</div>
 </footer>
 
 <script>

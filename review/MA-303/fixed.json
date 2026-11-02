@@ -45,8 +45,9 @@
   "finding": "Ledger checks retired whole though only part touched the boards; their records half (the width-rule phrase, owner decisions) lost its guard",
   "check": {
    "type": "cmd",
-   "run": "python3 -c \"import json,sys; want={'MA-240':['r2-o2','r2-o1','r2-29'],'MA-155':['r6-admin'],'MA-281':['r1-7','r1-10'],'MA-161':['r1-d6','r2-d2']}; bad=[k+' '+e['id'] for k,ids in want.items() for e in json.load(open('review/'+k+'/fixed.json')) if e['id'] in ids and 'retired' in e]; sys.exit('still retired: '+', '.join(bad) if bad else 0)\" && python3 scripts/review_regress.py MA-240 --only r2-o2,r2-o1,r2-29 && python3 scripts/review_regress.py MA-155 --only r6-admin && python3 scripts/review_regress.py MA-281 --only r1-7,r1-10 && python3 scripts/review_regress.py MA-161 --only r1-d6,r2-d2"
-  }
+   "run": "python3 -c \"import json,sys; want={'MA-240':['r2-o2','r2-o1','r2-29'],'MA-155':['r6-admin'],'MA-281':['r1-7','r1-10'],'MA-161':['r1-d6','r2-d2']}; bad=[k+' '+e['id'] for k,ids in want.items() for e in json.load(open('review/'+k+'/fixed.json')) if e['id'] in ids and 'retired' in e and not (k=='MA-281' and 'MA-307' in e['retired'])]; sys.exit('still retired: '+', '.join(bad) if bad else 0)\" && python3 scripts/review_regress.py MA-240 --only r2-o2,r2-o1,r2-29 && python3 scripts/review_regress.py MA-155 --only r6-admin && python3 scripts/review_regress.py MA-281 --only r1-7,r1-10 && python3 scripts/review_regress.py MA-161 --only r1-d6,r2-d2"
+  },
+  "updated": "MA-307, 2 Nov 2026: MA-281's r1-7 and r1-10 guarded the Forecaster, which MA-307 retired (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"); they may be retired by MA-307's words, never by MA-303's design-check retirement; the others stay unretired"
  },
  {
   "id": "r1-b2",

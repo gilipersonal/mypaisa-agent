@@ -72,7 +72,7 @@
       <!-- ================= 1 BUTTONS ================= -->
       <section class="dv-turn" id="buttons" data-screen-label="Components 1: Buttons">
         <div class="dv-thd"><a class="dv-tid" href="#buttons">1</a><span class="dv-tname">Buttons</span></div>
-        <p class="dv-intro">Four buttons, four states. In the app and the web app alike a button navigates, opens the chat, or answers a card the chat drew (Confirm, Edit, Cancel): records are created in the chat and corrected in place, and MyPaisa never trades, so there is no Buy or Sell to design.</p>
+        <p class="dv-intro">Four buttons, four states. In the app and the web app alike a button navigates, opens the chat, or answers a card the chat drew (Confirm, Edit, Cancel): records are created in the chat and corrected in place, and MyPaisa never trades or advises, so there is no trade button to design.</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Buttons {{ t.label }}">
@@ -106,8 +106,8 @@
         </div>
         <div class="notes">
           <div class="note"><b>Primary</b>50 high, radius 14, padding 0 20, Headline 17/22 semibold, one line. <code>--mp-accent</code> fill with <code>--mp-on-accent</code> label: 5.4:1 light, 7.5:1 dark. One per screen, for the main way on.</div>
-          <div class="note"><b>Tinted</b>The same box in <code>--mp-surface-2</code> with an ink label: 15.3:1 light, 13.9:1 dark. Secondary moves: Technical, Ask in the chat, Open report.</div>
-          <div class="note"><b>Plain and small</b>Plain: no fill, accent label, 44 high, padding 0 8, for in-line moves like Why?. Small: 44 high, radius 12, 15/20 semibold, padding 0 14, inside cards and toolbars.</div>
+          <div class="note"><b>Tinted</b>The same box in <code>--mp-surface-2</code> with an ink label: 15.3:1 light, 13.9:1 dark. Secondary moves: Ask in the chat, Open report, Technical (a card's audit detail).</div>
+          <div class="note"><b>Plain and small</b>Plain: no fill, accent label, 44 high, padding 0 8, for in-line moves like Show the sum. Small: 44 high, radius 12, 15/20 semibold, padding 0 14, inside cards and toolbars.</div>
           <div class="note"><b>Pressed</b>Scales to 97% over 120 ms on <code>--mp-ease</code> (<code>:active</code>). Nothing changes colour, so the label stays as readable as at rest.</div>
           <div class="note"><b>Focus</b>A 3 px ring in <code>--mp-focus</code>, 2 px outside, on <code>:focus-visible</code> only: keyboard users see it, taps do not. 6.7:1 and 8.1:1 against the surface.</div>
           <div class="note"><b>Disabled</b><code>.mp-disabled</code> (or <code>aria-disabled="true"</code>): 40% opacity, no pointer, plus <code>disabled</code> to leave the tab order. Use it only when the reason sits next to it; most of the time, hide the button instead.</div>
@@ -117,30 +117,30 @@
       <!-- ================= 2 CHIPS ================= -->
       <section class="dv-turn" id="chips" data-screen-label="Components 2: Chips">
         <div class="dv-thd"><a class="dv-tid" href="#chips">2</a><span class="dv-tname">Chips</span></div>
-        <p class="dv-intro">A stance is a view, not advice, and the chip says which one in a word. Six stance chips, a neutral chip for plain facts, and the alert chip for the red tier only. The bot cannot trade, so no chip ever sits beside a Buy or Sell.</p>
+        <p class="dv-intro">A status chip says in a word how a record or a job stands. Six status chips, a neutral chip for plain facts, and the alert chip for the red tier only. MyPaisa never trades or advises, so no chip ever carries a call on a holding (MA-307, 2 Nov 2026: the market side was retired; MyPaisa is a wealth tracker only).</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Chips {{ t.label }}">
               <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
               <div class="specs">
                 <div class="spec">
-                  <span class="lbl">Stances · .mp-chip + .mp-add … .mp-watch</span>
+                  <span class="lbl">Statuses · .mp-chip + .mp-add … .mp-watch</span>
                   <div class="chipgrid">
-                    <sc-for list="{{ stances }}" as="s" hint-placeholder-count="6">
+                    <sc-for list="{{ statuses }}" as="s" hint-placeholder-count="6">
                       <div class="chiprow"><span><span class="mp-chip {{ s.cls }}">{{ s.word }}</span></span><span class="mp-foot mp-ink2">{{ s.mean }}</span></div>
                     </sc-for>
                   </div>
                 </div>
                 <div class="spec w420">
-                  <span class="lbl">With confidence · word first · .chip-s 12 in rows</span>
+                  <span class="lbl">With a figure · word first · .chip-s 12 in rows</span>
                   <div class="fx ac gap8 wrap">
-                    <span class="mp-chip mp-hold">HOLD 71%</span><span class="mp-chip mp-pause">PAUSE 61%</span><span class="mp-chip mp-add">ADD 58%</span>
-                    <span class="mp-chip chip-s mp-hold">HOLD 71%</span><span class="mp-chip chip-s mp-pause">PAUSE 61%</span><span class="mp-chip chip-s mp-add">ADD 58%</span>
+                    <span class="mp-chip mp-hold">Due Sun 1 Nov</span><span class="mp-chip mp-pause">Over plan 108%</span><span class="mp-chip mp-add">Paid £1,250</span>
+                    <span class="mp-chip chip-s mp-hold">Due Sun 1 Nov</span><span class="mp-chip chip-s mp-pause">Over plan 108%</span><span class="mp-chip chip-s mp-add">Paid £1,250</span>
                   </div>
                   <span class="lbl">Neutral and alert · .mp-neutral · .mp-alertchip</span>
                   <div class="fx ac gap8 wrap">
                     <span class="mp-chip mp-neutral">ISA</span><span class="mp-chip mp-neutral">GIA</span><span class="mp-chip mp-neutral">Thu close</span><span class="mp-chip mp-neutral"><span class="ms ms-s" aria-hidden="true">lock</span>Audited</span>
-                    <span class="mp-chip mp-alertchip"><span class="ms ms-s" aria-hidden="true">warning</span>Past your 8% alert</span>
+                    <span class="mp-chip mp-alertchip"><span class="ms ms-s" aria-hidden="true">warning</span>Past your Groceries alert</span>
                   </div>
                   <span class="lbl">On the hero · .upchip 7.9:1 / 7.1:1 · .dnchip 7.6:1 / 6.8:1</span>
                   <div class="mp-hero herostrip fx ac jb">
@@ -154,11 +154,11 @@
         </div>
         <div class="notes">
           <div class="note"><b>Anatomy</b>A pill: padding 4 10, 13/18 semibold, +1% tracking, one line, an optional 18 icon 4 before the word. <code>.chip-s</code> (padding 2 8, 12/16) sits inside list rows beside the sub-line.</div>
-          <div class="note"><b>Contrast</b>Text on its own tint: ADD 4.6:1, HOLD 5.6:1, PAUSE 5.5:1, TRIM 5.0:1, REBALANCE 5.8:1, WATCH 6.4:1 in light; 6.6:1 or more in dark. Neutral 6.5:1 and 7.5:1; alert 5.4:1 and 6.2:1.</div>
-          <div class="note"><b>The word is the signal</b>Always the stance word, then the confidence: "PAUSE 61%". Colour only supports it, so the chip reads the same in greyscale and to a screen reader.</div>
-          <div class="note"><b>Neutral</b>For facts: the wrapper (ISA, GIA), the price date, audited facts. Never for a stance.</div>
+          <div class="note"><b>Contrast</b>Text on its own tint: Paid 4.6:1, Due 5.6:1, Over plan 5.5:1, Failed 5.0:1, Closed 5.8:1, Draft 6.4:1 in light; 6.6:1 or more in dark. Neutral 6.5:1 and 7.5:1; alert 5.4:1 and 6.2:1.</div>
+          <div class="note"><b>The word is the signal</b>Always the status word, then the figure: "Over plan 108%". Colour only supports it, so the chip reads the same in greyscale and to a screen reader.</div>
+          <div class="note"><b>Neutral</b>For facts: the wrapper (ISA, GIA), the price date, audited facts, a holding's XIRR. Never for a status.</div>
           <div class="note"><b>Alert</b>Only the red tier, which asks you to act, and it always says why in words. An everyday fall is quiet ink with ▼, never this chip.</div>
-          <div class="note"><b>Icons inside chips</b>Inherit the chip's text colour. Never put a stance class on a bare icon: it brings its tint with it. Use <code>.c-pause</code> and friends for text-only colour.</div>
+          <div class="note"><b>Icons inside chips</b>Inherit the chip's text colour. Never put a status class on a bare icon: it brings its tint with it. Use <code>.c-pause</code> and friends for text-only colour.</div>
         </div>
       </section>
 
@@ -252,9 +252,9 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">NASDAQ 100</span></div>
                     <div class="mp-group">
-                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Why PAUSE?</div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
-                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Technical details</div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
-                      <a class="mp-row rowlink" href="#rows"><div style="flex: 1; min-width: 0"><div class="mp-body">Track record</div><div class="mp-foot mp-ink2">PAUSE: 3 made, 2 right</div></div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Returns from the dated ledger</div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Every dated buy</div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div style="flex: 1; min-width: 0"><div class="mp-body">Audit history</div><div class="mp-foot mp-ink2">21 rows, the last Fri 23 Oct</div></div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
                     </div>
                   </div>
                 </div>
@@ -263,7 +263,7 @@
           </sc-for>
         </div>
         <div class="notes">
-          <div class="note"><b>Holding row</b>Lead tile 36, radius 10, neutral, two letters. Name in Headline; under it a small stance chip and a short sub-line in Footnote ink-2 (MyMap · ISA, not the full fund name). Value in Headline, right-aligned and tabular; the week's change under it, ▲ in <code>--mp-up</code> or ▼ in <code>--mp-down-quiet</code>.</div>
+          <div class="note"><b>Holding row</b>Lead tile 36, radius 10, neutral, two letters. Name in Headline; under it its XIRR in a small neutral chip and a short sub-line in Footnote ink-2 (MyMap · ISA, not the full fund name). Value in Headline, right-aligned and tabular; the week's change under it, ▲ in <code>--mp-up</code> or ▼ in <code>--mp-down-quiet</code>.</div>
           <div class="note"><b>The row box</b>At least 44 high, padding 11 16 (10 for two lines), gap 12. Hairlines in <code>--mp-line</code>, half a pixel, inset 16 from the left. The group has radius 14 and no shadow.</div>
           <div class="note"><b>Section header</b>Overline in ink-3, inset 16, 6 above the group; a Footnote on the right names the column (week, value).</div>
           <div class="note"><b>Setting row</b>A 32 icon tile (<code>.mp-icontile</code>, radius 9, neutral), the label in Body, then a value in ink-2, a switch, or a chevron. Settings that write say where they change: in the chat.</div>
@@ -288,7 +288,7 @@
                       <div class="fx jb ac gap8"><span class="mp-over mp-hero-2 clip">Household · Fri close</span><span class="mp-chip upchip chip-s">▲ 2.4% month</span></div>
                       <div class="mp-num-hero" style="margin-top: 8px"><span class="{{ h.maskCls }}" aria-label="{{ h.aria }}">{{ h.total }}</span></div>
                       <div class="mp-sub mp-hero-2" style="margin-top: 2px">{{ h.sub }}</div>
-                      <div class="mp-chartbox herochart" role="img" aria-label="Six months of value, rising, with three past stances marked">
+                      <div class="mp-chartbox herochart" role="img" aria-label="Six months of value, rising, with three past events marked">
                         <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="mp-fade" aria-hidden="true">
                           <path d="{{ heroChart.area }}" fill="var(--mp-hero-area)"></path>
                           <path d="{{ heroChart.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
@@ -308,7 +308,7 @@
           <div class="note"><b>Card</b><code>.mp-hero</code>: <code>--mp-hero</code> ground, radius 24, padding 20, 358 wide on a phone. It is navy in both themes: the one dark surface in light, a lifted navy in dark.</div>
           <div class="note"><b>Text</b>Overline and sub-line in hero-ink-2 (9.0:1 and 8.1:1); the figure is <code>.mp-num-hero</code>, 44/48 rounded heavy, in white (16.1:1 and 14.5:1). It counts up once over 600 ms.</div>
           <div class="note"><b>Month chip</b><code>.upchip</code>: green ▲ on a 16% green tint, 7.9:1 and 7.1:1. A falling month uses <code>.dnchip</code>, hero-ink-2 on hero-2 with ▼ (7.6:1 and 6.8:1), never red.</div>
-          <div class="note"><b>Chart</b>Coral line 2.5 px with round joins over <code>--mp-hero-area</code>, in a <code>.mp-chartbox</code>: the SVG stretches (<code>preserveAspectRatio="none"</code>, non-scaling stroke) and past stances are <code>.mp-chartdot</code> spans placed by %, white ringed in coral. No axes: the figure above carries the number. Fades in over 200 ms; <code>.mp-draw</code> breaks under a non-scaling stroke.</div>
+          <div class="note"><b>Chart</b>Coral line 2.5 px with round joins over <code>--mp-hero-area</code>, in a <code>.mp-chartbox</code>: the SVG stretches (<code>preserveAspectRatio="none"</code>, non-scaling stroke) and past events (a buy, a statement) are <code>.mp-chartdot</code> spans placed by %, white ringed in coral. No axes: the figure above carries the number. Fades in over 200 ms; <code>.mp-draw</code> breaks under a non-scaling stroke.</div>
           <div class="note"><b>Period</b>The segmented control on the hero, 1M · 6M · 1Y · All, 6M by default.</div>
           <div class="note"><b>Privacy on</b>Pounds become a mask in hero-2; percentages, the month chip and the chart's shape stay, so the story still reads. The mask holds a placeholder with the same digits (£00,000), never the real figure, and reads as "Hidden".</div>
         </div>
@@ -345,7 +345,7 @@
                 </div>
                 <div class="spec w420">
                   <span class="lbl">On the browser · a way on instead of a chevron</span>
-                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink2">Next review Saturday. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#cards">Open chat</a></div>
+                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink2">Next check-in Sun 1 Nov. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#cards">Open chat</a></div>
                 </div>
               </div>
             </div>
@@ -354,9 +354,9 @@
         <div class="notes">
           <div class="note"><b>This week</b><code>.mp-card</code>, padding 14 16, gap 12: a 26 filled icon, the sentence in Headline, the next step in Footnote ink-2, and a chevron to the detail. The whole card is the link.</div>
           <div class="note"><b>Tone by icon and words</b>All clear: <code>check_circle</code> in <code>--mp-up</code>. Worth a look: <code>warning</code> in <code>.c-pause</code>. Asks for action: <code>warning</code> in <code>.c-alert</code>. The sentence always says which; colour is never the only signal.</div>
-          <div class="note"><b>Red is rare</b>Only when you set an alert and it fired, or something needs your decision. A normal fall, a PAUSE or late prices are never red.</div>
+          <div class="note"><b>Red is rare</b>Only when you set an alert and it fired, or something needs your decision. A normal fall, a check-in a day late or late prices are never red.</div>
           <div class="note"><b>Stat card</b><code>.mp-card</code>, radius 20, padding 16, <code>--mp-shadow</code>. Overline in ink-3, one figure in <code>.mp-num-l</code> 28/32 rounded on one line, a Footnote saying what it means. Two across at every size; on the browser they sit in the narrow column. Cards in a row share a height.</div>
-          <div class="note"><b>Figures</b>Every figure comes from the engine with its date. A stat card never shows a number the AI wrote.</div>
+          <div class="note"><b>Figures</b>Every figure comes from the ledger with its date. A stat card never shows a number the AI wrote.</div>
           <div class="note"><b>Browser</b>On wide screens the summary card can carry a small tinted Open chat button instead of the chevron, since the chat is a separate window there.</div>
         </div>
       </section>
@@ -364,7 +364,7 @@
       <!-- ================= 7 PRIVACY MASK ================= -->
       <section class="dv-turn" id="privacy" data-screen-label="Components 7: Privacy mask">
         <div class="dv-thd"><a class="dv-tid" href="#privacy">7</a><span class="dv-tname">Privacy mask</span></div>
-        <p class="dv-intro">Privacy mode is for looking at MyPaisa on a train. The eye button hides every pound on every page and keeps percentages, stances and chart shapes, so you can still tell how things are going.</p>
+        <p class="dv-intro">Privacy mode is for looking at MyPaisa on a train. The eye button hides every pound on every page and keeps percentages, XIRR and chart shapes, so you can still tell how things are going.</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Privacy mask {{ t.label }}">
@@ -387,7 +387,7 @@
                     </div>
                     <div class="stats">
                       <div class="mp-card stat"><div class="mp-over mp-ink3">Household</div><div class="mp-num-l" style="margin-top: 6px"><span class="{{ p.totCls }}" aria-label="{{ p.totAria }}">{{ p.tot }}</span></div><div class="mp-foot mp-up">▲ 2.4% month</div></div>
-                      <div class="mp-card stat"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 6px">84%</div><div class="mp-foot mp-ink2">in dollars</div></div>
+                      <div class="mp-card stat"><div class="mp-over mp-ink3">XIRR</div><div class="mp-num-l" style="margin-top: 6px">9.8%</div><div class="mp-foot mp-ink2">all holdings</div></div>
                     </div>
                   </div>
                 </sc-for>
@@ -397,7 +397,7 @@
         </div>
         <div class="notes">
           <div class="note"><b>The mask</b><code>.mp-mask</code>: a <code>--mp-surface-2</code> pill (<code>--mp-hero-2</code> on the hero), radius 8, at least 64 wide, the height of the line it replaces. Text inside is transparent.</div>
-          <div class="note"><b>What hides, what stays</b>Pounds hide: values, totals, amounts in sentences. Percentages, ▲ ▼, stance chips, confidence and chart shapes stay.</div>
+          <div class="note"><b>What hides, what stays</b>Pounds hide: values, totals, amounts in sentences. Percentages, ▲ ▼, XIRR, status chips and chart shapes stay.</div>
           <div class="note"><b>Never in the page</b>The mask holds a placeholder with the same number of digits (£18,640 becomes £00,000), never the real figure, and carries <code>aria-label="Hidden"</code>, so a screen reader or a screenshot cannot leak it.</div>
           <div class="note"><b>Nothing moves</b>Figures are tabular, so the placeholder is exactly as wide as the figure it hides: names keep the same room and clip in the same place. Figures narrower than 64 get the 64 minimum.</div>
           <div class="note"><b>The switch</b>The eye button: <code>visibility</code> when pounds show, <code>visibility_off</code> when hidden, labelled "Privacy mode". It sits next to the whose-view control on every page.</div>
@@ -424,8 +424,8 @@
             return { line: line, area: line + ' L' + pts[n - 1][0] + ',100 L' + pts[0][0] + ',100 Z', marks: marks.map((i) => ({ x: pts[i][0] + '%', y: pts[i][1] + '%' })) };
           };
           const rows = [
-            { lead: 'BA', name: 'Balanced', hasSt: true, st: 'HOLD 71%', stCls: 'mp-hold', sub: 'MyMap · ISA', val: '£18,640', mask: '£00,000', ch: '▲ 0.4%', chCls: 'mp-up' },
-            { lead: 'NQ', name: 'NASDAQ 100', hasSt: true, st: 'PAUSE 61%', stCls: 'mp-pause', sub: 'iShares · ISA', val: '£4,210', mask: '£0,000', ch: '▼ 3.1%', chCls: 'mp-dq' },
+            { lead: 'BA', name: 'Balanced', hasSt: true, st: 'XIRR 8.4%', stCls: 'mp-neutral', sub: 'MyMap · ISA', val: '£18,640', mask: '£00,000', ch: '▲ 0.4%', chCls: 'mp-up' },
+            { lead: 'NQ', name: 'NASDAQ 100', hasSt: true, st: 'XIRR 14.2%', stCls: 'mp-neutral', sub: 'iShares · ISA', val: '£4,210', mask: '£0,000', ch: '▼ 3.1%', chCls: 'mp-dq' },
             { lead: '£', name: 'Cash pot', hasSt: false, st: '', stCls: '', sub: 'Easy access', val: '£400', mask: '£000', ch: '—', chCls: 'mp-ink3' }
           ];
           return {
@@ -433,21 +433,21 @@
             btns: [
               B('Primary', '50 · r14 · accent', 'mp-btn-primary', 'Open chat'),
               B('Tinted', '50 · r14 · surface-2', 'mp-btn-tinted', 'Technical'),
-              B('Plain', '44 · accent label', 'mp-btn-plain', 'Why?'),
+              B('Plain', '44 · accent label', 'mp-btn-plain', 'Show the sum'),
               B('Small', '44 · r12 · 15', 'mp-btn-tinted mp-btn-small', 'Open chat')
             ],
-            stances: [
-              { word: 'ADD', cls: 'mp-add', mean: 'Room to add at your usual pace.' },
-              { word: 'HOLD', cls: 'mp-hold', mean: 'Keep going as you are.' },
-              { word: 'PAUSE', cls: 'mp-pause', mean: 'Keep what you have; hold new money.' },
-              { word: 'TRIM', cls: 'mp-trim', mean: 'It has grown past its share.' },
-              { word: 'REBALANCE', cls: 'mp-reb', mean: 'The mix has drifted from your plan.' },
-              { word: 'WATCH', cls: 'mp-watch', mean: 'Nothing to do; worth an eye.' }
+            statuses: [
+              { word: 'Paid', cls: 'mp-add', mean: 'Done: a check-in paid, a job that ran.' },
+              { word: 'Due', cls: 'mp-hold', mean: 'Coming up: a check-in or a statement.' },
+              { word: 'Over plan', cls: 'mp-pause', mean: 'Worth a look: a budget line past its plan.' },
+              { word: 'Failed', cls: 'mp-trim', mean: 'Did not happen: a job failed again.' },
+              { word: 'Closed', cls: 'mp-reb', mean: 'Ended and kept: a loan paid off, a deposit matured.' },
+              { word: 'Draft', cls: 'mp-watch', mean: 'Not saved yet: a card waiting for Confirm.' }
             ],
             holdRows: [
-              { lead: 'BA', name: 'Balanced', st: 'HOLD 71%', stCls: 'mp-hold', sub: 'MyMap · ISA', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up', rowCls: '' },
-              { lead: 'NQ', name: 'NASDAQ 100', st: 'PAUSE 61%', stCls: 'mp-pause', sub: 'iShares · ISA', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq', rowCls: '' },
-              { lead: 'RB', name: 'Automation & Robotics', st: 'ADD 58%', stCls: 'mp-add', sub: 'iShares · ISA', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up', rowCls: 'row-pressed' }
+              { lead: 'BA', name: 'Balanced', st: 'XIRR 8.4%', stCls: 'mp-neutral', sub: 'MyMap · ISA', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up', rowCls: '' },
+              { lead: 'NQ', name: 'NASDAQ 100', st: 'XIRR 14.2%', stCls: 'mp-neutral', sub: 'iShares · ISA', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq', rowCls: '' },
+              { lead: 'RB', name: 'Automation & Robotics', st: 'XIRR 6.1%', stCls: 'mp-neutral', sub: 'iShares · ISA', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up', rowCls: 'row-pressed' }
             ],
             heroChart: mk(series, [3, 7, 10]),
             heroes: [
@@ -455,13 +455,13 @@
               { label: 'Privacy on', total: '£00,000', maskCls: 'mp-mask', aria: 'Hidden', sub: '▲ 2.4% this month · ▼ 0.6% this week', eye: 'visibility_off', eyeNote: 'Privacy on: pounds hidden' }
             ],
             weekly: [
-              { tone: 'All clear · most weeks', icon: 'check_circle', icls: 'mp-up', title: 'Nothing to do this week', body: 'Next review Saturday. Prices to Friday’s close.' },
-              { tone: 'Worth a look · amber', icon: 'warning', icls: 'c-pause', title: 'One thing worth a look', body: 'NASDAQ 100 moved to PAUSE. Keep what you have; not a reason to sell.' },
-              { tone: 'Asks for action · red, rare', icon: 'warning', icls: 'c-alert', title: 'NASDAQ 100 passed your alert', body: '8.4% below its high, past the 8% you set. Have a look in the chat today.' }
+              { tone: 'All clear · most weeks', icon: 'check_circle', icls: 'mp-up', title: 'Nothing to do this week', body: 'Next check-in Sun 1 Nov. Prices to Friday’s close.' },
+              { tone: 'Worth a look · amber', icon: 'warning', icls: 'c-pause', title: 'One thing worth a look', body: 'Groceries is over its plan: £702 of £650 in October.' },
+              { tone: 'Asks for action · red, rare', icon: 'warning', icls: 'c-alert', title: 'A job failed twice', body: 'Prices for 2 holdings did not arrive. Have a look in the chat today.' }
             ],
             stats: [
-              { over: 'Overlap', fig: '84%', foot: 'in dollars, looked through' },
-              { over: 'Track record', fig: '20 / 31', foot: 'held up, over 6 weeks' },
+              { over: 'XIRR', fig: '9.8%', foot: 'all holdings, from the dated ledger' },
+              { over: 'Surplus', fig: '£1,240', foot: 'October, after every plan' },
               { over: 'Positions', fig: '1.6 of 4', foot: 'effective; Balanced is 72%' },
               { over: 'AI cost', fig: '£6.40', foot: 'this month, of the £50 cap' }
             ],
