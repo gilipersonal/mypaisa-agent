@@ -59,7 +59,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-239 | An animated plain-words page, Inside MyPaisa, walks the admin from the first screen to the chatbot and the agent team | Done | §3, §8, §20, §21 | none |  |
 | MA-240 | Every board stays whole at every supported screen size and legible at 25% brightness | In Progress | §9.1, §9.4 | none |  |
 | MA-241 | Every holding, asset and debt shows a colourful icon for its kind, chosen from the kind's data | To Do | §4.8, §9.1, §9.4 | picked | Kind icons.dc.html: B · Settings squircles, one vivid set for both themes |
-| MA-242 | The open foldable boards show the chat as a sheet, as the size classes say, not as a column beside the screen | To Do | §9.1 | none |  |
+| MA-242 | The open foldable boards show the chat as a sheet, as the size classes say, not as a column beside the screen | Done | §9.1 | none |  |
 | MA-243 | Wealth's one-line sub-lines put the figure first, so an ellipsis never cuts a figure | To Do | §9.4 | none |  |
 | MA-244 | An animated technical page, MyPaisa Architecture v4, plays each journey through AWS and shows every agent and the Claude model it uses | Done | §3, §8, §10, §15.1, §18, §20, §21 | none |  |
 | MA-245 | The architecture records how the agents are guarded and evaluated: guardrails in code, evals gated on change, every live run checked, judges calibrated by the admin | In Progress | §23, §8, §10, §14, §15.1, §16, §18.4, §20.4, §20.7, §4.1, §9.3, §12.1, §13 | none |  |
@@ -93,7 +93,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-302 | Prototype v4's controls reach 44 pt, as the picked v4 boards and Prototype v5 now do | Done | §9.3, §9.4 | none |  |
 | MA-303 | Stop the checks on the design boards, and make plan-sync and the review ledger faster and smarter | Done | §9.1, §16 | none |  |
 | MA-304 | QA on request for the web app: Playwright, axe and Argos, with the 25% contrast floors and the 320 to 1920 width sweep | To Do | §9.1, §18.4 | none |  |
-| MA-305 | One CI workflow with named jobs in parallel, as mypaisaa-prediction has | In Progress | §18.4 | none |  |
+| MA-305 | One CI workflow with named jobs in parallel, as mypaisaa-prediction has | Done | §18.4 | none |  |
+| MA-306 | The review rule fits Antigravity's 24 KB: the design-board lessons move to MA-304's QA checklist | In Progress | §16 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

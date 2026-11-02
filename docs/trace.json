@@ -7047,7 +7047,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The open foldable boards show the chat as a sheet, as the size classes say, not as a column beside the screen",
-      "status": "To Do",
+      "status": "Done",
       "labels": [],
       "arch": [
         "9.1"
@@ -7055,7 +7055,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed in MA-240 for the open foldable's chat, then found to duplicate work the plan already carries: the redraw of Foldable · Open and Foldable · Open, Audit to the regular, narrow class is undrawn on MA-70, MA-71, MA-78, MA-79 and MA-163, for MA-163's design-first round (the sidebar collapsing to a tab bar at the top, the chat a sheet). Nothing is left to do here; it waits for Arun to close it as a duplicate. scripts/board_fit_allow.json pointed its foldable allowance at MA-163. Stopped by MA-303 (Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\"); QA on the built web app, on request, is MA-304."
+      "notes": "Filed in MA-240 for the open foldable's chat, then found to duplicate work the plan already carries: the redraw of Foldable · Open and Foldable · Open, Audit to the regular, narrow class is undrawn on MA-70, MA-71, MA-78, MA-79 and MA-163, for MA-163's design-first round (the sidebar collapsing to a tab bar at the top, the chat a sheet). Nothing is left to do here; it waits for Arun to close it as a duplicate. scripts/board_fit_allow.json pointed its foldable allowance at MA-163. Stopped by MA-303 (Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\"); QA on the built web app, on request, is MA-304. Closed as a duplicate of MA-163 (Arun, 2 Nov 2026)."
     },
     {
       "key": "MA-243",
@@ -8714,7 +8714,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "One CI workflow with named jobs in parallel, as mypaisaa-prediction has",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "18.4"
@@ -8726,6 +8726,26 @@
       "code": [
         ".github/workflows/ci.yml",
         ".github/workflows/jira-key.yml"
+      ]
+    },
+    {
+      "key": "MA-306",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The review rule fits Antigravity's 24 KB: the design-board lessons move to MA-304's QA checklist",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "16"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 2 Nov 2026: \"lets do this\" (refresh Antigravity's copy of the rules). agy-bridge refused: .claude/rules/independent-review.md was 28.5 KB, and a safety rule over 24,000 bytes cannot be always on in Antigravity. Its design-board lessons (1 and 21 in part, 9 to 11, 13, 19, 24 to 31, 37 to 39) move with their numbers to docs/qa/checklist.md, the checklist MA-304's QA applies; the rule points to it.",
+      "code": [
+        ".claude/rules/independent-review.md",
+        "docs/qa/checklist.md"
       ]
     }
   ],
@@ -8811,8 +8831,8 @@
       "key": "MA-293",
       "type": "Bug",
       "summary": "The board gate's diff crashes against any ref from before Prototype v5, so three of MA-240's ledger checks fail",
-      "status": "In Progress",
-      "notes": "Repo tooling: scripts/board_fit.js let a diff's base tree lack a repo-only board added since, while the tree being checked still failed closed without it (found and fixed on MA-260's branch, 30 Oct 2026). Stopped by MA-303 (Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\"); QA on the built web app, on request, is MA-304."
+      "status": "Done",
+      "notes": "Repo tooling: scripts/board_fit.js let a diff's base tree lack a repo-only board added since, while the tree being checked still failed closed without it (found and fixed on MA-260's branch, 30 Oct 2026). Stopped by MA-303 (Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\"); QA on the built web app, on request, is MA-304. Closed unbuilt (Arun, 2 Nov 2026): MA-303 deleted scripts/board_fit.js."
     },
     {
       "key": "MA-294",
