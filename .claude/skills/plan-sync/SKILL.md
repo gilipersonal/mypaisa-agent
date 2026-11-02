@@ -1,6 +1,6 @@
 ---
 name: plan-sync
-description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates), with the boards in docs/design/ (MyPaisa iOS v1, DS v1 and app v1, read as they are on disk; git is their only record) and with the Confluence space mypaisaa-agent (pages, versions, board previews); publish the pages rendered from the repo, fix or file every drift, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
+description: Keep MyPaisa's plan, designs, Jira, Confluence and code in step. Compare docs/trace.json with Jira (keys, parents, labels, status, the phase epics' due dates; incrementally, from docs/jira-sync.json, or all of it with --all), with the board files the trace cites in docs/design/ (their files and board names, never their content; MA-303) and with the Confluence space mypaisaa-agent (pages, versions, read-back hashes, board previews); publish the pages rendered from the repo, fix or file every drift in one table, and render docs/TRACE.md. Use before starting a story ("start MA-n", "pick up MA-n", /jira-flow:work), after any planning or design round, when a phase, story or board is added or changed, or when asked "is the plan in sync", "check drift", "sync design and Jira".
 ---
 
 # Plan sync
@@ -10,8 +10,19 @@ The rule is `.claude/rules/plan-sync.md`; the trace's schema is
 check that needs Jira and Confluence; `scripts/plan_sync.py` is the
 repo-side half and runs as a gate.
 
-Arguments: `MA-<n>` (one story, before it starts), `--all` (everything; the
-default), `--jira`, `--design` or `--confluence` (one side only).
+Arguments: `MA-<n>` (one story, before it starts), none (the default: Jira
+read incrementally, Confluence and the repo in full), `--all` (the full
+sweep, Jira included: weekly, or when unsure), `--jira`, `--design` or
+`--confluence` (one side only).
+
+Since MA-303 nothing here or in `scripts/plan_sync.py` reads a board's
+content. Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design.
+Lets stop that... Plan Sync is for keeping the Jira, confluence and
+implementation in sync. We can keep that but it needs to faster and smart.
+No need to any check on prototype v5." What stays of the designs is the
+trace's link to them: a cited board file exists, its folder exists, its
+board name is one of its canvas's titles, and a UI story has a board before
+it starts.
 
 Ids: Jira cloudId `81c51173-bbea-4905-bbc5-1a880fa348bb`, project `MA`,
 transitions in `.claude/jira-flow.json`. The board folders in
@@ -33,13 +44,39 @@ Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
 - Run on the story's branch (`MA-<n>-...`), never on `main`; with no story
   branch, create the sync task first (`/jira-flow:plan`) or report only.
 - Run `python3 scripts/plan_sync.py check` and keep its output: it is the
-  repo-side drift.
+  repo-side drift. On a story branch, also run
+  `python3 scripts/plan_sync.py pr-files`: it lists the product files the
+  branch changes (committed, uncommitted and untracked, under `web/`, `ios/`,
+  `src/`, `infra/`) that another story's `code` claims, or no story claims.
 
 ## 1. Jira against the trace
 
-Query `project = MA ORDER BY key ASC` (or `key = MA-<n>`), fields summary,
-status, issuetype, parent, labels, `responseFields` limited to those, every
-page.
+Jira is read incrementally (MA-303). `docs/jira-sync.json` records the last
+sync's time, the keys still drifting (`pending`), and per key a short hash of
+what Jira said (summary, parent, labels, status, due date) and of the
+trace's row.
+
+1. `python3 scripts/plan_sync.py jira-sync query` prints the JQL to run:
+   `project = MA AND (updated >= "<the day before the last sync>" OR key in
+   (<pending, and rows changed in the repo since>))`, or the full
+   `project = MA ORDER BY key ASC` when there is no last sync, the list would
+   be long, or `--all` is given. For one story, `key = MA-<n>`. Note the time
+   before the query runs.
+2. Run it (`searchJiraIssuesUsingJql`, fields summary, status, issuetype,
+   parent, labels, duedate, `responseFields` limited to those, every page) and
+   write the issues to a scratch file as a JSON list of `{key, summary,
+   parent, labels, status, duedate}` (`parent` the parent's key).
+3. `python3 scripts/plan_sync.py jira-sync compare <file>` (add `--all` on
+   the full sweep, so a trace key Jira lacks is reported too) prints the
+   drift table below, rows in key order. Fix each row as the table says.
+4. When fixed, `python3 scripts/plan_sync.py jira-sync record <file> --at
+   <the time noted in 1>` (with `--all` on the full sweep): clean issues get
+   their hashes, drifting ones stay in `pending` and are read again next
+   time, and `last_sync` moves on. Commit `docs/jira-sync.json` with the
+   trace.
+
+`/plan-sync --all` is the full sweep: weekly, or whenever a sync was missed
+or the record is in doubt. Only it finds a trace row whose issue is gone.
 
 | Found | Do |
 | --- | --- |
@@ -57,9 +94,12 @@ asking in this repo (`.claude/rules/ship-autopilot.md`).
 ## 2. The boards
 
 The boards are drawn in the repo and nowhere else, and git is their only
-record (rule 7, MA-260, MA-296). `python3 scripts/plan_sync.py check` reads
-every board folder under `claude_design` as it is on disk. Then, by hand,
-against the branch's changes (`git diff main --stat -- docs/design/`):
+record (rule 7, MA-260, MA-296). `python3 scripts/plan_sync.py check` checks
+only the trace's link to them: each cited board file exists, each folder
+under `claude_design` exists, and each board name is one of its canvas's
+titles. No board's content is checked (MA-303); Arun judges the boards by
+eye in each design round. Then, by hand, against the branch's changes
+(`git diff main --stat -- docs/design/`):
 
 | Found | Do |
 | --- | --- |
@@ -127,6 +167,11 @@ made in Confluence.
      the body (`format: html`, `versionMessage` naming the story), and
      record what is live:
      `python3 scripts/confluence_docs.py set-page <slug> <id> <new version> published`.
+     Then read the page back (`getConfluenceContent`, `detail: full`, html),
+     write its body to a scratch file and record it:
+     `python3 scripts/confluence_docs.py set-readback <slug> <file>`. The
+     check refuses a page whose read-back differs from what was sent, so a
+     publish that Confluence changed or dropped is caught (MA-303).
      Big pages are best sent by sub-agents, a few pages each, each given the
      file paths and ids; check afterwards that every page in `pending` is
      gone.
@@ -144,11 +189,18 @@ is reported and archived by Arun.
 - Fix what the check reports: a missing section (fix the row, or the
   ARCHITECTURE heading if the doc changed), a cited key not traced (add the
   row), a UI row with no board (`todo` plus a note saying which design round
-  will draw it), a board date with a wrong weekday or a board motion role on
-  the wrong element (`fade` in place of `label` or `dot`, or `!important` on a
-  chart label's or dot's own transform), or a tool ARCHITECTURE §8 does not
-  define (the right name, or the tool added to §8 first). A board is fixed in
-  its folder, through `/design-first`.
+  will draw it), a cited board file or board name that is gone (fix the row,
+  or redraw the board through `/design-first`), or a code path that matches
+  nothing.
+- Fix what `pr-files` reports: a file another story claims is either added
+  to this story's `code` (shared work) or moved to its own story's branch; a
+  file no story claims is added to this story's `code`.
+- `python3 scripts/plan_sync.py selftest` runs only when its code or its
+  fixtures changed: it hashes `scripts/plan_sync.py`, `confluence_docs.py`,
+  `confluence_record.py`, `roadmap.py`, `.claude/hooks/plan_sync_hook.py` and
+  the files its cases read, and reuses a pass recorded in
+  `review/.cache/plan_sync_selftest.json` in the last 7 days
+  (`selftest REUSED`). `selftest --force` always runs it.
 
 ## 4. For one story about to start (`MA-<n>`)
 
@@ -169,7 +221,17 @@ key, and say what it printed:
 
 ## 5. Report
 
-One block: what drifted (Jira, the boards, Confluence, repo), what was fixed, what was
+Drift is reported as one table, Jira, Confluence, the boards and the repo
+together:
+
+| Item | Field | Repo | Jira or Confluence | Wins, and why | Fix |
+| --- | --- | --- | --- | --- | --- |
+| MA-20 | status | To Do | Done | Jira: it holds who does what and its status | copied into the row |
+| MA-9 | due date | 2027-01-06 | 2026-12-20 | the roadmap: dates come from estimates (rule 9) | due date set in Jira |
+| phase-05 | page | v14, sha 3f2a | v15, edited there | the repo: Confluence is generated (rule 8) | the edit carried into PLAN.md, page republished |
+
+`jira-sync compare` prints the Jira rows in this shape; add the Confluence,
+board and repo rows to it. Then one line each: what was fixed, what was
 filed (keys), what needs Arun (a missing issue to confirm, a deleted file).
 Commit the trace and `TRACE.md` on
 the story branch as `MA-<n>: Sync the trace with Jira and the boards`; they ship

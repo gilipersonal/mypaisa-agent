@@ -91,6 +91,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-300 | Close the Impeccable deep scan's remaining P0, P1 and P3 findings, and its motion and performance fixes, across DS v1, iOS v1, Web v4 and Prototype v5 | In Progress | §9.1, §9.3, §9.4 | none |  |
 | MA-301 | Design options for the deep scan's redesign items: calmer Projection and statement Confirm, nested cards, a web-only join, the type and icon stack and the Cmd+K palette | In Progress | §9.1, §9.3, §9.4 | todo |  |
 | MA-302 | Prototype v4's controls reach 44 pt, as the picked v4 boards and Prototype v5 now do | To Do | §9.3, §9.4 | none |  |
+| MA-303 | Stop the checks on the design boards, and make plan-sync and the review ledger faster and smarter | In Progress | §16 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

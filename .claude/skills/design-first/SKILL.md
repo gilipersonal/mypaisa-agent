@@ -1,6 +1,6 @@
 ---
 name: design-first
-description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, a React Native shell whose every visible piece is SwiftUI, one spec in the MyPaisa iOS v1 boards in docs/design/ios-v1/, for iPhone, iPad and the foldable), the web app (web/, a SvelteKit 3 PWA with the chat, the dashboard and the Admin center, at desktop and phone width (390), from the browser boards in MyPaisa app v1, docs/design/app-v1/), the chat's cards, buttons, guided flows and in-place corrections, the charts (Swift Charts and the web's LayerChart in one house style), the motion, the design pages (the agent journey, the market agent) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps), drawn in the repo as .dc.html boards on MyPaisa DS v1 (docs/design/), keeping the record in docs/design/reviews/MA-<n>/; review every page for glitches locally in light and dark at every size class, legible at 25% brightness; publish the round as a private Claude Artifact and give Arun its link; and build only the option Arun picks.
+description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, a React Native shell whose every visible piece is SwiftUI, one spec in the MyPaisa iOS v1 boards in docs/design/ios-v1/, for iPhone, iPad and the foldable), the web app (web/, a SvelteKit 3 PWA with the chat, the dashboard and the Admin center, at desktop and phone width (390), from the browser boards in MyPaisa app v1, docs/design/app-v1/), the chat's cards, buttons, guided flows and in-place corrections, the charts (Swift Charts and the web's LayerChart in one house style), the motion, the design pages (the agent journey, the market agent) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps), drawn in the repo as .dc.html boards on MyPaisa DS v1 (docs/design/), keeping the record in docs/design/reviews/MA-<n>/; publish the round as a private Claude Artifact, give Arun its link and let him judge it by eye (no gates run on boards, MA-303); and build only the option Arun picks.
 ---
 
 # Design first
@@ -13,9 +13,10 @@ Every new UI or UX change to MyPaisa is designed before it is built, in four ste
    design"; until then the boards were drawn in Claude Design). The design system lives in `docs/design/ds-v1/`
    (MyPaisa DS v1), the screens in `docs/design/ios-v1/` (MyPaisa iOS v1, the app) and `docs/design/app-v1/` (MyPaisa
    app v1, the web app's browser boards); the record stays in `docs/design/reviews/MA-<n>/`.
-2. **Review every page for glitches** before Arun sees it (Arun, MA-101: "Make sure the designs are reviewed properly
-   for any kind of glitches, this app will be adaptive and responsive"): render it locally, look at it in light and
-   dark and at every size class, fix, look again.
+2. **No gates on the boards** (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design. Lets stop
+   that."). Open each board once to see that it loads, in light and dark, then go on; Arun judges the round by eye.
+   The glitch review at every size class (MA-101) and the board gates are retired; the same checks come back as QA on
+   the built code, with Playwright and Argos, when Arun asks.
 3. **Publish the round as a private Claude Artifact**, give Arun its link and ask for the pick. A round run in
    Google Antigravity, which cannot publish a Claude Artifact, shows its options as a local page instead (MA-297).
 4. **Arun picks one option.** Build only that option, and only after the pick, made in the current request.
@@ -131,10 +132,10 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
     figure, SF Symbols for icons.
 - **Legible at 25% brightness** (MA-181; Arun, 25 Oct 2026: "the text and component should be clearly visible even in
   25% mobile brightness"), in light and in dark, in the app and the web app:
-  - every colour pair passes `python3 scripts/contrast_check.py`, at full brightness and with the screen dimmed to 25%
-    (primary text and figures 7:1, and 4.5:1 dimmed; secondary and coloured text 4.5:1, and 3:1 dimmed; a chart line,
-    a meter, a switch's ring or focus 3:1, and 1.8:1 dimmed); a new token or a new pairing goes into the gate before
-    a board uses it;
+  - every colour pair meets these, at full brightness and with the screen dimmed to 25% (primary text and figures
+    7:1, and 4.5:1 dimmed; secondary and coloured text 4.5:1, and 3:1 dimmed; a chart line, a meter, a switch's ring
+    or focus 3:1, and 1.8:1 dimmed); they are targets for the design and are measured on the built code when Arun
+    asks for QA, not by a gate on the boards (MA-303);
   - no tertiary grey (`--mp-ink-3`) for anything a member must read: a figure, a label, a caption that carries
     meaning; it is for decoration and dividers only;
   - glass carries labels only, never body copy, and is measured over its worst backdrop.
@@ -215,42 +216,30 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   nearest board there, so it keeps the frames, the kit's classes and the shared files it loads by relative path:
   `./support.js` (the board runtime each folder carries), `tokens.css`, `motion.css`, `motion.js` and,
   for the app, `ios.css`. A design that is not a board set, such as a prototype, gets its own folder under
-  `docs/design/` and loads the shared files from a board folder (`../app-v1/tokens.css`, as `prototype-v5/` does);
-  the board gate must list it among its repo-only boards, or it is never measured.
+  `docs/design/` and loads the shared files from a board folder (`../app-v1/tokens.css`, as `prototype-v5/` does).
+  No check runs on a prototype (MA-303).
 - **No record to write.** Git is the boards' only record (MA-296): there is no record file to update after drawing.
   A file removed on purpose takes every trace row that names its boards with it, in the same change
   (`python3 scripts/plan_sync.py check` refuses a cited board that is gone).
 - **`tokens.css` and the motion files are copied** from `ds-v1/` into `ios-v1/` and `app-v1/`, with `ios.css`, byte
   for byte, after every change: each board loads the copy beside it. A snapshot of
   `tokens.css` goes into `docs/design/reviews/MA-<n>/` at the end of the round, as its record. `docs/design/ds-v1/`
-  is the source; once `ios/` exists, its colour assets are generated from it (MA-165). A token change is measured
-  before it is copied: change `ds-v1/` and run `python3 scripts/contrast_check.py --report`, where every pair
-  must pass and only the copies not yet made may fail; after the copies the whole gate
-  (`--selftest`, then the plain run) passes.
+  is the source; once `ios/` exists, its colour assets are generated from it (MA-165).
 - **Where Arun looks: a private Claude Artifact per round** in Claude Code, **a local page** in Antigravity. Each round
   is published as an Artifact (step 3) and its link goes in the round's `decision.md`; a round run in Antigravity
   shows the same host page on localhost instead, and `decision.md` names its path (MA-297). There is no whole-set Artifact to republish when a board changes (MA-296 retired
   the MyPaisa Boards Artifact); a board is otherwise linked by its file in the repo.
 - **The record** in `docs/design/reviews/MA-<n>/`, committed on the issue's branch: `decision.md` (the request in
-  Arun's words, the round's Artifact link or, for a round run in Antigravity, its local page, the options with rationale and trade-offs, what the build would touch, the
-  glitches found and fixed, the pick and its date), the round's host page (`options.html`, step 3) and `tokens.css`.
+  Arun's words, the round's Artifact link or, for a round run in Antigravity, its local page, the options with rationale and trade-offs, what the build would touch,
+  the pick and its date), the round's host page (`options.html`, step 3) and `tokens.css`.
 
-## 3. Review for glitches, publish the round, then get the pick
+## 3. Publish the round, then get the pick
 
-- **Glitch review, every time,** locally, before anything is published:
-  1. The gates on the round's boards: the board gate, `node scripts/board_fit.js --only <pattern>` (a pattern on the
-     board's path; it measures every frame at every size its class covers, in Chromium and WebKit, and fails closed),
-     the contrast gate (`python3 scripts/contrast_check.py`) and `python3 scripts/plan_sync.py check` (board names,
-     dates, motion roles, tools).
-  2. Then look: serve `docs/design/` on localhost, open each board with Playwright, screenshot it section by section
-     in light and dark and at every size class it claims, settled with `?static=1` and moving without it, click
-     through anything interactive, and read every image: clipped or touching text, icons showing as words,
-     misalignment, overflow, empty halves, light/dark differences, contrast, text a dimmed screen would lose (the
-     contrast gate), glass on glass, text clipped at AX5, targets under 44 pt (44 px on the web), motion that loops or
-     ignores Reduce Motion, charts out of line, numbers that disagree between pages or between the two doors.
-  Fix and look again. When Arun asks for it (as on MA-101), fresh reviewers that did not make the pages do this pass
-  too, the way every review here runs (`.claude/rules/independent-review.md`: gates first, parallel lanes, the delta
-  after round 1, the fixed list), and their blockers are fixed before Arun sees the work.
+- **No gates on the boards** (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design. Lets stop
+  that."). Before publishing, run `python3 scripts/plan_sync.py check`, which keeps the trace, Jira and
+  Confluence in step and finds every board a story cites on disk; it reads nothing inside a board. Open each board
+  once to see that it loads, in light and dark. Arun judges the round by eye, and no reviewer lane looks at boards
+  (`.claude/rules/independent-review.md`).
 - **Publish the round** as a private Claude Artifact, the way MA-291 published Prototype v5
   (`docs/design/reviews/MA-291/decision.md`, "Where it lives"):
   1. Write a host page, `docs/design/reviews/MA-<n>/options.html`, that names the request, lists the options (the
@@ -297,7 +286,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
      JSON model), `web/` for the web app (SvelteKit 3, Tailwind CSS 4, shadcn-svelte, TanStack, LayerChart; MA-229), `cards/` and the card pieces at both doors
      (SwiftUI in `ios/`, Svelte components in `web/`, the card types in `web/src/lib/`) for the chat's cards, the house
      chart style for charts, and the shared motion at both doors.
-  3. Run the gates in `.claude/jira-flow.json` (the plan-sync gate with `python3 scripts/contrast_check.py` now;
+  3. Run the gates in `.claude/jira-flow.json` (the plan-sync gate now;
      once `pyproject.toml` lands, `uv run ruff check . && uv run pyright && uv run pytest`; once `ios/` exists, the
      iOS gates of MA-166: eslint and Jest for the shell, swift-format lint, `xcodebuild test` on the iPhone and iPad
      simulators with XCUITest, the snapshot tests and `performAccessibilityAudit()`, and the `PERFORMANCE.md` benches

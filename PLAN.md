@@ -621,6 +621,14 @@ Claude's:
   suggestion chips, segmented control and composer that MA-300's live
   accessibility gate found under 44x44, brought in line with the picked v4
   boards and Prototype v5.
+- **Stop the checks on the design boards; plan-sync and the review ledger
+  faster and smarter (MA-303):** the six checks on `docs/design/` stopped
+  (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code
+  implemented"), nothing checks Prototype v5, and 136 ledger checks retired;
+  plan-sync's selftest is faster and runs only when its code changed, Jira is
+  compared since the last sync, Confluence is read back by hash, and a PR's
+  files are checked against the stories that claim them. QA on the code, with
+  Playwright and Argos and only on request, follows with MA-194 and MA-165.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -889,8 +897,9 @@ arrives from phase 2.
   optional Face ID lock; signing out a device and leaving the household; the
   last figures offline with their time and messages sent once back online;
   VoiceOver, Dynamic Type to AX5 and the other accessibility settings on
-  every screen; every text and control legible in light and dark at 25% brightness, which
-  `scripts/contrast_check.py` measures on every PR (ARCHITECTURE §9.1).
+  every screen; every text and control legible in light and dark at 25% brightness
+  (ARCHITECTURE §9.1), checked on the code by QA on request; MA-303 stopped
+  `scripts/contrast_check.py`, which measured it on the boards.
 - **Web Push (MA-200):** a reply or a check-in reaches the installed web app
   when it is closed, only on a device with no fresh presence, under the same
   privacy rule as Apple push; the VAPID private key is a write-only SSM
@@ -2122,7 +2131,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 50.25 (and 3.5 of yours) | 41 | Mon 2 Nov 2026 | Wed 6 Jan 2027 |
+| 0 Foundations at every door | 51.25 (and 3.5 of yours) | 41 | Mon 2 Nov 2026 | Wed 6 Jan 2027 |
 | 1 Talk: sign in and chat with the agent at every door | 109 (and 0.5 of yours) | 88 | Thu 7 Jan 2027 | Thu 13 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 49.5 | 40 | Fri 14 May 2027 | Fri 9 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Mon 12 Jul 2027 | Fri 30 Jul 2027 |

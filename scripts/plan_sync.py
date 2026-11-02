@@ -3,8 +3,8 @@
 
 The repo-side half of the plan-sync check. It reads docs/trace.json (the
 schema is in .claude/skills/plan-sync/reference/trace-schema.md) against
-ARCHITECTURE.md, PLAN.md, the other docs, the boards in docs/design/ (read
-from their folders; git is their record since MA-296), the roadmap
+ARCHITECTURE.md, PLAN.md, the other docs, the boards the trace cites in
+docs/design/ (their files and board names; git is their record since MA-296), the roadmap
 (scripts/roadmap.py), the Confluence pages rendered from them
 (scripts/confluence_docs.py) and the code each story names. The Jira and live
 Confluence halves need their MCP tools and live in /plan-sync.
@@ -12,12 +12,20 @@ Confluence halves need their MCP tools and live in /plan-sync.
     python3 scripts/plan_sync.py check         # fail on drift (a jira-flow gate and a CI job)
     python3 scripts/plan_sync.py render        # rewrite docs/TRACE.md from the trace
     python3 scripts/plan_sync.py start MA-149  # what a story needs before work starts
-    python3 scripts/plan_sync.py selftest      # board names, dates and motion roles against known cases, check on a mutated board,
-                                               # and the plan-sync hook's selftest (CI)
+    python3 scripts/plan_sync.py selftest      # board names, pr-files and check on mutated records, and the hook's selftest (CI);
+                                               # reused while its code and fixtures are unchanged (--force runs it)
+    python3 scripts/plan_sync.py pr-files [--base origin/main]  # product files this branch changes that another story,
+                                               # or no story, claims
+    python3 scripts/plan_sync.py jira-sync query|compare|record  # Jira read incrementally (docs/jira-sync.json; /plan-sync)
+
+Since MA-303 (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets stop that"), no board's content is
+read: only that a cited board file exists, its folder exists and its board name is one of its canvas's titles.
 """
 from __future__ import annotations
 
 import datetime
+import hashlib
+import queue
 import shutil
 import subprocess
 import tempfile
@@ -25,6 +33,7 @@ import html
 import json
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -294,148 +303,6 @@ def shape_errors(trace: dict) -> list[str]:
     return errors
 
 
-_MONTHS = {m: i + 1 for i, m in enumerate("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split())}
-_DAYS = "Mon Tue Wed Thu Fri Sat Sun".split()
-_DATE = re.compile(r"\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,?\s+(\d{1,2})(?:st|nd|rd|th)?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?:\s+(\d{4}))?\b")
-
-
-def _plain(text: str) -> str:
-    """A board's text as dates are read in it: a tag becomes a space (so "Thu&nbsp;<b>23 Oct</b>" reads as a date and
-    "23 Oct</span>wifi" keeps its word end), and a script's or style's body is read as raw text, never as tags, so a
-    comparison such as "i<n" or "a < b" cannot swallow the text after it."""
-    out, pos = [], 0
-    for m in re.finditer(r"<(script|style)\b[^>]*>(.*?)</\1\s*>", text, re.S | re.I):
-        out.append(re.sub(r"<[A-Za-z/!][^>]*>", " ", text[pos:m.start()]))
-        out.append(" " + m.group(2) + " ")
-        pos = m.end()
-    out.append(re.sub(r"<[A-Za-z/!][^>]*>", " ", text[pos:]))
-    return html.unescape("".join(out)).replace("\xa0", " ")
-
-
-def date_errors(text: str) -> list[str]:
-    """Each weekday-and-date on a board ("Fri 23 Oct") whose weekday is wrong (MA-161 review: lesson 10, dates agree).
-    The boards are set in October 2026: a date with no year is right if its weekday fits 2026, or 2027 for January
-    to September (a date ahead, such as the next results day)."""
-    bad = []
-    plain = _plain(text)
-    for m in _DATE.finditer(plain):
-        day, num, mon, year = m.group(1), int(m.group(2)), _MONTHS[m.group(3)], m.group(4)
-        years = [int(year)] if year else ([2026, 2027] if mon < 10 else [2026])
-        fits = False
-        for y in years:
-            try:
-                fits = fits or _DAYS[datetime.date(y, mon, num).weekday()] == day
-            except ValueError:
-                pass
-        if not fits:
-            bad.append(m.group(0))
-    return sorted(set(bad))
-
-
-def agent_tools() -> set[str]:
-    """The agent's tools as ARCHITECTURE 8 lists them (its **Tools:** paragraph)."""
-    m = re.search(r"\*\*Tools:\*\*(.*?)\n\n", ARCH.read_text(), re.S) if ARCH.exists() else None
-    return set(re.findall(r"`([a-z]+(?:_[a-z]+)+)", m.group(1))) if m else set()
-
-
-def tool_errors(text: str, tools: set[str]) -> list[str]:
-    """Each tool a board's run or Activity row names that ARCHITECTURE 8 does not define (MA-161 review, rounds 3 and
-    4: read_file, read_image and render_chart survived from the Telegram era beside extract_document and chart_series)."""
-    found = set(re.findall(r"\b(?:" + "|".join(_RETIRED_TOOLS) + r")\b", text))  # retired names, refused anywhere
-    for ctx in re.findall(r"tools\w*:\s*(\[\[.*?\]\]|'[^']*')|<span>Tools</span><span>([^<]*)", text, re.S):
-        found |= set(re.findall(r"\b[a-z]+(?:_[a-z]+)+\b", " ".join(ctx)))
-    return sorted(found - tools)
-
-
-_RETIRED_TOOLS = ("read_file", "read_image", "render_chart")  # Telegram-era names, never the app's
-
-
-_MOTION_NEEDS = {"label": "mp-chartlbl", "dot": "mp-chartdot"}
-
-
-def stroke_errors(text: str) -> list[str]:
-    """Each <use> that draws a shared SVG def holding a line or a path (a line, path, polyline, polygon, circle or
-    ellipse). The copy is drawn from a def outside the chart's own SVG, so the kit's non-scaling-stroke rule never
-    reaches it, and under preserveAspectRatio="none" its strokes stretch with the box (MA-281 review, round 1: every
-    candle's wick drew wider than its body). In a stretched SVG a shared def holds filled rects only; strokes belong
-    in the chart's own SVG. A <use> there of a def the board does not hold is refused too. An SVG scaled evenly (the
-    logo, an icon) is not stretched, so its <use> is left alone."""
-    defs = {}
-    for m in re.finditer(r"""<(g|symbol)\b[^>]*\bid\s*=\s*["']([^"']+)["'][^>]*>""", text):
-        depth, i = 1, m.end()
-        for t in re.finditer(r"<(/?)(g|symbol)\b[^>]*>", text[i:]):   # to the def's own closing tag, nested groups included
-            depth += -1 if t.group(1) else 1
-            if depth == 0:
-                defs[m.group(2)] = text[i:i + t.start()]
-                break
-        else:
-            defs[m.group(2)] = text[i:]
-    bad = []
-    # Only an SVG stretched to its box draws a <use> wrong: a mark scaled evenly (a logo, an icon) keeps its strokes.
-    stretched = "".join(m.group(1) for m in re.finditer(
-        r"""<svg\b[^>]*\spreserveAspectRatio\s*=\s*["']?none["']?[^>]*>(.*?)</svg>""", text, re.S | re.I))
-    for m in re.finditer(r"""<use\b[^>]*?\s(?:xlink:)?href\s*=\s*["']?#([^"'\s>]+)""", stretched):
-        if "{{" in m.group(1):
-            continue  # an id the template fills in cannot be read here
-        body = defs.get(m.group(1))
-        if body is None:
-            bad.append(f"a <use> of #{m.group(1)}, which it does not define")
-        elif re.search(r"<(line|path|polyline|polygon|circle|ellipse)\b", body):
-            bad.append(f"a <use> of #{m.group(1)}, a shared def that draws lines or paths (draw them in the chart's own SVG)")
-    return sorted(set(bad))
-
-
-def motion_errors(text: str) -> list[str]:
-    """Each element a board gives the label or dot motion role without the class whose transform that role's keyframe
-    ends on: the arrival would leave it moved by half its size or more (MA-161 review, round 2: chart axes and a dot
-    shifted off their cards once the motion settled, correct only with ?static=1)."""
-    bad = []
-    for m in re.finditer(r"<[a-z][\w-]*\b[^>]*\sdata-mo\s*=\s*[\"']?(label|dot)\b[^>]*>", text):
-        cls = re.search(r"""\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))""", m.group(0))
-        names = (cls.group(1) or cls.group(2) or cls.group(3) or "").split() if cls else []
-        if _MOTION_NEEDS[m.group(1)] not in names:
-            bad.append(f'data-mo="{m.group(1)}" on class "{" ".join(names)}" (use data-mo="fade")')
-    # motion.js gives every .mp-chartlbl and .mp-chartdot its role at run time, and the arrival's keyframe overrides
-    # any transform that is not !important. So on a board that loads motion.js, refuse a transform that reaches a chart
-    # label or dot other than the one its keyframe ends on: through a rule naming the class in any order or position,
-    # a rule for another class the element carries, or an inline style.
-    if "motion.js" not in text:
-        return sorted(set(bad))
-    ends = {"mp-chartlbl": "translate(-50%,-100%)", "mp-chartdot": "translate(-50%,-50%)"}
-    carried, static, templated = {}, set(), set()
-    for m in re.finditer(r"<[a-z][\w-]*\b[^>]*>", text):
-        cls = re.search(r"""\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))""", m.group(0))
-        raw = (cls.group(1) or cls.group(2) or cls.group(3) or "") if cls else ""
-        names = [n for n in re.sub(r"\{\{.*?\}\}", " ", raw).split()]
-        static |= set(names)
-        for base in ends:
-            if base in names and "{{" in raw:
-                templated.add(base)  # a class given by the template (Browser's {{ m.pos }}) cannot be read here
-            if base in names:
-                for n in names:
-                    if n != base:
-                        carried.setdefault(n, base)
-                st = re.search(r"""\sstyle\s*=\s*["']([^"']*)""", m.group(0))
-                if st and re.search(r"(?<![\w-])transform\s*:", st.group(1)) and "!important" not in st.group(1):
-                    bad.append(f"an inline transform on a .{base} (add !important to that transform)")
-    for m in re.finditer(r"([^{}]*)\{([^{}]*)\}", "\n".join(re.findall(r"<style\b[^>]*>(.*?)</style>", text, re.S | re.I))):
-        sel = " ".join(m.group(1).split(";")[-1].split())
-        decl = re.search(r"(?<![\w-])transform\s*:\s*([^;}]*)", m.group(2))
-        if not decl or "!important" in decl.group(1):
-            continue
-        val = decl.group(1).replace(" ", "")
-        for part in sel.split(","):
-            last = part.strip().split()[-1] if part.strip() else ""
-            classes = set(re.findall(r"\.([\w-]+)", last))
-            hit = [b for b in ends if b in part] + [carried[c] for c in classes if c in carried]
-            if not hit and templated and re.fullmatch(r"(?:\.[\w-]+)+", part.strip()) and not classes & static:
-                hit = sorted(templated)  # a class-only rule for a class no element carries in the markup: the template's
-            for base in hit:
-                if val != ends[base]:
-                    bad.append(f"its own transform on '{part.strip()}', which reaches a .{base} (add !important to that transform)")
-    return sorted(set(bad))
-
-
 def board_files(projects: dict, root: Path = ROOT) -> tuple[list[Path], list[str]]:
     """Every board page in the folders docs/trace.json's claude_design names (the key's name is history: the boards
     have been drawn in the repo since MA-260, and git has been their only record since MA-296). Fails closed: a
@@ -451,25 +318,6 @@ def board_files(projects: dict, root: Path = ROOT) -> tuple[list[Path], list[str
             continue
         files += [f for f in sorted(base.rglob("*.html")) if f.is_file() and f.name not in NOT_BOARDS]
     return files, errors
-
-
-TELEGRAM_FILE_RE = re.compile(r"^(?:Telegram|Mini App)\b", re.I)
-TELEGRAM_CAP_RE = re.compile(r"(?:^(?:Telegram|Mini App)\s*·|\b(?:Telegram|Mini App)\s+(?:avatar|Overview|opening)\b)", re.I)
-TELEGRAM_CODE_RE = re.compile(r'''(--tg-[a-z0-9_-]+|(?<![a-zA-Z0-9_-])\.(?:tg(?:-[a-z0-9_-]+)?|tgh(?:-[a-z0-9_-]+)?|tma-[a-z0-9_-]+)(?![a-zA-Z0-9_-])|\bclass=\s*["'][^"']*(?<![a-zA-Z0-9_.-])(?:tg-[a-z0-9_-]+|tgh(?:-[a-z0-9_-]+)?|tma-[a-z0-9_-]+|tg(?![a-zA-Z0-9_.-])))''')
-
-
-def telegram_errors(text: str, name: str = "", caps: set[str] | None = None) -> list[str]:
-    """MA-278: no Telegram or Mini App file, frame caption or .tg-*/.tgh/.tma-* rule may live in a board folder."""
-    out: list[str] = []
-    base = Path(name).name if name else ""
-    if base and TELEGRAM_FILE_RE.search(base):
-        out.append(f"retired Telegram/Mini App filename {base!r}")
-    for c in sorted(caps or set()):
-        if TELEGRAM_CAP_RE.search(c):
-            out.append(f"Telegram/Mini App frame or board {c!r}")
-    if m := TELEGRAM_CODE_RE.search(text):
-        out.append(f"Telegram/Mini App style or class {m.group(0)!r}")
-    return out
 
 
 def check(trace: dict) -> tuple[list[str], list[str]]:
@@ -526,21 +374,10 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
             if f"MA-{n}" not in keys:
                 errors.append(f"{doc.relative_to(ROOT)} cites MA-{n}, which is not in the trace")
 
-    # Every board page in the board folders, read as it is on disk: its dates, tools, motion roles, strokes and iOS/web-only rules.
-    files, missing = board_files(ctx["projects"])
-    errors += missing
-    for path in files:
-        name, text = path.relative_to(ROOT).as_posix(), path.read_text()
-        for d in date_errors(text):
-            errors.append(f"board date: {name} says {d!r}, a wrong weekday")
-        for d in tool_errors(text, ctx.setdefault("tools", agent_tools())):
-            errors.append(f"board tool: {name} names {d!r}, which ARCHITECTURE 8's Tools do not define")
-        for d in motion_errors(text):
-            errors.append(f"board motion: {name} has {d}: the settled arrival would move it")
-        for d in stroke_errors(text):
-            errors.append(f"board stroke: {name} has {d}: its strokes stretch with the chart")
-        for d in telegram_errors(text, name, captions(path)):
-            errors.append(f"board telegram: {name} has {d} (MA-278: iOS app and web browser only)")
+    # The board folders the trace names exist. A board's content is not read here: the design check that reads it went
+    # with MA-303 (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets stop that"); the trace-to-design
+    # sync stays, in item_findings (a cited board file exists and its board name is one of its canvas's titles).
+    errors += board_files(ctx["projects"])[1]
 
     # The rendered table is current.
     if not TRACE_MD.exists() or TRACE_MD.read_text() != render(trace):
@@ -561,7 +398,7 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
     for d in CODE_DIRS:
         for f in sorted((ROOT / d).rglob("*")) if (ROOT / d).is_dir() else []:
             rel = f.relative_to(ROOT).as_posix()
-            if f.is_file() and not any(f.match(c) or rel == c or rel.startswith(c + "/") for c in claimed):
+            if f.is_file() and not any(claims(c, rel) for c in claimed):
                 warnings.append(f"code: {rel} belongs to no story's code paths")
     return errors, warnings
 
@@ -652,56 +489,6 @@ def start(trace: dict, key: str) -> int:
 
 
 # Board names the check must accept (True) or refuse (False), from the reviews of PR #32.
-# Tool names the check must accept and refuse against a stand-in list (MA-161 review, round 4, e1).
-TOOL_CASES = [
-    ("tools: [['get_portfolio', '140 ms'], ['chart_series', '80 ms']]", True), ("tools: 'extract_document, propose_change'", True),
-    ("tools: [['render_chart', '80 ms']]", False), ("<span>Tools</span><span>read_image, propose_change</span>", False),
-    ("toolsW: 'get_signals, render_chart'", False), ("line: 'Sonnet · 2 calls · read_image'", False),
-]
-
-# Motion roles the check must accept and refuse (MA-161 review, round 2, e3).
-STROKE_CASES = [  # MA-281 review, round 1: a shared def under a stretched viewBox
-    ('<svg><defs><g id="c"><rect class="cb" x="1" y="1" width="1" height="2"></rect></g></defs></svg><svg viewBox="0 0 100 100" preserveAspectRatio="none"><use href="#c"></use></svg>', True),
-    ('<svg><defs><g id="c"><line class="wk" x1="1" x2="1" y1="0" y2="9"></line></g></defs></svg><svg viewBox="0 0 100 100" preserveAspectRatio="none"><use href="#c"></use></svg>', False),
-    ('<svg><defs><g id="c"><path d="M0 0 L9 9"></path></g></defs></svg><svg preserveAspectRatio="none"><use xlink:href="#c"></use></svg>', False),
-    ("<svg><defs><g id='c'><g><rect></rect></g><polyline points='0,0 1,1'></polyline></g></defs></svg><svg preserveAspectRatio='none'><use href='#c'></use></svg>", False),
-    ('<svg><defs><symbol id="c"><circle r="2"></circle></symbol></defs></svg><svg preserveAspectRatio=none><use href="#c"></use></svg>', False),
-    ('<svg preserveAspectRatio="none"><use href="#nowhere"></use></svg>', False),
-    ('<svg preserveAspectRatio="none"><path class="sim" d="M0 0 L9 9"></path></svg>', True),
-    ('<svg><defs><g id="mark"><path d="M0 0 L9 9"></path></g></defs></svg><svg viewBox="0 0 24 24"><use href="#mark"></use></svg>', True),
-    ('<svg preserveAspectRatio="none"><use href="#m{{ t.id }}"></use></svg>', True),
-]
-MOTION_CASES = [
-    ('<span class="mp-chartlbl" data-mo="label">', True), ('<div class="mp-chartdot x" data-mo="dot">', True),
-    ('<div class="hax" data-mo="label">', False), ('<div data-mo="dot" class="edot">', False),
-    ('<div class="gut" data-mo="fade">', True), ('<p data-mo="label">', False),
-    ("<div class='hax' data-mo='label'>", False), ('<div class=hax data-mo=label>', False),
-    ('<div data-class="mp-chartlbl" class="hax" data-mo="label">', False),
-    ('<script src="motion.js"></script><style>.mp-chartlbl.al { transform: translate(-100%, -100%); }</style>', False),
-    ('<script src="motion.js"></script><style>.mp-chartlbl.al { transform: translate(-100%, -100%) !important; }</style>', True),
-    ('<script src="motion.js"></script><style>.al.mp-chartlbl { transform: translate(-100%, 0); }</style>', False),
-    ('<script src="motion.js"></script><style>.pbox .mp-chartdot { transform: scale(2); }</style>', False),
-    ('<script src="motion.js"></script><style>.mp-chartlbl:last-child { transform: none; }</style>', False),
-    ('<script src="motion.js"></script><style>.lbl-ul { transform: translate(0, 0); }</style><span class="mp-chartlbl lbl-ul">', False),
-    ('<script src="motion.js"></script><span class="mp-chartdot" style="transform: scale(2)">', False),
-    ('<script src="motion.js"></script><style>.mp-chartlbl { transform: translate(-50%, -100%); }</style>', True),
-    ('<script src="motion.js"></script><span class="mp-chartlbl lbl-h {{ l.cls }}">', True),
-    ('<script src="motion.js"></script><style>.al { transform: translate(-100%, -100%); }</style><span class="mp-chartlbl {{ m.pos }}">', False),
-    ('<script src="motion.js"></script><style>.al { transform: translate(-100%, -100%) !important; }</style><span class="mp-chartlbl {{ m.pos }}">', True),
-    ('<style>.mp-chartlbl.al { transform: translate(-100%, -100%); }</style>', True),  # no motion.js: nothing animates, so nothing moves it
-]
-
-# Board dates the check must accept and refuse (MA-161 review, round 1: e3's timeline and lesson 10).
-DATE_CASES = [
-    ("Fri 23 Oct", True), ("Fri, 2 Oct", True), ("Sun 4 Oct", True), ("Mon 26 Oct 21:16", True),
-    ("Thu 29 Apr", True),            # next April's results day, 2027
-    ("Thu 23 Oct", False), ("Tue 20 Oct 2025", False), ("Wed 28 Oct", True), ("Sat 31 Oct", True),
-    ("Fri 31 Sep", False), ("Thursday 22 October", True), ("Thursday 23 October", False),
-    ("Thu&nbsp;23 Oct", False), ("Fri&nbsp;23 Oct", True), ("Thu <b>23 Oct</b>", False), ("Thu 23rd Oct", False),
-    ('<span>9:41 Thu 23 Oct</span><span class="ms">wifi</span>', False), ("a < b; 'Thu 23 Oct'; c > d", False),
-    ("<script>for(i=0;i<days.length;i++){s='Thu 23 Oct'} if(a>b){}</script>", False),
-]
-
 BOARD_CASES = [
     ("ds", "Foundations.dc.html", "1 · Colour", True), ("ds", "Foundations.dc.html", "2 · Type", True),
     ("ds", "Foundations.dc.html", "4 · Colour", False), ("ds", "Foundations.dc.html", "1 · Type", False),
@@ -850,43 +637,369 @@ RECORD_CASES = [
      r"boards: docs/trace\.json's claude_design names ds, whose folder docs/design/ds-v0 is not in the repo"),
 ]
 
+SELFTEST_SCRIPTS = ("plan_sync.py", "roadmap.py", "confluence_docs.py", "confluence_record.py")
+WORKERS = 4  # the mutated-record cases run on this many copies of the repo at once
 
-def record_cases() -> int:
+
+def _clone(dst: Path) -> None:
+    """A copy of the records the mutated-record cases run `check` on: the scripts, the root docs and docs/. On macOS
+    docs/ is an APFS clone (`cp -c`), which shares its blocks with the original until a case writes; elsewhere, or if
+    the clone fails, a plain copy."""
+    if dst.exists():
+        shutil.rmtree(dst)
+    (dst / "scripts").mkdir(parents=True)
+    for script in SELFTEST_SCRIPTS:
+        if (Path(__file__).parent / script).exists():
+            shutil.copy(Path(__file__).parent / script, dst / "scripts" / script)
+    for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
+        if (ROOT / f).exists():
+            shutil.copy(ROOT / f, dst / f)
+    if sys.platform == "darwin" and subprocess.run(["cp", "-c", "-R", str(ROOT / "docs"), str(dst / "docs")], capture_output=True).returncode == 0:
+        return
+    shutil.rmtree(dst / "docs", ignore_errors=True)
+    shutil.copytree(ROOT / "docs", dst / "docs")
+
+
+def _digest(path: Path) -> str | None:
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+
+
+def _record_case(case: tuple, worker: dict) -> str | None:
+    """One mutated-record case on a worker's copy: the copy is checked clean first (every file an earlier case touched
+    hashes as it was cloned, else the copy is cloned again), the case's file is mutated, check runs, and the file is put
+    back whatever happens. Returns the failure line, or None."""
+    what, rel, mutate, words = case
+    root = worker["dir"]
+    if any(_digest(root / r) != h for r, h in worker["clean"].items()):
+        _clone(root)
+        worker["clean"] = {}
+    target = root / rel
+    if not target.exists():
+        return f"FAIL: the case {what!r} needs {rel}"
+    original = target.read_bytes()
+    worker["clean"].setdefault(rel, hashlib.sha256(original).hexdigest())
+    try:
+        if mutate is None:
+            target.unlink()
+        elif rel.endswith(".json"):
+            target.write_text(json.dumps(mutate(json.loads(target.read_text())), indent=1, ensure_ascii=False) + "\n")
+        else:
+            target.write_text(mutate(target.read_text()))
+        r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
+    except Exception as e:  # noqa: BLE001 - a case that cannot be set up is a failure, never a skip
+        return f"FAIL: the case {what!r} could not run: {type(e).__name__}: {e}"
+    finally:
+        target.write_bytes(original)
+    if r.returncode == 0 or not re.search(words, r.stdout):
+        return f"FAIL: check passed {what} (exit {r.returncode}; wanted {words!r})"
+    return None
+
+
+def record_cases(cases: list | None = None, workers: int = WORKERS) -> int:
+    """Every RECORD_CASES case, across `workers` copies of the repo at once (MA-303: one clone per worker, each case's
+    file restored after it, in place of a fresh copy of docs/ per case). Failures print in the cases' own order."""
+    cases = RECORD_CASES if cases is None else cases
+    n = max(1, min(workers, len(cases)))
+    with tempfile.TemporaryDirectory() as tmp:
+        pool: queue.Queue = queue.Queue()
+        crew = [{"dir": Path(tmp) / f"w{i}", "clean": {}} for i in range(n)]
+        with ThreadPoolExecutor(n) as ex:
+            list(ex.map(lambda w: _clone(w["dir"]), crew))
+            for w in crew:
+                pool.put(w)
+
+            def run(case: tuple) -> str | None:
+                w = pool.get()  # each copy serves one case at a time
+                try:
+                    return _record_case(case, w)
+                finally:
+                    pool.put(w)
+
+            results = list(ex.map(run, cases))
+    for line in results:
+        if line:
+            print(line)
+    return sum(1 for line in results if line)
+
+
+# MA-303: which product files a branch changes, and whose story claims each. (paths, the trace's code rows, the branch's
+# key, the deleted paths) -> (files claimed by another story only, files no story claims).
+PR_ITEMS = [
+    {"key": "MA-10", "code": ["web/src/lib/chat/**", "ios/MyPaisa/Chat/"]},
+    {"key": "MA-11", "code": ["src/mypaisa/agent/tools.py", "infra/*.tf"]},
+    {"key": "MA-12", "code": ["web/src/lib/chat/shared.ts"]},
+    {"key": "MA-13", "code": ["web/**/legacy.ts"]},
+]
+PR_CASES = [
+    (["web/src/lib/chat/a/b.ts"], "MA-10", set(), [], []),
+    (["web/src/lib/chat/shared.ts"], "MA-10", set(), [], []),                       # shared with MA-12, ours too
+    (["web/src/lib/chat/shared.ts"], "MA-11", set(), [("web/src/lib/chat/shared.ts", ["MA-10", "MA-12"])], []),
+    (["ios/MyPaisa/Chat/View.swift", "ios/MyPaisa/ChatX.swift"], "MA-10", set(), [], ["ios/MyPaisa/ChatX.swift"]),
+    (["infra/main.tf", "infra/mod/main.tf"], "MA-11", set(), [], ["infra/mod/main.tf"]),  # * stays in its folder
+    (["src/mypaisa/agent/tools.py.bak"], "MA-11", set(), [], ["src/mypaisa/agent/tools.py.bak"]),
+    (["web/legacy.ts", "web/a/b/legacy.ts"], "MA-13", set(), [], []),                # **/ spans no folder or many
+    (["docs/trace.json", "scripts/plan_sync.py", "README.md"], "MA-10", set(), [], []),  # not product code
+    (["web/gone.ts"], "MA-10", {"web/gone.ts"}, [], []),                             # a deletion nobody claims is no fault
+    (["src/mypaisa/agent/tools.py"], "MA-10", {"src/mypaisa/agent/tools.py"}, [("src/mypaisa/agent/tools.py", ["MA-11"])], []),
+]
+
+
+def claims(path: str, rel: str) -> bool:
+    """Whether a story's code path covers a repo file: the path itself, a folder above it, or a glob (`*` and `?` within
+    a folder, `**` across folders); a glob that names a folder covers what is in it."""
+    path = path.rstrip("/")
+    if not re.search(r"[*?]", path):
+        return rel == path or rel.startswith(path + "/")
+    rx = "".join({"**/": "(?:.*/)?", "**": ".*", "*": "[^/]*", "?": "[^/]"}.get(t, re.escape(t))
+                 for t in re.split(r"(\*\*/|\*\*|\*|\?)", path))
+    return re.fullmatch(rx + r"(?:/.*)?", rel) is not None
+
+
+def pr_findings(files: list[str], items: list, key: str | None, deleted: set[str] = frozenset()) -> tuple[list, list]:
+    """The product files (under web/, ios/, src/, infra/) a branch changes that a story other than its own claims, with
+    their owners, and those no story claims (a deletion no story claims is no fault)."""
+    others, unclaimed = [], []
+    for f in files:
+        if not f.startswith(tuple(d + "/" for d in CODE_DIRS)):
+            continue
+        owners = sorted({it["key"] for it in items if isinstance(it, dict) and isinstance(it.get("key"), str)
+                         and isinstance(it.get("code"), list) and any(isinstance(c, str) and claims(c, f) for c in it["code"])},
+                        key=key_order)
+        if not owners:
+            if f not in deleted:
+                unclaimed.append(f)
+        elif key and key not in owners:
+            others.append((f, owners))
+    return others, unclaimed
+
+
+def changed_files(base: str, cwd: Path = ROOT) -> tuple[str, list[str], set[str]]:
+    """The files a branch changes since its merge-base with `base`: committed, uncommitted and untracked; and which of
+    them are deleted. Raises CalledProcessError when git cannot say."""
+    def git(*a: str) -> str:
+        return subprocess.run(["git", "-C", str(cwd), *a], capture_output=True, text=True, check=True).stdout
+    mb = git("merge-base", "HEAD", base).strip()
+    # --no-renames: a rename is its old path deleted and its new path added, so neither hides behind the other
+    changed = git("diff", "--name-only", "--no-renames", "-z", mb).split("\0")
+    deleted = git("diff", "--name-only", "--no-renames", "--diff-filter=D", "-z", mb).split("\0")
+    untracked = git("ls-files", "--others", "--exclude-standard", "-z").split("\0")
+    return mb, sorted({f for f in changed + untracked if f}), {f for f in deleted if f}
+
+
+def branch_key(cwd: Path = ROOT) -> str | None:
+    r = subprocess.run(["git", "-C", str(cwd), "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True)
+    m = re.match(r"(MA-\d+)\b", r.stdout.strip())
+    return m.group(1) if m else None
+
+
+def pr_files(trace: dict, base: str) -> int:
+    key = branch_key()
+    try:
+        mb, files, deleted = changed_files(base)
+    except (OSError, subprocess.CalledProcessError) as e:  # fails closed
+        print(f"pr-files: git cannot say what changed since {base}: {getattr(e, 'stderr', '') or e}".strip())
+        return 2
+    others, unclaimed = pr_findings(files, trace.get("items", []), key, deleted)
+    code = [f for f in files if f.startswith(tuple(d + "/" for d in CODE_DIRS))]
+    print(f"pr-files: {len(code)} product files changed on {key or 'a branch with no MA key'} since {mb[:7]} ({base})")
+    for f, owners in others:
+        print(f"  OTHER: {f} is claimed by {', '.join(owners)}, not {key}: add it to {key}'s code, or move it to its own story's branch")
+    for f in unclaimed:
+        print(f"  UNCLAIMED: {f} belongs to no story's code paths: add it to {key or 'its story'}'s code in docs/trace.json")
+    print(f"pr-files: {len(others)} claimed by another story, {len(unclaimed)} claimed by none")
+    return 1 if key and (others or unclaimed) else 0
+
+
+def pr_selftest() -> int:
+    """pr_findings against known cases, and changed_files on a throwaway repo (committed, uncommitted, untracked)."""
     bad = 0
-    for what, rel, mutate, words in RECORD_CASES:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            (root / "scripts").mkdir()
-            for script in ("plan_sync.py", "roadmap.py", "confluence_docs.py", "confluence_record.py"):
-                if (Path(__file__).parent / script).exists():
-                    shutil.copy(Path(__file__).parent / script, root / "scripts" / script)
-            for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
-                if (ROOT / f).exists():
-                    shutil.copy(ROOT / f, root / f)
-            shutil.copytree(ROOT / "docs", root / "docs")
-            target = root / rel
-            if not target.exists():
-                bad += 1
-                print(f"FAIL: the case {what!r} needs {rel}")
-                continue
-            if mutate is None:
-                target.unlink()
-            elif rel.endswith(".json"):
-                target.write_text(json.dumps(mutate(json.loads(target.read_text())), indent=1, ensure_ascii=False) + "\n")
-            else:
-                target.write_text(mutate(target.read_text()))
-            r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
-            if r.returncode == 0 or not re.search(words, r.stdout):
-                bad += 1
-                print(f"FAIL: check passed {what} (exit {r.returncode}; wanted {words!r})")
+    for files, key, deleted, want_others, want_unclaimed in PR_CASES:
+        got = pr_findings(files, PR_ITEMS, key, deleted)
+        if got != (want_others, want_unclaimed):
+            bad += 1
+            print(f"FAIL: pr-files {files} on {key}: {got}, should be {(want_others, want_unclaimed)}")
+    with tempfile.TemporaryDirectory() as t:
+        repo = Path(t)
+
+        def git(*a: str) -> None:
+            subprocess.run(["git", "-C", t, "-c", "user.name=t", "-c", "user.email=t@t", *a], capture_output=True, check=True)
+        git("init", "-q", "-b", "main")
+        for f in ("web/a.ts", "web/gone.ts", "web/edit.ts"):
+            (repo / f).parent.mkdir(parents=True, exist_ok=True)
+            (repo / f).write_text("x\n")
+        git("add", "-A")
+        git("commit", "-qm", "base")
+        git("checkout", "-qb", "MA-10-x")
+        (repo / "web" / "committed.ts").write_text("x\n")
+        git("add", "-A")
+        git("commit", "-qm", "MA-10: c")
+        (repo / "web" / "edit.ts").write_text("y\n")
+        (repo / "web" / "gone.ts").unlink()
+        (repo / "web" / "new.ts").write_text("x\n")
+        _, files, deleted = changed_files("main", repo)
+        want = (["web/committed.ts", "web/edit.ts", "web/gone.ts", "web/new.ts"], {"web/gone.ts"})
+        if (files, deleted) != want or branch_key(repo) != "MA-10":
+            bad += 1
+            print(f"FAIL: pr-files on a throwaway branch saw {files}, deleted {deleted}, key {branch_key(repo)}; should be {want}, MA-10")
     return bad
 
 
-def selftest(trace: dict) -> int:
+# MA-303: Jira compared incrementally. docs/jira-sync.json records the last sync and, per key, a short hash of what
+# Jira said (summary, parent, labels, status, due date) and of the trace's row, so a normal /plan-sync reads only the
+# issues updated since, the keys still drifting, and the rows changed in the repo; `--all` reads everything.
+JIRA_SYNC = ROOT / "docs" / "jira-sync.json"
+
+
+def _short(values: list) -> str:
+    return hashlib.sha256(json.dumps(values, ensure_ascii=False).encode()).hexdigest()[:12]
+
+
+def jira_hash(issue: dict) -> str:
+    return _short([issue.get("summary"), issue.get("parent"), sorted(issue.get("labels") or []), issue.get("status"), issue.get("duedate")])
+
+
+def repo_rows(trace: dict) -> dict[str, dict]:
+    """What the repo says of each key Jira holds: stories and tasks from items and others, epics with their due date."""
+    sched = load(ROOT / "docs" / "roadmap.json").get("schedule", {}) if (ROOT / "docs" / "roadmap.json").exists() else {}
+    rows = {}
+    for it in trace.get("items", []):
+        rows[it["key"]] = {"summary": it.get("summary"), "parent": it.get("epic"), "labels": sorted(it.get("labels", [])),
+                           "status": it.get("status"), "ui": it.get("ui")}
+    for o in trace.get("others", []):
+        rows[o["key"]] = {"summary": o.get("summary"), "status": o.get("status"), "other": True}
+    for p in trace.get("phases", []):
+        rows[p["epic"]] = {"epic": True, "duedate": (sched.get(str(p.get("phase"))) or {}).get("end")}
+    return rows
+
+
+def jira_drift(issues: list[dict], trace: dict, full: bool) -> list[tuple[str, ...]]:
+    """One row per disagreement: (item, field, repo value, Jira value, which wins and why, the fix)."""
+    rows, epics = repo_rows(trace), {p["epic"] for p in trace.get("phases", [])}
+    out = []
+    for i in issues:
+        k, r = i.get("key"), rows.get(i.get("key"))
+        if r is None:
+            where = "items, under its phase" if i.get("parent") in epics else "others"
+            out.append((k, "row", "not in the trace", str(i.get("summary")), "Jira: the issue exists", f"add its row to {where} (/plan-sync step 1)"))
+            continue
+        if r.get("epic"):
+            if (i.get("duedate") or None) != (r.get("duedate") or None):
+                out.append((k, "due date", str(r.get("duedate")), str(i.get("duedate")), "the roadmap: dates come from estimates (rule 9)",
+                            "set the epic's due date in Jira to the schedule's end"))
+            continue
+        for f in ("summary", "status"):
+            if i.get(f) != r.get(f):
+                out.append((k, f, str(r.get(f)), str(i.get(f)), "Jira: it holds who does what and its status", "copy Jira's value into the row"))
+        if r.get("other"):
+            continue
+        if i.get("parent") != r.get("parent"):
+            out.append((k, "parent", str(r.get("parent")), str(i.get("parent")), "the plan: PLAN.md decides the phase",
+                        "move the issue's parent in Jira and comment why"))
+        jl, rl = sorted(i.get("labels") or []), r.get("labels", [])
+        if ("design" in jl) != bool(r.get("ui")):
+            out.append((k, "design label", f"ui {str(r.get('ui')).lower()}", "set" if "design" in jl else "missing",
+                        "the trace: the label marks exactly the stories with UI", "set the label in Jira to match ui"))
+        if [x for x in jl if x != "design"] != [x for x in rl if x != "design"]:
+            out.append((k, "labels", ", ".join(rl), ", ".join(jl), "Jira", "copy Jira's labels into the row"))
+    if full:
+        seen = {i.get("key") for i in issues}
+        for k, r in rows.items():
+            if k not in seen:
+                out.append((k, "issue", "in the trace", "not in Jira", "neither: never invent an issue",
+                            "report it; if PLAN.md describes it, create the issue and fix the row's key"))
+    return sorted(out, key=lambda row: (key_order(row[0]), row[1]))
+
+
+def jira_sync(trace: dict, argv: list[str]) -> int:
+    rec = json.loads(JIRA_SYNC.read_text()) if JIRA_SYNC.exists() else {"version": 1, "last_sync": None, "pending": [], "issues": {}}
+    full = "--all" in argv
+    act = argv[0] if argv else ""
+    rows = repo_rows(trace)
+    if act == "query":
+        # The keys to read whatever their date: those still drifting, and the rows the repo changed (or never synced).
+        moved = sorted({k for k, r in rows.items() if rec["issues"].get(k, {}).get("repo") != _short(sorted(r.items()))}
+                       | set(rec.get("pending", [])), key=key_order)
+        if full or not rec.get("last_sync") or len(moved) > 100:  # the full sweep: asked for, never synced, or cheaper than a long list
+            print("project = MA ORDER BY key ASC")
+            return 0
+        since = (datetime.date.fromisoformat(rec["last_sync"][:10]) - datetime.timedelta(days=1)).isoformat()  # a day early: any timezone
+        keys = f' OR key in ({", ".join(moved)})' if moved else ""
+        print(f'project = MA AND (updated >= "{since}"{keys}) ORDER BY key ASC')
+        return 0
+    if act not in ("compare", "record") or len(argv) < 2:
+        print("usage: plan_sync.py jira-sync query [--all] | compare <issues.json> [--all] | record <issues.json> --at <ISO time> [--all]")
+        return 2
+    issues = json.loads(Path(argv[1]).read_text())
+    drift = jira_drift(issues, trace, full)
+    if act == "compare":
+        unchanged = sum(1 for i in issues if rec["issues"].get(i.get("key"), {}).get("jira") == jira_hash(i))
+        print(f"jira-sync: {len(issues)} issues read, {unchanged} unchanged since the last sync, {len(drift)} drift")
+        if drift:
+            print("| Item | Field | Repo | Jira | Wins, and why | Fix |\n| --- | --- | --- | --- | --- | --- |")
+            for row in drift:
+                print("| " + " | ".join(c.replace("|", "/") for c in row) + " |")
+        return 1 if drift else 0
+    at = argv[argv.index("--at") + 1] if "--at" in argv and argv.index("--at") + 1 < len(argv) else ""
+    if not re.match(r"\d{4}-\d{2}-\d{2}", at):
+        print("jira-sync record needs --at <the ISO time the query ran>")
+        return 2
+    drifting = {row[0] for row in drift}
+    for i in issues:
+        if i.get("key") not in drifting and i.get("key") in rows:
+            rec["issues"][i["key"]] = {"jira": jira_hash(i), "repo": _short(sorted(rows[i["key"]].items()))}
+    rec["pending"] = sorted(drifting | ({k for k in rec.get("pending", []) if k not in {i.get("key") for i in issues}} if not full else set()), key=key_order)
+    rec["last_sync"] = at
+    JIRA_SYNC.write_text(json.dumps(rec, indent=1, ensure_ascii=False) + "\n")
+    print(f"jira-sync: recorded {len(issues) - len(drifting & {i.get('key') for i in issues})} issues at {at}; {len(rec['pending'])} still drifting")
+    return 0
+
+
+# The inputs the selftest's result depends on: its code, and the fixtures its cases read or mutate (MA-303).
+SELFTEST_CODE = ("scripts/plan_sync.py", "scripts/confluence_docs.py", "scripts/confluence_record.py", "scripts/roadmap.py",
+                 ".claude/hooks/plan_sync_hook.py")
+SELFTEST_CACHE = ROOT / "review" / ".cache" / "plan_sync_selftest.json"
+SELFTEST_DAYS = 7  # a recorded pass older than this is run again
+
+
+def selftest_inputs(trace: dict) -> list[str]:
+    dirs = {k: v.get("dir") for k, v in trace.get("claude_design", {}).items() if isinstance(v, dict)}
+    fixtures = {rel for _, rel, _, _ in RECORD_CASES} | {"docs/trace.json"}
+    fixtures |= {f"{dirs[p]}/{f}" for p, f, _, _ in BOARD_CASES if isinstance(dirs.get(p), str)}
+    return list(SELFTEST_CODE) + sorted(fixtures - set(SELFTEST_CODE))
+
+
+def selftest_digest(trace: dict) -> str:
+    h = hashlib.sha256()
+    for rel in selftest_inputs(trace):
+        h.update(f"{rel}\0{_digest(ROOT / rel) or 'missing'}\0".encode())
+    return h.hexdigest()
+
+
+def _cache() -> list[dict]:
+    try:
+        entries = json.loads(SELFTEST_CACHE.read_text()).get("passes", [])
+    except (OSError, ValueError, AttributeError):
+        return []
+    now = datetime.datetime.now(datetime.timezone.utc)
+    fresh = []
+    for e in entries if isinstance(entries, list) else []:
+        try:
+            if now - datetime.datetime.fromisoformat(e["time"]) <= datetime.timedelta(days=SELFTEST_DAYS):
+                fresh.append(e)
+        except (KeyError, TypeError, ValueError):
+            pass
+    return fresh
+
+
+def selftest(trace: dict, force: bool = False) -> int:
     if bad_shape := shape_errors(trace):
         for e in bad_shape:
             print(f"DRIFT: {e}")
         return 1
+    digest = selftest_digest(trace)
+    if not force and (hit := next((e for e in _cache() if e.get("sha256") == digest), None)):
+        print(f"selftest REUSED (code unchanged since {hit['time']}); `selftest --force` runs it again")
+        return 0
     dirs = {k: v.get("dir") for k, v in trace.get("claude_design", {}).items()}
     bad = 0
     for proj, file, board, want in BOARD_CASES:
@@ -898,109 +1011,35 @@ def selftest(trace: dict) -> int:
         if got != want:
             bad += 1
             print(f"FAIL: {board!r} in {file}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    for text, want in DATE_CASES:
-        got = not date_errors(text)
-        if got != want:
-            bad += 1
-            print(f"FAIL: date {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    stand_in = {"get_portfolio", "chart_series", "extract_document", "propose_change"}
-    for text, want in TOOL_CASES:
-        got = not tool_errors(text, stand_in)
-        if got != want:
-            bad += 1
-            print(f"FAIL: tools {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    if not {"extract_document", "chart_series", "propose_change"} <= agent_tools():
-        bad += 1
-        print("FAIL: ARCHITECTURE 8's Tools paragraph could not be read")
-    for text, want in STROKE_CASES:
-        got = not stroke_errors(text)
-        if got != want:
-            bad += 1
-            print(f"FAIL: stroke {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    for text, want in MOTION_CASES:
-        got = not motion_errors(text)
-        if got != want:
-            bad += 1
-            print(f"FAIL: motion {text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    telegram_cases = [
-        ("<div>ok</div>", "docs/design/app-v1/Browser.dc.html", {"Browser · Overview"}, True),
-        ('<span class="mp-chip {{ tg.c }}">x</span>', "docs/design/app-v1/Web v4.dc.html", {"Web · Home"}, True),
-        ("<div>ok</div>", "docs/design/app-v1/Telegram chats.dc.html", set(), False),
-        ("<div>ok</div>", "docs/design/app-v1/Mini App.dc.html", set(), False),
-        ("<div>ok</div>", "docs/design/app-v1/Forecast.dc.html", {"Telegram · Side-by-side card"}, False),
-        ("<div>ok</div>", "docs/design/app-v1/India.dc.html", {"Mini App · Overview with India"}, False),
-        ("<style>.tgh { height: 52px }</style>", "docs/design/ds-v1/tokens.css", set(), False),
-        ("<style>body { color: var(--tg-text) }</style>", "docs/design/ds-v1/Logo.dc.html", set(), False),
-        ('<div class="phone tg">x</div>', "docs/design/app-v1/Wealth.dc.html", set(), False),
-        ('<div class="tg-bub">x</div>', "docs/design/app-v1/Browser.dc.html", set(), False),
-    ]
-    for text, name, caps, want in telegram_cases:
-        got = not telegram_errors(text, name, caps)
-        if got != want:
-            bad += 1
-            print(f"FAIL: telegram {name!r}/{text!r}: {'accepted' if got else 'refused'}, should be {'accepted' if want else 'refused'}")
-    # The date check bites inside `check` itself: a copy of the repo with one board given a wrong weekday
-    # must be refused, naming the board date.
-    board = "docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html"
-    with tempfile.TemporaryDirectory() as tmp:
-        root = Path(tmp)
-        (root / "scripts").mkdir()
-        for script in ("plan_sync.py", "roadmap.py", "confluence_docs.py", "confluence_record.py"):
-            if (Path(__file__).parent / script).exists():  # a lone copy of this file still runs its board cases
-                shutil.copy(Path(__file__).parent / script, root / "scripts" / script)
-        for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
-            if (ROOT / f).exists():
-                shutil.copy(ROOT / f, root / f)
-        shutil.copytree(ROOT / "docs", root / "docs")
-        target = root / board
-        text = target.read_text() if target.exists() else ""
-        if "Fri 23 Oct" not in text or 'data-mo="fade"' not in text:
-            bad += 1
-            print(f"FAIL: the mutated-board selftest needs 'Fri 23 Oct' and a data-mo=\"fade\" in {board}")
-        else:
-            text = text.replace("Fri 23 Oct", "Thu 23 Oct", 1)
-            text = re.sub(r'data-mo="fade"', 'data-mo="label"', text, count=1)  # a label role on a non-label element
-            target.write_text(text)
-            tools_board = root / "docs/design/ios-v1/iPhone v4 · Audit, activity and files.dc.html"
-            if tools_board.exists() and "chart_series" in tools_board.read_text():
-                tools_board.write_text(tools_board.read_text().replace("chart_series", "render_chart", 1))  # a tool §8 lacks
-            else:
-                bad += 1
-                print("FAIL: the mutated-board selftest needs 'chart_series' in iPhone v4 · Audit, activity and files.dc.html")
-            stroke_board = root / "docs/design/ios-v1/iPhone v4 · Forecast.dc.html"
-            if stroke_board.exists() and '<rect class="cw' in stroke_board.read_text():
-                stroke_board.write_text(stroke_board.read_text().replace('<rect class="cw', '<line class="cw', 1))  # a stroked wick in the shared def
-            else:
-                bad += 1
-                print("FAIL: the mutated-board selftest needs a shared candle def (<rect class=\"cw\") in iPhone v4 · Forecast.dc.html")
-            tg_board = root / "docs/design/app-v1/Web v4 · Market, holdings and India.dc.html"
-            if tg_board.exists():
-                tg_board.write_text(tg_board.read_text() + "\n<!-- test --><div class=\"tg-bub\" data-screen-label=\"Telegram · Leak\"></div>\n")
-            else:
-                bad += 1
-                print("FAIL: the mutated-board selftest needs docs/design/app-v1/Web v4 · Market, holdings and India.dc.html")
-            r = subprocess.run([sys.executable, "-I", str(root / "scripts" / "plan_sync.py"), "check"], capture_output=True, text=True)
-            for what in ("board date", "board motion", "board tool", "board stroke", "board telegram"):
-                if r.returncode == 0 or what not in r.stdout:
-                    bad += 1
-                    print(f"FAIL: check passed a board with a wrong {what.split()[1]} (exit {r.returncode})")
+    bad += pr_selftest()
     bad += record_cases()
     # MA-260: the PR and edit hooks check the checkout a call acts on, a worktree included (it prints its own line).
     hook = ROOT / ".claude" / "hooks" / "plan_sync_hook.py"
     r = subprocess.run([sys.executable, "-I", str(hook), "selftest"], capture_output=True, text=True) if hook.is_file() else None
     print(r.stdout.strip() if r else "FAIL: the plan-sync hook selftest cannot run: .claude/hooks/plan_sync_hook.py is missing")
     bad += 0 if r and r.returncode == 0 else 1
-    # The review ledgers read this line: keep "tool names and one mutated board, <n> wrong" as it is.
-    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(DATE_CASES)} dates, {len(MOTION_CASES)} motion roles, {len(STROKE_CASES)} shared strokes, {len(TOOL_CASES)} tool names and one mutated board, {bad} wrong, counting {len(RECORD_CASES)} mutated records")
+    print(f"plan-sync selftest: {len(BOARD_CASES)} board names, {len(PR_CASES) + 1} pr-files cases and {len(RECORD_CASES)} mutated records, {bad} wrong")
+    if not bad:
+        entries = [e for e in _cache() if e.get("sha256") != digest][-19:]
+        entries.append({"sha256": digest, "time": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"), "result": "PASS"})
+        try:
+            SELFTEST_CACHE.parent.mkdir(parents=True, exist_ok=True)
+            SELFTEST_CACHE.write_text(json.dumps({"about": "plan_sync.py selftest passes by input hash (MA-303); not committed",
+                                                  "passes": entries}, indent=1) + "\n")
+        except OSError as e:
+            print(f"note: the selftest passed but its cache could not be written: {e}")
     return 1 if bad else 0
 
 
+COMMANDS = ("check", "render", "start", "selftest", "pr-files", "jira-sync")
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) < 2 or argv[1] not in ("check", "render", "start", "selftest"):
+    if len(argv) < 2 or argv[1] not in COMMANDS:
         print(__doc__)
         return 2
     trace = load(TRACE)
-    if argv[1] in ("render", "start") and (bad := shape_errors(trace)):
+    if argv[1] in ("render", "start", "pr-files", "jira-sync") and (bad := shape_errors(trace)):
         for e in bad:
             print(f"DRIFT: {e}")
         return 1
@@ -1009,7 +1048,12 @@ def main(argv: list[str]) -> int:
         print(f"wrote {TRACE_MD.relative_to(ROOT)}")
         return 0
     if argv[1] == "selftest":
-        return selftest(trace)
+        return selftest(trace, force="--force" in argv[2:])
+    if argv[1] == "pr-files":
+        base = argv[argv.index("--base") + 1] if "--base" in argv[2:] and argv.index("--base") + 1 < len(argv) else "origin/main"
+        return pr_files(trace, base)
+    if argv[1] == "jira-sync":
+        return jira_sync(trace, argv[2:])
     if argv[1] == "start":
         if len(argv) < 3:
             print("usage: python3 scripts/plan_sync.py start MA-<n>")

@@ -48,7 +48,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "o5",
@@ -67,7 +68,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest light-glass-thin dark-glass-thin-reordered glass-accent-low"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-a2",
@@ -76,7 +78,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest ios-css-missing hex8-alpha dark-glass-thin-reordered copy-differs baseline"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-a3",
@@ -85,7 +88,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest mark-lost-on-track track-vanishes mask-vanishes hero-gain-dim chart-4-dim chart-5-dim pillar-for-dim pillar-against-dim asset-lost currency-on-surface"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-a4",
@@ -302,7 +306,8 @@
         "PLAN.md"
       ],
       "pattern": "25% brightness[\\s\\S]{0,800}contrast_check\\.py|contrast_check\\.py[\\s\\S]{0,800}25% brightness"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-c10",
@@ -342,7 +347,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/plan_sync.py selftest"
-    }
+    },
+    "retired": "Retired by MA-303: its finding is about a board-content reader plan_sync.py no longer has. Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-e8",
@@ -426,7 +432,8 @@
         "README.md"
       ],
       "pattern": "contrast_check\\.py --selftest"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-d4",
@@ -462,7 +469,8 @@
       "type": "grep",
       "file": ".claude/skills/design-first/SKILL.md",
       "pattern": "copied into `docs/design/ds-v1/` \\(the only source;"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-c5",
@@ -496,7 +504,8 @@
       ],
       "pattern": "▼ 3\\.3%|about two thirds|1\\.3312|6 of the last 8 weeks|Tue 20 Oct 19:30|since Tue 20 Oct|joined Sun 4 Oct|Safari on a Mac",
       "present": false
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-e1-e4-gate",
@@ -505,7 +514,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/plan_sync.py check"
-    }
+    },
+    "retired": "Retired by MA-303: its finding is about a board-content reader plan_sync.py no longer has. Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-e5",
@@ -517,7 +527,8 @@
       "pattern": "Wed 28 Oct",
       "present": false
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-e6-d7",
@@ -531,7 +542,8 @@
       ],
       "pattern": "pulses twice",
       "present": false
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-e7",
@@ -541,7 +553,8 @@
       "type": "cmd",
       "run": "python3 -c \"import re,sys; t=open('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html').read(); i=t.find('id=\\\"b3\\\"'); j=t.find('id=\\\"b4\\\"',i); b=re.findall(r'class=\\\"[^\\\"]*(?:cbtn|mp-btn)[^\\\"]*\\\"[^>]*>([^<]*)<',t[i:j]); sys.exit(0 if i>0 and {'Confirm','Cancel'}<=set(b) else 1)\""
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-a1",
@@ -550,7 +563,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-a2",
@@ -559,7 +573,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/plan_sync.py selftest | grep -q 'one mutated board, 0 wrong'"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-a3",
@@ -568,7 +583,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest stray-glass-block stray-token-block"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-a4",
@@ -577,7 +593,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest glass-mask-vanishes && grep -q '\\.lg \\.mp-mask, \\.strip \\.mp-mask { background: var(--lg-mask); }' docs/design/ds-v1/ios.css"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-a9",
@@ -715,7 +732,8 @@
       "type": "grep",
       "file": ".claude/skills/design-first/SKILL.md",
       "pattern": "every pair\\s+must pass and only the copies not yet made may fail"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-d2",
@@ -725,7 +743,8 @@
       "type": "grep",
       "file": ".claude/skills/design-first/SKILL.md",
       "pattern": "copied into `docs/design/ds-v1/` \\(the only source;"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-e1",
@@ -739,7 +758,8 @@
       ],
       "pattern": "£200[^\\n]{0,200}08:4[01]|08:4[01][^\\n]{0,200}£200|units: '1,234\\.5 → 1,245\\.3'[^\\n]{0,80}08:41",
       "present": false
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-e2",
@@ -757,7 +777,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/plan_sync.py selftest | grep -Eq 'motion roles.*one mutated board, 0 wrong' && python3 scripts/plan_sync.py check"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-a5",
@@ -768,7 +789,8 @@
       "file": "docs/design/ds-v1/Foundations.dc.html",
       "pattern": "#DCD7CF|#878177|#6B7587|#2C4068|#334A75|#323D50",
       "present": false
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-a5-rows",
@@ -778,7 +800,8 @@
       "type": "grep",
       "file": "docs/design/ds-v1/Foundations.dc.html",
       "pattern": "(?=[\\s\\S]*mp-track)(?=[\\s\\S]*mp-hero-up)(?=[\\s\\S]*lg-mask)"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r3-b1",
@@ -864,7 +887,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/plan_sync.py selftest | grep -q 'one mutated board, 0 wrong' && python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; sys.exit(0 if p.date_errors('<span>9:41 Thu 23 Oct</span><span>wifi</span>') and p.date_errors(\\\"a < b; 'Thu 23 Oct'; c > d\\\") else 1)\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r3-a2",
@@ -873,7 +897,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest stray-glass-block stray-token-block stray-duplicate-dark stray-media-glass stray-var-value dark-glass-thin-reordered"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r3-a3",
@@ -882,7 +907,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check"
-    }
+    },
+    "retired": "Retired by MA-303: its finding is about a board-content reader plan_sync.py no longer has. Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r3-d1",
@@ -891,7 +917,8 @@
     "check": {
       "type": "cmd",
       "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in motion_errors\\((?:path\\.read_text\\(\\)|text)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && python3 -I $T/scripts/plan_sync.py selftest | grep -q 'check passed a board with a wrong motion'; r=$?; rm -rf $T; exit $r"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r3-e1",
@@ -901,7 +928,8 @@
       "type": "cmd",
       "run": "python3 -c \"import sys; t=open('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html').read(); i=t.index('id=\\\"b3\\\"'); j=t.index('id=\\\"b4\\\"',i); c=t[i:j]; sys.exit(0 if '£444,951' in c and '£24,110' not in c and 'I put £200 into Balanced' not in c else 1)\""
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r3-e2",
@@ -910,7 +938,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/plan_sync.py selftest | grep -q 'tool names and one mutated board, 0 wrong' && ! python3 scripts/plan_sync.py check | grep -q '^DRIFT: board tool' && ! grep -Eq '\\b(read_file|read_image|render_chart)\\b' docs/design/ios-v1/*.dc.html \"docs/design/ds-v1/iOS kit.dc.html\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r4-c2",
@@ -938,7 +967,8 @@
     "check": {
       "type": "cmd",
       "run": "grep -q 'add `!important` to it' .claude/rules/plan-sync.md && grep -q '!important. on a' .claude/skills/plan-sync/SKILL.md && python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; e=p.motion_errors('<script src=motion.js></script><style>.mp-chartlbl.al { transform: translate(-100%, 0); }</style><div class=hax data-mo=label>'); sys.exit(0 if any('add !important' in x and '<style>' not in x for x in e) and any('use data-mo=' in x for x in e) else 1)\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r4-d2",
@@ -947,7 +977,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest chart-4-dim chart-5-dim pillar-for-dim pillar-against-dim asset-lost currency-on-surface mark-lost-on-track"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r4-e1",
@@ -956,7 +987,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; sys.exit(0 if p.tool_errors(\\\"tools: [['render_chart', '1 ms']]\\\", p.agent_tools())==['render_chart'] and not p.tool_errors(\\\"tools: [['chart_series', '1 ms']]\\\", p.agent_tools()) else 1)\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r4-a1",
@@ -965,7 +997,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest stray-new-token stray-mp-in-ios stray-in-measured-ios stray-named-colour stray-in-motion"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r4-a2",
@@ -974,7 +1007,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest stray-brace unclosed-block"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r4-a3",
@@ -984,7 +1018,8 @@
       "type": "cmd",
       "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Web v4 · Market, holdings and India.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al.mp-chartlbl { transform: translate(-100%, -100%);')) and p.motion_errors(t.replace(' !important','')) else 1)\" && python3 scripts/plan_sync.py selftest | grep -Eq 'motion roles.*0 wrong'"
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r4-a4",
@@ -993,7 +1028,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; sys.exit(0 if p.date_errors(\\\"<script>for(i=0;i<n;i++){s='Thu 23 Oct'} if(a>b){}</script>\\\") else 1)\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r5-c2",
@@ -1021,7 +1057,8 @@
         ".claude/rules/plan-sync.md"
       ],
       "pattern": "ARCHITECTURE §8"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "o6",
@@ -1044,7 +1081,8 @@
     "check": {
       "type": "cmd",
       "run": "T=$(mktemp -d) && mkdir $T/scripts && cp *.md $T/ && cp -R docs $T/docs && perl -0pe 's/for d in tool_errors\\((?:path\\.read_text\\(\\)|text), ctx\\.setdefault\\(\"tools\", agent_tools\\(\\)\\)\\):/for d in []:/' scripts/plan_sync.py > $T/scripts/plan_sync.py && grep -q 'for d in \\[\\]:' $T/scripts/plan_sync.py && python3 -I $T/scripts/plan_sync.py selftest | grep -q 'check passed a board with a wrong tool'; r=$?; rm -rf $T; exit $r"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r5-d4",
@@ -1073,7 +1111,8 @@
       "type": "cmd",
       "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; t=open('docs/design/app-v1/Web v4 · Market, holdings and India.dc.html').read(); sys.exit(0 if not p.motion_errors(t) and p.motion_errors(t.replace('.mp-chartlbl.al { transform: translate(-100%, -100%) !important;','.al { transform: translate(-100%, -100%);')) else 1)\""
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r5-b1",
@@ -1111,7 +1150,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest stray-in-measured-ios stray-named-colour"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r5-a2",
@@ -1120,7 +1160,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 scripts/contrast_check.py --selftest stray-in-motion"
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r5-a6",
@@ -1129,6 +1170,7 @@
     "check": {
       "type": "cmd",
       "run": "python3 -c \"import sys; sys.path.insert(0,'scripts'); import plan_sync as p; T=p.agent_tools(); sys.exit(0 if p.tool_errors(\\\"toolsW: 'get_signals, render_chart'\\\", T) and p.tool_errors(\\\"line: 'Sonnet · read_image'\\\", T) else 1)\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   }
 ]

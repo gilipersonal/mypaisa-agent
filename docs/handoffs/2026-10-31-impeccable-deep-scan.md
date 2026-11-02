@@ -1,5 +1,7 @@
 # Handoff to Claude Code: MyPaisa design deep-scan follow-through
 
+> Note, 2 Nov 2026: the board gates this handoff names (`board_fit.js` and its drawn-size diff, `a11y_live.js`, `prototype_smoke.js`, `contrast_check.py`, the generators' `--check`) were stopped by MA-303 (Arun's decision); QA on the code, on request, comes with MA-194 and MA-165.
+
 Written 31 Oct 2026 (Antigravity session `1b17f652`). Repo: `/Users/arundutta/projects/mypaisa-agent`, Jira project `MA`.
 
 ## State right now

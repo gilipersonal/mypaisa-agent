@@ -5,13 +5,17 @@ Confluence (space mypaisaa-agent) is the fifth record beside PLAN.md and ARCHITE
 docs/design/ and the code (.claude/rules/plan-sync.md). Every page is rendered here from docs/trace.json, PLAN.md,
 ARCHITECTURE.md, docs/roadmap.json, the design decision records and the boards in docs/design/, written to docs/confluence/<page>.html, and
 published through the Atlassian MCP by /plan-sync. docs/confluence.json records each page's id, the version
-published and the hash of the HTML sent, and each board preview's media id and the boards it shows.
+published and the hash of the HTML sent, and each board preview's media id and the boards it shows. A page sent by
+hand can arrive cut short (MA-300), so each publish is read back: set-readback compares the body Confluence returns with
+the file sent, once both are normalised, and records the receipt beside the page (MA-303).
 
     python3 scripts/confluence_docs.py write                 # render every page into docs/confluence/
     python3 scripts/confluence_docs.py check                 # fail on a stale or unpublished page or preview
     python3 scripts/confluence_docs.py pending               # the pages and previews that need publishing
     python3 scripts/confluence_docs.py images CAPTURES OUT   # compose the board previews from captured boards
     python3 scripts/confluence_docs.py set-page SLUG ID VERSION [published]  # record a page created, or published
+    python3 scripts/confluence_docs.py set-readback SLUG FILE  # compare the page as read back from Confluence with what was sent
+    python3 scripts/confluence_docs.py selftest              # prove the read-back receipt passes and refuses what it should
     python3 scripts/confluence_docs.py set-image NAME MEDIA COLLECTION # record an uploaded preview
     python3 scripts/confluence_docs.py app-prompt NAME       # the prompt a Maui app (roadmap-gantt, decision-cards) is made from
     python3 scripts/confluence_docs.py set-app NAME ID URL   # record a Maui app made from that prompt
@@ -22,9 +26,11 @@ from __future__ import annotations
 import hashlib
 import html
 import json
+import os
 import re
 import sys
 import urllib.parse
+from html.parser import HTMLParser
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -85,7 +91,7 @@ VPC_GIFS = [  # (gif in docs/design/aws-vpc-enterprise-lockdown, tab title, capt
 ARGOS_GIFS = [  # (gif in docs/design/argos-visual-a11y, tab title, caption): the SvelteKit 3 visual regression, ARIA snapshot & WCAG 2.2 AA pipeline, animated (MA-194, MA-269)
     ("01-one-helper-four-gates.gif", "1 · One helper, four gates", "One shared auditAndCapture() Playwright 1.64 fixture at 390x844 and 1440x900 in Light and Dark runs deterministic stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 AA before capture, landmark/focus checks, and argosScreenshot."),
     ("02-argos-cloud-diff-aria.gif", "2 · Cloud visual & ARIA diffing", "Tokenless GitHub App OIDC uploads 2x Retina PNGs (Light & Dark) and deduplicated YAML ariaSnapshot trees from ubuntu-24.04-arm (1x) to Argos CI, pairing pixel heatmaps with Git-style accessibility tree diffs against main."),
-    ("03-five-cost-guardrails.gif", "3 · Five £0/mo cost guardrails", "Strict web/** and cards/** path filtering, light-theme-only ariaSnapshot deduplication (saving 50% ARIA quota), fail-fast axe-core before Argos, cancel-in-progress concurrency, and repo-local static board gates trim 89% of naive snapshot volume."),
+    ("03-five-cost-guardrails.gif", "3 · Five £0/mo cost guardrails", "Strict web/** and cards/** path filtering, light-theme-only ariaSnapshot deduplication (saving 50% ARIA quota), fail-fast axe-core before Argos, cancel-in-progress concurrency, and repo-local static board gates (stopped by MA-303) trim 89% of naive snapshot volume."),
     ("04-quota-math-scenarios.gif", "4 · 5,000/mo quota math", "Side-by-side monthly quota comparison showing Option 1 Selected at 3,600 snapshots/month (72.0% of the 5,000/month Free Hobby cap, 1,400 buffer, £0.00/month) versus Option 2 (4,800/mo, 96%) and Option 3 Naive (34,000/mo, $100/mo Pro)."),
 ]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
@@ -1118,6 +1124,7 @@ def render_sync(ctx: Ctx) -> str:
         "<li><strong>One source each.</strong> Estimates and dates live in docs/roadmap.json; stories, boards and code paths in docs/trace.json; the words in PLAN.md and ARCHITECTURE.md. Every page here is generated from them.</li>"
         "<li><strong>The check.</strong> <code>python3 scripts/plan_sync.py check</code> runs on every PR and in CI. It fails when a page in docs/confluence/ is stale or unpublished, a board preview is older than its board, the roadmap or PLAN's Timeline is stale, a board or a section a story cites is missing, or a story In Review or Done names no code, or code that does not exist.</li>"
         "<li><strong>The live side.</strong> <code>/plan-sync</code> compares each page's version here, each epic's due date and every story's key, epic, labels and status in Jira, and fixes or files what differs.</li>"
+        "<li><strong>The receipt</strong> (MA-303). A page sent by hand can arrive cut short (MA-300), so each page is read back from Confluence once it is published and compared with the file sent: <code>python3 scripts/confluence_docs.py set-readback</code> records the receipt, and the check fails while a page as read back differs from what was published.</li>"
         '<li><strong>The designs, in the repo</strong> (MA-260). Arun, 30 Oct 2026: "for all future design use Local folder and then Claude '
         'Artifact. Claude Design is going away, so no need to push to claude design". The boards are drawn and edited in docs/design/, and '
         "nothing is read from or written to Claude Design again. Git is the boards' only record (MA-296: \"I dont need claude-design sync "
@@ -1383,11 +1390,14 @@ def render_argos(ctx: Ctx) -> str:
         cpanel("#E3FCEF", ":art:", '<p>Arun, 30 Oct 2026 (MA-194, MA-269): the SvelteKit 3 (<code>web/</code>) visual regression, ARIA accessibility '
                "tree diffing and fail-closed WCAG 2.2 Level A &amp; AA accessibility pipeline in GitHub Actions with Playwright 1.64, "
                "<code>@axe-core/playwright</code> 4.14 and Argos CI (<code>@argos-ci/playwright</code> 6.4). Every primary web route passes one shared "
-               "<code>auditAndCapture(page, name, opts)</code> fixture combining four gates in one Chromium load — mathematical 100% and 25% brightness "
-               "token contrast (<code>scripts/contrast_check.py</code>), runtime computed DOM contrast and WCAG 2.2 AA audit "
-               "(<code>@axe-core/playwright</code>), Argos CI visual pixel diffing in Light and Dark at desktop (<code>1280x800</code>) and mobile "
-               "(<code>390x844</code>), and Argos CI <code>ariaSnapshot: opts.theme === 'light'</code> YAML accessibility tree diffing — with five "
-               "cost guardrails keeping usage at ~3,600 snapshots/month (72% of Argos CI's 5,000/month Free Hobby cap) at <strong>£0.00/month</strong>. "
+               "<code>auditAndCapture(page, name, opts)</code> fixture combining its gates in one Chromium load — runtime computed DOM contrast "
+               "and WCAG 2.2 AA audit (<code>@axe-core/playwright</code>), Argos CI visual pixel diffing in Light and Dark at desktop "
+               "(<code>1280x800</code>) and mobile (<code>390x844</code>), and Argos CI <code>ariaSnapshot: opts.theme === 'light'</code> YAML "
+               "accessibility tree diffing — with five cost guardrails keeping usage at ~3,600 snapshots/month (72% of Argos CI's 5,000/month "
+               "Free Hobby cap) at <strong>£0.00/month</strong>. The token contrast at 100% and 25% brightness was measured on the boards by "
+               "<code>scripts/contrast_check.py</code>, a jira-flow gate until MA-303 stopped it with the other checks on the boards (Arun, "
+               "2 Nov 2026: &quot;I need this checks as QA when I ask, but on actual code implemented&quot;). This QA runs on the code, with "
+               "Playwright and Argos, only when Arun asks (a manual run or a <code>qa</code> label on the PR), and follows with MA-194 and MA-165. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7.4 and §10, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a> §3 and §4, and '
                f'{arch_link("9.4", ctx.sections)} and {arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
                f'the interactive explainer page is <a href="{gh("docs/design/argos-visual-a11y.html")}">docs/design/argos-visual-a11y.html</a>.</p>'),
@@ -1490,6 +1500,7 @@ def errors(ctx: Ctx | None = None) -> list[str]:
             out.append(f"confluence: database {name} has no Confluence id in docs/confluence.json; create it with /plan-sync")
         elif rec.get("sha256") != sha(want):
             out.append(f"confluence: database {name} changed in the repo but is not published: update its rows with /plan-sync")
+    out += receipt_findings(recorded, [s for s, _, _ in model])[0]
     images = ctx.manifest.get("images", {})
     for name, w in wanted_images(ctx).items():
         rec = images.get(name, {})
@@ -1498,6 +1509,283 @@ def errors(ctx: Ctx | None = None) -> list[str]:
         elif rec.get("source") != w["source"]:
             out.append(f"confluence: preview {name} is older than its boards or inputs: compose it again and upload it")
     return out
+
+
+# ---------- receipts: each page read back after it is published (MA-303) ----------
+# Confluence stores a page as its own document and returns it in its own words: an id on every block, a <p> inside
+# every cell and list item, a date in its own format, a card's URL as its text, a macro's id and placeholder, a
+# picture's pixel size, a default layout. The reader below drops exactly those and keeps every word, tag, link, status
+# and parameter we sent, so a page cut short or changed in transit still differs (the cases are in selftest; the rules
+# were drawn from four live pages read back on 2 Nov 2026: home, phase-14, rec and rec-drawings).
+
+RB_DROP = {"data-local-id", "data-icon-id", "data-icon-text", "data-status-style", "style",
+           "data-width", "data-height", "data-width-type"}
+RB_VOID = {"area", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}
+
+
+def _macro_params(raw: str) -> str:
+    """A macro's parameters without what Confluence adds: its id, placeholder and title, and the _parentId param."""
+    try:
+        p = json.loads(raw)
+    except ValueError:
+        return raw
+    if isinstance(p, dict):
+        p.pop("macroMetadata", None)
+        if isinstance(p.get("macroParams"), dict):
+            p["macroParams"] = {k: v for k, v in p["macroParams"].items() if not k.startswith("_")}
+    return json.dumps(p, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+class _Canon(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.out: list[str] = []
+        self.buf: list[str] = []
+        self.stack: list[tuple[str, bool]] = []  # (tag, muted): a muted element's content is Confluence's to render
+
+    def muted(self) -> bool:
+        return any(m for _, m in self.stack)
+
+    def flush(self) -> None:
+        text = " ".join(" ".join(self.buf).split())
+        self.buf = []
+        if text:
+            self.out.append(text)
+
+    def handle_starttag(self, tag, attrs):  # noqa: ANN001
+        if self.muted():
+            if tag not in RB_VOID:
+                self.stack.append((tag, True))
+            return
+        if tag == "p":  # Confluence wraps every cell's and item's text in one; a paragraph break is a space
+            self.buf.append(" ")
+            return
+        a = {k: v or "" for k, v in attrs if k not in RB_DROP and (k, v) != ("data-layout", "default")}
+        self.flush()
+        if (tag == "a" and "data-card-appearance" in a) or a.get("data-type") in ("block-card", "inline-card", "embed-card"):
+            self.out.append(f"<card {a.get('href') or a.get('data-url', '')}>")
+            self.stack.append((tag, True))
+            return
+        if "data-parameters" in a:
+            a["data-parameters"] = _macro_params(a["data-parameters"])
+        self.out.append(f"<{tag}" + "".join(f' {k}="{a[k]}"' for k in sorted(a)) + ">")
+        if tag not in RB_VOID:
+            self.stack.append((tag, tag == "time"))  # a date's words are Confluence's; its datetime is ours
+
+    def handle_startendtag(self, tag, attrs):  # noqa: ANN001
+        self.handle_starttag(tag, attrs)
+        if tag not in RB_VOID and tag != "p":
+            self.handle_endtag(tag)
+
+    def handle_endtag(self, tag):  # noqa: ANN001
+        if tag in RB_VOID:
+            return
+        if tag == "p":
+            if not self.muted():
+                self.buf.append(" ")
+            return
+        if not any(t == tag for t, _ in self.stack):
+            return
+        while self.stack:
+            t, m = self.stack.pop()
+            if t == tag:
+                break
+        if not m and not self.muted():
+            self.flush()
+            self.out.append(f"</{tag}>")
+
+    def handle_data(self, data):  # noqa: ANN001
+        if not self.muted():
+            self.buf.append(data)
+
+
+def canonical(body: str) -> list[str]:
+    """A storage body as the parts the read-back compares: tags with their kept attributes in order, and text."""
+    c = _Canon()
+    c.feed(body)
+    c.close()
+    c.flush()
+    return c.out
+
+
+def readback_body(raw: str) -> tuple[str, dict]:
+    """The page body in a read-back file: getConfluenceContent's whole reply (detail full, html), or the body alone."""
+    try:
+        d = json.loads(raw)
+    except ValueError:
+        return raw, {}
+    d = d.get("data", d) if isinstance(d, dict) else {}
+    body = d.get("body", {}) if isinstance(d, dict) else {}
+    if not isinstance(body, dict) or not isinstance(body.get("value"), str):
+        raise ValueError("the file is JSON but holds no body.value: save getConfluenceContent's reply (detail full, html)")
+    return body["value"], {"id": str(d.get("id", "")), "version": ((d.get("metadata") or {}).get("version") or {}).get("number")}
+
+
+def first_difference(want: list[str], got: list[str], around: int = 3) -> str:
+    n = next((i for i, (a, b) in enumerate(zip(want, got)) if a != b), min(len(want), len(got)))
+    if n == len(got) < len(want):
+        head = f"the read-back ends early: {len(got)} of {len(want)} parts arrived"
+    elif n == len(want) < len(got):
+        head = f"the read-back carries {len(got) - len(want)} parts the source does not"
+    else:
+        head = f"part {n + 1} of {len(want)} differs"
+    lo = max(0, n - around)
+    show = lambda xs: "\n".join(f"    {i + 1}: {x[:200]}" for i, x in enumerate(xs[lo:n + around], lo)) or "    (nothing)"  # noqa: E731
+    return f"{head}\n  sent:\n{show(want)}\n  read back:\n{show(got)}"
+
+
+def published_sha(rec: dict) -> str:
+    """The hash of the file last published to a page; pages published before MA-303 have only sha256."""
+    return rec.get("source_sha256") or rec.get("sha256") or ""
+
+
+def receipt_findings(recorded: dict, slugs: list[str]) -> tuple[list[str], list[str]]:
+    """(errors, notes) from the read-back receipts: a failed read-back of what is live is an error; a page published
+    with no read-back of what was published is a note (the pages published before MA-303 have none)."""
+    errs, unread = [], []
+    for s in slugs:
+        rec = recorded.get(s, {})
+        src = published_sha(rec)
+        if not src:
+            continue
+        if rec.get("readback_source_sha256") != src:  # none yet, or one for an older publish: ignored
+            unread.append(s)
+        elif not rec.get("readback_ok"):
+            errs.append(f"confluence: page {s} as read back differs from what was published: re-publish it, then set-readback")
+    notes = []
+    if unread:
+        more = f" and {len(unread) - 8} more" if len(unread) > 8 else ""
+        notes.append(f"confluence: {len(unread)} published pages have no read-back of what was published "
+                     f"({', '.join(unread[:8])}{more}): read each back and run set-readback")
+    return errs, notes
+
+
+def record_page(slug_: str, pid: str, version: int, title: str, published: bool) -> None:
+    """set-page: the page's id, version and, once published, the hash of the file sent. A read-back recorded before
+    stays, and counts only while it is for the hash published."""
+    path = PAGES / f"{slug_}.html"
+    h = sha(path.read_text()) if published and path.exists() else ""
+
+    def change(m: dict) -> None:
+        old = m.setdefault("pages", {}).get(slug_, {})
+        rec = {"id": pid, "title": title, "version": version, "sha256": h, "source_sha256": h}
+        rec.update({k: v for k, v in old.items() if k.startswith("readback_")})
+        m["pages"][slug_] = rec
+    update_manifest(change)
+
+
+def record_readback(slug_: str, raw: str) -> int:
+    """set-readback: compare the page as Confluence returns it with docs/confluence/SLUG.html as sent; record the
+    receipt. 0 when they agree, 1 when they differ, 2 when there is nothing to compare against."""
+    path = PAGES / f"{slug_}.html"
+    rec = (load(MANIFEST) if MANIFEST.exists() else {}).get("pages", {}).get(slug_, {})
+    try:
+        body, meta = readback_body(raw)
+    except ValueError as e:
+        print(f"set-readback {slug_}: {e}")
+        return 2
+    if not path.exists() or not published_sha(rec) or sha(path.read_text()) != published_sha(rec):
+        print(f"set-readback {slug_}: docs/confluence/{slug_}.html is not what was last published; publish it and run "
+              f"`set-page {slug_} <id> <version> published` first")
+        return 2
+    if meta.get("id") and meta["id"] != str(rec.get("id")):
+        print(f"set-readback {slug_}: the read-back is page {meta['id']}, but {slug_} is page {rec.get('id')}")
+        return 2
+    if meta.get("version") is not None and meta["version"] != rec.get("version"):
+        print(f"set-readback {slug_}: the read-back is version {meta['version']}, but version {rec.get('version')} is "
+              f"recorded; read the page again, or record the version published with set-page")
+        return 2
+    want, got = canonical(path.read_text()), canonical(body)
+    ok = want == got
+    import datetime  # noqa: PLC0415
+    receipt = {"readback_sha256": sha("\n".join(got)), "readback_source_sha256": published_sha(rec), "readback_ok": ok,
+               "readback_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+    update_manifest(lambda m: m.setdefault("pages", {}).setdefault(slug_, {}).update(receipt))
+    if ok:
+        print(f"set-readback {slug_}: the read-back matches what was sent ({len(want)} parts)")
+        return 0
+    print(f"set-readback {slug_}: the read-back differs from what was sent; re-publish it\n{first_difference(want, got)}")
+    return 1
+
+
+def selftest() -> int:
+    """The read-back receipt on a copy: a temporary manifest and page, never docs/confluence.json."""
+    import tempfile  # noqa: PLC0415
+    global MANIFEST, PAGES  # noqa: PLW0603
+    saved = MANIFEST, PAGES
+    page = ('<div data-type="panel-custom" data-icon=":house:" data-color="#DEEBFF"><p><strong>MyPaisa\'s plan.</strong> '
+            'From <time datetime="2026-11-02">Mon 2 Nov 2026</time>, epic <a href="https://x/browse/MA-16" '
+            'data-card-appearance="inline"></a> <span data-type="status" data-color="neutral">To Do</span></p>\n</div>\n'
+            '<table><tbody><tr><td>Story</td><td>Days</td></tr>\n<tr><td>The news job</td><td>2</td></tr>\n</tbody></table>\n'
+            '<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" '
+            'data-parameters=\'{"macroParams":{"maxLevel":{"value":"2"}},"macroMetadata":{"schemaVersion":{"value":"1"},"title":"Toc"}}\'></div>\n'
+            '<figure data-type="media-single" data-width="100" data-width-type="percentage"><div data-type="media" data-id="m1"></div>\n'
+            '<figcaption>The web app</figcaption></figure>\n<hr><p style="font-size: 14px"><em>Generated from the repo.</em></p>')
+    live = ('<div data-local-id="a1" data-type="panel-custom" data-icon=":house:" data-color="#DEEBFF" data-icon-id="1f3e0">'
+            '<p data-local-id="a2"><strong>MyPaisa&#39;s plan.</strong> From <time data-local-id="a3" datetime="2026-11-02">'
+            'November 2, 2026</time>, epic <a href="https://x/browse/MA-16" data-card-appearance="inline">https://x/browse/MA-16</a> '
+            '<span data-local-id="a4" data-type="status" data-color="neutral" data-status-style="bold">To Do</span></p></div>'
+            '<table data-local-id="a5"><tbody><tr><td><p>Story</p></td><td><p>Days</p></td></tr><tr><td><p>The news job</p></td>'
+            '<td><p>2</p></td></tr></tbody></table><div data-type="extension" data-extension-key="toc" data-layout="default" '
+            'data-extension-type="com.atlassian.confluence.macro.core" data-parameters="{&quot;macroParams&quot;:{&quot;maxLevel&quot;:'
+            '{&quot;value&quot;:&quot;2&quot;},&quot;_parentId&quot;:{&quot;value&quot;:&quot;9&quot;}},&quot;macroMetadata&quot;:'
+            '{&quot;macroId&quot;:{&quot;value&quot;:&quot;u&quot;},&quot;title&quot;:&quot;Table of Contents&quot;}}"></div>'
+            '<figure data-type="media-single" data-width="680" data-width-type="pixel"><div data-type="media" data-id="m1" '
+            'data-height="919" data-width="1720"></div><figcaption>The web app</figcaption></figure><hr data-local-id="a6">'
+            '<p style="font-size: 12px"><em>Generated from the repo.</em></p>')
+    envelope = lambda body, v=3: json.dumps({"data": {"id": "42", "body": {"format": "html", "value": body},  # noqa: E731
+                                                      "metadata": {"version": {"number": v}}}})
+    fails: list[str] = []
+    cases: list[str] = []
+
+    def expect(name: str, got: object, want: object) -> None:
+        cases.append(name)
+        if got != want:
+            fails.append(f"{name}: got {got!r}, expected {want!r}")
+    try:
+        with tempfile.TemporaryDirectory() as tmp, open(os.devnull, "w") as quiet:
+            MANIFEST, PAGES = Path(tmp) / "confluence.json", Path(tmp) / "confluence"
+            PAGES.mkdir()
+            MANIFEST.write_text('{"pages": {}}\n')
+            (PAGES / "p.html").write_text(page)
+            record_page("p", "42", 3, "P", published=True)
+            rec = lambda: load(MANIFEST)["pages"]["p"]  # noqa: E731
+            expect("set-page records source_sha256", rec().get("source_sha256"), sha(page))
+            expect("a page published with no read-back is a note, not an error", receipt_findings(load(MANIFEST)["pages"], ["p"])[0], [])
+            expect("... and is noted", len(receipt_findings(load(MANIFEST)["pages"], ["p"])[1]), 1)
+            out = sys.stdout
+            sys.stdout = quiet
+            try:
+                r_same = record_readback("p", envelope(live))
+                ok_same = rec().get("readback_ok")
+                r_ws = record_readback("p", page.replace("\n", "\n\n   ").replace("> <", ">  <"))
+                r_cut = record_readback("p", envelope(live[: len(live) * 2 // 3]))
+                ok_cut = rec().get("readback_ok")
+                errs_cut = receipt_findings(load(MANIFEST)["pages"], ["p"])[0]
+                r_word = record_readback("p", envelope(live.replace("The news job", "The news")))
+                r_ver = record_readback("p", envelope(live, 2))
+                r_json = record_readback("p", '{"data": {}}')
+            finally:
+                sys.stdout = out
+            expect("an identical body (Confluence's own ids, dates, cards and macro ids aside) passes", (r_same, ok_same), (0, True))
+            expect("whitespace-only differences pass", r_ws, 0)
+            expect("a truncated body fails", (r_cut, ok_cut), (1, False))
+            expect("a failed read-back of what is live is an error", len(errs_cut), 1)
+            expect("a changed word fails", r_word, 1)
+            expect("a read-back of another version is refused", r_ver, 2)
+            expect("a JSON file with no body is refused", r_json, 2)
+            (PAGES / "p.html").write_text(page + "<p>More.</p>")
+            record_page("p", "42", 4, "P", published=True)
+            errs, notes = receipt_findings(load(MANIFEST)["pages"], ["p"])
+            expect("a stale read-back (for an older publish) is ignored: no error", errs, [])
+            expect("... and the page is noted as not read back", len(notes), 1)
+            expect("... while the stale receipt is kept", rec().get("readback_ok"), False)
+    finally:
+        MANIFEST, PAGES = saved
+    for f in fails:
+        print(f"FAIL: {f}")
+    print(f"confluence_docs selftest: {len(cases) - len(fails)} of {len(cases)} cases pass")
+    return 1 if fails else 0
 
 
 def pending(ctx: Ctx) -> dict:
@@ -1545,11 +1833,19 @@ def main(argv: list[str]) -> int:
         print(f"wrote {len(pages(ctx))} pages to {PAGES.relative_to(ROOT)}")
         return 0
     if cmd == "check":
-        errs = errors()
+        ctx = Ctx()
+        errs = errors(ctx)
         for e in errs:
             print(f"DRIFT: {e}")
+        for n in receipt_findings(ctx.manifest.get("pages", {}), [s for s, _, _ in pages(ctx)])[1]:
+            print(f"NOTE: {n}")
         print(f"confluence: {len(errs)} drift")
         return 1 if errs else 0
+    if cmd == "selftest":
+        return selftest()
+    if cmd == "set-readback" and len(argv) == 4:
+        # set-readback SLUG FILE: FILE holds the page as read back after the publish (getConfluenceContent, detail full)
+        return record_readback(argv[2], Path(argv[3]).read_text())
     if cmd == "pending":
         print(json.dumps(pending(Ctx()), indent=1, ensure_ascii=False))
         return 0
@@ -1558,13 +1854,10 @@ def main(argv: list[str]) -> int:
         return confluence_images.compose(Ctx(), Path(argv[2]), Path(argv[3]))
     if cmd == "set-page" and len(argv) in (5, 6):
         # set-page SLUG ID VERSION [published]: "published" says the page now shows docs/confluence/SLUG.html
-        ctx = Ctx()
-        slug_, pid, version = argv[2], argv[3], int(argv[4])
-        path = PAGES / f"{slug_}.html"
-        published = len(argv) == 6 and argv[5] == "published" and path.exists()
-        rec = {"id": pid, "title": dict((s, t) for s, t, _ in pages(ctx))[slug_], "version": version,
-               "sha256": sha(path.read_text()) if published else ""}
-        update_manifest(lambda m: m.setdefault("pages", {}).__setitem__(slug_, rec))
+        # (and its source_sha256, which a read-back is checked against: set-readback)
+        slug_ = argv[2]
+        record_page(slug_, argv[3], int(argv[4]), dict((s, t) for s, t, _ in pages(Ctx()))[slug_],
+                    published=len(argv) == 6 and argv[5] == "published")
         return 0
     if cmd == "app-prompt" and len(argv) == 3:
         print(app_prompt(Ctx(), argv[2]))

@@ -43,7 +43,7 @@ A single private household ledger and analyst where kinds are dynamic documents 
 - Architecture & domain specification: `ARCHITECTURE.md`, `PLAN.md`, `TECH_STACK.md`, `docs/trace.json`.
 - Design system & screen boards: `docs/design/ds-v1/`, `docs/design/ios-v1/`, `docs/design/app-v1/`, and interactive multi-door verification harness `docs/design/prototype-v5/`.
 - Canonical household figure set & generators: `docs/design/figures/` (`make_prototype_v5.py`, `make_forecaster.py`) — every illustrative board uses one reconciled household ledger where lists sum to totals and timestamps advance consistently.
-- Automated design gates: `scripts/contrast_check.py` (WCAG AA + Liquid Glass worst-case contrast), `scripts/board_fit.js` (multi-viewport Chromium + WebKit overflow/overlap/pixel-diff gate), `scripts/prototype_smoke.js` (21-chapter × 5-door + Privacy Mode smoke gate), and `scripts/plan_sync.py`.
+- Automated checks: `scripts/plan_sync.py` keeps Jira, Confluence, the trace and the code in step, and checks that a story's cited boards exist. The checks on the boards' content (`contrast_check.py`, `board_fit.js`, `a11y_live.js`, `prototype_smoke.js` and the generators' `--check`) were stopped by MA-303 (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code implemented"); QA on the code, with Playwright and Argos, on request, comes with MA-194 and MA-165.
 
 ## Product Principles
 
@@ -54,5 +54,5 @@ A single private household ledger and analyst where kinds are dynamic documents 
 
 ## Accessibility & Inclusion
 
-- **Contrast floor:** WCAG 2.2 AA across light (`Warm ledger`) and dark (`Night ledger`) themes, including worst-case composited contrast (`>= 4.5:1` text, `>= 3.0:1` UI marks/tracks) over translucent iOS Liquid Glass (`scripts/contrast_check.py`).
+- **Contrast floor:** WCAG 2.2 AA across light (`Warm ledger`) and dark (`Night ledger`) themes, including worst-case composited contrast (`>= 4.5:1` text, `>= 3.0:1` UI marks/tracks) over translucent iOS Liquid Glass (checked on the code, on request, from MA-194 and MA-165; the board gate `contrast_check.py` was stopped by MA-303).
 - **Adaptive & assistive support:** Full Dynamic Type scaling up to Accessibility sizes (`AX1–AX5`) without clipped figures, `>= 44×44` pt/px hit targets, keyboard `:focus-visible` navigation on Web and iPad, `prefers-color-scheme`, `prefers-reduced-motion`, `prefers-reduced-transparency`, and `prefers-contrast: more`, plus complete Privacy Mode redaction across both visual DOM and screen-reader `aria-label` attributes.

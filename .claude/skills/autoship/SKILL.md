@@ -32,8 +32,12 @@ Uncommitted files that belong to another story are left alone and named.
 1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
    red gate stops here: report it, raise nothing (offer a draft at most).
    No gates configured: say "no gates configured". The `plan-sync` gate
-   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py`) always applies; it reads
-   the boards as they are on disk (git is their only record, MA-296). Every time, run
+   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check`;
+   the selftest runs only when plan-sync's own code changed) always applies;
+   it keeps the trace, Jira, Confluence and the code in step, and checks
+   that every board a story cites is on disk. No gate measures the boards
+   themselves (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on
+   docs/design. Lets stop that."). Every time, run
    `/plan-sync --confluence`, so every page the change re-rendered is
    published; and if the story changed a board, a phase or a story, run
    `/plan-sync MA-<n>` too, so the trace, Confluence and
@@ -71,21 +75,38 @@ allows a third answer). Do not merge on anything but a yes given in the turn
 that is running.
 
 On "Review, then merge": run the review as `.claude/rules/ship-autopilot.md`
-says, in parallel lanes. Run the gates and `scripts/review_regress.py MA-<n>`
-first. Then start one fresh sub-agent per lane in a single message (scripts
-and checks; the trace against Jira; the spec docs; the rules and skills; the
-boards, when changed), each with the PR number, the issue key, its lane's
-files, the story's acceptance criteria, the repo's rules and
-`review/MA-<n>/fixed.json` (fixes it must not undo), never the maker's notes; round 1
-covers everything, later rounds the delta since `reviewed_sha` in
-`review/MA-<n>/state.json`. Merge their findings. Fix the blocking ones on
-the branch, add each (and any owner decision the review must keep) to `review/MA-<n>/fixed.json` with a check, push, wait
-for the checks, then report the round and ask before the next one ("Run round N on round N-1's fixes, then merge on a
-clean round, or merge now?"; each round needs its own yes, `ship-autopilot.md`); at most five rounds, then stop and
-ask Arun whether to go on, listing what is left and what each fix costs. The question names the merge
-("Fix them, run round 6, then merge on a clean round?"), so his yes covers both (`ship-autopilot.md`);
-a yes to a question that does not name the merge is not a yes to merge. A clean round goes straight
-to step 4; put the non-blocking findings in the report and on the issue.
+says, in parallel lanes.
+
+1. **Gates first:** the configured gates, then
+   `python3 scripts/review_regress.py MA-<n>` and
+   `python3 scripts/review_regress.py --state MA-<n>`. A FAIL is fixed before
+   any reviewer starts. Exit 3 means every command passed but `manual`
+   checks remain: start one fresh verifier sub-agent with those items, the
+   rules and the files they name (never the maker's notes); a broken item is
+   fixed first, like a FAIL.
+2. **Lanes:** one fresh sub-agent per lane in a single message: (a) scripts
+   and checks; (b) the trace against Jira; (c) the spec docs; (d) the rules
+   and skills; (f) the code, once the story has code. A lane with nothing in
+   the round's files sits it out. Brief each from
+   `.claude/skills/autoship/review-brief.md`: the PR number, the issue key,
+   its lane's files, the story's acceptance criteria, the repo's rules and
+   lessons, and `review/MA-<n>/fixed.json` (fixes it must not undo), never
+   the maker's notes; round 1 covers everything, later rounds the delta since
+   `reviewed_sha` in `review/MA-<n>/state.json` and its direct joins.
+3. **Merge their findings** into one list, two lanes at the same `file:line`
+   under one id naming both, and record them in `state.json` (the fields are
+   in `.claude/rules/independent-review.md`). Fix the blocking ones on the
+   branch, add each (and any owner decision the review must keep) to
+   `review/MA-<n>/fixed.json` with a check, push, wait for the checks.
+4. **Ask before the next round:** report the round and ask "Run round N on
+   round N-1's fixes, then merge on a clean round, or merge now?" (each round
+   needs its own yes, `ship-autopilot.md`). At most five rounds, then stop and
+   ask Arun whether to go on, listing what is left and what each fix costs.
+   The question names the merge ("Fix them, run round 6, then merge on a
+   clean round?"), so his yes covers both (`ship-autopilot.md`); a yes to a
+   question that does not name the merge is not a yes to merge. A clean round
+   goes straight to section 4 below; put the non-blocking findings in the report
+   and on the issue.
 
 ## 4. After a yes (and a clean review, if one was asked for), without asking again
 

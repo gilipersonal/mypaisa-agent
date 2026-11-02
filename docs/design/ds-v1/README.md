@@ -56,6 +56,6 @@ The web app's browser boards live in MyPaisa app v1 (`docs/design/app-v1/`); the
 - Green means good: gains with ▲ and status-OK marks. Falls are quiet ink with ▼. Red only for alerts that ask
   for action. Never green for a category, a progress bar or a meter.
 - WCAG 2.2 AA in both themes; 44 pt targets; colour never the only signal.
-- Legible at 25% screen brightness in light and dark: every pair passes `scripts/contrast_check.py` (MA-181).
+- Legible at 25% screen brightness in light and dark (MA-181). `scripts/contrast_check.py` measured every pair on the boards until MA-303 stopped it (Arun, 2 Nov 2026); QA on the code, on request, comes with MA-194 and MA-165.
 - Liquid Glass only on the layer of controls: content is never glass, and glass never sits on glass.
 - Motion: transform and opacity only, nothing loops, Reduce Motion lands at once.

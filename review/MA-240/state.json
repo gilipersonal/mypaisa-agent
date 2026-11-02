@@ -38,5 +38,13 @@
    "fixed": "All 38 distinct blocking findings fixed (r2-1 to r2-38 in fixed.json, with Arun's two decisions as r2-o1 and r2-o2): the CSS and records in 84e90c4 and 17dc38a, the gate in 62a0924 and 7edbde7, Confluence in 89ce97a. The rebuilt gate then found the iPad failing from 900 to 1132; Arun picked the chat as a sheet there (27 Oct 2026).",
    "after": "Arun, 27 Oct 2026: \"No round 3 needed for now\". Gates on the fixes: board_fit 40 boards in Chromium and WebKit, 0 faults; its selftest 39 cases, 0 wrong; the drawn-size diff against d6e243f, 178 frames changed, 0 not meant; plan_sync check 0 drift; contrast 0 pairs below the limits."
   }
+ ],
+ "owner_decisions": [
+  {
+   "date": "2026-11-02",
+   "story": "MA-303",
+   "what": "design checks stopped; 56 ledger checks retired",
+   "words": "All the 6 checks currently run on docs/design. Lets stop that. ... No need to any check on prototype v5."
+  }
  ]
 }
