@@ -124,3 +124,17 @@ board that shows them.
 | §22.1 to §22.3, §22.5 | §20.1 to §20.3, §20.4 |
 | §23 | §21 |
 | §24 | §22 |
+
+## Settled after review
+
+- **"Why?" no longer searches the web to explain a move** (review of MA-307,
+  2 Nov 2026). A move in a holding's value is explained from code's own
+  figures: the FX change and the holding's currency split. Web search stays
+  only to look up a holding's public details when it is added (ARCHITECTURE
+  §7). Cut from the Agent Journey's flow 6 and its spend ladder, from
+  Architecture v4's Sonnet uses and ladder, and from PLAN phase 11 (`/why`
+  and MA-68's wording).
+- **Budget alerts and check-ins go to the admins** (the same review). A
+  check-in writes a record, so it goes to the admins and is answered by
+  admins only (§4.5, §4.9); budget alerts go to the admins too (§14.2), in
+  their chat and on their devices.

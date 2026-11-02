@@ -8,7 +8,7 @@ adaptive
 
 ## Users
 
-One dual-country household (UK and India) of non-finance family members, some of them admins. Admins add, correct and delete the household's records through the chat (correcting also in place), answer check-ins, send statements and make plans; every other member views the whole wealth and asks questions, across iPhone, iPad, desktop browsers, and mobile browsers (including Android foldables). The owner is always an admin and grants or takes back the role in the chat (MA-308). Admins operate system health, budgets, feature toggles, and member access in the Admin center.
+One dual-country household (UK and India) of non-finance family members, some of them admins. Admins add, correct and delete the household's records through the chat (correcting also in place), answer check-ins, send statements and make plans; every other member views the household overview, their own detail and what others share, and asks questions, across iPhone, iPad, desktop browsers, and mobile browsers (including Android foldables). The owner is always an admin and grants or takes back the role in the chat (MA-308). Admins operate system health, budgets, feature toggles, and member access in the Admin center.
 
 ## Product Purpose
 
@@ -28,7 +28,7 @@ A single private household wealth tracker where kinds are dynamic documents rath
 ## Capabilities and Constraints
 
 - **Only admins write; the chat adds and deletes; the UI corrects in place:** New assets, debts, commitments, statements, and plans are added in an admin's chat, and a record is deleted only there (Confirm, then the second check; the record is marked `deleted`, hidden and restorable, its events, audit rows and files kept; MA-309). An admin can correct an existing figure in the chat or in place where it appears; every write previews a confirmation card and writes an immutable audit row.
-- **Several admins, everyone else views:** The owner grants or takes back the admin role in the chat (MA-308); the owner is always an admin. Every other member has full whole-wealth visibility, asks anything, and changes nothing but their own preferences, with no multi-tenant org chrome.
+- **Several admins, everyone else views:** The owner grants or takes back the admin role in the chat (MA-308); the owner is always an admin. Every other member views the household overview, their own detail and what others share, asks anything, and changes nothing but their own preferences, with no multi-tenant org chrome.
 - **Telegram retired:** Early v1/v2 explorations used Telegram and a Telegram Mini App; v3 (MA-161) and v4 (MA-186) retired Telegram completely in favour of the iOS app and the Web PWA.
 - **A wealth tracker only:** Prices exist only to value holdings. There is no market forecast, no stance or buy, add, hold, pause, trim or sell call, no research card, track record, news or sentiment, and no trading or brokerage execution (MA-307, 2 Nov 2026).
 

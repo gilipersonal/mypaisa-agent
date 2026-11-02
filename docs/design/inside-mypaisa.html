@@ -406,7 +406,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .net{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:12px;align-content:start;min-width:0}
 .net p{color:var(--ink-2);font-size:14.5px}
 .meter{position:relative;height:14px;border-radius:7px;background:var(--surface-2);margin:26px 0 6px}
-.meter .fill{position:absolute;left:0;top:0;bottom:0;width:15%;border-radius:7px;background:var(--blue)}
+.meter .fill{position:absolute;left:0;top:0;bottom:0;width:13%;border-radius:7px;background:var(--blue)}
 .meter .tick{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink-3)}
 .meter .tick span{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--ink-2);white-space:nowrap}
 .meter .tick.lo span{bottom:auto;top:calc(100% + 2px)}
@@ -660,7 +660,7 @@ footer .wrap{display:grid;gap:10px}
       <div class="who cat-code"><div class="ic"><svg class="ico"><use href="#i-clock"/></svg></div><h3>The back office</h3><span class="real">worker · scheduler</span><p>Runs the jobs nobody asked for out loud: prices, reading files, check-ins, overnight sums.</p></div>
       <div class="who cat-pipe"><div class="ic"><svg class="ico"><use href="#i-mail"/></svg></div><h3>The postman</h3><span class="real">sender Lambda</span><p>Delivers every reply to each open screen, or by push when the app is closed.</p></div>
       <div class="who cat-pipe"><div class="ic"><svg class="ico"><use href="#i-wave"/></svg></div><h3>The live line</h3><span class="real">SSE stream on the api host</span><p>Keeps open screens in step: a tap on the phone moves the laptop at once.</p></div>
-      <div class="who cat-ai"><div class="ic"><svg class="ico"><use href="#i-spark"/></svg></div><h3>Claude</h3><span class="real">Anthropic API · Sonnet, Haiku, Opus</span><p>The language brain the concierge consults. It lives outside AWS and sees only what it needs.</p></div>
+      <div class="who cat-ai"><div class="ic"><svg class="ico"><use href="#i-spark"/></svg></div><h3>Claude</h3><span class="real">Anthropic API · Sonnet, Haiku</span><p>The language brain the concierge consults. It lives outside AWS and sees only what it needs.</p></div>
     </div>
   </div>
 </section>
@@ -902,7 +902,7 @@ footer .wrap{display:grid;gap:10px}
         <div class="copy">
           <div class="tag"><span class="chipx ph">Phases 2 to 9</span><span class="chipx code">Code computes</span></div>
           <h2>See the whole picture, and fix a figure where it shows</h2>
-          <p>Pull the chat down and Home opens: the household's net worth in pounds and rupees, what it owns and owes, each person's share, UK against India, then Assets, Debts, Budget and the Projection. On the laptop, the same dashboard sits beside the chat. Arun, as an admin, taps his home's value, types the new estimate, sees before and after, and taps Save. The laptop moves at the same moment. A member who is not an admin sees the same figures, read only.</p>
+          <p>Pull the chat down and Home opens: the household's net worth in pounds and rupees, what it owns and owes, each person's share, UK against India, then Assets, Debts, Budget and the Projection. On the laptop, the same dashboard sits beside the chat. Arun, as an admin, taps his home's value, types the new estimate, sees before and after, and taps Save. The laptop moves at the same moment. A member who is not an admin sees the household overview, their own detail and what others share, read only.</p>
           <ul class="behind">
             <li class="bh" style="display:block">Behind the screen</li>
             <li class="cat-code"><span><b>Figures are views, rebuilt from history.</b> Every record keeps a list of what happened to it; net worth is worked out from those, never typed in.</span></li>
@@ -1092,10 +1092,10 @@ footer .wrap{display:grid;gap:10px}
             <div class="chat">
               <div class="me a" style="--d:0">What if we put £60,000 down on a second flat in June 2028?</div>
               <div class="typing" style="--d:.6"><i></i><i></i><i></i></div>
-              <div class="bot a" style="--d:1.6"><svg class="av"><use href="#mark"/></svg><div>It would set you back for a few years, then you'd keep growing. By 2036 you'd be at about <b>£1.23m</b>, against £1.32m without it.</div></div>
+              <div class="bot a" style="--d:1.6"><svg class="av"><use href="#mark"/></svg><div>It would set you back for a few years, then you'd keep growing. By 2036 you'd be at about <b>£1.42m</b>, against £1.51m without it.</div></div>
               <div class="bot a" style="--d:2.4"><svg class="av"><use href="#mark"/></svg><div class="card">
                 <span class="ct">What-if · not saved</span>
-                <svg class="fan" id="fan" viewBox="0 0 250 150" role="img" aria-label="Net worth from 2027 to 2041: with the deposit the middle path reaches about £1.87m in 2041, against £1.98m without it"></svg>
+                <svg class="fan" id="fan" viewBox="0 0 250 150" role="img" aria-label="Net worth from 2027 to 2041: with the deposit the middle path reaches about £2.27m in 2041, against £2.39m without it"></svg>
                 <div class="chips"><span class="chip">Why?</span><span class="chip">Technical</span><span class="chip">Add to the plan</span></div>
               </div></div>
             </div>
@@ -1177,9 +1177,9 @@ footer .wrap{display:grid;gap:10px}
     <div class="team">
       <div class="agent cat-ai"><span class="beat"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-chat"/></svg></div><div><h3>Concierge</h3><span class="brain">Sonnet · Haiku for small turns</span></div></div><dl><dt>Its job</dt><dd>Talks to every member in the chat; passes the admin's instructions to the admin desk.</dd><dt>On its own</dt><dd>Answers, reads, drafts changes with a Confirm card.</dd><dt>Asks</dt><dd>An admin confirms every add, correction and delete; other members view.</dd></dl><span class="when">Working from phase 1</span></div>
       <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-wave"/></svg></div><div><h3>Data steward</h3><span class="brain">Code · Haiku writes its requests</span></div></div><dl><dt>Its job</dt><dd>Keeps the prices that value holdings flowing from free sources; watches for gaps, stale data and quotas.</dd><dt>On its own</dt><dd>Switches to the next source, retries, labels stale data.</dd><dt>Asks</dt><dd>A new source, or anything that costs money.</dd></dl><span class="when">Phase 13</span></div>
-      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-check"/></svg></div><div><h3>Grader and tuner</h3><span class="brain">Code · Sonnet writes the reviews</span></div></div><dl><dt>Its job</dt><dd>Grades each month's Budget forecast, and each year's Projection, against what really happened.</dd><dt>On its own</dt><dd>Grades each closed month, and works out better estimates from the household's own history.</dd><dt>Asks</dt><dd>Every household assumption it proposes.</dd></dl><span class="when">Phase 13</span></div>
+      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-check"/></svg></div><div><h3>Grader and tuner</h3><span class="brain">Code · Sonnet writes the reviews</span></div></div><dl><dt>Its job</dt><dd>Grades each month's Budget forecast, and each year's Projection, against what really happened.</dd><dt>On its own</dt><dd>Grades each closed month, and works out better estimates from the household's own history.</dd><dt>Asks</dt><dd>Every household assumption it proposes.</dd></dl><span class="when">Phase 9</span></div>
       <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-wrench"/></svg></div><div><h3>Ops warden</h3><span class="brain">Code · Haiku sums up incidents</span></div></div><dl><dt>Its job</dt><dd>Runs the daily pipeline and repairs it when a step fails.</dd><dt>On its own</dt><dd>Retries, catches up, rolls back to the last good version, replays stuck work.</dd><dt>Asks</dt><dd>Anything it can't fix becomes an incident for you.</dd></dl><span class="when">Phase 13</span></div>
-      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-gauge"/></svg></div><div><h3>Budget keeper</h3><span class="brain">Code</span></div></div><dl><dt>Its job</dt><dd>The AI spend meter and its ladder of savings.</dd><dt>On its own</dt><dd>Steps down to cheaper modes, and back up.</dd><dt>Asks</dt><dd>Never moves a ceiling: those are yours.</dd></dl><span class="when">Meter and ladder from phase 1</span></div>
+      <div class="agent cat-code"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-gauge"/></svg></div><div><h3>Budget keeper</h3><span class="brain">Code</span></div></div><dl><dt>Its job</dt><dd>The AI spend meter and its ladder of savings.</dd><dt>On its own</dt><dd>Steps down to cheaper modes, and back up.</dd><dt>Asks</dt><dd>Never moves a ceiling: those are yours.</dd></dl><span class="when">Meter and the 100% stop from phase 1; the lower steps from phase 10</span></div>
       <div class="agent cat-pipe"><span class="beat later"></span><div class="top"><div class="ic"><svg class="ico"><use href="#i-desk"/></svg></div><div><h3>Admin desk</h3><span class="brain">Code · Haiku reads your words</span></div></div><dl><dt>Its job</dt><dd>The one channel between every agent and you.</dd><dt>On its own</dt><dd>Queues requests, bundles the non-urgent ones into one daily digest, reminds, lets them expire.</dd><dt>Asks</dt><dd>It is the asking.</dd></dl><span class="when">Phase 13</span></div>
     </div>
 
@@ -1187,7 +1187,7 @@ footer .wrap{display:grid;gap:10px}
       <div class="copy">
         <div class="eyebrow">The admin desk</div>
         <h2>An agent asks; you approve with your face</h2>
-        <p>When an agent needs something outside its limits, the request reaches Arun as a card in his own chat and in the Admin center. It says what changes, from what to what, why, with its evidence, the cost and the budget left, the risk, how to undo it, and when it expires. Approving needs a fresh Face ID check, because the server must know the admin is holding the phone right now. Deciding in one place updates the other.</p>
+        <p>When an agent needs something outside its limits, the request reaches Arun as a card in his own chat and in the Admin center. It says what changes, from what to what, why, with its evidence, the cost and the budget left, the risk, how to undo it, and when it expires. Approving needs a fresh sign-in under Face ID, because the server must know the admin is holding the phone right now. Deciding in one place updates the other.</p>
         <p>Arun can also give instructions in his own words, such as "put Twelve Data first for London" or "why is the Balanced fund's price stale?". The concierge turns an instruction into the same kind of request card, and a question into an answer from the agent concerned.</p>
         <div class="screens">
           <div><b>Approvals</b>Every agent's open requests</div>
@@ -1210,7 +1210,7 @@ footer .wrap{display:grid;gap:10px}
               <div class="row"><span>AWS and others</span><b>£3 of £50 used</b></div>
               <div class="row"><span>Undo</span><b>Switch it off</b></div>
               <div class="btns"><span class="b1 tap" style="--d:1.4">Approve</span><span class="b2">Reject</span><span class="b2">Why?</span></div>
-              <div class="done a" style="--d:4.2"><svg class="ico"><use href="#i-tick"/></svg>Approved by Arun · Face ID · audited</div>
+              <div class="done a" style="--d:4.2"><svg class="ico"><use href="#i-tick"/></svg>Approved by Arun · fresh sign-in under Face ID · audited</div>
             </div></div>
           </div>
           <div class="composer"><span class="plus">+</span>Message MyPaisa<span class="send"><svg class="ico"><use href="#i-send"/></svg></span></div>
@@ -1219,7 +1219,7 @@ footer .wrap{display:grid;gap:10px}
             <div class="sheet">
               <svg class="faceid ico"><use href="#i-face"/></svg>
               <b>Confirm it's you</b>
-              <span class="muted" style="font-size:11px">A fresh Face ID check, under five minutes old, bound to this one approval</span>
+              <span class="muted" style="font-size:11px">A fresh sign-in under Face ID, under five minutes old, bound to this one approval</span>
             </div>
           </div>
         </div></div>
@@ -1245,17 +1245,17 @@ footer .wrap{display:grid;gap:10px}
       </div>
       <div class="net">
         <h3>A spending ceiling for the AI, with a ladder</h3>
-        <p>The admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan's monthly credit. Two members are expected to use about $24 of it. Every call's cost is added to a meter, and the meter is read before every call.</p>
-        <div class="meter" aria-label="Expected spend $24 of a $160 ceiling">
+        <p>An admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan's monthly credit. Two members are expected to use about $21 of it. Every call's cost is added to a meter, and the meter is read before every call.</p>
+        <div class="meter" aria-label="Expected spend $21 of a $160 ceiling">
           <span class="fill grow" style="--d:0"></span>
           <span class="tick" style="left:70%"><span>70%</span></span>
           <span class="tick" style="left:85%"><span>85%</span></span>
           <span class="tick" style="left:95%"><span>95%</span></span>
           <span class="tick lo" style="left:100%"><span>100%</span></span>
-          <span class="exp" style="left:0">Expected: about $24 a month</span>
+          <span class="exp" style="left:0">Expected: about $21 a month</span>
         </div>
         <div class="ladder">
-          <div><b>70%</b><span>A message to the admin. Nothing changes.</span></div>
+          <div><b>70%</b><span>A message to the admins. Nothing changes.</span></div>
           <div><b>85%</b><span>Savers: shorter reviews and fewer web searches.</span></div>
           <div><b>95%</b><span>Essentials: chat on the smallest model; alerts as plain templates.</span></div>
           <div><b>100%</b><span>The AI stops until the month renews or the ceiling is raised. Buttons, check-ins and alerts still work, since they need no AI.</span></div>
@@ -1332,7 +1332,7 @@ footer .wrap{display:grid;gap:10px}
         <h3>Written down, checked, approved</h3>
         <div class="ship"><span>A change</span><em>→</em><span>GitHub</span><em>→</em><span>Checks</span><em>→</em><span>Dev</span><em>→</em><span class="gate">Arun approves</span><em>→</em><span>Prod</span></div>
         <p class="muted" style="font-size:14px">Infrastructure is described in Terraform files and changed only through them; nobody clicks around the AWS console. Prod is updated only by the release workflow.</p>
-        <div style="display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><span class="cost">≈ £45</span><span class="muted" style="font-size:14px">a month for two members on the standard setup, about £6 of it Apple's developer membership. The AI is paid from the plan's monthly credit.</span></div>
+        <div style="display:flex;gap:14px;align-items:baseline;flex-wrap:wrap"><span class="cost">≈ £46</span><span class="muted" style="font-size:14px">a month for two members on the standard setup, about £6 of it Apple's developer membership. The AI is paid from the plan's monthly credit.</span></div>
       </div>
     </div>
   </div>
@@ -1375,15 +1375,15 @@ footer .wrap{display:grid;gap:10px}
   const U = 800;
 
   /* ---------- fan chart (from the figure set: what-if fan and the plan's middle path) ---------- */
-  const W = [[2027,451,499,547],[2028,442,522,598],[2029,506,599,691],[2030,576,677,786],[2031,634,740,866],[2032,699,835,989],[2033,758,922,1111],[2034,830,1034,1242],[2035,915,1132,1371],[2036,1001,1233,1513],[2037,1085,1345,1710],[2038,1166,1483,1891],[2039,1247,1614,2059],[2040,1342,1746,2256],[2041,1440,1869,2466]];
-  const B = [499,582,660,747,812,906,1001,1122,1214,1316,1447,1586,1718,1851,1981];
+  const W = [[2027,453,512,563],[2028,458,538,617],[2029,516,618,727],[2030,585,714,850],[2031,626,787,950],[2032,708,902,1096],[2033,802,999,1248],[2034,885,1132,1405],[2035,967,1266,1566],[2036,1064,1417,1771],[2037,1170,1555,1961],[2038,1303,1712,2220],[2039,1395,1897,2516],[2040,1552,2066,2795],[2041,1667,2266,3117]];
+  const B = [512,600,683,787,861,973,1071,1210,1347,1508,1646,1796,1993,2163,2385];
   const fan = document.getElementById('fan');
   if (fan) {
-    const x0 = 36, x1 = 242, y0 = 128, y1 = 10, ymax = 2500;
+    const x0 = 36, x1 = 242, y0 = 128, y1 = 10, ymax = 3500;
     const X = i => x0 + (x1 - x0) * i / (W.length - 1);
     const Y = v => y0 - (y0 - y1) * v / ymax;
     let s = '';
-    [500,1000,1500,2000,2500].forEach(v => {
+    [500,1000,1500,2000,2500,3000,3500].forEach(v => {
       s += `<line class="gl" x1="${x0}" x2="${x1}" y1="${Y(v)}" y2="${Y(v)}"/>`;
       if (v % 1000 === 0 || v === 500) s += `<text x="0" y="${Y(v)+3}">£${v>=1000?(v/1000)+'m':v+'k'}</text>`;
     });
@@ -1394,7 +1394,7 @@ footer .wrap{display:grid;gap:10px}
     s += `<path class="base draw" style="--d:3" d="M${B.map((v,i)=>`${X(i)},${Y(v)}`).join(' L')}"/>`;
     s += `<path class="p50 draw" style="--d:2.8" d="M${W.map((r,i)=>`${X(i)},${Y(r[2])}`).join(' L')}"/>`;
     s += `<circle class="dot" cx="${X(9)}" cy="${Y(W[9][2])}" r="3"/>`;
-    s += `<text class="lbl" x="${X(9)-4}" y="${Y(W[9][2])-7}" text-anchor="end">2036: £1.23m</text>`;
+    s += `<text class="lbl" x="${X(9)-4}" y="${Y(W[9][2])-7}" text-anchor="end">2036: £1.42m</text>`;
     fan.innerHTML = s;
   }
 
@@ -1533,7 +1533,7 @@ footer .wrap{display:grid;gap:10px}
       {n:['out','post'], t:'It tries again, waiting longer each time', b:'A failed message comes back after a growing wait, so a struggling service isn\'t hammered. Because every part remembers what it has done, a retry never sends anything twice.', x:'5 tries · backoff · idempotency keys'},
       {n:['dlq'], w:['postdlq'], t:'After five tries, safe keeping', b:'It moves to a holding area for 14 days, and a copy goes to the filing cabinet for good. It is never thrown away.', x:'dead-letter queue · copy in S3 raw/dlq/'},
       {n:['dlq','phone'], t:'The admin is told at once', b:'An alarm reaches Arun as "failed work", with a Replay button in his chat and in the Admin center.', x:'alarm → alert router → admin\'s app and email'},
-      {n:['dlq','post','phone'], w:['postdlq','postpush'], rev:['postdlq'], t:'Replay delivers it, once', b:'When Apple is healthy again, Arun taps Replay (behind Face ID) and the message goes back in line and is delivered once. From phase 13 the ops warden does this on its own.', x:'redrive → Replay button (phase 8) → ops warden (phase 13), at most 3 times'}
+      {n:['dlq','post','phone'], w:['postdlq','postpush'], rev:['postdlq'], t:'Replay delivers it, once', b:'When Apple is healthy again, Arun taps Replay (behind a fresh sign-in under Face ID) and the message goes back in line and is delivered once. From phase 13 the ops warden does this on its own.', x:'redrive → Replay button (phase 8) → ops warden (phase 13), at most 3 times'}
     ]
   };
 

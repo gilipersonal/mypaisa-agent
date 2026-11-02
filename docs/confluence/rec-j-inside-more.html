@@ -1,5 +1,5 @@
 <div data-type="panel-custom" data-icon=":envelope_with_arrow:" data-color="#E3FCEF"><p><strong>✉️ Inside MyPaisa, the rest of the way</strong></p>
-<p>One message played through the system in four tours, the agent team of phase 18 and the admin's approval, what stops it going wrong, the two homes on AWS, and a day with MyPaisa.</p>
+<p>One message played through the system in four tours, the agent team of phase 13 and the admin's approval, what stops it going wrong, the two homes on AWS, and a day with MyPaisa.</p>
 <p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/inside-mypaisa.html">inside-mypaisa.html</a> (MA-239).</p>
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
@@ -64,7 +64,7 @@
 <tr><td><strong>3</strong></td><td><strong>It tries again, waiting longer each time</strong></td><td>A failed message comes back after a growing wait, so a struggling service isn&#x27;t hammered. Because every part remembers what it has done, a retry never sends anything twice.</td><td><code>5 tries · backoff · idempotency keys</code></td></tr>
 <tr><td><strong>4</strong></td><td><strong>After five tries, safe keeping</strong></td><td>It moves to a holding area for 14 days, and a copy goes to the filing cabinet for good. It is never thrown away.</td><td><code>dead-letter queue · copy in S3 raw/dlq/</code></td></tr>
 <tr><td><strong>5</strong></td><td><strong>The admin is told at once</strong></td><td>An alarm reaches Arun as &quot;failed work&quot;, with a Replay button in his chat and in the Admin center.</td><td><code>alarm → alert router → admin&#x27;s app and email</code></td></tr>
-<tr><td><strong>6</strong></td><td><strong>Replay delivers it, once</strong></td><td>When Apple is healthy again, Arun taps Replay (behind Face ID) and the message goes back in line and is delivered once. From phase 13 the ops warden does this on its own.</td><td><code>redrive → Replay button (phase 8) → ops warden (phase 13), at most 3 times</code></td></tr>
+<tr><td><strong>6</strong></td><td><strong>Replay delivers it, once</strong></td><td>When Apple is healthy again, Arun taps Replay (behind a fresh sign-in under Face ID) and the message goes back in line and is delivered once. From phase 13 the ops warden does this on its own.</td><td><code>redrive → Replay button (phase 8) → ops warden (phase 13), at most 3 times</code></td></tr>
 </tbody>
 </table>
 <h2>👥 Later, one concierge becomes a team of six, and you are its manager</h2>
@@ -104,7 +104,7 @@
 <p>Grades each closed month, and works out better estimates from the household&#x27;s own history.</p>
 <p>Asks</p>
 <p>Every household assumption it proposes.</p>
-<p>Phase 13</p>
+<p>Phase 9</p>
 <h4>Ops warden</h4>
 <p>Code · Haiku sums up incidents</p>
 <p>Its job</p>
@@ -122,7 +122,7 @@
 <p>Steps down to cheaper modes, and back up.</p>
 <p>Asks</p>
 <p>Never moves a ceiling: those are yours.</p>
-<p>Meter and ladder from phase 1</p>
+<p>Meter and the 100% stop from phase 1; the lower steps from phase 10</p>
 <h4>Admin desk</h4>
 <p>Code · Haiku reads your words</p>
 <p>Its job</p>
@@ -133,7 +133,7 @@
 <p>It is the asking.</p>
 <p>Phase 13</p>
 <h3>An agent asks; you approve with your face</h3>
-<p>When an agent needs something outside its limits, the request reaches Arun as a card in his own chat and in the Admin center. It says what changes, from what to what, why, with its evidence, the cost and the budget left, the risk, how to undo it, and when it expires. Approving needs a fresh Face ID check, because the server must know the admin is holding the phone right now. Deciding in one place updates the other.</p>
+<p>When an agent needs something outside its limits, the request reaches Arun as a card in his own chat and in the Admin center. It says what changes, from what to what, why, with its evidence, the cost and the budget left, the risk, how to undo it, and when it expires. Approving needs a fresh sign-in under Face ID, because the server must know the admin is holding the phone right now. Deciding in one place updates the other.</p>
 <p>Arun can also give instructions in his own words, such as &quot;put Twelve Data first for London&quot; or &quot;why is the Balanced fund&#x27;s price stale?&quot;. The concierge turns an instruction into the same kind of request card, and a question into an answer from the agent concerned.</p>
 <p><strong>Approvals</strong>Every agent&#x27;s open requests</p>
 <p><strong>Settings</strong>Every behaviour, with its range and history</p>
@@ -146,9 +146,9 @@
 <p>AWS and others<strong>£3 of £50 used</strong></p>
 <p>Undo<strong>Switch it off</strong></p>
 <p>ApproveRejectWhy?</p>
-<p>Approved by Arun · Face ID · audited</p>
+<p>Approved by Arun · fresh sign-in under Face ID · audited</p>
 <p>+Message MyPaisa</p>
-<p><strong>Confirm it&#x27;s you</strong> A fresh Face ID check, under five minutes old, bound to this one approval</p>
+<p><strong>Confirm it&#x27;s you</strong> A fresh sign-in under Face ID, under five minutes old, bound to this one approval</p>
 <h2>🛟 What stops it going wrong</h2>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="9c7c9c98-57b1-451e-ac91-f0e0c523f635" data-collection="contentId-1736725" data-alt="rec-j-inside-more--inside-safety.png"></div>
 <figcaption>What stops it going wrong (Inside MyPaisa)</figcaption></figure>
@@ -157,9 +157,9 @@
 <p>Before any tool runs, a small piece of code checks it is allowed for this agent and this person, that its details make sense and that the run is inside its limits; if in doubt, the answer is no. What a statement, a factsheet or a web page says is read as data, never as an instruction, and a chat that has read one loses every tool that could send something out. Every figure in a reply must come from a tool or from your own words.</p>
 <p>The tests run on every change, never on a timer: recorded ones always, live ones when the AI&#x27;s instructions or tools change, and a new Claude model is tested five times over before it answers you. Every live chat is checked by code, and a few are read overnight by a judge that you calibrate each month. The whole story, in plain words or technical detail: <a href="https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT">MyPaisa Guardrails and Evals</a>.</p>
 <h4>A spending ceiling for the AI, with a ladder</h4>
-<p>The admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan&#x27;s monthly credit. Two members are expected to use about $24 of it. Every call&#x27;s cost is added to a meter, and the meter is read before every call.</p>
-<p>70% 85% 95% 100% Expected: about $24 a month</p>
-<p><strong>70%</strong>A message to the admin. Nothing changes.</p>
+<p>An admin sets a monthly ceiling for Claude, $160 in prod by default, paid from the plan&#x27;s monthly credit. Two members are expected to use about $21 of it. Every call&#x27;s cost is added to a meter, and the meter is read before every call.</p>
+<p>70% 85% 95% 100% Expected: about $21 a month</p>
+<p><strong>70%</strong>A message to the admins. Nothing changes.</p>
 <p><strong>85%</strong>Savers: shorter reviews and fewer web searches.</p>
 <p><strong>95%</strong>Essentials: chat on the smallest model; alerts as plain templates.</p>
 <p><strong>100%</strong>The AI stops until the month renews or the ceiling is raised. Buttons, check-ins and alerts still work, since they need no AI.</p>
@@ -207,7 +207,7 @@
 <h4>Written down, checked, approved</h4>
 <p>A change<em>→</em>GitHub<em>→</em>Checks<em>→</em>Dev<em>→</em>Arun approves<em>→</em>Prod</p>
 <p>Infrastructure is described in Terraform files and changed only through them; nobody clicks around the AWS console. Prod is updated only by the release workflow.</p>
-<p>≈ £45a month for two members on the standard setup, about £6 of it Apple&#x27;s developer membership. The AI is paid from the plan&#x27;s monthly credit.</p>
+<p>≈ £46a month for two members on the standard setup, about £6 of it Apple&#x27;s developer membership. The AI is paid from the plan&#x27;s monthly credit.</p>
 <h2>☀️ Mostly quiet, on time, and there when you ask</h2>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="b1263767-aa4e-4186-9df4-75211aecf954" data-collection="contentId-1736725" data-alt="rec-j-inside-more--inside-day.png"></div>
 <figcaption>A day with MyPaisa: mostly quiet, on time, and there when you ask (Inside MyPaisa)</figcaption></figure>

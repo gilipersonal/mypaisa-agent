@@ -276,7 +276,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     <div class="copy plain">
       <p>A fence that makes a thing impossible beats one that spots it, and one that spots it beats asking the model nicely. Each request passes all five, in this order.</p>
       <ul>
-        <li><strong>Least agency.</strong> There is no tool that can trade, delete, read a secret or message anyone else. Nothing is saved until you tap Confirm.</li>
+        <li><strong>Least agency.</strong> There is no tool that can trade, erase data, read a secret or message anyone else. Nothing is saved until you tap Confirm; a delete is an admin's draft, saved only on Confirm and the second check, and only marks the record deleted.</li>
         <li><strong>The policy gate.</strong> Code checks every tool call before it runs.</li>
         <li><strong>Untrusted text.</strong> What is written in a file or a web page is read as data, never as an instruction.</li>
         <li><strong>What it says.</strong> Every figure in a reply must come from a tool or from your own words; out-of-scope asks get a plain refusal.</li>
@@ -285,7 +285,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Least agency</strong> (§7, §4.10): no trade, delete, secret or cross-member message tool; drafts write nothing; Confirm commits exactly the draft whose hash <code>PendingAction</code> holds; the SQL copy runs DuckDB read only, external access off, configuration locked, over the asker's views (§11.1); admin actions behind the second check.</li>
+        <li><strong>Least agency</strong> (§7, §4.10): no trade, erase, secret or cross-member message tool; drafts write nothing; a delete is an admin's draft, saved only on Confirm and the second check, and only marks the record deleted (MA-309); Confirm commits exactly the draft whose hash <code>PendingAction</code> holds; the SQL copy runs DuckDB read only, external access off, configuration locked, over the asker's views (§11.1); admin actions behind the second check.</li>
         <li><strong>Policy gate</strong> (MA-247): manifest, role and household scope, strict schema with amounts as the member's text, run caps, taint; fails closed.</li>
         <li><strong>Untrusted text</strong> (MA-253): third-party text only as a JSON-encoded, labelled tool result, or a labelled document or image block; a quarantined extractor with no tools returns strict JSON with each field's source line; a conversation that has read such text, with its notes and summaries, loses every outbound tool.</li>
         <li><strong>Output checks</strong> (MA-248, MA-249): figures grounded in the tool results and the member's words after normalising unit, currency and rounding; one regeneration, then the plain template; scope refusals; no remote images.</li>
@@ -605,7 +605,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
           <tr><td class="k">MA-253</td><td>2</td><td>The quarantined extractor and the poisoned files</td></tr>
           <tr><td class="k">MA-254</td><td>2</td><td>Each kind's generated tests</td></tr>
           <tr><td class="k">MA-255</td><td>8</td><td>Your calibration and the eval caps on the Evals page</td></tr>
-          <tr><td class="k">MA-256</td><td>18</td><td>Each team agent's tools, safety tests and evidence on its changes</td></tr>
+          <tr><td class="k">MA-256</td><td>13</td><td>Each team agent's tools, safety tests and evidence on its changes</td></tr>
         </tbody>
       </table>
     </div>
@@ -628,7 +628,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <dt>Untrusted text</dt><dd>Anything written by someone outside the chat: a statement, a factsheet, a web page, a shop's name.</dd>
       <dt>Quarantined extractor</dt><dd>The step that reads a file. It has no tools at all, so whatever the file says, it can only fill in the form it was given.</dd>
       <dt>Manifest</dt><dd>The one list of every agent and tool, what each may do, and the tests that prove it.</dd>
-      <dt>Second check</dt><dd>A fresh Face ID, passkey or sign-in that the server checks before an admin action.</dd>
+      <dt>Second check</dt><dd>A fresh sign-in with Apple, Google or a passkey, under Face ID, that the server checks before an admin action; the app's own Face ID lock never authorises anything.</dd>
     </dl>
   </div>
 </section>

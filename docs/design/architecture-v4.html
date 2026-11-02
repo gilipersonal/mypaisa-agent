@@ -652,7 +652,7 @@ footer ul{display:grid;gap:5px}
     <div class="sec-head">
       <p class="eyebrow">The agent team · phase 13</p>
       <h2>Six agents that never call each other</h2>
-      <p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, delete data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1; the rest join it in phase 13. Together they keep the records, the budget and the wealth forecast current as the household's numbers change.</p>
+      <p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, erase data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1, with the budget keeper's meter; the grader and tuner arrive in phase 9; the data steward, the ops warden and the admin desk join in phase 13. Together they keep the records, the budget and the wealth forecast current as the household's numbers change.</p>
     </div>
     <div class="team-rules">
       <div class="lr"><b>Code decides, Claude explains</b>Code makes every number: XIRR, CAGR, the Projection and the Budget forecast. Claude tags, writes, asks and answers.</div>
@@ -939,7 +939,8 @@ var E = {
   push_ios:  ["push","ios","M420,46 C230,46 84,96 82,198"],
   api_cog:   ["api","cog","M370,336 V404"],
   agent_ddb: ["agent","ddb","M610,342 V404"],
-  agent_docs:["agent","docs","M588,336 L512,408"],
+  agent_work:["agent","work","M584,330 Q548,340 548,372 V506 Q548,532 516,540"],
+  wrkr_docs: ["wrkr","docs","M588,526 L512,456"],
   agent_ssm: ["agent","ssm","M642,296 C712,262 772,206 824,194"],
   agent_claude:["agent","claude","M642,310 H1032"],
   ios_docs:  ["ios","docs","M108,250 C150,262 158,386 212,386 H446 Q474,386 482,404"],
@@ -983,16 +984,17 @@ var SCEN = [
   {p:["ios_apiC","apiC_api"], hot:["api"], t:"Ask for an upload link", d:"The door asks the api for a presigned link to the documents bucket.", c:"POST /v1/uploads → presigned PUT, five minutes"},
   {p:["ios_docs"], hot:["docs"], t:"The file lands first", d:"The PDF is stored before anything reads it, with a Document row and an audit row of its own. It is kept for good, whatever happens next.", c:"s3://mypaisa-prod-documents/<household>/<member>/2026/10/"},
   {p:["ios_apiC","apiC_api","api_upd","upd_agent"], hot:["agent"], t:"The message names the file", d:"The chat message carries the file's key through the member's lane to the concierge.", c:"updates.fifo · { s3_key, client_message_id }"},
-  {p:["agent_docs","-agent_docs"], hot:["docs"], t:"The agent opens it", d:"extract_document reads the file with the schema of what it expects to find.", c:"tool extract_document(s3_key, schema)"},
-  {p:["agent_claude","-agent_claude"], hot:["claude"], m:"sonnet", t:"Claude reads the PDF", d:"PDF input with citations: the name, ISIN, cost, top holdings and where it invests. Every figure carries its source line; no PAN, address or account number is kept.", c:"document block · citations: enabled"},
-  {p:["agent_ddb"], hot:["ddb"], t:"A draft, not a record", d:"Code parses and types each field against the kind. The draft is hashed in a PendingAction, so Confirm commits exactly what was shown.", c:"PendingAction(flow_id, draft_hash) · expires in 24 h"},
+  {p:["agent_work","work_wrkr"], hot:["wrkr"], t:"A job on the work queue", d:"Reading a document is a job, not a chat call: the concierge queues it on the work queue and the worker runs it by type.", c:"work: documents · { s3_key, member, run_id }"},
+  {p:["wrkr_docs","-wrkr_docs"], hot:["docs"], t:"The worker reads it with no tools", d:"The quarantined extractor (§21.2) opens the file with the schema of what it expects to find. It holds no tools and writes nothing; the file's text is data, never an instruction.", c:"extract_document(s3_key, schema) · no tools"},
+  {p:["wrkr_claude","-wrkr_claude"], hot:["claude"], m:"sonnet", t:"Claude reads the PDF", d:"PDF input with citations: the name, ISIN, cost, top holdings and where it invests. Every figure carries its source line; no PAN, address or account number is kept.", c:"document block · citations: enabled"},
+  {p:["wrkr_ddb","-agent_ddb","agent_ddb"], hot:["ddb"], t:"A draft, not a record", d:"The worker keeps what it read; the concierge picks it up and drafts it with draft_record, as code parses and types each field against the kind. The draft is hashed in a PendingAction, so Confirm commits exactly what was shown.", c:"PendingAction(flow_id, draft_hash) · expires in 24 h"},
   {p:["agent_outb","outb_sndr","sndr_strm","strm_apiS","apiS_ios"], hot:["ios"], t:"The Confirm card", d:"The card shows what will be written, with the source a tap away. Nothing is saved yet.", c:"card: holding.confirm · [Confirm] [Edit] [Cancel]"},
   {p:["ios_apiC","apiC_api","api_upd","upd_agent","agent_ddb"], hot:["ddb"], t:"Confirm writes it, once", d:"The tap takes the same lane. Code checks the member is an admin; the write service validates against the kind and writes the record with its hash-chained audit row in one transaction.", c:"TransactWriteItems: Record + AuditEvent(via: factsheet, document_id)"},
   {p:["agent_outb","outb_sndr","sndr_strm","strm_apiS","apiS_web"], hot:["web"], t:"The laptop moves too", d:"records.changed reaches every open door, so the dashboard on the laptop shows the new holding at once.", c:"event: records.changed"}
  ]},
  {id:"checkin", name:"A check-in", sum:"Code decides an EMI is due; an admin taps Paid on the lock-screen push.", steps:[
   {p:["sched_work"], hot:["work"], t:"The schedule ticks", d:"EventBridge Scheduler, in Europe/London, puts the daily check-ins job on the work queue. The tick is the root of the trace.", c:"schedule: checkins-daily → work · job_id"},
-  {p:["work_wrkr","wrkr_ddb"], hot:["ddb"], t:"Code decides what is due", d:"No model: the worker reads the commitments and finds November's EMI on the HDFC car loan due. The CheckIn row is created once, by a conditional put.", c:"get_commitments(window) → CheckIn(emi#2026-11-05)"},
+  {p:["work_wrkr","wrkr_ddb"], hot:["ddb"], t:"Code decides what is due", d:"No model: the worker reads the commitments and finds November's EMI on the HDFC home loan due. The CheckIn row is created once, by a conditional put.", c:"get_commitments(window) → CheckIn(emi#2026-11-05)"},
   {p:["wrkr_outb"], hot:["outb"], t:"A card that shows what a tap writes", d:"The check-in goes on the admin's outbox lane. Its Paid is the Confirm, with Undo.", c:"card: checkin · [Paid] [Not yet] [Different amount]"},
   {p:["outb_sndr","sndr_push","push_ios"], hot:["ios"], t:"Pushed, because no door is open", d:"The sender appends to the stream log and, with no fresh presence, sends Apple push. No amount shows on the lock screen.", c:"APNs HTTP/2 · token key · retry-after honoured"},
   {p:["ios_apiC","apiC_api","api_upd","upd_agent","agent_ddb"], hot:["ddb"], t:"Paid", d:"The tap is acknowledged at once and its effect queued, so the button never spins. The payment event and its audit row are written together.", c:"Event(emi_paid) + AuditEvent(via: checkin)"},
@@ -1305,7 +1307,7 @@ if (!RM && "IntersectionObserver" in window){
 /* ---------------- tools ---------------- */
 var TOOLS = [
   {h:"Read the records and views", c:"#C925D1", p:"Look up rather than ask.", l:["get_portfolio","get_holding(id)","get_networth(view)","get_commitments(window)","get_budget(month)","get_audit(filter)","list_kinds","describe_kind","chart_series(id, days)","query_ledger","query_ledger_sql","get_spend"]},
-  {h:"Compute, never saved", c:"#1D9A5B", p:"Typed overrides through code.", l:["run_scenario","run_projection(overrides)"]},
+  {h:"Compute, never saved", c:"#1D9A5B", p:"Typed overrides through code.", l:["run_projection(overrides)"]},
   {h:"Draft and propose", c:"#E7157B", p:"Admins only, enforced in code. Writes nothing until Confirm; the draft is hashed; a delete also takes the second check.", l:["draft_record(kind, fields)","draft_event(record, type, fields)","propose_change(entity, patch)"]},
   {h:"Ask, read, search", c:"#D97757", p:"Server tools are Anthropic's, with citations.", l:["ask_user(question, options[])","extract_document(s3_key, schema)","web_search","web_fetch"]},
   {h:"Kinds, plan and budget", c:"#DD344C", p:"Admins only, enforced in code; propose_kind takes the second check, plan and budget changes take Confirm.", l:["propose_kind","propose_plan_item","rearrange_budget"]}
@@ -1420,7 +1422,7 @@ AG.forEach(function(a){
 
 /* ---------------- models ---------------- */
 var MC = [
-  {k:"sonnet", name:"Sonnet 5.5", id:"claude-sonnet-5-5", role:"Carries the conversation.", uses:["The concierge's tool loop: the chat, its cards and guided flows, about 1.5p to 3p a message","Reading a factsheet or a screenshot sent in the chat, with citations","Web search and fetch with citations, when a member asks","Phase 13: the grader and tuner's review of each closed month"], price:"$2 in · $10 out per million tokens"},
+  {k:"sonnet", name:"Sonnet 5.5", id:"claude-sonnet-5-5", role:"Carries the conversation.", uses:["The concierge's tool loop: the chat, its cards and guided flows, about 1.5p to 3p a message","Reading a factsheet or a screenshot sent in the chat, with citations","Web search and fetch, only to look up a holding's public details when it is added","From phase 9: the grader and tuner's monthly note on each closed month"], price:"$2 in · $10 out per million tokens"},
   {k:"haiku", name:"Haiku 5.5", id:"claude-haiku-5-5", role:"Files and filters at volume.", uses:["Statement merchants the memory has not seen, through Message Batches at half price","A one-line note on each closed conversation; the alerts' repeat filter; small chat turns","Phase 13: the data steward's requests, the ops warden's incident summaries, the admin desk's drafts","Chat answers at the 95% step"], price:"$0.10 in · $0.50 out per million tokens"}
 ];
 var mcEl = document.getElementById("modelcards");
@@ -1431,14 +1433,15 @@ MC.forEach(function(m){
 });
 var JOBS = [
   ["Chat answers", function(p){ return p>=100?["tpl","One-line reply, templates"]:p>=95?["haiku","Haiku 5.5"]:["sonnet","Sonnet 5.5"]; }],
-  ["Alerts and check-in cards", function(p){ return p>=95?["tpl","Plain template"]:["sonnet","Sonnet 5.5"]; }],
+  ["Alert wording", function(p){ return p>=95?["tpl","Plain template"]:["sonnet","Sonnet 5.5"]; }],
+  ["Check-in cards", function(p){ return ["tpl","Template, no model"]; }],
   ["Reading a factsheet or screenshot", function(p){ return p>=100?["off","Stopped"]:["ok","Works"]; }],
-  ["Web searches in the chat", function(p){ return p>=100?["off","Stopped"]:p>=95?["off","Essentials only"]:p>=85?["tpl","Three a day"]:["ok","As asked"]; }],
+  ["Web searches for a new holding's details", function(p){ return p>=100?["off","Stopped"]:p>=95?["off","Essentials only"]:p>=85?["tpl","Three a day"]:["ok","When one is added"]; }],
   ["Memory notes on closed conversations", function(p){ return p>=100?["off","Stopped"]:p>=85?["tpl","Only when asked"]:["haiku","Haiku 5.5"]; }]
 ];
 var STEPS = [
   [100,"s100","Claude stops","Claude stops until the cycle renews or an admin raises the ceiling. Every card goes out as its plain template; buttons and guided flows work as before. Alerts are never dropped: a template needs no model."],
-  [95,"s95","Essentials only","Chat answers on Haiku; alerts and check-in cards go out as their plain templates with code's numbers. Reading a factsheet or screenshot still works. The admins are told."],
+  [95,"s95","Essentials only","Chat answers on Haiku; alert wording goes out as its plain template with code's numbers (check-ins are templates at every step). Reading a factsheet or screenshot still works. The admins are told."],
   [85,"s85","Savers","Web searches are limited to three a day, and a memory note is written only when a member asks MyPaisa to remember. The admins are told."],
   [70,"s70","Admins told","One message to the admins: what is spent, on what, and the days left. Nothing changes."],
   [0,"s0","Normal","Every job runs on its usual model."]

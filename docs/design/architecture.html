@@ -360,7 +360,7 @@ pre.tree .c { color: var(--faint); }
       <tr><th>Tool</th><th>Returns</th><th>Who else uses it</th></tr>
       <tr><td><code>get_portfolio</code> · <code>get_holding(id)</code></td><td>The registry: instruments, positions, latest valuations, weights, in GBP</td><td>Every card</td></tr>
       <tr><td><code>get_returns(id)</code> · <code>get_history</code></td><td>XIRR and CAGR from the dated ledger, money paid in and taken out, the local-vs-FX split of a change; closes for charts</td><td>The Portfolio card, the holding card</td></tr>
-      <tr><td><code>run_projection</code></td><td>"If I add £300 a month and the pound falls 10%, where am I in ten years?" The Projection, from actual numbers: the household's own XIRR and CAGR, contractual rates, salaries, debts and plans</td><td>Chat, the Projection card</td></tr>
+      <tr><td><code>run_projection</code></td><td>"If I add £300 a month, where am I in ten years?" The Projection, from actual numbers: the household's own XIRR and CAGR, contractual rates, salaries, debts and plans</td><td>Chat, the Projection card</td></tr>
       <tr><td><code>get_budget</code></td><td>The budget against actuals, and the Budget forecast</td><td>Check-ins, the month close</td></tr>
       <tr><td><code>extract_document</code></td><td>Structured facts from a factsheet PDF or a screenshot, with the source line and a confidence per field</td><td>Adding or correcting a holding</td></tr>
       <tr><td><code>propose_change</code> · <code>propose_delete</code></td><td>A record added, corrected or deleted, shown as a card and saved only after an admin taps Confirm (a delete also needs a second check, and marks the record <code>deleted</code>: hidden, restorable through the chat); every write is an audit row</td><td>Chat only (an admin may also correct a figure in place)</td></tr>
@@ -390,7 +390,7 @@ pre.tree .c { color: var(--faint); }
     <tr><th>Instrument</th><th>Kind</th><th>ISIN</th><th>Listing recorded</th><th>Exposure</th><th>Note</th></tr>
     <tr><td>BlackRock MyMap (Monzo "Balanced")</td><td><code>oeic</code></td><td>from the factsheet</td><td>none, daily NAV</td><td>~66% shares, ~34% bonds; mostly USD underneath</td><td>valued from its daily NAV</td></tr>
     <tr><td>iShares NASDAQ 100 UCITS ETF (Acc)</td><td><code>etf</code></td><td>IE00B53SZB19</td><td>XLON <code>CNX1</code> GBP (USD line <code>CNDX</code>)</td><td>100% USD, US large-cap tech</td><td>charge 0.30%</td></tr>
-    <tr><td>iShares Automation &amp; Robotics UCITS ETF (Acc)</td><td><code>etf</code></td><td>IE00BYZK4552</td><td>XLON <code>RBTX</code> GBP (USD line <code>RBOT</code>)</td><td>global, roughly equal-weighted small and mid caps; USD, JPY, EUR, TWD</td><td>charge 0.40%; overlaps the NASDAQ ETF in a few names, computed not assumed</td></tr>
+    <tr><td>iShares Automation &amp; Robotics UCITS ETF (Acc)</td><td><code>etf</code></td><td>IE00BYZK4552</td><td>XLON <code>RBTX</code> GBP (USD line <code>RBOT</code>)</td><td>global, roughly equal-weighted small and mid caps; USD, JPY, EUR, TWD</td><td>charge 0.40%</td></tr>
     <tr><td>iShares Physical Silver ETC</td><td><code>commodity_etc</code></td><td>IE00B4NCWG09</td><td>XLON <code>ISLN</code> GBP (USD line <code>SSLN</code>)</td><td>silver, priced in USD</td><td>not a fund: a debt security backed by bars; charge ~0.20%</td></tr>
     <tr><td>Monzo pot</td><td><code>cash</code></td><td>—</td><td>—</td><td>GBP</td><td>where contributions come from</td></tr>
   </table></div>

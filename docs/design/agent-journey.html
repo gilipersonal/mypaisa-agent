@@ -749,7 +749,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="card lanecard"><h3><i class="dot dm"></i>Member</h3><p>You (an admin) or Asha (a member who views), in the MyPaisa app on an iPhone or an iPad (or a foldable, folded or open), or in the web app in a browser on a laptop.</p></div>
   <div class="card lanecard"><h3><i class="dot dp"></i>App and web app</h3><p>MyPaisa, one app for iPhone and iPad on iOS 26, a React Native shell with a native SwiftUI core: the chat with its cards, composer and shortcut chips; Home, Activity and You; the Admin center for the admins; the Keychain, Face ID, push and the share sheet. It talks to AWS over HTTPS (<code>api.mypaisapp.com</code>), and replies stream to it over Server-Sent Events from the same host. Beside it, the web app at <code>dashboard.mypaisapp.com</code>: a SvelteKit 3 progressive web app with the same chat, the dashboard and the Admin center.</p></div>
   <div class="card lanecard"><h3><i class="dot da"></i>AWS</h3><p>API Gateway (the api's REST API, with the SSE stream as its streaming route on the same host), the api λ, the SQS FIFO updates queue, the agent λ, the SQS work queue and worker λ, the SQS outbox and sender λ, DynamoDB, S3, Cognito, EventBridge Scheduler, Step Functions (phase 13), SNS, CloudWatch.</p></div>
-  <div class="card lanecard"><h3><i class="dot dc"></i>Claude</h3><p>The Anthropic API: Haiku, Sonnet and Opus 5.5, server-side web search and fetch, Message Batches.</p></div>
+  <div class="card lanecard"><h3><i class="dot dc"></i>Claude</h3><p>The Anthropic API: Haiku and Sonnet 5.5, server-side web search and fetch, Message Batches.</p></div>
   <div class="card lanecard"><h3><i class="dot de"></i>External data</h3><p>Free sources first, for prices only, to value what the household holds: yfinance, Twelve Data's free tier, ECB FX, issuer pages, FT. For India: AMFI's NAV file from phase 5; from phase 14, mfapi.in, yfinance <code>.NS</code> and <code>.BO</code>, NSE and BSE bhavcopy, the RBI/FBIL rate. Apple and Google, when they vouch for a sign-in; Apple's push service (APNs), when the app is closed.</p></div>
 </div>
 
@@ -775,7 +775,7 @@ footer.foot b { color: var(--mp-ink); }
   <a class="idx" href="#holding"><b>3</b><span><strong>Adding a holding</strong><small>A factsheet or a screenshot from the camera, a scan, Photos or Files · phases 2 and 5</small></span></a>
   <a class="idx" href="#money"><b>4</b><span><strong>Logging money in plain words</strong><small>"I put £200 into Balanced today", in the holding's currency · phase 5</small></span></a>
   <a class="idx" href="#prices"><b>5</b><span><strong>The daily prices</strong><small>Scheduler, queues, free prices, every holding valued, stale labelled · phase 5</small></span></a>
-  <a class="idx" href="#ask"><b>6</b><span><strong>Asking a question</strong><small>Chat memory, tools, a reply streamed as it is written, Why? with sources · phases 1 and 11</small></span></a>
+  <a class="idx" href="#ask"><b>6</b><span><strong>Asking a question</strong><small>Chat memory, tools, a reply streamed as it is written, Why? from code's figures · phases 1 and 11</small></span></a>
   <a class="idx" href="#dashboard"><b>7</b><span><strong>The dashboard in the app</strong><small>Home, a holding, Audit, Activity, on iPhone and iPad · phases 2 to 9</small></span></a>
   <a class="idx" href="#ipad"><b>8</b><span><strong>On the iPad: reading Home while asking about it</strong><small>The chat beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt · phases 1 to 9</small></span></a>
   <a class="idx" href="#web"><b>9</b><span><strong>The web app on a laptop</strong><small>The chat, the dashboard and the Admin center in a browser, installable · phases 1 to 9</small></span></a>
@@ -1225,8 +1225,8 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg><div><b>Amber when unsure</b><span>Any field Claude is unsure of is shown in amber and asked about.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>A source for every figure</b><span>Extracted figures carry the line they came from. Claude reads; it does not invent a number.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><div><b>Straight to the private bucket</b><span>The app uploads through a presigned link that works once, for one file, for a few minutes; nothing passes through the chat's queue but its name.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Every file kept, and yours to see</b><span>Each file you send is kept for good in a private, encrypted bucket and opens from the Audit screen through a five-minute link, for you and the owner only (MA-148, MA-149).</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A document's words are data</b><span>Text inside a PDF is untrusted and never followed as an instruction; no tool can trade or delete.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Every file kept, and yours to see</b><span>Each file you send is kept for good in a private, encrypted bucket and opens from the Audit screen through a five-minute link, for you and the admins only (MA-148, MA-149).</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>A document's words are data</b><span>Text inside a PDF is untrusted and never followed as an instruction; no tool can trade or erase data. A delete is an admin's draft, saved only on Confirm and the second check, and only marks the record deleted.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>Retries</b><span>The document read is a job on the work queue: five tries with backoff, then a dead-letter queue and an alarm.</span></div></div>
   </div>
 
@@ -1479,7 +1479,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="flow-h">
     <span class="flow-n">06</span>
     <h2 id="h-ask">Asking a question in chat</h2>
-    <p class="lede">Ask in plain words. The agent looks up what it needs with its tools, sends Claude only the current conversation, and answers with a card; its words stream into the chat as they are written. Any member may ask about the household's wealth. <b>Why?</b> goes to the web for the reasons behind a move in value, with the sources cited; nothing predicts a market or says buy or sell.</p>
+    <p class="lede">Ask in plain words. The agent looks up what it needs with its tools, sends Claude only the current conversation, and answers with a card; its words stream into the chat as they are written. Any member may ask about the household's wealth. <b>Why?</b> explains a move in value from code's own figures: the FX change and the holding's currency split. Nothing searches the web to explain a move, nothing predicts a market, and nothing says buy or sell.</p>
     <div class="meta"><span class="chip trig"><b>Trigger</b> a typed question, the <b>Ask</b> chip, or a screen's Ask</span><span class="chip">Phase 1 (memory, streaming)</span><span class="chip">Phase 11 (tools, cards)</span></div>
   </div>
 
@@ -1514,9 +1514,9 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The finished card goes through the outbox; sender λ delivers it whole to every open stream you have, your iPad's too, with <b>Why?</b>, <b>Projection</b> and <b>Technical</b></span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You tap <b>Why?</b></span><span class="ln"></span></li>
       <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">The tap, through <code>/v1/chat/actions</code> and your lane</span><span class="ln"></span></li>
-      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The question goes to Claude with web search and fetch on, and no household figure in the call</span><span class="ln"></span></li>
-      <li class="st mv fc toE" data-lanes="Claude to External data"><span class="lb">Anthropic's server-side search reads the week's sources; their text is <span class="sg">untrusted</span> and never obeyed</span><span class="ln"></span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The reasons, streamed, with each source cited</span><span class="ln"></span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box">Code works out the move from its own figures: the week's change in the ECB's pound-to-dollar rate and the fund's currency split, from <b>DynamoDB</b>; no web search</span></li>
+      <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">Only those figures go to Sonnet, which words the reasons</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">The reasons, streamed, each figure from code</span><span class="ln"></span></li>
     </ol></div>
   </div></div>
 
@@ -1564,8 +1564,8 @@ footer.foot b { color: var(--mp-ink); }
           <div class="say"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg><div>
             <div class="mcard">
               <h5>Why Balanced wobbled this week</h5>
-              <p>Most of the fund sits in dollar assets. The pound rose against the dollar, which trims what they are worth in pounds. <span class="src">[1]</span> <span class="src">[2]</span></p>
-              <div class="qt">[1] A markets report on the pound, this morning<br>[2] The fund's own page: where it invests</div>
+              <p>Most of the fund sits in dollar assets. The pound rose against the dollar this week, which trims what they are worth in pounds.</p>
+              <div class="qt">From code: the ECB's pound-to-dollar rate, Fri 16 Oct and Fri 23 Oct<br>The fund's currency split, from its last factsheet</div>
             </div>
           </div></div>
           <span class="day">Technical ▾ opened</span>
@@ -1575,17 +1575,17 @@ footer.foot b { color: var(--mp-ink); }
         </div>
         <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
       </div>
-      <figcaption><b>Why? and Technical.</b> Sources cited; the return's working, from code.</figcaption>
+      <figcaption><b>Why? and Technical.</b> The move explained from code's figures; the return's working, from code.</figcaption>
     </figure>
   </div>
 
   <h3 class="blk">Safeguards on this path</h3>
   <div class="sgs">
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>Numbers from tools</b><span>Claude calls the tools and words the card; the value, XIRR and CAGR come from code, and a card's figures are typed numbers in its JSON, never prose. Nothing predicts a market or says buy or sell.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Untrusted web text</b><span>Search results that contain instructions are not acted on. No tool can trade, delete or message anyone else.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>No web search to explain a move</b><span>Why? reads only code's figures. Web search only looks up a holding's public details when it is added, and its text is never obeyed. No tool can trade, erase data or message anyone else; a delete is an admin's draft, saved only on Confirm and the second check, and only marks the record deleted.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><div><b>Short memory, full record</b><span>Only the current conversation is sent; the agent looks up the rest with <code>get_audit</code> and <code>get_portfolio</code>.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg><div><b>At most eight calls a run</b><span>A loop that reaches it stops and says so.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>The spend ladder</b><span>At 85% Why? gets three searches a day; at 95% chat answers on Haiku; at 100% free text waits for the renewal.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><div><b>The spend ladder</b><span>At 85% web searches are limited to three a day; at 95% chat answers on Haiku; at 100% free text waits for the renewal.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><div><b>Confirm before any write</b><span>A question can lead to a change, but only through a card and Confirm: a record by an admin, a member's own preference ("stop pinging me about check-ins") by that member.</span></div></div>
   </div>
 
@@ -1622,7 +1622,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inP" data-lanes="App"><span class="box">The last fetch is kept on the device, encrypted, and shown <span class="sg">with its time</span> when the network is gone</span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">You open a holding: its value series, its XIRR with its working, its events and its files</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box"><b>Audit</b> reads the <b>AuditEvent</b> rows. <b>Activity</b> reads the <b>RunRecord</b> rows, the schedule board, the spend meter and seven days of <b>CloudWatch</b> alarms</span></li>
-      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">A file behind an audit row opens through a <span class="sg">five-minute link</span>, for its member and the owner only; the opening is itself an audit row</span><span class="ln"></span></li>
+      <li class="st mv fp toA" data-lanes="App to AWS"><span class="lb">A file behind an audit row opens through a <span class="sg">five-minute link</span>, for its member and the admins only; the opening is itself an audit row</span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to App"><span class="lb">To add or delete anything, an admin's <b>Update</b> opens the chat with the right guided flow started: a card, <span class="sg">Confirm</span>, an <span class="sg">audit row</span>; an admin can also correct an existing figure in place, with its audit row. A member who views sees no Update</span><span class="ln"></span></li>
       <li class="st note" data-lanes="Note"><span class="box">On the iPad the same screens sit between the sidebar and the chat, so a member reads and asks at once (flow 8); in a browser they are the web app, with the same chat beside them (flow 9). Every card carries <b>Open</b> to its screen, and every screen's <b>Ask</b> opens the chat about it.</span></li>
     </ol></div>
@@ -1738,7 +1738,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg><div><b>Checked on every call</b><span>Token, status, epoch and role on every call; the token never leaves the Keychain except to the api.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds and rupees hidden on every screen and chart axis, with placeholders that stay visible in dark; the app switcher shows only the mark.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Roles</b><span>Only admins write. A member sees the household totals and their own detail and views only; a viewer reads Home and what members share.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit log, readable</b><span>Filtered by member, record and date; a member sees their own rows and the household's, the owner sees all.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit log, readable</b><span>Filtered by member, record and date; a member sees their own rows and the household's, an admin sees all.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-cloud"/></svg><div><b>Offline, labelled</b><span>The last Home, holdings and conversation stay on the device with complete file protection, shown "as of 08:42" when the network is gone; an old figure is never shown as new.</span></div></div>
   </div>
 
@@ -1912,7 +1912,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st act inA" data-lanes="AWS"><span class="box">Signed in as in flow 2, route 3: Apple, Google or a passkey. The api keeps the session behind an <span class="sg">HttpOnly cookie</span> for its own host</span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">Every call to <code>api.mypaisapp.com/v1</code>, and the stream from <code>/v1/stream</code>, carries the cookie. The <span class="sg">authorizer</span> checks session, status, epoch and role; CORS admits only this environment's site; <b>api λ</b> reads <b>DynamoDB</b> and returns just what this member may see</span></li>
       <li class="st mv fa toP rev" data-lanes="AWS to Web app"><span class="lb">The same chat, beside Home, Assets, a holding and the Projection, with the Household and Me switch; Audit and Files; Activity: the app's screens, laid out for a wide window</span><span class="ln"></span></li>
-      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Audit</b> reads the <b>AuditEvent</b> rows. <b>Activity</b> reads the <b>RunRecord</b> rows, the schedule board, the spend meter and seven days of <b>CloudWatch</b> alarms. Every run is one <b>OpenTelemetry</b> trace from the door to the model, with its id on every log line, span and RunRecord; the logs, spans, metrics, dashboard and alarms live in CloudWatch, the content only in the RunRecord (ARCHITECTURE 10). A file opens through a <span class="sg">five-minute link</span>, for its member and the owner only</span></li>
+      <li class="st act inA" data-lanes="AWS"><span class="box"><b>Audit</b> reads the <b>AuditEvent</b> rows. <b>Activity</b> reads the <b>RunRecord</b> rows, the schedule board, the spend meter and seven days of <b>CloudWatch</b> alarms. Every run is one <b>OpenTelemetry</b> trace from the door to the model, with its id on every log line, span and RunRecord; the logs, spans, metrics, dashboard and alarms live in CloudWatch, the content only in the RunRecord (ARCHITECTURE §9). A file opens through a <span class="sg">five-minute link</span>, for its member and the admins only</span></li>
       <li class="st mv fm toP" data-lanes="Member (admin) to Web app"><span class="lb">An admin opens the <b>Admin center</b>: every action asks for the <span class="sg">second check</span> in the browser, a passkey or a fresh sign-in (flow 10)</span><span class="ln"></span></li>
       <li class="st mv fm toP" data-lanes="Member to Web app"><span class="lb">To add or delete anything, an admin asks in the web app's chat: a card, <span class="sg">Confirm</span>, an <span class="sg">audit row</span>, through the same write service as the app. An admin can also correct an existing figure in place where it shows</span><span class="ln"></span></li>
       <li class="st note" data-lanes="Note"><span class="box">Installable as a progressive web app on a laptop, an iPad or a phone: its own window and icon, the same chat and screens. When it is closed, a reply arrives by Web Push (MA-200), on a device with no open stream.</span></li>
@@ -1974,7 +1974,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg><div><b>A shell with nothing in it</b><span>The site on CloudFront and S3 is public and holds no figures; everything a member sees comes from the api after sign-in.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg><div><b>Privacy mode</b><span>Pounds and rupees hidden here too, with placeholders that stay visible in dark.</span></div></div>
     <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg><div><b>Roles</b><span>Only admins write. A member sees the household totals and their own detail and views only; a viewer reads Home and what members share; only admins see the Admin center.</span></div></div>
-    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit log, readable</b><span>Filtered by member, record and date; a member sees their own rows and the household's, the owner sees all. Each file opening is itself an audit row.</span></div></div>
+    <div class="sgc"><svg class="ic" aria-hidden="true"><use href="#i-doc"/></svg><div><b>The audit log, readable</b><span>Filtered by member, record and date; a member sees their own rows and the household's, an admin sees all. Each file opening is itself an audit row.</span></div></div>
   </div>
 
   <h3 class="blk">Built by</h3>
@@ -2083,7 +2083,7 @@ footer.foot b { color: var(--mp-ink); }
                 <tr><td>A Claude or AWS step reached; the forecast over the cap</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
                 <tr><td>An incident; an approval waiting</td><td>Yes</td><td>Yes</td><td>Critical only</td></tr>
                 <tr><td>A data feed stale; a job failed</td><td>Yes</td><td>Yes</td><td>No</td></tr>
-                <tr><td>Budget and check-in alerts</td><td>Members' own</td><td>Members' own</td><td>No</td></tr>
+                <tr><td>Budget and check-in alerts</td><td>The admins' chat</td><td>The admins' devices</td><td>No</td></tr>
               </tbody>
             </table></div>
             <p class="small muted">Email goes through the SNS topic <code>mypaisa-prod-admin-alerts</code> and carries system alerts only. Each channel has quiet hours a critical alert may break through, every alert a cooldown, and non-urgent ones can wait for a daily digest.</p>
@@ -2149,7 +2149,7 @@ footer.foot b { color: var(--mp-ink); }
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-116"><b>MA-116</b><span>The owner moves the Claude ceiling up or down in the Admin center</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-137"><b>MA-137</b><span>The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the app and the web app, push and email</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-113"><b>MA-113</b><span>Every Claude call is metered and nothing runs past the monthly ceiling</span></a>
-    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-130"><b>MA-130</b><span>E2: an admin desk in the owner's chat and the Admin center where agents ask questions and seek approval (phase 13)</span></a>
+    <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-130"><b>MA-130</b><span>E2: an admin desk in the admins' chat and the Admin center where agents ask questions and seek approval, and admins give instructions (phase 13)</span></a>
     <a class="key" href="https://duttaarun2015.atlassian.net/browse/MA-136"><b>MA-136</b><span>E8: each agent has its share of the $200 Claude credit (phase 13)</span></a>
   </div>
 </section>
@@ -2221,7 +2221,7 @@ footer.foot b { color: var(--mp-ink); }
         </div>
         <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
       </div>
-      <figcaption><b>The owner's failed-work alert.</b> Phase 8 adds the Replay button; replaying is an owner action, behind the second check.</figcaption>
+      <figcaption><b>An admin's failed-work alert.</b> Phase 8 adds the Replay button; replaying is an admin action, behind the second check.</figcaption>
     </figure>
     <figure class="mock">
       <div class="phone">
@@ -2293,7 +2293,7 @@ footer.foot b { color: var(--mp-ink); }
   <div class="flow-h">
     <span class="flow-n">12</span>
     <h2 id="h-ladder">The Claude spend ladder in practice</h2>
-    <p class="lede">The agents' allowance is the Max 20x plan's $200 monthly credit: $160 for prod and $40 for dev, each a ceiling the owner moves. As the month's spend climbs, MyPaisa steps down to cheaper ways of working before it stops. Alerts always go out.</p>
+    <p class="lede">The agents' allowance is the Max 20x plan's $200 monthly credit: $160 for prod and $40 for dev, each a ceiling an admin moves. As the month's spend climbs, MyPaisa steps down to cheaper ways of working before it stops. Alerts always go out.</p>
     <div class="meta"><span class="chip trig"><b>Trigger</b> every model call reads the meter first</span><span class="chip">Phase 1 (meter, 100% stop)</span><span class="chip">Phase 10 (the lower steps)</span></div>
   </div>
 
@@ -2304,11 +2304,11 @@ footer.foot b { color: var(--mp-ink); }
     <div class="ticks" aria-hidden="true"><span style="left:70%">70</span><span style="left:85%">85</span><span style="left:95%">95%</span></div>
   </div>
   <div class="ladder">
-    <div class="rung"><b>&lt; 70%</b><h4>Normal</h4><ul><li>Sonnet for chat and cards</li><li>Why? with web search</li></ul></div>
-    <div class="rung"><b>70%</b><h4>A heads-up</h4><ul><li>One message to the owner: what is spent, on what, and the days left</li><li>Nothing changes</li></ul></div>
-    <div class="rung"><b>85%</b><h4>Savers</h4><ul><li>Why? gets three searches a day</li><li>Everything else as normal</li></ul></div>
+    <div class="rung"><b>&lt; 70%</b><h4>Normal</h4><ul><li>Sonnet for chat and cards</li><li>Web search to look up a holding's details when it is added</li></ul></div>
+    <div class="rung"><b>70%</b><h4>A heads-up</h4><ul><li>One message to the admins: what is spent, on what, and the days left</li><li>Nothing changes</li></ul></div>
+    <div class="rung"><b>85%</b><h4>Savers</h4><ul><li>Web searches are limited to three a day</li><li>Everything else as normal</li></ul></div>
     <div class="rung"><b>95%</b><h4>Essentials only</h4><ul><li>Chat answers on Haiku</li><li>Alerts and check-ins go out as plain templates with code's numbers</li><li>Reading a factsheet or screenshot still works</li></ul></div>
-    <div class="rung stop"><b>100%</b><h4>Templates only</h4><ul><li>Claude stops until the cycle renews or the owner raises the ceiling</li><li>Every card goes out as its plain template; its buttons, the chips and guided flows work</li><li>A typed message gets one line saying when free text is back</li></ul></div>
+    <div class="rung stop"><b>100%</b><h4>Templates only</h4><ul><li>Claude stops until the cycle renews or an admin raises the ceiling</li><li>Every card goes out as its plain template; its buttons, the chips and guided flows work</li><li>A typed message gets one line saying when free text is back</li></ul></div>
   </div>
   <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><span><b>Alerts are never dropped at any step:</b> a template needs no model. Raising the ceiling moves MyPaisa back up the ladder at the next call.</span></p>
 
@@ -2322,7 +2322,7 @@ footer.foot b { color: var(--mp-ink); }
       <li class="st mv fa toC" data-lanes="AWS to Claude"><span class="lb">The call, if the step allows it</span><span class="ln"></span></li>
       <li class="st mv fc toA rev" data-lanes="Claude to AWS"><span class="lb">The API's own usage counts: input, output and thinking, cache writes and reads, web searches</span><span class="ln"></span></li>
       <li class="st act inA" data-lanes="AWS"><span class="box">The cost, from the price table, added atomically to SpendMonth by member, feature, agent, model and day, and written on the <b>RunRecord</b></span></li>
-      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">At 70, 85, 95 and 100%: a message to the owner, through the alert router to the app and the web app, push and email (<b>SNS</b>)</span><span class="ln"></span></li>
+      <li class="st mv fa toP rev" data-lanes="AWS to App"><span class="lb">At 70, 85, 95 and 100%: a message to the admins, through the alert router to the app and the web app, push and email (<b>SNS</b>)</span><span class="ln"></span></li>
       <li class="st note" data-lanes="Note"><span class="box"><b>Behind the meter.</b> Each Anthropic workspace, prod and dev, has its spend limit set by hand to the hard limit ($160 prod, $40 dev), which stops the key outright if the meter is ever wrong. Behind that, the credit itself: no payment method, auto-reload off. The meter is reconciled weekly against Anthropic's own usage figures.</span></li>
     </ol></div>
   </div></div>
@@ -2332,7 +2332,7 @@ footer.foot b { color: var(--mp-ink); }
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Per member</dt><dd>No member spends more than 60% of the ceiling; past it, that member's chat runs at the 95% step for the rest of the cycle.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>Per day</dt><dd>No day spends more than three times the cycle's daily average, about $16 at a $160 ceiling; past it, the rest of the day runs at the 95% step.</dd></div>
     <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-retry"/></svg>Per run</dt><dd>At most eight model calls in one run; a loop that reaches it stops and says so.</dd></div>
-    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Per agent (phase 13)</dt><dd>Each agent has its share of the ceiling, the concierge 55%; past it, that agent drops to its 95% step and the reserve covers the chat first.</dd></div>
+    <div class="fact"><dt><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg>Per agent (phase 13)</dt><dd>Each agent has its share of the ceiling, the concierge 75%; past it, that agent drops to its 95% step and the reserve covers the chat first.</dd></div>
   </dl>
 
   <h3 class="blk">What the members see</h3>
@@ -2347,7 +2347,7 @@ footer.foot b { color: var(--mp-ink); }
             <div class="mcard">
               <h5>Claude spend: 85% of $160</h5>
               <p>$136 spent this cycle, mostly the chat and reading statements. 9 days left.</p>
-              <p>Savers are on: three Why? searches a day; everything else as normal.</p>
+              <p>Savers are on: three web searches a day; everything else as normal.</p>
               <small>Move the ceiling in the Admin center, behind the second check.</small>
               <div class="cbs c1"><span class="cb">Open Spend</span></div>
             </div>
@@ -2355,7 +2355,7 @@ footer.foot b { color: var(--mp-ink); }
         </div>
         <div class="dock"><div class="composer" aria-hidden="true"><span class="gbtn glass"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="gfield glass">Ask or log anything</span><span class="send"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></span></div><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
       </div>
-      <figcaption><b>85%.</b> The owner is told what changed.</figcaption>
+      <figcaption><b>85%.</b> The admins are told what changed.</figcaption>
     </figure>
     <figure class="mock">
       <div class="phone">
@@ -2740,7 +2740,7 @@ footer.foot b { color: var(--mp-ink); }
             <div class="row"><span class="lead">₹</span><span class="grow"><b>Transaction · create · via cas</b><small>You · 20:15 · a SIP of ₹5,000 into Nifty 50 index fund on 5 Mar 2019 · import 0007</small></span></div>
             <div class="row"><span class="lead">₹</span><span class="grow"><b>Transaction · create · via broker_export</b><small>You · 20:15 · bought Nifty 50 ETF on NSE, in your <code>demat</code> · tradebook.csv, <span class="acc">Open</span></small></span></div>
           </div>
-          <p class="muted small">A row made from a file opens it through a five-minute link: a member opens their own files, the owner any, a viewer none. Each opening is itself an audit row. Files lists every file with the changes it fed.</p>
+          <p class="muted small">A row made from a file opens it through a five-minute link: a member opens their own files, an admin any, a viewer none. Each opening is itself an audit row. Files lists every file with the changes it fed.</p>
         </div>
         <div class="dock"><div class="tabs" aria-hidden="true"><span class="tbar glass"><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg>Chat</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Home</span><span class="tb on"><svg class="ic" aria-hidden="true"><use href="#i-pulse"/></svg>Activity</span><span class="tb"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>You</span></span><span class="gbtn glass gsearch"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></span></div></div>
       </div>

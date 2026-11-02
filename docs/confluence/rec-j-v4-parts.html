@@ -1,5 +1,5 @@
 <div data-type="panel-custom" data-icon=":jigsaw:" data-color="#EAE6FF"><p><strong>🧩 Every part of Architecture v4</strong></p>
-<p>The system map's parts as its inspector describes them, one message as an OpenTelemetry trace, the concierge's tool loop and its tools, the agents with the kind of agent each is and the model it uses, the three Claude models and the spend ladder, where the data lives, delivery and the guardrails.</p>
+<p>The system map's parts as its inspector describes them, one message as an OpenTelemetry trace, the concierge's tool loop and its tools, the agents with the kind of agent each is and the model it uses, the two Claude models and the spend ladder, where the data lives, delivery and the guardrails.</p>
 <p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/architecture-v4.html">architecture-v4.html</a> (MA-244). Timings, tokens, costs and the bus events are illustrative.</p>
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
@@ -165,14 +165,14 @@
 <table data-layout="full-width"><thead><tr><th>Tools</th><th>Rule</th><th>The tools</th></tr>
 </thead>
 <tbody><tr><td><strong>Read the records and views</strong></td><td>Look up rather than ask.</td><td><code>get_portfolio</code> <code>get_holding(id)</code> <code>get_networth(view)</code> <code>get_commitments(window)</code> <code>get_budget(month)</code> <code>get_audit(filter)</code> <code>list_kinds</code> <code>describe_kind</code> <code>chart_series(id, days)</code> <code>query_ledger</code> <code>query_ledger_sql</code> <code>get_spend</code></td></tr>
-<tr><td><strong>Compute, never saved</strong></td><td>Typed overrides through code.</td><td><code>run_scenario</code> <code>run_projection(overrides)</code></td></tr>
+<tr><td><strong>Compute, never saved</strong></td><td>Typed overrides through code.</td><td><code>run_projection(overrides)</code></td></tr>
 <tr><td><strong>Draft and propose</strong></td><td>Admins only, enforced in code. Writes nothing until Confirm; the draft is hashed; a delete also takes the second check.</td><td><code>draft_record(kind, fields)</code> <code>draft_event(record, type, fields)</code> <code>propose_change(entity, patch)</code></td></tr>
 <tr><td><strong>Ask, read, search</strong></td><td>Server tools are Anthropic&#x27;s, with citations.</td><td><code>ask_user(question, options[])</code> <code>extract_document(s3_key, schema)</code> <code>web_search</code> <code>web_fetch</code></td></tr>
 <tr><td><strong>Kinds, plan and budget</strong></td><td>Admins only, enforced in code; propose_kind takes the second check, plan and budget changes take Confirm.</td><td><code>propose_kind</code> <code>propose_plan_item</code> <code>rearrange_budget</code></td></tr>
 </tbody>
 </table>
 <h2>👥 Six agents that never call each other</h2>
-<p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, delete data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1; the rest join it in phase 13. Together they keep the records, the budget and the wealth forecast current as the household&#x27;s numbers change.</p>
+<p>Each agent is a Lambda with its own role, tools, model routing and budget share. They publish events on the <code>mypaisa-&lt;env&gt;-events</code> EventBridge bus and leave work in DynamoDB; the daily run is one Step Functions state machine. No agent can trade, read a secret, erase data or apply infrastructure. The concierge is the <code>agent</code> Lambda from phase 1, with the budget keeper&#x27;s meter; the grader and tuner arrive in phase 9; the data steward, the ops warden and the admin desk join in phase 13. Together they keep the records, the budget and the wealth forecast current as the household&#x27;s numbers change.</p>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="74a93eb4-07be-49e0-a50e-8238211e8cdb" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-team.gif"></div>
 <figcaption>Six agents that never call each other, around one event bus (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>Agent</th><th>Kind</th><th>Models</th><th>Its job</th><th>On its own</th><th>Asks the admin</th><th>Budget share</th></tr>
@@ -192,8 +192,8 @@
 <p><strong>Carries the conversation.</strong></p>
 <ul><li>The concierge&#x27;s tool loop: the chat, its cards and guided flows, about 1.5p to 3p a message</li>
 <li>Reading a factsheet or a screenshot sent in the chat, with citations</li>
-<li>Web search and fetch with citations, when a member asks</li>
-<li>Phase 13: the grader and tuner&#x27;s review of each closed month</li>
+<li>Web search and fetch, only to look up a holding&#x27;s public details when it is added</li>
+<li>From phase 9: the grader and tuner&#x27;s monthly note on each closed month</li>
 </ul>
 <p>$2 in · $10 out per million tokens</p>
 </div>
@@ -216,7 +216,7 @@
 <table data-layout="full-width"><thead><tr><th>From</th><th>Step</th><th>What happens</th></tr>
 </thead>
 <tbody><tr><td data-background="#FFEBE6"><strong>100%</strong> of the ceiling</td><td>Claude stops</td><td>Claude stops until the cycle renews or an admin raises the ceiling. Every card goes out as its plain template; buttons and guided flows work as before. Alerts are never dropped: a template needs no model.</td></tr>
-<tr><td data-background="#FFF0E6"><strong>95%</strong> of the ceiling</td><td>Essentials only</td><td>Chat answers on Haiku; alerts and check-in cards go out as their plain templates with code&#x27;s numbers. Reading a factsheet or screenshot still works. The admins are told.</td></tr>
+<tr><td data-background="#FFF0E6"><strong>95%</strong> of the ceiling</td><td>Essentials only</td><td>Chat answers on Haiku; alert wording goes out as its plain template with code&#x27;s numbers (check-ins are templates at every step). Reading a factsheet or screenshot still works. The admins are told.</td></tr>
 <tr><td data-background="#FFFAE6"><strong>85%</strong> of the ceiling</td><td>Savers</td><td>Web searches are limited to three a day, and a memory note is written only when a member asks MyPaisa to remember. The admins are told.</td></tr>
 <tr><td data-background="#DEEBFF"><strong>70%</strong> of the ceiling</td><td>Admins told</td><td>One message to the admins: what is spent, on what, and the days left. Nothing changes.</td></tr>
 <tr><td data-background="#E3FCEF"><strong>0%</strong> of the ceiling</td><td>Normal</td><td>Every job runs on its usual model.</td></tr>
@@ -233,7 +233,7 @@
 </tbody>
 </table>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7eccf7be-50e5-43e9-bbdd-8af47fada72d" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-models.png"></div>
-<figcaption>Three Claude models, each where it earns its cost, and the spend ladder (Architecture v4)</figcaption></figure>
+<figcaption>Two Claude models, each where it earns its cost, and the spend ladder (Architecture v4)</figcaption></figure>
 <h2>🗄️ One table for state, one lake for the record, one store for secrets</h2>
 <p>The household&#x27;s records are data, not code: kinds are versioned documents, records are documents, their history is append-only events, and the dashboard reads materialised views. Every change and its audit row are written in one DynamoDB transaction, chained by hash. A delete marks the record <code>deleted</code>: hidden from every view, restorable through the chat, its events, audit rows and files kept for good.</p>
 <figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="a2189b6d-8884-4172-9f8c-e7f385cad972" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-state.png"></div>
@@ -323,6 +323,6 @@
 <h4>Nothing private in CloudWatch</h4>
 <p>No prompt, reply, amount, name, token or account number on any span, log or metric; members are hashed. A leak test replays a conversation in CI to hold the line.</p>
 <p>§9.9 · MA-232</p>
-<div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong>🛡️ The guardrails and evals</strong> have a page of their own, with their own explainer and diagrams: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1540178">Guardrails and evals</a> (ARCHITECTURE §23).</p>
+<div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong>🛡️ The guardrails and evals</strong> have a page of their own, with their own explainer and diagrams: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1540178">Guardrails and evals</a> (ARCHITECTURE §21).</p>
 </div>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

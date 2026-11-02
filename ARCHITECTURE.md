@@ -96,8 +96,8 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   (`docs/design/figures/household-v4.json`), with a clickable Prototype v4 at
   all three doors for Arun to walk through and pick from.
 - **[MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7)**:
-  the flows end to end (invite, sign-in, adding a holding, logging money, a
-  red alert, a question, the dashboard, the Admin center,
+  the twenty-three flows end to end (invite, sign-in, adding a holding,
+  logging money, the daily prices, a question, the dashboard, the Admin center,
   failures and replay, the spend ladder, the first of the month, money in any
   currency, India), each across the member, the app, AWS, Claude and data
   lanes, with what the member sees, the safeguards and the Jira stories that
@@ -111,8 +111,8 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   environments and a day with MyPaisa.
 - **[MyPaisa Architecture v4](https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9)** (MA-244): the same
   architecture, technical and animated, on AWS-style service icons: a system
-  map that plays four journeys hop by hop (a question, a factsheet, a
-  check-in, a failure and its replay), one message as an
+  map that plays six journeys hop by hop (a question, a factsheet, a
+  check-in, the nightly valuation, a delete, a failure and its replay), one message as an
   OpenTelemetry trace with its GenAI spans, the concierge's Claude tool loop
   and its tools, the agents with the kind of agent each is and the
   models it uses, the routing across the models with the spend
@@ -156,8 +156,15 @@ the layers are added.
 1. **Claude never produces a number.** Every figure comes from code with
    tests. Claude chooses what to say and how to say it.
 2. **The app gives no calls and cannot trade.** No broker login, no
-   orders, and no buy, sell or hold call: nothing it shows or says tells the
-   household to buy, add, hold, pause, trim or sell (MA-307).
+   orders, and no call on a holding drawn from a market view: nothing it
+   shows or says tells the household to buy, add, hold, pause, trim or sell
+   a holding because of where a market may go (MA-307). Options that code
+   computes from the household's own cash flows and shows as options, such
+   as pausing or reducing a SIP or trimming a budget category to cover a
+   shortfall (§6), are not calls: each is an unsaved scenario with code's
+   figures, an admin picks one or none, and no reply or nudge says which the
+   household should take (the agentic review, MA-323; safety cases on both
+   sides, §21.3).
 3. **The layman sees the summary; the detail is one tap away.** Every message
    has a plain top and a technical underside. Nothing technical is shown
    unasked.
@@ -201,7 +208,7 @@ preferences (§1, rule 4).
 | Open `dashboard.mypaisapp.com` on your laptop or your phone's browser, or the web app you installed | Sign in with Apple, Google or a passkey; the same chat, dashboard, Audit and Activity, and for admins the Admin center; the chat beside the dashboard on a laptop and a tab at phone width; replies stream in as they are written (§8.4, §19.5) |
 | Start something on the laptop and pick up the phone | One conversation per member at every door: a flow started on the laptop finishes on the phone, and a Confirm on the phone moves the laptop's dashboard at once (§19.5) |
 | Type "£5,000 in Monzo savings", or "an SBI FD of ₹5 lakh at 7.1% for three years" | Drafts the record, asks only what is missing (whose is it? which bank?) one thing at a time with chips, and shows a Confirm card with the figures code computed, such as the maturity value and date; an admin registers for any member, and the card names whose it is (§4.8) |
-| As an admin, a check-in arrives: "HDFC car loan: was November's EMI paid?" | Check-ins go to admins only; a member who is not an admin sees it pending, with no buttons. Tap Paid: the card already shows what will be written, so the tap is the Confirm, with Undo. Not yet asks again in a few days; Different amount and Paid off in full open a short flow, and paid off in full closes the loan (§4.9) |
+| As an admin, a check-in arrives: "HDFC home loan: was November's EMI paid?" | Check-ins go to admins only; a member who is not an admin sees it pending, with no buttons. Tap Paid: the card already shows what will be written, so the tap is the Confirm, with Undo. Not yet asks again in a few days; Different amount and Paid off in full open a short flow, and paid off in full closes the loan (§4.9) |
 | Send a bank or card statement (PDF, CSV or XLSX) | Every line categorised, transfers and EMIs recognised so nothing counts twice, one review card by category with the uncertain lines in amber, one Confirm; the file is kept for good (§4.9, §11) |
 | Tap a figure on any screen, such as an FD's rate, and type the new one | A before → after line with Save; saved as a correction with its audit row; only figures the kind marks editable, and only by an admin, who can also type the correction in the chat (§4.10) |
 | Type "delete the old Monzo pot", or "restore the Monzo pot" | A card naming the record and what goes with it; Confirm, then the second check. The record is marked `deleted` and hidden from every view and total; its history, audit rows and files are kept for good, and a restore brings it back the same way (MA-309, §4.10) |
@@ -211,6 +218,10 @@ preferences (§1, rule 4).
 | Tap **Portfolio** | One table: each holding, value, day and month change, XIRR; a total line in GBP |
 | Tap a holding | Its screen: value and history chart, XIRR and CAGR with the working, its events and files, "What if?", "Ask about it" |
 | Say "no pings after 9 pm" | A preference card to confirm; saved (a member's own preferences are theirs, admin or not) |
+| Ask "why is our net worth up this month?" | The change split by code into saved, markets, currency, accrual, revaluations and corrections, with the records behind each; every "because" in the reply rests on one of those parts (§6.2, MA-315) |
+| As an admin, say "£40,000 for a car deposit by Sep 2028", then ask "what would it take?" | A goal card from the solver: where the goal stands, the date it is reached at today's saving, the monthly saving that reaches it on time, and from the fan the chance; saved on Confirm, and every member sees it (§6.1, MA-314) |
+| Say "compare: a house in 2028, a house in 2030, no house" | Three scenarios side by side at 5, 10 and 20 years, with the leanest month and each goal's date, from one run of the engine; an admin keeps one by name or turns it into plan items with one Confirm (§6.3, MA-317) |
+| As an admin, open the chat on a Monday | One quiet digest card: what changed last week and why, what is coming (a maturity, a fixed rate ending, a tax year's end), and anything worth a look, all as facts; at most one timely nudge in the week besides (§10.1, MA-316) |
 | Pause MyPaisa in You, or type `/pause` | Everything scheduled stops until Resume (`/resume`); the kill switch |
 
 Silence is a feature: about ten notifications a week, two with sound at most.
@@ -233,7 +244,7 @@ One container image and a handful of handlers: `api` (a FastAPI app wrapped in
 owner's admin routes, MA-265, MA-266), `agent`,
 `sender`, `worker` (which runs each background job by its type: the price
 ingest that values holdings, documents, check-ins, the nightly views and
-Projection runs), `stream` (the SSE stream on the api host, a FastAPI app on
+Projection runs, the insight job), `stream` (the SSE stream on the api host, a FastAPI app on
 Uvicorn as a separate build target of the same Dockerfile through the Lambda
 Web Adapter 1.1, §19.5, MA-266), the
 authorizer and the Cognito triggers.
@@ -284,23 +295,26 @@ beside it, and say where a v3 entity now lives inside that structure.
 | **Transaction** | `position_id` or `liability_id`, `date`, `type` (`buy` · `sell` · `dividend` · `fee` · `interest` · `rent` · `repayment` · `prepayment` · `rate_change` · `maturity`), `units?`, `amount`, `ccy` (always the position's), `amount_gbp`, `orig_amount?`, `orig_ccy?`, `fx_rate?`, `fx_source?` (`as_credited` · `ecb` · `statement`), `fx_date?` | The dated cashflow ledger. From "I put £200 in", or extracted from a screenshot. For the household's own records these are `Event`s of the record's kind (§4.8), with these fields in their payload; XIRR, payoff curves and the Projection are computed from them, so every money movement is recorded with its date. |
 | **Liability** | `account_id`, `kind` (`mortgage` · `loan` · `card`), `principal`, `rate`, `term_months`, `started_at`, `emi`, `schedule[]` (computed), `ccy` | A debt: the balance against the original plan, the interest and principal split, the payoff date. For the household's own records a mortgage, a loan or a card is a `Record` of a debt kind (§4.8) with dated terms (a floating-rate reset, a fixed rate that ends), a prepay mode (a shorter term or a lower EMI, by country), balance checkpoints and, for a card, revolving debt from its statements; its schedule is computed (§6). Phase 4. |
 | **NetWorth** | `portfolio_id`, `date`, `assets_gbp`, `debts_gbp`, by member, by category, by currency, by country | A view, materialised from the records' events and the prices and rebuilt after a kind changes (§4.8); the series the dashboard and the Projection read. Phase 2, in GBP, INR, USD or EUR from phase 3. |
-| **Budget**, **ProjectionAssumptions**, **ProjectionRun** | per member; per portfolio; per run: `inputs_hash`, `seed`, `engine_version`, `horizon`, `percentiles` (p10, p50, p90), `milestones[]` | Income with its history and dated future changes, a monthly plan per category (each with its `inflation_key`) and plan against actual, the actuals from statements and check-ins, every amount take-home (phase 6, §11, MA-96, MA-261); the assumption set the Projection runs on, each figure with its source, saved by an admin alone (§4.5); one row per Projection run, so any curve can be reproduced (§6, phase 7). Renamed from `ForecastAssumptions`. |
+| **Budget**, **ProjectionAssumptions**, **ProjectionRun** | per member; per portfolio; per run: `inputs_hash`, `seed`, `engine_version`, `horizon`, `percentiles` (p10, p50, p90), `milestones[]`, `goal_odds{}` (each goal's chance, §6.1), `sensitivity[]` (§6.4), `short_odds` (the chance cash or a pool runs out, §6.4) | Income with its history and dated future changes, a monthly plan per category (each with its `inflation_key`) and plan against actual, the actuals from statements and check-ins, every amount take-home (phase 6, §11, MA-96, MA-261); the assumption set the Projection runs on, each figure with its source, saved by an admin alone (§4.5); one row per Projection run, so any curve can be reproduced (§6, phase 7). Renamed from `ForecastAssumptions`. |
 | **Kind** | `kind`, `version`, `fields[]` (typed; required, optional or derived; `editable` or not), `valuation` (a method from the library), `events[]`, `commitments[]` and `checkins[]` (templates), `grouping` {class, liquidity, country}, `presentation`, `status` (`proposed` · `approved`) | A kind of asset or debt, as data, versioned (§4.8). An admin approves a new one; it adds no screen, form or tool. |
 | **Record** | `portfolio_id`, `record_id`, `kind`, `kind_version`, `owners[]` ({member, share_pct}), `country`, `ccy`, `liquidity`, `status` (`open` · `closed` · `matured` · `sold` · `deleted`), `parent_id?`, `instrument_id?`, `attrs{}` | One thing the household owns or owes, as a document (§4.8). Never erased: closing it is a status, and so is deleting it. `deleted` hides the record from every view and total; its events, audit rows and files are kept for good, and an admin restores it through the chat (MA-309, §4.10). |
 | **Event** | `record_id`, `seq`, `type` (one the kind accepts), `effective_date`, `payload{}`, `source`, `actor`, `document_id?` | A record's history, append-only and hash-chained with the audit log; a correction or a reversal is a new event (§4.8, §4.10). |
 | **Commitment** | `commitment_id`, `record_id?` or `member_id`, `type` (`emi` · `card_bill` · `sip` · `rent` · `premium` · `salary` · `maturity` · `valuation_due` · …), `amount?`, `ccy`, `schedule`, `autopay`, `grace_days`, `payer?`, `ends_at?` | Any expected, dated money tied to a record or a member (§4.9); income commitments accept dated future changes (§11, MA-96). |
 | **CheckIn** | `id` (`commitment#due_date`), `status` (`open` · `answered` · `assumed` · `overdue`), `message_id`, `answer?`, `answered_by?`, `event_id?` | One occurrence of a commitment, created once by a conditional put; answered by a tap, a short flow or a statement (§4.9). |
 | **PlanItem** | `plan_item_id`, `effect` (`new_flow` · `change_flow` · `record_event`), `type` (`income` · `spend`), `member_id`, `for_member?`, `category`, `one_off` or `recurring` (`monthly` · `termly` · `yearly`), `start`, `end?` (a date, after N months, until an age, or open), `amount`, `ccy`, `growth` (a fixed `growth_pct`, the category's prior, or none), `target_ref?` (the commitment, record or category a `change_flow` changes and how: set to, or changed by an amount or a percentage; the record a `record_event` acts on), `funded_from?`, `source_text`, `status` (`active` · `paused` · `done`), `version`, `created_by` | A future change for the Projection, an admin's alone (§4.5, §6): a new flow, a change to an existing flow from a date, or an event on a record such as a loan prepaid or closed. Every amount is take-home. `source_text` keeps the admin's own words (MA-261). |
+| **Goal** | `goal_id`, `name`, `target`, `ccy`, `by` (a date), `funded_from[]` (records, or a budget category), `priority`, `owner` (`household` or a member), `status` (`active` · `paused` · `reached` · `ended`), `glide_path` (the pool's deterministic path to `by` when the goal was saved or last changed), `version`, `source_text`, `created_by` | A tracked target (§6.1, MA-314): saved, corrected, paused or ended by an admin alone through `propose_change` and Confirm, each change an audit row with the admin's own words; every member sees it and asks `solve_goal`. A memory note may name a goal but never hold its figure (§22.2). |
+| **Scenario** | `scenario_id`, `name`, `owner`, `overrides` (typed, as `run_projection`'s), `base_run_id`, `status` (`draft` · `saved` · `promoted` · `archived`), `last_run{}` (the figures `compare_scenarios` returned), `created_by` | A named what-if (§6.3, MA-317): unsaved until an admin saves it by name with Confirm, run again with each nightly Projection, promoted to plan items with one Confirm. Whether a member who is not an admin may save their own is open (§16). |
+| **Insight** | `insight_id`, `kind` (`budget_drift` · `idle_cash` · `goal_off_path` · `maturity_soon` · `rate_change_soon` · `prepayment_impact` · `unusual_spend` · `salary_missing` · `fx_move` · `allowance_deadline`), `member_id` (the admin it is for), `fingerprint`, `facts{}` (code's figures, each with its trace), `score` (impact, urgency, novelty, engagement), `channel` (`digest` · `nudge`), `status` (`new` · `sent` · `opened` · `muted` · `expired`), `sent_at?` | One finding of the nightly insight job (§10.1, MA-316): the fingerprint keeps the same finding from being sent twice; a mute is a `MemberSignal` count E10 learns from (§18.8). |
 | **Setting**, **ConfigVersion** | `key`, `value`, `schema` (type, range), `auto_band`, `approval` (`auto` · `admin`), `version`, `updated_by` (an admin or an agent), `reason`; one `ConfigVersion` row per change, never edited | Every behaviour the admin controls (§18.2). |
 | **ChangeRequest** | `id`, `agent`, `setting` or `action`, `from`, `to`, `why`, `evidence` (S3 key), `cost`, `risk`, `undo`, `urgency`, `status` (`proposed` · `approved` · `rejected` · `expired` · `applied` · `rolled_back`), `decided_by`, `via` (`chat` · `admin_center`), `expires_at` | An agent's request for an admin's approval (§18.3). |
 | **AdminQuestion**, **Incident** | the agent, the question or what happened, what was tried, the options, the answer or decision, timestamps | What agents need from the admins, and what they could not fix themselves (§18.3, §18.4). |
-| **MonthGrade**, **LearnedProposal**, **MemberSignal** | per closed month and line: `month`, `line` (a member's income, a category, an EMI, a plan item, the surplus, closing cash), `forecast`, `actual`, `gap`, `traces_to`, `run_id`; per proposal: `target` (an assumption or a member's preference), `member_id?`, `from`, `to`, `evidence`, `status` (`proposed` · `applied` · `rejected` · `offered_back`); per member and day: counts of what they asked, opened, tapped, corrected and muted, never text | The household's learning (§18.8): each closed month graded against the Budget forecast, the tuner's proposals, and the counts each member's orders and preference cards are learned from. |
+| **MonthGrade**, **LearnedProposal**, **MemberSignal** | per closed month and line: `month`, `line` (a member's income, a category, an EMI, a plan item, the surplus, closing cash; from MA-319 the fan's coverage at 1, 3 and 12 months with its PIT, and each goal's glide path), `forecast`, `actual`, `gap`, `traces_to`, `run_id`; per proposal: `target` (an assumption or a member's preference), `member_id?`, `from`, `to`, `evidence`, `status` (`proposed` · `applied` · `rejected` · `offered_back`); per member and day: counts of what they asked, opened, tapped, corrected and muted, never text | The household's learning (§18.8): each closed month graded against the Budget forecast, the tuner's proposals, and the counts each member's orders and preference cards are learned from. |
 | **AlertState**, **ChatTurn** | per member | A member's chat memory and alert cooldowns are their own. `ChatTurn` is one row per message, holding the model's content blocks exactly as returned, kept ninety days (§7). |
 | **BudgetSettings** | `portfolio_id`, `ceiling_usd` (prod $160, dev $40: the Max 20x plan's $200 credit), `steps[]` (70, 85, 95, 100), `daily_guard_x` (3), `run_max_calls` (8), `hard_limit_usd` (the Console workspace limit, typed in to match it), `agent_shares{}` (§18.6), `member_share_pct` (60), `cycle_start_day` (the day the plan's credit renews), `eval_caps{}` (prod's overnight judges: 3% of the ceiling; the evals workspace's live evals: $10 a run, $30 a month; §21.7), `updated_by`, `updated_at` | The Claude ceiling an admin moves in the Admin center; every change is an audit row (§14.1). |
 | **AwsSpendMonth**, **AlertRule**, **Alert** | AWS and others: month to date by service and `env`, the forecast, `cap_gbp`, `steps[]`, `actions{}`, `step`; alert routing: type × severity → app, push, email, quiet hours, cooldown; each alert sent, where and when | The AWS meter and caps, and the alert router (§14.2). |
 | **SpendMonth** | `portfolio_id`, `cycle` (its start date), `total_usd`, `by_member{}`, `by_feature{}`, `by_agent{}`, `by_model{}`, `by_day{}`, `step` | The running meter for one cycle, added to atomically after every model call and read before every call (§14.1). |
 | **MessageSeen** | per member (the client ids already taken, §19.2) | |
-| **PendingAction** | `member_id`, `flow_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `register_record` · `record_event` · `delete_record` · `restore_record` · `checkin` · `statement` · `plan_item` · `rearrange_budget` · `settings` · `confirm`), `step`, `collected` (the answers so far), `draft_hash?`, `message_id`, `expires_at` (24 h) | The state of the guided flows: what MyPaisa is waiting for from this member. Several can be open at once, keyed by flow id, so a check-in arriving mid-way does not wipe a half-registered FD. A draft (§4.8) is hashed here, and Confirm commits exactly that draft. The next message or tap resumes its flow; expiry clears it. |
+| **PendingAction** | `member_id`, `flow_id`, `kind` (`log_transaction` · `add_holding` · `update_valuation` · `register_record` · `record_event` · `delete_record` · `restore_record` · `checkin` · `statement` · `plan_item` · `rearrange_budget` · `goal` · `scenario` · `plan_with_me` · `settings` · `confirm`), `step`, `collected` (the answers so far), `draft_hash?`, `message_id`, `expires_at` (24 h) | The state of the guided flows: what MyPaisa is waiting for from this member. Several can be open at once, keyed by flow id, so a check-in arriving mid-way does not wipe a half-registered FD. A draft (§4.8) is hashed here, and Confirm commits exactly that draft. The next message or tap resumes its flow; expiry clears it. |
 | **AuditEvent** | `portfolio_id`, `ts`, `seq`, `actor` (a member id, or `system:ingest`, `system:engine`, `system:migration`), `via` (`typed` · `button` · `screenshot` · `factsheet` · `cas` · `broker_export` · `statement` · `checkin` · `inline_edit` · `agent_proposal` · `schedule` · `migration`), `document_id?` (the file a change came from), `entity`, `entity_id`, `action` (`create` · `update` · `delete` · `restore` · `confirm` · `reject`), `before`, `after`, `run_id`, `prev_hash`, `hash` | Append-only, one row per change to the records, written in the same transaction as the change. Hash-chained, so a missing or edited row shows. See §4.6. |
 | **RunRecord** | `run_id`, `trace_id`, `build`, `version`, `function`, `trigger` (`message` · `action` · `schedule:<name>` · `alarm` · `deploy`), `member_id?`, `started_at`, `finished_at`, `status`, `model_calls[]` (model, input, output, cache-read and cache-write tokens, cost, ms, time to the first token, stop reason, refused or fell back), `tool_calls[]` (name, ms, ok, error class, input and output sizes, the truncated input and output), `messages_sent`, `checks[]` (the policy gate's decisions, the figure check, the member's signals; §21.4), `outcome`, `error?` | What one run of any Lambda did and cost, and the trace it is on. 90-day TTL. Activity at every door and the cost guard rails read these; the only place a tool's input and output are kept outside `ChatTurn`. See §9. |
 | **MemoryNote** | `agent`, `scope` (`member` · `household` · `self`), `member_id?`, `path` (under `/memories/<agent>/`), `text`, `written_by` (the run), `created_at`, `updated_at` | One file of an agent's memory, read and written only through Claude's memory tool and the policy gate; never a figure, a record, a setting or a secret; each write an audit row; a member's notes deleted when they forget them or leave (§22). |
@@ -478,8 +492,9 @@ the chat, with Confirm, the second check and an audit row. This supersedes
 (every account, every member, one total) and **Me** (my accounts). An admin
 sees a further tab per member; a member sees those whose detail is shared.
 A check-in goes to the admins and is answered by admins only; a member who
-is not an admin sees it pending, with no buttons (§4.9). An alert about a
-record goes to the admins and to the members who own it.
+is not an admin sees it pending, with no buttons (§4.9). A budget alert goes to the admins
+(§14.2). An alert about a record goes to the admins and to the members who
+own it.
 
 **Isolation.** Every item is keyed by the household, every tool call carries
 the calling member as a principal, and the registry layer refuses a read or
@@ -710,7 +725,7 @@ question and the 35-day nudge for a valuation).
   lock screen, MA-170):
 
   ```
-  HDFC car loan: was November's EMI paid?
+  HDFC home loan: was November's EMI paid?
   [Paid] [Not yet] [Different amount] [Paid off in full]
   ```
 
@@ -963,6 +978,8 @@ phase 3), and extends it:
 - **Budget** (phase 6): plan against actual per category, income, EMIs,
   surplus and savings rate, per member and for the household (§11).
 - **The Projection** (phase 7), below.
+- **Goals, what changed and why, scenarios, the richer fan and tax-year
+  facts** (phases 5 to 9, §6.1 to §6.5), after it.
 
 **Two wealth forecasts, both from actual numbers** (Arun, 29 Oct 2026,
 MA-275: "budget forecast will need to deterministic algo based on inputs and
@@ -973,7 +990,7 @@ forecast he set beside them on 29 Oct was retired by MA-307.
 | Word | What it answers | How it is worked out |
 | --- | --- | --- |
 | **Budget forecast** | What comes in and goes out each month and year to the horizon: income by member, spend by category, EMIs, each plan item, the surplus and closing cash | Deterministic: worked out month by month from the household's inputs and circumstances (its records, commitments, plan items and assumptions), with no randomness and no model, so the same inputs give the same figures to the penny. It is read from the base path below, never from the fan. Phase 7, MA-262 |
-| **Projection** | Where the household's net worth is heading over 5 to 30 years | The same deterministic monthly path, then a Monte Carlo fan (p10, p50, p90) for the market returns, its seed stored. Phase 7, MA-219 |
+| **Projection** | Where the household's net worth is heading over 5 to 30 years | The same deterministic monthly path, then a Monte Carlo fan (p10, p50, p90) over market returns, inflation by country and GBP/INR, drawn together and fat-tailed (§6.4), its seed stored. Phase 7, MA-219 and MA-318 |
 
 The Budget forecast and the Projection learn only through their inputs: the
 household's own closed months tune their assumptions on the admin's Confirm
@@ -1009,7 +1026,7 @@ shown or stored. Every amount is take-home: the engine does no tax maths
 - **Debts** amortise to their real end dates, freeing their EMIs.
 - **Also:** maturities, the commitments, the budget's spend inflating by
   country, and the admin's plan items (below).
-- **Surplus** is allocated by a rule.
+- **Surplus** is allocated by a rule, which is still to be chosen (§16).
 - **Constraints:** a locked pension cannot cover a shortfall before it
   unlocks.
 
@@ -1055,7 +1072,7 @@ for that currency.
   property, savings and pensions, the Monte Carlo, the priors and the
   country.
 - **Priors** (long-run returns, inflation and wage growth per country) are
-  versioned settings with their sources, set by the admin (MA-221).
+  versioned settings with their sources, set by an admin (MA-221).
 
 **What the AI does** (MA-223). Code produces every number; the model never
 does (rule 1).
@@ -1115,12 +1132,229 @@ expandable to its months and every figure opening its flows; scenario chips;
 Ask. MA-264 drew it; Arun picked the Budget forecast's 1a, the chat's 2a and
 the Plans tab's 3a on 28 Oct 2026 (`docs/design/reviews/MA-264/decision.md`).
 
+### 6.1 Goals and the goal solver (phase 7, MA-314)
+
+Arun, 2 Nov 2026, after the agentic review: "I need this to be super
+intelligent agentic ai based wealth tracker and forecasting engine,
+interactive chat based conversations etc."; he picked the review's P1 and P2
+whole ("Need all of the above"). Sections 6.1 to 6.5, 7.1, 7.2, 10.1, the
+fan's grading in §18.8 and the reasoning cases in §21.3 are those picks.
+
+A **goal** is a target the household is saving towards: "£40,000 for a car
+deposit by Sep 2028", "₹1.5 cr for education by 2035". It is a `Goal` (§4.1):
+a target in its own currency, a date, the pools it is funded from (records
+such as a savings account or an ISA, or a budget category), a priority and an
+owner, the household or one member. Until now such a sentence could only be
+a memory note with no figure (§22.2) or a plan item, which is a flow, not a
+target.
+
+**The solver** (`wealth/goals.py`) works on the deterministic path (§6), so
+every figure it returns comes from the engine and can be reproduced:
+
+1. **Where it stands.** The funded-from pools' value today against the
+   target, in the goal's currency at the day's ECB rate.
+2. **When, at today's saving.** The first month the pools' projected value
+   reaches the target on the base path, or "not by the horizon".
+3. **What it would take.** The monthly saving into the named pool, from next
+   month to `by`, that makes the pool meet the target on its date: a
+   bisection on a `change_flow` amount over the base path, to the pound,
+   bounded below by zero and above by what keeps the surplus over the
+   admin's floor (§6, item 7). If no amount inside that bound reaches it,
+   the solver says so and returns the gap and the leanest month.
+4. **The other levers**, each as an option with its figures, never as a
+   call (§1, rule 2): a later date (the date reached at today's saving), a
+   lump sum from a named pool, a category trimmed from a date (the goal-seek
+   of `rearrange_budget`). The agent ranks and explains them; an admin's
+   Confirm turns one into a plan item.
+5. **The chance**, from phase 7's fan (§6.4, MA-318): the share of the run's
+   paths whose pools are at or above the target on `by`, stored on the
+   `ProjectionRun` as `goal_odds`.
+
+Several goals that draw on the same pool are solved in priority order: the
+saving the first needs is fixed in the path before the second is solved, so
+two goals never count the same pound. A goal's **glide path** is the pool's
+base path to `by`, stored with the goal when it is saved or changed; the
+insight job (§10.1) notices a pool falling off it, and the tuner grades it
+each month (§18.8).
+
+**Who does what.** Every member asks: `solve_goal` reads (§7.1). A goal is
+saved, corrected, paused or ended by an admin alone, through
+`propose_change(entity: goal, …)` and Confirm, with its audit row and the
+admin's own words, as a plan item is (§4.5, §4.10); it changes a plan, not
+the records, so it needs no second check. Goals show as milestones on the
+Projection's line and as a Goals list on the Projection screen (drawn with
+`/design-first` before MA-314 starts). A goal reached is marked `reached` by
+code at the month close, with a line in the admins' digest.
+
+### 6.2 What changed and why: the attribution engine (phase 5, its Overview part in phase 9; MA-315)
+
+"Computes what moved and why" (the opening of this document) and the
+Overview's "where growth comes from" (§11) now have their mechanism. The
+engine's trace explains a *future* figure; attribution explains a *past*
+change.
+
+**The `Attribution` view** (`wealth/attribution.py`), between any two dates
+(a month by default), for the household, a member, a record, a class or a
+country, splits the change in net worth into parts that add up to it:
+
+| Part | What it is |
+| --- | --- |
+| **Saved** | Take-home income less spending, interest and fees, from the budget's actuals and the commitments (§4.9, §11): what the household kept |
+| **Markets** | The price change on market-valued records, in their own currency, translated at the end rate |
+| **Currency** | The FX change on every record not in the reporting currency: an INR deposit's value in pounds moving with GBP/INR |
+| **Accrual** | Interest and growth at contract rates on deposits, policies and pensions (§6, phase 3) |
+| **Revaluations** | A new valuation of a property or another marked asset, from its event |
+| **Corrections** | An admin's correction (§4.10) or a late statement that changes a past figure |
+| **Other** | Records opened, closed, deleted or restored, and any residual, shown with its records, never hidden |
+
+A second split says **where the saving went**: into cash, into investments,
+into a debt's principal. Paying down a loan moves money from cash to the
+debt, so it does not change net worth; it is shown where the saving went,
+not as a cause of the change.
+
+It is worked out **day by day** from the daily views (§4.8) and summed, with
+each day's flows at that day's rate, so the parts add up to the change to
+the penny and the price and FX parts never overlap. Each part carries its
+records and their events, so any figure opens what makes it. It is a view:
+rebuilt from the events and the prices like the others, never edited. It
+needs prices and FX, so it is built in phase 5 (MA-315); the Overview's
+card reads it when MA-95 completes the Overview in phase 9.
+
+**The tool** `explain_change(scope, from, to)` returns the parts, the
+largest records behind each and their trace ids (§7.1); Claude chooses the
+words: "Net worth rose £3,100 in October: £1,900 saved, £1,600 from markets,
+−£450 from the rupee on the Indian deposits, and £50 of other changes"
+(illustrative figures).
+
+**The claim check.** The figure check (§21.2) proves a reply's numbers; it
+cannot prove its causes. So a reply that explains a change (from
+`explain_change`, the engine's trace or `compare_scenarios`) carries its
+`claims[]` beside the text: each sentence that states a cause names the part
+or trace id it rests on. Code checks that each id was returned by a tool in
+this run, that the sentence's figure and direction match it (a "fell" on a
+positive part fails), and that no sentence with a causal word ("because",
+"due to", "driven by", "thanks to", "mainly", "after") goes without one. A
+miss regenerates once, then the plain template goes, as for a figure. The
+judge for "causal claims faithful to the trace or the attribution" (§21.3)
+watches what the words check cannot.
+
+### 6.3 The scenario workspace (phase 7, MA-317)
+
+"Compare: a house in 2028, a house in 2030, no house." One `run_projection`
+call answers one what-if, so a three-way comparison used to cost three calls
+of the run's eight (§14.1) and three cards. The workspace makes it one.
+
+- **A `Scenario`** (§4.1) is a named set of typed overrides, the same shape
+  as `run_projection`'s, on a base run. It is unsaved (a draft) until an
+  admin saves it by name with Confirm (`propose_change(entity: scenario,
+  …)`), with its audit row; saved scenarios run again with each nightly
+  Projection, so their figures are always current, at no Claude cost.
+- **`compare_scenarios(scenarios[≤4])`** (§7.1) runs the base and up to four
+  scenarios in one call, on one inputs hash and seed, and returns them side
+  by side: net worth at 5, 10 and 20 years, the leanest month and its cash,
+  the first month cash goes negative, each goal's date and chance (§6.1),
+  the milestones, and each one's difference from the base. One card shows
+  them; every figure comes from the engine.
+- **Promoted with one Confirm.** An admin turns a scenario into plan items:
+  `propose_plan_item` drafts one per override, shown together on one card
+  with the impact; one Confirm writes each with its own audit row, and the
+  scenario is marked `promoted`.
+- **The validator holds** (§6, item 2): every number in an override traces
+  to the member's words or a named preset.
+- **Who saves.** Until Arun decides, saving a scenario is an admin's, as
+  rule 4 has it; members compare and see unsaved results. Open on MA-317
+  and in §16: "May a member who is not an admin save their own scenarios as
+  a preference, or are scenarios admin-only?"
+
+### 6.4 A richer Monte Carlo, and what moves the result most (phase 7, MA-318)
+
+The deterministic path is the Budget forecast and the Projection's spine;
+the fan around it (phase 7, after the path, §6 "How it runs") used to vary
+only market returns. For a household in the UK and India the larger risks
+are inflation in each country and the rupee against the pound, and they move
+together. The fan now draws them jointly. Nothing here predicts a market:
+every range comes from stated priors, labelled as such, and the fan is
+graded against what happens (§18.8).
+
+- **Joint draws, each year of each path:** a return for each asset class
+  and country the household holds, CPI for the UK and India, and the GBP/INR
+  rate. They are correlated through a matrix and fat-tailed: a multivariate
+  Student-t with a low degrees-of-freedom prior, scaled so each variable
+  keeps its prior's volatility. GBP/INR drifts by the inflation gap, as on
+  the base path, plus its own volatility.
+- **Inflation flows through.** Each path's CPI drives its spend by country
+  and category (with each category's spread over CPI) and its salary
+  growth, so a high-inflation path is lean as well as low.
+- **Contractual rates stay as given:** an FD, PPF, a bond's yield to
+  maturity, a loan's dated terms and resets. A floating rate follows its
+  stated terms, not a draw.
+- **Sequence risk.** In a year whose shortfall is met from market pools
+  (retirement, a large one-off), the path sells at that year's drawn
+  return, so a bad run early in a drawdown shows. The run stores
+  `short_odds`, the chance cash or a pool runs out before the horizon.
+- **Priors, versioned with their sources** (MA-221): each class's long-run
+  return and volatility, each country's CPI mean, volatility and
+  persistence, GBP/INR's volatility, the correlation matrix and the tail
+  weight, each a setting with its source and the window it was measured on,
+  set by an admin. Their versions are in the run's inputs hash, with the
+  seed and the engine version, so a run is reproduced to the penny.
+- **Size.** About 5,000 paths of monthly steps to the horizon, vectorised in
+  NumPy in the worker, inside Lambda's free tier: no Claude cost.
+
+**The sensitivity table.** For each input that can move the result (each
+class's return prior, each country's CPI, GBP/INR's drift, each member's
+salary growth, the largest spend categories, each plan item's amount),
+code moves it by a stated step (one standard deviation of its prior, or 10%
+of an amount) up and down on the deterministic path, and records the change
+in net worth at the horizon and in the leanest month. The five that move it
+most are drawn as a tornado on the Projection screen and listed under
+Technical; the table is stored on the run (`sensitivity[]`), so "what
+matters most for 2045?" is answered from code. Plan with me reads it
+(§7.2).
+
+### 6.5 Tax-year facts and dates (phase 9; India in phase 14; MA-320)
+
+Facts and dates, never advice: the engine still does no tax maths and every
+amount stays take-home (MA-261), and tax advice is still refused (§21.2).
+What MyPaisa can say is what a government page states and what the
+household's own ledger shows: "£14,200 of this year's ISA allowance used;
+the tax year ends on 5 April".
+
+- **Facts as versioned settings** (§18.2), each with its source: the page
+  (gov.uk, and from phase 14 the Income Tax Department of India), the date
+  it was read and the dates it applies from and to. The UK's: the tax year
+  (6 April to 5 April), the ISA allowance and its parts, the pension annual
+  allowance, the Self Assessment deadline. India's, in phase 14 with MA-153:
+  the financial year (1 April to 31 March), the return's due date, and
+  section 80C's limit, only for a member flagged as filing in India under
+  the old regime. Each value is checked against its source when the story
+  starts [verify]; a fact past its end date is flagged on the Admin
+  center's Settings, and not used, until an admin enters the new one.
+- **What the ledger shows,** by code: each member's contributions into
+  their ISA-type records in the current tax year, and the room left; the
+  pension contributions recorded; from phase 14, the 80C-eligible
+  contributions in the financial year. "Used" means what the ledger holds,
+  and the card says so when records are missing.
+- **`get_calendar(window)`** (§7.1) returns the dates in a window: tax-year
+  ends and deadlines, maturities, fixed-rate ends and rate resets,
+  commitments due and goal dates, with each allowance used and left in the
+  asker's scope (§4.5).
+- **The insight job's deadline detector** (§10.1): an allowance with room
+  left within 30 days of its year's end, said as a fact ("£5,800 of the ISA
+  allowance is unused; the tax year ends on 5 April"), never "you should
+  top it up".
+- **Where the line is** (§21.2): what to claim, which regime to choose, how
+  to pay less tax, or whether to move money into a wrapper are tax advice
+  and get a plain refusal; a stated allowance, its source and what the
+  ledger shows used are facts and are answered.
+
 ---
 
 ## 7. The agent
 
 One Claude tool loop (Sonnet 5.5 for chat and cards, Haiku 5.5 for small
-turns, statement lines and summaries), written as a thin explicit
+turns, statement lines and summaries; and, only when an admin starts a
+planning session, Opus 5.5 in a loop of its own, §7.2), written as a thin explicit
 Python loop (`AnthropicAgentRunner`, MA-271) directly on the `anthropic` SDK and Pydantic v2 (`@tool` with a
 typed `RunContext`, inspired by PydanticAI, rather than LangGraph or CrewAI;
 `docs/RESEARCH.md` §6.3, MA-265), with strict tools over the
@@ -1218,7 +1452,10 @@ uncertain; the draft is hashed in `PendingAction`, and Confirm commits exactly
 that draft; a delete or a restore is an event of its own, drafted the same
 way, that also needs the second check, MA-309); `get_networth(view)`, `get_commitments(window)` and
 `get_budget(month)` (reading the views); `query_ledger` and `query_ledger_sql` (questions over the ledger: the structured one first, MA-62, and SQL on the read-only copy for the rest, §11.1); `get_spend` (what the cycle has spent, reported, never changed, §14.1); `run_projection(overrides)` (a
-what-if through a typed override, never saved, §6). Every tool that drafts
+what-if through a typed override, never saved, §6). The planning and
+explaining tools (`solve_goal`, `explain_change`, `compare_scenarios`,
+`get_calendar`, `get_projection`, `get_returns`) and the one read that
+replaces five, `get_wealth`, are §7.1. Every tool that drafts
 or proposes a write (`draft_record`, `draft_event`, `propose_change` and the
 three below) is an admin's, enforced in code, not in the prompt (MA-308); and,
 for an admin, `propose_kind` (a new kind, or a new field
@@ -1241,6 +1478,82 @@ conversation that has read it loses every tool that sends data out, and every
 figure a reply states is checked against the tool results and the member's
 own words; §21 holds the guardrails and the evals that test them on every
 change.
+### 7.1 Tools for planning and explaining, and fewer, richer reads (MA-314 to MA-321)
+
+The agentic review (MA-323) found about 25 tools for one loop, five of them
+overlapping reads, and no tool for a goal, a past change, a comparison, a
+date or a stored run. Fewer, richer tools that return meaningful context
+give the model better choices in fewer calls (Anthropic, "Writing effective
+tools for agents"; `docs/RESEARCH.md`). Each tool below is read-only unless
+it says otherwise, typed, `strict: true`, declared in the manifest with its
+cases (§21.5), and passed by the policy gate like every other (§21.2); each
+figure it returns comes from code, and the figure and claim checks hold
+replies to it (§6.2).
+
+| Tool | Returns | Phase, story |
+| --- | --- | --- |
+| `solve_goal(goal or target, by, levers[])` | Where a goal stands, the date reached at today's saving, the monthly saving that reaches it on time, each lever as an option with its figures, and from the fan the chance (§6.1). A target and date may be the member's own words, unsaved, so "what would £40,000 by 2028 take?" works before any goal exists | 7, MA-314 |
+| `explain_change(scope, from, to)` | The attribution's parts, the largest records behind each and their trace ids (§6.2) | 5, MA-315 |
+| `compare_scenarios(scenarios[≤4])` | The base and up to four scenarios side by side, one inputs hash and seed (§6.3) | 7, MA-317 |
+| `get_calendar(window)` | Tax-year ends and deadlines, maturities, fixed-rate ends and resets, commitments due, goal dates, and each allowance used and left in the asker's scope (§6.5) | 9, MA-320 |
+| `get_projection(run?)` | A stored `ProjectionRun` as it is (the current one by default): the path, the fan, the milestones, `goal_odds`, `sensitivity[]` and `short_odds`, with no override; `run_projection` stays for a what-if | 11, MA-321 |
+| `get_returns(scope, from, to)` | XIRR and CAGR for a holding, an account, a member or the household over a window, with their working, or nothing with the reason (§6, MA-212, MA-215): the tool for "what has the ISA returned since 2021?" | 11, MA-321 |
+| `get_wealth(scope, view, period)` | One read for what five did: net worth by member, category, currency or country; a holding or record with its events; its history; and the series a card's chart is drawn from | 11, MA-321 |
+
+**`get_wealth` replaces** `get_portfolio`, `get_holding(id)`,
+`get_history(id, days)`, `chart_series(id, days)` and `get_networth(view)`
+(MA-321). Until phase 11 those five stand as each phase brings them; MA-321
+merges them, changes the manifest, the gate's rules and the Tools list above
+in one change, and replays phase 1 to 10's recorded conversations (T0) on the
+merged tool before the old ones go. `get_commitments` and `get_budget` stay:
+they read their own views. `query_ledger` stays the first choice for a
+question over the ledger and `query_ledger_sql` the long tail (§11.1): it is
+the right just-in-time use of the ledger, its figures from the result
+(Anthropic, "Effective context engineering for AI agents").
+
+**Writes stay where they were.** A goal and a scenario are saved through
+`propose_change`, and a scenario promoted through `propose_plan_item`, both
+admin-only in code (MA-308); no new tool writes. Every answer that uses
+these tools is graded for its reasoning as well as its figures (§21.3,
+MA-321).
+
+### 7.2 Plan with me: Opus for an admin's planning session (phase 11, MA-322)
+
+MA-307 left Opus 5.5 with no job: the Saturday review it wrote went with
+the market side. Arun gave it one (2 Nov 2026, the agentic review,
+recommendation 11): deep, slower "plan with me" sessions for the big
+decisions (retirement, the children's education, a house), where a chat
+turn on Sonnet is too quick.
+
+- **Admin-started, never on its own.** An admin taps "Plan with me" or types
+  `/plan` (optionally with the subject: `/plan retirement`). The gate
+  refuses it to a member who is not an admin, in code; nothing starts it on
+  a schedule, and the insight job never offers it.
+- **Its own loop.** A cache belongs to one model, so a loop never changes
+  model (§22.1): the session runs on Opus 5.5 in a loop of its own, at high
+  effort with adaptive thinking, with its own cached prefix and the
+  one-hour lifetime. It has the read and planning tools only: `get_wealth`,
+  `get_returns`, `get_projection`, `get_calendar`, `explain_change`,
+  `solve_goal`, `compare_scenarios`, `run_projection` and `ask_user`, and to
+  finish, `propose_plan_item` and `propose_change` (goals and scenarios). No
+  web tools, no memory writes beyond the member's own scope, and no other
+  write. Its manifest entry and safety suite are its own (§21.5).
+- **How a session goes.** It asks what is missing, one thing at a time with
+  chips (the target, the date, what may change); solves the goals; compares
+  up to four scenarios in one call; reads the sensitivity table to say which
+  assumptions matter most; and ends in **one plan card**: the goals, the
+  chosen scenario, the plan items and the inputs that move the result, every
+  figure from the engine. Each change on the card is saved only on the
+  admin's Confirm, with its audit row; the card offers options and says
+  which one the admin chose, never which one to choose (§1, rule 2).
+- **Capped.** At most 5% of prod's ceiling (about $8 at $160), metered as the
+  feature `planner` inside the 10% share of §18.6; a session costs about
+  $0.40 at the repo's prices. The eight-call guard holds for each turn (§14.1);
+  a session is a conversation of several turns and ends with its plan card or
+  after thirty minutes of silence, as any conversation does (§7). From the
+  85% step it waits ("Plan with me is back when the budget allows"); at 95%
+  it is off. Its runs carry the route in their `RunRecord`, so Activity and
+  the model panel show Opus's share on its own.
 
 ---
 
@@ -1870,7 +2183,7 @@ Terraform module (MA-231), so code and the dashboard name them once.
 
 | Group | Metrics | Alarm (§9.6) |
 | --- | --- | --- |
-| Schedules | `ScheduleLateness` (seconds, the latest schedule; the schedule in the line) | over 10 minutes; the 07:45 dead man's switch (the night's jobs not finished) |
+| Schedules | `ScheduleLateness` (seconds, the latest schedule; the schedule in the line) | over 10 minutes; the dead man's switch (views and the Projection not current by 07:00, checked at 07:45; the day's check-ins not sent by 09:00 outside quiet hours) |
 | The model (MA-233) | `ModelCostUSD`, `Tokens` (in, out and cache reads, each in the line), `CacheReadTokens`, `TimeToFirstToken`, `Refusals`, `TemplateFallbacks` | a day's cost past the daily guard (§14.1); refusals or fallbacks above 5% of calls in an hour |
 | Tools | `ToolErrors` (the tool in the line; latency from the spans) | errors above 5% of calls in an hour; a tool's p95 over 10 s, from the spans |
 | Quality | `ProposalsCancelled` (confirmed in the line) | cancelled above a third of proposals in a day |
@@ -1904,8 +2217,12 @@ door; the doors' crashes by app version; deploys and alarms.
   for fifteen minutes;
 - a queue's oldest message over five minutes; any dead-letter queue holding
   anything (§19.3);
-- the 07:45 dead man's switch when the night's jobs (the price ingest, the
-  views and the Projection run) have not finished, and any schedule ten
+- the dead man's switch, anchored to what the household is promised each
+  day: at 07:45 when the views and the Projection run (after the night's
+  price ingest) were not current by 07:00, or the day's check-ins (§4.9)
+  and the insight job's findings (§10.1) are not queued; and when a
+  check-in due that day has not been sent by 09:00 outside the admin's
+  quiet hours (a check-in held by quiet hours is not late). Any schedule ten
   minutes late;
 - each step of the Claude ladder and the daily guard (§14.1), and a day's cost
   past the guard;
@@ -2001,7 +2318,7 @@ prorated by the hour they receive data):
 on in dev, their first month is measured, and the figure is put to Arun before
 prod's apply (`.claude/rules/aws-changes.md`). An ingestion alarm on
 `aws/spans` (§9.6). Observability that costs more than the thing it watches
-has failed: about £2.50 of watching against £7 to £21 of Claude.
+has failed: about £2.50 of watching against £9 to £32 of Claude.
 
 ### 9.10 The stories
 
@@ -2037,7 +2354,69 @@ Check-ins (§4.9, phase 4) arrive the same way, decided by code. Several due at
 once share one card; autopay commitments are assumed paid after their grace
 period and listed in a weekly digest (MA-211) instead of one notification each.
 Together they keep the household to about ten notifications a week, two with
-sound at most (§2).
+sound at most (§2). The insight job's digest and nudges (§10.1) count
+inside that, with no sound.
+### 10.1 The insight job: quiet nudges and a Monday digest (phase 10, MA-316)
+
+MA-307 took away the only voice MyPaisa had that spoke unasked with a
+reason: the morning brief and the Saturday review. What stayed were code's
+check-ins and threshold alerts. The insight job gives back a proactive voice
+inside the rules: it notices what matters in the household's own numbers and
+says it as facts, rarely.
+
+**A nightly worker job,** `insights`, runs after the Projection run in the
+daily run (§18.4), from the views, the commitments, the goals and the
+latest run. Its detectors are code, each with its threshold a setting
+(§18.2):
+
+| Detector | Fires when |
+| --- | --- |
+| Budget drift | A category's run rate this month is past its plan by more than its band |
+| Idle cash | Cash above a number of months of the household's spend (six to start) |
+| A goal off its glide path | A goal's pools below its glide path by more than its band (§6.1) |
+| A maturity soon | A deposit or policy maturing within 30 days, with what its sum is |
+| A rate change soon | A fixed rate ending, or a floating rate's reset, within 90 days, with the EMI before and after on the stated terms |
+| A prepayment's impact | A loan where a stated prepayment would change the interest or the end date by more than a band: a computed comparison, never "you should" |
+| An unusual spend | A statement line far outside its merchant's and category's history |
+| A salary not credited | An income commitment past its date and grace with no credit |
+| A currency move | GBP/INR past a band since the last digest, with what it did to the Indian records (§6.2) |
+| An allowance's year end | An allowance with room left within 30 days of its year's end (§6.5) |
+
+**Scored and kept quiet.** Each finding is an `Insight` (§4.1) with its
+facts and their traces, a fingerprint so the same finding is never sent
+twice, and a score: impact (money at stake against the household's monthly
+spend) × urgency (days to act) × novelty (not said before, from the per-run
+self-audit's list, §7) × the admin's past engagement with that kind (E10,
+§18.8). Quiet by default:
+
+- **One digest card on Monday morning** in each admin's chat, silent, sent by
+  09:00 outside the admin's quiet hours: what changed last week and why (the
+  attribution's parts, §6.2), what is coming in the next fortnight
+  (`get_calendar`), and the week's best-scored findings. It replaces nothing
+  and joins the weekly digest of assumed autopay check-ins (§4.9) as one
+  card.
+- **At most one timely nudge a week per admin,** only for a finding whose
+  urgency cannot wait for Monday (a salary not credited, a maturity in under
+  a week), amber and silent unless the admin's own settings say otherwise
+  (§14.2).
+- **Muted kinds are learned.** Each card has Mute for its kind; a mute is a
+  `MemberSignal` count (§18.8), the kind stops for that admin at once, and
+  E10 offers it back as a preference card after a period the setting names.
+  Nothing else changes without that admin's Confirm.
+
+**Admins only,** as budget alerts and check-ins are (§14.2): a finding is
+about the household's records, which only an admin writes. A member who is
+not an admin asks "what changed this week?" in the chat and gets the same
+facts from `explain_change` and `get_calendar`.
+
+**Words.** Haiku writes each finding's one line and Sonnet the digest, from
+code's facts; every figure passes the figure check and every cause the
+claim check (§6.2). No nudge says "should" or tells the household to buy,
+add, hold, pause, trim or sell a holding (§1, rule 2); each kind has its
+safety and capability cases for "fact, not advice" (§21.3). From the 85%
+step the digest goes and timely nudges wait; from the 95% step the digest
+goes as its plain template with code's figures (§14.1). The job counts
+inside the ten notifications a week of §2, with no sound.
 
 ---
 
@@ -2065,7 +2444,7 @@ stays fixed:
 | **One backend** | The same DynamoDB table, entities (§4.1), identity (§4.5), audit log (§4.6) and observability (§9). The first savings record of phase 2 and the household's property, deposits, policies, pensions, investments and loans are records of one structure (§4.8). |
 | **One identity** | The members and roles of §4.5, with figures masked for a `viewer` as the tracker masks them for a standard user. Apple, Google or a passkey to sign in, through each environment's Cognito pool. |
 | **Four currencies** | GBP, INR, USD and EUR, from the ECB's daily rates, chosen per member for every figure (phase 3, Arun, 29 Oct 2026, MA-275); each record keeps its own currency. |
-| **Numbers from code** | XIRR, schedules, net worth, the budget and the Projection from §6; Claude writes the words around them and answers "why is my net worth down this month?" from the same tools. |
+| **Numbers from code** | XIRR, schedules, net worth, the budget and the Projection from §6; Claude writes the words around them and answers "why is my net worth down this month?" from the same tools (`explain_change`, §6.2). |
 
 The screens, from the tracker's own list, and what each reads:
 
@@ -2258,11 +2637,14 @@ and that device are now the key to the app.
 | --- | ---: | ---: | ---: |
 | AWS, both environments, including API Gateway, the stream (below), the web app's site, Cognito (free under 10,000 monthly users), and the watching of §9.9 (the spans, Application Signals, the metrics and alarms past the free ten: about £2.50 in prod); Apple push and Web Push are free | £3 | £3.50 | £4 |
 | Apple Developer Program ($99 a year, for Sign in with Apple, push and TestFlight; MA-162) | £6.35 | £6.35 | £6.35 |
-| Claude: chat, cards, statements, alerts, the agents' reviews | £7 | £12 | £21 |
+| Claude: chat, cards, statements, alert wording, the tuner's monthly note | £7 | £12 | £21 |
+| Claude: goals, scenarios and what changed (Sonnet's words over the solver, the workspace and the attribution, §6.1 to §6.3) | £1 | £2.70 | £3 |
+| Claude: the insight job and tax-year dates (Haiku's one-liners, Sonnet's Monday digest, §10.1, §6.5) | £0.30 | £0.60 | £0.80 |
+| Claude: plan with me (Opus 5.5, admin-started, at most its 5% share, §7.2) | £0 | £3.85 | £6.15 |
 | Claude: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
-| Claude: web search (~60 a month at $10 per 1,000) | £0.50 | £0.50 | £1 |
+| Claude: web search (under 10 a month, only when a holding is added, at $10 per 1,000, with the results read as input) | £0.20 | £0.25 | £0.50 |
 | Price data to value holdings (EODHD Historian, £19.99 a month, only if a free source fails and an admin approves) | £0 | £20 | £20 |
-| **Total, one member** | **£17** | **£43** | **£53** |
+| **Total, one member** | **£18** | **£49** | **£62** |
 | Each further member (their chat) | +£2 | +£3 | +£5 |
 
 Not in the table: the live evals in their own Console workspace (§21.7), up
@@ -2278,7 +2660,7 @@ lockdown (`MA-283`, `MA-284`, decided last after phase 15; `docs/RESEARCH.md`
 for Option 1 Bank-Grade Hub-and-Spoke with AWS Network Firewall and Transit
 Gateway).
 
-Two members on the standard setup: about £46, of which about £6 is Apple's developer membership and about £2.50 the watching of §9.9. The Claude lines are paid by
+Two members on the standard setup: about £52, of which about £6 is Apple's developer membership and about £2.50 the watching of §9.9. The Claude lines are paid by
 the monthly API credit that comes with the Max 20x plan ($200 a month,
 about £154), spent through a Console organisation linked to the plan;
 at these figures dev and prod together stay inside it, so the model's cash
@@ -2286,7 +2668,7 @@ cost is £0. The agents' allowance is the Max 20x plan's credit, $200 a month
 (about £154) across prod and dev, $160 and $40 by default, each a ceiling an
 admin moves (§14.1); AWS and other services have their own cap, £50 by
 default (§14.2). EODHD's prices as shown on its pricing page on 24 Oct
-2026. A second *household* would add roughly a full set (£10–34),
+2026. A second *household* would add roughly a full set (£12–36),
 since data feeds are shared but model calls are not.
 
 **The stream's idle cost** (§19.5). Each open stream is a running Lambda:
@@ -2321,17 +2703,25 @@ ceilings (Arun, 28 Oct 2026): the three limits sum to $230, the credit stays
 the last stop with no card on file, and the warning still compares only
 prod's and dev's ceilings (§21.7).
 
-**What $160 buys.** Two members are expected to spend about $21 a month on
-the standard setup and $36 on the full one (the Claude lines above, in
-dollars, about £16 to £28), plus a few pounds once the agents of §18 run. The ceiling is a guard against a bad month or a runaway
+**What $160 buys.** Two members are expected to spend about $30 a month on
+the standard setup and $48 on the full one (the Claude lines above, in
+dollars, about £23 to £37), plus a few pounds once the agents of §18 run.
+The agentic review (MA-323, 2 Nov 2026) re-derived the lines: the morning
+brief and the Opus Saturday review went with MA-307, the chat's line now
+pays for the tuner's monthly note, web search runs only when a holding is
+added, and the upgrades of §6.1 to §6.5, §7.2 and §10.1 add about $9 to
+$12. The ceiling is a guard against a bad month or a runaway
 loop, not a ration.
 
 | Line, two members | Standard | Full |
 | --- | ---: | ---: |
-| Chat, cards, statements, alerts, the agents' reviews | $20 | $34 |
+| Chat, cards, statements, alert wording, the tuner's monthly note | $20 | $34 |
+| Goals, scenarios and what changed (§6.1 to §6.3) | $3.50 | $4 |
+| The insight job and tax-year dates (§10.1, §6.5) | $0.75 | $1 |
+| Plan with me on Opus (§7.2; about 12 sessions at $0.40 standard, its 5% cap full) | $5 | $8 |
 | Document extraction | $0.25 | $0.25 |
-| Web search | $0.65 | $1.30 |
-| **Expected** | **$21** | **$36** |
+| Web search (only when a holding is added) | $0.30 | $0.65 |
+| **Expected** | **$30** | **$48** |
 | **Prod ceiling** | **$160** | **$160** |
 
 **The ceiling, set by an admin.** `BudgetSettings` holds the monthly
@@ -2362,8 +2752,8 @@ made. The meter is reconciled weekly against the Console (§9).
 | --- | --- |
 | under 70% | Normal. |
 | 70% | One message to the admins: what is spent, on what, and the days left. Nothing changes. |
-| 85% | Savers: web searches are limited to three a day, the overnight judges pause (§21.4), the tuner's monthly note is held to its figures, and a memory note is written only when a member asks MyPaisa to remember (§22.6). The admins are told. |
-| 95% | Essentials only: chat answers on Haiku; alerts and check-ins go out as their plain templates with code's numbers; reading a factsheet, a screenshot or a statement still works; memory notes are read and none is written (§22.6). The admins are told. |
+| 85% | Savers: web searches are limited to three a day, the overnight judges pause (§21.4), the tuner's monthly note is held to its figures, a memory note is written only when a member asks MyPaisa to remember (§22.6), the insight job sends the Monday digest only and its timely nudges wait, and plan with me waits (§10.1, §7.2). The admins are told. |
+| 95% | Essentials only: chat answers on Haiku; alert wording and the digest go out as their plain templates with code's numbers (check-ins are templates at every step, §4.9); plan with me is off; reading a factsheet, a screenshot or a statement still works; memory notes are read and none is written (§22.6). The admins are told. |
 | 100% | Claude stops until the cycle renews or an admin raises the ceiling. Every card goes out as its plain template, buttons and guided flows work as before, and a typed message gets one line saying free text is back on the renewal day. |
 
 Alerts are never dropped at any step: a template needs no model. Raising the
@@ -2390,7 +2780,7 @@ no Console admin key, so it cannot change the Console itself.
 workspaces, and the two workspace limits ($160 and $40) add up to it, so
 neither environment can eat the other's share.
 
-### 14.2 Caps and alerts, set by the admin in the Admin center (MA-137)
+### 14.2 Caps and alerts, set by an admin in the Admin center (MA-137)
 
 
 ![The agent team, settings, caps and alerts, Lucid page 7](docs/design/lucid/07-agents-caps.png)
@@ -2434,11 +2824,12 @@ the hard limit is a pull request.
 | Incident, an approval waiting (§18.3) | yes | yes | critical only |
 | Data feed stale, a job failed | yes | yes | no |
 | TestFlight build reaching day 60 of 90 (MA-167) | yes | yes | yes (SNS from phase 0; app and push join here in phase 8) |
-| Budget and check-in alerts (§10) | members' own, as today | members' own, as today | no |
+| Budget and check-in alerts (§10) | the admins' chat | the admins' devices | no |
+| The insight job's Monday digest and timely nudges (§10.1) | the admins' chat | the admins' devices, silent | no |
 
 - **App:** the Alerts screen in the Admin center and its badge, for admins
-  only, for system alerts; members' budget and check-in alerts arrive in
-  their own chat.
+  only, for system alerts; budget alerts and check-ins go to the admins and
+  arrive in their own chat (§4.5, §4.9).
 - **Push:** to the admins' devices; critical alerts time-sensitive with sound,
   the rest passive and silent; no amounts on the lock screen.
 - **Email:** through Amazon SNS, a topic `mypaisa-<env>-admin-alerts` with the
@@ -2463,6 +2854,7 @@ a daily digest instead.
 | Caching and memory | Every agent gets both from the one runner (§22, MA-285): its calls marked for the cache in one frozen order with a lifetime per route, checked by a byte test, T1 and an alarm; and Claude's memory tool on MyPaisa's own `MemoryNote` store, scoped to the member, the household or the agent, through the policy gate, never holding a figure, a record, a setting or a secret; a member's notes read in their own runs only, kept until forgotten, written on the agent's own and shown in Activity; the notes in the cached layer under hard caps, counted as their own feature and stepped down by the ladder | Arun, 29 Oct 2026: "I want automatic caching and memory enabled for all agents that will be built" and "go for all recommended options, I need the app to grow and remember me. But it should not exceed costs"; in the runner, no agent can forget either, and a broken cache or a poisoned note is caught by code, not by review |
 | Indian holdings | Phase 14 (§20, MA-147): AMFI, mfapi.in, yfinance `.NS`/`.BO` and the bhavcopy, free first, to value them; the existing portfolio imported from a CAS or a broker export; INR and GBP side by side and a tax flag; Indian mutual funds are registered and priced from AMFI's NAV file earlier, in phase 5 | Arun's Indian mutual funds and shares, to be fed later |
 | Orchestration | One tool loop, not an agent graph | One household; cost without accuracy otherwise |
+| Planning and insight | Goals and a solver, what changed and why with a claim check, a scenario workspace, a richer fan with a sensitivity table, tax-year facts, the fan graded, reasoning evals and fewer, richer tools, as tools, views and worker jobs on the concierge and the worker, with no new agent; Opus only for an admin's plan with me, in its own loop and share; a nightly insight job, quiet by default (§6.1 to §6.5, §7.1, §7.2, §10.1, §18.8, §21.3; MA-323, 2 Nov 2026) | Arun, 2 Nov 2026: "I need this to be super intelligent agentic ai based wealth tracker and forecasting engine, interactive chat based conversations etc."; then "Need all of the above". Code still computes every figure and nothing says "should" |
 | Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
 | Front end | Two full doors, built in parallel in every phase. One app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger), a React Native shell with a native SwiftUI core (§8.5): the chat with native cards and Swift Charts, and the dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat beside them from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§8.1); and the web app, a SvelteKit 3 PWA with the same chat, dashboard and Admin center at desktop and phone width (§8.4); no Telegram (MA-161, 25 Oct 2026; MA-186, 26 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "Performance is key … silky smooth like Monzo"; native sign-in, push and Face ID in the app, the same chat in any browser, and the TypeScript shared between the two |
 | The kill switch's name | `/pause` and `/resume` (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping. Two things share it: `/pause` is the household's kill switch, a flag every scheduled run checks first (§2, §7); the Admin center's Pause of a member disables that person's sign-in through Cognito and signs them out until the owner restores them (MA-102, §4.5) |
@@ -2494,7 +2886,7 @@ a daily digest instead.
 | Budget | Statements categorised (the merchant memory, then Haiku) plus a check-in on the 1st; a statement is routine and needs no second check, while the Excel history importer keeps its own (§4.9, §11) | Actuals without typing, and nothing counted twice |
 | Projection | Code computes and the AI drives: returns shrunk toward priors by how much history there is, salary growth blended with the country's prior, inflation by country, each currency's drift against GBP from the inflation gap, deterministic then Monte Carlo, each run stored; plan items and saved assumptions an admin's alone (§6) | A wealth forecast from the household's actual numbers; every Projection figure comes from code and can be reproduced |
 | Live delivery | SSE on the api host at both doors, with a per-member event log for resume and push only where no stream is open, replacing the API Gateway WebSocket and its `live` host; a spike proves it first (§19.5) | The session cookie reaches the api host; one stream carries replies, cards, check-ins and record changes |
-| Documentation | Confluence (space mypaisaa-agent) is the readable copy of the plan: generated from the trace, PLAN, ARCHITECTURE, the roadmap, the decision records and the boards' record by `scripts/confluence_docs.py`, published through the Atlassian MCP, and checked with the other records by `scripts/plan_sync.py`; every story's estimate and every phase's dates live in `docs/roadmap.json`, and each phase epic's due date in Jira is its target end; each story names the code that builds it (MA-228) | Arun, 26 Oct 2026: the plan, Jira, the designs, the documents and the code stay the same and do not drift; one source for each fact, every copy generated from it and checked |
+| Documentation | Confluence (space mypaisaa-agent) is the readable copy of the plan: generated from the trace, PLAN, ARCHITECTURE, the roadmap, the decision records and the boards in the repo by `scripts/confluence_docs.py`, published through the Atlassian MCP, and checked with the other records by `scripts/plan_sync.py`; every story's estimate and every phase's dates live in `docs/roadmap.json`, and each phase epic's due date in Jira is its target end; each story names the code that builds it (MA-228) | Arun, 26 Oct 2026: the plan, Jira, the designs, the documents and the code stay the same and do not drift; one source for each fact, every copy generated from it and checked |
 | UI and app stack | The web app on Smart Clearance's stack: SvelteKit 3, Tailwind CSS 4 over the Warm ledger tokens, shadcn-svelte on bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, Motion. The iOS shell on bong-panjika's: React Native 0.88, TanStack Query on the shared query definitions, Reanimated, MMKV on Nitro, with every pixel SwiftUI. Each at its latest; Swift Package Manager from day one; the api a REST API so the stream can stream (MA-229, 26 Oct 2026) | Arun: "Go with the latest and greatest ... for UI, I want what we used for Smart Clearance and bong-panjika, Tanstack, shadcn-ui, tailwind CSS"; two stacks already proven in his projects, one data layer for both doors |
 | Charts | 1a Monzo Pulse at every door (Swift Charts in the iOS app, LayerChart in the web app; §8.1, §8.4), on Warm ledger's audited `tokens.css` colours: plain-language takeaway first, Fritsch-Carlson monotone cubic splines with warm coral wash and double-ring endpoint beacon, sculpted capsule meters with vertical 100%-plan ticks and `▲`/`▼` words, zero-spine diverging cashflow drivers, and touch/pointer scrub callouts masked in privacy mode (MA-295, picked 30 Oct 2026; MA-56) | Arun, 30 Oct 2026: livelier dashboard graphs and charts conforming to Apple's HIG and Monzo's mobile and modular web craft, without adding unmeasured colours or losing 25%-brightness legibility |
 | Guardrails | In code before the prompt: least agency, one manifest per agent and tool, a policy gate before every call of our own tools that fails closed, Anthropic's server tools only in a call that holds no household figure, third-party text only as labelled data and files read by a quarantined extractor with no tools, a conversation that has read such text losing every tool that sends data out, every figure checked against the tool results and the member's own words, plain refusals for what is out of scope (§21.2; MA-245, 27 and 28 Oct 2026) | A prompt can be talked round and a file can carry instructions; code cannot be, so what the agent must never do is made impossible, not discouraged |
@@ -2502,6 +2894,16 @@ a daily digest instead.
 | Domains | `dashboard(-dev)` and `api(-dev)`; the `console` and `live` hosts are gone; the apex redirects to `dashboard.mypaisapp.com` at cutover (§17.2) | One host for the web app, its links and its passkeys |
 
 ## 16. Open questions
+
+- **The surplus rule** (§6, MA-323): where the engine puts each month's
+  surplus on the base path and the fan. Candidates: all to cash in its
+  currency; to cash up to a number of months of spend, then pro rata to the
+  SIPs; or by an order the admin sets. Arun has not chosen; MA-219 needs the
+  answer before the engine is built, and the goal solver (§6.1) and the
+  sensitivity table (§6.4) read whatever it is.
+- **Saving scenarios** (§6.3, MA-317): "May a member who is not an admin
+  save their own scenarios as a preference, or are scenarios admin-only?"
+  Until Arun decides, saving is an admin's.
 
 - The Monzo fund's exact name and ISIN (factsheet in the app); whether the holdings sit in the Stocks & Shares ISA or a general account; the Monzo platform fee on your plan.
 - Whether yfinance returns history for the fund's `0P…L` id; otherwise which page becomes the daily source.
@@ -2741,9 +3143,9 @@ settings allow; anything else is a request to the admins.
 
 | Agent | Its job | Brain | On its own | Asks the admin |
 | --- | --- | --- | --- | --- |
-| **Concierge** (the `agent` Lambda) | Talks to members in the chat; routes an admin's instructions to the admin desk | Sonnet, Haiku for small turns | Answers, reads, and for an admin drafts changes to records with a Confirm card (§7) | n/a: an admin confirms every record change |
+| **Concierge** (the `agent` Lambda) | Talks to members in the chat; routes an admin's instructions to the admin desk; for an admin who starts one, a plan with me session (§7.2) | Sonnet, Haiku for small turns; Opus in plan with me's own loop | Answers, reads, and for an admin drafts changes to records with a Confirm card (§7) | n/a: an admin confirms every record change |
 | **Data steward** | Keeps the prices that value the holdings flowing from free sources; watches freshness, gaps, disagreement and free quotas | Code; Haiku writes its requests | Fails over within the chain, retries, fills gaps, labels stale data | A new or reordered source, any paid feed, a source's terms |
-| **Grader and tuner** | The household's learning loop: its closed months graded and its needs learned from use (§18.8) | Code; Sonnet writes the monthly note | Grades each closed month; orders a member's chips inside their band | Every household assumption it proposes (a member's own preferences go to that member) |
+| **Grader and tuner** | The household's learning loop: its closed months and the fan's band graded, and its needs learned from use (§18.8) | Code; Sonnet writes the monthly note | Grades each closed month; orders a member's chips inside their band | Every household assumption it proposes (a member's own preferences go to that member) |
 | **Ops warden** | Runs the daily pipeline and repairs it (§18.4) | Code; Haiku summarises incidents | Retries, catches up, rolls back to the last good version | Anything it cannot fix: an incident |
 | **Budget keeper** | The meter, the ladder and the guards (§14.1) | Code | Steps down and back up | Ceilings and shares are the admin's |
 | **Admin desk** | The one channel between agents and the admins (§18.3) | Code; Haiku turns the admin's words into a request | Queues, batches, reminds, expires | It is the asking |
@@ -2752,7 +3154,7 @@ Each agent is a Lambda with its own role, tools, model routing and budget
 share. They do not call each other directly: they publish events on the
 `mypaisa-<env>-events` EventBridge bus and leave work in DynamoDB, and the
 daily pipeline is a Step Functions state machine (§18.4). No agent can
-trade, read a secret, delete data or apply infrastructure: secrets are put
+trade, read a secret, erase data or apply infrastructure: secrets are put
 in SSM by hand, and infrastructure changes only through Terraform and CI
 (`.claude/rules/aws-changes.md`); an agent can at most open a Jira issue
 proposing one.
@@ -2810,7 +3212,7 @@ for the period its setting names. Every decision is audited.
 ### 18.4 Self-healing (E7, MA-135)
 
 The daily run (the price ingest, the nightly views, the Projection run, the
-check-ins) is one Step Functions state machine with retries and backoff on every step and
+check-ins, the insight job) is one Step Functions state machine with retries and backoff on every step and
 idempotent writes, its jobs carried by the queues of §19. When a dead-letter
 queue fills, the ops warden finds the cause (Apple push, the Anthropic API, a
 data source, a deploy) and, once it is healthy again, replays the messages
@@ -2823,8 +3225,9 @@ fails skipped, its output labelled stale. Everything else is an `Incident`
 on the admin desk with what happened, what was tried and the choices. Every
 agent reports a heartbeat, and a silent one is an incident. The daily run is one trace
 and each agent a service on the map; a replay links to the run it repeats and
-an incident names its trace (§9.8, MA-235). The 07:45 dead
-man's switch, the nightly drift check (MA-108) and the Lambda rollback
+an incident names its trace (§9.8, MA-235). The dead man's
+switch (§9.6: the views and the Projection current by 07:00, the check-ins
+sent by 09:00 outside quiet hours), the nightly drift check (MA-108) and the Lambda rollback
 (MA-107) stay as they are.
 
 ### 18.5 Where the data lives
@@ -2857,14 +3260,18 @@ ceiling, metered by agent; the defaults, each a setting:
 
 | Agent | Share |
 | --- | ---: |
-| Concierge (the chat, cards, statements) | 75% |
-| Grader and tuner reviews | 10% |
+| Concierge (the chat, cards, statements) | 70% |
+| Grader and tuner (the monthly note) | 5% |
+| The insight job and plan with me (features `insights` and `planner`, §10.1, §7.2; plan with me at most 5% of the ceiling) | 10% |
 | Admin desk | 5% |
 | Data steward and ops warden | 5% |
 | Reserve, the chat first | 5% |
 
 An agent past its share drops to its 95% step (§14.1); the reserve covers
-the chat before anything else. The overnight eval judges are not an agent:
+the chat before anything else. The agentic review re-cut the shares on 2
+Nov 2026 (MA-323): the insight job and plan with me are not new agents but
+a worker job and a route of the concierge, metered as features with a share
+of their own so neither can eat the chat's. The overnight eval judges are not an agent:
 they are metered as the feature `evals` inside their own cap (§21.7).
 
 **AWS and other services: £50 a month** across both environments by default,
@@ -2954,6 +3361,39 @@ budget plan or the engine's arithmetic.
    beside its actual, and the tuner's monthly note to the admins says how
    close the last twelve months came and what changed and why. Designed first, with `/design-first`, before the
    story starts.
+
+**The fan, graded too (MA-319).** E9 grades the median path, the Budget
+forecast's line; the fan around it (§6.4) is a claim about how far the
+truth may stray, and is graded as one, so trust grows from the household's
+own record ("the band has held 9 of the last 10 quarters").
+
+1. **Coverage.** At each month close, for the `ProjectionRun`s current 1, 3
+   and 12 months earlier, code checks whether the household's actual net
+   worth, and each goal's pools (§6.1), landed inside that run's p10 to p90
+   for this month. Each check is a `MonthGrade` row (line: the fan's
+   coverage, with its horizon). The coverage rate over a rolling window is
+   the share inside; a well-made band holds about 80% of the time.
+2. **PIT.** For each check, the percentile at which the actual fell inside
+   that run's distribution (its probability integral transform) is stored.
+   Once there are 12 or more, the histogram shows whether the band is too
+   wide (actuals bunched in the middle), too narrow (piled at the edges) or
+   biased (piled on one side). A household makes 12 monthly points a year,
+   so the early reading is labelled with how few points stand behind it.
+3. **Glide paths.** Each goal's pools are graded against the glide path
+   saved with the goal: the gap, and whether it is inside its band. The
+   insight job reads the same rows (§10.1).
+4. **Priors re-fitted only on evidence.** The tuner proposes a change to a
+   return, volatility or inflation prior (§6.4) only when the coverage has
+   left its band (below 60% or above 95%, settings) over at least 12 points
+   and the PIT shows the direction; only a step at a time, inside the
+   prior's own band (§18.2); and only on an admin's Confirm, as a new
+   version of the prior with its audit row, as item 4 above. A household's
+   few points never move a prior on their own: the step is small and the
+   prior's source is shown beside the proposal.
+5. **Shown.** The tuner's monthly note gains one line, how often the band
+   has held and over how many points; the Projection's assumptions panel
+   shows the same line, and its Technical part the PIT histogram (drawn
+   with `/design-first` before MA-319 starts).
 
 **What each member needs, learned from use (E10, MA-277).** MyPaisa already
 records what each member asks, opens, taps, confirms, corrects, cancels and
@@ -3262,7 +3702,7 @@ detects it beats one that asks the model nicely. The layers, in that order:
 | **Least agency** | No tool can trade, erase data, read a secret or message anyone but the member it is answering (§7). Every tool that drafts a write is an admin's (§4.5, MA-308). Drafts write nothing; only Confirm, a check-in's tap or a Save in place commits, through the write service, and Confirm commits exactly the draft whose hash `PendingAction` holds (§4.10). The SQL copy is read only, and its DuckDB runs with external access off and its configuration locked, over views of the asker's own scope (§11.1). Admin actions sit behind the second check (§4.5). Each agent gets only the tools its manifest lists (§21.5). | §7, §11.1, MA-246, MA-256 |
 | **The policy gate** | Before every call of one of our own tools, in code: the tool is in the calling agent's manifest; the member's role and the household scope allow it (§4.5); the arguments match the strict schema and their ranges (an amount is the member's own text, parsed and typed by code, §4.7; only a typed override takes minor units and a currency code, §6); the run is under its tool-call cap and is not repeating the same call. It fails closed: an error or a timeout refuses the call. Each decision is an attribute on the tool's span and an entry in the `RunRecord`'s `checks`. Anthropic's server tools (`web_search`, `web_fetch`) run inside one API request, where no code can stop a call, so the gate acts on them between requests: they are given only to a call that holds no household figures (looking up a holding's public details gets its name and ISIN, never an amount), with `max_uses` set, and `web_fetch` reaches only links already in that conversation. | MA-247, MA-68 |
 | **Untrusted text, one way in** | Every third-party text (a file, a statement line, a CAS file, an Excel sheet, a fetched page, a search result, a merchant name) reaches a model only as data: inside a tool result, JSON-encoded and labelled with its source, or, for a PDF or a screenshot, as a labelled document or image block. The system prompt says such text is data, never instruction. Files are read by a quarantined extractor: its own model call, with no tools, whose only output is the strict schema with each field's source line and confidence, checked by code. The one-shot calls that read such text (statement categorisation) also run with no tools and a strict schema. Once untrusted text is in a conversation, that conversation, and any note or summary drawn from it, loses every tool that sends data out, so nothing holds private data, untrusted text and a way out at once. | MA-253, MA-68, MA-247 |
-| **Checks on what it says** | Every figure in a reply is matched against the conversation's tool results and the member's own words, after normalising the unit, the currency and the rounding; a miss regenerates once, then the plain template is sent (§1). A trade, a buy, sell or hold call, tax advice, another household's data, and a member's detail not shared with the asker get a plain refusal with the reason. A reply that names a record outside the asker's scope is refused. The doors render a reply as plain text and card fields, with no remote image and no link the reply invents (§13). | MA-248, MA-249, MA-54 |
+| **Checks on what it says** | Every figure in a reply is matched against the conversation's tool results and the member's own words, after normalising the unit, the currency and the rounding; a miss regenerates once, then the plain template is sent (§1). A trade, a call on a holding drawn from a market view, tax advice (what to claim, which regime, how to pay less), another household's data, and a member's detail not shared with the asker get a plain refusal with the reason; a stated allowance, its source and what the ledger shows used are facts and are answered (§6.5), and options code computes from the cash flows are shown as options (§1, rule 2). A reply that explains a change passes the claim check too: each cause rests on a part or a trace a tool returned in the run (§6.2, MA-315). A reply that names a record outside the asker's scope is refused. The doors render a reply as plain text and card fields, with no remote image and no link the reply invents (§13). | MA-248, MA-249, MA-54 |
 | **Limits** | The Claude ceiling and its ladder, the member, day and run guards (§14.1); a cap on tool calls per run; `/pause`. | §14.1, MA-247 |
 
 No classifier screens text today: the layers above make an injection
@@ -3305,11 +3745,43 @@ trials, scores them and keeps the logs. Phase 1's cases test what the phase-1
 chat does; registering, Confirm, cancel and correcting join with phase 2's
 draft tools and write service (MA-197, MA-201).
 
+**Reasoning quality** (MA-321). The figure check proves a reply's numbers
+and the claim check its stated causes (§6.2); neither proves that the agent
+reasoned well. So the `capability` suite (graduating to `regression`) holds
+cases whose ground truth is the engine's:
+
+- **Goal solving:** "what would £40,000 by Sep 2028 take?" passes when
+  `solve_goal` was called, the reply's saving and date are its result's, and
+  nothing was worked out by the model (§6.1).
+- **Attribution:** "why is net worth up this month?" passes when
+  `explain_change` was called and every cause the reply gives is a part it
+  returned, in the right direction (§6.2).
+- **Comparisons:** "compare three plans" passes when `compare_scenarios` was
+  called once, not `run_projection` three times (§6.3).
+- **Ambiguous plans:** "about 2 cr", no end date, a loan that does not exist:
+  the agent asks only what is missing, one thing at a time, and nothing it
+  could look up.
+
+Three binary judges watch what code cannot: **causal claims faithful to the
+trace or the attribution**, **asked only what was missing**, and **fact, not
+advice** (no "should", no call, in a reply, a nudge or a plan card). Each is
+calibrated like the others before it acts (§21.5). Each story that brings a
+tool brings its cases (rule 5); MA-321 adds the judges, the trajectory
+metrics below and the cases that cross tools. Plan with me (§7.2) has its
+own suite on its own route.
+
+**Trajectory metrics.** Every case and every live run records, in its
+`RunRecord`'s `checks`, the model calls per answer, any identical tool call
+repeated in the run, and tools called that the case's ground truth did not
+need. Each suite has a band for them; a T1 run past its band is reported on
+the pull request, and live, a repeated identical call flags the run for the
+overnight judges (§21.4).
+
 **Three suites.**
 
 | Suite | Holds | Passes when |
 | --- | --- | --- |
-| `safety` | Red-team cases: injection in a file, a page or a merchant name; a request beyond the member's role, a write by a member who is not an admin among them; a trade, a buy, sell or hold call, tax advice, another household | Every case passes every trial (pass^k) |
+| `safety` | Red-team cases: injection in a file, a page or a merchant name; a request beyond the member's role, a write by a member who is not an admin among them; a trade, a call on a holding drawn from a market view, tax advice, another household; and rule 2's other side, a shortfall whose options from code (pause or reduce a SIP, trim a category) must be shown as options with no "should", and a nudge of each kind that must state facts only (§1, §10.1) | Every case passes every trial (pass^k) |
 | `regression` | Graduated capability cases, every incident and review finding, the kinds' generated cases | The pass rate stays at or above its baseline less its measured noise, reported with its standard error |
 | `capability` | New work, expected to fail at first | Tracked, never blocking; a case that passes every trial in ten gated runs in a row graduates to `regression` |
 
@@ -3340,7 +3812,8 @@ by a person (the transcript, not only the score) and either fixed or moved to
 
 **Every run, at no cost.** The `RunRecord`'s `checks` (§9.1) hold the gate's
 decisions, the figure check, a refusal, a template fallback, tool errors, the
-loop's length and its cost; and the member's own signals: a question asked
+loop's length and its cost, and the trajectory metrics of §21.3 (calls
+per answer, an identical call repeated); and the member's own signals: a question asked
 twice in a conversation, and from phase 2 a proposal cancelled and a
 correction within seven days of a Confirm on the same record. Any of these
 flags the run.
@@ -3419,7 +3892,8 @@ and one drawn from an incident never leaves T1.
 
 | Job | When | Why it runs then |
 | --- | --- | --- |
-| Grading the household's forecasts and proposing its assumptions (§18.8) | at each month close | Its ground truth, a closed month, arrives once a month |
+| Grading the household's forecasts, the fan's band and the goals' glide paths, and proposing its assumptions (§18.8) | at each month close | Its ground truth, a closed month, arrives once a month |
+| The insight job (§10.1) | nightly, after the Projection run; the digest on Monday mornings | It reads the night's views and run; the digest is weekly so it stays quiet |
 | Counting each member's use (§18.8) | nightly | It reads the day's runs and taps, and changes only orders inside their band |
 | The overnight judges and the rates (§21.4) | nightly, compared a week at a time | They read the day's new runs |
 | The admin's calibration (§21.5) | monthly, and on every change | People are the slow, expensive grader, kept for checking the fast ones |
@@ -3463,6 +3937,9 @@ inside their own cap, whatever the agents' shares.
 | MA-254 | 2 | Each kind's generated cases |
 | MA-255 | 8 | The admin's calibration and the eval caps on the Evals page |
 | MA-256 | 13 | Each team agent's tools, safety suite and evidence on its changes |
+| MA-315 | 5 | The claim check beside the figure check |
+| MA-321 | 11 | Reasoning-quality cases and judges, the trajectory metrics, and rule 2's safety cases on both sides |
+| MA-322 | 11 | Plan with me's own manifest entry and safety suite on the Opus route |
 
 Earlier stories this changes: MA-54 (its chat half moved to MA-248), MA-68
 (web text follows the untrusted-text rule), MA-198 (its recordings are T0), MA-25 (CI runs T0, T1 and T2),
@@ -3575,8 +4052,8 @@ plain words about the person or the work:
 - **A figure or a record.** No amount, balance, rate, percentage, date of a
   payment, account or card number, id, token or secret: the write handler
   refuses each in code, with the reason. A note may name a record ("the car
-  loan"), and the agent looks its figures up with the tools when it needs
-  them. The figure check (§21.2) matches a reply's figures only against the
+  loan") or a goal ("the car goal", §6.1), and the agent looks its figures
+  up with the tools when it needs them. The figure check (§21.2) matches a reply's figures only against the
   run's tool results and the member's own words, so a figure from a note
   cannot reach a reply even if one were written.
 - **A setting.** "Asha asked for fewer pings" may be a note; changing her
@@ -3608,9 +4085,9 @@ plain words about the person or the work:
   poisoned page can neither plant a note nor erase one.
 - **Seen and audited.** Every write is an audit row (`memory.write`, the path,
   the run) and one line in Activity, "MyPaisa noted: ...". In You, What
-  MyPaisa remembers lists the member's own notes and the household's, each
-  corrected in place (a before and after with Save, `via: inline_edit`) or
-  forgotten with a Confirm; nothing is added there, since a new note comes
+  MyPaisa remembers lists the member's own notes, each corrected in place (a
+  before and after with Save, `via: inline_edit`) or forgotten with a
+  Confirm, and the household's, which an admin corrects or forgets; nothing is added there, since a new note comes
   only from the chat (MA-288, §4.10). Forgetting removes the note's text for
   good and keeps its audit row without it.
 - **Kept small.** Each scope has a cap (§22.6), so reading it stays cheap;

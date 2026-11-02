@@ -55,18 +55,18 @@
 <li><strong>MyPaisa: What if you saved £900 a month?</strong> Nothing is saved. Changing the plan is a write: an admin does it in the chat, with a Confirm card and an audit row.</li>
 </ol>
 <h2>📱 Delete a record</h2>
-<p><em>Admins only, in the chat, asked twice</em> · at 21:40</p>
+<p><em>Admins only, in the chat: Confirm and the second check</em> · at 21:40</p>
 <ol><li><strong>You send delete the second Silver entry, I added it twice by mistake</strong> Deleting happens only in the chat. You are an admin, so the agent may propose it. Any other member would be told that only an admin can change records.</li>
 <li><strong>MyPaisa: Finding it…</strong> The agent finds the two Silver positions and names the one added second.</li>
 <li><strong>MyPaisa: Delete this record?</strong> The card names exactly one record and what deleting it does. Nothing is changed yet.</li>
 <li><strong>You tap Confirm</strong> Confirm is the first check.</li>
-<li><strong>MyPaisa: Second check: delete Physical Silver (24 Oct)?</strong> A delete asks twice. The second check is in code, not a choice Claude makes.</li>
-<li><strong>You tap Yes, delete it</strong> The record&#x27;s status becomes deleted and an audit row says who, when and what. Nothing is erased.</li>
+<li><strong>MyPaisa: Check it&#x27;s you</strong> The second check is a fresh, server-verified sign-in with Apple, Google or a passkey, bound to this one action, never a button. It is in code, not a choice Claude makes.</li>
+<li><strong>You tap Sign in with Apple</strong> The api accepts the fresh assertion. The record&#x27;s status becomes deleted and an audit row says who, when and what. Nothing is erased.</li>
 <li><strong>MyPaisa: Deleted. Net worth is now £40,260. Say &quot;restore the Silver entry from 24 Oct&quot; to bring it back.</strong> Closing a holding (sold, matured, closed) is separate: it stays in the history. Delete is for a record that should not be there.</li>
 </ol>
 <h2>📱 Closing the month</h2>
 <p><em>The 1st: the month against its plan, then the dashboard</em> · at 08:00</p>
-<ol><li><strong>Sun 1 Nov · 08:00</strong> October closes. Code compares the month&#x27;s line of the Budget forecast with what happened and keeps each gap. Opus 5.5 reads the month before writing.</li>
+<ol><li><strong>Sun 1 Nov · 08:00</strong> October closes. Code compares the month&#x27;s line of the Budget forecast with what happened and keeps each gap. Sonnet 5.5 writes the month&#x27;s note.</li>
 <li><strong>MyPaisa: 📒 October · net worth £41,200 ▲£1,140</strong> A record of the household&#x27;s month, graded against its own forecast. The grade is worked out in code, not by the model.</li>
 <li><strong>You tap Open dashboard</strong> The Mini App opens inside Telegram. A static page on CloudFront; it shows data only after validating Telegram&#x27;s signed proof that it is you.</li>
 <li>Interactive charts (pinch, scroll), the budget and the Projection. Only admins change records: adding and deleting in the chat with a Confirm card, correcting a figure in the chat or in place on a screen. Every other member views.</li>
@@ -80,7 +80,7 @@
 <li><strong>You send /privacy on</strong> Bot chats are not end-to-end encrypted. Privacy mode hides pounds everywhere, including the dashboard.</li>
 <li><strong>MyPaisa: 📊 Portfolio · privacy on</strong> Same card, no amounts.</li>
 <li><strong>You send /pause</strong> The kill switch. A flag every scheduled run checks first.</li>
-<li><strong>Paused. No alerts or check-ins until /resume. Your records are kept.</strong> Pause stops everything that speaks. Prices keep being collected to value the holdings, so there is no gap when you come back.</li>
+<li><strong>Paused. No alerts or check-ins until /resume. Your records are kept.</strong> Pause stops everything scheduled, prices included; the first run after /resume catches up.</li>
 </ol>
 <h2>🗓️ A week in the life</h2>
 <p>About five messages a week from the bot, at most two with sound. Quiet 22:00–07:00. Everything else waits until you ask.</p>
@@ -108,7 +108,7 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":pushpin:" data-color="#EAE6FF"><p><strong><strong>Only admins write</strong></strong></p>
-<p>The household can have several admins. Admins add and delete only in the chat, with a card and Confirm; a delete asks twice, marks the record deleted (restorable through the chat) and writes an audit row. Admins correct a figure in the chat or in place on a screen. Every other member views only.</p>
+<p>The household can have several admins. Admins add and delete only in the chat, with a card and Confirm; a delete takes Confirm and the second check (a fresh sign-in with Apple, Google or a passkey), marks the record deleted (restorable through the chat) and writes an audit row. Admins correct a figure in the chat or in place on a screen. Every other member views only.</p>
 </div>
 </div>
 </section>

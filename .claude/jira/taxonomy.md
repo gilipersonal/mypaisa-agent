@@ -83,13 +83,14 @@ and the SwiftUI pieces, each hosted through a Fabric component, in
 
 ## Labels
 
-`bug` marks bugs. Two theme labels (also in `jira.labels.themes` in
+`bug` marks bugs. Three theme labels (also in `jira.labels.themes` in
 `.claude/jira-flow.json`):
 
 | Label | Means |
 | --- | --- |
 | `manual` | Arun does it by hand (an account, a key, an export); no PR |
 | `design` | The story changes what a member sees: `ui: true` in the trace, boards in `docs/design/` (or a note, and MA-158, while they are still to draw), and `/design-first` before code |
+| `retired` | Closed without being built by an owner decision (MA-307); labelled, commented with the owner's words and moved to Done, and out of PLAN, the trace and the roadmap |
 
 Bugs are type `Bug` and also carry the `bug` label so one JQL
 covers them.

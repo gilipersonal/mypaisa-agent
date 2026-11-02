@@ -240,7 +240,29 @@ def arch_sections() -> dict[str, str]:
     return out
 
 
-GUARDRAILS = ("21", "Guardrails and evals")  # the ARCHITECTURE section the guardrails page shows, and its title (MA-245)
+GUARDRAILS = ("21", "Guardrails and evals")
+# The ARCHITECTURE sections each explainer page's "sources" line cites, with the title each must have: a renumbering
+# that moves a section fails the check instead of linking the page to another section (MA-307 review, F1).
+SOURCE_CITES = {
+    "stack": [("3", "System context"), ("4.8", "The dynamic structure"), ("7", "The agent"), ("8.4", "The web app"),
+              ("9", "Observability")],
+    "cicd": [("17.4", "Delivery")],
+    "maestro": [("8.1", "The shell, the chat"), ("8.5", "The iOS app's build"), ("17.4", "Delivery")],
+    "vpc": [("13", "Security and privacy"), ("14", "Cost"), ("17.1", "Two environments"), ("17.4", "Delivery")],
+    "argos": [("8.4", "The web app"), ("17.4", "Delivery")],
+}
+
+
+def cite_links(page: str, sections: dict[str, str]) -> str:
+    """The cited sections as links, joined in prose: '§3, §4.8 and §9'."""
+    links = [arch_link(n, sections) for n, _ in SOURCE_CITES[page]]
+    return links[0] if len(links) == 1 else ", ".join(links[:-1]) + " and " + links[-1]
+
+
+def cite_errors(sections: dict[str, str]) -> list[str]:
+    return [f"confluence: the {page} page cites ARCHITECTURE §{n} as {want!r}, but §{n} is {sections.get(n, 'missing')!r}"
+            for page, cites in SOURCE_CITES.items() for n, want in cites
+            if not sections.get(n, "").removeprefix(n).lstrip(". ").startswith(want)]  # the ARCHITECTURE section the guardrails page shows, and its title (MA-245)
 
 
 def arch_text(num: str) -> tuple[str, str]:
@@ -571,7 +593,7 @@ DECISION_CARDS = [
     ("MA-193", "26 Oct 2026", "The check-in card", ["1a Chips in one row", "1b Paid as the Confirm", "1c A compact row"], "1b Paid as the Confirm",
      "Paid looks like every other Confirm button, and \"Paid off in full\", which closes a loan, cannot be hit by accident."),
     ("MA-193", "26 Oct 2026", "The Projection", ["1a The fan first", "1b A story first", "1c Decades"], "1a The fan first",
-     "It is the screen ARCHITECTURE 6.6 lists: the fan, milestones on the line, assumptions with sources, scenario chips and Ask."),
+     "It is the screen ARCHITECTURE §6 lists: the fan, milestones on the line, assumptions with sources, scenario chips and Ask."),
     ("MA-197", "26 Oct 2026", "Does approving a new kind of record need the second check?", ["Yes, the second check", "No"], "Yes, the second check",
      "A new kind changes what every member can register, so the admin approves it behind the second check."),
     ("MA-76", "26 Oct 2026", "When does the second check arrive?", ["Phase 1, with sign-in", "Phase 8, with the Admin center"], "Phase 1, with sign-in",
@@ -610,7 +632,7 @@ def app_prompt(ctx: Ctx, name: str) -> str:
                 "Colour the bars by group (three groups: Foundations and talk, The whole wealth, The agents and beyond) with a legend. On hover, show the epic "
                 "key, the build days and the dates. Keep the axis in months.\n" + "\n".join(lines) +
                 "\nMilestones (diamonds on their date, with these labels):\n" + miles +
-                "\nPhase 16 (New kinds of holding) is built on demand and has no dates; leave it out.")
+                "\nPhase 12 (New kinds of holding) is built on demand and has no dates; leave it out.")
     if name == "decision-cards":
         cards = "\n".join(f"- Front: {q} ({k}, {d}). Back: options: {'; '.join(o)}. Picked: {pick}. Why: {why}"
                           for k, d, q, o, pick, why in DECISION_CARDS)
@@ -756,7 +778,7 @@ def jql_link(jql: str, text: str) -> str:
 
 def footer(ctx: Ctx) -> str:
     return ('<hr><p style="font-size: 14px"><em>Generated from the repo by scripts/confluence_docs.py (MA-228) from docs/trace.json, '
-            "PLAN.md, docs/roadmap.json, the design decision records and the boards' record. Change those, not this page: "
+            "PLAN.md, docs/roadmap.json, the design decision records and the boards in the repo. Change those, not this page: "
             "/plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>")
 
 
@@ -1086,7 +1108,7 @@ def render_explainers(ctx: Ctx) -> str:
            f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}), '
            f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">aws-vpc-enterprise-lockdown.html</a> (the optional seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing, decided last after Phase 15, MA-283, MA-284; see {ctx.link("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing")}) and '
            f'<a href="{gh("docs/design/argos-visual-a11y.html")}">argos-visual-a11y.html</a> (the SvelteKit 3 web visual regression, YAML ariaSnapshot diffing and fail-closed @axe-core/playwright WCAG 2.2 AA pipeline with Argos CI at £0/month, MA-194, MA-269; see {ctx.link("argos", "Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI")}); '
-           'the first five are also published as Claude artifacts below, while the stack, CI/CD, Maestro, VPC and Argos CI explainers embed their animated block diagrams directly on their Confluence pages.</p>',
+           'the first four are also published as Claude artifacts below, while the stack, CI/CD, Maestro, VPC and Argos CI explainers embed their animated block diagrams directly on their Confluence pages.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
                f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
                + "</section>" for pair in (list(ARTIFACTS.items())[k:k + 2] for k in range(0, len(ARTIFACTS), 2))),
@@ -1126,7 +1148,7 @@ def render_sync(ctx: Ctx) -> str:
         'Artifact. Claude Design is going away, so no need to push to claude design". The boards are drawn and edited in docs/design/, and '
         "nothing is read from or written to Claude Design again. Git is the boards' only record (MA-296: \"I dont need claude-design sync "
         "anymore\"): there is no record file to update and no whole-set Artifact to republish; <code>python3 scripts/plan_sync.py check</code> "
-        "reads every board as it is on disk. Each design round's options are published as a private Claude Artifact for Arun to look at, "
+        "reads each board a trace row cites for its canvas titles only. Each design round's options are published as a private Claude Artifact for Arun to look at, "
         "comment on and pick from; a round run in Google Antigravity, which cannot publish one, shows the same page locally (MA-297). Until 30 Oct "
         "2026 the boards were drawn in standalone Claude Design, which closes by 14 Dec 2026, and copied in (MA-259); the choice is recorded "
         "in docs/design/reviews/MA-259/decision.md.</li>"
@@ -1230,8 +1252,7 @@ def render_stack(ctx: Ctx) -> str:
                "SwiftUI core), the Python 3.14 backend (FastAPI, Pydantic v2, single-table DynamoDB versus DocumentDB, and the Python DynamoDB library "
                "comparison), and the agent framework evaluation and recommendation. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §6, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a>, and '
-               f'{arch_link("3", ctx.sections)}, {arch_link("4.8", ctx.sections)}, {arch_link("8", ctx.sections)}, {arch_link("9.4", ctx.sections)} and '
-               f'{arch_link("10", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
+               f'{cite_links("stack", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
                f'<a href="{gh("docs/design/tech-stack-observability.html")}">docs/design/tech-stack-observability.html</a>.</p>'),
         toc(),
         "<h2>🎞️ Block diagrams (animated)</h2>"
@@ -1272,7 +1293,7 @@ def render_cicd(ctx: Ctx) -> str:
                "regression pyramid (<code>scripts/regression.py</code>) across Phases 0 to 15, and the GitHub Actions versus AWS CodeBuild runner cost "
                "analysis showing how Option D stays at £0.00 a month inside both free tiers. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7 and '
-               f'{arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
+               f'{cite_links("cicd", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
                f'<a href="{gh("docs/design/cicd-security-regression.html")}">docs/design/cicd-security-regression.html</a>.</p>'),
         toc(),
         "<h2>🎞️ Block diagrams (animated)</h2>"
@@ -1311,7 +1332,7 @@ def render_maestro(ctx: Ctx) -> str:
                "household beta plan (<code>testFlightInternalTestingOnly = true</code>, least-privilege App Store Connect roles, silent overnight updates "
                "preserving Keychain and MMKV, and a day-60 keepalive rebuild). "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §8, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a> §2 and §4, and '
-               f'{arch_link("9.1", ctx.sections)}, {arch_link("9.5", ctx.sections)} and {arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
+               f'{cite_links("maestro", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
                f'the interactive explainer page is <a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">docs/design/maestro-ios-ipados-testing.html</a>.</p>'),
         toc(),
         "<h2>🎞️ Block diagrams (animated)</h2>"
@@ -1352,7 +1373,7 @@ def render_vpc(ctx: Ctx) -> str:
                "Zero-Trust VPC + CloudFront Pro bundled AWS WAF on prod (+£24.86/month = +$32.32/month, keeping total MyPaisa AWS spend at ~£28.36/month "
                "inside the £50/month AWS cap)</strong> — together with the four serverless VPC operational gotchas and the five-step zero-lockout rollout. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §9, <a href="{gh("PLAN.md")}">PLAN.md</a> Phase 0 and Phase 15, and '
-               f'{arch_link("14", ctx.sections)}, {arch_link("15", ctx.sections)}, {arch_link("18.1", ctx.sections)} and {arch_link("18.4", ctx.sections)} of '
+               f'{cite_links("vpc", ctx.sections)} of '
                f'<a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
                f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">docs/design/aws-vpc-enterprise-lockdown.html</a>.</p>'),
         toc(),
@@ -1396,7 +1417,7 @@ def render_argos(ctx: Ctx) -> str:
                "2 Nov 2026: &quot;I need this checks as QA when I ask, but on actual code implemented&quot;). This QA runs on the code, with "
                "Playwright and Argos, only when Arun asks (a manual run or a <code>qa</code> label on the PR), and follows with MA-194 and MA-165. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7.4 and §10, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a> §3 and §4, and '
-               f'{arch_link("9.4", ctx.sections)} and {arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
+               f'{cite_links("argos", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
                f'the interactive explainer page is <a href="{gh("docs/design/argos-visual-a11y.html")}">docs/design/argos-visual-a11y.html</a>.</p>'),
         toc(),
         "<h2>🎞️ Block diagrams (animated)</h2>"
@@ -1457,6 +1478,7 @@ def errors(ctx: Ctx | None = None) -> list[str]:
     cited = {r[1] for r in ctx.cites}
     for f in sorted(cited - set(ctx.file_area)):
         out.append(f"confluence: board file {f!r} is cited by a story but belongs to no screen area in scripts/confluence_docs.py AREAS")
+    out += cite_errors(ctx.sections)
     if out:
         return out
     model = pages(ctx)
