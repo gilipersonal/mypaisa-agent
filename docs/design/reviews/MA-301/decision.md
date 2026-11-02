@@ -153,3 +153,30 @@ browser 390, 1180, 1280, 1366, 1440), and read every frame; a script also measur
 ## The pick
 
 _Pending: one per item, recorded here with its date, then in `docs/trace.json` (MA-301 `design: picked`)._
+
+## The pick
+
+Arun, Mon 2 Nov 2026, from the published round (https://claude.ai/artifact/YCuDtgRHdMHtj6Xewte6g5):
+
+| Item | Pick | Recommended was |
+| --- | --- | --- |
+| a · Projection and Plans header | **1b · The title is the picker** | 1a |
+| b · Statement review | **1a · Questions first, then a short Confirm** | 1a |
+| c · Laptop widths 1133 to 1392 px | **1c · The chat beside only from 1393 px, a sheet or drawer below**, applied to **the web and the iPad both** | 1a |
+| d · Cards inside cards | **1a · Hairlines, sentence-case labels** | 1a |
+| e · /join/<token> in a browser | **1a · One page, two live buttons** | 1a |
+| f · Type and icons | **1a · Platform type, Lucide on the web** | 1a |
+| g · ⌘K on the web | **1a · One palette: go, find, or ask** | 1a |
+
+What the picks change beyond the boards (to be carried in the same change as the redrawn boards, after MA-300 merges):
+
+- **c 1c, web and iPad:** the width rule changes for every door. Lesson 23's phrase, "beside every screen from about
+  1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window", becomes "beside every screen from
+  about 1393 pt", with the sheet band widened to match, word for word in every record that states it (ARCHITECTURE,
+  PLAN, the rules, DESIGN.md, the boards' notes, the board gate's sizes, `tokens.css`'s container rules). The largest
+  iPad (13-inch, 1376 pt across) is under 1393, so on iPad the chat is always a sheet away. MA-240's iPad guards and
+  the 1133 pt measurements in `scripts/board_fit.js` move with it.
+- **b 1a:** ARCHITECTURE §4.9's "one review card" wording changes to questions first, then one Confirm.
+- **f 1a:** TECH_STACK's fonts and icons change (SF Pro, SF Pro Rounded and SF Symbols in the app; system font, then
+  self-hosted Inter and a Nunito figures subset, and Lucide on the web); the Google Fonts `@import` leaves `tokens.css`.
+- **g 1a:** iPad's ⌘K behaviour is the open question the option names; it stays as drawn until Arun says.
