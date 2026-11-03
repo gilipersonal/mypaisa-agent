@@ -66,11 +66,13 @@ scan_staged() {
 }
 
 scan_sast() {
-  step "sast: semgrep ${SEMGREP_VERSION} (python, fastapi, secrets, github-actions) over backend/, scripts/ and .github/"
+  step "sast: semgrep ${SEMGREP_VERSION} (python, fastapi, typescript, javascript, secrets, github-actions) over backend/, web/, scripts/ and .github/"
   uvx "semgrep==${SEMGREP_VERSION}" scan --metrics=off --error --quiet \
-    --config p/python --config p/fastapi --config p/secrets --config p/github-actions \
-    backend scripts .github
-  echo "semgrep: no findings"
+    --config p/python --config p/fastapi --config p/typescript --config p/javascript \
+    --config p/secrets --config p/github-actions \
+    --exclude web/node_modules --exclude web/build --exclude web/.svelte-kit \
+    backend web scripts .github
+  echo "semgrep: no findings (semgrep does not parse .svelte; eslint's no-eval rules cover those files in the web gate)"
 }
 
 scan_deps() {

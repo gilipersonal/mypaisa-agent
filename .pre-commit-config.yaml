@@ -34,6 +34,12 @@ repos:
         language: system
         pass_filenames: false
         files: ^backend/src/
+      - id: web-check
+        name: svelte-check, eslint and prettier (web)
+        entry: bash -c 'cd web && corepack pnpm@12.16.1 --silent check && corepack pnpm@12.16.1 --silent lint && corepack pnpm@12.16.1 --silent format:check'
+        language: system
+        pass_filenames: false
+        files: ^web/
       - id: uv-lock
         name: backend/uv.lock matches pyproject.toml
         entry: uv lock --directory backend --check

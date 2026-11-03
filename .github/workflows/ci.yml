@@ -13,9 +13,10 @@ name: CI
 # Nothing here checks a board's content or Prototype v5: MA-303 stopped those
 # checks (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets
 # stop that."). Playwright, axe and Argos run only when Arun asks (MA-304). The
-# Backend job runs the backend's gates in backend/ (MA-24) and the Security job
-# the repo's scans (MA-326; weekly too, security-weekly.yml); the Web and iOS jobs join when
-# their code exists (MA-194, MA-165).
+# Backend job runs the backend's gates in backend/ (MA-24), the Web job the web
+# app's (MA-194), and the Security job
+# the repo's scans (MA-326; weekly too, security-weekly.yml); the iOS job joins with
+# its code (MA-165).
 #
 # jira-key.yml stays its own workflow: it must rerun when a PR's title is
 # edited, and nothing here needs to.
@@ -57,7 +58,7 @@ jobs:
       # (GITHUB_HEAD_REF); with no key there it fails closed (CI is set), never
       # passes every file (MA-303 review, R1-a1).
       # Dependabot's PRs (by their author, not github.actor) belong to MA-326,
-      # whose trace row claims the lockfiles and manifests they update.
+      # whose trace row claims the lockfiles and manifests they update (backend/, web/).
       - name: Every code file the PR changes belongs to its story
         if: github.event_name == 'pull_request'
         env:
@@ -157,6 +158,24 @@ jobs:
       - name: Lock, lint, format, types, layers, tests and the dependency audit
         run: scripts/backend_gates.sh
 
+  web:
+    name: Web
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      # pnpm comes from corepack at the version web/package.json pins; the
+      # packages from web/pnpm-lock.yaml, so CI installs what a laptop does.
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@12.16.1 --activate
+      - name: Types, lint, format, tests, build and the dependency audit
+        run: scripts/web_gates.sh
+
   security:
     name: Security scans
     runs-on: ubuntu-latest
@@ -172,8 +191,8 @@ jobs:
           python-version: "3.14"
       - name: Install uv
         run: python3 -m pip install --disable-pip-version-check "uv==0.12.9"
-      # Secrets in the whole history (gitleaks), SAST over backend/, scripts/ and
-      # the workflows (semgrep), every lockfile (osv-scanner) and the workflows
+      # Secrets in the whole history (gitleaks), SAST over backend/, web/, scripts/
+      # and the workflows (semgrep; .svelte files are eslint's), every lockfile (osv-scanner) and the workflows
       # themselves (zizmor); each tool pinned and checksum-checked (MA-326).
       - name: Secrets, SAST, dependencies and workflows
         run: scripts/security_scan.sh

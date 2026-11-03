@@ -297,6 +297,17 @@ number, so a reference to it holds wherever it now sits.
     runs or promises it, Jira descriptions and trace notes included, in the
     same change** (MA-303 round 1).
 
+47. **A promise about behaviour is checked by doing it:** "works offline" is
+    checked with the network off, "caches the shell" by listing the cache, and
+    a gate's "carries the hashes" by building a copy without them (MA-194
+    round 1: the service worker never stored index.html; the web gate passed
+    a CSP with no hash and a build with no manifest).
+
+48. **"Shared with the other door" is checked against what the file
+    imports:** a module that pulls in one door's framework is that door's
+    alone, and the record names which folders really are shared (MA-194
+    round 1: the query definitions imported @tanstack/svelte-query).
+
 ## The lessons from the design-board era
 
 Lessons 1 (its board half), 9 to 11, 13, 19, 21 (its board half), 24 to 31

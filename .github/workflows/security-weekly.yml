@@ -1,8 +1,9 @@
 name: Security sweep
 
 # Every Monday at 04:00 UTC on main (MA-326): a CVE published with no new commit
-# is caught within a week. The same scans as CI's Security job, plus the
-# backend's pip-audit --strict. A failure fails the run and GitHub emails it.
+# is caught within a week. The same scans as CI's Security job (osv-scanner
+# reads web/pnpm-lock.yaml too), plus the backend's gates (pip-audit --strict)
+# and web's pnpm audit. A failure fails the run and GitHub emails it.
 
 on:
   schedule:
@@ -37,3 +38,11 @@ jobs:
         run: |
           (cd backend && uv sync --locked)
           scripts/backend_gates.sh
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      - name: The web app's dependencies (pnpm audit)
+        run: |
+          corepack enable
+          corepack pnpm@12.16.1 --dir web install --frozen-lockfile --silent
+          corepack pnpm@12.16.1 --dir web audit --audit-level high

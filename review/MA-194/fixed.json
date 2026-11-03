@@ -1,0 +1,189 @@
+[
+ {
+  "id": "r1-a1",
+  "round": 1,
+  "lanes": [
+   "a"
+  ],
+  "finding": "The web gate passed with a CSP whose script-src carried no SvelteKit hash or allowed unsafe-inline, and with no manifest",
+  "check": {
+   "type": "cmd",
+   "run": "bash review/MA-194/check.sh clean-copy && bash review/MA-194/check.sh csp-unsafe-inline && bash review/MA-194/check.sh csp-no-manifest"
+  }
+ },
+ {
+  "id": "r1-a2",
+  "round": 1,
+  "lanes": [
+   "a",
+   "b"
+  ],
+  "finding": "Every Dependabot PR for web/ would fail pr-files: MA-326 claimed only the backend's lockfile and manifest (R1-b1 is the same finding)",
+  "check": {
+   "type": "cmd",
+   "run": "bash review/MA-194/check.sh dependabot-web"
+  }
+ },
+ {
+  "id": "r1-b2",
+  "round": 1,
+  "lanes": [
+   "b"
+  ],
+  "finding": "MA-194's trace notes opened with the 30 Oct plan of Playwright and Argos in its CI, against MA-303's move to MA-304",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json;t={i['key']:i for i in json.load(open('docs/trace.json'))['items']};n=t['MA-194']['notes'];assert n.startswith('Moved to MA-304 by MA-303'),n[:80]\""
+  }
+ },
+ {
+  "id": "r1-b3",
+  "round": 1,
+  "lanes": [
+   "b"
+  ],
+  "finding": "MA-267 and MA-326 still said MA-267 keeps all web SAST and SCA, though MA-194 brought web semgrep, pnpm audit, osv-scanner and Dependabot",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json;t={i['key']:i for i in json.load(open('docs/trace.json'))['items']};assert 'eslint-plugin-security for web/' in t['MA-267']['notes'];assert 'eslint-plugin-security for web' in t['MA-326']['notes']\""
+  }
+ },
+ {
+  "id": "r1-c1",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "The records said svelte-check, eslint and vitest run on every PR touching web/, while CI's Web job runs scripts/web_gates.sh on every PR; §17.4's web row named a path filter, an arm runner and eslint-plugin-security that do not exist",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "TECH_STACK.md",
+    "README.md",
+    "docs/design/README.md"
+   ],
+   "pattern": "svelte-check,\\s+eslint\\s+and\\s+vitest\\s+run\\s+on\\s+every\\s+PR\\s+touching",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c2",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "PLAN put web visual and a11y gates on PRs touching web/, cards/ or docs/design/, and the stack explainer listed Playwright, axe and Argos as CI gates with vitest 4",
+  "check": {
+   "type": "grep",
+   "files": [
+    "PLAN.md",
+    "docs/design/tech-stack-observability.html"
+   ],
+   "pattern": "visual/a11y gates\\s+join on PRs|vitest 4<|Playwright \\+ axe-core \\+ Argos CI",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c3",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "README and PLAN set up and checked the web app with npm, which refuses web/'s pnpm lockfile, and ran it against api-dev though Vite proxies /v1 to the local backend",
+  "check": {
+   "type": "grep",
+   "files": [
+    "README.md",
+    "PLAN.md"
+   ],
+   "pattern": "cd web && npm (ci|run)|against api-dev",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c4",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "ARCHITECTURE, TECH_STACK and PLAN described the security scans without web/: no TypeScript rules and no web lockfile",
+  "check": {
+   "type": "grep",
+   "files": [
+    "ARCHITECTURE.md",
+    "TECH_STACK.md"
+   ],
+   "pattern": "p/typescript`, `p/javascript`",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c5",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "The api client's comments said the dashboard's CloudFront routes /v1 to the api, against ARCHITECTURE §17.2 (both doors call api(-dev).mypaisapp.com)",
+  "check": {
+   "type": "grep",
+   "files": [
+    "web/src/lib/api/client.ts",
+    "web/vite.config.ts"
+   ],
+   "pattern": "CloudFront routes|as it does behind CloudFront",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-f1",
+  "round": 1,
+  "lanes": [
+   "f"
+  ],
+  "finding": "The service worker never stored index.html, so the app did not open offline; its fallback also answered requests that were not navigations, and it stored the association file (R1-f2, R1-f3)",
+  "check": {
+   "type": "cmd",
+   "run": "bash review/MA-194/check.sh service-worker"
+  }
+ },
+ {
+  "id": "r1-f4",
+  "round": 1,
+  "lanes": [
+   "f",
+   "d"
+  ],
+  "finding": "Tailwind's dark: variant matched only .t-dark, so shadcn's dark: utilities never applied in the system's dark mode (R1-d8 is the same finding)",
+  "check": {
+   "type": "cmd",
+   "run": "bash review/MA-194/check.sh dark-variant"
+  }
+ },
+ {
+  "id": "r1-f5",
+  "round": 1,
+  "lanes": [
+   "f",
+   "d"
+  ],
+  "finding": "The skip link lost its padding on focus and the shell's button was 36 px, under the 44 px targets (R1-f6, R1-d4)",
+  "check": {
+   "type": "cmd",
+   "run": "bash review/MA-194/check.sh targets"
+  }
+ },
+ {
+  "id": "r1-f7",
+  "round": 1,
+  "lanes": [
+   "f"
+  ],
+  "finding": "Compact money chose its unit before rounding: 999,999 read £1,000k and 9,999,999 rupees ₹100 L",
+  "check": {
+   "type": "cmd",
+   "run": "bash review/MA-194/check.sh money-compact"
+  }
+ }
+]

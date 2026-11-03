@@ -186,8 +186,8 @@ Claude's:
   `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`,
   `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`,
   `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
-  both environments on every PR touching `infra/`. The web visual/a11y gates
-  join on PRs touching `web/`, `cards/` or `docs/design/` (MA-194), and the
+  both environments on every PR touching `infra/`. The web gates (`scripts/web_gates.sh`) run on
+  every PR (MA-194), Playwright, axe and Argos run only when Arun asks (MA-304), and the
   native SwiftUI Xcode Simulator gates (`macos-15` or a self-hosted Mac runner,
   paired locally on Apple Silicon with `scripts/maestro_local.py`, MA-273)
   join on PRs touching `ios/` or `cards/` (MA-166), keeping monthly CI inside
@@ -199,11 +199,13 @@ Claude's:
   per best practices". `scripts/security_scan.sh`, run by CI's Security job on
   every PR and push to `main` and by a sweep every Monday at 04:00 UTC:
   gitleaks over the whole history (and staged changes in pre-commit), semgrep
-  over `backend/`, `scripts/` and the workflows, osv-scanner over every
+  over `backend/`, `web/`, `scripts/` and the workflows, osv-scanner over every
   lockfile, zizmor over the workflows, each tool pinned and checksum-checked;
   `pip-audit --strict` in the backend's gates; grouped weekly Dependabot
   updates. The repo is private, so GitHub's paid Advanced Security scanners
-  are not used. MA-267 keeps the gates for web, iOS, Terraform and the images.
+  are not used. MA-194 added web's TypeScript
+  rules, its lockfile and pnpm audit; MA-267 keeps eslint-plugin-security for
+  web, iOS, Terraform and the images.
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
   `infra/dev` and `infra/prod`, each with its own state key in the existing
   state bucket; `infra/bootstrap`, applied once from the laptop, with the
@@ -259,9 +261,13 @@ Claude's:
   formatting in GBP, INR, USD and EUR (rupees in lakh and crore), privacy masking and the view
   models, and the api client with its TanStack Query definitions and
   `api-types.d.ts` generated from FastAPI's `app.openapi()` by
-  `openapi-typescript` (MA-265, MA-266). Its gates:
-  svelte-check, eslint, vitest and pnpm audit; svelte-check, eslint and
-  vitest run on every PR touching `web/`; Playwright, axe and Argos run only
+  `openapi-typescript` (MA-265, MA-266). Built on 3 Nov 2026 as you asked
+  ("best practices ... proper structured SvelteKit project, Tailwind,
+  ShadeCDN and TanStack"): `scripts/web_gates.sh` runs every gate below, plus
+  prettier, the build with its CSP and service worker, and the api types
+  checked against `backend/openapi.json`, which a backend test holds equal to
+  the app. Its gates:
+  svelte-check, eslint, vitest and pnpm audit; `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only
   when Arun asks (a manual run or a `qa` label; MA-303, MA-304). That QA is
   MA-304's: Playwright 1.64 at `390x844` and `1440x900` in both themes
   through one `auditAndCapture()` fixture (`@axe-core/playwright` WCAG 2.2 AA
@@ -657,7 +663,7 @@ Claude's:
   MA-304; MA-302 is closed (Prototype v4 superseded).
 - **QA on request for the web app (MA-304):** Playwright, axe and Argos on
   the built web app, with the 25% contrast floors and the 320 to 1920 width
-  sweep; svelte-check, eslint and vitest run on every PR touching `web/`;
+  sweep; `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR;
   Playwright, axe and Argos run only when Arun asks (a manual run or a `qa`
   label; MA-303, MA-304). Depends on MA-194.
 - **One CI workflow, its jobs in parallel (MA-305):** CI runs Plan sync,
@@ -786,7 +792,7 @@ arrives from phase 2.
   active OpenTelemetry span and echoing `x-mypaisa-trace-id` and
   `x-request-id` on every response and stream handshake;
   `opentelemetry-instrumentation-fastapi` setting `http.route` on every span
-  for CloudWatch Application Signals; and `pnpm generate:api` generating
+  for CloudWatch Application Signals; and `pnpm --dir web api:types` generating
   `web/src/lib/api-types.d.ts` from `app.openapi()` for both doors.
 - **Identity on AWS from day one (MA-109, MA-32, MA-168, `ARCHITECTURE.md`
   §4.5):** a Cognito user pool per environment (Essentials); Sign in with
@@ -2171,10 +2177,10 @@ uv run pytest --cov --cov-fail-under=90
 terraform fmt -check -recursive infra
 for env in dev prod; do terraform -chdir=infra/$env validate; done
 tflint --recursive
-# when web/ changed (MA-194): svelte-check, eslint and vitest run on every PR touching `web/`; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304)
-(cd web && npm run check && npm run lint && npm test && npm audit)
+# when web/ changed (MA-194): `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304)
+scripts/web_gates.sh
 # QA on request (MA-304): Playwright 1.64 + @axe-core/playwright WCAG 2.2 AA + Argos CI visual & ARIA snapshots at 390 and 1440 in both themes
-(cd web && npm run test:e2e)
+corepack pnpm@12.16.1 --dir web test:e2e
 # when ios/ changed (MA-165, MA-166, MA-273): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks; Maestro syntax + local 5-simulator matrix
 python3 scripts/maestro_local.py check-syntax
 npm run lint --prefix ios && npm test --prefix ios

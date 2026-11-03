@@ -1,0 +1,112 @@
+/* MyPaisa DS v1 · Motion (MA-182). The boards' drawing of the app's motion system.
+   The app ships it in SwiftUI (springs, glass morphing, numericText, chart draw-in and scrubbing, haptics);
+   these keyframes show the same choreography on the canvas. Link after tokens.css and ios.css, and load motion.js.
+   Rules: transform and opacity only; content moves, the glass bars stay put; nothing loops forever (a typing mark or
+   a skeleton stops on its own); under Reduce Motion everything lands at once. motion.js hides a frame's content until
+   the frame scrolls into view, then plays it; add ?static=1 to the page URL for still captures. */
+
+.mp, :root {
+  --mo-smooth: cubic-bezier(0.22, 1, 0.36, 1);     /* SwiftUI .smooth: content arriving */
+  --mo-snappy: cubic-bezier(0.3, 1.25, 0.5, 1);     /* .snappy(extraBounce: 0.08): controls answering a touch */
+  --mo-bouncy: cubic-bezier(0.3, 1.18, 0.5, 1);    /* .bouncy, kept calm: success moments only (Saved, Face ID passed); a few per cent past, then home in the same time (MA-300) */
+  --mo-sheet: cubic-bezier(0.32, 0.72, 0, 1);       /* the system sheet */
+  --mo-fast: 180ms; --mo-base: 340ms; --mo-slow: 520ms; --mo-draw: 950ms; --mo-count: 750ms;
+  --mo-step: 45ms;                                   /* the stagger between siblings, capped at eight */
+}
+
+/* ---------- touch: every control answers the finger ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .cbtn, .gchip, .tab, .gbtn, .gtext, .cplus, .csend, .side-i, .mp-btn, .mp-seg-i, .menu-i, .tabsearch, .mp-row, .pin, .notif {
+    transition: transform var(--mo-fast) var(--mo-snappy), background-color var(--mo-fast) linear, box-shadow var(--mo-fast) linear;
+  }
+  .cbtn:active, .gchip:active, .tab:active, .gbtn:active, .gtext:active, .cplus:active, .csend:active,
+  .mp-btn:active, .mp-seg-i:active, .tabsearch:active, .pin:active { transform: scale(0.95); }
+  .mp-row:active, .side-i:active, .menu-i:active, .notif:active { transform: scale(0.985); }
+  /* the iPad pointer: a lift you can feel */
+  .side-i:hover, .menu-i:hover { background-color: var(--lg-lens); }
+  .cbtn:hover, .gchip:hover, .gbtn:hover { transform: translateY(-1px); }
+  .mp-switch-k { transition: transform var(--mo-base) var(--mo-snappy); }
+}
+
+/* ---------- arrivals ----------
+   motion.js marks each device frame data-mo-frame="wait", then "go" when it scrolls into view, and gives each element
+   inside it a data-mo role (rise, card, me, ai, chip, pop, fade, sheet, dim, menu, alert, draw, dot, label, barx,
+   bary, typing, caret, skel, attn, saved, mark, face, mask) with --i, its place among its siblings. A board may set
+   data-mo itself on any element to choose its role. */
+@media (prefers-reduced-motion: no-preference) {
+  html.mo-ready [data-mo-frame="wait"] [data-mo]:not([data-mo="typing"]):not([data-mo="caret"]):not([data-mo="skel"]):not([data-mo="attn"]) { opacity: 0; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="rise"]   { animation: mo-rise var(--mo-base) var(--mo-smooth) both; animation-delay: calc(var(--i, 0) * var(--mo-step) + var(--mo-d, 0ms)); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="card"]   { animation: mo-card var(--mo-slow) var(--mo-smooth) both; animation-delay: calc(var(--i, 0) * var(--mo-step) + var(--mo-d, 0ms)); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="me"]     { animation: mo-me var(--mo-base) var(--mo-snappy) both; transform-origin: 100% 100%; animation-delay: calc(var(--i, 0) * 90ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="ai"]     { animation: mo-rise var(--mo-slow) var(--mo-smooth) both; animation-delay: calc(var(--i, 0) * 90ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="chip"]   { animation: mo-chip var(--mo-base) var(--mo-snappy) both; animation-delay: calc(240ms + var(--i, 0) * 55ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="pop"]    { animation: mo-pop var(--mo-base) var(--mo-bouncy) both; animation-delay: calc(var(--mo-d, 280ms) + var(--i, 0) * 40ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="fade"]   { animation: mo-fade var(--mo-base) linear both; animation-delay: var(--mo-d, 0ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="sheet"]  { animation: mo-sheet var(--mo-slow) var(--mo-sheet) both; animation-delay: 160ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="dim"]    { animation: mo-fade var(--mo-base) linear both; animation-delay: 120ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="menu"]   { animation: mo-menu var(--mo-base) var(--mo-snappy) both; transform-origin: var(--mo-origin, 0 100%); animation-delay: 140ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="alert"]  { animation: mo-alert var(--mo-base) var(--mo-snappy) both; animation-delay: 140ms; }
+  /* charts: the line and its area wipe in left to right (a clip, so non-scaling strokes stay crisp); dots and labels land after */
+  html.mo-ready [data-mo-frame="go"] [data-mo="draw"]   { animation: mo-wipe var(--mo-draw) var(--mo-smooth) both; animation-delay: var(--mo-d, 180ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="dot"]    { animation: mo-dotpop var(--mo-base) var(--mo-bouncy) both; animation-delay: calc(var(--mo-draw) + 120ms + var(--i, 0) * 60ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="label"]  { animation: mo-lblrise var(--mo-base) var(--mo-smooth) both; animation-delay: calc(var(--mo-draw) + 60ms + var(--i, 0) * 40ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="barx"]   { animation: mo-barx var(--mo-slow) var(--mo-smooth) both; transform-origin: 0 50%; animation-delay: calc(220ms + var(--i, 0) * 70ms); }
+  html.mo-ready [data-mo-frame="go"] [data-mo="bary"]   { animation: mo-bary var(--mo-slow) var(--mo-smooth) both; transform-origin: 50% 100%; animation-delay: calc(220ms + var(--i, 0) * 50ms); }
+  /* states that move on their own, and stop on their own */
+  html.mo-ready [data-mo-frame="go"] [data-mo="typing"] i { animation: mo-dot 1.1s ease-in-out 5 both; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="typing"] i:nth-child(2) { animation-delay: 140ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="typing"] i:nth-child(3) { animation-delay: 280ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="caret"]  { animation: mo-caret 1s steps(1) 6; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="skel"]   { animation: mo-shimmer 1.3s ease-in-out 3 both; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="attn"]   { animation: mo-attn 900ms var(--mo-snappy) 1 both; animation-delay: 700ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="saved"]  { animation: mo-saved var(--mo-slow) var(--mo-bouncy) both; animation-delay: 520ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="mark"] i { animation: mo-mark 900ms var(--mo-bouncy) both; animation-delay: 80ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="face"]   { animation: mo-face 1.2s var(--mo-smooth) both; animation-delay: 300ms; }
+  html.mo-ready [data-mo-frame="go"] [data-mo="mask"]   { animation: mo-fade 260ms linear both; animation-delay: var(--mo-d, 300ms); }
+}
+@keyframes mo-rise   { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes mo-card   { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes mo-me     { from { opacity: 0; transform: translateY(10px) scale(0.92); } to { opacity: 1; transform: none; } }
+@keyframes mo-chip   { from { opacity: 0; transform: translateY(8px) scale(0.9); } to { opacity: 1; transform: none; } }
+@keyframes mo-pop    { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+/* chart dots and labels are centred by a transform of their own; their arrivals keep it */
+@keyframes mo-dotpop { from { opacity: 0; transform: translate(-50%, -50%) scale(0.4); } to { opacity: 1; transform: translate(-50%, -50%); } }
+@keyframes mo-lblrise { from { opacity: 0; transform: translate(-50%, -100%) translateY(8px); } to { opacity: 1; transform: translate(-50%, -100%); } }
+@keyframes mo-fade   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mo-sheet  { from { transform: translateY(105%); } to { transform: none; } }
+@keyframes mo-menu   { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
+@keyframes mo-alert  { from { opacity: 0; transform: translateY(-50%) scale(1.12); } to { opacity: 1; transform: translateY(-50%); } }
+@keyframes mo-wipe   { from { clip-path: inset(-20% 100% -20% 0); } to { clip-path: inset(-20% -2% -20% 0); } }
+@keyframes mo-barx   { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes mo-bary   { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes mo-dot    { 0%, 60%, 100% { transform: none; opacity: 0.5; } 30% { transform: translateY(-5px); opacity: 1; } }
+@keyframes mo-caret  { 0% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes mo-shimmer { 0% { opacity: 1; } 50% { opacity: 0.45; } 100% { opacity: 1; } }
+@keyframes mo-attn   { 0%, 100% { transform: none; } 40% { transform: scale(1.035); } }
+@keyframes mo-saved  { 0% { opacity: 0; transform: scale(0.3) rotate(-30deg); } 100% { opacity: 1; transform: none; } }
+@keyframes mo-mark   { 0% { transform: scale(0); } 70% { transform: scale(1.15); } 100% { transform: none; } }
+@keyframes mo-face   { 0% { opacity: 0; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } 70% { transform: scale(0.94); } 100% { transform: none; } }
+
+/* the sliding lens motion.js adds to a segmented control or a tab bar (the glass morph, drawn) */
+.mo-lens { position: absolute; z-index: 0; border-radius: inherit; pointer-events: none; }
+.mp-seg .mo-lens { background: var(--mp-seg-on); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); border-radius: 8px; }
+.mp-hero .mp-seg .mo-lens { background: var(--mp-hero-ink); }
+.tabs .mo-lens { background: var(--lg-lens); border-radius: 999px; }
+.mo-lensed > .on { background: transparent !important; box-shadow: none !important; }
+.mo-lensed { position: relative; }
+.mo-lensed > * { position: relative; z-index: 1; }
+
+/* the replay chip motion.js puts beside each frame's label */
+.mo-replay { font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; background: rgba(0, 0, 0, 0.06); border: 0; border-radius: 5px;
+  padding: 3px 8px; margin-left: 8px; cursor: pointer; }
+.mo-replay:hover { background: rgba(0, 0, 0, 0.12); color: #14171F; }
+
+/* Reduce Motion (iOS kit, 12 · Motion: "a 150 ms cross-fade, or it lands at once"): nothing moves and nothing loops; an
+   arrival lands at once, at its end state, so nothing is left hidden; a change of state (a colour, a fill, a fade) is a 150 ms
+   cross-fade, and a change of place or size jumps (MA-300) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; animation-delay: 0ms !important;
+    transition-property: opacity, color, background-color, border-color, outline-color, fill, stroke, box-shadow !important;
+    transition-duration: 150ms !important; transition-timing-function: linear !important; transition-delay: 0ms !important; scroll-behavior: auto !important; }
+}
+@media print { html.mo-ready * { animation: none !important; opacity: 1 !important; } }
