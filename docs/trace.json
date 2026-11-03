@@ -1214,7 +1214,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Moved to phase 1 by MA-161: the chat needs it from the start. It hosts pages others draw: the invite page on a device without the app is listed undrawn on MA-32, and the web app's pages are MA-183 to MA-185's."
+      "notes": "Moved to phase 1 by MA-161: the chat needs it from the start. It hosts pages others draw: the invite page on a device without the app is listed undrawn on MA-32, and the web app's pages are MA-183 to MA-185's. MA-194 created web/static/.well-known/apple-app-site-association as an empty placeholder; MA-73 fills applinks and webcredentials, and its CloudFront response headers send frame-ancestors, HSTS and the CSP a meta tag cannot carry."
     },
     {
       "key": "MA-74",
@@ -3710,7 +3710,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Updated 30 Oct 2026: Playwright 1.64 E2E on web/ runs one shared auditAndCapture() fixture at 390x844 and 1440x900 in .t-light and .t-dark (plus privacy mode on wealth/home screens): deterministic motion/font stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 Level A & AA before capture, keyboard focus/landmark assertions (MA-181), and Argos CI (@argos-ci/playwright, Tokenless GitHub App OIDC, uploadToArgos: !!process.env.CI) capturing cloud visual PNG diffs in both themes (threshold: 0.2) and a light-theme-deduplicated YAML ariaSnapshot accessibility tree (~3,600 snapshots/month inside the 5,000/month £0 Free Hobby tier, docs/RESEARCH.md 10, docs/design/argos-visual-a11y.html). Built 3 Nov 2026 (Arun: \"best practices ... proper structured SvelteKit project, Tailwind, ShadeCDN and TanStack\"): SvelteKit 3.1 configured in vite.config.ts, #lib subpath imports, Tailwind 4 and shadcn-svelte on the Warm ledger tokens, TanStack Query over openapi-fetch typed from backend/openapi.json, the shell-only service worker and the CSP; scripts/web_gates.sh in CI's Web job. Playwright, axe and Argos stay with MA-304, on request (MA-303).",
+      "notes": "Moved to MA-304 by MA-303 (2 Nov 2026), on request only, never a PR gate: as planned on 30 Oct 2026, Playwright 1.64 E2E on web/ runs one shared auditAndCapture() fixture at 390x844 and 1440x900 in .t-light and .t-dark (plus privacy mode on wealth/home screens): deterministic motion/font stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 Level A & AA before capture, keyboard focus/landmark assertions (MA-181), and Argos CI (@argos-ci/playwright, Tokenless GitHub App OIDC, uploadToArgos: !!process.env.CI) capturing cloud visual PNG diffs in both themes (threshold: 0.2) and a light-theme-deduplicated YAML ariaSnapshot accessibility tree (~3,600 snapshots/month inside the 5,000/month £0 Free Hobby tier, docs/RESEARCH.md 10, docs/design/argos-visual-a11y.html). Built 3 Nov 2026 (Arun: \"best practices ... proper structured SvelteKit project, Tailwind, ShadeCDN and TanStack\"): SvelteKit 3.1 configured in vite.config.ts, #lib subpath imports, Tailwind 4 and shadcn-svelte on the Warm ledger tokens, TanStack Query over openapi-fetch typed from backend/openapi.json, the shell-only service worker and the CSP; scripts/web_gates.sh in CI's Web job. Playwright, axe and Argos stay with MA-304, on request (MA-303).",
       "code": [
         "web",
         "backend/openapi.json",
@@ -6824,7 +6824,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-272 (28 Oct 2026): unifies gitleaks, ruff Bandit S rules, semgrep across Python/TypeScript/Swift, pip-audit, pnpm audit, trivy fs on ios/Package.resolved, trivy config on infra/, trivy image + ECR Basic Scan on push inside AWS CodeBuild arm1.small for both lambda and stream targets, and a weekly Monday 04:00 UTC CVE sweep with grouped Dependabot updates. Build time is covered by MA-25, MA-166, MA-194 and MA-237. Narrowed 3 Nov 2026: MA-326 brings the scans for what exists now (gitleaks, semgrep on Python and the workflows, osv-scanner, zizmor, pip-audit --strict, the weekly sweep, Dependabot); MA-267 keeps the web and iOS SAST and SCA, Terraform (tflint, trivy config) and the image gate (trivy image, ECR scan on push), added as their code arrives."
+      "notes": "Filed from MA-272 (28 Oct 2026): unifies gitleaks, ruff Bandit S rules, semgrep across Python/TypeScript/Swift, pip-audit, pnpm audit, trivy fs on ios/Package.resolved, trivy config on infra/, trivy image + ECR Basic Scan on push inside AWS CodeBuild arm1.small for both lambda and stream targets, and a weekly Monday 04:00 UTC CVE sweep with grouped Dependabot updates. Build time is covered by MA-25, MA-166, MA-194 and MA-237. Narrowed 3 Nov 2026: MA-326 brings the scans for what exists now (gitleaks, semgrep on Python and the workflows, osv-scanner, zizmor, pip-audit --strict, the weekly sweep, Dependabot); MA-267 keeps the web and iOS SAST and SCA, Terraform (tflint, trivy config) and the image gate (trivy image, ECR scan on push), added as their code arrives. Narrowed again 3 Nov 2026 (MA-194): web/ already has semgrep p/typescript and p/javascript, pnpm audit, osv-scanner on web/pnpm-lock.yaml and Dependabot; MA-267 keeps eslint-plugin-security for web/, iOS, Terraform and the images."
     },
     {
       "key": "MA-268",
@@ -7861,9 +7861,12 @@
       "boards": [],
       "code": [
         "backend/uv.lock",
-        "backend/pyproject.toml"
+        "backend/pyproject.toml",
+        "web/package.json",
+        "web/pnpm-lock.yaml",
+        "web/pnpm-workspace.yaml"
       ],
-      "notes": "Arun, 3 Nov 2026: \"make sure the CI is perfect...running all the scans as per best practices.\" scripts/security_scan.sh (gitleaks, semgrep, osv-scanner, zizmor), CI's Security job, security-weekly.yml, dependabot.yml, gitleaks in pre-commit, pip-audit --strict. Claims the lockfile and manifest Dependabot updates, so its PRs pass pr-files as MA-326's. MA-267 keeps web, iOS, Terraform and image scanning."
+      "notes": "Arun, 3 Nov 2026: \"make sure the CI is perfect...running all the scans as per best practices.\" scripts/security_scan.sh (gitleaks, semgrep, osv-scanner, zizmor), CI's Security job, security-weekly.yml, dependabot.yml, gitleaks in pre-commit, pip-audit --strict. Claims the lockfiles and manifests Dependabot updates (backend/ and, since MA-194, web/), so its PRs pass pr-files as MA-326's. MA-194 added web's semgrep TypeScript and JavaScript rules, its lockfile and pnpm audit; MA-267 keeps eslint-plugin-security for web, iOS, Terraform and image scanning."
     }
   ],
   "others": [

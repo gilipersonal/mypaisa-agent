@@ -26,6 +26,7 @@
 		{/if}
 	</Card.Content>
 	<Card.Footer>
-		<Button variant="outline" onclick={() => health.refetch()} disabled={health.isFetching}>Check again</Button>
+		<!-- A 44 px target at the call site (ui/ stays as the registry writes it); never disabled, so focus stays put. -->
+		<Button variant="outline" class="min-h-11" onclick={() => health.refetch()}>Check again</Button>
 	</Card.Footer>
 </Card.Root>

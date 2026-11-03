@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatMoney, isDecimal } from './money';
+import { formatMoney, isDecimal } from './money.ts';
 
 describe('formatMoney', () => {
 	it('formats each currency in its own locale, to the penny', () => {
@@ -32,9 +32,22 @@ describe('formatMoney', () => {
 		expect(formatMoney('2500000000', 'USD', { compact: true, signed: true })).toBe('+$2.5bn');
 	});
 
+	it('moves up a unit when rounding reaches it, never showing 1,000k or 100 L', () => {
+		expect(formatMoney('999999', 'GBP', { compact: true })).toBe('£1m');
+		expect(formatMoney('999950', 'GBP', { compact: true })).toBe('£1m');
+		expect(formatMoney('999.6', 'GBP', { compact: true })).toBe('£1k');
+		expect(formatMoney('9999999', 'INR', { compact: true })).toBe('₹1 Cr');
+		expect(formatMoney('99950', 'INR', { compact: true })).toBe('₹1 L');
+	});
+
+	it('never shows a minus on zero', () => {
+		expect(formatMoney('-0', 'GBP')).toBe('£0.00');
+		expect(formatMoney('-0.001', 'GBP')).toBe('£0.00');
+	});
+
 	it('shows small amounts whole when compact', () => {
 		expect(formatMoney('850.40', 'GBP', { compact: true })).toBe('£850');
-		expect(formatMoney('99999', 'INR', { compact: true })).toBe('₹99,999');
+		expect(formatMoney('94999', 'INR', { compact: true })).toBe('₹94,999');
 	});
 
 	it('refuses anything that is not a decimal amount', () => {

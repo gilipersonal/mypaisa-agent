@@ -60,7 +60,7 @@ with one obvious fix. When unsure whether something is a design change, treat it
     `xcrun simctl io booted screenshot <file>.png`: iPhone 17 Pro and iPad Air 11", in light and dark
     (`xcrun simctl ui booted appearance light`, then `dark`), at the Large text size and at AX5
     (`xcrun simctl ui booted content_size large`, then `accessibility-extra-extra-extra-large`);
-  - once `web/` exists, serve it with the SvelteKit dev server (`npm run dev` in `web/`, on `localhost:5173`, the origin
+  - once `web/` exists, serve it with the SvelteKit dev server (`corepack pnpm@12.16.1 --dir web dev`, on `localhost:5173`, the origin
     dev's api and Google web client allow) or `vite preview` for the built app, and screenshot it with Playwright at
     390 and 1440 wide, in dark and light;
   - for a card, the same: its board, or the card as the app draws it.
@@ -227,7 +227,9 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   A file removed on purpose takes every trace row that names its boards with it, in the same change
   (`python3 scripts/plan_sync.py check` refuses a cited board that is gone).
 - **`tokens.css` and the motion files are copied** from `ds-v1/` into `ios-v1/` and `app-v1/`, with `ios.css`, byte
-  for byte, after every change: each board loads the copy beside it. A snapshot of
+  for byte, after every change: each board loads the copy beside it. The web app holds its own copy in
+  `web/src/lib/styles/` (`tokens.css` without its Google Fonts `@import`, which `web/src/app.html` makes, and
+  `motion.css`), equal by `tokens.test.ts` in the web gate: copy it there too (MA-194). A snapshot of
   `tokens.css` goes into `docs/design/reviews/MA-<n>/` at the end of the round, as its record. `docs/design/ds-v1/`
   is the source; once `ios/` exists, its colour assets are generated from it (MA-165).
 - **Where Arun looks: a private Claude Artifact per round** in Claude Code, **a local page** in Antigravity. Each round

@@ -38,11 +38,15 @@ catalog:
 minimumReleaseAge: 1440
 onlyBuiltDependencies:
   - esbuild
-# Security overrides: a patched version forced where a tool still pins a vulnerable one (pnpm audit, MA-194).
-overrides:
-  minimatch: '>=11.0.1'
 # Peer ranges that lag SvelteKit 3 and TypeScript 6 upstream; each works (svelte-check, vitest and the build pass).
 peerDependencyRules:
   allowedVersions:
     runed>@sveltejs/kit: '3'
     openapi-typescript>typescript: '6'
+# Security overrides (MA-194): the patched minimatch, only for the tools that work with it (eslint and
+# typescript-eslint). openapi-typescript's @redocly/openapi-core calls minimatch 5's API, so it keeps 5.x, with a dated
+# exception in osv-scanner.toml.
+overrides:
+  '@eslint/config-array>minimatch': '>=11.0.1'
+  '@typescript-eslint/typescript-estree>minimatch': '>=11.0.1'
+  'eslint>minimatch': '>=11.0.1'

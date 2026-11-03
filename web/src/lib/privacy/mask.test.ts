@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MASK, maskedMoney } from './mask';
+import { MASK, maskedMoney } from './mask.ts';
 
 describe('maskedMoney', () => {
 	it('shows the figure when privacy is off', () => {

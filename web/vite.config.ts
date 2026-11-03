@@ -31,9 +31,11 @@ export default defineConfig({
 		})
 	],
 	server: {
-		// The backend in development (`uv run --directory backend uvicorn ... --port 8000`), so the app calls /v1 on
-		// its own origin, as it does behind CloudFront.
-		proxy: { '/v1': 'http://127.0.0.1:8000' }
+		// Development only: /v1 goes to the local backend (`uv run --directory backend uvicorn ... --port 8000`). In dev
+		// and prod the app calls the environment's api host, set with MA-266 (ARCHITECTURE §17.2).
+		proxy: { '/v1': 'http://127.0.0.1:8000' },
+		// Test and build output never reloads the page.
+		watch: { ignored: ['**/coverage/**', '**/build/**'] }
 	},
 	test: {
 		include: ['src/**/*.test.ts'],

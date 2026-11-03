@@ -58,7 +58,7 @@ jobs:
       # (GITHUB_HEAD_REF); with no key there it fails closed (CI is set), never
       # passes every file (MA-303 review, R1-a1).
       # Dependabot's PRs (by their author, not github.actor) belong to MA-326,
-      # whose trace row claims the lockfiles and manifests they update.
+      # whose trace row claims the lockfiles and manifests they update (backend/, web/).
       - name: Every code file the PR changes belongs to its story
         if: github.event_name == 'pull_request'
         env:
@@ -191,8 +191,8 @@ jobs:
           python-version: "3.14"
       - name: Install uv
         run: python3 -m pip install --disable-pip-version-check "uv==0.12.9"
-      # Secrets in the whole history (gitleaks), SAST over backend/, scripts/ and
-      # the workflows (semgrep), every lockfile (osv-scanner) and the workflows
+      # Secrets in the whole history (gitleaks), SAST over backend/, web/, scripts/
+      # and the workflows (semgrep; .svelte files are eslint's), every lockfile (osv-scanner) and the workflows
       # themselves (zizmor); each tool pinned and checksum-checked (MA-326).
       - name: Secrets, SAST, dependencies and workflows
         run: scripts/security_scan.sh

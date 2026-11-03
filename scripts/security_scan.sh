@@ -72,7 +72,7 @@ scan_sast() {
     --config p/secrets --config p/github-actions \
     --exclude web/node_modules --exclude web/build --exclude web/.svelte-kit \
     backend web scripts .github
-  echo "semgrep: no findings"
+  echo "semgrep: no findings (semgrep does not parse .svelte; eslint's no-eval rules cover those files in the web gate)"
 }
 
 scan_deps() {

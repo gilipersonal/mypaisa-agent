@@ -36,7 +36,7 @@ export function formatMoney(amount: Decimal, currency: Currency, options: MoneyO
 		currency,
 		minimumFractionDigits: digits,
 		maximumFractionDigits: digits,
-		signDisplay: options.signed ? 'exceptZero' : 'auto'
+		signDisplay: options.signed ? 'exceptZero' : 'negative'
 	});
 	// Intl formats a decimal string exactly (ES2023), so the amount is never parsed into a float first.
 	return fmt.format(amount as `${number}`);
@@ -53,15 +53,16 @@ const WESTERN_STEPS = [
 ] as const;
 
 function formatCompact(amount: Decimal, currency: Currency, options: MoneyOptions): string {
-	const value = Number(amount); // a display shortening only: the exact figure is always one tap away
+	const value = Number(amount); // a display shortening only (the one float here): the exact figure is one tap away
 	const steps = currency === 'INR' ? INR_STEPS : WESTERN_STEPS;
-	const step = steps.find((s) => Math.abs(value) >= s.size);
+	// The unit is chosen after rounding to one decimal, so 999,999 reads £1m, never £1,000k.
+	const step = steps.find((s) => Math.round((Math.abs(value) / s.size) * 10) / 10 >= 1);
 	if (!step) return formatMoney(amount, currency, { ...options, compact: false, whole: true });
 	const symbol = formatMoney('0', currency, { whole: true }).replace(/[\d\s.,]/g, '');
 	const scaled = new Intl.NumberFormat(LOCALE[currency], {
 		maximumFractionDigits: 1,
-		signDisplay: options.signed ? 'exceptZero' : 'auto'
-	}).format(value / step.size);
+		signDisplay: options.signed ? 'exceptZero' : 'negative'
+	}).format(Math.round((value / step.size) * 10) / 10);
 	const sign = scaled.startsWith('-') || scaled.startsWith('+') ? scaled.charAt(0) : '';
 	return `${sign}${symbol}${scaled.replace(/^[-+]/, '')}${step.suffix}`;
 }

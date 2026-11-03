@@ -1,8 +1,9 @@
 /** The api client both doors use (MA-194, MA-266): typed from the backend's OpenAPI schema (`api-types.d.ts`, generated
- * by `pnpm api:types` from backend/openapi.json), so a renamed field fails svelte-check, not a member's screen.
- * The app calls /v1 on its own origin: CloudFront routes it to the api, and Vite proxies it in development. */
+ * by `pnpm --dir web api:types` from backend/openapi.json), so a renamed field fails svelte-check, not a member's screen.
+ * The base URL is the environment's api host, `api(-dev).mypaisapp.com` (ARCHITECTURE §17.2), set with MA-266; until
+ * then it is empty, so in development the app calls /v1 on its own origin and Vite proxies it to the local backend. */
 import createClient, { type Client } from 'openapi-fetch';
-import type { paths } from '../api-types';
+import type { paths } from '../api-types.d.ts';
 
 export type ApiClient = Client<paths>;
 

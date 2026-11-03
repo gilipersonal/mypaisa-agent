@@ -149,7 +149,7 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   board name matches its canvas. The QA is measured on the built web app by
   MA-304, QA on request, with the 25% brightness floors and the 320 to 1920
   width sweep; iOS QA comes after MA-165 (the iOS shell), with no story yet.
-  svelte-check, eslint and vitest run on every PR touching `web/`;
+  `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR;
   Playwright, axe and Argos run only when Arun asks (a manual run or a `qa`
   label; MA-303, MA-304).
 

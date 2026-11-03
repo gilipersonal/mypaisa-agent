@@ -18,5 +18,5 @@ def schema() -> str:
     return json.dumps(app.openapi(), indent=2, sort_keys=True) + "\n"
 
 
-if __name__ == "__main__":  # pragma: no cover - a command, run by hand and by the web gate
+if __name__ == "__main__":  # pragma: no cover - a command, run by hand when a route changes
     print(schema(), end="")  # noqa: T201 - the command's output is the schema

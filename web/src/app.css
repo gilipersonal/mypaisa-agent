@@ -6,7 +6,18 @@
 @import './lib/styles/tokens.css';
 @import './lib/styles/motion.css';
 
-@custom-variant dark (&:where(.t-dark, .t-dark *));
+/* Tailwind's dark: follows the theme exactly as the tokens do: the system's setting, unless .t-light or .t-dark
+   forces one. */
+@custom-variant dark {
+	@media (prefers-color-scheme: dark) {
+		&:where(:root:not(.t-light) *, :root:not(.t-light)) {
+			@slot;
+		}
+	}
+	&:where(.t-dark, .t-dark *) {
+		@slot;
+	}
+}
 
 /* shadcn-svelte's names, each pointing at a Warm ledger token. */
 :root {

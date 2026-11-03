@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cn } from './utils';
+import { cn } from './utils.ts';
 
 describe('cn', () => {
 	it('lets a later class win over an earlier one of the same kind', () => {

@@ -410,7 +410,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     </div>
     <div class="copy tech">
       <p>Proven in Smart Clearance (`MA-194`, `MA-229`, `MA-265`): a <code>pnpm 12.x</code> workspace on <strong>SvelteKit 3.1.x</strong> (<code>@sveltejs/adapter-static</code>) and <strong>Svelte 5.57.x</strong> runes (<code>$state</code>, <code>$derived</code>, <code>$effect</code>), built with <strong>Vite 8.x</strong> and <strong>TypeScript 6.x</strong>. Styled with <strong>Tailwind CSS 4.3.x</strong> over <code>docs/design/ds-v1/tokens.css</code>, <strong>shadcn-svelte 1.7.x</strong> on <strong>bits-ui 2.20.x</strong>, <strong>LayerChart 2.9.x</strong> + <strong>d3-scale / d3-shape</strong> for wealth charts, and <strong>Motion 14.0.x</strong>.</p>
-      <p>Data and state run on <strong>@tanstack/svelte-query 6.3.x</strong> (updated in place by the SSE stream on <code>records.changed</code>), <strong>@tanstack/table-core 9.3.x</strong>, <strong>@tanstack/svelte-virtual 3.13.x</strong> and <strong>@tanstack/svelte-form 1.33.x</strong> + <strong>zod 4.x</strong>. <code>pnpm generate:api</code> runs <strong>openapi-typescript 7.x</strong> against FastAPI's <code>app.openapi()</code> to emit <code>web/src/lib/api-types.d.ts</code>.</p>
+      <p>Data and state run on <strong>@tanstack/svelte-query 6.3.x</strong> (updated in place by the SSE stream on <code>records.changed</code>), <strong>@tanstack/table-core 9.3.x</strong>, <strong>@tanstack/svelte-virtual 3.13.x</strong> and <strong>@tanstack/svelte-form 1.33.x</strong> + <strong>zod 4.x</strong>. <code>pnpm --dir web api:types</code> runs <strong>openapi-typescript 7.x</strong> against FastAPI's <code>app.openapi()</code> to emit <code>web/src/lib/api-types.d.ts</code>.</p>
     </div>
     <figure class="fig" id="fig-web">
       <div class="scroll">
@@ -426,7 +426,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
         <rect class="w2 s-box" x="332" y="24" width="296" height="156" rx="14"/>
         <text class="s-h" x="348" y="50">UI, Charts &amp; Motion</text>
         <text class="s-vit" x="348" y="72">Tailwind CSS 4.3 · shadcn-svelte 1.7</text>
-        <text class="s-t" x="348" y="94">• bits-ui 2.20 · lucide-svelte · cmdk-sv</text>
+        <text class="s-t" x="348" y="94">• bits-ui 2.20 · @lucide/svelte · cmdk-sv</text>
         <text class="s-t" x="348" y="114">• LayerChart 2.9 (net worth, fan, mix)</text>
         <text class="s-t" x="348" y="134">• d3-scale · d3-shape (budget, projection)</text>
         <text class="s-m" x="348" y="156">Motion 14.0 · View Transitions · 25% gate</text>
@@ -455,8 +455,8 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
 
         <rect class="s-ambg" x="640" y="256" width="288" height="84" rx="10"/>
         <text class="s-amt" x="654" y="278">Automated Web Gates (CI)</text>
-        <text class="s-t" x="654" y="298">svelte-check · eslint 10 · vitest 4</text>
-        <text class="s-m" x="654" y="318">Playwright + axe-core + Argos CI (£0)</text>
+        <text class="s-t" x="654" y="298">web_gates.sh: svelte-check · eslint · vitest 5</text>
+        <text class="s-m" x="654" y="318">Playwright + axe + Argos: on request (MA-304)</text>
       </svg>
       </div>
       <figcaption>SvelteKit 3.1, Tailwind CSS 4.3, shadcn-svelte, LayerChart and TanStack Query/Table/Virtual/Form sit over web/src/lib/, whose OpenAPI types come straight from FastAPI.</figcaption>

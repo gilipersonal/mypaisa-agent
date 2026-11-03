@@ -15,7 +15,8 @@ web/
     app.html            the document: fonts, the manifest, the icons
     service-worker.ts   caches the shell only; /v1 and /.well-known always go to the network
     routes/             pages: thin, each reads through a query and renders components
-    lib/                what both doors share, imported as #lib/... (the iOS shell imports it by path)
+    lib/                imported as #lib/...; cards/, formatting/, privacy/ and api/client.ts are what the iOS
+                        shell shares by path (the rest is the web app's own: Svelte components, svelte-query)
       api/              the typed client (openapi-fetch) and the TanStack Query definitions
       api-types.d.ts    generated from backend/openapi.json by `pnpm api:types`; never edited by hand
       query/            the one QueryClient and its retry rules
@@ -29,21 +30,27 @@ web/
 
 ## The rules
 
-- **Imports:** use `#lib/...` (SvelteKit 3's subpath import; `$lib` is gone), naming the file with its extension
-  (`#lib/formatting/money.ts`, `#lib/components/ui/button/index.ts`).
+- **Imports:** use `#lib/...` (SvelteKit 3's subpath import; `$lib` is gone), and name every imported file with its
+  extension (`#lib/formatting/money.ts`, `./client.ts`, `#lib/components/ui/button/index.ts`). eslint refuses either
+  mistake.
 - **The api is typed from the backend:** when a route changes, run
-  `uv run --directory backend python -m mypaisa_agent.api.openapi > backend/openapi.json`, then `pnpm api:types`. The
-  backend's test and the web gate both fail while either file is stale.
+  `uv run --directory backend python -m mypaisa_agent.api.openapi > backend/openapi.json`, then
+  `corepack pnpm@12.16.1 --dir web api:types`. The backend's test fails while `openapi.json` is stale, and the web gate
+  while `api-types.d.ts` is.
 - **Data goes through TanStack Query**, whose definitions live in `#lib/api/queries.ts`. A component never calls
   `fetch` itself. A 4xx the api meant is never retried.
-- **Money is a decimal string** from the api to the screen. `formatMoney` formats it without turning it into a float.
+- **Money is a decimal string** from the api to the screen. `formatMoney` formats it without turning it into a float,
+  except the compact shortening (£1.3m), which is display-only.
   Privacy mode masks every amount through `maskedMoney`.
 - **Colours come from the tokens.** Use Tailwind's theme (`bg-card`, `text-muted-foreground`, `text-up`) or shadcn's
-  variables, never a hex value. Dark mode follows the system, and `.t-light` or `.t-dark` force a theme.
+  variables, never a hex value. Dark mode follows the system, and `.t-light` or `.t-dark` force a theme; the tokens and
+  Tailwind's `dark:` variant follow the same rule.
 - **shadcn-svelte components** are added from its registry into `src/lib/components/ui/` and kept as written, so an
-  update replaces them cleanly.
-- **Accessibility:** one `main` landmark, a skip link, 44 pt targets, visible focus, and `aria-live` where a value
-  updates.
+  update replaces them cleanly; the app sets sizes at the call site (`class="min-h-11"`).
+- **Accessibility:** one `main` landmark, a skip link, 44 px targets (`min-h-11`), visible focus, and `aria-live` where
+  a value updates. A button is never disabled while it refetches, so focus stays put.
+- **The page shell:** pages sit inside the shell in `components/shell/`; the design system's adaptive shell
+  (`.mp-app`, `.mp-shell`, `.mp-cols`) arrives with the first real screens (MA-199, MA-183 to MA-185).
 
 ## The gates
 
@@ -61,4 +68,5 @@ job. In order:
 
 Playwright, axe and Argos run only when Arun asks (MA-304).
 
-Run locally: `corepack pnpm@12.16.1 --dir web dev`, with the backend on port 8000. Vite proxies `/v1` to it.
+Needs Node 24 or later with corepack (on Node 25 and later, `brew install corepack` first). Run locally:
+`corepack pnpm@12.16.1 --dir web dev`, with the backend on port 8000; Vite proxies `/v1` to it.

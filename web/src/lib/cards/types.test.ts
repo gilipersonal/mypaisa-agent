@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canRender, isCardEnvelope } from './types';
+import { canRender, isCardEnvelope } from './types.ts';
 
 const card = { type: 'confirm', version: 1, id: 'c-1', fallback: 'Add ISA: £20,000. Confirm?', body: {} };
 

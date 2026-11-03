@@ -27,8 +27,14 @@ step "tests: vitest, 90% coverage of src/lib"
 pnpm --silent test:coverage
 step "build: adapter-static, the service worker, the CSP"
 pnpm --silent build >/dev/null
-test -f build/index.html && test -f build/service-worker.js && test -f build/.well-known/apple-app-site-association
-grep -q 'http-equiv="content-security-policy"' build/index.html || { echo "the built page has no CSP" >&2; exit 1; }
+for f in index.html service-worker.js manifest.webmanifest .well-known/apple-app-site-association; do
+  test -f "build/$f" || { echo "the build has no $f" >&2; exit 1; }
+done
+csp=$(grep -o 'http-equiv="content-security-policy" content="[^"]*"' build/index.html || true)
+script_src=$(printf '%s' "$csp" | grep -o "script-src [^;\"]*" || true)
+[[ -n "$script_src" ]] || { echo "the built page has no CSP script-src" >&2; exit 1; }
+[[ "$script_src" == *"'sha256-"* ]] || { echo "the CSP's script-src carries no SvelteKit hash: $script_src" >&2; exit 1; }
+[[ "$script_src" != *"unsafe-inline"* ]] || { echo "the CSP's script-src allows unsafe-inline: $script_src" >&2; exit 1; }
 if [[ "${1:-}" != "--offline" ]]; then
   step "dependencies: pnpm audit, no high or critical advisory"
   pnpm audit --audit-level high

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ApiError, createApiClient, toApiError } from './client';
-import { livenessQuery, readinessQuery } from './queries';
+import { ApiError, createApiClient, toApiError } from './client.ts';
+import { livenessQuery, readinessQuery } from './queries.ts';
 import { createQueryClient, shouldRetry } from '#lib/query/client.ts';
 
 function fakeFetch(status: number, body: unknown, contentType = 'application/json'): typeof fetch {
@@ -40,6 +40,11 @@ describe('the api client and its queries', () => {
 		await expect(run(readinessQuery(api))).resolves.toEqual(body);
 	});
 
+	it('throws on a 503 that is not the readiness report (a CDN error page)', async () => {
+		const api = createApiClient('http://api.test', fakeFetch(503, '<html>Service Unavailable</html>', 'text/html'));
+		await expect(run(readinessQuery(api))).rejects.toBeInstanceOf(ApiError);
+	});
+
 	it('throws on any other readiness failure', async () => {
 		const api = createApiClient('http://api.test', fakeFetch(500, { detail: 'down' }));
 		await expect(run(readinessQuery(api))).rejects.toBeInstanceOf(ApiError);
@@ -62,6 +67,8 @@ describe('the query client', () => {
 	it('never retries a 4xx the api meant, and retries anything else twice', () => {
 		expect(shouldRetry(0, new ApiError(404, 'not_found', 'x'))).toBe(false);
 		expect(shouldRetry(0, new ApiError(503, 'unavailable', 'x'))).toBe(true);
+		expect(shouldRetry(0, new ApiError(429, 'http_429', 'x'))).toBe(true);
+		expect(shouldRetry(0, new ApiError(408, 'http_408', 'x'))).toBe(true);
 		expect(shouldRetry(1, new Error('network'))).toBe(true);
 		expect(shouldRetry(2, new Error('network'))).toBe(false);
 	});
