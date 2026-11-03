@@ -54,7 +54,7 @@ KEY = re.compile(r"\bMA-(\d+)\b")
 DESIGN_STATES = {"none", "planned", "picked", "todo"}
 # Never a board file: the Finder's folder settings (MA-260).
 NOT_BOARDS = {".DS_Store"}
-CODE_DIRS = ("web", "ios", "src", "infra")  # where product code lives; a file there should belong to a story's code
+CODE_DIRS = ("web", "ios", "backend", "infra")  # where product code lives; a file there should belong to a story's code
 
 
 def load(path: Path) -> dict:
@@ -965,7 +965,7 @@ def record_cases(cases: list | None = None, workers: int = WORKERS) -> int:
 # key, the deleted paths) -> (files claimed by another story only, files no story claims).
 PR_ITEMS = [
     {"key": "MA-10", "code": ["web/src/lib/chat/**", "ios/MyPaisa/Chat/"]},
-    {"key": "MA-11", "code": ["src/mypaisa/agent/tools.py", "infra/*.tf"]},
+    {"key": "MA-11", "code": ["backend/src/mypaisa_agent/agent/tools.py", "infra/*.tf"]},
     {"key": "MA-12", "code": ["web/src/lib/chat/shared.ts"]},
     {"key": "MA-13", "code": ["web/**/legacy.ts"]},
 ]
@@ -975,11 +975,11 @@ PR_CASES = [
     (["web/src/lib/chat/shared.ts"], "MA-11", set(), [("web/src/lib/chat/shared.ts", ["MA-10", "MA-12"])], []),
     (["ios/MyPaisa/Chat/View.swift", "ios/MyPaisa/ChatX.swift"], "MA-10", set(), [], ["ios/MyPaisa/ChatX.swift"]),
     (["infra/main.tf", "infra/mod/main.tf"], "MA-11", set(), [], ["infra/mod/main.tf"]),  # * stays in its folder
-    (["src/mypaisa/agent/tools.py.bak"], "MA-11", set(), [], ["src/mypaisa/agent/tools.py.bak"]),
+    (["backend/src/mypaisa_agent/agent/tools.py.bak"], "MA-11", set(), [], ["backend/src/mypaisa_agent/agent/tools.py.bak"]),
     (["web/legacy.ts", "web/a/b/legacy.ts"], "MA-13", set(), [], []),                # **/ spans no folder or many
     (["docs/trace.json", "scripts/plan_sync.py", "README.md"], "MA-10", set(), [], []),  # not product code
     (["web/gone.ts"], "MA-10", {"web/gone.ts"}, [], []),                             # a deletion nobody claims is no fault
-    (["src/mypaisa/agent/tools.py"], "MA-10", {"src/mypaisa/agent/tools.py"}, [("src/mypaisa/agent/tools.py", ["MA-11"])], []),
+    (["backend/src/mypaisa_agent/agent/tools.py"], "MA-10", {"backend/src/mypaisa_agent/agent/tools.py"}, [("backend/src/mypaisa_agent/agent/tools.py", ["MA-11"])], []),
 ]
 
 # pr_files on a detached merge commit, as CI runs it: (what, the trace, --key, the environment, the exit it must give).
@@ -1008,7 +1008,7 @@ def claims(path: str, rel: str) -> bool:
 
 
 def pr_findings(files: list[str], items: list, key: str | None, deleted: set[str] = frozenset()) -> tuple[list, list]:
-    """The product files (under web/, ios/, src/, infra/) a branch changes that a story other than its own claims, with
+    """The product files (under web/, ios/, backend/, infra/) a branch changes that a story other than its own claims, with
     their owners, and those no story claims (a deletion no story claims is no fault)."""
     others, unclaimed = [], []
     for f in files:

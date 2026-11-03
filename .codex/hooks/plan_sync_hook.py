@@ -30,7 +30,7 @@ from pathlib import Path
 
 ROOT = Path(os.environ.get("CLAUDE_PROJECT_DIR") or Path(__file__).resolve().parents[2])
 RECORDS = re.compile(r"^(docs/trace\.json|docs/roadmap\.json|docs/confluence|docs/design/|PLAN\.md|ARCHITECTURE\.md|TECH_STACK\.md|README\.md"
-                     r"|scripts/(plan_sync|roadmap|confluence_docs)\.py|web/|ios/|src/|infra/)")
+                     r"|scripts/(plan_sync|roadmap|confluence_docs)\.py|web/|ios/|backend/|infra/)")
 NEW_WORK = re.compile(r"\b(new (feature|screen|page|flow|design|card|story|kind)|redesign|design (a|the|for|new)|feature|mock-?up|wireframe"
                       r"|ux|ui change|board|add (a|an|the) .{0,40}(screen|page|button|card|chart|flow|tab)|can we (have|add|build)"
                       r"|i (want|need) (a|an|the|to see))\b", re.I)

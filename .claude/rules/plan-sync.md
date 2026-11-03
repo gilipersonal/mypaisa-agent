@@ -27,7 +27,7 @@ check says so before any story starts and before any PR.
 | The designs | The repo, three board folders: `docs/design/ios-v1/` (MyPaisa iOS v1, the app's screens, from MA-161), `docs/design/ds-v1/` (MyPaisa DS v1, the system and its iOS kit) and `docs/design/app-v1/` (MyPaisa app v1, the web app's browser boards, its spec; its Mini App and Telegram boards are the superseded record), git their only record; a record that is not a board set in its own folder (`docs/design/prototype-v5/`). Arun sees each design round's options as a private Claude Artifact, or as a local page for a round run in Antigravity | What a member sees |
 | The trace | `docs/trace.json`, rendered to `docs/TRACE.md` | Which story follows which ARCHITECTURE section and which boards, and which code builds it |
 | Confluence | Space mypaisaa-agent: the hub, the roadmap, a page per phase, a page per screen area, the design decisions, the explainers. Rendered by `scripts/confluence_docs.py` into `docs/confluence/`; page ids, versions and previews in `docs/confluence.json` | The plan as one readable tree, phase by phase and screen by screen |
-| The code | `web/`, `ios/`, `src/`, `infra/`, named per story in the trace's `code` paths | What was built, traced to its story |
+| The code | `backend/`, `web/`, `ios/`, `infra/` (Arun, 3 Nov 2026, MA-24), named per story in the trace's `code` paths | What was built, traced to its story |
 
 The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 
@@ -104,7 +104,7 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    by changing an estimate or a setting there.
 10. **Code is traced to its story.** A story's `code` lists the repo paths
     that build it (globs allowed). A Story In Review or Done names its code,
-    and every path must exist; a file under `web/`, `ios/`, `src/` or
+    and every path must exist; a file under `backend/`, `web/`, `ios/` or
     `infra/` that no story claims is reported. A picked board is the spec
     the code is built to (rule 4); a UI story's PR shows its screens beside
     their boards.
@@ -164,7 +164,7 @@ story yet.
 
 `python3 scripts/plan_sync.py pr-files [--base <ref>]` (default: the merge-base
 with `origin/main`) is the branch's own check, run before every PR: it lists the
-files the branch changes under `web/`, `ios/`, `src/` and `infra/` (committed,
+files the branch changes under `backend/`, `web/`, `ios/` and `infra/` (committed,
 uncommitted and untracked; a rename is its old path and its new one), maps each
 to the trace rows whose `code` claims it (a path, a folder, or a glob where `*`
 stays in a folder and `**` spans folders), and fails, on a branch with an MA key,

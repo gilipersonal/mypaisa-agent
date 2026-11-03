@@ -30,7 +30,7 @@ items, goes to the one verifier that an exit 3 from
 
 (a) scripts and checks; (b) the trace against Jira; (c) the spec docs
 (`ARCHITECTURE.md`, `PLAN.md`, `TECH_STACK.md`, `README.md`, the explainer
-pages); (d) the rules and skills; (f) the code (`web/`, `ios/`, `src/`,
+pages); (d) the rules and skills; (f) the code (`web/`, `ios/`, `backend/`,
 `infra/`), once the story has code. The boards' lane (e) left the review with
 MA-303, so no reviewer judges a board; Arun does, by eye. A lane with nothing
 in the round's files sits the round out.

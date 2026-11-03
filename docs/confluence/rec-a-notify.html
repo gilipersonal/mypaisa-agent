@@ -124,7 +124,7 @@
 </tbody>
 </table>
 <h3>12.1 The backend&#x27;s layers (MA-24)</h3>
-<p>Arun, 3 Nov 2026: &quot;best practices for FAST API, controllers, services, repository and whatever is the latest and greatest. Proper Gates using ruff, black etc&quot;. The Python package <code>src/mypaisa_agent/</code> is cut into four layers whose imports point one way, <code>api -&gt; services -&gt; repositories -&gt; domain</code>, with <code>core</code> (settings and the error classes) beside them:</p>
+<p>Arun, 3 Nov 2026: &quot;best practices for FAST API, controllers, services, repository and whatever is the latest and greatest. Proper Gates using ruff, black etc&quot;. The code lives in four top-level folders, one per part (Arun, the same day: &quot;I need to code to be structured backend/ web/ ios/ infra/&quot;): <code>backend/</code>, <code>web/</code>, <code>ios/</code> and <code>infra/</code>. The backend is a uv project of its own in <code>backend/</code> (<code>pyproject.toml</code>, <code>uv.lock</code>, its tests), and its Python package <code>backend/src/mypaisa_agent/</code> is cut into four layers whose imports point one way, <code>api -&gt; services -&gt; repositories -&gt; domain</code>, with <code>core</code> (settings and the error classes) beside them:</p>
 <table><thead><tr><th>Layer</th><th>Holds</th><th>May import</th></tr>
 </thead>
 <tbody><tr><td><code>api/</code> (controllers)</td><td>FastAPI routers under <code>/v1/</code>, request and response schemas apart from the domain, dependency wiring from the app the request reached, the app factory, and service errors mapped to RFC 9457 problems</td><td>everything below; the only layer that knows HTTP</td></tr>

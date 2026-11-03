@@ -217,9 +217,9 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 3 Nov 2026: \"best practices for FAST API, controllers, services, repository and whatever is the latest and greatest. Proper Gates using ruff, black etc\". The package is layered api -> services -> repositories -> domain (ARCHITECTURE 12.1), enforced by import-linter; ruff format stands in for Black (compatible); the gates are scripts/backend_gates.sh, run by pre-commit, jira-flow and CI's Backend job.",
+      "notes": "Arun, 3 Nov 2026: \"best practices for FAST API, controllers, services, repository and whatever is the latest and greatest. Proper Gates using ruff, black etc\". The package is layered api -> services -> repositories -> domain (ARCHITECTURE 12.1), enforced by import-linter; ruff format stands in for Black (compatible); the gates are scripts/backend_gates.sh, run by pre-commit, jira-flow and CI's Backend job. Then: \"I need to code to be structured backend/ web/ ios/ infra/\": the package, its tests and pyproject.toml live in backend/, and every record names backend/src/mypaisa_agent/.",
       "code": [
-        "src/mypaisa_agent"
+        "backend"
       ]
     },
     {
@@ -6874,7 +6874,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-265 and MA-272 (28 Oct 2026): src/mypaisa_agent/registry/ (keys.py, serde.py, client.py, uow.py, pagination.py) implementing the typed single-table DynamoDB repository on Pydantic v2, boto3 TypeSerializer/TypeDeserializer, mypy-boto3-dynamodb, ForbiddenScanError guard, HMAC-signed cursor pagination and TransactWriteUnit ahead of MA-27 and MA-28. Build time is covered by MA-27 and MA-28."
+      "notes": "Filed from MA-265 and MA-272 (28 Oct 2026): backend/src/mypaisa_agent/registry/ (keys.py, serde.py, client.py, uow.py, pagination.py) implementing the typed single-table DynamoDB repository on Pydantic v2, boto3 TypeSerializer/TypeDeserializer, mypy-boto3-dynamodb, ForbiddenScanError guard, HMAC-signed cursor pagination and TransactWriteUnit ahead of MA-27 and MA-28. Build time is covered by MA-27 and MA-28."
     },
     {
       "key": "MA-271",
@@ -6894,7 +6894,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-265 and MA-272 (28 Oct 2026): src/mypaisa_agent/agent/ (runner.py, tools.py, cache.py) implementing the ~250-line async tool-use loop on anthropic.AsyncAnthropic, four-breakpoint ephemeral prompt caching, @tool Pydantic v2 strict JSON Schema export, PolicyGate (MA-247) and FigureCheck (MA-248) hooks, and automatic gen_ai.* OTel spans (MA-233). Build time is covered by MA-31, MA-233, MA-247 and MA-248. 29 Oct 2026 (MA-285): the cache assembler serves every agent, with at most three explicit breakpoints and the request's automatic caching for the tail (ARCHITECTURE 22.1); MA-286 adds its checks."
+      "notes": "Filed from MA-265 and MA-272 (28 Oct 2026): backend/src/mypaisa_agent/agent/ (runner.py, tools.py, cache.py) implementing the ~250-line async tool-use loop on anthropic.AsyncAnthropic, four-breakpoint ephemeral prompt caching, @tool Pydantic v2 strict JSON Schema export, PolicyGate (MA-247) and FigureCheck (MA-248) hooks, and automatic gen_ai.* OTel spans (MA-233). Build time is covered by MA-31, MA-233, MA-247 and MA-248. 29 Oct 2026 (MA-285): the cache assembler serves every agent, with at most three explicit breakpoints and the request's automatic caching for the tail (ARCHITECTURE 22.1); MA-286 adds its checks."
     },
     {
       "key": "MA-272",

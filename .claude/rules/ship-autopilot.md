@@ -40,7 +40,7 @@ this repo on any change just before you merge the PR. just for this Repo".
      and checks; (b) the trace against Jira; (c) the spec docs
      (`ARCHITECTURE.md`, `PLAN.md`, `TECH_STACK.md`, `README.md`, the
      explainer pages); (d) the rules and skills; (f) the code (`web/`, `ios/`,
-     `src/`, `infra/`), once the story has code. The boards' lane (e) left the
+     `backend/`, `infra/`), once the story has code. The boards' lane (e) left the
      review with MA-303. Each reports on its part and the joins into it; their
      findings are merged into one list, two lanes' findings at the same
      `file:line` under one id.

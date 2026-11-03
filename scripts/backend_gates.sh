@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# The backend's gates (MA-24), in one place: the jira-flow gate, CI's Backend job and a person run the same thing.
+# The backend's gates (MA-24), in one place, run inside backend/: the jira-flow gate, CI's Backend job and a person run the same thing.
 #   scripts/backend_gates.sh            # every gate
 #   scripts/backend_gates.sh --offline  # every gate but the dependency audit, which needs the network
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../backend"
 
 step() { printf '\n== %s\n' "$1"; }
 

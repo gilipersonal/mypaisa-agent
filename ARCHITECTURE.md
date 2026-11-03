@@ -656,7 +656,7 @@ phase 2 (MA-27, MA-28, MA-197) and every wealth phase after it adds only kinds.
 `Account`, `Position`, `Liability` and `Transaction` (§4.1) fold into Record
 and Event for the household's own records. There is no relational schema:
 questions nobody planned for read the nightly Parquet exports of the events
-and views through DuckDB (§11.1, MA-104). In code (`src/mypaisa_agent/registry/`,
+and views through DuckDB (§11.1, MA-104). In code (`backend/src/mypaisa_agent/registry/`,
 MA-27, MA-28, MA-265, MA-270), the single table is accessed through a thin typed
 repository on Pydantic v2, `boto3` (`TypeSerializer` and `TypeDeserializer`
 with `Decimal` conversion at the wire boundary) and `mypy-boto3-dynamodb`
@@ -2559,7 +2559,10 @@ pensions since 2024") are answered without a database running all month:
 ### 12.1 The backend's layers (MA-24)
 
 Arun, 3 Nov 2026: "best practices for FAST API, controllers, services, repository and whatever is the latest
-and greatest. Proper Gates using ruff, black etc". The Python package `src/mypaisa_agent/` is cut into
+and greatest. Proper Gates using ruff, black etc". The code lives in four top-level folders, one per part
+(Arun, the same day: "I need to code to be structured backend/ web/ ios/ infra/"): `backend/`, `web/`,
+`ios/` and `infra/`. The backend is a uv project of its own in `backend/` (`pyproject.toml`, `uv.lock`, its
+tests), and its Python package `backend/src/mypaisa_agent/` is cut into
 four layers whose imports point one way, `api -> services -> repositories -> domain`, with `core` (settings and
 the error classes) beside them:
 
@@ -3761,7 +3764,7 @@ the records after Confirm and nothing written before Confirm); a binary judge
 only for what code cannot measure ("asked one thing at a time", "plain and
 clear"), one judge per failure mode, with an "unknown" answer allowed. Each
 case carries its tags: the agent, the tool, the kind, the flow, the story key
-and its suite. Cases are Inspect AI datasets in `evals/`; Inspect runs the
+and its suite. Cases are Inspect AI datasets in `backend/evals/`; Inspect runs the
 trials, scores them and keeps the logs. Phase 1's cases test what the phase-1
 chat does; registering, Confirm, cancel and correcting join with phase 2's
 draft tools and write service (MA-197, MA-201).

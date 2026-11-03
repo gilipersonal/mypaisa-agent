@@ -44,9 +44,6 @@ build-backend = "uv_build"
 target-version = "py314"
 line-length = 120
 src = ["src", "tests"]
-# The product is src/ and tests/. The repo's plan, review and design tooling (scripts/, review/, docs/, .claude/)
-# keeps its own style and is checked by its own selftests.
-extend-exclude = ["scripts", "review", "docs", ".claude", ".codex", "*.md"]
 
 [tool.ruff.lint]
 select = ["ALL"]
