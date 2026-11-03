@@ -109,13 +109,14 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   through the system (a question, a file, a check-in, a failure and its
   replay), the agent team and the admin desk, the safety nets, the two
   environments and a day with MyPaisa.
-- **[MyPaisa Architecture v4](https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9)** (MA-244): the same
+- **[MyPaisa Architecture v4](https://claude.ai/artifact/Ns3DLFTCvnLcBxJvRvygBo)** (MA-244): the same
   architecture, technical and animated, on AWS-style service icons: a system
-  map that plays six journeys hop by hop (a question, a factsheet, a
-  check-in, the nightly valuation, a delete, a failure and its replay), one message as an
+  map that plays nine journeys hop by hop (a question, a goal, plan with me
+  on Opus, a factsheet, a delete, a check-in, the nightly run, the Monday
+  digest, a failure and its replay), one message as an
   OpenTelemetry trace with its GenAI spans, the concierge's Claude tool loop
   and its tools, the agents with the kind of agent each is and the
-  models it uses, the routing across the models with the spend
+  models it uses, the routing across the three models with the spend
   ladder, where the data lives, delivery and the guardrails.
 - **[MyPaisa Guardrails and Evals](https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT)** (MA-258): §21 as an
   explainer, plain or technical at a switch, with six animated diagrams: the

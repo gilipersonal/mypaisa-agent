@@ -503,7 +503,7 @@ FLOW_GROUPS = [  # (slug, emoji, colour, title, flow ids), in the Agent Journey'
     ("rec-j-flows-wealth", "🏡", "#E3FCEF", "The household's whole wealth, by talking", ["register", "correct", "checkin", "statement", "month-close", "projection"]),
 ]
 JOURNEY_PAGES = [  # (slug, emoji, panel icon, colour, title, parent)
-    ("rec-j-v4", "🛰️", ":satellite_orbital:", "#DEEBFF", "Six journeys through AWS, hop by hop", "rec-journeys"),
+    ("rec-j-v4", "🛰️", ":satellite_orbital:", "#DEEBFF", "Nine journeys through AWS, hop by hop", "rec-journeys"),
     ("rec-j-v4-parts", "🧩", ":jigsaw:", "#EAE6FF", "Architecture v4: every part, the trace, the loop, the agents and the models", "rec-journeys"),
     ("rec-j-inside", "🏠", ":house:", "#FFFAE6", "Inside MyPaisa: the admin's journey in nine steps", "rec-journeys"),
     ("rec-j-inside-more", "✉️", ":envelope_with_arrow:", "#E3FCEF", "Inside MyPaisa: one message, the agent team, the safety nets and a day", "rec-journeys"),
@@ -550,6 +550,9 @@ def is_record(slug: str) -> bool:
 
 # ---------- the pictures ----------
 
+V4_JOURNEYS = ("question", "goal", "plan", "file", "delete", "checkin", "value", "digest", "failure")  # the SCEN ids of architecture-v4.html, in its order
+
+
 def _v4_journey(sid: str) -> dict:
     return {"src": V4, "kind": "gif", "target": "#map .stage", "actions": [{"click": f'#tabs .tab[data-id="{sid}"]'}],
             "until": "document.querySelector('#play span').textContent === 'Replay'", "max": 70000, "hold": 2500, "width": 960}
@@ -569,7 +572,7 @@ def _inside_tour(k: str) -> dict:
 MEDIA: dict[str, dict] = {
     "mark": {"src": "docs/mark-animated.svg", "kind": "gif", "target": "svg", "viewport": [360, 360], "until": "animations",
              "min": 600, "max": 4000, "hold": 2500, "width": 200, "fps": 20, "show": 18, "hide": []},
-    **{f"v4-{k}": _v4_journey(k) for k in ("question", "file", "checkin", "value", "delete", "failure")},
+    **{f"v4-{k}": _v4_journey(k) for k in V4_JOURNEYS},
     "v4-hero": {"src": V4, "kind": "png", "target": "section.hero"},
     "v4-trace": {"src": V4, "kind": "gif", "target": "#tracebox", "until": "animations", "min": 2000, "max": 12000, "hold": 2500, "width": 960,
                  "actions": [{"js": "(() => { const t = document.getElementById('tracebox'); t.classList.remove('play'); void t.offsetWidth; t.classList.add('play'); })()"}]},
@@ -640,7 +643,7 @@ def page_media(slug: str) -> list[str]:
     if slug == "rec-journeys":
         return ["inside-tour-ask"]
     if slug == "rec-j-v4":
-        return [f"v4-{k}" for k in ("question", "file", "checkin", "value", "delete", "failure")]
+        return [f"v4-{k}" for k in V4_JOURNEYS]
     if slug == "rec-j-v4-parts":
         return ["v4-trace", "v4-loop", "v4-team", "v4-models", "v4-state", "v4-delivery", "v4-rules"]
     if slug == "rec-j-inside":
@@ -837,16 +840,19 @@ def pictures_line(slug: str, media: list[str]) -> str:
 MEDIA_CAPTION = {
     "mark": "The mark arriving: the coin, the orbit and the coral dot that comes to rest at half past one",
     "v4-question": "A question, typed on the iPhone and answered at both doors, hop by hop (Architecture v4)",
+    "v4-goal": "A goal: code solves what £40,000 by Sep 2028 takes, and one Confirm saves it (Architecture v4)",
+    "v4-plan": "Plan with me: an admin's /plan runs on Opus in its own loop and ends in one plan card (Architecture v4)",
     "v4-file": "A factsheet sent from the iPhone becomes a holding, with one Confirm (Architecture v4)",
-    "v4-checkin": "Code decides an EMI is due; the owner taps Paid on the push (Architecture v4)",
-    "v4-value": "The nightly valuation: prices in, only to value the holdings, XIRR and CAGR worked out (Architecture v4)",
+    "v4-checkin": "Code decides an EMI is due; an admin taps Paid on the push (Architecture v4)",
+    "v4-value": "The nightly run: prices in only to value the holdings, XIRR and CAGR, the Projection again, and the insight job (Architecture v4)",
+    "v4-digest": "The Monday digest: facts from code, worded by Haiku and Sonnet, silent, to the admins only (Architecture v4)",
     "v4-delete": "A delete in the chat: a card, Confirm, the second check and an audit row, the files kept (Architecture v4)",
     "v4-failure": "A statement job meets an overloaded API: retried, kept, alarmed, replayed once (Architecture v4)",
     "v4-hero": "Architecture v4: from a tap at either door to Claude and back, on AWS",
     "v4-trace": "One message is one trace, from the finger to the last word (Architecture v4)",
     "v4-loop": "One Claude tool loop, with code doing every sum (Architecture v4)",
     "v4-team": "Six agents that never call each other, around one event bus (Architecture v4)",
-    "v4-models": "Two Claude models, each where it earns its cost, and the spend ladder (Architecture v4)",
+    "v4-models": "Three Claude models, each where it earns its cost, and the spend ladder (Architecture v4)",
     "v4-state": "One table for state, one lake for the record, one store for secrets (Architecture v4)",
     "v4-delivery": "Terraform only, one image, prod after a person says yes (Architecture v4)",
     "v4-rules": "Enforced in code, not in the prompt (Architecture v4)",
@@ -882,7 +888,7 @@ def render_rec(ctx: cd.Ctx) -> str:
     gifs = sum(1 for m in MEDIA.values() if m["kind"] == "gif")
     out = [
         cd.cpanel("#DEEBFF", ":blue_book:", "<p><strong>📘 The whole architecture, and every journey, in one place</strong></p>"
-                  "<p>Everything MyPaisa is designed to be, recorded in full: ARCHITECTURE.md section by section, the six journeys that play "
+                  "<p>Everything MyPaisa is designed to be, recorded in full: ARCHITECTURE.md section by section, the nine journeys that play "
                   "through AWS hop by hop, the admin's nine steps in plain words, the agent flows, the first "
                   "journeys, and the Lucid drawings. Nothing is built yet; this is the design every phase is built to.</p>"
                   "<p>Arun, 27 Oct 2026 (MA-257): <em>\"I need full record of everything.\"</em></p>"),
@@ -891,7 +897,7 @@ def render_rec(ctx: cd.Ctx) -> str:
                         f"<p>{len(tops)} sections of ARCHITECTURE.md on {len(ARCH)} pages, every word, with the Lucid drawings where the text puts them "
                         "and the stories that build each part.</p>"),
               cd.cpanel("#E3FCEF", ":compass:", f"<h3>{ctx.link('rec-journeys', '🧭 The journeys')}</h3>"
-                        f"<p>Six journeys through AWS, nine steps of the admin's journey, four tours of one message, {len(flows)} agent flows "
+                        f"<p>Nine journeys through AWS, nine steps of the admin's journey, four tours of one message, {len(flows)} agent flows "
                         "and the first journeys.</p>"),
               cd.cpanel("#FFFAE6", ":building_construction:", f"<h3>{ctx.link('rec-drawings', '🏗️ The drawings')}</h3>"
                         f"<p>The {len(cd.LUCID)} Lucid drawings on AWS shapes, what each explains, and how they are generated.</p>")], 3),
@@ -1017,12 +1023,15 @@ def render_v4(ctx: cd.Ctx) -> str:
     root = dom(V4)
     hero = root.need("section", cls="hero")
     _, h2, intro = sec_head(root, "map")
-    emoji = {"question": "❓", "file": "📄", "checkin": "✅", "value": "💷", "delete": "🗑️", "failure": "🧯"}
+    emoji = {"question": "❓", "goal": "🎯", "plan": "🧭", "file": "📄", "delete": "🗑️", "checkin": "✅", "value": "🌙", "digest": "📬", "failure": "🧯"}
     out = [cd.cpanel("#DEEBFF", ":satellite_orbital:", f"<p><strong>🛰️ {line(hero.find('h1'))}</strong></p>" + "".join(f"<p>{line(p)}</p>" for p in hero.find_all("p", cls="lede")[:1])
                      + f'<p>From <a href="{cd.gh(V4)}">architecture-v4.html</a> (MA-244), live at <a href="{cd.ARTIFACTS["MyPaisa Architecture v4"]}">MyPaisa Architecture v4</a>, '
                      "where each journey plays on demand and any part can be inspected.</p>"),
            f"<h2>🗺️ {h2}</h2>{intro}", legend(), toc(2)]
-    for s in js(V4, "SCEN"):
+    scen = js(V4, "SCEN")
+    if tuple(s["id"] for s in scen) != V4_JOURNEYS:
+        raise RecordError(f"{V4}: its journeys are {[s['id'] for s in scen]}, not V4_JOURNEYS; update the record's pictures and captions with them")
+    for s in scen:
         out.append(f"<h2>{emoji.get(s['id'], '•')} {cd.esc(s['name'])}: {len(s['steps'])} steps</h2>")
         out.append(cd.cpanel("#F4F5F7", ":arrow_forward:", f"<p><strong>{cd.esc(s['sum'])}</strong></p>"))
         out.append(pic(ctx, "rec-j-v4", f"v4-{s['id']}", media_caption(f"v4-{s['id']}")))
