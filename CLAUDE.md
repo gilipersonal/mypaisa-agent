@@ -5,7 +5,7 @@ Arun, 3 Nov 2026 (MA-24): the code is structured in four top-level folders, one 
 | Folder | Holds | Its rules |
 | --- | --- | --- |
 | `backend/` | The Python package (FastAPI controllers, services, repositories, domain), its tests, `pyproject.toml` and `uv.lock` | [`backend/CLAUDE.md`](backend/CLAUDE.md) |
-| `web/` | The web app: SvelteKit 3 PWA (MA-194) | joins with MA-194 |
+| `web/` | The web app: a SvelteKit 3 PWA with Tailwind, shadcn-svelte and TanStack Query, and the shared `#lib` (MA-194) | [`web/CLAUDE.md`](web/CLAUDE.md) |
 | `ios/` | The iOS app: React Native shell with a native SwiftUI core (MA-165) | joins with MA-165 |
 | `infra/` | Terraform for dev and prod (MA-26) | `.claude/rules/aws-changes.md` |
 

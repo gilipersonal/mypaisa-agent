@@ -1894,7 +1894,14 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   the chat and long lists, and Form 1.33 for the in-place correction and the
   Admin center's settings (still no creation form); shadcn-svelte's charts on
   LayerChart 2.9 for every chart, in the 1a Monzo Pulse grammar (§8.1, MA-295);
-  Motion 14 and Svelte transitions. Tests: svelte-check, eslint and vitest run
+  Motion 14 and Svelte transitions. **The skeleton as built (MA-194, 3 Nov 2026):** SvelteKit 3 takes its
+  configuration in `vite.config.ts` (`svelte.config.js` is gone); what both doors share is imported as `#lib/...`
+  (a Node subpath import, as SvelteKit 3 replaces `$lib`); the api client is openapi-fetch over the generated
+  `web/src/lib/api-types.d.ts`, read through TanStack Query definitions in `web/src/lib/api/`; shadcn-svelte's
+  variables are mapped onto the Warm ledger tokens, so its components and Tailwind read the same colours; DS v1's
+  `tokens.css` and `motion.css` are copied into `web/src/lib/styles/` and held equal to `docs/design/ds-v1/` by a
+  test; pnpm installs a version only once it is a day old. The gates are `scripts/web_gates.sh` (`web/CLAUDE.md`).
+  Tests: svelte-check, eslint and vitest run
   on every PR touching `web/`; Playwright, axe and Argos run only when Arun
   asks (a manual run or a `qa` label; MA-303, MA-304). The unit tests are
   Vitest 5; MA-304's QA on request is Playwright 1.64 with one fail-closed

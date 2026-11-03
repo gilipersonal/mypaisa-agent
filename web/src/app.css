@@ -1,0 +1,74 @@
+/* The web app's styles (MA-194). The Warm ledger tokens and the motion are DS v1's own files
+   (src/lib/styles/, copied from docs/design/ds-v1/ and held equal by tokens.test.ts); Tailwind's theme and
+   shadcn-svelte's variables are mapped onto them, so a utility class and a component both read the same colours. */
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './lib/styles/tokens.css';
+@import './lib/styles/motion.css';
+
+@custom-variant dark (&:where(.t-dark, .t-dark *));
+
+/* shadcn-svelte's names, each pointing at a Warm ledger token. */
+:root {
+	--background: var(--mp-bg);
+	--foreground: var(--mp-ink);
+	--card: var(--mp-surface);
+	--card-foreground: var(--mp-ink);
+	--popover: var(--mp-surface);
+	--popover-foreground: var(--mp-ink);
+	--primary: var(--mp-accent);
+	--primary-foreground: var(--mp-on-accent);
+	--secondary: var(--mp-surface-2);
+	--secondary-foreground: var(--mp-ink);
+	--muted: var(--mp-surface-2);
+	--muted-foreground: var(--mp-ink-3);
+	--accent: var(--mp-surface-2);
+	--accent-foreground: var(--mp-ink);
+	--destructive: var(--mp-alert);
+	--border: var(--mp-line);
+	--input: var(--mp-line);
+	--ring: var(--mp-focus);
+	--radius: 14px;
+}
+
+@theme inline {
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-display: 'Nunito', 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-hero: var(--mp-hero);
+	--color-hero-ink: var(--mp-hero-ink);
+	--color-coral: var(--mp-coral);
+	--color-up: var(--mp-up);
+	--color-alert: var(--mp-alert);
+	--color-mask: var(--mp-mask);
+	--radius-sm: calc(var(--radius) - 6px);
+	--radius-md: calc(var(--radius) - 4px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background font-sans text-foreground antialiased;
+	}
+}

@@ -65,6 +65,16 @@
       ]
     },
     {
+      "name": "web",
+      "cwd": ".",
+      "run": "scripts/web_gates.sh",
+      "paths": [
+        "web/**",
+        "backend/openapi.json",
+        "scripts/web_gates.sh"
+      ]
+    },
+    {
       "name": "security",
       "cwd": ".",
       "run": "scripts/security_scan.sh",

@@ -18,7 +18,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-21 | Claude API access is paid from the plan, with dev, prod and evals workspaces and spend limits | To Do | §14.1, §17.1 | none |  |
 | MA-22 | A free Twelve Data key is in SSM for the US lines and the FX fallback | To Do | §5.1 | none |  |
 | MA-23 | Each Monzo fund's factsheet and a valuation screenshot are ready to send in the app | To Do | §4.2 | none |  |
-| MA-24 | The Python project skeleton exists with its gates and the working rules | In Progress | §12, §12.1, §15 | none |  |
+| MA-24 | The Python project skeleton exists with its gates and the working rules | Done | §12, §12.1, §15 | none |  |
 | MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | To Do | §17.4, §21.3 | none |  |
 | MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | To Do | §17.1, §17.4 | none |  |
 | MA-106 | The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery | Done | §4.5, §8.3, §11, §12, §13, §14, §15 | none |  |
@@ -44,7 +44,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-167 | A merge to main sends MyPaisa Dev to TestFlight, and MyPaisa after Arun approves, with an alert before a build expires | To Do | §8.5, §14.2, §17.4 | todo |  |
 | MA-186 | Re-plan: the household's whole wealth comes first, at every door, in clean renumbered phases | Done | §15 | none |  |
 | MA-193 | Design the whole-wealth screens at every door, with a clickable prototype Arun walks through before anything is built | Done | §8, §8.4 | picked | Web v4 · Shell and chat.dc.html: Browser · Shell 1a, Chat beside; Web v4 · Shell and chat.dc.html: Browser · Shell 1a, Chat beside, phone; Web v4 · Shell and chat.dc.html: Browser · Shell 1b, Chat first; Web v4 · Shell and chat.dc.html: Browser · Shell 1b, Chat first, phone; Web v4 · Shell and chat.dc.html: Browser · Shell 1c, Ask bar; Web v4 · Shell and chat.dc.html: Browser · Shell 1c, Ask bar, phone; Web v4 · Dashboard.dc.html: Browser · Dashboard, net worth first; Web v4 · Dashboard.dc.html: Browser · Dashboard, two countries; Web v4 · Dashboard.dc.html: Browser · Dashboard, what's next; iPhone v4 · Home.dc.html: iPhone · Home, net worth first; iPhone v4 · Home.dc.html: iPhone · Home, two countries; iPhone v4 · Home.dc.html: iPhone · Home, what's next; iPhone v4 · Check-ins.dc.html: iPhone · Check-in card 1a, chips in one row; iPhone v4 · Check-ins.dc.html: iPhone · Check-in card 1b, Paid as the Confirm; iPhone v4 · Check-ins.dc.html: iPhone · Check-in card 1c, a compact row; Web v4 · Projection.dc.html: Browser · Projection, the fan first; Web v4 · Projection.dc.html: Browser · Projection, a story first; Web v4 · Projection.dc.html: Browser · Projection, decades; iPhone v4 · Projection.dc.html: iPhone · Projection, the fan first; iPhone v4 · Projection.dc.html: iPhone · Projection, a story first; iPhone v4 · Projection.dc.html: iPhone · Projection, decades |
-| MA-194 | The web app's SvelteKit 3 PWA skeleton and the shared TypeScript models build, lint and test in CI | To Do | §8.4, §12, §17.4 | none |  |
+| MA-194 | The web app's SvelteKit 3 PWA skeleton and the shared TypeScript models build, lint and test in CI | In Progress | §8.4, §12, §17.4 | none |  |
 | MA-198 | A local stack runs the whole app on the laptop, with a scripted agent that replays recorded conversations | To Do | §12, §17.1, §21.3 | none |  |
 | MA-225 | The Lucid architecture pages show SSE on the api host, the dashboard host, the web chat and the dynamic structure | Done | §3, §4.8, §19.5 | none |  |
 | MA-226 | The explainer pages walk the v4 flows: registering anything, check-ins, statements, in-place correction and the Projection | Done | §4.8, §4.9, §4.10, §6 | none |  |
@@ -102,7 +102,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-323 | The agentic review's upgrades are recorded: goals, what changed and why, nudges, scenarios, a richer Monte Carlo, forecast accuracy, tax-year facts, reasoning evals and plan with me are designed and planned | Done | §1, §4.1, §6.1, §6.2, §6.3, §6.4, §6.5, §7.1, §7.2, §10.1, §14, §14.1, §18.6, §18.8, §21.3 | none |  |
 | MA-324 | Every published artifact is in step with the repo: a manifest of each artifact's sources, a check that fails while one is behind, and Prototype v5, the Boards and the Agent Journey published again | Done | §15 | none |  |
 | MA-325 | Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it | Done | §1 | none |  |
-| MA-326 | CI scans what exists today on every pull request and every week: secrets in the whole history, the backend's source, every lockfile and the workflows | In Progress | §13, §17.4 | none |  |
+| MA-326 | CI scans what exists today on every pull request and every week: secrets in the whole history, the backend's source, every lockfile and the workflows | Done | §13, §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

@@ -13,9 +13,10 @@ name: CI
 # Nothing here checks a board's content or Prototype v5: MA-303 stopped those
 # checks (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets
 # stop that."). Playwright, axe and Argos run only when Arun asks (MA-304). The
-# Backend job runs the backend's gates in backend/ (MA-24) and the Security job
-# the repo's scans (MA-326; weekly too, security-weekly.yml); the Web and iOS jobs join when
-# their code exists (MA-194, MA-165).
+# Backend job runs the backend's gates in backend/ (MA-24), the Web job the web
+# app's (MA-194), and the Security job
+# the repo's scans (MA-326; weekly too, security-weekly.yml); the iOS job joins with
+# its code (MA-165).
 #
 # jira-key.yml stays its own workflow: it must rerun when a PR's title is
 # edited, and nothing here needs to.
@@ -156,6 +157,24 @@ jobs:
         run: uv sync --locked
       - name: Lock, lint, format, types, layers, tests and the dependency audit
         run: scripts/backend_gates.sh
+
+  web:
+    name: Web
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      # pnpm comes from corepack at the version web/package.json pins; the
+      # packages from web/pnpm-lock.yaml, so CI installs what a laptop does.
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@12.16.1 --activate
+      - name: Types, lint, format, tests, build and the dependency audit
+        run: scripts/web_gates.sh
 
   security:
     name: Security scans

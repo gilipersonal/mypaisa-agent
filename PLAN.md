@@ -259,7 +259,12 @@ Claude's:
   formatting in GBP, INR, USD and EUR (rupees in lakh and crore), privacy masking and the view
   models, and the api client with its TanStack Query definitions and
   `api-types.d.ts` generated from FastAPI's `app.openapi()` by
-  `openapi-typescript` (MA-265, MA-266). Its gates:
+  `openapi-typescript` (MA-265, MA-266). Built on 3 Nov 2026 as you asked
+  ("best practices ... proper structured SvelteKit project, Tailwind,
+  ShadeCDN and TanStack"): `scripts/web_gates.sh` runs every gate below, plus
+  prettier, the build with its CSP and service worker, and the api types
+  checked against `backend/openapi.json`, which a backend test holds equal to
+  the app. Its gates:
   svelte-check, eslint, vitest and pnpm audit; svelte-check, eslint and
   vitest run on every PR touching `web/`; Playwright, axe and Argos run only
   when Arun asks (a manual run or a `qa` label; MA-303, MA-304). That QA is

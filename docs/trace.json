@@ -207,7 +207,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The Python project skeleton exists with its gates and the working rules",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "12",
@@ -3700,7 +3700,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The web app's SvelteKit 3 PWA skeleton and the shared TypeScript models build, lint and test in CI",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "8.4",
@@ -3710,7 +3710,13 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Updated 30 Oct 2026: Playwright 1.64 E2E on web/ runs one shared auditAndCapture() fixture at 390x844 and 1440x900 in .t-light and .t-dark (plus privacy mode on wealth/home screens): deterministic motion/font stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 Level A & AA before capture, keyboard focus/landmark assertions (MA-181), and Argos CI (@argos-ci/playwright, Tokenless GitHub App OIDC, uploadToArgos: !!process.env.CI) capturing cloud visual PNG diffs in both themes (threshold: 0.2) and a light-theme-deduplicated YAML ariaSnapshot accessibility tree (~3,600 snapshots/month inside the 5,000/month £0 Free Hobby tier, docs/RESEARCH.md 10, docs/design/argos-visual-a11y.html)."
+      "notes": "Updated 30 Oct 2026: Playwright 1.64 E2E on web/ runs one shared auditAndCapture() fixture at 390x844 and 1440x900 in .t-light and .t-dark (plus privacy mode on wealth/home screens): deterministic motion/font stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 Level A & AA before capture, keyboard focus/landmark assertions (MA-181), and Argos CI (@argos-ci/playwright, Tokenless GitHub App OIDC, uploadToArgos: !!process.env.CI) capturing cloud visual PNG diffs in both themes (threshold: 0.2) and a light-theme-deduplicated YAML ariaSnapshot accessibility tree (~3,600 snapshots/month inside the 5,000/month £0 Free Hobby tier, docs/RESEARCH.md 10, docs/design/argos-visual-a11y.html). Built 3 Nov 2026 (Arun: \"best practices ... proper structured SvelteKit project, Tailwind, ShadeCDN and TanStack\"): SvelteKit 3.1 configured in vite.config.ts, #lib subpath imports, Tailwind 4 and shadcn-svelte on the Warm ledger tokens, TanStack Query over openapi-fetch typed from backend/openapi.json, the shell-only service worker and the CSP; scripts/web_gates.sh in CI's Web job. Playwright, axe and Argos stay with MA-304, on request (MA-303).",
+      "code": [
+        "web",
+        "backend/openapi.json",
+        "backend/src/mypaisa_agent/api/openapi.py",
+        "backend/tests/api/test_openapi.py"
+      ]
     },
     {
       "key": "MA-198",
@@ -7844,7 +7850,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "CI scans what exists today on every pull request and every week: secrets in the whole history, the backend's source, every lockfile and the workflows",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "13",
