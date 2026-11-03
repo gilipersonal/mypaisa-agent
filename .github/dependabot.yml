@@ -36,6 +36,13 @@ updates:
     groups:
       web:
         patterns: ["*"]
+    # Majors the toolchain cannot take yet (closed PR #93, 3 Nov 2026): svelte-check supports TypeScript 5 and 6
+    # only, and the web app runs on Node 24, so @types/node stays at 24. Lift each when its tool catches up.
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "MA-326:"
   - package-ecosystem: github-actions
