@@ -179,4 +179,4 @@ Lessons 1 and 21 are split: their record halves stay in the review rule.
     - nothing showed the picked option's track records, the fund's rows, or
       the "no clear view" card;
     - the proof page invented a shadow stage and a monthly restart;
-    - similar days were counted 31 against §19.4's 30.
+    - similar days were counted 31 against §19.4's 30 (numbered before MA-307; that section went with the Forecaster).

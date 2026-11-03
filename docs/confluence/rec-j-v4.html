@@ -1,5 +1,5 @@
 <div data-type="panel-custom" data-icon=":satellite_orbital:" data-color="#DEEBFF"><p><strong>🛰️ From a tap at either door to <em>Claude</em> and back, on AWS, in one trace.</strong></p>
-<p>The household&#x27;s wealth tracker end to end, driven by the chat: the iOS app and the web app, the AWS services between them, the concierge&#x27;s tool loop on the Anthropic API, the six agents that keep the records, the budget and the wealth forecast current, and which Claude model each piece uses. Admins add, correct and delete through the chat; every other member views. The forecast comes from the household&#x27;s actual numbers: XIRR and CAGR from the dated ledger, the Projection and the Budget forecast. Pick a journey below and press play to watch it move through the system.</p>
+<p>The household&#x27;s wealth tracker end to end, driven by the chat: the iOS app and the web app, the AWS services between them, the concierge&#x27;s tool loop on the Anthropic API, the six agents that keep the records, the budget and the wealth forecast current, and which Claude model each piece uses. Admins add, correct and delete through the chat; every other member views. The forecast comes from the household&#x27;s actual numbers: XIRR and CAGR from the dated ledger, the Projection and the Budget forecast. Goals and the saving they need, what changed and why, scenarios side by side and a forecast range graded each month all come from code; a nightly insight job in the worker says what matters, quietly, in a Monday digest; and an admin can plan with Opus. Pick a journey below and press play to watch it move through the system.</p>
 <p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/architecture-v4.html">architecture-v4.html</a> (MA-244), live at <a href="https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9">MyPaisa Architecture v4</a>, where each journey plays on demand and any part can be inspected.</p>
 </div>
 <h2>🗺️ Every hop a message makes, on the services that carry it</h2>
@@ -9,7 +9,7 @@
 <h2>❓ A question: 10 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>“What if we buy a house in 2028?” typed on the iPhone, answered at both doors.</strong></p>
 </div>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="2ec1a9d7-bd2e-4c89-ad82-d90b3c490fad" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-question.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="5a8cebab-6e37-4fee-b7c0-a10bc98e8534" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-question.gif"></div>
 <figcaption>A question, typed on the iPhone and answered at both doors, hop by hop (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
@@ -25,33 +25,34 @@
 <tr><td><strong>10</strong></td><td><strong>One run, one RunRecord</strong></td><td>The agent writes what it did and cost: each model call&#x27;s tokens, each tool&#x27;s time. The spans go to X-Ray; nothing of the conversation does.</td><td><code>RunRecord · mypaisa.cost_usd 0.020 · aws/spans</code></td><td></td></tr>
 </tbody>
 </table>
-<h2>📄 A factsheet: 9 steps</h2>
+<h2>📄 A factsheet: 10 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>An admin sends a fund factsheet PDF from the iPhone; it becomes a holding, with one Confirm.</strong></p>
 </div>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="cb2a88b4-21f6-4118-8777-37c86273dd7c" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-file.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e1b63b05-df15-47e8-927a-2e45bded2a09" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-file.gif"></div>
 <figcaption>A factsheet sent from the iPhone becomes a holding, with one Confirm (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
 <tbody><tr><td><strong>1</strong></td><td><strong>Ask for an upload link</strong></td><td>The door asks the api for a presigned link to the documents bucket.</td><td><code>POST /v1/uploads → presigned PUT, five minutes</code></td><td></td></tr>
 <tr><td><strong>2</strong></td><td><strong>The file lands first</strong></td><td>The PDF is stored before anything reads it, with a Document row and an audit row of its own. It is kept for good, whatever happens next.</td><td><code>s3://mypaisa-prod-documents/&lt;household&gt;/&lt;member&gt;/2026/10/</code></td><td></td></tr>
 <tr><td><strong>3</strong></td><td><strong>The message names the file</strong></td><td>The chat message carries the file&#x27;s key through the member&#x27;s lane to the concierge.</td><td><code>updates.fifo · { s3_key, client_message_id }</code></td><td></td></tr>
-<tr><td><strong>4</strong></td><td><strong>The agent opens it</strong></td><td>extract_document reads the file with the schema of what it expects to find.</td><td><code>tool extract_document(s3_key, schema)</code></td><td></td></tr>
-<tr><td><strong>5</strong></td><td><strong>Claude reads the PDF</strong></td><td>PDF input with citations: the name, ISIN, cost, top holdings and where it invests. Every figure carries its source line; no PAN, address or account number is kept.</td><td><code>document block · citations: enabled</code></td><td><span data-type="status" data-color="red">Sonnet 5.5</span></td></tr>
-<tr><td><strong>6</strong></td><td><strong>A draft, not a record</strong></td><td>Code parses and types each field against the kind. The draft is hashed in a PendingAction, so Confirm commits exactly what was shown.</td><td><code>PendingAction(flow_id, draft_hash) · expires in 24 h</code></td><td></td></tr>
-<tr><td><strong>7</strong></td><td><strong>The Confirm card</strong></td><td>The card shows what will be written, with the source a tap away. Nothing is saved yet.</td><td><code>card: holding.confirm · [Confirm] [Edit] [Cancel]</code></td><td></td></tr>
-<tr><td><strong>8</strong></td><td><strong>Confirm writes it, once</strong></td><td>The tap takes the same lane. Code checks the member is an admin; the write service validates against the kind and writes the record with its hash-chained audit row in one transaction.</td><td><code>TransactWriteItems: Record + AuditEvent(via: factsheet, document_id)</code></td><td></td></tr>
-<tr><td><strong>9</strong></td><td><strong>The laptop moves too</strong></td><td>records.changed reaches every open door, so the dashboard on the laptop shows the new holding at once.</td><td><code>event: records.changed</code></td><td></td></tr>
+<tr><td><strong>4</strong></td><td><strong>A job on the work queue</strong></td><td>Reading a document is a job, not a chat call: the concierge queues it on the work queue and the worker runs it by type.</td><td><code>work: documents · { s3_key, member, run_id }</code></td><td></td></tr>
+<tr><td><strong>5</strong></td><td><strong>The worker reads it with no tools</strong></td><td>The quarantined extractor (§21.2) opens the file with the schema of what it expects to find. It holds no tools and writes nothing; the file&#x27;s text is data, never an instruction.</td><td><code>extract_document(s3_key, schema) · no tools</code></td><td></td></tr>
+<tr><td><strong>6</strong></td><td><strong>Claude reads the PDF</strong></td><td>PDF input with citations: the name, ISIN, cost, top holdings and where it invests. Every figure carries its source line; no PAN, address or account number is kept.</td><td><code>document block · citations: enabled</code></td><td><span data-type="status" data-color="red">Sonnet 5.5</span></td></tr>
+<tr><td><strong>7</strong></td><td><strong>A draft, not a record</strong></td><td>The worker keeps what it read; the concierge picks it up and drafts it with draft_record, as code parses and types each field against the kind. The draft is hashed in a PendingAction, so Confirm commits exactly what was shown.</td><td><code>PendingAction(flow_id, draft_hash) · expires in 24 h</code></td><td></td></tr>
+<tr><td><strong>8</strong></td><td><strong>The Confirm card</strong></td><td>The card shows what will be written, with the source a tap away. Nothing is saved yet.</td><td><code>card: holding.confirm · [Confirm] [Edit] [Cancel]</code></td><td></td></tr>
+<tr><td><strong>9</strong></td><td><strong>Confirm writes it, once</strong></td><td>The tap takes the same lane. Code checks the member is an admin; the write service validates against the kind and writes the record with its hash-chained audit row in one transaction.</td><td><code>TransactWriteItems: Record + AuditEvent(via: factsheet, document_id)</code></td><td></td></tr>
+<tr><td><strong>10</strong></td><td><strong>The laptop moves too</strong></td><td>records.changed reaches every open door, so the dashboard on the laptop shows the new holding at once.</td><td><code>event: records.changed</code></td><td></td></tr>
 </tbody>
 </table>
 <h2>✅ A check-in: 6 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>Code decides an EMI is due; an admin taps Paid on the lock-screen push.</strong></p>
 </div>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="b34b261e-96d5-45ec-aa01-ac6b8194bbc0" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-checkin.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="695dd4a5-1bc7-42b7-ad64-8359d97e674a" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-checkin.gif"></div>
 <figcaption>Code decides an EMI is due; the owner taps Paid on the push (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
 <tbody><tr><td><strong>1</strong></td><td><strong>The schedule ticks</strong></td><td>EventBridge Scheduler, in Europe/London, puts the daily check-ins job on the work queue. The tick is the root of the trace.</td><td><code>schedule: checkins-daily → work · job_id</code></td><td></td></tr>
-<tr><td><strong>2</strong></td><td><strong>Code decides what is due</strong></td><td>No model: the worker reads the commitments and finds November&#x27;s EMI on the HDFC car loan due. The CheckIn row is created once, by a conditional put.</td><td><code>get_commitments(window) → CheckIn(emi#2026-11-05)</code></td><td></td></tr>
+<tr><td><strong>2</strong></td><td><strong>Code decides what is due</strong></td><td>No model: the worker reads the commitments and finds November&#x27;s EMI on the HDFC home loan due. The CheckIn row is created once, by a conditional put.</td><td><code>get_commitments(window) → CheckIn(emi#2026-11-05)</code></td><td></td></tr>
 <tr><td><strong>3</strong></td><td><strong>A card that shows what a tap writes</strong></td><td>The check-in goes on the admin&#x27;s outbox lane. Its Paid is the Confirm, with Undo.</td><td><code>card: checkin · [Paid] [Not yet] [Different amount]</code></td><td></td></tr>
 <tr><td><strong>4</strong></td><td><strong>Pushed, because no door is open</strong></td><td>The sender appends to the stream log and, with no fresh presence, sends Apple push. No amount shows on the lock screen.</td><td><code>APNs HTTP/2 · token key · retry-after honoured</code></td><td></td></tr>
 <tr><td><strong>5</strong></td><td><strong>Paid</strong></td><td>The tap is acknowledged at once and its effect queued, so the button never spins. The payment event and its audit row are written together.</td><td><code>Event(emi_paid) + AuditEvent(via: checkin)</code></td><td></td></tr>
@@ -61,7 +62,7 @@
 <h2>💷 The nightly valuation: 6 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>Prices in, only to value holdings; code works out net worth, XIRR and CAGR from the dated ledger.</strong></p>
 </div>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="90f46c44-d806-462b-ad92-2ecb49e6ea6d" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-value.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="5932dd92-5f34-43f6-9f54-265c9adbecd6" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-value.gif"></div>
 <figcaption>The nightly valuation: prices in, only to value the holdings, XIRR and CAGR worked out (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
@@ -76,7 +77,7 @@
 <h2>🗑️ A delete: 6 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>An admin deletes a closed account in the chat: a card, Confirm, the second check, an audit row.</strong></p>
 </div>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7ed77324-1c78-435c-9f26-1332dd41a1c6" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-delete.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="811c4bbc-7ee4-4709-9b12-fbb3191b1572" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-delete.gif"></div>
 <figcaption>A delete in the chat: a card, Confirm, the second check and an audit row, the files kept (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>
@@ -91,7 +92,7 @@
 <h2>🧯 A failure and its replay: 8 steps</h2>
 <div data-type="panel-custom" data-icon=":arrow_forward:" data-color="#F4F5F7"><p><strong>A statement job meets an overloaded API: retried, kept, alarmed, replayed once.</strong></p>
 </div>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="47d00af1-3026-4263-b3b9-b7fc1489d16e" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-failure.gif"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="9c52dbe3-1182-4196-9abe-a3b4a1cf5aee" data-collection="contentId-1671270" data-alt="rec-j-v4--v4-failure.gif"></div>
 <figcaption>A statement job meets an overloaded API: retried, kept, alarmed, replayed once (Architecture v4)</figcaption></figure>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Step</th><th>What happens</th><th>On the wire</th><th>Model</th></tr>
 </thead>

@@ -27,7 +27,7 @@
 </tbody>
 </table>
 <h3>👀 What the admin sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="5b447f90-668b-4922-ae0e-d99bf773b2f6" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-admin.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d7ae5e24-5254-4be1-b822-43cc65ed2ac9" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-admin.png"></div>
 <figcaption>What the member sees: The Admin center, admins only (Agent Journey)</figcaption></figure>
 <ul><li><strong>People first.</strong> The unconfirmed device on top; each action with its consequence; destructive ones in crimson, never the coral primary.</li>
 <li><strong>The web app · Spend.</strong> Dollars for Claude, as the credit and Anthropic&#x27;s limit are, with pounds beside them; the AWS cap in pounds; where alerts go.</li>
@@ -70,7 +70,7 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-116" data-card-appearance="inline"></a></td><td>The owner moves the Claude ceiling up or down in the Admin center</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-137" data-card-appearance="inline"></a></td><td>The admin sets the AWS and Claude caps and their alert thresholds in the Admin center, and alerts reach the app and the web app, push and email</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-113" data-card-appearance="inline"></a></td><td>Every Claude call is metered and nothing runs past the monthly ceiling</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-130" data-card-appearance="inline"></a></td><td>E2: an admin desk in the owner&#x27;s chat and the Admin center where agents ask questions and seek approval (phase 13)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-130" data-card-appearance="inline"></a></td><td>E2: an admin desk in the admins&#x27; chat and the Admin center where agents ask questions and seek approval, and admins give instructions (phase 13)</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-136" data-card-appearance="inline"></a></td><td>E8: each agent has its share of the $200 Claude credit (phase 13)</td></tr>
 </tbody>
 </table>
@@ -128,9 +128,9 @@
 </tbody>
 </table>
 <h3>👀 What the members see</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="53ca87bf-4148-46bf-bfe3-190fa57f6398" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-failure.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c3e6c46c-e088-4208-a995-a30bbbbdc429" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-failure.png"></div>
 <figcaption>What the member sees: When something fails (Agent Journey)</figcaption></figure>
-<ul><li><strong>The owner&#x27;s failed-work alert.</strong> Phase 8 adds the Replay button; replaying is an owner action, behind the second check.</li>
+<ul><li><strong>An admin&#x27;s failed-work alert.</strong> Phase 8 adds the Replay button; replaying is an admin action, behind the second check.</li>
 <li><strong>The member&#x27;s side.</strong> Kept, asked again when old, and an expired Confirm refused.</li>
 <li><strong>Offline.</strong> A typed message waits with its clock mark and goes once back online; Confirm needs a connection; figures carry their time.</li>
 </ul>
@@ -181,7 +181,7 @@
 </tbody>
 </table>
 <h2>12 · The Claude spend ladder in practice</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The agents&#x27; allowance is the Max 20x plan&#x27;s $200 monthly credit: $160 for prod and $40 for dev, each a ceiling the owner moves. As the month&#x27;s spend climbs, MyPaisa steps down to cheaper ways of working before it stops. Alerts always go out.</p>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The agents&#x27; allowance is the Max 20x plan&#x27;s $200 monthly credit: $160 for prod and $40 for dev, each a ceiling an admin moves. As the month&#x27;s spend climbs, MyPaisa steps down to cheaper ways of working before it stops. Alerts always go out.</p>
 <p><em><strong>Trigger</strong> every model call reads the meter first</em> <span data-type="status" data-color="blue">Phase 1 (meter, 100% stop)</span> <span data-type="status" data-color="blue">Phase 10 (the lower steps)</span></p>
 </div>
 <h3>📌 The steps</h3>
@@ -189,27 +189,30 @@
 <p><strong>&lt; 70%</strong></p>
 <h5>Normal</h5>
 <ul><li>Sonnet for chat and cards</li>
-<li>Why? with web search</li>
+<li>Opus for a plan with me session an admin starts, at most 5% of the ceiling</li>
+<li>Web search to look up a holding&#x27;s details when it is added</li>
 </ul>
 <p><strong>70%</strong></p>
 <h5>A heads-up</h5>
-<ul><li>One message to the owner: what is spent, on what, and the days left</li>
+<ul><li>One message to the admins: what is spent, on what, and the days left</li>
 <li>Nothing changes</li>
 </ul>
 <p><strong>85%</strong></p>
 <h5>Savers</h5>
-<ul><li>Why? gets three searches a day</li>
-<li>Everything else as normal</li>
+<ul><li>Plan with me waits, and the insight job sends the Monday digest only, its timely nudges waiting</li>
+<li>Web searches are limited to three a day; the overnight judges pause; the tuner&#x27;s monthly note is held to its figures; a memory note only when asked</li>
+<li>Chat as normal</li>
 </ul>
 <p><strong>95%</strong></p>
 <h5>Essentials only</h5>
 <ul><li>Chat answers on Haiku</li>
-<li>Alerts and check-ins go out as plain templates with code&#x27;s numbers</li>
+<li>Alerts, check-ins and the Monday digest go out as plain templates with code&#x27;s numbers</li>
+<li>Plan with me is off</li>
 <li>Reading a factsheet or screenshot still works</li>
 </ul>
 <p><strong>100%</strong></p>
 <h5>Templates only</h5>
-<ul><li>Claude stops until the cycle renews or the owner raises the ceiling</li>
+<ul><li>Claude stops until the cycle renews or an admin raises the ceiling</li>
 <li>Every card goes out as its plain template; its buttons, the chips and guided flows work</li>
 <li>A typed message gets one line saying when free text is back</li>
 </ul>
@@ -222,7 +225,7 @@
 <tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The call, if the step allows it</td></tr>
 <tr><td data-background="#EAE6FF"><strong>4</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>The API&#x27;s own usage counts: input, output and thinking, cache writes and reads, web searches</td></tr>
 <tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>The cost, from the price table, added atomically to SpendMonth by member, feature, agent, model and day, and written on the <strong>RunRecord</strong></td></tr>
-<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to App</td><td>At 70, 85, 95 and 100%: a message to the owner, through the alert router to the app and the web app, push and email (<strong>SNS</strong>)</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to App</td><td>At 70, 85, 95 and 100%: a message to the admins, through the alert router to the app and the web app, push and email (<strong>SNS</strong>)</td></tr>
 <tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Behind the meter.</strong> Each Anthropic workspace, prod and dev, has its spend limit set by hand to the hard limit ($160 prod, $40 dev), which stops the key outright if the meter is ever wrong. Behind that, the credit itself: no payment method, auto-reload off. The meter is reconciled weekly against Anthropic&#x27;s own usage figures.</td></tr>
 </tbody>
 </table>
@@ -234,11 +237,11 @@
 <p>Per run</p>
 <p>At most eight model calls in one run; a loop that reaches it stops and says so.</p>
 <p>Per agent (phase 13)</p>
-<p>Each agent has its share of the ceiling, the concierge 55%; past it, that agent drops to its 95% step and the reserve covers the chat first.</p>
+<p>Each agent has its share of the ceiling: the concierge 70%, the insight job and plan with me 10% between them (plan with me at most 5%), the grader and tuner 5%; past it, that agent drops to its 95% step and the reserve covers the chat first.</p>
 <h3>👀 What the members see</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="341dee58-8ba5-488c-b601-e908b0f0dc46" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-ladder.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="6043dd57-5a71-4297-88d6-a92d8fba1a16" data-collection="contentId-1736745" data-alt="rec-j-flows-run--flow-ladder.png"></div>
 <figcaption>What the member sees: The Claude spend ladder in practice (Agent Journey)</figcaption></figure>
-<ul><li><strong>85%.</strong> The owner is told what changed.</li>
+<ul><li><strong>85%.</strong> The admins are told what changed.</li>
 <li><strong>95%.</strong> A check-in as its plain template: the same figures from code, the words from the template.</li>
 <li><strong>100%.</strong> One line; everything with a button keeps working. The renewal date is illustrative.</li>
 </ul>

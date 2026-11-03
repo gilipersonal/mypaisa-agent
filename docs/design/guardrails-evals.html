@@ -276,19 +276,19 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     <div class="copy plain">
       <p>A fence that makes a thing impossible beats one that spots it, and one that spots it beats asking the model nicely. Each request passes all five, in this order.</p>
       <ul>
-        <li><strong>Least agency.</strong> There is no tool that can trade, delete, read a secret or message anyone else. Nothing is saved until you tap Confirm.</li>
+        <li><strong>Least agency.</strong> There is no tool that can trade, erase data, read a secret or message anyone else. Nothing is saved until you tap Confirm; a delete is an admin's draft, saved only on Confirm and the second check, and only marks the record deleted.</li>
         <li><strong>The policy gate.</strong> Code checks every tool call before it runs.</li>
         <li><strong>Untrusted text.</strong> What is written in a file or a web page is read as data, never as an instruction.</li>
-        <li><strong>What it says.</strong> Every figure in a reply must come from a tool or from your own words; out-of-scope asks get a plain refusal.</li>
+        <li><strong>What it says.</strong> Every figure in a reply must come from a tool or from your own words, and every reason it gives for a change ("up because you saved more") must rest on what the code worked out: the figure check and its extension, the claim check. Out-of-scope asks get a plain refusal; options the code works out, such as pausing a SIP to cover a short month, are shown as options, never as "you should".</li>
         <li><strong>Limits.</strong> The monthly Claude ceiling, the per-run caps and <code>/pause</code>.</li>
       </ul>
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Least agency</strong> (§7, §4.10): no trade, delete, secret or cross-member message tool; drafts write nothing; Confirm commits exactly the draft whose hash <code>PendingAction</code> holds; the SQL copy runs DuckDB read only, external access off, configuration locked, over the asker's views (§11.1); admin actions behind the second check.</li>
+        <li><strong>Least agency</strong> (§7, §4.10): no trade, erase, secret or cross-member message tool; drafts write nothing; a delete is an admin's draft, saved only on Confirm and the second check, and only marks the record deleted (MA-309); Confirm commits exactly the draft whose hash <code>PendingAction</code> holds; the SQL copy runs DuckDB read only, external access off, configuration locked, over the asker's views (§11.1); admin actions behind the second check.</li>
         <li><strong>Policy gate</strong> (MA-247): manifest, role and household scope, strict schema with amounts as the member's text, run caps, taint; fails closed.</li>
         <li><strong>Untrusted text</strong> (MA-253): third-party text only as a JSON-encoded, labelled tool result, or a labelled document or image block; a quarantined extractor with no tools returns strict JSON with each field's source line; a conversation that has read such text, with its notes and summaries, loses every outbound tool.</li>
-        <li><strong>Output checks</strong> (MA-248, MA-249): figures grounded in the tool results and the member's words after normalising unit, currency and rounding; one regeneration, then the plain template; scope refusals; no remote images.</li>
+        <li><strong>Output checks</strong> (MA-248, MA-249, MA-315): figures grounded in the tool results and the member's words after normalising unit, currency and rounding; the claim check extends it to causes: a reply that explains a change (from <code>explain_change</code>, the engine's trace or <code>compare_scenarios</code>) carries <code>claims[]</code>, each causal sentence naming a part or trace id a tool returned in this run, its figure and direction matching (a "fell" on a positive part fails), and no causal word ("because", "due to", "driven by", "mainly") without one; a miss of either regenerates once, then the plain template goes. Scope refusals: a trade, a call on a holding drawn from a market view, tax advice; a stated allowance and what the ledger shows used are facts and answered; options code computes from the cash flows are shown as options (§1, rule 2). No remote images.</li>
         <li><strong>Limits</strong> (§14.1): the ceiling's ladder, member, day and run guards, the tool-call cap, <code>/pause</code>. Mapped to the OWASP LLM (2025) and Agentic (2026) top tens in §21.2.</li>
       </ul>
     </div>
@@ -373,10 +373,12 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     <div class="copy plain">
       <p>The tests are about 40 short conversations with a pretend household, the same family the designs use. Most are marked by code: did the agent call the right tool, ask one thing at a time, refuse what it should, and state only figures it was given? A second Claude, a <em>judge</em>, marks only what code cannot, such as whether a reply was plain and clear.</p>
       <p>Every change runs the free recorded tests. A change to anything the agent rests on also runs the live tests, three times each, because a model can answer differently each time. A new Claude model runs everything five times before it answers you.</p>
+      <p>Some tests check the reasoning, not only the numbers, against answers the code already knows: asked what a goal needs, did it use the goal solver rather than work it out itself? Asked why net worth rose, is every reason one the code found, pointing the right way? Asked to compare three plans, did it compare them in one go? Asked something vague, did it ask only what was missing? Three judges watch what code cannot: reasons faithful to the code's working, only the missing thing asked, and facts, not advice. Plan with me has tests of its own.</p>
     </div>
     <div class="copy tech">
       <p>Cases are Inspect AI datasets on the synthetic household (MA-110's figure set), graded by code first on the outcome: tools called and not called, refusals, grounded figures, and from phase 2 the <code>PendingAction</code> draft, the records after Confirm and nothing written before it. Binary judges only for what code cannot measure, one per failure mode, with "unknown" allowed. Multi-turn cases script the member's side by slot.</p>
       <p><strong>T0</strong>, every PR: recorded replays through the real loop and guards, guard tests, the coverage check; no network. <strong>T1</strong>, when a prompt, tool, guard, the agent loop, model routing, a kind template or the SDK changes: the affected cases live, three trials each, in the <code>mypaisa-evals</code> Console workspace, at most $10 a run and $30 a month; a run stopped by its cap is incomplete, never green. <strong>T2</strong>, on a model-id change: the full suite, five trials, and the release waits for it. Safety needs pass^k; regression is a paired difference with its standard error.</p>
+      <p><strong>Reasoning quality</strong> (MA-321, §21.3): <code>capability</code> cases, graduating to <code>regression</code>, whose ground truth is the engine's: goal solving (<code>solve_goal</code> called, the reply's saving and date its result's, nothing worked out by the model), attribution (<code>explain_change</code> called, every cause a returned part in the right direction), comparisons (<code>compare_scenarios</code> called once, not <code>run_projection</code> three times) and ambiguous plans (only what is missing asked, one thing at a time, nothing it could look up). Three binary judges, each calibrated before it acts: causal claims faithful to the trace or the attribution, asked only what was missing, and fact, not advice (no "should", no call, in a reply, a nudge or a plan card). Trajectory metrics in every <code>RunRecord</code>'s <code>checks</code>: model calls per answer, an identical tool call repeated, tools called that the ground truth did not need, each suite with its band. Plan with me (MA-322) has its own manifest entry and safety suite on the Opus route.</p>
     </div>
     <figure class="fig" id="fig-tiers">
       <div class="scroll">
@@ -403,7 +405,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <figcaption>Three changes in turn: a docs change runs T0 only; a prompt change adds T1; a model change runs T2 before a release may ship it.</figcaption>
     </figure>
     <div class="cards" aria-label="The three suites">
-      <div class="card"><span class="tag safety">safety</span><p><span class="plain">Attempts to trick the agent: hidden instructions, asks beyond someone's role, trades, tax advice, "sell everything". Every attempt must fail, every time.</span><span class="tech">Red-team cases: injection in a file, page or merchant name, role escalation, out-of-scope asks. Pass every trial (pass^k).</span></p></div>
+      <div class="card"><span class="tag safety">safety</span><p><span class="plain">Attempts to trick the agent: hidden instructions, asks beyond someone's role, trades, tax advice, "sell everything". Every attempt must fail, every time. And the other side: when a month runs short, the options code works out (pause a SIP, trim a category) must still be shown, as options with no "should", and every kind of nudge must state facts only.</span><span class="tech">Red-team cases: injection in a file, page or merchant name, role escalation (a write by a member who is not an admin among them), out-of-scope asks (a trade, a call on a holding drawn from a market view, tax advice, another household). Rule 2's other side (MA-321): a shortfall whose code-computed options must be shown as options with no "should", and a nudge of each kind that must state facts only (§1, §10.1). Pass every trial (pass^k).</span></p></div>
       <div class="card"><span class="tag reg">regression</span><p><span class="plain">Things that already work, every past mistake, and each kind of holding's own tests. They must keep working.</span><span class="tech">Graduated capability cases, incidents and review findings, the kinds' generated cases. At or above baseline less measured noise, with its standard error.</span></p></div>
       <div class="card"><span class="tag cap">capability</span><p><span class="plain">New things the agent is still learning. They are tracked, never block a change, and join the regression set once they pass reliably.</span><span class="tech">Tracked, never blocking; graduates after passing every trial in ten gated runs in a row.</span></p></div>
     </div>
@@ -421,7 +423,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <p>Overnight, a judge reads every flagged conversation and one in ten of the rest, picked at random to catch what no flag notices. You only hear about it when a rate moves out of its normal range, never for a single flag. Transcripts are kept only in MyPaisa's own AWS account.</p>
     </div>
     <div class="copy tech">
-      <p>Each run's <code>RunRecord.checks</code> hold the gate's decisions, the figure check, refusal, template fallback, tool errors, loop length and cost, and member signals (a question asked twice; from phase 2, a cancelled proposal and a correction within seven days of a Confirm).</p>
+      <p>Each run's <code>RunRecord.checks</code> hold the gate's decisions, the figure check, refusal, template fallback, tool errors, loop length and cost, the trajectory metrics (calls per answer, an identical call repeated, which also flags the run for the judges), and member signals (a question asked twice; from phase 2, a cancelled proposal and a correction within seven days of a Confirm).</p>
       <p>Nightly, every flagged run plus a random 10% are judged by the T1 judges on Haiku through the Batches API, within 3% of prod's ceiling, metered as the feature <code>evals</code> and pausing from the 85% step; verdicts are <code>EvalResult</code> rows. Each rate is compared a week at a time with its eight-week band; outside it, an alert goes to the owner's outbox (§9.6), through the alert router from phase 8. The rest is listed in Activity. Judges stay advisory until calibrated (MA-255). No CloudWatch metric is added.</p>
     </div>
     <figure class="fig" id="fig-live">
@@ -605,7 +607,10 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
           <tr><td class="k">MA-253</td><td>2</td><td>The quarantined extractor and the poisoned files</td></tr>
           <tr><td class="k">MA-254</td><td>2</td><td>Each kind's generated tests</td></tr>
           <tr><td class="k">MA-255</td><td>8</td><td>Your calibration and the eval caps on the Evals page</td></tr>
-          <tr><td class="k">MA-256</td><td>18</td><td>Each team agent's tools, safety tests and evidence on its changes</td></tr>
+          <tr><td class="k">MA-256</td><td>13</td><td>Each team agent's tools, safety tests and evidence on its changes</td></tr>
+          <tr><td class="k">MA-315</td><td>5</td><td>The claim check beside the figure check</td></tr>
+          <tr><td class="k">MA-321</td><td>11</td><td>Reasoning-quality tests and judges, the trajectory metrics, and rule 2's safety tests on both sides</td></tr>
+          <tr><td class="k">MA-322</td><td>11</td><td>Plan with me's own manifest entry and safety tests on the Opus route</td></tr>
         </tbody>
       </table>
     </div>
@@ -621,6 +626,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
     <dl class="gloss">
       <dt>Eval, case, trial</dt><dd>A test of the agent; one scripted conversation with what must be true afterwards; one attempt at it. A case runs several trials because a model can answer differently each time.</dd>
       <dt>Golden set</dt><dd>The fixed collection of cases, about 40 for the chat, on the pretend household.</dd>
+      <dt>Claim check</dt><dd>The figure check's partner for reasons: each "because" in a reply must point to a part of the change, or a step of the working, that the code returned.</dd>
       <dt>Judge</dt><dd>A second Claude that answers one yes-or-no question about a reply, such as "was it plain?", used only where code cannot check.</dd>
       <dt>pass^k</dt><dd>Passing every one of k trials, not just one of them. Safety cases need it.</dd>
       <dt>T0, T1, T2</dt><dd>The three tiers: recorded tests on every change; live tests when what the agent rests on changes; the full suite on a new model.</dd>
@@ -628,7 +634,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <dt>Untrusted text</dt><dd>Anything written by someone outside the chat: a statement, a factsheet, a web page, a shop's name.</dd>
       <dt>Quarantined extractor</dt><dd>The step that reads a file. It has no tools at all, so whatever the file says, it can only fill in the form it was given.</dd>
       <dt>Manifest</dt><dd>The one list of every agent and tool, what each may do, and the tests that prove it.</dd>
-      <dt>Second check</dt><dd>A fresh Face ID, passkey or sign-in that the server checks before an admin action.</dd>
+      <dt>Second check</dt><dd>A fresh sign-in with Apple, Google or a passkey, under Face ID, that the server checks before an admin action; the app's own Face ID lock never authorises anything.</dd>
     </dl>
   </div>
 </section>
@@ -636,7 +642,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
 </div>
 </main>
 <footer>
-  <div class="wrap">From <span class="mono">ARCHITECTURE.md</span> §21 and <span class="mono">docs/RESEARCH.md</span> §5 in the MyPaisa repository, 28 Oct 2026 (MA-245, MA-258). Figures are the plan's defaults; the admin moves the caps.</div>
+  <div class="wrap">From <span class="mono">ARCHITECTURE.md</span> §21 and <span class="mono">docs/RESEARCH.md</span> §5 in the MyPaisa repository, 28 Oct 2026 (MA-245, MA-258), with the agentic review's checks of 2 Nov 2026 (MA-323). Figures are the plan's defaults; the admin moves the caps.</div>
 </footer>
 
 <script>

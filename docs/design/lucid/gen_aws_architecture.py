@@ -18,6 +18,13 @@ PlantUML for Lucid's sequence importer (the Standard Import format has no sequen
 
 A change after the first import is made in the Lucid documents in place, so their ids and links stay: a shape's text
 and box by its id (the ids here are the ids in Lucid), and view 8 by replacing its sequence generator's markup.
+
+MA-312 (2 Nov 2026), after MA-307 made MyPaisa a wealth tracker only: page 6, the market agent and learning loop, is
+gone (its Lucid document, 6f1b4c75-353c-49e5-b6e7-29fd2c18d356, is left as it was for Arun to decide on), and no
+other page draws the News scout, the Analyst, the Forecaster, the rules engine, briefs, stances or news feeds. The
+agent team is the six agents of ARCHITECTURE 18.1, prices exist only to value the holdings (5.1), only admins write
+(4.10), and the phases are numbered as PLAN.md now numbers them (the agent team is phase 13). A shape that left a
+page was deleted from its Lucid document; the ids of the shapes that stayed did not change.
 """
 import json, re, sys
 
@@ -113,7 +120,7 @@ p.box("h_app", 70, APP_Y, 300, APP_H,
       "iOS 26 · MyPaisa Dev → dev<br>SSE stream · Apple push<br>files: presigned upload<br><br>sign in: Apple · Google<br>a passkey (added from You)<br>answers the second check<br>tokens in the Keychain")
 p.box("h_web", 70, WEB_Y, 300, WEB_H,
       "<b>Web app</b> (SvelteKit 3 PWA)<br>the chat, the dashboard,<br>the Admin center<br>dashboard.mypaisapp.com<br>SSE stream · Web Push<br>Apple · Google · passkey<br>HttpOnly session cookie")
-p.box("h_mem", 70, 1360, 300, 100, "<b>Members</b><br>owner, member, viewer<br>joined by an invite link")
+p.box("h_mem", 70, 1360, 300, 100, "<b>Members</b><br>owner, admin, member, viewer<br>joined by an invite link")
 p.box("h_mail", 70, 1230, 300, 110, "<b>Admin's email</b><br>system alerts through SNS<br>1,000 a month free")
 p.box("o_apple", 615, 150, 360, 110, "<b>Apple · push services</b><br>Sign in with Apple · APNs<br>Web Push · TestFlight", F_OUT, AMBER)
 p.box("o_claude", 1045, 150, 340, 110, "<b>Anthropic API</b> · Haiku · Sonnet<br>$200 credit: $160 prod · $40 dev", F_OUT, AMBER)
@@ -136,25 +143,25 @@ p.icon("qin", "sqs", c[2], YB, "SQS updates.fifo<br>lane per member")
 p.icon("ddb", "ddb", c[4], YB, "DynamoDB<br>records · events · audit<br>stream log · Presence")
 p.icon("lake", "s3", c[5], YB, "S3 lake<br>Parquet · DuckDB")
 p.icon("ecr", "ecr", c[6], YB, "ECR<br>one arm64 image")
-# row C: the web app's site, sign-in, files, phase 18
+# row C: the web app's site, sign-in, files, phase 13
 p.icon("cf", "cf", c[0], YC, "CloudFront<br>dashboard.mypaisapp.com")
 p.icon("s3web", "s3", c[1], YC, "S3 dashboard site<br>PWA · AASA · /join")
 p.icon("cog", "cognito", c[2], YC, "Cognito (Essentials)<br>no hosted domain<br>called by api /auth/*")
 p.icon("trig", "lambda", c[3], YC, "Cognito triggers λ<br>Apple · Google tokens<br>passkey assertions")
 p.icon("docs", "s3", c[4], YC, "S3 documents<br>presigned uploads<br>kept for good")
-p.icon("sfn", "sfn", c[5], YC, "Step Functions<br>daily run (phase 18)")
-p.icon("bus", "bus", c[6], YC, "EventBridge bus<br>agent team (phase 18)")
+p.icon("sfn", "sfn", c[5], YC, "Step Functions<br>daily run (phase 13)")
+p.icon("bus", "bus", c[6], YC, "EventBridge bus<br>agent team (phase 13)")
 # row D: background work, failure, cost
 p.icon("sns", "sns", c[0], YD, "SNS admin-alerts<br>email · alert router")
 p.icon("cw", "cw", c[1], YD, "CloudWatch + X-Ray<br>logs · alarms")
 p.icon("dlq", "queue", c[2], YD, "dead-letter queues<br>kept 14 days")
 p.icon("sched", "sched", c[3], YD, "EventBridge Scheduler<br>Europe/London")
 p.icon("qwork", "sqs", c[4], YD, "SQS work<br>background jobs")
-p.icon("worker", "lambda", c[5], YD, "worker λ<br>ingest · news · docs<br>engine · briefs<br>check-ins · views")
+p.icon("worker", "lambda", c[5], YD, "worker λ<br>price ingest · docs<br>check-ins · views<br>Projection runs")
 p.icon("budg", "budgets", c[6], YD, "AWS Budgets<br>£75 backstop")
 p.icon("ce", "ce", c[7], YD, "Cost Explorer<br>daily AWS meter")
 p.cont("out", 2240, 380, 360, 1000, "Outside AWS", F_OUT, AMBER)
-p.box("o_data", 2270, 440, 300, 170, "<b>Free data first</b><br>yfinance · Twelve Data free<br>FRED · BoE · ECB · EIA<br>GDELT · RSS<br>EODHD only on approval")
+p.box("o_data", 2270, 440, 300, 170, "<b>Prices, free first</b><br>to value the holdings<br>yfinance · Twelve Data free<br>ECB rates · issuer pages<br>EODHD only on approval")
 p.box("o_google", 2270, 670, 300, 110, "<b>Google</b><br>Sign in with Google<br>iOS and web clients")
 p.box("o_gh", 2270, 840, 300, 200, "<b>GitHub Actions</b><br>OIDC, no AWS keys<br>gates · plan · build once<br>dev, then prod on approval<br>macOS runner: the app<br>→ TestFlight")
 p.box("o_jira", 2270, 1100, 300, 100, "<b>Jira MA</b><br>every change traced")
@@ -333,9 +340,9 @@ p.icon("q_send", "lambda", 1700, 380, "sender λ<br>stream log,<br>else push")  
 p.icon("q_ws", "apigw", 1960, 380, "SSE stream · /v1/stream<br>api.mypaisapp.com")
 p.icon("q_conn", "ddb", 1960, 640, "DynamoDB<br>stream log · Presence<br>read by the stream")
 p.icon("q_sched", "sched", 380, 720, "EventBridge Scheduler<br>retry policy + own DLQ")
-p.icon("q_work", "sqs", 880, 720, "work queue<br>ingest · news · docs<br>engine · briefs · scoring")
+p.icon("q_work", "sqs", 880, 720, "work queue<br>price ingest · docs<br>check-ins · views<br>Projection runs")
 p.icon("q_worker", "lambda", 1160, 720, "worker λ<br>capped concurrency")
-p.box("q_free", 1440, 720, 300, 120, "<b>Free data sources</b><br>yfinance · Twelve Data (8/min)<br>FRED · GDELT · RSS", F_OUT, AMBER)
+p.box("q_free", 1440, 720, 300, 120, "<b>Free price sources</b><br>yfinance · Twelve Data (8/min)<br>ECB · issuer pages", F_OUT, AMBER)
 p.icon("q_idem", "ddb", 880, 980, "DynamoDB<br>idempotency records<br>(Powertools)")
 p.box("q_rules", 1300, 920, 880, 230,
       "<b>Retry rules, all settings</b><br>updates: 3 tries within about a minute, so a lane never stays stuck<br>"
@@ -349,7 +356,7 @@ p.icon("q_cw", "cw", 980, 1300, "CloudWatch alarm<br>depth over 0")
 p.icon("q_sns", "sns", 1240, 1300, "SNS admin-alerts<br>→ alert router")
 p.box("q_replay", 1500, 1265, 640, 180,
       "<b>Replay</b> moves messages back to their queue<br>phase 1: scripts/redrive.sh · phase 8: [Replay] on the alert<br>"
-      "in the Admin center · phase 18: the ops warden, once the cause<br>is healthy, at most 3 times, then an incident<br>"
+      "in the Admin center · phase 13: the ops warden, once the cause<br>is healthy, at most 3 times, then an incident<br>"
       "a message over an hour old asks \"still want this?\"",
       F_NOTE, CRIMSON)
 p.line("q_app", "q_apigw", "", pa=R, pb=Lf)
@@ -366,7 +373,7 @@ p.line("q_send", "q_conn", "", color=GREY, pa=(1, 0.8), pb=(0, 0.3))
 p.line("q_sched", "q_work", "jobs", pa=R, pb=Lf)
 p.line("q_work", "q_worker", "", pa=R, pb=Lf)
 p.line("q_worker", "q_free", "", color=AMBER, pa=R, pb=(0, 0.375))
-p.line("q_worker", "q_out", "briefs", pa=(0.75, 0), pb=(0, 0.85))
+p.line("q_worker", "q_out", "check-ins", pa=(0.75, 0), pb=(0, 0.85))
 p.line("q_agent", "q_work", "documents", pa=(0, 0.75), pb=(1, 0), lpos=0.5)
 p.line("q_worker", "q_idem", "done?", color=GREY, pa=(0, 1), pb=T, lpos=0.72)
 p.line("q_work", "q_dlq", "after the last try", color=CRIMSON, dashed=True, pa=(0, 0.65), pb=T, lpos=0.5)
@@ -392,7 +399,7 @@ groups = [
     ("Views, from the events", "each record's value<br>NetWorth · budget month<br>what is due<br>ProjectionRun<br>rebuilt if a kind changes"),
     ("Commitments, check-ins", "Commitment: dated money<br>EMI · card bill · SIP<br>premium · salary · rent<br>CheckIn: one per due date<br>PlanItem (the admin's)"),
     ("Household and identity", "Portfolio · Invite<br>Member: role, status<br>and session epoch<br>Device: push, Web Push<br>Cognito holds the users"),
-    ("Market and files", "Instrument (shared)<br>Valuation · Document<br>Signal · Stance<br>Forecast · ModelVersion<br>ScoreDaily"),
+    ("Prices, files, learning", "Instrument (shared)<br>Valuation · Document<br>MonthGrade<br>LearnedProposal<br>MemberSignal"),
     ("Chat, audit and runs", "ChatTurn (90 days)<br>PendingAction (a day)<br>AuditEvent (hash-chained)<br>RunRecord (90 days)"),
     ("Settings, budgets, alerts", "Setting · ConfigVersion<br>ChangeRequest · Incident<br>BudgetSettings · Alert<br>SpendMonth · AlertRule"),
 ]
@@ -403,12 +410,9 @@ p.cont("lakec", 1320, 270, 950, 640, "S3 lake bucket · Parquet by date", F_AWS,
 p.icon("lakei", "s3", 1350, 330, "S3 lake<br>versioned in prod")
 prefixes = [
     ("raw/&lt;source&gt;/dt=", "as fetched · 90 days, then IA"),
-    ("curated/", "prices, economy, events, news matches<br>with the date each was known"),
-    ("features/dt=", "each day's feature snapshot"),
-    ("predictions/model=/dt=", "every stance and forecast as made"),
-    ("outcomes/model=/dt=", "every grade"),
-    ("models/ · calibration/", "model files, test reports, maps"),
-    ("reports/ · config/snapshots/", "backtests, reviews, daily settings"),
+    ("curated/", "prices and exchange rates<br>with the date each was known"),
+    ("household/&lt;household&gt;/learning/", "month grades, proposals, daily counts<br>never message text"),
+    ("reports/ · config/snapshots/", "the tuner's monthly notes<br>the daily settings snapshot"),
     ("raw/dlq/", "dead-lettered messages, for good"),
 ]
 for i, (k, v) in enumerate(prefixes):
@@ -425,71 +429,23 @@ p.line("ddbi", "k1", "", color=GREY, pa=R, pb=Lf)
 p.line("duck", "lakec", "queries", color=GREEN, pa=T, pb=((1395 - 1320) / 950, 1))
 pages.append(p)
 
-# ---------------------------------------------------------------- 6 market agent and learning loop
-p = Page("p6", "6 Market agent and learning loop", "The market agent: rules engine, Forecaster and the learning loop",
-         "phase 10 rules engine · phase 17 Forecaster (MA-117) · phase 18 learning loop and agents (MA-127) · phase 19 India (MA-147) · code decides, Claude explains")
-p.box("m_src", 40, 190, 300, 330, "<b>Free data first</b><br>yfinance · Twelve Data free<br>FRED / ALFRED · BoE · ECB · ONS<br>EIA (oil) · GDELT · GPR index<br>RSS · calendars<br><b>India</b>: AMFI NAVs, phase 5<br>mfapi.in · NSE/BSE bhavcopy<br>RBI · NSDL flows: phase 19<br>EODHD only if approved", F_OUT, AMBER)
-p.group("cl6", "cloud", 400, 170, 1900, 1340, "AWS · prod")
-p.group("wf", "sfnwf", 440, 230, 1540, 600, "Daily run · Step Functions · retries on every step (phase 18)")
-p.icon("m_steward", "lambda", 500, 320, "data steward<br>failover · gaps · quotas")
-p.icon("m_lake", "s3", 760, 320, "S3 curated<br>known-date stamped")
-p.icon("m_feat", "lambda", 1000, 320, "features<br>trend · momentum · risk<br>macro · news tone")
-p.icon("m_rules", "lambda", 1260, 270, "analyst · rules engine<br>pillars · cascade · confidence")
-p.icon("m_fc", "lambda", 1260, 520, "Forecaster models<br>mood · risk · similar days<br>event impacts · direction")
-p.icon("m_cal", "lambda", 1540, 400, "calibrate and combine<br>CalibrationMap")
-p.icon("m_store", "ddb", 1800, 300, "DynamoDB<br>Stance · Forecast")
-p.icon("m_pred", "s3", 1800, 560, "S3 predictions/<br>every one as made")
-p.icon("m_card", "sqs", 2100, 400, "outbox → the app<br>side-by-side card")
-p.icon("m_news", "lambda", 500, 620, "news scout<br>Haiku through Batches")
-p.box("m_expo", 720, 610, 420, 150, "<b>Exposure map per holding</b> · news relevance<br>fund: holdings, countries, sectors, currencies<br>share: company, sector, markets, rivals<br>commodity: gold, silver, oil drivers", F_NOTE, GREY)
-p.cont("learn", 440, 900, 1540, 560, "Learning loop · daily, bounded, approved (phase 18, MA-132 to MA-134)", F_P12, PURPLE)
-p.box("m_calrule", 480, 1000, 480, 170, "<b>Daily calibration</b><br>refit on a rolling window<br>at most 2 points per bucket a day<br>used only when better · 10 days' probation<br>rolls back on its own", F_NOTE, PURPLE)
-p.icon("m_score", "ddb", 1120, 1040, "ScoreDaily<br>30 · 90 · 365 days")
-p.icon("m_out", "s3", 1440, 1040, "S3 outcomes/<br>never overwritten")
-p.icon("m_grade", "lambda", 1760, 1040, "grader<br>after each close<br>Brier · log loss · range")
-p.icon("m_chal", "lambda", 500, 1290, "tuner<br>challengers: retrain,<br>parameters, rule ranges")
-p.box("m_lab", 700, 1270, 420, 150, "<b>Backtest lab</b> (MA-120)<br>ten years, walk-forward with a gap<br>last two years held out<br>then 8 live weeks in shadow", F_NOTE, PURPLE)
-p.icon("m_cr", "ddb", 1270, 1290, "ChangeRequest<br>with scores side by side")
-p.box("m_desk", 1490, 1270, 440, 150, "<b>Admin desk</b><br>a card in the owner's chat in the app<br>or the Admin center<br>approve with the second check<br>then ModelVersion goes live", F_FAIL, CRIMSON)
-p.box("m_claude", 40, 580, 300, 140, "<b>Claude</b><br>Haiku tags news<br>Sonnet explains<br>never a number", F_OUT, AMBER)
-p.line("m_src", "m_steward", "", color=AMBER, pa=R, pb=Lf)
-p.line("m_steward", "m_lake", "", pa=R, pb=Lf)
-p.line("m_lake", "m_feat", "", pa=R, pb=Lf)
-p.line("m_feat", "m_rules", "", pa=R, pb=Lf)
-p.line("m_feat", "m_fc", "", pa=(1, 0.8), pb=Lf, kind="elbow")
-p.line("m_rules", "m_cal", "", pa=R, pb=(0, 0.2))
-p.line("m_fc", "m_cal", "", pa=R, pb=(0, 0.8))
-p.line("m_cal", "m_store", "", pa=R, pb=Lf)
-p.line("m_cal", "m_pred", "", pa=(1, 0.8), pb=Lf, kind="elbow")
-p.line("m_store", "m_card", "", pa=R, pb=Lf)
-p.line("m_news", "m_expo", "tags", pa=R, pb=Lf)
-p.line("m_expo", "m_fc", "", pa=R, pb=(0, 0.8))
-p.line("m_news", "m_claude", "Haiku", color=AMBER, dashed=True, pa=Lf, pb=R)
-p.line("m_pred", "m_grade", "horizon passed", color=PURPLE, pa=R, pb=R, kind="elbow", lpos=0.5)
-p.line("m_grade", "m_out", "", color=PURPLE, pa=Lf, pb=R)
-p.line("m_out", "m_score", "", color=PURPLE, pa=Lf, pb=R)
-p.line("m_score", "m_calrule", "", color=PURPLE, pa=Lf, pb=R)
-p.line("m_chal", "m_lab", "", color=PURPLE, pa=R, pb=Lf)
-p.line("m_lab", "m_cr", "beats current", color=PURPLE, pa=R, pb=Lf)
-p.line("m_cr", "m_desk", "", color=PURPLE, pa=R, pb=Lf)
-pages.append(p)
-
 # ---------------------------------------------------------------- 7 agent team, caps and alerts
 p = Page("p7", "7 Agent team, caps and alerts", "The agent team, settings, spend caps and alerts",
-         "phase 8 caps and alerts (MA-137) · phase 18 agents and settings (MA-127) · alerts reach the app, push and email (MA-161) · "
+         "phase 8 caps and alerts (MA-137) · phase 13 agents and settings (MA-127) · alerts reach the app, push and email (MA-161) · "
          "everything configurable by the admin, nothing changed without asking")
 p.cont("adm", 40, 170, 400, 1000, "Admins only", F_HOME, NAVY)
-p.box("a_tg", 70, 230, 340, 150, "<b>Owner's chat in the app</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with the second check")
+p.box("a_tg", 70, 230, 340, 150, "<b>Admins' chat in the app</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with the second check")
 p.box("a_web", 70, 440, 340, 170, "<b>Admin center</b><br>in the app and the web app<br>Spend · Alerts · Approvals<br>Settings · Agents · Incidents<br>second check: passkey or sign-in")
 p.box("a_mail", 70, 670, 340, 100, "<b>Email</b><br>system alerts only, via SNS")
 p.box("a_rule", 70, 830, 340, 300, "<b>Bands</b><br>inside a setting's automatic band: an agent may act, and says so in the daily digest<br>outside it: a request to an admin<br>never: trade, read a secret, delete data, apply infrastructure")
 p.group("cl7", "cloud", 500, 170, 1780, 1530, "AWS · prod")
-p.cont("agc", 540, 270, 1700, 220, "Nine agents · Lambda · each with its own IAM role and tools", F_P12, PURPLE)
-agents = [("concierge", "chat · cards"), ("data steward", "sources"), ("news scout", "tags news"), ("analyst", "rules engine"),
-          ("Forecaster", "models"), ("grader and tuner", "learning loop"), ("ops warden", "repairs"), ("budget keeper", "meter · ladder"),
-          ("admin desk", "the asking")]
-for i, (n, d) in enumerate(agents):
-    p.icon(f"ag{i}", "lambda", 580 + i * 185, 330, f"{n}<br>{d}", size=80)
+p.cont("agc", 540, 270, 1700, 220, "Six agents · Lambda · each with its own IAM role and tools", F_P12, PURPLE)
+# The six agents of ARCHITECTURE 18.1 (MA-307 retired the news scout, the analyst and the Forecaster, which were ag2 to
+# ag4); each keeps its Lucid id, spread evenly across the container.
+agents = [("ag0", "concierge", "chat · cards"), ("ag1", "data steward", "prices"), ("ag5", "grader and tuner", "the household learns"),
+          ("ag6", "ops warden", "repairs"), ("ag7", "budget keeper", "meter · ladder"), ("ag8", "admin desk", "the asking")]
+for i, (sid, n, d) in enumerate(agents):
+    p.icon(sid, "lambda", 620 + i * 290, 330, f"{n}<br>{d}", size=80)
 p.icon("a_api", "apigw", 600, 580, "API Gateway<br>/v1/admin")
 p.icon("a_bus", "bus", 1300, 580, "EventBridge bus<br>mypaisa-&lt;env&gt;-events")
 p.icon("a_set", "lambda", 860, 760, "settings service<br>schema · range · band")
@@ -500,7 +456,7 @@ p.cont("caps", 540, 960, 1700, 680, "Caps and alerts, set in the Admin center (M
 p.box("c_claude", 580, 1020, 540, 280, "<b>Claude: Max 20x credit $200 a month</b><br>ceilings $160 prod · $40 dev (settings)<br>meter: every call costed from usage → SpendMonth<br>steps 70% tell · 85% savers · 95% essentials · 100% templates<br>guards: member 60% · day 3x average · 8 calls a run<br>hard stops: Console workspace limits, then the credit",
       F_NOTE, CRIMSON)
 p.icon("c_ce", "ce", 1160, 1040, "Cost Explorer<br>once a day")
-p.box("c_aws", 1320, 1020, 480, 220, "<b>AWS and others: £50 a month</b><br>steps 50% · 80% · 100% · forecast over cap<br>80%: dev's schedules pause<br>100%: non-essential prod jobs pause<br>never the brief, alerts or chat<br>actions are flags, not resource changes",
+p.box("c_aws", 1320, 1020, 480, 220, "<b>AWS and others: £50 a month</b><br>steps 50% · 80% · 100% · forecast over cap<br>80%: dev's schedules pause<br>100%: non-essential prod jobs pause<br>never alerts, check-ins or the chat<br>actions are flags, not resource changes",
       F_NOTE, CRIMSON)
 p.icon("c_budg", "budgets", 600, 1460, "AWS Budgets £75<br>Terraform backstop")
 p.icon("c_sns", "sns", 900, 1460, "SNS admin-alerts<br>→ admin's email<br>1,000 a month free")
@@ -527,11 +483,12 @@ pages.append(p)
 # ARCHITECTURE 4.8 and 4.10 (MA-186): a draft writes nothing; Confirm commits exactly the hashed draft, and a Save in place
 # commits a correction, both through the one write service, each change with its audit row in one transaction. The
 # figures are household-v4.json's: Balanced at Fri 23 Oct's NAV, and Home, Reading corrected from 415,000 to 428,000.
+# Only an admin adds, corrects and deletes (ARCHITECTURE 4.10, MA-307, MA-308), so the actor is the admin (MA-312).
 # Lucid's sequence generator doubles an apostrophe inside a note and reads " as " in a group label as an alias, so the
 # notes have no apostrophe and the labels no "as".
 SEQUENCE ="""@startuml
-title Adding a record through the chat, and correcting a figure in place (figures illustrative)
-actor Member
+title An admin adds a record through the chat, and corrects a figure in place (figures illustrative)
+actor Admin
 participant "iOS app (React Native shell, SwiftUI core)" as app
 participant "web app (SvelteKit PWA)" as web
 participant "S3 documents (kept for good)" as s3
@@ -545,7 +502,7 @@ database "DynamoDB registry" as ddb
 participant "SQS outbox.fifo + sender λ" as out
 participant "stream log + stream λ (SSE on the api host)" as stream
 autonumber
-Member -> app : attaches factsheet.pdf in the chat
+Admin -> app : attaches factsheet.pdf in the chat
 app -> api : asks for an upload link
 api --> app : presigned PUT URL
 app -> s3 : PUT factsheet.pdf
@@ -569,7 +526,7 @@ worker -> out : what I read, unsure fields in amber; which account is it in? [IS
 deactivate worker
 out -> stream : appended to the stream log
 stream --> app : SSE: the card and its chips
-Member -> app : taps ISA · Monzo
+Admin -> app : taps ISA · Monzo
 app -> api : POST /v1/chat/actions (the chip, the flow id)
 api -> qin : queue the tap
 api --> app : acknowledged at once
@@ -580,7 +537,7 @@ agent -> out : ask_user: "How many units do you hold? Type them, or send a scree
 deactivate agent
 out -> stream : appended to the stream log
 stream --> app : SSE: the question
-Member -> app : types "1,234.5 units"
+Admin -> app : types "1,234.5 units"
 app -> api : POST /v1/chat/messages
 api -> qin : queue
 qin -> agent : the answer, in order
@@ -590,7 +547,7 @@ agent -> out : Confirm card: Balanced, in ISA · Monzo, Arun's, £22,925, the fi
 deactivate agent
 out -> stream : appended to the stream log
 stream --> app : SSE: the Confirm card
-Member -> app : taps Confirm
+Admin -> app : taps Confirm
 app -> api : POST /v1/chat/actions (Confirm, the draft's hash)
 api -> qin : queue the tap
 api --> app : acknowledged at once
@@ -603,12 +560,12 @@ out -> stream : appended to the stream log
 stream --> app : SSE: the confirmation
 stream --> web : SSE: records.changed, the laptop's dashboard moves
 group Correction in place
-Member -> web : taps Home, Reading's value, types 428,000
-web --> Member : £415,000 → £428,000 [Save]
-Member -> web : Save
+Admin -> web : taps Home, Reading's value, types 428,000
+web --> Admin : £415,000 → £428,000 [Save]
+Admin -> web : Save
 web -> api : PATCH /v1/records/{id} (value 428,000; the figure shown, 415,000), the session cookie
 activate api
-api -> ddb : write service: value is editable on the property kind, a number in range; has the record moved since 415,000?
+api -> ddb : write service: the caller is an admin; value is editable on the property kind, a number in range; has the record moved since 415,000?
 alt the record moved since the screen showed it
 api --> web : refused, nothing written; the new figure is shown
 else unchanged since the screen showed it
@@ -621,14 +578,14 @@ end
 deactivate api
 end
 note over agent, out : The Document and audit rows of a file are written when it arrives, before the docs job reads it, and stay whatever happens next (Cancel, an expired PendingAction, a failed read); the file opens from the Audit screen. A draft writes nothing: only Confirm, the tap on a check-in or a Save in place commits.
-note over api, ddb : One write service, the same code behind Confirm in the agent and the PATCH in the api: it checks the change against the kind spec and writes the event with its audit row in one transaction.
+note over api, ddb : Only an admin writes (MA-307, MA-308): a member who is not an admin is offered nothing to Confirm or Save. One write service, the same code behind Confirm in the agent and the PATCH in the api: it checks the change against the kind spec and writes the event with its audit row in one transaction.
 note over out, stream : A device with no fresh Presence gets Apple push or Web Push instead; on opening, a door resumes from its last event (Last-Event-ID).
 @enduml
 """
 
 
 # ---------------------------------------------------------------- 9 one trace from the door to the model (MA-230, MA-236)
-# ARCHITECTURE 10: a message is one trace from the finger to the push. The door makes a traceparent per action; API
+# ARCHITECTURE 9: a message is one trace from the finger to the push. The door makes a traceparent per action; API
 # Gateway, the api, the queues (the header rides each message), the agent, the model and tool spans, the sender, the
 # stream and push continue it, and nothing starts a fresh trace. The band below says where each signal is kept.
 p = Page("p9", "9 One trace, door to model", "One trace from the door to the model, and where each signal lives",
@@ -649,8 +606,8 @@ p.icon("t_ws", "apigw", 1960, 380, "SSE stream<br>the send is a span<br>on the m
 p.icon("t_sched", "sched", 380, 720, "EventBridge Scheduler<br>the tick is the root")
 p.icon("t_work", "sqs", 880, 720, "work queue<br>carries the header")
 p.icon("t_worker", "lambda", 1160, 720, "worker λ<br>a chained job<br>continues it")
-p.icon("t_sfn", "sfn", 1440, 720, "Step Functions<br>daily run, tracing on<br>(phase 18)")
-p.icon("t_bus", "bus", 1700, 720, "EventBridge bus<br>events carry the header<br>(phase 18)")
+p.icon("t_sfn", "sfn", 1440, 720, "Step Functions<br>daily run, tracing on<br>(phase 13)")
+p.icon("t_bus", "bus", 1700, 720, "EventBridge bus<br>events carry the header<br>(phase 13)")
 p.box("t_keys", 1960, 640, 230, 260,
       "<b>On every line, span,<br>metric and RunRecord</b><br>trace_id · span_id · run_id<br>member (a hash)<br>client_message_id<br>conversation_id · job_id<br>env · build · version", F_NOTE, GREY)
 p.cont("sig", 360, 960, 1820, 420, "Where each signal lives", F_P12, PURPLE)

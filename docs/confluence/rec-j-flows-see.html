@@ -4,7 +4,7 @@
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h2>06 · Asking a question in chat</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Ask in plain words. The agent looks up what it needs with its tools, sends Claude only the current conversation, and answers with a card; its words stream into the chat as they are written. Any member may ask about the household&#x27;s wealth. <strong>Why?</strong> goes to the web for the reasons behind a move in value, with the sources cited; nothing predicts a market or says buy or sell.</p>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Ask in plain words. The agent looks up what it needs with its tools, sends Claude only the current conversation, and answers with a card; its words stream into the chat as they are written. Any member may ask about the household&#x27;s wealth. <strong>Why?</strong> explains a move in value from code&#x27;s own figures: the FX change and the holding&#x27;s currency split. Nothing searches the web to explain a move, nothing predicts a market, and nothing says buy or sell.</p>
 <p><em><strong>Trigger</strong> a typed question, the <strong>Ask</strong> chip, or a screen&#x27;s Ask</em> <span data-type="status" data-color="blue">Phase 1 (memory, streaming)</span> <span data-type="status" data-color="blue">Phase 11 (tools, cards)</span></p>
 </div>
 <h3>📌 Chat memory: keep it all, send little</h3>
@@ -35,25 +35,25 @@
 <tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The finished card goes through the outbox; sender λ delivers it whole to every open stream you have, your iPad&#x27;s too, with <strong>Why?</strong>, <strong>Projection</strong> and <strong>Technical</strong></td></tr>
 <tr><td data-background="#FFEBE6"><strong>11</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap <strong>Why?</strong></td></tr>
 <tr><td data-background="#DEEBFF"><strong>12</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The tap, through <code>/v1/chat/actions</code> and your lane</td></tr>
-<tr><td data-background="#FFFAE6"><strong>13</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The question goes to Claude with web search and fetch on, and no household figure in the call</td></tr>
-<tr><td data-background="#EAE6FF"><strong>14</strong></td><td data-background="#EAE6FF">Claude to External data</td><td>Anthropic&#x27;s server-side search reads the week&#x27;s sources; their text is untrusted and never obeyed</td></tr>
-<tr><td data-background="#FFFAE6"><strong>15</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The reasons, streamed, with each source cited</td></tr>
+<tr><td data-background="#FFFAE6"><strong>13</strong></td><td data-background="#FFFAE6">AWS</td><td>Code works out the move from its own figures: the week&#x27;s change in the ECB&#x27;s pound-to-dollar rate and the fund&#x27;s currency split, from <strong>DynamoDB</strong>; no web search</td></tr>
+<tr><td data-background="#FFFAE6"><strong>14</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>Only those figures go to Sonnet, which words the reasons</td></tr>
+<tr><td data-background="#FFFAE6"><strong>15</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The reasons, streamed, each figure from code</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ee2ffd0c-ce40-407d-95eb-ea1934a00883" data-collection="contentId-1147125" data-alt="rec-j-flows-see--flow-ask.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="dea981fd-ec35-487a-9b76-dd791f7c6879" data-collection="contentId-1147125" data-alt="rec-j-flows-see--flow-ask.png"></div>
 <figcaption>What the member sees: Asking a question in chat (Agent Journey)</figcaption></figure>
 <ul><li><strong>Streaming.</strong> The words arrive as Claude writes them; the card follows whole, its figures from code.</li>
 <li><strong>The answer card.</strong> Its returns from the dated ledger; the working one tap away.</li>
-<li><strong>Why? and Technical.</strong> Sources cited; the return&#x27;s working, from code.</li>
+<li><strong>Why? and Technical.</strong> The move explained from code&#x27;s figures; the return&#x27;s working, from code.</li>
 </ul>
 <h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Numbers from tools</strong></strong></p>
 <p>Claude calls the tools and words the card; the value, XIRR and CAGR come from code, and a card&#x27;s figures are typed numbers in its JSON, never prose. Nothing predicts a market or says buy or sell.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Untrusted web text</strong></strong></p>
-<p>Search results that contain instructions are not acted on. No tool can trade, delete or message anyone else.</p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>No web search to explain a move</strong></strong></p>
+<p>Why? reads only code&#x27;s figures. Web search only looks up a holding&#x27;s public details when it is added, and its text is never obeyed. No tool can trade, erase data or message anyone else; a delete is an admin&#x27;s draft, saved only on Confirm and the second check, and only marks the record deleted.</p>
 </div>
 </div>
 </section>
@@ -67,7 +67,7 @@
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The spend ladder</strong></strong></p>
-<p>At 85% Why? gets three searches a day; at 95% chat answers on Haiku; at 100% free text waits for the renewal.</p>
+<p>At 85% web searches are limited to three a day; at 95% chat answers on Haiku; at 100% free text waits for the renewal.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm before any write</strong></strong></p>
@@ -99,7 +99,7 @@
 <tr><td data-background="#DEEBFF"><strong>5</strong></td><td data-background="#DEEBFF">App</td><td>The last fetch is kept on the device, encrypted, and shown with its time when the network is gone</td></tr>
 <tr><td data-background="#FFEBE6"><strong>6</strong></td><td data-background="#FFEBE6">Member to App</td><td>You open a holding: its value series, its XIRR with its working, its events and its files</td></tr>
 <tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Audit</strong> reads the <strong>AuditEvent</strong> rows. <strong>Activity</strong> reads the <strong>RunRecord</strong> rows, the schedule board, the spend meter and seven days of <strong>CloudWatch</strong> alarms</td></tr>
-<tr><td data-background="#DEEBFF"><strong>8</strong></td><td data-background="#DEEBFF">App to AWS</td><td>A file behind an audit row opens through a five-minute link, for its member and the owner only; the opening is itself an audit row</td></tr>
+<tr><td data-background="#DEEBFF"><strong>8</strong></td><td data-background="#DEEBFF">App to AWS</td><td>A file behind an audit row opens through a five-minute link, for its member and the admins only; the opening is itself an audit row</td></tr>
 <tr><td data-background="#FFEBE6"><strong>9</strong></td><td data-background="#FFEBE6">Member to App</td><td>To add or delete anything, an admin&#x27;s <strong>Update</strong> opens the chat with the right guided flow started: a card, Confirm, an audit row; an admin can also correct an existing figure in place, with its audit row. A member who views sees no Update</td></tr>
 <tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>On the iPad the same screens sit between the sidebar and the chat, so a member reads and asks at once (flow 8); in a browser they are the web app, with the same chat beside them (flow 9). Every card carries <strong>Open</strong> to its screen, and every screen&#x27;s <strong>Ask</strong> opens the chat about it.</td></tr>
 </tbody>
@@ -132,7 +132,7 @@
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit log, readable</strong></strong></p>
-<p>Filtered by member, record and date; a member sees their own rows and the household&#x27;s, the owner sees all.</p>
+<p>Filtered by member, record and date; a member sees their own rows and the household&#x27;s, an admin sees all.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Offline, labelled</strong></strong></p>
@@ -247,7 +247,7 @@
 <tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>Signed in as in flow 2, route 3: Apple, Google or a passkey. The api keeps the session behind an HttpOnly cookie for its own host</td></tr>
 <tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS</td><td>Every call to <code>api.mypaisapp.com/v1</code>, and the stream from <code>/v1/stream</code>, carries the cookie. The authorizer checks session, status, epoch and role; CORS admits only this environment&#x27;s site; <strong>api λ</strong> reads <strong>DynamoDB</strong> and returns just what this member may see</td></tr>
 <tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS to Web app</td><td>The same chat, beside Home, Assets, a holding and the Projection, with the Household and Me switch; Audit and Files; Activity: the app&#x27;s screens, laid out for a wide window</td></tr>
-<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Audit</strong> reads the <strong>AuditEvent</strong> rows. <strong>Activity</strong> reads the <strong>RunRecord</strong> rows, the schedule board, the spend meter and seven days of <strong>CloudWatch</strong> alarms. Every run is one <strong>OpenTelemetry</strong> trace from the door to the model, with its id on every log line, span and RunRecord; the logs, spans, metrics, dashboard and alarms live in CloudWatch, the content only in the RunRecord (ARCHITECTURE 10). A file opens through a five-minute link, for its member and the owner only</td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Audit</strong> reads the <strong>AuditEvent</strong> rows. <strong>Activity</strong> reads the <strong>RunRecord</strong> rows, the schedule board, the spend meter and seven days of <strong>CloudWatch</strong> alarms. Every run is one <strong>OpenTelemetry</strong> trace from the door to the model, with its id on every log line, span and RunRecord; the logs, spans, metrics, dashboard and alarms live in CloudWatch, the content only in the RunRecord (ARCHITECTURE §9). A file opens through a five-minute link, for its member and the admins only</td></tr>
 <tr><td data-background="#FFEBE6"><strong>7</strong></td><td data-background="#FFEBE6">Member (admin) to Web app</td><td>An admin opens the <strong>Admin center</strong>: every action asks for the second check in the browser, a passkey or a fresh sign-in (flow 10)</td></tr>
 <tr><td data-background="#FFEBE6"><strong>8</strong></td><td data-background="#FFEBE6">Member to Web app</td><td>To add or delete anything, an admin asks in the web app&#x27;s chat: a card, Confirm, an audit row, through the same write service as the app. An admin can also correct an existing figure in place where it shows</td></tr>
 <tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Installable as a progressive web app on a laptop, an iPad or a phone: its own window and icon, the same chat and screens. When it is closed, a reply arrives by Web Push (MA-200), on a device with no open stream.</td></tr>
@@ -283,7 +283,7 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit log, readable</strong></strong></p>
-<p>Filtered by member, record and date; a member sees their own rows and the household&#x27;s, the owner sees all. Each file opening is itself an audit row.</p>
+<p>Filtered by member, record and date; a member sees their own rows and the household&#x27;s, an admin sees all. Each file opening is itself an audit row.</p>
 </div>
 </div>
 </section>

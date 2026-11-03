@@ -7,7 +7,7 @@ with animations and effects, make it really colourful and engaging and detailed.
 The record is a tree of pages under the hub, generated like every other page (plan-sync rule 8): scripts/confluence_docs.py
 lists them in pages() and renders them through render_body. Their words are the records' own: ARCHITECTURE.md section by
 section, in full, every section on exactly one page (or on the page another story gives it, ELSEWHERE); and the explainer
-pages in docs/design/ (Architecture v4, Inside MyPaisa, the Agent Journey, the Market Agent and the first journeys), read
+pages in docs/design/ (Architecture v4, Inside MyPaisa, the Agent Journey and the first journeys), read
 for their text and their data. Confluence runs no script, so the motion comes as GIFs and the rest as stills, captured
 from those pages by scripts/confluence_capture.js from the recipes in MEDIA. Each picture's source is its page's hash and
 its recipe, so an explainer page that changes asks for a new capture, as a board that changes asks for a new preview.
@@ -448,7 +448,7 @@ ARCH = [
      "Signing in with Apple, Google or a passkey, the household and its members, invites, the second check, sessions and what each member may see.",
      ["4.5"], ["inside-step-1", "inside-step-3"], ["Inside MyPaisa", "MyPaisa Agent Journey"]),
     ("rec-a-writing", "✍️", ":pencil:", "#FFFAE6", "Commitments, check-ins and writing",
-     "The promises the household keeps (EMIs, SIPs, bills, maturities), the check-ins code decides on, and the one way anything is written: create in the chat, correct in place.",
+     "The promises the household keeps (EMIs, SIPs, bills, maturities), the check-ins code decides on, and the one way anything is written, by admins only: add and delete in the chat, correct in the chat or in place.",
      ["4.9", "4.10"], ["v4-checkin", "v4-file"], ["MyPaisa Architecture v4", "MyPaisa Agent Journey"]),
     ("rec-a-engine", "📡", ":bar_chart:", "#EAE6FF", "Prices and FX, to value what the household holds",
      "One plugin per price feed, a chain per kind, look-through, FX and calendars: prices exist only to value the holdings, and nothing predicts a market (MA-307).",
@@ -503,7 +503,7 @@ FLOW_GROUPS = [  # (slug, emoji, colour, title, flow ids), in the Agent Journey'
     ("rec-j-flows-wealth", "🏡", "#E3FCEF", "The household's whole wealth, by talking", ["register", "correct", "checkin", "statement", "month-close", "projection"]),
 ]
 JOURNEY_PAGES = [  # (slug, emoji, panel icon, colour, title, parent)
-    ("rec-j-v4", "🛰️", ":satellite_orbital:", "#DEEBFF", "Five journeys through AWS, hop by hop", "rec-journeys"),
+    ("rec-j-v4", "🛰️", ":satellite_orbital:", "#DEEBFF", "Six journeys through AWS, hop by hop", "rec-journeys"),
     ("rec-j-v4-parts", "🧩", ":jigsaw:", "#EAE6FF", "Architecture v4: every part, the trace, the loop, the agents and the models", "rec-journeys"),
     ("rec-j-inside", "🏠", ":house:", "#FFFAE6", "Inside MyPaisa: the admin's journey in nine steps", "rec-journeys"),
     ("rec-j-inside-more", "✉️", ":envelope_with_arrow:", "#E3FCEF", "Inside MyPaisa: one message, the agent team, the safety nets and a day", "rec-journeys"),
@@ -784,7 +784,7 @@ def guardrails_note(ctx: cd.Ctx) -> str:
     if not ctx.manifest.get("pages", {}).get("guardrails", {}).get("id"):
         return ""
     return cd.cpanel("#E3FCEF", ":shield:", f"<p><strong>🛡️ The guardrails and evals</strong> have a page of their own, with their own "
-                     f"explainer and diagrams: {ctx.link('guardrails', 'Guardrails and evals')} (ARCHITECTURE §23).</p>")
+                     f"explainer and diagrams: {ctx.link('guardrails', 'Guardrails and evals')} (ARCHITECTURE §{cd.GUARDRAILS[0]}).</p>")
 
 
 def explainer_cards(names: list[str]) -> str:
@@ -846,7 +846,7 @@ MEDIA_CAPTION = {
     "v4-trace": "One message is one trace, from the finger to the last word (Architecture v4)",
     "v4-loop": "One Claude tool loop, with code doing every sum (Architecture v4)",
     "v4-team": "Six agents that never call each other, around one event bus (Architecture v4)",
-    "v4-models": "Three Claude models, each where it earns its cost, and the spend ladder (Architecture v4)",
+    "v4-models": "Two Claude models, each where it earns its cost, and the spend ladder (Architecture v4)",
     "v4-state": "One table for state, one lake for the record, one store for secrets (Architecture v4)",
     "v4-delivery": "Terraform only, one image, prod after a person says yes (Architecture v4)",
     "v4-rules": "Enforced in code, not in the prompt (Architecture v4)",
@@ -882,7 +882,7 @@ def render_rec(ctx: cd.Ctx) -> str:
     gifs = sum(1 for m in MEDIA.values() if m["kind"] == "gif")
     out = [
         cd.cpanel("#DEEBFF", ":blue_book:", "<p><strong>📘 The whole architecture, and every journey, in one place</strong></p>"
-                  "<p>Everything MyPaisa is designed to be, recorded in full: ARCHITECTURE.md section by section, the five journeys that play "
+                  "<p>Everything MyPaisa is designed to be, recorded in full: ARCHITECTURE.md section by section, the six journeys that play "
                   "through AWS hop by hop, the admin's nine steps in plain words, the agent flows, the first "
                   "journeys, and the Lucid drawings. Nothing is built yet; this is the design every phase is built to.</p>"
                   "<p>Arun, 27 Oct 2026 (MA-257): <em>\"I need full record of everything.\"</em></p>"),
@@ -891,7 +891,7 @@ def render_rec(ctx: cd.Ctx) -> str:
                         f"<p>{len(tops)} sections of ARCHITECTURE.md on {len(ARCH)} pages, every word, with the Lucid drawings where the text puts them "
                         "and the stories that build each part.</p>"),
               cd.cpanel("#E3FCEF", ":compass:", f"<h3>{ctx.link('rec-journeys', '🧭 The journeys')}</h3>"
-                        f"<p>Five journeys through AWS, nine steps of the admin's journey, four tours of one message, {len(flows)} agent flows "
+                        f"<p>Six journeys through AWS, nine steps of the admin's journey, four tours of one message, {len(flows)} agent flows "
                         "and the first journeys.</p>"),
               cd.cpanel("#FFFAE6", ":building_construction:", f"<h3>{ctx.link('rec-drawings', '🏗️ The drawings')}</h3>"
                         f"<p>The {len(cd.LUCID)} Lucid drawings on AWS shapes, what each explains, and how they are generated.</p>")], 3),
@@ -1048,7 +1048,7 @@ def render_v4_parts(ctx: cd.Ctx) -> str:
     slug = "rec-j-v4-parts"
     out = [cd.cpanel("#EAE6FF", ":jigsaw:", "<p><strong>🧩 Every part of Architecture v4</strong></p><p>The system map's parts as its inspector describes them, one message "
                      "as an OpenTelemetry trace, the concierge's tool loop and its tools, the agents with the kind of agent each is and the model "
-                     "it uses, the three Claude models and the spend ladder, where the data lives, delivery and the guardrails.</p>"
+                     "it uses, the two Claude models and the spend ladder, where the data lives, delivery and the guardrails.</p>"
                      f'<p>From <a href="{cd.gh(V4)}">architecture-v4.html</a> (MA-244). Timings, tokens, costs and the bus events are illustrative.</p>'), toc(2)]
     out.append("<h2>🗺️ Every part on the map</h2><p>As the map's inspector tells it, part by part.</p>"
                '<table data-layout="full-width"><thead><tr><th>Part</th><th>Kind</th><th>What it does</th><th>Facts</th></tr></thead><tbody>')
@@ -1160,7 +1160,7 @@ def render_inside_more(ctx: cd.Ctx) -> str:
     tours = js(INSIDE, "T")
     eng = root.need("section", id="inside")
     out = [cd.cpanel("#E3FCEF", ":envelope_with_arrow:", "<p><strong>✉️ Inside MyPaisa, the rest of the way</strong></p><p>One message played through the system in four "
-                     "tours, the agent team of phase 18 and the admin's approval, what stops it going wrong, the two homes on AWS, and a day with MyPaisa.</p>"
+                     "tours, the agent team of phase 13 and the admin's approval, what stops it going wrong, the two homes on AWS, and a day with MyPaisa.</p>"
                      f'<p>From <a href="{cd.gh(INSIDE)}">inside-mypaisa.html</a> (MA-239).</p>'), toc(2),
            f"<h2>✉️ {line(eng.find('h2'))}</h2>", "".join(f"<p>{line(p)}</p>" for p in eng.find(cls="sec-head").children("p") if "eyebrow" not in p.cls())]
     temoji = {"ask": "❓", "file": "📄", "checkin": "🔔", "fail": "🧯"}

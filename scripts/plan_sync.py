@@ -794,6 +794,10 @@ RECORD_CASES = [
      r"guardrails page: ARCHITECTURE §21 is not 'Guardrails and evals'"),
     ("ARCHITECTURE 21's body emptied", "ARCHITECTURE.md",
      lambda s: re.sub(r"(?ms)^(## 21\. [^\n]*\n).*?(?=^## |\Z)", r"\1", s), r"guardrails page: ARCHITECTURE §21 has no body"),
+    # MA-307 review, F1: an explainer page's sources line cites sections by number; a renumbering that moves one fails.
+    ("a section an explainer page cites renamed by a renumbering", "ARCHITECTURE.md",
+     lambda s: s.replace("### 17.4 Delivery", "### 17.4 Something else", 1),
+     r"the cicd page cites ARCHITECTURE §17\.4 as 'Delivery'"),
     ("ARCHITECTURE 21 edited, its page not rewritten", "ARCHITECTURE.md", lambda s: s.replace("a random 10%", "a random 20%", 1),
      r"docs/confluence/guardrails\.html is stale"),
     ("the guardrails page with no Confluence id", "docs/confluence.json", lambda m: (m["pages"].pop("guardrails"), m)[1],
