@@ -1026,7 +1026,11 @@ shown or stored. Every amount is take-home: the engine does no tax maths
 - **Debts** amortise to their real end dates, freeing their EMIs.
 - **Also:** maturities, the commitments, the budget's spend inflating by
   country, and the admin's plan items (below).
-- **Surplus** is allocated by a rule, which is still to be chosen (§16).
+- **Surplus** stays as cash in its own currency, every month, on the base
+  path and the fan alike (Arun, 3 Nov 2026: "All to cash"; §15). Nothing is
+  swept into a holding or a loan; an admin who wants it invested says so as a
+  plan item, and the goal solver (§6.1) and the scenario workspace (§6.3)
+  test such a plan without saving it.
 - **Constraints:** a locked pension cannot cover a shortfall before it
   unlocks.
 
@@ -1036,7 +1040,8 @@ a SIP or a budget category set to, or changed by, an amount or a percentage
 from a date, the latest start winning for the same target); then `new_flow`
 plan items; then `record_event` plan items (a loan prepaid is re-amortised;
 one that covers the balance closes it and frees its EMI from the next month);
-then spend inflation by country and category; then the surplus rule. Growth
+then spend inflation by country and category; then the surplus, kept as cash
+in its currency. Growth
 steps up on each anniversary of a plan's start, fixed or at its category's
 prior (school fees, for instance). A one-off draws on `funded_from`; when
 none is named it is paid from the surplus and then cash in its currency
@@ -1261,10 +1266,9 @@ of the run's eight (§14.1) and three cards. The workspace makes it one.
   scenario is marked `promoted`.
 - **The validator holds** (§6, item 2): every number in an override traces
   to the member's words or a named preset.
-- **Who saves.** Until Arun decides, saving a scenario is an admin's, as
-  rule 4 has it; members compare and see unsaved results. Open on MA-317
-  and in §16: "May a member who is not an admin save their own scenarios as
-  a preference, or are scenarios admin-only?"
+- **Who saves.** Only an admin saves, names and promotes a scenario (Arun,
+  3 Nov 2026: "Admins only"; §15). Every member may ask a what-if or a
+  comparison in the chat and see its result, which is never saved.
 
 ### 6.4 A richer Monte Carlo, and what moves the result most (phase 7, MA-318)
 
@@ -2892,18 +2896,10 @@ a daily digest instead.
 | Guardrails | In code before the prompt: least agency, one manifest per agent and tool, a policy gate before every call of our own tools that fails closed, Anthropic's server tools only in a call that holds no household figure, third-party text only as labelled data and files read by a quarantined extractor with no tools, a conversation that has read such text losing every tool that sends data out, every figure checked against the tool results and the member's own words, plain refusals for what is out of scope (§21.2; MA-245, 27 and 28 Oct 2026) | A prompt can be talked round and a file can carry instructions; code cannot be, so what the agent must never do is made impossible, not discouraged |
 | Evals | Tested on change, never on a calendar: T0 replays on every pull request; T1 live when a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK changes, three trials a case, in a Console workspace of its own, `evals` ($10 a run, $30 a month, on top of the two ceilings), its key in SSM read only by a `ci-evals` role; T2 on a model change before it reaches prod; every live run checked by code, flagged runs and 10% judged overnight on Haiku through Batches, alerts only when a rate leaves its band; the admin calibrates the judges monthly and on every change, each label behind the second check; Inspect AI; transcripts stored only in our AWS account, and no evaluation service stores them (§21.3 to §21.7; MA-245, 27 and 28 Oct 2026) | Arun: a daily rerun of an unchanged set costs money, repeats the same score and breeds alert fatigue; model ids are pinned snapshots, so only a change can change the agent, while live traffic changes every day |
 | Domains | `dashboard(-dev)` and `api(-dev)`; the `console` and `live` hosts are gone; the apex redirects to `dashboard.mypaisapp.com` at cutover (§17.2) | One host for the web app, its links and its passkeys |
+| The surplus | Each month's surplus stays as cash in its own currency on the base path and the fan; nothing is swept into a holding or a loan unless an admin makes it a plan item (§6) | Arun, 3 Nov 2026 (MA-317, MA-219): "All to cash"; the simplest and most conservative path, and every figure stays traceable |
+| Saving scenarios | Only an admin saves, names and promotes a scenario; every member may ask a what-if or a comparison and see its result, never saved (§6.3) | Arun, 3 Nov 2026 (MA-317): "Admins only", as rule 4 has it |
 
 ## 16. Open questions
-
-- **The surplus rule** (§6, MA-323): where the engine puts each month's
-  surplus on the base path and the fan. Candidates: all to cash in its
-  currency; to cash up to a number of months of spend, then pro rata to the
-  SIPs; or by an order the admin sets. Arun has not chosen; MA-219 needs the
-  answer before the engine is built, and the goal solver (§6.1) and the
-  sensitivity table (§6.4) read whatever it is.
-- **Saving scenarios** (§6.3, MA-317): "May a member who is not an admin
-  save their own scenarios as a preference, or are scenarios admin-only?"
-  Until Arun decides, saving is an admin's.
 
 - The Monzo fund's exact name and ISIN (factsheet in the app); whether the holdings sit in the Stocks & Shares ISA or a general account; the Monzo platform fee on your plan.
 - Whether yfinance returns history for the fund's `0P…L` id; otherwise which page becomes the daily source.

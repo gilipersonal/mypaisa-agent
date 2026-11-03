@@ -680,7 +680,8 @@ Claude's:
   holding drawn from a market view, against options code computes from
   cash flows), re-anchors the dead man's switch (the views and the
   Projection current by 07:00, check-ins sent by 09:00 outside quiet
-  hours), records the surplus rule as an open question, re-derives the
+  hours), records the surplus rule as an open question (settled on 3 Nov 2026:
+  all to cash), re-derives the
   Claude lines (about $30 to $48 a month for two members) and re-cuts the
   agents' shares (concierge 70%, the insight job and plan with me 10%).
 - **Already done:** the architecture and its records (MA-106, MA-112,
@@ -1487,8 +1488,8 @@ Nothing here predicts a market.
   observed XIRR shrunk toward a long-run prior per asset class and country,
   by how much history it has; estimates as marked); debts amortising to their
   real end dates and freeing their EMIs; maturities, commitments, the
-  budget's spend inflating by country, and the admin's plan items; the
-  surplus allocated by a rule (still to choose, `ARCHITECTURE.md` §16);
+  budget's spend inflating by country, and the admin's plan items;
+  the surplus kept as cash in its currency (Arun, 3 Nov 2026: "All to cash", `ARCHITECTURE.md` §15);
   and no locked pension covering a shortfall
   before it unlocks. The deterministic path first, then a Monte Carlo fan
   (p10, p50, p90); each run stored as a `ProjectionRun` with its inputs hash,
@@ -1561,8 +1562,9 @@ Nothing here predicts a market.
   up to four what-ifs beside the base in one `compare_scenarios` call (net
   worth at 5, 10 and 20 years, the leanest month, each goal's date and
   chance); a scenario saved by name and promoted to plan items with one
-  Confirm, by an admin. Open: may a member who is not an admin save their
-  own as a preference? Designed first.
+  Confirm, by an admin. Only admins save scenarios; every member may ask
+  and see a what-if, never saved (Arun, 3 Nov 2026: "Admins only").
+  Designed first.
 - **A richer Monte Carlo (MA-318, `ARCHITECTURE.md` §6.4):** the fan draws
   class returns, CPI in the UK and India and GBP/INR together, correlated
   and fat-tailed, with inflation flowing into spend and salaries, sequence
