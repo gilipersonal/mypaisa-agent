@@ -100,7 +100,11 @@ asking in this repo (`.claude/rules/ship-autopilot.md`).
 ## 2. The boards
 
 The boards are drawn in the repo and nowhere else, and git is their only
-record (rule 7, MA-260, MA-296). `python3 scripts/plan_sync.py check` checks
+record (rule 7, MA-260, MA-296). The MyPaisa Boards Artifact is built by
+`scripts/boards_page/build.py` and published again whenever a board changes,
+then recorded with `python3 scripts/artifacts_sync.py record "MyPaisa Boards"
+<version>`; check fails while any artifact in `docs/design/artifacts.json` is
+older than its sources (MA-324). `python3 scripts/plan_sync.py check` checks
 only the trace's link to them: each cited board file exists, each folder
 under `claude_design` exists, and each board name is one of its canvas's
 titles; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Arun judges the boards by

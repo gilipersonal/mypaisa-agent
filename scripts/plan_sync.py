@@ -416,6 +416,14 @@ def check(trace: dict) -> tuple[list[str], list[str]]:
         errors += [f"roadmap: {e}" for e in roadmap.errors(trace=trace)]
         errors += confluence_docs.errors()
 
+    # Every published artifact is in step with its sources in the repo (MA-324).
+    try:
+        import artifacts_sync  # noqa: PLC0415
+    except ImportError as e:  # fails closed
+        errors.append(f"the artifacts check cannot run: {e}")
+    else:
+        errors += artifacts_sync.errors()
+
     # Product code that no story claims.
     claimed = [c.rstrip("/") for it in code_rows(trace) if isinstance(it.get("code"), list) for c in it["code"] if isinstance(c, str)]
     for d in CODE_DIRS:
@@ -794,6 +802,20 @@ RECORD_CASES = [
      r"guardrails page: ARCHITECTURE §21 is not 'Guardrails and evals'"),
     ("ARCHITECTURE 21's body emptied", "ARCHITECTURE.md",
      lambda s: re.sub(r"(?ms)^(## 21\. [^\n]*\n).*?(?=^## |\Z)", r"\1", s), r"guardrails page: ARCHITECTURE §21 has no body"),
+    # MA-324: every published artifact is in step with its sources in the repo; a source changed after the publish fails.
+    ("an artifact's source changed after it was published", "docs/design/guardrails-evals.html",
+     lambda h: h.replace("</title>", " changed</title>", 1),
+     r"artifacts: MyPaisa Guardrails and Evals \(https://claude\.ai/artifact/K4esevpFaFVYQKk2QAw3bT\) is older than its sources"),
+    ("the artifacts manifest missing", "docs/design/artifacts.json", None, r"artifacts: docs/design/artifacts\.json is missing"),
+    ("an artifact with a status the manifest does not know", "docs/design/artifacts.json",
+     lambda m: (m["artifacts"][0].update({"status": "maybe"}), m)[1], r"artifacts: MyPaisa Architecture v4: status 'maybe' is not one of"),
+    ("a synced artifact's source file gone", "docs/design/artifacts.json",
+     lambda m: (m["artifacts"][0]["sources"].update({"page": "docs/design/no-such-page.html"}), m)[1],
+     r"artifacts: MyPaisa Architecture v4: source docs/design/no-such-page\.html \(published as page\) is not in the repo"),
+    ("a board changed, the Boards artifact not published again", "docs/design/ds-v1/README.md", lambda t: t + "\nx\n",
+     r"artifacts: MyPaisa Boards \(https://claude\.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g\) is older than its sources"),
+    ("the Boards artifact's builder gone", "scripts/boards_page/viewer.html", None,
+     r"artifacts: MyPaisa Boards: input scripts/boards_page/viewer\.html is not in the repo"),
     # MA-307 review, F1: an explainer page's sources line cites sections by number; a renumbering that moves one fails.
     ("a section an explainer page cites renamed by a renumbering", "ARCHITECTURE.md",
      lambda s: s.replace("### 17.4 Delivery", "### 17.4 Something else", 1),
@@ -852,7 +874,7 @@ RECORD_CASES = [
      r"boards: docs/trace\.json's claude_design names ds, whose folder docs/design/ds-v0 is not in the repo"),
 ]
 
-SELFTEST_SCRIPTS = ("plan_sync.py", "roadmap.py", "confluence_docs.py", "confluence_record.py")
+SELFTEST_SCRIPTS = ("plan_sync.py", "roadmap.py", "confluence_docs.py", "confluence_record.py", "artifacts_sync.py")
 WORKERS = 4  # the mutated-record cases run on this many copies of the repo at once
 
 
@@ -869,6 +891,8 @@ def _clone(dst: Path) -> None:
     for f in ("ARCHITECTURE.md", "PLAN.md", "TECH_STACK.md", "README.md"):
         if (ROOT / f).exists():
             shutil.copy(ROOT / f, dst / f)
+    if (Path(__file__).parent / "boards_page").is_dir():  # the Boards artifact's builder, an input of its manifest entry
+        shutil.copytree(Path(__file__).parent / "boards_page", dst / "scripts" / "boards_page")
     if sys.platform == "darwin" and subprocess.run(["cp", "-c", "-R", str(ROOT / "docs"), str(dst / "docs")], capture_output=True).returncode == 0:
         return
     shutil.rmtree(dst / "docs", ignore_errors=True)
@@ -1349,7 +1373,7 @@ def jira_selftest() -> tuple[int, int]:
 
 
 # The inputs the selftest's result depends on: its code, and the fixtures its cases read or mutate (MA-303).
-SELFTEST_CODE = ("scripts/plan_sync.py", "scripts/confluence_docs.py", "scripts/confluence_record.py", "scripts/roadmap.py",
+SELFTEST_CODE = ("scripts/plan_sync.py", "scripts/confluence_docs.py", "scripts/confluence_record.py", "scripts/roadmap.py", "scripts/artifacts_sync.py",
                  ".claude/hooks/plan_sync_hook.py")
 SELFTEST_CACHE = ROOT / "review" / ".cache" / "plan_sync_selftest.json"
 SELFTEST_DAYS = 7  # a recorded pass older than this is run again

@@ -49,7 +49,7 @@ GITHUB = "https://github.com/gilipersonal/mypaisa-agent/blob/main/"
 ARTIFACTS = {
     "Inside MyPaisa": "https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5",
     "MyPaisa Architecture v4": "https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9",
-    "MyPaisa Agent Journey": "https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7",
+    "MyPaisa Agent Journey": "https://claude.ai/artifact/HPcNrDt2TvR2hdMBzjFE9u",
     "MyPaisa Guardrails and Evals": "https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT",
 }
 GUARDRAILS_GIFS = [  # (gif in docs/design/guardrails-evals, tab title, caption): the explainer's diagrams, animated (MA-258)
@@ -1147,11 +1147,16 @@ def render_sync(ctx: Ctx) -> str:
         '<li><strong>The designs, in the repo</strong> (MA-260). Arun, 30 Oct 2026: "for all future design use Local folder and then Claude '
         'Artifact. Claude Design is going away, so no need to push to claude design". The boards are drawn and edited in docs/design/, and '
         "nothing is read from or written to Claude Design again. Git is the boards' only record (MA-296: \"I dont need claude-design sync "
-        "anymore\"): there is no record file to update and no whole-set Artifact to republish; <code>python3 scripts/plan_sync.py check</code> "
+        "anymore\"): there is no record file to update; <code>python3 scripts/plan_sync.py check</code> "
         "reads each board a trace row cites for its canvas titles only. Each design round's options are published as a private Claude Artifact for Arun to look at, "
         "comment on and pick from; a round run in Google Antigravity, which cannot publish one, shows the same page locally (MA-297). Until 30 Oct "
         "2026 the boards were drawn in standalone Claude Design, which closes by 14 Dec 2026, and copied in (MA-259); the choice is recorded "
         "in docs/design/reviews/MA-259/decision.md.</li>"
+        "<li><strong>The artifacts, in step with the repo</strong> (MA-324). Arun, 3 Nov 2026: \"All artifacts and design should be in sync "
+        "with local\". docs/design/artifacts.json lists every published artifact (the explainer pages, the Agent Journey, Prototype v5 and "
+        "the MyPaisa Boards page, built by scripts/boards_page/build.py) with the repo files it is published from and their hash at its last "
+        "publish; the check fails while one is older than its sources, until it is published again and recorded with "
+        "<code>python3 scripts/artifacts_sync.py record</code>. Retired artifacts and dated design rounds are listed, never compared.</li>"
         "<li><strong>The hooks</strong>, in this repo only. After an edit to a record, the check runs and reports drift at once. Raising a PR with drift is refused. When a new design or feature is discussed, the session is reminded to file its Jira issue and its Confluence page in the same change.</li></ul>",
         "<h2>🆕 New work</h2>"
         + cpanel("#E3FCEF", ":seedling:", "<p>A new design or feature gets, in the same change: its Jira story or task under its phase epic, its PLAN.md "
