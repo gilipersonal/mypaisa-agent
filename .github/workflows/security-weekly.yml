@@ -33,8 +33,7 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check "uv==0.12.9"
       - name: Secrets, SAST, dependencies and workflows
         run: scripts/security_scan.sh
-      - name: The backend's dependencies (pip-audit --strict)
-        working-directory: backend
+      - name: The backend's gates, pip-audit --strict on uv.lock included
         run: |
-          uv sync --locked
-          uv run pip-audit --strict --progress-spinner off --skip-editable
+          (cd backend && uv sync --locked)
+          scripts/backend_gates.sh
