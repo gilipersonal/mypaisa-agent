@@ -163,8 +163,14 @@ Claude's:
 
 - **The app icons (MA-20, MA-142)** from the 1c Watcher mark
   (`docs/mark-1024.png`, MA-103): MyPaisa, and MyPaisa Dev with its DEV band.
-- **The repository skeleton (MA-24):** `CLAUDE.md` with the working rules;
-  uv, ruff, pyright, pytest, pre-commit; FastAPI, Mangum,
+- **The repository skeleton (MA-24, `ARCHITECTURE.md` §12.1):** `CLAUDE.md`
+  with the working rules; the package in four layers whose imports point one
+  way (api controllers, services, repositories as ports, a pure domain),
+  enforced by import-linter; the gates in one script (`uv lock --check`,
+  ruff lint and format, pyright strict, the layers, pytest at 90% branch
+  coverage, pip-audit), run by pre-commit, jira-flow and CI's Backend job;
+  a FastAPI app factory with `/v1/health` and `/v1/health/ready` and errors
+  as RFC 9457 problems; uv, ruff, pyright, pytest, pre-commit; FastAPI, Mangum,
   `opentelemetry-instrumentation-fastapi` and `boto3-stubs[dynamodb,s3,sqs,ssm,cognito-idp]`
   pinned in `pyproject.toml` (MA-265).
 - **The PR gates, seven-layer vulnerability scanning and the five-layer

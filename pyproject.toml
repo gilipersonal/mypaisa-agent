@@ -1,0 +1,146 @@
+[project]
+name = "mypaisa-agent"
+version = "0.1.0"
+description = "MyPaisa: one household's agentic wealth tracker, driven by the chat."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "LicenseRef-Proprietary"
+authors = [{ name = "Arun Dutta" }]
+# The stack ARCHITECTURE §12 and MA-265 chose. Declared here so every later story builds on one lock.
+dependencies = [
+    "anthropic>=0.70",
+    "aws-lambda-powertools>=3.20",
+    "boto3>=1.40",
+    "fastapi>=0.120",
+    "mangum>=0.19",
+    "opentelemetry-api>=1.38",
+    "opentelemetry-instrumentation-fastapi>=0.59b0",
+    "opentelemetry-sdk>=1.38",
+    "pydantic>=2.12",
+    "pydantic-settings>=2.11",
+    "uvicorn[standard]>=0.38",
+]
+
+[dependency-groups]
+dev = [
+    "boto3-stubs[dynamodb,events,s3,sns,sqs,ssm,stepfunctions]>=1.40",
+    "httpx>=0.28",
+    "import-linter>=2.5",
+    "pip-audit>=2.9",
+    "pre-commit>=4.3",
+    "pyright>=1.1.407",
+    "pytest>=8.4",
+    "pytest-cov>=7.0",
+    "ruff>=0.14",
+]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.13"]
+build-backend = "uv_build"
+
+# ---------- ruff: lint and format (the formatter is Black-compatible; Black itself is not needed) ----------
+
+[tool.ruff]
+target-version = "py314"
+line-length = 120
+src = ["src", "tests"]
+# The product is src/ and tests/. The repo's plan, review and design tooling (scripts/, review/, docs/, .claude/)
+# keeps its own style and is checked by its own selftests.
+extend-exclude = ["scripts", "review", "docs", ".claude", ".codex", "*.md"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D",       # docstrings are written where they say something the code does not
+    "CPY",     # no copyright header per file
+    "COM812",  # conflicts with the formatter
+    "TD",      # TODOs name their story instead (see CLAUDE.md)
+    "FIX",
+    "TC001",   # FastAPI and Pydantic read annotations at run time: an import moved under TYPE_CHECKING
+    "TC002",   # breaks a dependency or a model field, so these stay off
+    "TC003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "S101",    # assert is how pytest checks
+    "PLR2004", # status codes and counts read best as literals in a test
+    "ANN401",
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"typing.Optional".msg = "Write `X | None`."
+"typing.Union".msg = "Write `X | Y`."
+
+[tool.ruff.lint.isort]
+known-first-party = ["mypaisa_agent"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+# ---------- pyright: strict on the package and the tests ----------
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+reportMissingModuleSource = "none"
+reportImplicitOverride = "error"
+reportUnnecessaryTypeIgnoreComment = "error"
+venvPath = "."
+venv = ".venv"
+
+# ---------- pytest and coverage ----------
+
+[tool.pytest.ini_options]
+minversion = "8.4"
+testpaths = ["tests"]
+addopts = ["--strict-markers", "--strict-config", "-ra", "--import-mode=importlib"]
+filterwarnings = ["error"]
+xfail_strict = true
+
+[tool.coverage.run]
+source = ["mypaisa_agent"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+skip_covered = true
+exclude_also = ["if TYPE_CHECKING:", "@overload", "raise NotImplementedError"]
+
+# ---------- import-linter: the layers point one way (ARCHITECTURE §12.1) ----------
+
+[tool.importlinter]
+root_package = "mypaisa_agent"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers: api (controllers) -> services -> repositories -> domain"
+type = "layers"
+layers = [
+    "mypaisa_agent.api",
+    "mypaisa_agent.services",
+    "mypaisa_agent.repositories",
+    "mypaisa_agent.domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "Only the api layer knows HTTP"
+type = "forbidden"
+source_modules = [
+    "mypaisa_agent.services",
+    "mypaisa_agent.repositories",
+    "mypaisa_agent.domain",
+    "mypaisa_agent.core",
+]
+forbidden_modules = ["fastapi", "starlette", "mangum", "uvicorn"]
+
+[[tool.importlinter.contracts]]
+name = "The domain is pure: no I/O, no settings, no AWS"
+type = "forbidden"
+source_modules = ["mypaisa_agent.domain"]
+forbidden_modules = ["mypaisa_agent.core.config", "boto3", "anthropic", "pydantic_settings"]

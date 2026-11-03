@@ -207,16 +207,20 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The Python project skeleton exists with its gates and the working rules",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "12",
+        "12.1",
         "15"
       ],
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "Arun, 3 Nov 2026: \"best practices for FAST API, controllers, services, repository and whatever is the latest and greatest. Proper Gates using ruff, black etc\". The package is layered api -> services -> repositories -> domain (ARCHITECTURE 12.1), enforced by import-linter; ruff format stands in for Black (compatible); the gates are scripts/backend_gates.sh, run by pre-commit, jira-flow and CI's Backend job.",
+      "code": [
+        "src/mypaisa_agent"
+      ]
     },
     {
       "key": "MA-25",
@@ -7276,7 +7280,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Close the Impeccable deep scan's remaining P0, P1 and P3 findings, and its motion and performance fixes, across DS v1, iOS v1, Web v4 and Prototype v5",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "8.1",
@@ -7398,7 +7402,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The review rule fits Antigravity's 24 KB: the design-board lessons move to MA-304's QA checklist",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "15"
@@ -7418,7 +7422,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "MyPaisa is a wealth tracker only: the market forecasts and the buy, add and sell calls are removed, and only admins write, through the chat",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "design"
       ],
@@ -7521,7 +7525,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The Lucid architecture drawings lose page 6, the market agent and learning loop",
-      "status": "To Do",
+      "status": "Done",
       "labels": [],
       "arch": [],
       "ui": false,
@@ -7546,7 +7550,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The explainer GIFs on Confluence show the wealth-only app: recaptured from the rewritten explainer pages",
-      "status": "To Do",
+      "status": "Done",
       "labels": [],
       "arch": [],
       "ui": false,
@@ -7778,7 +7782,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The agentic review's upgrades are recorded: goals, what changed and why, nudges, scenarios, a richer Monte Carlo, forecast accuracy, tax-year facts, reasoning evals and plan with me are designed and planned",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "1",
@@ -7824,7 +7828,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "1"

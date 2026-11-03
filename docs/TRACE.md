@@ -18,7 +18,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-21 | Claude API access is paid from the plan, with dev, prod and evals workspaces and spend limits | To Do | §14.1, §17.1 | none |  |
 | MA-22 | A free Twelve Data key is in SSM for the US lines and the FX fallback | To Do | §5.1 | none |  |
 | MA-23 | Each Monzo fund's factsheet and a valuation screenshot are ready to send in the app | To Do | §4.2 | none |  |
-| MA-24 | The Python project skeleton exists with its gates and the working rules | To Do | §12, §15 | none |  |
+| MA-24 | The Python project skeleton exists with its gates and the working rules | In Progress | §12, §12.1, §15 | none |  |
 | MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | To Do | §17.4, §21.3 | none |  |
 | MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | To Do | §17.1, §17.4 | none |  |
 | MA-106 | The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery | Done | §4.5, §8.3, §11, §12, §13, §14, §15 | none |  |
@@ -87,21 +87,21 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-295 | Design livelier dashboard graphs and charts at every door, following Apple HIG and Monzo's modular warmth on Warm ledger | Done | §8.1, §8.3, §8.4, §15 | picked | Chart options.dc.html: 1a · Monzo Pulse; iPhone v4 · Chart options.dc.html: 1a · iPhone · Dashboard charts, Monzo Pulse; iPhone v4 · Chart options.dc.html: S1 · iPhone · Projection and Budget forecast charts; iPhone v4 · Chart options.dc.html: S3 · iPhone · Dashboard charts, privacy on; Web v4 · Chart options.dc.html: 1a · Browser · Dashboard charts, Monzo Pulse; Web v4 · Chart options.dc.html: W1 · Browser · Projection and Budget forecast charts; Web v4 · Chart options.dc.html: W2 · Browser · Dashboard charts, privacy on |
 | MA-298 | Harden DS v1, Prototype v5, Impeccable context and design gates for all P0 and shared P1 best-practices gaps | Done | §8.1, §8.3, §8.4 | none |  |
 | MA-299 | The SvelteKit 3 web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI are recorded in the plan and Confluence with block diagrams | Done | §8.4, §17.4 | none |  |
-| MA-300 | Close the Impeccable deep scan's remaining P0, P1 and P3 findings, and its motion and performance fixes, across DS v1, iOS v1, Web v4 and Prototype v5 | In Progress | §8.1, §8.3, §8.4 | none |  |
+| MA-300 | Close the Impeccable deep scan's remaining P0, P1 and P3 findings, and its motion and performance fixes, across DS v1, iOS v1, Web v4 and Prototype v5 | Done | §8.1, §8.3, §8.4 | none |  |
 | MA-301 | Design options for the deep scan's redesign items: calmer Projection and statement Confirm, nested cards, a web-only join, the type and icon stack and the Cmd+K palette | In Progress | §8.1, §8.3, §8.4 | todo |  |
 | MA-302 | Prototype v4's controls reach 44 pt, as the picked v4 boards and Prototype v5 now do | Done | §8.3, §8.4 | none |  |
 | MA-303 | Stop the checks on the design boards, and make plan-sync and the review ledger faster and smarter | Done | §8.1, §15 | none |  |
 | MA-304 | QA on request for the web app: Playwright, axe and Argos, with the 25% contrast floors and the 320 to 1920 width sweep | To Do | §8.1, §17.4 | none |  |
 | MA-305 | One CI workflow with named jobs in parallel, as mypaisaa-prediction has | Done | §17.4 | none |  |
-| MA-306 | The review rule fits Antigravity's 24 KB: the design-board lessons move to MA-304's QA checklist | In Progress | §15 | none |  |
-| MA-307 | MyPaisa is a wealth tracker only: the market forecasts and the buy, add and sell calls are removed, and only admins write, through the chat | In Progress | §1, §4.10 | picked | iPhone v4 · Holdings and India.dc.html: iPhone · Register, Holdings & India · Light; iPhone v4 · Chat and guided flows.dc.html: iPhone · Alerts & commands · Light |
+| MA-306 | The review rule fits Antigravity's 24 KB: the design-board lessons move to MA-304's QA checklist | Done | §15 | none |  |
+| MA-307 | MyPaisa is a wealth tracker only: the market forecasts and the buy, add and sell calls are removed, and only admins write, through the chat | Done | §1, §4.10 | picked | iPhone v4 · Holdings and India.dc.html: iPhone · Register, Holdings & India · Light; iPhone v4 · Chat and guided flows.dc.html: iPhone · Alerts & commands · Light |
 | MA-310 | Prototype v5 shows phases 10 to 12 again: alerts and charts, asking about the household's wealth, and a new kind of holding | To Do |  | none |  |
 | MA-311 | The prototype's figure scripts make the wealth-only figures again, without the retired market sets | To Do |  | none |  |
-| MA-312 | The Lucid architecture drawings lose page 6, the market agent and learning loop | To Do |  | none |  |
-| MA-313 | The explainer GIFs on Confluence show the wealth-only app: recaptured from the rewritten explainer pages | To Do |  | none |  |
-| MA-323 | The agentic review's upgrades are recorded: goals, what changed and why, nudges, scenarios, a richer Monte Carlo, forecast accuracy, tax-year facts, reasoning evals and plan with me are designed and planned | In Progress | §1, §4.1, §6.1, §6.2, §6.3, §6.4, §6.5, §7.1, §7.2, §10.1, §14, §14.1, §18.6, §18.8, §21.3 | none |  |
+| MA-312 | The Lucid architecture drawings lose page 6, the market agent and learning loop | Done |  | none |  |
+| MA-313 | The explainer GIFs on Confluence show the wealth-only app: recaptured from the rewritten explainer pages | Done |  | none |  |
+| MA-323 | The agentic review's upgrades are recorded: goals, what changed and why, nudges, scenarios, a richer Monte Carlo, forecast accuracy, tax-year facts, reasoning evals and plan with me are designed and planned | Done | §1, §4.1, §6.1, §6.2, §6.3, §6.4, §6.5, §7.1, §7.2, §10.1, §14, §14.1, §18.6, §18.8, §21.3 | none |  |
 | MA-324 | Every published artifact is in step with the repo: a manifest of each artifact's sources, a check that fails while one is behind, and Prototype v5, the Boards and the Agent Journey published again | Done | §15 | none |  |
-| MA-325 | Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it | In Progress | §1 | none |  |
+| MA-325 | Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it | Done | §1 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

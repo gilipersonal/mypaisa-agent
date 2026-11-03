@@ -13,7 +13,8 @@ name: CI
 # Nothing here checks a board's content or Prototype v5: MA-303 stopped those
 # checks (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets
 # stop that."). Playwright, axe and Argos run only when Arun asks (MA-304). The
-# Web, Backend and iOS jobs join when their code exists (MA-24, MA-194, MA-165).
+# Backend job runs the backend's gates (MA-24); the Web and iOS jobs join when
+# their code exists (MA-194, MA-165).
 #
 # jira-key.yml stays its own workflow: it must rerun when a PR's title is
 # edited, and nothing here needs to.
@@ -125,6 +126,26 @@ jobs:
           python-version: "3.12"
       - name: A page that comes back cut short or changed is refused
         run: python3 scripts/confluence_docs.py selftest
+
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version-file: .python-version
+      # uv pinned to the version the lock was made with; the project's tools come
+      # from uv.lock, so CI runs exactly what a laptop runs.
+      - name: Install uv
+        run: python3 -m pip install --disable-pip-version-check "uv==0.12.9"
+      - name: Install the locked environment
+        run: uv sync --locked
+      - name: Lock, lint, format, types, layers, tests and the dependency audit
+        run: scripts/backend_gates.sh
 
   workflow-lint:
     name: Workflow lint

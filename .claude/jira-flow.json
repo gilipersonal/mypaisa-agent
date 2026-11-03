@@ -25,13 +25,19 @@
     "labels": {
       "bug": "bug",
       "platforms": [],
-      "themes": ["manual", "design", "retired"]
+      "themes": [
+        "manual",
+        "design",
+        "retired"
+      ]
     },
     "taxonomy": ".claude/jira/taxonomy.md"
   },
   "git": {
     "baseBranch": "main",
-    "protectedBranches": ["main"],
+    "protectedBranches": [
+      "main"
+    ],
     "requireKey": true,
     "branch": "{key}-{slug}",
     "commit": "{key}: {subject}",
@@ -44,7 +50,21 @@
       "name": "plan-sync",
       "cwd": ".",
       "run": "python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files",
-      "paths": ["**"]
+      "paths": [
+        "**"
+      ]
+    },
+    {
+      "name": "backend",
+      "cwd": ".",
+      "run": "scripts/backend_gates.sh",
+      "paths": [
+        "src/**",
+        "tests/**",
+        "pyproject.toml",
+        "uv.lock",
+        "scripts/backend_gates.sh"
+      ]
     }
   ],
   "work": {
@@ -57,7 +77,9 @@
     "comments": false
   },
   "ship": {
-    "askBefore": ["merge"],
+    "askBefore": [
+      "merge"
+    ],
     "mergeMethod": "merge",
     "deleteBranchOnMerge": true,
     "waitForChecks": true
