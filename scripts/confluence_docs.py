@@ -48,7 +48,7 @@ CLOUD_ID = "81c51173-bbea-4905-bbc5-1a880fa348bb"
 GITHUB = "https://github.com/gilipersonal/mypaisa-agent/blob/main/"
 ARTIFACTS = {
     "Inside MyPaisa": "https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5",
-    "MyPaisa Architecture v4": "https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9",
+    "MyPaisa Architecture v4": "https://claude.ai/artifact/Ns3DLFTCvnLcBxJvRvygBo",
     "MyPaisa Agent Journey": "https://claude.ai/artifact/HPcNrDt2TvR2hdMBzjFE9u",
     "MyPaisa Guardrails and Evals": "https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT",
 }
