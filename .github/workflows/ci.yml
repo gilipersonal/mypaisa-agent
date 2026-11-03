@@ -13,7 +13,8 @@ name: CI
 # Nothing here checks a board's content or Prototype v5: MA-303 stopped those
 # checks (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets
 # stop that."). Playwright, axe and Argos run only when Arun asks (MA-304). The
-# Backend job runs the backend's gates in backend/ (MA-24); the Web and iOS jobs join when
+# Backend job runs the backend's gates in backend/ (MA-24) and the Security job
+# the repo's scans (MA-326; weekly too, security-weekly.yml); the Web and iOS jobs join when
 # their code exists (MA-194, MA-165).
 #
 # jira-key.yml stays its own workflow: it must rerun when a PR's title is
@@ -55,11 +56,19 @@ jobs:
       # is the PR's own change. The story's key comes from the PR's head branch
       # (GITHUB_HEAD_REF); with no key there it fails closed (CI is set), never
       # passes every file (MA-303 review, R1-a1).
+      # Dependabot's PRs (by their author, not github.actor) belong to MA-326,
+      # whose trace row claims the lockfiles and manifests they update.
       - name: Every code file the PR changes belongs to its story
         if: github.event_name == 'pull_request'
         env:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
-        run: python3 scripts/plan_sync.py pr-files --base HEAD^1
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          if [ "$AUTHOR" = "dependabot[bot]" ]; then
+            python3 scripts/plan_sync.py pr-files --base HEAD^1 --key MA-326
+          else
+            python3 scripts/plan_sync.py pr-files --base HEAD^1
+          fi
 
   plan-sync-selftest:
     name: Plan-sync selftest
@@ -147,6 +156,27 @@ jobs:
         run: uv sync --locked
       - name: Lock, lint, format, types, layers, tests and the dependency audit
         run: scripts/backend_gates.sh
+
+  security:
+    name: Security scans
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          # gitleaks reads every commit in the history.
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.14"
+      - name: Install uv
+        run: python3 -m pip install --disable-pip-version-check "uv==0.12.9"
+      # Secrets in the whole history (gitleaks), SAST over backend/, scripts/ and
+      # the workflows (semgrep), every lockfile (osv-scanner) and the workflows
+      # themselves (zizmor); each tool pinned and checksum-checked (MA-326).
+      - name: Secrets, SAST, dependencies and workflows
+        run: scripts/security_scan.sh
 
   workflow-lint:
     name: Workflow lint

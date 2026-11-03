@@ -20,7 +20,7 @@ uv run lint-imports
 step "tests: pytest, branch coverage at least 90%"
 uv run pytest --cov --cov-fail-under=90
 if [[ "${1:-}" != "--offline" ]]; then
-  step "dependencies: pip-audit, no known vulnerability"
-  uv run pip-audit --progress-spinner off --skip-editable
+  step "dependencies: pip-audit --strict, no known vulnerability"
+  uv run pip-audit --strict --progress-spinner off --skip-editable
 fi
 printf '\nbackend gates: all passed\n'

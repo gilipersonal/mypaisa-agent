@@ -6818,7 +6818,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-272 (28 Oct 2026): unifies gitleaks, ruff Bandit S rules, semgrep across Python/TypeScript/Swift, pip-audit, pnpm audit, trivy fs on ios/Package.resolved, trivy config on infra/, trivy image + ECR Basic Scan on push inside AWS CodeBuild arm1.small for both lambda and stream targets, and a weekly Monday 04:00 UTC CVE sweep with grouped Dependabot updates. Build time is covered by MA-25, MA-166, MA-194 and MA-237."
+      "notes": "Filed from MA-272 (28 Oct 2026): unifies gitleaks, ruff Bandit S rules, semgrep across Python/TypeScript/Swift, pip-audit, pnpm audit, trivy fs on ios/Package.resolved, trivy config on infra/, trivy image + ECR Basic Scan on push inside AWS CodeBuild arm1.small for both lambda and stream targets, and a weekly Monday 04:00 UTC CVE sweep with grouped Dependabot updates. Build time is covered by MA-25, MA-166, MA-194 and MA-237. Narrowed 3 Nov 2026: MA-326 brings the scans for what exists now (gitleaks, semgrep on Python and the workflows, osv-scanner, zizmor, pip-audit --strict, the weekly sweep, Dependabot); MA-267 keeps the web and iOS SAST and SCA, Terraform (tflint, trivy config) and the image gate (trivy image, ECR scan on push), added as their code arrives."
     },
     {
       "key": "MA-268",
@@ -7837,6 +7837,27 @@
       "design": "none",
       "boards": [],
       "notes": "Arun, 3 Nov 2026: \"hold on, revert the architecture v4 and push to artifact. I made a mistake\". The page was unchanged; QputM7CuDn3Zv5s7TGyGL9 was deleted, so it is now Ns3DLFTCvnLcBxJvRvygBo. Records only, no product UI."
+    },
+    {
+      "key": "MA-326",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "CI scans what exists today on every pull request and every week: secrets in the whole history, the backend's source, every lockfile and the workflows",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "13",
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "code": [
+        "backend/uv.lock",
+        "backend/pyproject.toml"
+      ],
+      "notes": "Arun, 3 Nov 2026: \"make sure the CI is perfect...running all the scans as per best practices.\" scripts/security_scan.sh (gitleaks, semgrep, osv-scanner, zizmor), CI's Security job, security-weekly.yml, dependabot.yml, gitleaks in pre-commit, pip-audit --strict. Claims the lockfile and manifest Dependabot updates, so its PRs pass pr-files as MA-326's. MA-267 keeps web, iOS, Terraform and image scanning."
     }
   ],
   "others": [

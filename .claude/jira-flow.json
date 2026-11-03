@@ -63,6 +63,14 @@
         "scripts/backend_gates.sh",
         ".pre-commit-config.yaml"
       ]
+    },
+    {
+      "name": "security",
+      "cwd": ".",
+      "run": "scripts/security_scan.sh",
+      "paths": [
+        "**"
+      ]
     }
   ],
   "work": {
