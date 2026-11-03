@@ -68,7 +68,10 @@ boards were stopped by MA-303 (Arun, 2 Nov 2026: "All the 6 checks currently
 run on docs/design. Lets stop that"). A board drawn or changed is checked against the trace's `boards` in
 the same change. `docs/design/claude-design.json` (each file's bytes and
 sha256, MA-260) and the MyPaisa Boards Artifact with its stamp,
-`docs/design/boards-artifact.json`, were retired by MA-296.
+`docs/design/boards-artifact.json`, were retired by MA-296. MA-324 brought
+the Boards Artifact back (`scripts/boards_page/build.py`), kept in step
+with the repo by `docs/design/artifacts.json` and `scripts/artifacts_sync.py`,
+which `check` runs.
 
 ## The roadmap: `docs/roadmap.json`
 

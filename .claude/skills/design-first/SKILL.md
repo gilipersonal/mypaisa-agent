@@ -232,8 +232,10 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   is the source; once `ios/` exists, its colour assets are generated from it (MA-165).
 - **Where Arun looks: a private Claude Artifact per round** in Claude Code, **a local page** in Antigravity. Each round
   is published as an Artifact (step 3) and its link goes in the round's `decision.md`; a round run in Antigravity
-  shows the same host page on localhost instead, and `decision.md` names its path (MA-297). There is no whole-set Artifact to republish when a board changes (MA-296 retired
-  the MyPaisa Boards Artifact); a board is otherwise linked by its file in the repo.
+  shows the same host page on localhost instead, and `decision.md` names its path (MA-297). When a board changes, the whole-set MyPaisa Boards Artifact is published
+  again (MA-324): `python3 scripts/boards_page/build.py docs/design <scratchpad>/boards`, then the publish its
+  docstring gives, then `python3 scripts/artifacts_sync.py record "MyPaisa Boards" <version>`; `plan_sync.py check`
+  fails until then. A board is otherwise linked by its file in the repo.
 - **The record** in `docs/design/reviews/MA-<n>/`, committed on the issue's branch: `decision.md` (the request in
   Arun's words, the round's Artifact link or, for a round run in Antigravity, its local page, the options with rationale and trade-offs, what the build would touch,
   the pick and its date), the round's host page (`options.html`, step 3) and `tokens.css`.

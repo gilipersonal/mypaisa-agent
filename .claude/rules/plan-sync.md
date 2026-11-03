@@ -62,8 +62,16 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 7. **Boards are drawn in the repo; each round is shown as an Artifact.**
    Boards are drawn and edited in their folders under `docs/design/` and
    nowhere else; git is their only record, and a PR reviews them. There is
-   no record file to update and no whole-set Artifact to republish (MA-296,
-   Arun, 30 Oct 2026: "I dont need claude-design sync anymore"):
+   no record file to update (MA-296, Arun, 30 Oct 2026: "I dont need
+   claude-design sync anymore"). The MyPaisa Boards Artifact, which shows
+   the whole set, is published again from the repo whenever a board changes
+   (MA-324, Arun, 3 Nov 2026: "All artifacts and design should be in sync
+   with local"): `python3 scripts/boards_page/build.py docs/design <out>`
+   builds it, and `docs/design/artifacts.json` lists it, with every other
+   published artifact and the repo files each is published from;
+   `python3 scripts/plan_sync.py check` fails while one is older than its
+   sources, until it is published and recorded with
+   `python3 scripts/artifacts_sync.py record <name> <version>`.
    `python3 scripts/plan_sync.py check` finds the boards the trace cites on
    disk; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303).
    Arun reviews each `/design-first` round as a private Claude Artifact: the
@@ -71,10 +79,11 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    Google Antigravity, which cannot publish a Claude Artifact, shows the same
    options page on localhost instead, and its `decision.md` names the page
    (MA-297, Arun, 30 Oct 2026). A board is
-   linked by its file in the repo (on GitHub, in Confluence). The MyPaisa
-   Boards Artifact, `scripts/design_sync.py`, `scripts/boards_page/`,
-   `docs/design/claude-design.json` and `docs/design/boards-artifact.json`
-   were retired by MA-296. Until 30 Oct 2026 the boards were drawn in Claude
+   linked by its file in the repo (on GitHub, in Confluence).
+   `scripts/design_sync.py`, `docs/design/claude-design.json` and
+   `docs/design/boards-artifact.json` were retired by MA-296; it retired the
+   MyPaisa Boards Artifact and `scripts/boards_page/` too, which MA-324
+   brought back. Until 30 Oct 2026 the boards were drawn in Claude
    Design and copied here with their etags (MA-259). Standalone Claude Design
    closes by 14 Dec 2026, so Arun moved the drawing into the repo (30 Oct
    2026, MA-260: "for all future design use Local folder and then Claude

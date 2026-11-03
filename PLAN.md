@@ -43,7 +43,7 @@ call, no research cards, track record, news or Forecaster. So:
 Status: planning. Nothing is built. The architecture is drawn in Lucid (eight
 AWS views and a sequence, linked from `ARCHITECTURE.md`), and a page walks
 through the flows end to end:
-[MyPaisa Agent Journey](https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7)
+[MyPaisa Agent Journey](https://claude.ai/artifact/HPcNrDt2TvR2hdMBzjFE9u)
 (MA-141), and [Inside MyPaisa](https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5) explains the whole of it in
 plain words, from the first screen to the chatbot and the agent team
 (MA-239), and [MyPaisa Architecture v4](https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9) draws it technically, with
@@ -428,7 +428,8 @@ Claude's:
   you review each design round as a private Claude Artifact (MA-260;
   `docs/design/reviews/MA-259/decision.md`). Since MA-296 (30 Oct 2026, "I
   dont need claude-design sync anymore") git is the boards' only record:
-  no record file, no whole-set Boards Artifact to republish, and
+  no record file, no whole-set Boards Artifact to republish (MA-324
+  brought that Artifact back on 3 Nov 2026, kept in step with the repo), and
   `python3 scripts/plan_sync.py check` read every board as it is on disk
   until MA-303; it now reads only each cited board's canvas titles.
 - **The future-plans design (MA-264):** the screens MA-261's future plans
@@ -684,6 +685,15 @@ Claude's:
   all to cash), re-derives the
   Claude lines (about $30 to $48 a month for two members) and re-cuts the
   agents' shares (concierge 70%, the insight job and plan with me 10%).
+- **Every published artifact in step with the repo (MA-324):** you asked,
+  3 Nov 2026, "All artifacts and design should be in sync with local".
+  `docs/design/artifacts.json` lists every MyPaisa artifact, the repo files
+  it is published from and their hash at its last publish;
+  `python3 scripts/artifacts_sync.py check`, run inside `plan_sync.py
+  check`, fails while a synced artifact is older than its sources. The
+  Prototype v5 and MyPaisa Boards artifacts were published again from the
+  repo, and the Agent Journey, whose artifact no longer existed, was
+  published as a new one with every link moved to it.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -2096,7 +2106,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 52.75 (and 3.5 of yours) | 43 | Mon 2 Nov 2026 | Fri 8 Jan 2027 |
+| 0 Foundations at every door | 53.25 (and 3.5 of yours) | 43 | Mon 2 Nov 2026 | Fri 8 Jan 2027 |
 | 1 Talk: sign in and chat with the agent at every door | 109 (and 0.5 of yours) | 88 | Mon 11 Jan 2027 | Mon 17 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Tue 18 May 2027 | Wed 14 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Thu 15 Jul 2027 | Wed 4 Aug 2027 |
