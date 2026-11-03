@@ -3,6 +3,12 @@ name: jira-key
 # Every PR is traced to a Jira issue: the title carries [MA-n], the branch
 # carries MA-n, and every commit subject starts with MA-n. No secrets,
 # no network, so it runs on forks and drafts alike. Written by /jira-flow:init.
+#
+# Dependabot (MA-326) names its own branches and titles its PRs with its commit
+# subject, which .github/dependabot.yml prefixes "MA-326: ". For a PR opened by
+# dependabot[bot] (the PR's author, which cannot be spoofed, not github.actor),
+# the title may start "MA-n: " and the branch check is skipped; every commit
+# subject must still start with MA-n.
 
 on:
   pull_request:
@@ -25,13 +31,17 @@ jobs:
       - name: PR title carries [MA-n]
         env:
           TITLE: ${{ github.event.pull_request.title }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
-          if ! printf '%s' "$TITLE" | grep -qE '^\[MA-[0-9]+\] '; then
+          pattern='^\[MA-[0-9]+\] '
+          if [ "$AUTHOR" = "dependabot[bot]" ]; then pattern='^(\[MA-[0-9]+\] |MA-[0-9]+: )'; fi
+          if ! printf '%s' "$TITLE" | grep -qE "$pattern"; then
             echo "::error::PR title must start with [MA-n] followed by a space. Got: $TITLE"
             exit 1
           fi
 
       - name: Branch carries MA-n
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
         env:
           BRANCH: ${{ github.head_ref }}
         run: |

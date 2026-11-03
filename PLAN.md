@@ -194,6 +194,16 @@ Claude's:
   the 2,000 free GitHub minutes (`docs/RESEARCH.md` §7.5, §8.7). A weekly Monday
   04:00 UTC schedule and grouped Dependabot updates catch newly disclosed CVEs
   when no code changes (MA-267).
+- **The scans for what exists today (MA-326, `ARCHITECTURE.md` §17.4):** you
+  asked, 3 Nov 2026, "make sure the CI is perfect...running all the scans as
+  per best practices". `scripts/security_scan.sh`, run by CI's Security job on
+  every PR and push to `main` and by a sweep every Monday at 04:00 UTC:
+  gitleaks over the whole history (and staged changes in pre-commit), semgrep
+  over `backend/`, `scripts/` and the workflows, osv-scanner over every
+  lockfile, zizmor over the workflows, each tool pinned and checksum-checked;
+  `pip-audit --strict` in the backend's gates; grouped weekly Dependabot
+  updates. The repo is private, so GitHub's paid Advanced Security scanners
+  are not used. MA-267 keeps the gates for web, iOS, Terraform and the images.
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
   `infra/dev` and `infra/prod`, each with its own state key in the existing
   state bucket; `infra/bootstrap`, applied once from the laptop, with the

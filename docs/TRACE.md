@@ -102,6 +102,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-323 | The agentic review's upgrades are recorded: goals, what changed and why, nudges, scenarios, a richer Monte Carlo, forecast accuracy, tax-year facts, reasoning evals and plan with me are designed and planned | Done | §1, §4.1, §6.1, §6.2, §6.3, §6.4, §6.5, §7.1, §7.2, §10.1, §14, §14.1, §18.6, §18.8, §21.3 | none |  |
 | MA-324 | Every published artifact is in step with the repo: a manifest of each artifact's sources, a check that fails while one is behind, and Prototype v5, the Boards and the Agent Journey published again | Done | §15 | none |  |
 | MA-325 | Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it | Done | §1 | none |  |
+| MA-326 | CI scans what exists today on every pull request and every week: secrets in the whole history, the backend's source, every lockfile and the workflows | In Progress | §13, §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

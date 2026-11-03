@@ -1,0 +1,39 @@
+name: Security sweep
+
+# Every Monday at 04:00 UTC on main (MA-326): a CVE published with no new commit
+# is caught within a week. The same scans as CI's Security job, plus the
+# backend's pip-audit --strict. A failure fails the run and GitHub emails it.
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-weekly
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    name: Weekly security sweep
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.14"
+      - name: Install uv
+        run: python3 -m pip install --disable-pip-version-check "uv==0.12.9"
+      - name: Secrets, SAST, dependencies and workflows
+        run: scripts/security_scan.sh
+      - name: The backend's gates, pip-audit --strict on uv.lock included
+        run: |
+          (cd backend && uv sync --locked)
+          scripts/backend_gates.sh
