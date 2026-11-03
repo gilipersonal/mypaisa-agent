@@ -44,7 +44,7 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
 - **Lanes:** (a) scripts and checks; (b) the trace against Jira; (c) the spec
   docs (`ARCHITECTURE.md`, `PLAN.md`, `TECH_STACK.md`, `README.md`, the
   explainer pages); (d) the rules and skills; (f) the code (`web/`, `ios/`,
-  `src/`, `infra/`), once a story has code. All in one message, each blind to
+  `backend/`, `infra/`), once a story has code. All in one message, each blind to
   the making. The boards' lane (e) left the review with MA-303; its letter is
   not reused, so old findings keep their ids.
 - **Scope of each round** (Arun, 26 Oct 2026: "make sure for each review round

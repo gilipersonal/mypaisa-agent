@@ -1137,7 +1137,7 @@ def render_sync(ctx: Ctx) -> str:
         '<tr><td data-background="#FFFAE6">The designs</td><td>The boards, drawn, edited and kept in docs/design/ (MyPaisa app v1, iOS v1, DS v1), '
         'git their history; each design round\'s options reviewed as a private Claude Artifact, or on a local page for a round run in Antigravity (MA-297)</td><td>What a member sees</td></tr>'
         '<tr><td data-background="#E3FCEF">Confluence</td><td>This space, rendered from the repo into docs/confluence/</td><td>The plan as one readable tree, phase by phase and screen by screen</td></tr>'
-        f'<tr><td data-background="#FFEBE6">The code</td><td>web/, ios/, src/, infra/, and each story\'s code paths in <a href="{gh("docs/trace.json")}">the trace</a></td><td>What was built, traced to its story</td></tr>'
+        f'<tr><td data-background="#FFEBE6">The code</td><td>backend/, web/, ios/, infra/, and each story\'s code paths in <a href="{gh("docs/trace.json")}">the trace</a></td><td>What was built, traced to its story</td></tr>'
         "</tbody></table>",
         "<h2>🔁 What keeps them the same</h2><ul>"
         "<li><strong>One source each.</strong> Estimates and dates live in docs/roadmap.json; stories, boards and code paths in docs/trace.json; the words in PLAN.md and ARCHITECTURE.md. Every page here is generated from them.</li>"

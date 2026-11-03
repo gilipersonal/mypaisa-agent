@@ -163,8 +163,15 @@ Claude's:
 
 - **The app icons (MA-20, MA-142)** from the 1c Watcher mark
   (`docs/mark-1024.png`, MA-103): MyPaisa, and MyPaisa Dev with its DEV band.
-- **The repository skeleton (MA-24):** `CLAUDE.md` with the working rules;
-  uv, ruff, pyright, pytest, pre-commit; FastAPI, Mangum,
+- **The repository skeleton (MA-24, `ARCHITECTURE.md` §12.1):** the code in
+  four top-level folders, `backend/`, `web/`, `ios/` and `infra/`, the
+  backend a uv project of its own; `CLAUDE.md` with the working rules; the package in four layers whose imports point one
+  way (api controllers, services, repositories as ports, a pure domain),
+  enforced by import-linter; the gates in one script (`uv lock --check`,
+  ruff lint and format, pyright strict, the layers, pytest at 90% branch
+  coverage, pip-audit), run by pre-commit, jira-flow and CI's Backend job;
+  a FastAPI app factory with `/v1/health` and `/v1/health/ready` and errors
+  as RFC 9457 problems; uv, ruff, pyright, pytest, pre-commit; FastAPI, Mangum,
   `opentelemetry-instrumentation-fastapi` and `boto3-stubs[dynamodb,s3,sqs,ssm,cognito-idp]`
   pinned in `pyproject.toml` (MA-265).
 - **The PR gates, seven-layer vulnerability scanning and the five-layer
@@ -874,7 +881,7 @@ arrives from phase 2.
   `run_id` and `trace_id`; the leak test proves no prompt, figure, name or
   token reaches CloudWatch, and the dev smoke test asserts the trace.
 - **Every model call a span, and the typed `AnthropicAgentRunner` loop
-  (MA-233, MA-271, `ARCHITECTURE.md` §7, §9.3):** `src/mypaisa_agent/agent/`
+  (MA-233, MA-271, `ARCHITECTURE.md` §7, §9.3):** `backend/src/mypaisa_agent/agent/`
   runs the ~250-line async tool-use loop on `anthropic.AsyncAnthropic` with the
   prompt-cache assembler (at most three explicit `cache_control` breakpoints,
   on the tools and system prompt together, the household's layer and the
@@ -1092,7 +1099,7 @@ maths arrives.
   structure evolves with no migration. `Account`, `Position`, `Liability` and
   `Transaction` fold into Record and Event for the household's own records;
   there is no relational schema and no DocumentDB cluster (`docs/RESEARCH.md`
-  §6.2): `src/mypaisa_agent/registry/` (`keys.py`, `serde.py`, `client.py`,
+  §6.2): `backend/src/mypaisa_agent/registry/` (`keys.py`, `serde.py`, `client.py`,
   `uow.py`, `pagination.py`, MA-270) is a thin typed
   repository on Pydantic v2 (`model_dump(mode="json")`,
   `model_validate()`), `boto3`'s `TypeSerializer` and `TypeDeserializer`,

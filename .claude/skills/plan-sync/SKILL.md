@@ -50,7 +50,7 @@ Load tools with ToolSearch: `mcp__atlassian__searchJiraIssuesUsingJql`,
   repo-side drift. On a story branch, also run
   `python3 scripts/plan_sync.py pr-files`: it lists the product files the
   branch changes (committed, uncommitted and untracked, under `web/`, `ios/`,
-  `src/`, `infra/`) that another story's `code` claims, or no story claims.
+  `backend/`, `infra/`) that another story's `code` claims, or no story claims.
 
 ## 1. Jira against the trace
 
