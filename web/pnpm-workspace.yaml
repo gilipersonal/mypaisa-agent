@@ -41,6 +41,9 @@ catalog:
 minimumReleaseAge: 1440
 onlyBuiltDependencies:
   - esbuild
+# Jest 30's file watcher: its prebuilt binary is enough, so its build script stays off, by name, so an install does not stop.
+allowBuilds:
+  '@parcel/watcher': false
 # Peer ranges that lag SvelteKit 3 and TypeScript 6 upstream; each works (svelte-check, vitest and the build pass).
 peerDependencyRules:
   allowedVersions:

@@ -103,6 +103,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-324 | Every published artifact is in step with the repo: a manifest of each artifact's sources, a check that fails while one is behind, and Prototype v5, the Boards and the Agent Journey published again | Done | §15 | none |  |
 | MA-325 | Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it | Done | §1 | none |  |
 | MA-326 | CI scans what exists today on every pull request and every week: secrets in the whole history, the backend's source, every lockfile and the workflows | Done | §13, §17.4 | none |  |
+| MA-327 | CI bundles the iOS app, so a toolchain update that breaks the build cannot pass as green | In Review | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

@@ -39,6 +39,14 @@ shell exec prettier --check .
 step "tests: Jest"
 shell exec jest --silent
 
+# Jest and tsc pass on a toolchain Metro refuses (Babel 8, PR #96, MA-327), so the bundle itself is a gate, on Linux too.
+step "bundle: Metro builds the iOS app's JavaScript, as Xcode does"
+bundle="$(mktemp -d)/main.jsbundle"
+shell exec react-native bundle --platform ios --dev false --entry-file index.js --bundle-output "$bundle" --reset-cache >/dev/null
+[[ -s "$bundle" ]] || fail "Metro wrote no bundle"
+grep -q 'v1/health' "$bundle" || fail "this check cannot read the bundle"
+if grep -q 'auth/local' "$bundle"; then fail "the local sign-in stub reached the bundle"; fi
+
 if [[ "${1:-}" == "--no-xcode" ]]; then
   printf '\nios gates (no Xcode): all passed\n'
   exit 0

@@ -206,6 +206,10 @@ Claude's:
   are not used. MA-194 added web's TypeScript
   rules, its lockfile and pnpm audit; MA-267 keeps eslint-plugin-security for
   web, iOS, Terraform and the images.
+- **CI bundles the iOS app (MA-327, `ARCHITECTURE.md` §17.4):** the iOS shell
+  job builds the app's JavaScript with Metro on Linux, since Jest and tsc pass on
+  a toolchain Metro refuses, as Dependabot's Babel 8 showed (PR #96). Dependabot
+  skips Babel majors until React Native moves.
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
   `infra/dev` and `infra/prod`, each with its own state key in the existing
   state bucket; `infra/bootstrap`, applied once from the laptop, with the
