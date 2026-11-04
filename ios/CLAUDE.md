@@ -62,5 +62,7 @@ On the local stack: `scripts/local/README.md`.
    mismatch crashes at launch with a bytecode error, and the gate fails on two versions.
 9. **Colours come from `tokens.css`** through `scripts/ios_tokens.py`. `Colors.xcassets` and `MPColor.swift` are
    generated, never edited.
+10. **Babel stays on 7 until React Native moves.** Babel 8 stops the bundle at its first file while Jest and tsc pass, so
+    the gate bundles the app with Metro, on CI's Linux job too, and Dependabot skips Babel majors (PR #96, MA-327).
 
 Liquid Glass goes on controls only, and carries labels only; the hero is content, so it is never glass.

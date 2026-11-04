@@ -7900,9 +7900,32 @@
         "backend/pyproject.toml",
         "web/package.json",
         "web/pnpm-lock.yaml",
-        "web/pnpm-workspace.yaml"
+        "web/pnpm-workspace.yaml",
+        "ios/package.json"
       ],
       "notes": "Arun, 3 Nov 2026: \"make sure the CI is perfect...running all the scans as per best practices.\" scripts/security_scan.sh (gitleaks, semgrep, osv-scanner, zizmor), CI's Security job, security-weekly.yml, dependabot.yml, gitleaks in pre-commit, pip-audit --strict. Claims the lockfiles and manifests Dependabot updates (backend/ and, since MA-194, web/), so its PRs pass pr-files as MA-326's. MA-194 added web's semgrep TypeScript and JavaScript rules, its lockfile and pnpm audit; MA-267 keeps eslint-plugin-security for web, iOS, Terraform and image scanning."
+    },
+    {
+      "key": "MA-327",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "CI bundles the iOS app, so a toolchain update that breaks the build cannot pass as green",
+      "status": "In Review",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "code": [
+        "web/pnpm-workspace.yaml",
+        "ios/CLAUDE.md"
+      ],
+      "notes": "Found on Dependabot's PR #96, 4 Nov 2026: Babel 8 stops the iOS bundle while Jest and tsc pass, so CI stayed green. The gate now bundles the app on Linux, Dependabot skips Babel majors, and ios/package.json joins MA-326's claim."
     }
   ],
   "others": [
