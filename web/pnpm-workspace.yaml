@@ -1,7 +1,8 @@
-# One catalog pins every version the web app uses (MA-194, ARCHITECTURE §8.4). The iOS app's React Native shell
-# joins this workspace with MA-165 and takes its shared versions from here.
+# One catalog pins every version both doors use (MA-194, MA-165, ARCHITECTURE §8.4, §8.5): the web app and the iOS app's
+# React Native shell are one workspace, with one lockfile, so the TypeScript they share runs on the same packages.
 packages:
   - '.'
+  - '../ios'
 catalog:
   '@eslint/js': 10.0.1
   '@lucide/svelte': 1.66.0
@@ -9,6 +10,8 @@ catalog:
   '@sveltejs/kit': 3.1.1
   '@sveltejs/vite-plugin-svelte': 7.3.1
   '@tailwindcss/vite': 4.3.3
+  '@tanstack/query-core': 5.105.3
+  '@tanstack/react-query': 5.105.3
   '@tanstack/svelte-query': 6.3.8
   '@types/node': 24.19.2
   '@vitest/coverage-v8': 5.1.0
@@ -48,5 +51,7 @@ peerDependencyRules:
 # exception in osv-scanner.toml.
 overrides:
   '@eslint/config-array>minimatch': '>=11.0.1'
+  # One query core at both doors (TECH_STACK §2): Svelte Query's own pin sits one patch behind React Query's.
+  '@tanstack/query-core': 5.105.3
   '@typescript-eslint/typescript-estree>minimatch': '>=11.0.1'
   'eslint>minimatch': '>=11.0.1'

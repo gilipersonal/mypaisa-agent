@@ -26,6 +26,7 @@ updates:
         patterns: ["*"]
     commit-message:
       prefix: "MA-326:"
+  # /web is the pnpm workspace root, and its lockfile covers ios/ too (MA-165).
   - package-ecosystem: npm
     directory: /web
     schedule:

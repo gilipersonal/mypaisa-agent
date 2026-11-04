@@ -1,0 +1,7 @@
+// MyPaisa: against prod. Scheme "MyPaisa". A base URL is compiled in here; no runtime switch reaches it.
+#include "Shared.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.mypaisapp.agent
+MP_DISPLAY_NAME = MyPaisa
+MP_API_BASE_URL = https:/$()/api.mypaisapp.com
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon

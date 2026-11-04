@@ -78,6 +78,20 @@
       ]
     },
     {
+      "name": "ios",
+      "cwd": ".",
+      "run": "scripts/ios_gates.sh",
+      "paths": [
+        "ios/**",
+        "web/src/lib/**",
+        "web/pnpm-workspace.yaml",
+        "web/pnpm-lock.yaml",
+        "scripts/ios_gates.sh",
+        "scripts/ios_tokens.py",
+        "docs/design/ds-v1/tokens.css"
+      ]
+    },
+    {
       "name": "security",
       "cwd": ".",
       "run": "scripts/security_scan.sh",

@@ -176,6 +176,24 @@ jobs:
       - name: Types, lint, format, tests, build and the dependency audit
         run: scripts/web_gates.sh
 
+  ios-shell:
+    name: iOS shell
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@12.16.1 --activate
+      # The gates that need no Mac: the colour assets, the selectors, types, lint and Jest. Xcode's own gates run on
+      # the laptop until MA-166 brings a macOS runner.
+      - name: Tokens, selectors, types, lint, format and Jest
+        run: scripts/ios_gates.sh --no-xcode
+
   security:
     name: Security scans
     runs-on: ubuntu-latest

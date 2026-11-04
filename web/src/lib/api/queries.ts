@@ -1,6 +1,5 @@
-/** The web app's TanStack Query definitions over the api client: one place for each query's key and its fetch. The iOS
- * app's React Native shell shares the client and these keys, and builds its own options with React Query (MA-165). */
-import { queryOptions } from '@tanstack/svelte-query';
+/** The TanStack Query definitions over the api client, shared by both doors (MA-165): one place for each query's key and
+ * its fetch. Plain option objects with no framework import, so Svelte Query and React Query take the same definitions. */
 import type { components } from '../api-types.d.ts';
 import { toApiError, type ApiClient } from './client.ts';
 
@@ -18,18 +17,18 @@ function isReadiness(body: unknown): body is Readiness {
 }
 
 export function livenessQuery(api: ApiClient) {
-	return queryOptions({
+	return {
 		queryKey: keys.health,
 		queryFn: async (): Promise<Liveness> => {
 			const { data, error, response } = await api.GET('/v1/health');
 			if (data === undefined) throw toApiError(response.status, error);
 			return data;
 		}
-	});
+	};
 }
 
 export function readinessQuery(api: ApiClient) {
-	return queryOptions({
+	return {
 		queryKey: keys.ready,
 		// 503 is an answer, not a failure: the body names the check that failed.
 		queryFn: async (): Promise<Readiness> => {
@@ -38,5 +37,5 @@ export function readinessQuery(api: ApiClient) {
 			if (response.status === 503 && isReadiness(error)) return error;
 			throw toApiError(response.status, error);
 		}
-	});
+	};
 }

@@ -1,7 +1,8 @@
 /** The one QueryClient (MA-194): reads are fresh for 30 s, retried twice with backoff, and never retried on a 4xx
  * the api meant (a missing record stays missing), except a timeout (408) or too many requests (429), which pass.
- * The SSE stream writes into this cache from MA-30 on. */
-import { QueryClient } from '@tanstack/svelte-query';
+ * The SSE stream writes into this cache from MA-30 on. Both doors use it: query-core is the
+ * framework-free half of TanStack Query, so nothing here belongs to Svelte or React (MA-165). */
+import { QueryClient } from '@tanstack/query-core';
 import { ApiError } from '#lib/api/client.ts';
 
 export function shouldRetry(failureCount: number, error: unknown): boolean {

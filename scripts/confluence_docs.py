@@ -64,7 +64,7 @@ STACK_GIFS = [  # (gif in docs/design/tech-stack-observability, tab title, capti
     ("01-e2e-trace-fastapi.gif", "1 · E2E trace & FastAPI", "One W3C trace and request ID flow from the browser or iPhone through FastAPI (Mangum and Uvicorn + LWA), the FIFO queues, the agent's Claude GenAI spans and SSE back to the door."),
     ("02-observability-surfaces-cost.gif", "2 · Surfaces & £2.50/mo cost", "Every run feeds the in-app Activity screen (£0), the 8-panel CloudWatch Watch Tower and Transaction Search, and the owner's alerts, for £2.46/month in prod."),
     ("03-frontend-sveltekit-stack.gif", "3 · Web stack (SvelteKit 3)", "SvelteKit 3.1, Svelte 5 runes, Tailwind CSS 4.3, shadcn-svelte, LayerChart and TanStack Query/Table/Virtual/Form sit over web/src/lib/, whose OpenAPI types come straight from FastAPI."),
-    ("04-ios-rn-swiftui-stack.gif", "4 · iOS stack (RN + SwiftUI)", "React Native 0.88 handles state, offline MMKV caching and SSE in TypeScript; every visible screen, card and chart is Swift 6 SwiftUI at 120 Hz across the Fabric C++ bridge."),
+    ("04-ios-rn-swiftui-stack.gif", "4 · iOS stack (RN + SwiftUI)", "React Native 0.88 handles state, the offline cache and SSE in TypeScript; every visible screen, card and chart is Swift 6 SwiftUI at 120 Hz across the Fabric C++ bridge."),
     ("05-backend-fastapi-dynamodb.gif", "5 · FastAPI & DynamoDB", "FastAPI serves both REST and SSE; a thin typed repository on Pydantic v2, boto3 and mypy-boto3-dynamodb handles single-table DynamoDB at £0/mo, whereas DocumentDB would cost £75–£110/mo."),
     ("06-agent-framework-architecture.gif", "6 · Agent loop & frameworks", "The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge for the six-agent team in Phase 13."),
 ]
@@ -1335,7 +1335,7 @@ def render_maestro(ctx: Ctx) -> str:
                "and live rotation across 1133 pt, <code>xcrun simctl</code> and host Local File Provider bridges for Face ID, APNs push, Universal Links, Photos images, PDFs/workbooks and AX5, and a "
                "phase-by-phase rollout across Phases 0 to 15 at £0.00/month), together with the 100% private 90-day (3-month) evergreen TestFlight "
                "household beta plan (<code>testFlightInternalTestingOnly = true</code>, least-privilege App Store Connect roles, silent overnight updates "
-               "preserving Keychain and MMKV, and a day-60 keepalive rebuild). "
+               "preserving the Keychain and the offline store, and a day-60 keepalive rebuild). "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §8, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a> §2 and §4, and '
                f'{cite_links("maestro", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
                f'the interactive explainer page is <a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">docs/design/maestro-ios-ipados-testing.html</a>.</p>'),

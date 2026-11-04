@@ -1,0 +1,9 @@
+// MyPaisa Dev: against dev, on its own bundle id, beside the real app on one phone. Scheme "MyPaisa Dev".
+#include "Shared.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.mypaisapp.agent.dev
+MP_DISPLAY_NAME = MyPaisa Dev
+MP_API_BASE_URL = https:/$()/api-dev.mypaisapp.com
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev
+// Lets the UI tests ask the shell to run the shared code under Hermes (`src/probe.ts`). Never set for the prod app.
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) MP_PROBES
