@@ -39,7 +39,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-161 | MyPaisa's chat moves from Telegram to one native iOS app for iPhone and iPad, and the web app stays as a read-only PWA: the plan, the designs and Jira follow | Done | §8, §15 | none |  |
 | MA-162 | Arun joins the Apple Developer Program ($99 a year) and registers the MyPaisa and MyPaisa Dev app ids with Sign in with Apple, push and associated domains | To Do | §14, §17.1 | none |  |
 | MA-164 | An APNs key per environment is in SSM, and the App Store Connect app records, TestFlight testers and API key exist | To Do | §13, §17.4 | none |  |
-| MA-165 | The iOS app builds as a React Native shell with a native SwiftUI core: its first SwiftUI piece, its performance bench and its tests | In Progress | §8, §12, §8.5 | none |  |
+| MA-165 | The iOS app builds as a React Native shell with a native SwiftUI core: its first SwiftUI piece, its performance bench and its tests | In Review | §8, §12, §8.5 | none |  |
 | MA-166 | CI builds and tests the iOS app on every pull request that touches it, with snapshot and accessibility checks | To Do | §17.4, §8.5 | none |  |
 | MA-167 | A merge to main sends MyPaisa Dev to TestFlight, and MyPaisa after Arun approves, with an alert before a build expires | To Do | §8.5, §14.2, §17.4 | todo |  |
 | MA-186 | Re-plan: the household's whole wealth comes first, at every door, in clean renumbered phases | Done | §15 | none |  |
