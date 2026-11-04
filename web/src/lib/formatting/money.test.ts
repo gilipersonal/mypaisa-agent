@@ -40,6 +40,29 @@ describe('formatMoney', () => {
 		expect(formatMoney('99950', 'INR', { compact: true })).toBe('₹1 L');
 	});
 
+	it('rounds half away from zero on the digits themselves, where a float would land short', () => {
+		expect(formatMoney('1.005', 'GBP')).toBe('£1.01');
+		expect(formatMoney('-1.005', 'GBP')).toBe('-£1.01');
+		expect(formatMoney('0.995', 'GBP', { whole: true })).toBe('£1');
+		expect(formatMoney('999.995', 'INR')).toBe('₹1,000.00');
+	});
+
+	it('uses no Intl, so a runtime whose Intl differs reads the same (MA-165)', () => {
+		const real = Intl.NumberFormat;
+		Object.defineProperty(Intl, 'NumberFormat', {
+			configurable: true,
+			value: () => {
+				throw new RangeError('signDisplay value is invalid.');
+			}
+		});
+		try {
+			expect(formatMoney('1234567.5', 'INR')).toBe('₹12,34,567.50');
+			expect(formatMoney('-48200', 'GBP', { compact: true })).toBe('-£48.2k');
+		} finally {
+			Object.defineProperty(Intl, 'NumberFormat', { configurable: true, value: real });
+		}
+	});
+
 	it('never shows a minus on zero', () => {
 		expect(formatMoney('-0', 'GBP')).toBe('£0.00');
 		expect(formatMoney('-0.001', 'GBP')).toBe('£0.00');

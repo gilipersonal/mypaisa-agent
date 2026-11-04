@@ -15,8 +15,9 @@ web/
     app.html            the document: fonts, the manifest, the icons
     service-worker.ts   caches the shell only; /v1 and /.well-known always go to the network
     routes/             pages: thin, each reads through a query and renders components
-    lib/                imported as #lib/...; cards/, formatting/, privacy/ and api/client.ts are what the iOS
-                        shell shares by path (the rest is the web app's own: Svelte components, svelte-query)
+    lib/                imported as #lib/...; api/, query/, cards/, formatting/, privacy/ and test-ids.ts are what
+                        the iOS shell shares by path, so they import no door's framework and run on Hermes too
+                        (MA-165: no Intl in money.ts); the rest is the web app's own: Svelte components
       api/              the typed client (openapi-fetch) and the TanStack Query definitions
       api-types.d.ts    generated from backend/openapi.json by `pnpm api:types`; never edited by hand
       query/            the one QueryClient and its retry rules

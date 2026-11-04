@@ -283,7 +283,8 @@ Claude's:
   0.88 with React 19.3, New Architecture, Hermes, TypeScript, no Expo, its
   native dependencies through Swift Package Manager from day one, never
   CocoaPods; TanStack Query on the shared query definitions, Reanimated,
-  Gesture Handler and MMKV on Nitro Modules in the shell (MA-229). The shell owns the
+  Gesture Handler in the shell; MA-173 settles the offline store, since MMKV on
+  Nitro Modules cannot build with Swift Package Manager (MA-229, MA-165). The shell owns the
   navigation (the system tab bar through Fabric), the store, the api and SSE
   client, sign-in, push registration and the shared models. Every piece a
   member looks at is SwiftUI, hosted through a Fabric component and fed one
@@ -364,8 +365,8 @@ Claude's:
 - **The UI stack, and three build questions settled (MA-229):** the web app
   on Smart Clearance's stack (SvelteKit 3, Tailwind CSS 4, shadcn-svelte on
   bits-ui, TanStack Query, Table, Virtual and Form, LayerChart, Motion), the
-  iOS shell on bong-panjika's (React Native 0.88, TanStack Query, Reanimated,
-  MMKV), each at its latest; Swift Package Manager from day one; the
+  iOS shell on bong-panjika's (React Native 0.88, TanStack Query, Reanimated),
+  each at its latest; Swift Package Manager from day one; the
   association file served by a CloudFront Function; the stream on the api's
   REST API in API Gateway's streaming mode, through the Lambda Web Adapter
   1.1.
@@ -523,7 +524,7 @@ Claude's:
   Tailwind CSS 4.3, shadcn-svelte 1.7 on bits-ui 2.20, TanStack Query 6.3,
   Table 9.3, Virtual 3.13 and Form 1.33, LayerChart 2.9, Motion 14, `openapi-typescript`), `ios/` (bare React Native 0.88 on
   New Architecture, Fabric and Hermes with Swift Package Manager, TanStack
-  Query 5.105, MMKV 4.3 on Nitro Modules, Reanimated 4.7, and a Swift 6
+  Query 5.105, Reanimated 4.7, the offline store MA-173 settles, and a Swift 6
   strict-concurrency SwiftUI core with Swift Charts at 120 Hz and Liquid
   Glass on controls), the Python 3.14 backend (FastAPI on Mangum for `api`
   and Uvicorn behind Lambda Web Adapter 1.1 for `stream`, Pydantic v2, and a

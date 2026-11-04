@@ -3006,7 +3006,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The iOS app builds as a React Native shell with a native SwiftUI core: its first SwiftUI piece, its performance bench and its tests",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "8",
@@ -3016,7 +3016,19 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "MA-274 (29 Oct 2026): carries ios/MyPaisaCore/Testing/TestIDs.swift (shared with web/src/lib/test-ids.ts), .accessibilityElement(children: .contain) on interactive SwiftUI cards and Swift Charts, UITabBarItem.accessibilityIdentifier on Liquid Glass tabs, MYPAISA_BUILD_EPOCH in Info.plist, and #if DEBUG hooks (MYPAISA_API_URL, MYPAISA_STATIC_MOTION, MYPAISA_VIEWPORT_WIDTH) stripped from Release (MA-273)."
+      "notes": "MA-274 (29 Oct 2026): carries ios/MyPaisaCore/Testing/TestIDs.swift (shared with web/src/lib/test-ids.ts), .accessibilityElement(children: .contain) on interactive SwiftUI cards and Swift Charts, UITabBarItem.accessibilityIdentifier on Liquid Glass tabs, MYPAISA_BUILD_EPOCH in Info.plist, and #if DEBUG hooks (MYPAISA_API_URL, MYPAISA_STATIC_MOTION, MYPAISA_VIEWPORT_WIDTH) stripped from Release (MA-273). Built 4 Nov 2026: bare React Native 0.88.1 on Swift Package Manager, in the pnpm workspace rooted in web/, with the Xcode project beside package.json. MMKV and Nitro Modules cannot build with Swift Package Manager, so they are left out; MA-173 holds the question of what replaces them. Hermes threw on Intl at launch, so the shared money.ts now uses none, and ShellUITests reads the shared formatting on Hermes itself. The first phone bench waits for MA-162.",
+      "code": [
+        "ios",
+        "web/src/lib/test-ids.ts",
+        "web/src/lib/api/queries.ts",
+        "web/src/lib/query/client.ts",
+        "web/src/lib/formatting/money.ts",
+        "web/src/lib/formatting/money.test.ts",
+        "web/package.json",
+        "web/pnpm-workspace.yaml",
+        "web/pnpm-lock.yaml",
+        "web/CLAUDE.md"
+      ]
     },
     {
       "key": "MA-166",
@@ -3053,7 +3065,7 @@
       "ui": true,
       "design": "todo",
       "boards": [],
-      "notes": "Its two UI states - (a) a dismissible day-75 Warm Ledger build-expiry banner with a 1-tap itms-beta:// action driven offline in Phase 0 by compiled MYPAISA_BUILD_EPOCH in Info.plist, and (b) a hard minimum-version update prompt once Phase 1's FastAPI GET /v1/app/minimum-version (MA-266) lands - are drawn in MyPaisa iOS v1 with /design-first before the story starts. MA-274 (29 Oct 2026): exports set testFlightInternalTestingOnly = true and ITSAppUsesNonExemptEncryption = false so builds stay strictly private in App Store Connect Internal Testing (never on the public App Store), run untethered for 90 days (3 months) with silent Automatic Updates preserving Keychain and MMKV, and renew automatically at day 60 via keepalive rebuild; day-60 build-age alerts notify via MA-231's SNS watch-tower topic in Phase 0 and join ARCHITECTURE 14.2's Admin center alert router in Phase 8 (MA-137; docs/RESEARCH.md 8.8)."
+      "notes": "Its two UI states - (a) a dismissible day-75 Warm Ledger build-expiry banner with a 1-tap itms-beta:// action driven offline in Phase 0 by compiled MYPAISA_BUILD_EPOCH in Info.plist, and (b) a hard minimum-version update prompt once Phase 1's FastAPI GET /v1/app/minimum-version (MA-266) lands - are drawn in MyPaisa iOS v1 with /design-first before the story starts. MA-274 (29 Oct 2026): exports set testFlightInternalTestingOnly = true and ITSAppUsesNonExemptEncryption = false so builds stay strictly private in App Store Connect Internal Testing (never on the public App Store), run untethered for 90 days (3 months) with silent Automatic Updates preserving the Keychain and the offline store, and renew automatically at day 60 via keepalive rebuild; day-60 build-age alerts notify via MA-231's SNS watch-tower topic in Phase 0 and join ARCHITECTURE 14.2's Admin center alert router in Phase 8 (MA-137; docs/RESEARCH.md 8.8)."
     },
     {
       "key": "MA-168",
@@ -3310,7 +3322,10 @@
         }
       ],
       "notes": "Drawn: its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279).",
-      "undrawn": []
+      "undrawn": [],
+      "open": [
+        "Offline store: MMKV 4.3 on Nitro Modules cannot build with Swift Package Manager (react-native spm refuses both: mixed Swift and Objective-C sources), and MA-229 says such a library is replaced. Which store replaces it: Tencent's MMKV through its own Swift package behind a thin native module, SQLite, or wait for React Native 0.89 and a Nitro build that supports it?"
+      ]
     },
     {
       "key": "MA-174",
@@ -3700,7 +3715,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The web app's SvelteKit 3 PWA skeleton and the shared TypeScript models build, lint and test in CI",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "8.4",
@@ -6962,7 +6977,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 29 Oct 2026: design and record the local iOS and iPadOS Maestro testing strategy and Phase 0 to 20 rollout plan on Confluence with block diagrams, together with how to keep MyPaisa privately installed for 3 months (90 days) and rolling indefinitely on household iPhones and iPads via TestFlight Internal Testing (testFlightInternalTestingOnly = true, silent Automatic Updates preserving Keychain and MMKV, day-60 keepalive renewal, zero App Store listing). Delivered in docs/RESEARCH.md 7.4 and 8, ARCHITECTURE.md 8.1, 8.5, 14.2 and 17.4, PLAN.md, TECH_STACK.md, README.md, docs/design/maestro-ios-ipados-testing.html, its five GIFs in docs/design/maestro-ios-ipados-testing/, and the Confluence page Local iOS and iPadOS Maestro testing and private TestFlight beta plan.",
+      "notes": "Arun, 29 Oct 2026: design and record the local iOS and iPadOS Maestro testing strategy and Phase 0 to 20 rollout plan on Confluence with block diagrams, together with how to keep MyPaisa privately installed for 3 months (90 days) and rolling indefinitely on household iPhones and iPads via TestFlight Internal Testing (testFlightInternalTestingOnly = true, silent Automatic Updates preserving the Keychain and the offline store, day-60 keepalive renewal, zero App Store listing). Delivered in docs/RESEARCH.md 7.4 and 8, ARCHITECTURE.md 8.1, 8.5, 14.2 and 17.4, PLAN.md, TECH_STACK.md, README.md, docs/design/maestro-ios-ipados-testing.html, its five GIFs in docs/design/maestro-ios-ipados-testing/, and the Confluence page Local iOS and iPadOS Maestro testing and private TestFlight beta plan.",
       "code": [
         "docs/design/maestro-ios-ipados-testing.html",
         "docs/design/maestro-ios-ipados-testing/*.gif"

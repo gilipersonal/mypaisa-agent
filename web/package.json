@@ -25,6 +25,7 @@
 		"api:types": "openapi-typescript ../backend/openapi.json -o src/lib/api-types.d.ts"
 	},
 	"dependencies": {
+		"@tanstack/query-core": "catalog:",
 		"@tanstack/svelte-query": "catalog:",
 		"openapi-fetch": "catalog:"
 	},
