@@ -70,4 +70,5 @@ job. In order:
 Playwright, axe and Argos run only when Arun asks (MA-304).
 
 Needs Node 24 or later with corepack (on Node 25 and later, `brew install corepack` first). Run locally:
-`corepack pnpm@12.16.1 --dir web dev`, with the backend on port 8000; Vite proxies `/v1` to it.
+`corepack pnpm@12.16.1 --dir web dev`, with the local stack running (`scripts/local/README.md`): Vite proxies `/v1` to it on
+port 8787, or to `MYPAISA_API_PROXY`.

@@ -35,6 +35,8 @@ script_src=$(printf '%s' "$csp" | grep -o "script-src [^;\"]*" || true)
 [[ -n "$script_src" ]] || { echo "the built page has no CSP script-src" >&2; exit 1; }
 [[ "$script_src" == *"'sha256-"* ]] || { echo "the CSP's script-src carries no SvelteKit hash: $script_src" >&2; exit 1; }
 [[ "$script_src" != *"unsafe-inline"* ]] || { echo "the CSP's script-src allows unsafe-inline: $script_src" >&2; exit 1; }
+step "the local stack's sign-in stub is not in the build (MA-198)"
+! grep -rl 'auth/local' build >/dev/null || { echo "the build carries the local sign-in stub" >&2; exit 1; }
 if [[ "${1:-}" != "--offline" ]]; then
   step "dependencies: pnpm audit, no high or critical advisory"
   pnpm audit --audit-level high

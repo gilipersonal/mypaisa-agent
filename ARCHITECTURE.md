@@ -3011,7 +3011,9 @@ the SSE stream included; the SvelteKit dev server; the iOS simulator pointed at
 localhost; and a localhost-only sign-in stub, compiled out of every deployed
 build. The agent runs either against the dev Claude key or in a scripted mode
 that replays recorded conversations, which UI work, the end-to-end tests and
-parity with the prototype use. The same code also runs against dev in AWS: the
+parity with the prototype use. Until phase 1 builds the real handlers, the
+stack carries stand-ins for the chat api and the stream in `scripts/local/`,
+on the wire of §19, which MA-30 and MA-31 replace. The same code also runs against dev in AWS: the
 MyPaisa Dev build on the simulator or a device against `api-dev`, the web app
 from `localhost` against `api-dev`, and the dev Cognito pool for sign-in.
 
@@ -3585,8 +3587,11 @@ the iOS app and Web Push the installed web app (§10). Built in phase 1
   its envelope, the `run_id` and `trace_id` of the run that made it, so a
   door's "it arrived at 9:41:03" and the server's spans are one trace (§9.2,
   MA-232).
-- **The clients:** a fetch-based SSE client at both doors, not `EventSource`,
-  so a 401 refreshes the token and reconnects. One leader tab per browser holds
+- **The clients:** a client of our own at both doors, not `EventSource`, so a
+  401 refreshes the token and reconnects: `fetch` in the browser, and on the
+  phone a transport that can stream, since React Native's `fetch` has no
+  streaming body (MA-198 reads it through `XMLHttpRequest`; the spike, MA-195,
+  settles it). One parser, `web/src/lib/api/stream.ts`, serves both. One leader tab per browser holds
   the stream for the others, and the stream closes 60 s after the page is
   hidden.
 - **Sign-out lands at once:** the stream re-checks the member's status and

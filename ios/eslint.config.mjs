@@ -10,6 +10,8 @@ export default ts.config(
   ...ts.configs.strict,
   ...ts.configs.stylistic,
   { plugins: { 'react-hooks': reactHooks }, rules: reactHooks.configs.recommended.rules },
+  // The one lazy require, so Metro can drop the Debug-only journey from every bundled build.
+  { files: ['src/App.tsx'], rules: { '@typescript-eslint/no-require-imports': 'off' } },
   {
     files: ['*.js', '*.mjs'],
     languageOptions: { globals: globals.node },

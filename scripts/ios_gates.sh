@@ -75,8 +75,14 @@ plist() { /usr/libexec/PlistBuddy -c "Print :$1" "$app/Info.plist"; }
 [[ "$(plist CFBundleIdentifier)" == "com.mypaisapp.agent" ]] || fail "the prod app's bundle id is wrong"
 [[ "$(plist MPApiBaseURL)" == "https://api.mypaisapp.com" ]] || fail "the prod app's base URL is wrong"
 [[ "$(plist MYPAISA_BUILD_EPOCH)" -gt 1790000000 ]] || fail "the prod app carries no build epoch"
-for hook in MYPAISA_API_URL MYPAISA_STATIC_MOTION MYPAISA_VIEWPORT_WIDTH mpProbe; do
-  ! strings "$app/MyPaisa" | grep -q "$hook" || fail "$hook reached the Release binary"
+# `grep -c`, never `! strings | grep -q`: under pipefail, grep stopping early breaks the pipe, the pipeline fails, and `!`
+# turns that into a pass, so the check could never fail.
+found() { strings "$2" | grep -c "$1" || true; }
+for hook in MYPAISA_API_URL MYPAISA_AUTH_STUB MYPAISA_STATIC_MOTION MYPAISA_VIEWPORT_WIDTH mpProbe; do
+  [[ "$(found "$hook" "$app/MyPaisa")" == 0 ]] || fail "$hook reached the Release binary"
 done
+[[ -s "$app/main.jsbundle" ]] || fail "the Release app has no JavaScript bundle"
+[[ "$(found 'v1/health' "$app/main.jsbundle")" != 0 ]] || fail "this check cannot read the Release bundle"
+[[ "$(found 'auth/local' "$app/main.jsbundle")" == 0 ]] || fail "the local sign-in stub reached the Release bundle"
 
 printf '\nios gates: all passed\n'

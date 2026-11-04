@@ -49,9 +49,9 @@ jira-flow `backend` gate and CI's Backend job:
 | Gate | Command |
 | --- | --- |
 | Lock | `uv lock --check` |
-| Lint | `uv run ruff check .` (every ruff rule, a few named exceptions in `pyproject.toml`) |
-| Format | `uv run ruff format --check .` (Black-compatible, so Black itself is not run) |
-| Types | `uv run pyright` (strict, `backend/src/` and `backend/tests/`) |
+| Lint | `uv run ruff check . ../scripts/local` (every ruff rule, a few named exceptions in `pyproject.toml`) |
+| Format | `uv run ruff format --check . ../scripts/local` (Black-compatible, so Black itself is not run) |
+| Types | `uv run pyright` (strict, `backend/src/` and `backend/tests/`; `scripts/local/` too, its boto3 files on basic) |
 | Layers | `uv run lint-imports` |
 | Tests | `uv run pytest --cov --cov-fail-under=90` (branch coverage) |
 | Audit | `uv run pip-audit --skip-editable` |

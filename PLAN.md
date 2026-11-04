@@ -320,7 +320,9 @@ Claude's:
   pointed at it; a localhost-only sign-in stub, compiled out of every
   deployed build. The agent runs against the dev Claude key, or in a scripted
   mode that replays recorded conversations, which UI work, the end-to-end
-  tests and parity with the prototype use.
+  tests and parity with the prototype use. Until phase 1, `scripts/local/`
+  carries stand-ins for the chat api and the stream on §19's wire, which
+  MA-30 and MA-31 replace.
 - **The seed (MA-110):** dev and the laptop seeded and hydrated with one
   illustrative household of every kind, in the UK and India, with years of
   events (salary history, EMIs paid, valuations, SIPs, statements), from the

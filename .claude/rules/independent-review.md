@@ -308,6 +308,13 @@ number, so a reference to it holds wherever it now sits.
     alone, and the record names which folders really are shared (MA-194
     round 1: the query definitions imported @tanstack/svelte-query).
 
+49. **A check that greps a pipeline is proved by a planted failure:** `! cmd |
+    grep -q x` under `pipefail` passes whatever `cmd` holds, because grep stops
+    early and the broken pipe fails the pipeline, which `!` turns into a pass.
+    Count with `grep -c`, and read a known string first, so a check that sees
+    nothing fails (MA-198: the sign-in stub sat in the Release bundle while the
+    gate passed; Metro drops `if (__DEV__) { }`, not code after an early return).
+
 ## The lessons from the design-board era
 
 Lessons 1 (its board half), 9 to 11, 13, 19, 21 (its board half), 24 to 31

@@ -31,9 +31,9 @@ export default defineConfig({
 		})
 	],
 	server: {
-		// Development only: /v1 goes to the local backend (`uv run --directory backend uvicorn ... --port 8000`). In dev
+		// Development only: /v1 goes to the local stack (scripts/local/run.py, MA-198), or to MYPAISA_API_PROXY. In dev
 		// and prod the app calls the environment's api host, set with MA-266 (ARCHITECTURE §17.2).
-		proxy: { '/v1': 'http://127.0.0.1:8000' },
+		proxy: { '/v1': process.env.MYPAISA_API_PROXY ?? 'http://127.0.0.1:8787' },
 		// Test and build output never reloads the page.
 		watch: { ignored: ['**/coverage/**', '**/build/**'] }
 	},

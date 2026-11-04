@@ -1,12 +1,17 @@
 import Foundation
 import UIKit
 
-/// What the shell is told at launch. The base URL is compiled per scheme (`Config/*.xcconfig`). The three `MYPAISA_*`
+/// What the shell is told at launch. The base URL is compiled per scheme (`Config/*.xcconfig`). The `MYPAISA_*`
 /// hooks exist for Maestro (MA-273) in a Debug build only: `scripts/ios_gates.sh` fails if their names reach a
 /// Release binary.
 enum AppConfig {
   static var initialProperties: [AnyHashable: Any] {
     var properties: [AnyHashable: Any] = ["apiUrl": apiBaseURL, "buildEpoch": buildEpoch]
+    #if DEBUG
+      if let member = ProcessInfo.processInfo.environment["MYPAISA_AUTH_STUB"], !member.isEmpty {
+        properties["authStub"] = member
+      }
+    #endif
     #if MP_PROBES
       if let probe = UserDefaults.standard.string(forKey: "mpProbe") {
         properties["probe"] = probe
