@@ -26,18 +26,17 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MPApiBaseURL</key>
+	<string>$(MP_API_BASE_URL)</string>
+	<key>MYPAISA_BUILD_EPOCH</key>
+	<integer>0</integer>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>MPApiBaseURL</key>
-	<string>$(MP_API_BASE_URL)</string>
-	<key>MYPAISA_BUILD_EPOCH</key>
-	<integer>0</integer>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
