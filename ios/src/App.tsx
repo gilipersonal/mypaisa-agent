@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, type NativeSyntheticEvent } from 'react-native';
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { createApiClient, type ApiClient } from '#lib/api/client.ts';
@@ -22,7 +22,24 @@ function useApiStatus(api: ApiClient): string {
   return `The api is up, version ${health.data.version}.`;
 }
 
-function Shell({ api, probe }: Readonly<{ api: ApiClient; probe?: string }>) {
+/** Debug only: the scripted journey on the local stack (MA-198). `__DEV__` is false in every bundled build, so Metro
+ * drops this branch and its require, and `scripts/ios_gates.sh` checks that it did. */
+function useLocalJourney(baseUrl: string, member: string | undefined): string | undefined {
+  const [reply, setReply] = useState<string>();
+  useEffect(() => {
+    // The whole body sits inside `if (__DEV__)`: Metro drops a block, not the code after an early return.
+    if (__DEV__) {
+      if (!member) return;
+      const { runIosJourney } = require('./local/journey') as typeof import('./local/journey');
+      runIosJourney(baseUrl, member).then(setReply, (error: unknown) => {
+        setReply(`The journey failed: ${String(error)}`);
+      });
+    }
+  }, [baseUrl, member]);
+  return reply;
+}
+
+function Shell({ api, journey, probe }: Readonly<{ api: ApiClient; journey?: string; probe?: string }>) {
   const [tab, setTab] = useState(0);
   const status = useApiStatus(api);
   const model = useMemo(
@@ -32,10 +49,10 @@ function Shell({ api, probe }: Readonly<{ api: ApiClient; probe?: string }>) {
         amount: '0',
         currency: 'GBP',
         privacy: false,
-        note: probeNote(probe) ?? "The household's wealth arrives here with phase 2.",
+        note: journey ?? probeNote(probe) ?? "The household's wealth arrives here with phase 2.",
         status,
       }),
-    [tab, status, probe],
+    [tab, status, probe, journey],
   );
   return (
     <View style={styles.page}>
@@ -55,9 +72,10 @@ function Shell({ api, probe }: Readonly<{ api: ApiClient; probe?: string }>) {
 export default function App(props: Readonly<AppProps>) {
   const client = useMemo(() => createQueryClient(), []);
   const api = useMemo(() => createApiClient(apiBaseUrl(props)), [props]);
+  const journey = useLocalJourney(apiBaseUrl(props), props.authStub);
   return (
     <QueryClientProvider client={client}>
-      <Shell api={api} probe={props.probe} />
+      <Shell api={api} journey={journey} probe={props.probe} />
     </QueryClientProvider>
   );
 }

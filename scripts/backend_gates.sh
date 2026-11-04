@@ -9,10 +9,10 @@ step() { printf '\n== %s\n' "$1"; }
 
 step "lock: uv.lock matches pyproject.toml"
 uv lock --check
-step "lint: ruff"
-uv run ruff check .
+step "lint: ruff, the local stack included"
+uv run ruff check . ../scripts/local
 step "format: ruff format (Black-compatible)"
-uv run ruff format --check .
+uv run ruff format --check . ../scripts/local
 step "types: pyright strict"
 uv run pyright
 step "layers: api -> services -> repositories -> domain"

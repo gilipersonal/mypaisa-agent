@@ -1,0 +1,22 @@
+{
+  "id": "first-hello",
+  "tier": "T0",
+  "about": "The scripted journey both doors run (MA-198): sign in, say hello, get a streamed reply and a card.",
+  "turns": [
+    {
+      "user": "Hello",
+      "agent": {
+        "deltas": ["Hello, ", "I'm MyPaisa. ", "This reply came ", "from a recording."],
+        "cards": [
+          {
+            "type": "note",
+            "version": 1,
+            "id": "first-hello-note",
+            "fallback": "The local stack is working.",
+            "body": { "title": "The local stack is working." }
+          }
+        ]
+      }
+    }
+  ]
+}

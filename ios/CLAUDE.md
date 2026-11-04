@@ -40,6 +40,8 @@ scripts/ios_gates.sh
 and pick a scheme. **MyPaisa Dev** runs Debug through Metro against dev; its tests use the `Dev` configuration, which is
 optimised and bundles its JavaScript. **MyPaisa** is prod, `Release`.
 
+On the local stack: `scripts/local/README.md`.
+
 ## The rules
 
 1. **No CocoaPods, ever** (MA-229). `Podfile` is one comment because the React Native CLI finds an iOS project only
@@ -54,7 +56,8 @@ optimised and bundles its JavaScript. **MyPaisa** is prod, `Release`.
    depends on the runtime goes in `src/probe.ts`, and `ShellUITests` reads the result.
 6. **A shared file imports no door's framework** (lesson 48): `@tanstack/query-core`, never `svelte-query` or
    `react-query`.
-7. **`MYPAISA_*` hooks live under `#if DEBUG`, probes under `MP_PROBES`.** The gate fails if either reaches `Release`.
+7. **`MYPAISA_*` hooks live under `#if DEBUG`, probes under `MP_PROBES`,** and the local journey under `__DEV__`. The gate
+   fails if any of them reaches `Release`.
 8. **`hermes-compiler` is pinned to the version `react-native` names.** Move it with every React Native upgrade: a
    mismatch crashes at launch with a bytecode error, and the gate fails on two versions.
 9. **Colours come from `tokens.css`** through `scripts/ios_tokens.py`. `Colors.xcassets` and `MPColor.swift` are
