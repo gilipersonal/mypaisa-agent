@@ -8058,7 +8058,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Prototype v5's Home scope selector works: Household, me and the other member each change the figures",
-      "status": "To Do",
+      "status": "In Review",
       "labels": [
         "bug"
       ],
@@ -8068,7 +8068,12 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Finding F06 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days."
+      "notes": "Finding F06 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days. Household, Me and the other member now change the hero, its trajectory and the Home cards, from the figure set's own shares, and a member's own and owe add up to the ledger's by-member net. Keyboard works, the selected scope is exposed with aria-pressed, and a viewer switch leaves no duplicate person. What's due, the month's cash and the plan stay on Household, and the scope resets at each step so the walk-through's rings stay true.",
+      "code": [
+        "docs/design/prototype-v5/prototype-v5.js",
+        "docs/design/prototype-v5/prototype-v5-kit.js",
+        "docs/design/prototype-v5/prototype-v5-ch-wealth.js"
+      ]
     },
     {
       "key": "MA-336",
@@ -8076,7 +8081,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Prototype v5 reaches Assets and Debts from Home's first summary, as the Home board already draws",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "bug"
       ],
@@ -8086,7 +8091,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Finding F07 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days."
+      "notes": "Finding F07 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days.",
+      "code": [
+        "docs/design/prototype-v5/prototype-v5-ch-wealth.js"
+      ]
     },
     {
       "key": "MA-337",

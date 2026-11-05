@@ -115,7 +115,7 @@
 
   /* ---------- state ---------- */
   var CHARTS = [['a', 'A · Pulse'], ['b', 'B · Editorial'], ['c', 'C · Modular'], ['classic', 'Classic']];
-  var st = { door: 'desk', dark: false, priv: false, charts: 'a', viewer: 'arun', ci: 0, si: 0, view: null, pane: null, hist: [], open: {}, seen: {}, toast: null, sheet: null, moreOpen: false, sheetOff: false };
+  var st = { door: 'desk', dark: false, priv: false, charts: 'a', viewer: 'arun', scope: 'all', ci: 0, si: 0, view: null, pane: null, hist: [], open: {}, seen: {}, toast: null, sheet: null, moreOpen: false, sheetOff: false };
   MP5.state = function () { return st; };
   function load() {
     try {
@@ -136,7 +136,7 @@
     var t = iso(step && step.d, step && step.tm);
     var ctx = {
       door: d.id, web: !!d.web, app: !!d.app, compact: !!d.compact, wide: !!d.wide, narrow: !!d.narrow,
-      dark: st.dark, priv: st.priv, charts: st.charts, viewer: st.viewer, isAdmin: st.viewer === 'arun', who: st.viewer === 'arun' ? 'Arun' : 'Asha',
+      dark: st.dark, priv: st.priv, charts: st.charts, viewer: st.viewer, scope: st.scope, isAdmin: st.viewer === 'arun', who: st.viewer === 'arun' ? 'Arun' : 'Asha',
       t: t, d: step ? step.d : '', tm: step ? step.tm : '', step: step, ch: ch, W: world(t), D: window.MP5D || {}, K: K,
       open: st.open, view: st.view, MP5: MP5
     };
@@ -423,7 +423,7 @@
     ci = Math.max(0, Math.min(cs.length - 1, ci));
     si = Math.max(0, Math.min(cs[ci].steps.length - 1, si));
     if (cs[st.ci]) st.seen[cs[st.ci].key] = true;
-    st.ci = ci; st.si = si; st.view = null; st.pane = null; st.hist = []; st.toast = null; st.open = {}; st.moreOpen = false; st.sheetOff = false;
+    st.ci = ci; st.si = si; st.view = null; st.pane = null; st.hist = []; st.toast = null; st.open = {}; st.moreOpen = false; st.sheetOff = false; st.scope = 'all';
     var s = cs[ci].steps[si];
     st.viewer = (s && s.viewer) || cs[ci].viewer || 'arun';
     if (s && s.open) s.open.forEach(function (k) { st.open[k] = true; });
@@ -441,6 +441,7 @@
     else if (key.indexOf('charts:') === 0) { var cm = key.slice(7); if (['a', 'b', 'c', 'classic'].indexOf(cm) >= 0) { st.charts = cm; save(); } }
     else if (key === 'priv') st.priv = !st.priv;
     else if (key.indexOf('viewer:') === 0) st.viewer = key.slice(7);
+    else if (key.indexOf('scope:') === 0) st.scope = key.slice(6);
     else if (key.indexOf('ch:') === 0) goStep(+key.slice(3), 0);
     else if (key.indexOf('st:') === 0) goStep(st.ci, +key.slice(3));
     else if (key === 'next') next();
@@ -473,7 +474,7 @@
   MP5.handles = function (key) {
     var s = cur().step || {};
     if (!key) return false;
-    return /^(door|charts|viewer|ch|st|nav|tab|fold|open):/.test(key) ||
+    return /^(door|charts|viewer|scope|ch|st|nav|tab|fold|open):/.test(key) ||
       ['theme:dark', 'theme:light', 'priv', 'next', 'prev', 'restart', 'more:close', 'sheet:dismiss', 'back'].indexOf(key) >= 0 ||
       !!(s.on && s.on[key] != null) || key === s.target;
   };

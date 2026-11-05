@@ -110,8 +110,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-332 | Settings, Admin and Activity boards draw the real task, not a paragraph about it | To Do | §4.6, §4.10, §8.3, §8.4 | todo |  |
 | MA-333 | Each promised Holdings state is a drawn frame: loading, a non-trading day, stale prices and a failed fetch | To Do | §5.1, §8.3 | todo |  |
 | MA-334 | The web app's compact navigation has one contract across the boards, the design system and the docs | To Do | §8.1, §8.4 | todo |  |
-| MA-335 | Prototype v5's Home scope selector works: Household, me and the other member each change the figures | To Do | §8.3 | none |  |
-| MA-336 | Prototype v5 reaches Assets and Debts from Home's first summary, as the Home board already draws | To Do | §8.3 | none |  |
+| MA-335 | Prototype v5's Home scope selector works: Household, me and the other member each change the figures | In Review | §8.3 | none |  |
+| MA-336 | Prototype v5 reaches Assets and Debts from Home's first summary, as the Home board already draws | In Progress | §8.3 | none |  |
 | MA-337 | Primary actions and consequential instructions on the boards use the agreed control and body type | To Do | §8.1, §8.3, §8.4 | none |  |
 | MA-338 | A current-spec map names each screen's one composition, and the design notes agree with later rules | To Do | §8.1, §8.3, §8.4 | none |  |
 | MA-339 | Every foldable example names its OS, door and posture, and follows that door's material | To Do | §8.1, §8.4 | none |  |
