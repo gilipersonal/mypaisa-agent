@@ -3,11 +3,13 @@
    as Apple's HIG for iOS 26 says: tab bars, sidebars, toolbars, the composer, chips, menus and
    partial-height sheets. Content (the hero, cards, lists, charts, messages) is never glass, and glass
    never sits on glass. Labels on glass use ink or ink-2, never ink-3, so they hold at 25% screen brightness
-   (scripts/contrast_check.py, MA-181). Link tokens.css first, then this file. Put .mp and t-light or t-dark on a device root.
+   (MA-181; measured on the built apps by MA-304). Link tokens.css first, then this file. Put .mp and t-light or t-dark on a device root.
    The CSS glass is a drawing of the system material: the app uses .glassEffect() and the system bars. */
 
 /* ---------- Liquid Glass, as drawn on the boards ---------- */
-.mp {
+/* Declared as tokens.css declares its colours, so the nearest element that names a theme decides, and everything inside
+   it inherits; a page that names none follows the host (MA-329). */
+:root, .t-light {
   --lg-fill: rgba(255, 255, 255, 0.86);   /* dense enough that labels on glass hold at 25% brightness (MA-181) */
   --lg-fill-strong: rgba(255, 255, 255, 0.94);
   --lg-accent: #8C2410;                       /* the selected tab and an accent label on glass */
@@ -16,13 +18,9 @@
   --lg-edge: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 1px rgba(255, 255, 255, 0.35), 0 0 0 0.5px rgba(20, 23, 31, 0.10);
   --lg-lift: 0 10px 30px rgba(20, 23, 31, 0.12), 0 2px 6px rgba(20, 23, 31, 0.06);
   --lg-lens: rgba(20, 23, 31, 0.06);          /* the selected tab's lens */
-  --lg-ink: var(--mp-ink);
-  --lg-tint: var(--mp-accent);                /* the one tinted control in a group */
-  --lg-on-tint: var(--mp-on-accent);
-  --lg-blur: blur(18px) saturate(190%);
-  --dev-chrome: #1B1D22;                      /* the device's band, on the canvas only */
+  --lg-sheen: 0.55;                           /* how strongly the top highlight shows */
 }
-.t-dark.mp, .t-dark .mp {
+.t-dark {
   --lg-fill: rgba(24, 30, 40, 0.86);
   --lg-fill-strong: rgba(24, 30, 40, 0.94);
   --lg-accent: #FFC2B3;
@@ -31,9 +29,10 @@
   --lg-edge: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 1px rgba(255, 255, 255, 0.06), 0 0 0 0.5px rgba(255, 255, 255, 0.10);
   --lg-lift: 0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
   --lg-lens: rgba(255, 255, 255, 0.12);
+  --lg-sheen: 0.18;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not(.t-light):not(.t-dark) .mp, :root:not(.t-light):not(.t-dark).mp {
+  :root:not(.t-light):not(.t-dark) {
     --lg-fill: rgba(24, 30, 40, 0.86);
     --lg-fill-strong: rgba(24, 30, 40, 0.94);
     --lg-accent: #FFC2B3;
@@ -42,28 +41,37 @@
     --lg-edge: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 1px rgba(255, 255, 255, 0.06), 0 0 0 0.5px rgba(255, 255, 255, 0.10);
     --lg-lift: 0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
     --lg-lens: rgba(255, 255, 255, 0.12);
+    --lg-sheen: 0.18;
   }
-  :root:not(.t-light):not(.t-dark) .lg::before, :root:not(.t-light):not(.t-dark).lg::before { opacity: 0.18; }
+}
+/* These read a colour from tokens.css, and var() resolves where it is declared, so each named surface declares them again. */
+:root, .t-light, .t-dark, .mp {
+  --lg-ink: var(--mp-ink);
+  --lg-tint: var(--mp-accent);                /* the one tinted control in a group */
+  --lg-on-tint: var(--mp-on-accent);
+  --lg-blur: blur(18px) saturate(190%);
+  --dev-chrome: #1B1D22;                      /* the device's band, on the canvas only */
 }
 .lg { background: var(--lg-fill); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur); box-shadow: var(--lg-edge), var(--lg-lift); color: var(--lg-ink); position: relative; }
 .lg::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 46%); opacity: 0.55; }
-.t-dark .lg::before, .t-dark.lg::before { opacity: 0.18; }
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 46%); opacity: var(--lg-sheen); }
 .lg-strong { background: var(--lg-fill-strong); }
 .lg-tint { background: var(--lg-tint); color: var(--lg-on-tint); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), var(--lg-lift); }
 .lg-pill { border-radius: 999px; }
 /* Reduce Transparency: the system makes glass opaque; the boards show it with .rt on the device */
 .rt .lg { background: var(--mp-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
 .rt .lg::before { display: none; }
+.rt .lg-tint { background: var(--lg-tint); }   /* a selected control keeps its tint, or its on-tint label vanishes (MA-329) */
 @media (prefers-reduced-transparency: reduce) {
   .lg { background: var(--mp-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .lg::before { display: none; }
+  .lg-tint { background: var(--lg-tint); }
 }
 /* Increase Contrast: glass is denser and gains an edge, as the system's does (iOS kit, Accessibility) */
 @media (prefers-contrast: more) {
   .lg { background: var(--lg-fill-strong); box-shadow: inset 0 0 0 1px var(--mp-ink-3), var(--lg-lift); }
   .lg::before { display: none; }
-  .lg-tint { box-shadow: inset 0 0 0 1px var(--mp-ink), var(--lg-lift); }
+  .lg-tint { background: var(--lg-tint); box-shadow: inset 0 0 0 1px var(--mp-ink), var(--lg-lift); }
 }
 
 /* ---------- devices (the canvas's frames; the app never asks which one it is on) ---------- */

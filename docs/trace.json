@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-11-03",
+  "updated": "2026-11-05",
   "claude_design": {
     "app": {
       "id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7",
@@ -7911,7 +7911,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "CI bundles the iOS app, so a toolchain update that breaks the build cannot pass as green",
-      "status": "In Review",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -7923,9 +7923,58 @@
       "boards": [],
       "code": [
         "web/pnpm-workspace.yaml",
-        "ios/CLAUDE.md"
+        "ios/CLAUDE.md",
+        "scripts/ios_gates.sh",
+        ".github/dependabot.yml"
       ],
       "notes": "Found on Dependabot's PR #96, 4 Nov 2026: Babel 8 stops the iOS bundle while Jest and tsc pass, so CI stayed green. The gate now bundles the app on Linux, Dependabot skips Babel majors, and ios/package.json joins MA-326's claim."
+    },
+    {
+      "key": "MA-329",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "A light board stays light in a dark browser: the glass follows the frame's own theme",
+      "status": "In Review",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "8.1",
+        "8.3",
+        "8.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "code": [
+        "docs/design/ds-v1/ios.css",
+        "docs/design/ios-v1/ios.css",
+        "docs/design/app-v1/ios.css",
+        "docs/design/reviews/MA-329/"
+      ],
+      "notes": "Finding F01 of MA-328 except its last step, on the boards and Prototype v5 only: the real apps do not load ios.css. Bug fix on picked boards, so no options round. The glass tokens are now declared as tokens.css declares its colours, so the nearest element that names a theme decides and everything inside it inherits. A selected control keeps its tint under Reduce Transparency and Increase Contrast, where it had dropped to about 1:1 on the selected Privacy control. The fix changes the theme rules and those settings' fills only: privacy, safe areas and the iOS and web material distinction are untouched. docs/design/reviews/MA-329/ holds the six cases, the surfaces, and settings-selected-control.png and settings-surfaces.png for both settings in light, dark and automatic frames in a dark browser. On iPhone v4 · Home, a light frame in a dark browser, pixel (210,837) of the 402 x 874 capture against the #14171F tab label went from 1.62:1 to 17.65:1. The Boards and Prototype v5 artifacts were republished. F01's harden and polish pass, with its shadow and opacity judgement, is MA-330."
+    },
+    {
+      "key": "MA-330",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The boards' glass gets Impeccable's harden and polish pass, the last step of finding F01",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8.1",
+        "8.3",
+        "8.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Split from MA-329 in round 1 of its review. F01 ends with /impeccable harden, then /impeccable polish; MA-328's suggested sequence finishes with the polish, after F02 to F10, and waiting with harden too was a choice made in that review. Estimate 0 on purpose while it cannot start: 0.25 would add a working day to phase 0 and move every later date.",
+      "open": [
+        "Who owns F02 to F10: this pass waits for them, and they have no issues yet (docs/design/reviews/MA-328/handoff.md)."
+      ]
     }
   ],
   "others": [
@@ -8549,7 +8598,7 @@
       "key": "MA-328",
       "type": "Task",
       "summary": "Assess docs/design UI screens with Impeccable and prepare a Claude fix handoff",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "notes": "Repo assessment and handoff only: docs/design/reviews/MA-328/handoff.md, coverage/evidence, and review/MA-328/. Two independent review rounds completed; round 2 clean. The report identifies ten design findings for Claude to fix later; this task changes no product UI or design boards. Includes review-checklist lessons 50-52. No phase implementation scope or roadmap estimate."
     }

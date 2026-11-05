@@ -1,0 +1,309 @@
+{
+ "story": "MA-329",
+ "rounds": 2,
+ "reviewed_sha": "75df9ff591662f1e49b3c700b931992c1943c7a4",
+ "status": "round 2 fixed; round 3 waits for Arun's yes",
+ "history": [
+  {
+   "round": 1,
+   "reviewed_sha": "ec9c3ca15b46bf60eb05321356db35be099d0ba5",
+   "range": "1a2f9c3..ec9c3ca (everything)",
+   "review_approval": "Review first",
+   "gate_results": [
+    {
+     "command": "python3 scripts/plan_sync.py selftest",
+     "result": "PASS (reused)"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py check",
+     "result": "PASS: 247 items, 0 drift, 61 notes"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py pr-files",
+     "result": "PASS: 0 claimed by another story, 0 by none"
+    },
+    {
+     "command": "python3 scripts/review_regress.py MA-329",
+     "result": "PASS: no ledger yet"
+    },
+    {
+     "command": "python3 scripts/review_regress.py --state MA-329",
+     "result": "PASS: no rounds yet"
+    },
+    {
+     "command": "python3 scripts/artifacts_sync.py check",
+     "result": "PASS: 0 stale or broken"
+    },
+    {
+     "command": "cmp of the three ios.css copies",
+     "result": "PASS: identical"
+    }
+   ],
+   "deferred_gates": [
+    {
+     "gate": "iOS and web gates",
+     "reason": "No file under ios/ or web/ changed; CI ran them on the PR"
+    }
+   ],
+   "findings": [
+    {
+     "id": "R1-b1",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "docs/trace.json:8557",
+     "evidence": "Jira MA-329 had no parent, so its row sat in others with no PLAN bullet or estimate; taxonomy.md:34 and :80 put board work under MA-9, and rule 1 asks for a PLAN bullet.",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b2",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "docs/design/reviews/MA-328/handoff.md:63",
+     "evidence": "The story covered part of F01: not the other surfaces, the six-case comparison or the harden and polish pass, and no record said so.",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a1",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "docs/design/ds-v1/ios.css:25",
+     "evidence": "A light frame under a dark ancestor still got dark glass, because .t-dark .mp outweighed .mp; the new comment said a frame that names its theme keeps it.",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a2",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "docs/design/ds-v1/ios.css:37",
+     "evidence": "A theme class with no .mp on the same element is half-honoured. No board has that shape, and ios.css:6 says to put .mp and the theme on a device root.",
+     "status": "wontfix"
+    },
+    {
+     "id": "R1-b3",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "Jira MA-329 issuelinks",
+     "evidence": "No Relates link to MA-328.",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b4",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json:8564",
+     "evidence": "The contrast figures named no board, pixel or foreground (lesson 52).",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b5",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json:8552",
+     "evidence": "The MA-328 row lagged Jira by two steps.",
+     "status": "fixed"
+    }
+   ],
+   "next_round": "The delta since the reviewed sha, ec9c3ca..75df9ff: lanes a, b, c and d."
+  },
+  {
+   "round": 2,
+   "reviewed_sha": "75df9ff591662f1e49b3c700b931992c1943c7a4",
+   "range": "ec9c3ca..75df9ff",
+   "review_approval": "Run round 2",
+   "gate_results": [
+    {
+     "command": "python3 scripts/plan_sync.py selftest",
+     "result": "PASS (reused)"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py check",
+     "result": "PASS: 249 items, 0 drift, 61 notes"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py pr-files",
+     "result": "PASS: 0 claimed by another story, 0 by none"
+    },
+    {
+     "command": "python3 scripts/review_regress.py MA-329",
+     "result": "PASS: 2 checks, 2 passed"
+    },
+    {
+     "command": "python3 scripts/review_regress.py --state MA-329",
+     "result": "PASS"
+    },
+    {
+     "command": "python3 scripts/artifacts_sync.py check",
+     "result": "PASS: 0 stale or broken"
+    },
+    {
+     "command": "gh pr checks 102",
+     "result": "PASS: 10 of 10 at 75df9ff"
+    }
+   ],
+   "deferred_gates": [],
+   "findings": [
+    {
+     "id": "R2-a1",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "a",
+     "anchor": "docs/design/ds-v1/ios.css:27",
+     "evidence": "An unnamed .mp inside a light frame inside a dark ancestor got dark glass: :where(.t-dark) .mp tied with .mp and came later. 44 of 3,552 nesting cases per engine, plus 382 in the R1-a2 shape. Lane c found the same as R2-c2.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-a2",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "a",
+     "anchor": "docs/design/ds-v1/ios.css:56",
+     "evidence": "The selected Privacy control vanished under Reduce Transparency and Increase Contrast: about 1:1 and 1.12:1, because .lg replaced .lg-tint's fill. On 4 boards, dating from MA-161.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-a3",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "a,b,d",
+     "anchor": "docs/design/reviews/MA-329/surfaces-dark-browser.png",
+     "evidence": "The acceptance line on Reduce Transparency and Increase Contrast had no evidence behind it. Also reported as R2-b2 and R2-d1.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-b1",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "b,d",
+     "anchor": "docs/design/reviews/MA-328/handoff.md:71",
+     "evidence": "Three F01 clauses were owned by neither MA-329 nor MA-330: privacy and safe areas, a complete material set, and the shadow and opacity judgement. Also reported as R2-d5.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-a4",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a,d",
+     "anchor": "review/MA-329/fixed.json:15",
+     "evidence": "The r1-b2 check passed with a capture replaced by one byte, and with its notes rewritten. Also reported as R2-d2.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-b3",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json:7931",
+     "evidence": "Both rows cited sections that never mention glass; the rules on it are in 8.1.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-b4",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "b,c",
+     "anchor": "PLAN.md:665",
+     "evidence": "MA-330 waits on F02 to F10, which no issue owns. Also reported as R2-c1.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-b5",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/roadmap.json:305",
+     "evidence": "Estimate 0 for a To Do story does not fit the schema; 0.25 would move every later date.",
+     "status": "wontfix"
+    },
+    {
+     "id": "R2-b6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json:7909",
+     "evidence": "The MA-327 row omitted scripts/ios_gates.sh and .github/dependabot.yml.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-c3",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": ".claude/skills/design-first/SKILL.md:189",
+     "evidence": "Said a board follows prefers-color-scheme, which a frame that names a theme no longer does.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-c4",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "DESIGN.md:261",
+     "evidence": "Named the old .t-dark .mp selector.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-c5",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "PLAN.md:664",
+     "evidence": "\"Boards only\" left out Prototype v5, which also loads ios.css.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-c6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "docs/design/ds-v1/ios.css:6",
+     "evidence": "Both top comments cited the deleted contrast_check.py. Fixed in ios.css; tokens.css is held to web/ by a test.",
+     "status": "deferred MA-330"
+    },
+    {
+     "id": "R2-d3",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": ".claude/rules/independent-review.md:336",
+     "evidence": "Lesson 53 named the wrong tool.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-d4",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": ".claude/skills/plan-sync/reference/trace-schema.md:60",
+     "evidence": "The schema still offered repo tooling as a reason to sit in others.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-d6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "review/MA-329/state.json:10",
+     "evidence": "Round 1's range depended on a moving ref.",
+     "status": "fixed"
+    },
+    {
+     "id": "R2-d7",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "review/MA-329/state.json:113",
+     "evidence": "next_round named the wrong lanes.",
+     "status": "fixed"
+    }
+   ],
+   "next_round": "The delta since 75df9ff: ios.css, the MA-329 and MA-330 records, the captures, the lessons. Lanes a, b, c and d. Needs Arun's yes."
+  }
+ ]
+}

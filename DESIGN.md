@@ -258,7 +258,7 @@ Warm stone-paper neutrals contrasted against a single deep navy hero card, terra
 ### Named Rules
 **The Quiet Drawdown Rule.** Green (`positive` with `▲`) is reserved for gains, while a routine daily fall in a holding's value uses quiet secondary ink (`ink-secondary` with `▼`); crimson (`alert`) appears only on genuine red-tier alerts and destructive actions.
 
-**The 25% Brightness Rule.** Every colour token lives in the top-level `:root, .t-light` and `.t-dark` blocks of `tokens.css` (and `.mp` / `.t-dark .mp` in `ios.css`) and must stay legible both at `100%` and at `25%` indoor screen luminance. The `contrast_check.py` gate that measured this on the boards was stopped by MA-303 (Arun, 2 Nov 2026); the rule is now measured on the built web app by MA-304, QA on request; iOS QA comes after MA-165, with no story yet.
+**The 25% Brightness Rule.** Every colour token lives in the top-level `:root, .t-light` and `.t-dark` blocks of `tokens.css` (and the same blocks in `ios.css`) and must stay legible both at `100%` and at `25%` indoor screen luminance. The `contrast_check.py` gate that measured this on the boards was stopped by MA-303 (Arun, 2 Nov 2026); the rule is now measured on the built web app by MA-304, QA on request; iOS QA comes after MA-165, with no story yet.
 
 ## Typography
 
