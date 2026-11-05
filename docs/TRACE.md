@@ -104,8 +104,17 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-325 | Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it | Done | §1 | none |  |
 | MA-326 | CI scans what exists today on every pull request and every week: secrets in the whole history, the backend's source, every lockfile and the workflows | Done | §13, §17.4 | none |  |
 | MA-327 | CI bundles the iOS app, so a toolchain update that breaks the build cannot pass as green | Done | §17.4 | none |  |
-| MA-329 | A light board stays light in a dark browser: the glass follows the frame's own theme | In Review | §8.1, §8.3, §8.4 | none |  |
+| MA-329 | A light board stays light in a dark browser: the glass follows the frame's own theme | Done | §8.1, §8.3, §8.4 | none |  |
 | MA-330 | The boards' glass gets Impeccable's harden and polish pass, the last step of finding F01 | To Do | §8.1, §8.3, §8.4 | none |  |
+| MA-331 | Sign-in shows only what a signed-out person can do, with every sign-in and invite state drawn at both doors | To Do | §4.5, §8.1, §8.4 | todo |  |
+| MA-332 | Settings, Admin and Activity boards draw the real task, not a paragraph about it | To Do | §4.6, §4.10, §8.3, §8.4 | todo |  |
+| MA-333 | Each promised Holdings state is a drawn frame: loading, a non-trading day, stale prices and a failed fetch | To Do | §5.1, §8.3 | todo |  |
+| MA-334 | The web app's compact navigation has one contract across the boards, the design system and the docs | To Do | §8.1, §8.4 | todo |  |
+| MA-335 | Prototype v5's Home scope selector works: Household, me and the other member each change the figures | To Do | §8.3 | none |  |
+| MA-336 | Prototype v5 reaches Assets and Debts from Home's first summary, as the Home board already draws | To Do | §8.3 | none |  |
+| MA-337 | Primary actions and consequential instructions on the boards use the agreed control and body type | To Do | §8.1, §8.3, §8.4 | none |  |
+| MA-338 | A current-spec map names each screen's one composition, and the design notes agree with later rules | To Do | §8.1, §8.3, §8.4 | none |  |
+| MA-339 | Every foldable example names its OS, door and posture, and follows that door's material | To Do | §8.1, §8.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
