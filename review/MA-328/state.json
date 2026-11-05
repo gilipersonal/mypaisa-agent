@@ -1,0 +1,259 @@
+{
+  "story": "MA-328",
+  "rounds": 2,
+  "reviewed_sha": "b69fb34535f28d3bdea17e2c951c339b2bb7a519",
+  "status": "complete; independently reviewed handoff ready",
+  "history": [
+    {
+      "round": 1,
+      "reviewed_sha": "b69fb34535f28d3bdea17e2c951c339b2bb7a519",
+      "range": "Full uncommitted report/evidence snapshot in review/MA-328/round-1/input-manifest.json at b69fb34535f28d3bdea17e2c951c339b2bb7a519",
+      "review_approval": "lets independent review the findings",
+      "gate_results": [
+        {
+          "command": "python3 scripts/plan_sync.py selftest",
+          "result": "PASS; valid unchanged-code selftest reused from 2026-11-04T12:50:48+00:00"
+        },
+        {
+          "command": "python3 scripts/plan_sync.py check",
+          "result": "PASS: 247 items, 0 drift, 61 notes"
+        },
+        {
+          "command": "python3 scripts/plan_sync.py pr-files --key MA-328",
+          "result": "PASS: 0 product files changed; uncommitted report pinned separately by input manifest"
+        },
+        {
+          "command": "scripts/security_scan.sh",
+          "result": "PASS: gitleaks, semgrep, OSV, zizmor. Existing OSV filters and one zizmor suppression apply; zizmor offline mode as configured."
+        },
+        {
+          "command": "python3 scripts/review_regress.py MA-328",
+          "result": "PASS: no existing fixes"
+        },
+        {
+          "command": "python3 scripts/review_regress.py --state MA-328",
+          "result": "PASS: no previous rounds"
+        },
+        {
+          "gate": "Report local links and assessment source hashes",
+          "result": "PASS; links exist; source bytes unchanged"
+        }
+      ],
+      "deferred_gates": [
+        {
+          "gate": "backend/web/ios build gates",
+          "reason": "No matching product or build files changed; report-only review"
+        },
+        {
+          "gate": "Retired board-content checks",
+          "reason": "MA-303; not reintroduced. Review targets assessment claims, not a new design approval."
+        }
+      ],
+      "findings": [
+        {
+          "id": "R1-d1",
+          "severity": "P1",
+          "blocking": true,
+          "lane": "d",
+          "anchor": "docs/design/reviews/MA-328/handoff.md:67 (round-1 snapshot)",
+          "evidence": "Native passkey first sign-in, relying-party annotation and browser joining distinctions conflict with ARCHITECTURE.md:425,428,430,453-460; original F02 did not name the discrepancies.",
+          "status": "fixed",
+          "correction": "Door/action auth table, exact domain correction and acceptance matrix added; author-applied, independent delta verification pending.",
+          "verified_in_round": 2
+        },
+        {
+          "id": "R1-d2",
+          "severity": "P1",
+          "blocking": true,
+          "lane": [
+            "c",
+            "d"
+          ],
+          "anchor": "docs/design/reviews/MA-328/handoff.md:163 (round-1 snapshot)",
+          "evidence": "MA-193:113-126 and MA-279:91-99 already record the compositions and retained alternatives; original report/coverage did not classify them. Includes R1-c2.",
+          "status": "fixed",
+          "correction": "Recorded decision map, selected-source distinction and lifecycle coverage added; author-applied, independent delta verification pending.",
+          "verified_in_round": 2
+        },
+        {
+          "id": "R1-d3",
+          "severity": "P2",
+          "blocking": false,
+          "lane": "d",
+          "anchor": "docs/design/reviews/MA-328/handoff.md:127 (round-1 snapshot)",
+          "evidence": "F06 offered static annotation as a fix while acceptance demanded functioning activation and scoped data.",
+          "status": "fixed",
+          "correction": "Removed annotation alternative as a resolution; deferred interaction remains explicitly open.",
+          "verified_in_round": 2
+        },
+        {
+          "id": "R1-c1",
+          "severity": "P2",
+          "blocking": false,
+          "lane": "c",
+          "anchor": "docs/design/reviews/MA-328/handoff.md:137 (round-1 snapshot)",
+          "evidence": "Exact scroll/rectangle measurements lacked a reproducible scenario and coordinate-space distinction while the prototype applies transform scaling.",
+          "status": "fixed",
+          "correction": "Named p9-overview scenario and removed exact numerical distance claims; qualitative source-order evidence retained.",
+          "verified_in_round": 2
+        }
+      ],
+      "next_round": "Only corrected F02/F05/F06/F07/F09 passages, decision/lifecycle maps, auth verification row and checklist lessons 50-52, plus direct cited architecture/decision/trace joins. New user yes required; first verify the two manual fixed-ledger entries.",
+      "status": "changes-required; report corrections applied; delta review pending",
+      "reviewers": [
+        {
+          "lane": "c",
+          "agent": "/root/independent_evidence_r1",
+          "scope": "Factual validity, source/evidence and reproduction of all F01-F10"
+        },
+        {
+          "lane": "d",
+          "agent": "/root/independent_ux_r1",
+          "scope": "UX conclusions, severity, approved decisions and handoff acceptance of all F01-F10"
+        }
+      ],
+      "snapshot_note": "Report and coverage text preserved beside SHA-256 manifest because deliverable is uncommitted; reviewed_sha is the unchanged source baseline, not a commit of the report.",
+      "blocking": 2,
+      "post_fix_gate_results": [
+        {
+          "command": "python3 scripts/plan_sync.py selftest",
+          "result": "PASS; valid unchanged-code result reused"
+        },
+        {
+          "command": "python3 scripts/plan_sync.py check",
+          "result": "PASS; 247 items, 0 drift, 61 notes; round-1/plan-sync-after.txt"
+        },
+        {
+          "command": "python3 scripts/plan_sync.py pr-files --key MA-328",
+          "result": "PASS; 0 product files changed"
+        },
+        {
+          "command": "scripts/security_scan.sh",
+          "result": "PASS; round-1/security-after.txt; existing configured suppressions/filters"
+        },
+        {
+          "gate": "Report links, source line bounds, source/image hashes and finding totals",
+          "result": "PASS; 285 local links, 25 source line ranges, 72 source hashes, 161 image hashes; 10 underlying findings unchanged"
+        },
+        {
+          "command": "git diff --check",
+          "result": "PASS"
+        },
+        {
+          "command": "python3 scripts/review_regress.py --state MA-328",
+          "result": "PASS"
+        },
+        {
+          "command": "python3 scripts/review_regress.py MA-328",
+          "result": "EXIT 3: 0 failures; 2 semantic manual checks pending next approved round"
+        }
+      ],
+      "outcome": "Two independent lanes completed. Two blocking report omissions and two nonblocking clarifications corrected; ten design findings retained. Corrections not independently approved."
+    },
+    {
+      "round": 2,
+      "reviewed_sha": "b69fb34535f28d3bdea17e2c951c339b2bb7a519",
+      "range": "Correction-only snapshot delta review/MA-328/round-2/review-delta.diff from round-1 report snapshot to round-2/input-manifest.json, plus cited source joins; unchanged git source baseline b69fb34535f28d3bdea17e2c951c339b2bb7a519",
+      "review_approval": "lets run round 2",
+      "gate_results": [
+        {
+          "command": "python3 scripts/plan_sync.py selftest",
+          "result": "PASS; valid unchanged-code result reused per policy"
+        },
+        {
+          "command": "python3 scripts/plan_sync.py check",
+          "result": "PASS: 247 items, 0 drift, 61 notes; round-2/plan-sync.txt"
+        },
+        {
+          "command": "python3 scripts/plan_sync.py pr-files --key MA-328",
+          "result": "PASS: 0 product files changed"
+        },
+        {
+          "command": "scripts/security_scan.sh",
+          "result": "PASS: round-2/security.txt; existing OSV filters, zizmor offline configuration and one suppression"
+        },
+        {
+          "gate": "Artifact links and source/image hashes",
+          "result": "PASS: 286 local links, 72 source hashes, 161 image hashes; artifact-gate.json"
+        },
+        {
+          "command": "git diff --check",
+          "result": "PASS"
+        },
+        {
+          "command": "python3 scripts/review_regress.py --state MA-328",
+          "result": "PASS"
+        },
+        {
+          "command": "python3 scripts/review_regress.py MA-328",
+          "result": "EXIT 3, 0 failures, 2 manual checks; fresh verifier required before lanes"
+        },
+        {
+          "gate": "Fresh semantic fixed-ledger verifier",
+          "result": "PASS; r1-d1 HELD and r1-d2 HELD; round-2/manual-verification.json"
+        }
+      ],
+      "deferred_gates": [
+        {
+          "gate": "backend/web/ios",
+          "reason": "No matching product/build source changed; report-only review"
+        },
+        {
+          "gate": "Retired board-content checks",
+          "reason": "MA-303; no board-content gates reinstated"
+        }
+      ],
+      "findings": [],
+      "next_round": null,
+      "status": "clean",
+      "manual_verification": {
+        "round": 2,
+        "verifier": "/root/fixed_verifier_r2",
+        "checks": [
+          {
+            "id": "r1-d1",
+            "result": "HELD",
+            "evidence": "F02 contract/acceptance and auth verification row match ARCHITECTURE.md:425,430,445,453 for native/web sign-in, native second check, invite landing/join and both environment domains; no broader access."
+          },
+          {
+            "id": "r1-d2",
+            "result": "HELD",
+            "evidence": "Decision and coverage lifecycle maps match MA-163/193/264/279/295; current trace picked/planned/todo statuses agree; later MA-307/308/309 constraints preserved."
+          }
+        ],
+        "lanes_may_start": true,
+        "limits": "Semantic fixed-ledger verification only; no gates rerun, no edits, no new board approval."
+      },
+      "reviewers": [
+        {
+          "lane": "c",
+          "agent": "/root/independent_evidence_r2",
+          "scope": "Changed report claims and source joins only"
+        },
+        {
+          "lane": "d",
+          "agent": "/root/independent_ux_r2",
+          "scope": "Changed handoff acceptance, lifecycle and checklist lessons only"
+        }
+      ],
+      "blocking": 0,
+      "outcome": "Clean correction-only review: lane c 0 blocking/0 nonblocking; lane d 0 blocking/0 nonblocking. Fresh verifier confirmed r1-d1 and r1-d2 HELD. Handoff cleared; no UI fixes implemented.",
+      "lane_results": [
+        {
+          "lane": "c",
+          "agent": "/root/independent_evidence_r2",
+          "blocking": 0,
+          "nonblocking": 0,
+          "receipt": "review/MA-328/round-2/lane-c.md"
+        },
+        {
+          "lane": "d",
+          "agent": "/root/independent_ux_r2",
+          "blocking": 0,
+          "nonblocking": 0,
+          "receipt": "review/MA-328/round-2/lane-d.md"
+        }
+      ]
+    }
+  ]
+}

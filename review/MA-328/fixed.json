@@ -1,0 +1,34 @@
+[
+  {
+    "id": "r1-d1",
+    "finding": "Auth fix criteria must preserve the exact native/browser/second-check/invite/domain contracts, not merely generic security language.",
+    "fix": "F02 and authentication verification row specify the existing contracts.",
+    "check": {
+      "type": "manual",
+      "what": "Read the changed F02 and auth verification row against ARCHITECTURE.md:425,428-430,453-460. Confirm native first sign-in has Apple/Google only; browser includes passkeys; native passkeys are for second checks; browser never joins; prod/dev relying-party annotations use dashboard.mypaisapp.com/dashboard-dev.mypaisapp.com. Confirm proposed state changes do not grant broader access."
+    },
+    "last_verified": {
+      "round": 2,
+      "date": "2026-11-05",
+      "result": "HELD",
+      "verifier": "/root/fixed_verifier_r2",
+      "receipt": "review/MA-328/round-2/manual-verification.json"
+    }
+  },
+  {
+    "id": "r1-d2",
+    "finding": "A handoff must distinguish recorded picks, retained alternatives and planned individual flows rather than treat them all as competing current specifications.",
+    "fix": "Decision map and coverage lifecycle table identify MA-163/193/264/279/295 picks and later product overrides; F05/F09 clarify residual selected-source drift.",
+    "check": {
+      "type": "manual",
+      "what": "Read changed decision/coverage maps and F05/F09 against MA-193 decision:113-126, MA-279 decision:91-99, MA-264:163-173, MA-295, design README:74-79 and current trace rows MA-163/208/95/32/168/170/76/77/102/308/309. Confirm known picks are settled, alternatives remain historical, task-level planned status remains distinct and later MA-307/308/309 constraints override retired market content."
+    },
+    "last_verified": {
+      "round": 2,
+      "date": "2026-11-05",
+      "result": "HELD",
+      "verifier": "/root/fixed_verifier_r2",
+      "receipt": "review/MA-328/round-2/manual-verification.json"
+    }
+  }
+]
