@@ -1,0 +1,18 @@
+{
+  "round": 2,
+  "verifier": "/root/fixed_verifier_r2",
+  "checks": [
+    {
+      "id": "r1-d1",
+      "result": "HELD",
+      "evidence": "F02 contract/acceptance and auth verification row match ARCHITECTURE.md:425,430,445,453 for native/web sign-in, native second check, invite landing/join and both environment domains; no broader access."
+    },
+    {
+      "id": "r1-d2",
+      "result": "HELD",
+      "evidence": "Decision and coverage lifecycle maps match MA-163/193/264/279/295; current trace picked/planned/todo statuses agree; later MA-307/308/309 constraints preserved."
+    }
+  ],
+  "lanes_may_start": true,
+  "limits": "Semantic fixed-ledger verification only; no gates rerun, no edits, no new board approval."
+}

@@ -1,0 +1,12 @@
+[extend]
+useDefault = true
+
+# MA-328: verified SHA-256 of the assessed tokens.css source, not a credential.
+# Match both this exact evidence path and this exact digest; keep all default rules.
+[[allowlists]]
+description = "MA-328 source-file checksum"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "secret"
+paths = ['''^docs/design/reviews/MA-328/evidence/source-hashes\.json$''']
+regexes = ['''^ee255930980225d12156ed86c17bcd616e1a398e2e6419a73ff52bbc9395c256$''']

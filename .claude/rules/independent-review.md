@@ -315,6 +315,22 @@ number, so a reference to it holds wherever it now sits.
     nothing fails (MA-198: the sign-in stub sat in the Release bundle while the
     gate passed; Metro drops `if (__DEV__) { }`, not code after an early return).
 
+50. **A UX assessment carries the exact door-specific authentication contract into its fix criteria.**
+    Generic wording such as "preserve security contracts" is insufficient when the cited frame shows a
+    contradictory action or annotation. Native first sign-in, browser first sign-in, native second checks,
+    native invite joining and browser invite landing are distinct; moving an incorrect technical annotation
+    outside a frame does not correct it (MA-328 round 1).
+
+51. **A design assessment names the recorded picks before calling sources inconsistent.**
+    A file may contain a picked composition and retained unpicked alternatives. Record which is which,
+    distinguish stale labels from an undecided composition, and preserve individual stories' planned status
+    even when their shared visual style was picked (MA-328 round 1).
+
+52. **A reported UI measurement names its scenario and coordinate space.**
+    An unscaled scroll dimension and a transformed bounding-rectangle distance are not interchangeable.
+    Retain the viewport/scale and state needed to reproduce a precise claim, or state the supported
+    qualitative observation without false precision (MA-328 round 1).
+
 ## The lessons from the design-board era
 
 Lessons 1 (its board half), 9 to 11, 13, 19, 21 (its board half), 24 to 31

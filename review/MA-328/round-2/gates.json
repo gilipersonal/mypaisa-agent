@@ -1,0 +1,38 @@
+[
+  {
+    "command": "python3 scripts/plan_sync.py selftest",
+    "result": "PASS; valid unchanged-code result reused per policy"
+  },
+  {
+    "command": "python3 scripts/plan_sync.py check",
+    "result": "PASS: 247 items, 0 drift, 61 notes; round-2/plan-sync.txt"
+  },
+  {
+    "command": "python3 scripts/plan_sync.py pr-files --key MA-328",
+    "result": "PASS: 0 product files changed"
+  },
+  {
+    "command": "scripts/security_scan.sh",
+    "result": "PASS: round-2/security.txt; existing OSV filters, zizmor offline configuration and one suppression"
+  },
+  {
+    "gate": "Artifact links and source/image hashes",
+    "result": "PASS: 286 local links, 72 source hashes, 161 image hashes; artifact-gate.json"
+  },
+  {
+    "command": "git diff --check",
+    "result": "PASS"
+  },
+  {
+    "command": "python3 scripts/review_regress.py --state MA-328",
+    "result": "PASS"
+  },
+  {
+    "command": "python3 scripts/review_regress.py MA-328",
+    "result": "EXIT 3, 0 failures, 2 manual checks; fresh verifier required before lanes"
+  },
+  {
+    "gate": "Fresh semantic fixed-ledger verifier",
+    "result": "PASS; r1-d1 HELD and r1-d2 HELD; round-2/manual-verification.json"
+  }
+]

@@ -1,0 +1,40 @@
+MA-328 delivery validation — 5 November 2026
+
+Scope: handoff report and evidence only. No product source changed.
+Browser: Chromium 156; 1440x1100 final viewport, intrinsic artboard dimensions.
+Reduced Motion enabled for still captures. Host light/dark emulated for F01.
+
+PASS: 262 local Markdown targets checked across handoff.md and coverage.md (this validation file was checked separately after writing).
+PASS: 17 cited source line ranges within file bounds; details in line-anchors.json.
+PASS: 10 unique findings: 4 P1 and 6 P2.
+PASS: 56 baseline .dc.html files catalogued; 141 baseline captures exist.
+PASS: source-hashes.json matched assessed source bytes at delivery.
+PASS: 161 image artifacts recorded in image-manifest.json, including contact sheets and targeted captures.
+PASS: no whitespace diagnostics from git diff --no-index --check against /dev/null for each report file. Exit 1 indicates the new file differs, not a whitespace diagnostic.
+PASS: git diff --stat empty; only the new MA-328 folder added to the initial untracked paths.
+
+Plan-sync selftest: REUSED, unchanged code since 2026-11-04T12:50:48+00:00, per repository policy.
+Plan-sync check: exit 0; 247 items, 0 drift, 61 informational notes.
+Plan-sync pr-files --key MA-328: exit 0; 0 product files changed since b69fb34 (origin/main), 0 claimed by another story, 0 unclaimed.
+
+Targeted observations:
+- Dark host changes explicit light artboard --lg-fill to rgba(24,30,40,0.86), while inactive foreground stays rgb(20,23,31).
+- Sample bar background at (210,837) in 02-home-dark-host.png is rgb(56,60,68); computed sRGB contrast ~1.62:1 against the computed foreground.
+- Shared tokens.css, ios.css, motion.css and motion.js match across ds-v1, ios-v1 and app-v1.
+- Prototype Home privacy and static EUR privacy examples mask currency text and currency-valued accessible labels.
+- Prototype Home Me button click leaves displayed content unchanged.
+- Sample sign-in buttons measure 46px high; toolbar buttons 44px; text labels on auth buttons 12px.
+- Native, hardware, performance and 25% physical-brightness behavior not tested.
+
+Retired board gates were not reintroduced or run. Application suites, full security pipeline, axe/Argos and native builds were not run for this report-only deliverable.
+Independent UX review of this report: NOT RUN, awaiting opt-in.
+Parallel final agents perform mechanical delivery checks only; they do not constitute that independent review.
+
+Cleanup: assessment browser tabs closed; own local HTTP server stopped.
+
+Parallel report_link_checks: PASS — 263 link occurrences, 229 unique local targets; 22 cited line ranges or individual lines within bounds; finding totals correct. The validation.txt target was created after this agent read it and has now been confirmed to exist.
+Parallel evidence_checks: PASS — 56 unique baseline files match inventory; 141/141 captures exist; 72/72 source hashes match; 161/161 image hashes and byte sizes match; no unmanifested images. 52 baseline files have captures; four are helper modules.
+
+Independent review round 1 — 5 November 2026 (supersedes original NOT RUN status above): two fresh parallel lanes completed. All ten underlying findings retained. Two blocking report omissions and two smaller clarifications corrected. Corrections await independent delta review. Full security and plan-sync gates passed before review and after corrections. Post-fix artifact checks: 285 local links, 25 cited line ranges, 72 source hashes and 161 image hashes passed. Review regression state valid; fixed-ledger runner exit 3 with two semantic manual checks and zero failures. See review/MA-328/round-1-summary.md and state.json.
+
+Independent review round 2 — 5 November 2026: COMPLETE AND CLEAN. Fresh manual verifier: r1-d1 HELD, r1-d2 HELD. Fresh parallel lane c and lane d: each zero blocking and zero nonblocking findings. Gates passed before review. Report-status metadata updated only after completion; substantive reviewed corrections unchanged. Handoff cleared for Claude; UI fixes remain unimplemented. See review/MA-328/round-2-summary.md.

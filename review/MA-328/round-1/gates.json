@@ -1,0 +1,30 @@
+[
+  {
+    "command": "python3 scripts/plan_sync.py selftest",
+    "result": "PASS; valid unchanged-code selftest reused from 2026-11-04T12:50:48+00:00"
+  },
+  {
+    "command": "python3 scripts/plan_sync.py check",
+    "result": "PASS: 247 items, 0 drift, 61 notes"
+  },
+  {
+    "command": "python3 scripts/plan_sync.py pr-files --key MA-328",
+    "result": "PASS: 0 product files changed; uncommitted report pinned separately by input manifest"
+  },
+  {
+    "command": "scripts/security_scan.sh",
+    "result": "PASS: gitleaks, semgrep, OSV, zizmor. Existing OSV filters and one zizmor suppression apply; zizmor offline mode as configured."
+  },
+  {
+    "command": "python3 scripts/review_regress.py MA-328",
+    "result": "PASS: no existing fixes"
+  },
+  {
+    "command": "python3 scripts/review_regress.py --state MA-328",
+    "result": "PASS: no previous rounds"
+  },
+  {
+    "gate": "Report local links and assessment source hashes",
+    "result": "PASS; links exist; source bytes unchanged"
+  }
+]

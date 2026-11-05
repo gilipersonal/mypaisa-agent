@@ -1,0 +1,33 @@
+
+== secrets: gitleaks 8.30.1, every commit in the history (pre-commit checks what is staged)
+9:05AM INF 285 commits scanned.
+9:05AM INF scanned ~36212609 bytes (36.21 MB) in 753ms
+9:05AM INF no leaks found
+
+== sast: semgrep 1.183.0 (python, fastapi, typescript, javascript, secrets, github-actions) over backend/, web/, scripts/ and .github/
+semgrep: no findings (semgrep does not parse .svelte; eslint's no-eval rules cover those files in the web gate)
+
+== dependencies: osv-scanner 2.7.0 over every lockfile
+Starting filesystem walk for root: /
+Scanned /Users/arundutta/projects/mypaisa-agent/backend/uv.lock file and found 141 packages
+Scanned /Users/arundutta/projects/mypaisa-agent/ios/Packages/MyPaisaUI/Package.resolved file and found 4 packages
+Scanned /Users/arundutta/projects/mypaisa-agent/scripts/package-lock.json file and found 1 package
+Scanned /Users/arundutta/projects/mypaisa-agent/web/pnpm-lock.yaml file and found 994 packages
+End status: 0 dirs visited, 4 inodes visited, 4 Extract calls, 14.991584ms elapsed, 14.992ms wall time
+Loaded filter from: /Users/arundutta/projects/mypaisa-agent/web/osv-scanner.toml
+GHSA-gcqx-w48m-w2h4 and 1 alias have been filtered out because: deepmerge 4.3.1, prototype poisoning (low in pnpm audit, 5.3 medium in OSV): only in @sveltejs/vite-plugin-svelte at build time, never shipped to the browser; no fixed version exists yet. Dependabot proposes one when it does.
+GHSA-3g3m-2fjr-6pw4 and 1 alias have been filtered out because: glob 9.3.5, an aborted async walk keeps reading directories (6.3 medium, no data at risk): only in React Native's dev tooling on a developer's machine or CI, never in the app, and only when a caller passes an AbortSignal. React Native pins the old major, so 14 cannot be forced on it; a React Native upgrade clears it (MA-165).
+GHSA-3g3m-2fjr-6pw4 and 1 alias have been filtered out because: glob 9.3.5, an aborted async walk keeps reading directories (6.3 medium, no data at risk): only in React Native's dev tooling on a developer's machine or CI, never in the app, and only when a caller passes an AbortSignal. React Native pins the old major, so 14 cannot be forced on it; a React Native upgrade clears it (MA-165).
+GHSA-3g3m-2fjr-6pw4 and 1 alias have been filtered out because: glob 9.3.5, an aborted async walk keeps reading directories (6.3 medium, no data at risk): only in React Native's dev tooling on a developer's machine or CI, never in the app, and only when a caller passes an AbortSignal. React Native pins the old major, so 14 cannot be forced on it; a React Native upgrade clears it (MA-165).
+GHSA-g3hv-75wg-m249 and 1 alias have been filtered out because: minimatch 5.1.9, glob-pattern denial of service (moderate): only in @redocly/openapi-core under openapi-typescript, a dev tool that reads our own backend/openapi.json, never a pattern from outside; it calls minimatch 5's API, so 11 cannot be forced on it. Every other minimatch is the patched 11.x (pnpm-workspace.yaml overrides).
+GHSA-g3hv-75wg-m249 and 1 alias have been filtered out because: minimatch 5.1.9, glob-pattern denial of service (moderate): only in @redocly/openapi-core under openapi-typescript, a dev tool that reads our own backend/openapi.json, never a pattern from outside; it calls minimatch 5's API, so 11 cannot be forced on it. Every other minimatch is the patched 11.x (pnpm-workspace.yaml overrides).
+GHSA-g3hv-75wg-m249 and 1 alias have been filtered out because: minimatch 5.1.9, glob-pattern denial of service (moderate): only in @redocly/openapi-core under openapi-typescript, a dev tool that reads our own backend/openapi.json, never a pattern from outside; it calls minimatch 5's API, so 11 cannot be forced on it. Every other minimatch is the patched 11.x (pnpm-workspace.yaml overrides).
+Filtered 7 vulnerabilities from output
+
+No issues found
+
+== workflows: zizmor 1.32.0 over .github/workflows/
+ WARN zizmor: zizmor is running in offline mode by default; some audits and auto-fixes will not be available. see https://docs.zizmor.sh/usage/#operating-modes for details
+No findings to report. Good job! (1 suppressed)
+
+security scans: all passed
