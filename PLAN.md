@@ -675,17 +675,21 @@ Claude's:
   about them.
 - **Holdings' states are drawn (MA-333):** F04. Loading, a non-trading day, stale
   prices and a failed fetch each have a named frame.
-- **One compact web navigation (MA-334):** F05. One table of destinations and
-  labels across the boards, the design system and `DESIGN.md`, reopening no pick.
+- **One compact web navigation (MA-334):** F05. Chat, Home, Assets, Projection
+  and More across the boards, the design system and `DESIGN.md`, with Budget
+  under More, reopening no pick. Assets covers everything owned, and Holdings
+  means investments only.
 - **Prototype v5's Home scope selector works (MA-335):** F06.
 - **Prototype v5 reaches Assets and Debts from Home's first summary (MA-336):**
   F07, as the Home board already draws.
 - **Agreed type for primary actions and instructions (MA-337):** F08, after
   MA-331 and MA-332.
 - **A current-spec map (MA-338):** F09. Each screen's one composition, chart and
-  material, with Proposed, Picked and Implemented kept apart.
-- **Each foldable example names its door (MA-339):** F10. Its OS, posture,
-  material and navigation agree.
+  material, with Proposed, Picked and Implemented kept apart. Foundations follows
+  the design-first rule on tertiary ink.
+- **Each foldable example names its door (MA-339):** F10. The Foldable frame is
+  an Apple adaptive frame of the iOS app; Android's foldable stays a separate,
+  labelled web example. Its OS, posture, material and navigation agree.
 - **Stop the checks on the design boards; plan-sync and the review ledger
   faster and smarter (MA-303):** the six checks on `docs/design/` stopped
   (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code
