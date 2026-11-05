@@ -275,6 +275,29 @@
   function indiaInr(ctx) {
     return records(ctx).filter(function (a) { return a.country === 'IN'; }).reduce(function (s, a) { return s + a.value; }, 0) - hdfcInr(ctx);
   }
+  /* Home's scope selector (MA-335): null for the household, or one member's figures, joint records by share as By member
+     counts them. The member's net is the ledger's, and what they owe absorbs the rounding, so the card adds up to the hero. */
+  function scopeView(ctx) {
+    var id = ctx.scope || 'all';
+    if (id === 'all') return null;
+    var T = ctx.W.T, R = debtsRaw(ctx), D = debts(ctx);
+    var share = function (owners) { var o = owners.filter(function (x) { return x[0] === id; })[0]; return o ? o[1] / 100 : 0; };
+    var list = records(ctx).map(function (a) {
+      var sh = share(a.owners);
+      return Object.assign({}, a, { share: sh, value: a.value * sh, gbp: a.gbp * sh, joint: a.owners.length > 1 });
+    }).filter(function (a) { return a.share > 0; });
+    var dl = [['mortgage', 'Mortgage · Nationwide', 'UK'], ['car', 'Car loan · Close Brothers', 'UK'], ['hdfc', 'Home loan · HDFC, the Pune flat', 'IN'], ['card', 'Barclaycard', 'UK']].map(function (x) {
+      var sh = share(R[x[0]].owners);
+      return { id: x[0], t: x[1], country: x[2], gbp: D[x[0]] * sh, joint: R[x[0]].owners.length > 1 };
+    }).filter(function (d) { return d.gbp > 0; });
+    var own = list.reduce(function (n, a) { return n + a.gbp; }, 0), net = T.by_member_gbp[id];
+    var ukOwn = list.filter(function (a) { return a.country === 'UK'; }).reduce(function (n, a) { return n + a.gbp; }, 0);
+    var ukOwe = dl.filter(function (d) { return d.country === 'UK'; }).reduce(function (n, d) { return n + d.gbp; }, 0);
+    var arunInr = rhe(T.by_member_gbp.arun * FX);
+    return { id: id, name: id === 'arun' ? 'Arun' : 'Asha', mine: id === ctx.viewer, list: list, debts: dl, own: own, owe: own - net, net: net,
+      netInr: id === 'arun' ? arunInr : T.net_inr - arunInr, uk: ukOwn - ukOwe, ind: net - (ukOwn - ukOwe),
+      liquid: groupSum(list.filter(function (a) { return a.liq === 'liquid'; }).map(function (a) { return Object.assign({}, a, { group: 'liq' }); }), 'liq') };
+  }
   function groupSum(list, gid) { return list.filter(function (a) { return a.group === gid; }).reduce(function (s, a) { return s + a.gbp; }, 0); }
   function recLink(a) { return 'nav:asset/' + a.id; }
   function recSub(a) {
@@ -325,7 +348,7 @@
     var inr = ctx.has('inr');
     return K.seg([{ t: '£ GBP', on: !inr, go: inr ? 'fold:inr' : null }, { t: '₹ INR', on: inr, go: inr ? null : 'fold:inr' }]);
   }
-  function heroPulse(ctx) {
+  function heroPulse(ctx, s) {
     var m = K.mode();
     if (m === 'classic') return '';
     var inr = ctx.has('inr'), ccy = inr ? 'INR' : 'GBP';
@@ -342,7 +365,7 @@
     if (!MS.length || MS[MS.length - 1][0] < ctx.t) MS.push([ctx.t, ctx.d || 'Now', 'Current ledger']);
     var pts = MS.map(function (x, i) {
       var Wx = x[0] === ctx.t ? ctx.W : M.world(x[0]);
-      var val = inr ? Wx.T.net_inr : Wx.T.net_gbp;
+      var val = s ? Wx.T.by_member_gbp[s.id] * (inr ? FX : 1) : inr ? Wx.T.net_inr : Wx.T.net_gbp;
       return { i: i, k: x[1], s: x[2], v: val };
     });
     if (pts.length < 2) return '';
@@ -362,9 +385,9 @@
         return '<i class="hpulse-col' + (idx === pts.length - 1 ? ' now' : '') + '" style="height:' + hPct.toFixed(1) + '%"></i>';
       }).join('');
       return '<div class="hpulse">' + K.chartStats([
-        { k: 'We own', v: M2(T.own_gbp) },
-        { k: 'We owe', v: M2(T.owe_gbp) },
-        { k: 'Liquid now', v: M2(T.liquid_gbp) }
+        { k: s ? 'Own' : 'We own', v: M2(s ? s.own : T.own_gbp) },
+        { k: s ? 'Owe' : 'We owe', v: M2(s ? s.owe : T.owe_gbp) },
+        { k: 'Liquid now', v: M2(s ? s.liquid : T.liquid_gbp) }
       ], 'c') + '<div class="hpulse-h"><span>Recorded trajectory · ' + pts.length + ' milestones</span><span>' + diffFmt + ' since ' + first.k.split(' · ')[0] + '</span></div>' +
         '<div class="hpulse-bars" role="img" aria-label="Recorded net worth across ' + pts.length + ' ledger milestones"' + (ctx.priv ? '' : ' data-scrub="' + K.esc(JSON.stringify(scrubC)) + '" tabindex="0"') + '>' + cols + K.scrubBox() + '</div>' +
         '<div class="axis5" style="color:var(--mp-hero-ink-2)"><span>' + first.k.split(' · ')[0] + '</span><span>' + last.k.split(' · ')[0] + '</span></div></div>';
@@ -384,12 +407,20 @@
         series: [{ pts: linePts, color: 'var(--mp-coral)', w: m === 'a' ? 2.5 : 2 }],
         dots: dots, areaOp: 0.28, stats: statsB, scrub: scrubL,
         xLabels: [{ x: 0, t: first.k.split(' · ')[0] }, { x: pts.length - 1, t: last.k.split(' · ')[0] }],
-        label: 'Recorded household net worth from ' + first.k + ' to ' + last.k
+        label: 'Recorded ' + (s ? s.name + '’s' : 'household') + ' net worth from ' + first.k + ' to ' + last.k
       }) + '</div>';
   }
   function homeHero(ctx) {
     var T = ctx.W.T, inr = ctx.has('inr');
-    var top = '<div class="heroseg">' + K.seg([{ t: 'Household', on: true }, { t: 'Me' }, { t: 'Asha' }]) + ccySeg(ctx, true) + '</div>';
+    var s = scopeView(ctx), me = ctx.viewer, other = me === 'arun' ? 'asha' : 'arun', scope = ctx.scope || 'all';
+    var top = '<div class="heroseg">' + K.seg([{ t: 'Household', on: scope === 'all', go: 'scope:all' }, { t: 'Me', on: scope === me, go: 'scope:' + me },
+      { t: other === 'arun' ? 'Arun' : 'Asha', on: scope === other, go: 'scope:' + other }], 'Whose figures') + ccySeg(ctx, true) + '</div>';
+    if (s) {
+      return K.hero({ top: top, k: s.mine ? 'My net worth' : s.name + '’s net worth', v: inr ? ri(s.netInr) : g(s.net), id: 'w-hero', extra:
+        '<span class="mp-foot mp-hero-2">' + K.ms('group') + ' Joint records count by share, half each.</span>' +
+        '<span class="mp-foot mp-hero-2">' + K.ms('currency_exchange') + ' ' + RATE() + ' · ECB reference rate, Fri 23 Oct · prices at the ' + ctx.W.pricesAt + '</span>' +
+        heroPulse(ctx, s) });
+    }
     var live = '';
     if (ctx.web && ctx.t.slice(0, 10) === '2026-10-26' && ctx.W.monzoSavings && !ctx.W.homeCorrected) live = 'Updated live at 09:41: the change came over the stream, no reload. It was ' + g(439951) + '.';
     if (ctx.web && ctx.t.slice(0, 10) === '2026-10-26' && ctx.W.homeCorrected && ctx.t < '2026-10-26T09:55') live = 'Updated live at 09:52: the change came over the stream, no reload. It was ' + g(444951) + '.';
@@ -400,7 +431,32 @@
       heroPulse(ctx);
     return K.hero({ top: top, k: 'Household net worth', v: inr ? ri(T.net_inr) : g(T.net_gbp), extra: extra, id: 'w-hero' });
   }
+  /* one member's Home (MA-335). What's due, the month's cash and the plan are the household's, so they stay on Household. */
+  function scopeCards(ctx, s) {
+    var inr = ctx.has('inr'), m = K.mode(), M2 = function (n) { return inr ? ri(n * FX) : g(n); }, cards = [];
+    var title = s.mine ? 'What I own and owe' : 'What ' + s.name + ' owns and owes', n = s.list.length;
+    cards.push(K.card({ t: title, r: '<span class="mp-foot mp-ink2">' + pct(s.owe, s.own) + ' of it is owed</span>', id: 'w-scope-own', body:
+      hb('Owns', M2(s.own), 1, n + (n === 1 ? ' asset' : ' assets') + ', joint ones by share', '', { pill: '100%', tick: s.net / s.own }) +
+      hb('Owes', M2(s.owe), s.owe / s.own, s.debts.length ? s.debts.length + (s.debts.length === 1 ? ' debt' : ' debts') + ', joint ones by share' : 'No debts', 'grey', { pill: pct(s.owe, s.own) }) }));
+    cards.push(K.card({ t: 'By country', r: '<span class="mp-foot mp-ink2">' + (inr ? 'in rupees' : 'in pounds') + '</span>', body:
+      hb('United Kingdom', M2(s.uk), s.uk / s.net, pct(s.uk, s.net) + ' of net worth', '', { pill: pct(s.uk, s.net), tick: 0.5 }) +
+      hb('India', M2(s.ind), s.ind / s.net, pct(s.ind, s.net) + ' of net worth', m === 'c' ? 'b2' : '', { pill: pct(s.ind, s.net), tick: 0.5 }) }));
+    var inv = s.list.filter(function (a) { return a.group === 'inv' || a.id === 'pot'; });
+    if (inv.length) cards.push(K.card({ t: 'Investments', id: 'w-scope-inv', body: K.list(inv.map(function (a) {
+      return K.row({ lead: lead(LEAD[a.id]), t: a.name.replace(' · Direct Growth', '').replace(' (BlackRock MyMap 5)', ''), s: a.joint ? 'Joint · half counted' : s.name, v: inr && a.ccy === 'GBP' ? ri(a.value * FX) : recValue(a), vs: recVs(a), go: recLink(a) });
+    })) }));
+    if (s.debts.length) cards.push(K.card({ t: 'What’s owed', id: 'w-scope-debts', body: K.list(s.debts.map(function (d) {
+      return K.row({ lead: lead(d.id === 'card' ? 'BC' : d.id === 'car' ? 'CL' : d.id === 'hdfc' ? 'HD' : 'MG'), t: d.t, s: d.joint ? 'Joint · half counted' : s.name, v: M2(d.gbp), go: 'nav:debts' });
+    })) }));
+    var big = s.list.slice().sort(function (a, b) { return b.gbp - a.gbp; }).slice(0, 5);
+    cards.push(K.card({ t: 'Largest assets', r: '<span class="mp-foot mp-ink2">each in its own currency</span>', id: 'w-scope-big', body: K.list(big.map(function (a) {
+      return K.row({ lead: lead(LEAD[a.id]), t: a.name, s: a.joint ? 'Joint · half counted' : s.name, v: recValue(a), vs: recVs(a), go: recLink(a) });
+    })) + '<div>' + K.btn('All assets', 'nav:assets', 'plain', 'chevron_right') + '</div>' }));
+    return cards;
+  }
   function homeCards(ctx) {
+    var sv = scopeView(ctx);
+    if (sv) return scopeCards(ctx, sv);
     var T = ctx.W.T, list = records(ctx), D = debts(ctx), inr = ctx.has('inr'), m = K.mode();
     var M2 = function (n) { return inr ? ri(n * FX) : g(n); };
     var n = list.length, nUK = list.filter(function (a) { return a.country === 'UK'; }).length;
@@ -486,8 +542,9 @@
     return cards;
   }
   M.page('home', function (ctx) {
-    return { title: 'Home', sub: 'Household · ' + ctx.d + ' · prices at the ' + ctx.W.pricesAt + ' · illustrative figures', chip: K.picked('Picked · 1a, Net worth first'),
-      body: wrap(homeHero(ctx) + '<div class="cols">' + homeCards(ctx).join('') + '</div>' + K.foot(ILLUS)) };
+    var sv = scopeView(ctx), who1 = !sv ? 'Household' : sv.mine ? 'Me' : sv.name;
+    return { title: 'Home', sub: who1 + ' · ' + ctx.d + ' · prices at the ' + ctx.W.pricesAt + ' · illustrative figures', chip: K.picked('Picked · 1a, Net worth first'),
+      body: wrap(homeHero(ctx) + '<div class="cols">' + homeCards(ctx).join('') + '</div>' + (sv ? K.foot('What’s due, the month’s cash and the plan are the household’s: they stay on Household.') : '') + K.foot(ILLUS)) };
   });
 
   /* ---------- Assets ---------- */

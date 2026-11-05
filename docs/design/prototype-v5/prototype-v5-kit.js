@@ -99,8 +99,8 @@
   K.cbtn = function (t, key, kind, icon) {
     return '<button type="button" class="cbtn' + (kind ? ' cbtn-' + kind : '') + '"' + K.go(key) + '>' + (icon ? K.ms(icon) : '') + '<span>' + t + '</span></button>';
   };
-  K.seg = function (items) {
-    return '<div class="mp-seg" role="group">' + items.map(function (i) { return '<button type="button" class="mp-seg-i' + (i.on ? ' on' : '') + '"' + K.go(i.go) + '>' + i.t + '</button>'; }).join('') + '</div>';
+  K.seg = function (items, label) {
+    return '<div class="mp-seg" role="group"' + (label ? ' aria-label="' + K.esc(label) + '"' : '') + '>' + items.map(function (i) { return '<button type="button" class="mp-seg-i' + (i.on ? ' on' : '') + '" aria-pressed="' + (i.on ? 'true' : 'false') + '"' + K.go(i.go) + '>' + i.t + '</button>'; }).join('') + '</div>';
   };
   K.tabs = function (items) {
     return '<div class="tabsx" role="tablist">' + items.map(function (i) { return '<button type="button" role="tab" aria-selected="' + (i.on ? 'true' : 'false') + '" class="' + (i.on ? 'on' : '') + '"' + K.go(i.go) + '>' + i.t + '</button>'; }).join('') + '</div>';
