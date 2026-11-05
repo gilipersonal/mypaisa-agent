@@ -665,7 +665,27 @@ Claude's:
   Transparency and Increase Contrast. Boards and Prototype v5 only: the real
   apps do not load `ios.css`.
 - **The boards' glass, hardened and polished (MA-330):** F01's last step,
-  `/impeccable harden` then `/impeccable polish`, once F02 to F10 have landed.
+  `/impeccable harden` then `/impeccable polish`, once MA-331 to MA-339 have
+  landed.
+- **The sign-in boards show one state each (MA-331):** F02 of MA-328. Signed-out
+  screens offer only signed-out actions, and each sign-in and invite state is
+  drawn at both doors, as ARCHITECTURE §4.5 allows.
+- **Settings, Admin and Activity draw the task (MA-332):** F03. Each screen
+  draws its action, next state, cancellation and error, in place of a paragraph
+  about them.
+- **Holdings' states are drawn (MA-333):** F04. Loading, a non-trading day, stale
+  prices and a failed fetch each have a named frame.
+- **One compact web navigation (MA-334):** F05. One table of destinations and
+  labels across the boards, the design system and `DESIGN.md`, reopening no pick.
+- **Prototype v5's Home scope selector works (MA-335):** F06.
+- **Prototype v5 reaches Assets and Debts from Home's first summary (MA-336):**
+  F07, as the Home board already draws.
+- **Agreed type for primary actions and instructions (MA-337):** F08, after
+  MA-331 and MA-332.
+- **A current-spec map (MA-338):** F09. Each screen's one composition, chart and
+  material, with Proposed, Picked and Implemented kept apart.
+- **Each foldable example names its door (MA-339):** F10. Its OS, posture,
+  material and navigation agree.
 - **Stop the checks on the design boards; plan-sync and the review ledger
   faster and smarter (MA-303):** the six checks on `docs/design/` stopped
   (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code

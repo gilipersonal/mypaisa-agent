@@ -7935,7 +7935,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "A light board stays light in a dark browser: the glass follows the frame's own theme",
-      "status": "In Review",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -7971,10 +7971,184 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Split from MA-329 in round 1 of its review. F01 ends with /impeccable harden, then /impeccable polish; MA-328's suggested sequence finishes with the polish, after F02 to F10, and waiting with harden too was a choice made in that review. Estimate 0 on purpose while it cannot start: 0.25 would add a working day to phase 0 and move every later date.",
+      "notes": "Split from MA-329 in round 1 of its review. F01 ends with /impeccable harden, then /impeccable polish; MA-328's suggested sequence finishes with the polish, after F02 to F10, and waiting with harden too was a choice made in that review. Estimate 0 on purpose while it cannot start: 0.25 would add a working day to phase 0 and move every later date. Settled: Who owns F02 to F10: each has its own issue, MA-331 to MA-339, filed by Arun's word on 5 Nov 2026, and each blocks this story in Jira."
+    },
+    {
+      "key": "MA-331",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Sign-in shows only what a signed-out person can do, with every sign-in and invite state drawn at both doors",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "4.5",
+        "8.1",
+        "8.4"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "Finding F02 of MA-328 (docs/design/reviews/MA-328/handoff.md). No board is picked until Arun picks: this goes through /design-first. Estimate 0, as other board work here, since an estimate counts build days. MA-32, MA-168 and MA-76 draw on these boards."
+    },
+    {
+      "key": "MA-332",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Settings, Admin and Activity boards draw the real task, not a paragraph about it",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "4.6",
+        "4.10",
+        "8.3",
+        "8.4"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "Finding F03 of MA-328 (docs/design/reviews/MA-328/handoff.md). No board is picked until Arun picks: this goes through /design-first. Estimate 0, as other board work here, since an estimate counts build days."
+    },
+    {
+      "key": "MA-333",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Each promised Holdings state is a drawn frame: loading, a non-trading day, stale prices and a failed fetch",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "5.1",
+        "8.3"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
+      "notes": "Finding F04 of MA-328 (docs/design/reviews/MA-328/handoff.md). No board is picked until Arun picks: this goes through /design-first. Estimate 0, as other board work here, since an estimate counts build days."
+    },
+    {
+      "key": "MA-334",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The web app's compact navigation has one contract across the boards, the design system and the docs",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "8.1",
+        "8.4"
+      ],
+      "ui": true,
+      "design": "todo",
+      "boards": [],
       "open": [
-        "Who owns F02 to F10: this pass waits for them, and they have no issues yet (docs/design/reviews/MA-328/handoff.md)."
-      ]
+        "Which compact web navigation is current: five sources list different destinations, and the picks do not settle Home or Overview, or Assets, Holdings or Register."
+      ],
+      "notes": "Finding F05 of MA-328 (docs/design/reviews/MA-328/handoff.md). No board is picked until Arun picks: this goes through /design-first. Estimate 0, as other board work here, since an estimate counts build days. It reopens neither MA-193's nor MA-279's pick."
+    },
+    {
+      "key": "MA-335",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Prototype v5's Home scope selector works: Household, me and the other member each change the figures",
+      "status": "To Do",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "8.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Finding F06 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days."
+    },
+    {
+      "key": "MA-336",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Prototype v5 reaches Assets and Debts from Home's first summary, as the Home board already draws",
+      "status": "To Do",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "8.3"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Finding F07 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days."
+    },
+    {
+      "key": "MA-337",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Primary actions and consequential instructions on the boards use the agreed control and body type",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8.1",
+        "8.3",
+        "8.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Finding F08 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days. It follows MA-331 and MA-332, whose boards it restyles."
+    },
+    {
+      "key": "MA-338",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "A current-spec map names each screen's one composition, and the design notes agree with later rules",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8.1",
+        "8.3",
+        "8.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "open": [
+        "Which rule governs tertiary ink: Foundations allows it for axis ticks and unselected tabs, and the design-first rule forbids it for meaningful labels."
+      ],
+      "notes": "Finding F09 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days."
+    },
+    {
+      "key": "MA-339",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Every foldable example names its OS, door and posture, and follows that door's material",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8.1",
+        "8.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "open": [
+        "Which platform does the Foldable frame stand for: Android's web door, or an Apple adaptive concept."
+      ],
+      "notes": "Finding F10 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days."
     }
   ],
   "others": [
