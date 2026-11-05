@@ -184,6 +184,7 @@ html, body { margin: 0; height: 100%; background: #ECEAE6; }
 @container af (max-width: 599px) {
   .ap-top, .ap-ask { display: none; }
   .ap-dock { display: flex; }
+  .ap-srch { display: none; } /* the compact shell's search is the dock's circle, as the iPhone boards draw (MA-336) */
   .ap-edge { display: block; }
   .ap-row { inset: 0; }
   .ip-main .pcontent { padding: 110px 16px 170px; }

@@ -410,6 +410,8 @@
         label: 'Recorded ' + (s ? s.name + '’s' : 'household') + ' net worth from ' + first.k + ' to ' + last.k
       }) + '</div>';
   }
+  /* the rows a Home card ends in, as the Home board's do (MA-336) */
+  function routes(list) { return '<div class="fx ac g8 wrap">' + list.map(function (r) { return K.btn(r[0], 'nav:' + r[1], 'plain', 'chevron_right'); }).join('') + '</div>'; }
   function homeHero(ctx) {
     var T = ctx.W.T, inr = ctx.has('inr');
     var s = scopeView(ctx), me = ctx.viewer, other = me === 'arun' ? 'asha' : 'arun', scope = ctx.scope || 'all';
@@ -437,7 +439,8 @@
     var title = s.mine ? 'What I own and owe' : 'What ' + s.name + ' owns and owes', n = s.list.length;
     cards.push(K.card({ t: title, r: '<span class="mp-foot mp-ink2">' + pct(s.owe, s.own) + ' of it is owed</span>', id: 'w-scope-own', body:
       hb('Owns', M2(s.own), 1, n + (n === 1 ? ' asset' : ' assets') + ', joint ones by share', '', { pill: '100%', tick: s.net / s.own }) +
-      hb('Owes', M2(s.owe), s.owe / s.own, s.debts.length ? s.debts.length + (s.debts.length === 1 ? ' debt' : ' debts') + ', joint ones by share' : 'No debts', 'grey', { pill: pct(s.owe, s.own) }) }));
+      hb('Owes', M2(s.owe), s.owe / s.own, s.debts.length ? s.debts.length + (s.debts.length === 1 ? ' debt' : ' debts') + ', joint ones by share' : 'No debts', 'grey', { pill: pct(s.owe, s.own) }) +
+      routes([['All assets', 'assets'], ['All debts', 'debts']]) }));
     cards.push(K.card({ t: 'By country', r: '<span class="mp-foot mp-ink2">' + (inr ? 'in rupees' : 'in pounds') + '</span>', body:
       hb('United Kingdom', M2(s.uk), s.uk / s.net, pct(s.uk, s.net) + ' of net worth', '', { pill: pct(s.uk, s.net), tick: 0.5 }) +
       hb('India', M2(s.ind), s.ind / s.net, pct(s.ind, s.net) + ' of net worth', m === 'c' ? 'b2' : '', { pill: pct(s.ind, s.net), tick: 0.5 }) }));
@@ -465,9 +468,9 @@
     var ownOweRows = hb('We own', M2(own), 1, n + ' assets in the UK and India', '', { pill: '100%', tick: net / own }) +
       hb('We owe', M2(owe), owe / own, '3 loans and a card', 'grey', { pill: pct(owe, own) });
     cards.push(K.card({ t: 'What we own and owe', r: '<span class="mp-foot mp-ink2">' + pct(owe, own) + ' of what we own is owed</span>', body:
-      m === 'c'
+      (m === 'c'
         ? '<div class="mp5-donut-wrap">' + K.donut([{ v: net, color: 'var(--mp-chart-line)' }, { v: owe, color: 'var(--mp-ink-3)' }], pct(net, own), 'net') + '<div class="mp5-donut-side">' + ownOweRows + '</div></div>'
-        : ownOweRows }));
+        : ownOweRows) + routes([['All assets', 'assets'], ['All debts', 'debts']]) }));
     var uk = T.by_country_gbp.UK, ind = T.by_country_gbp.IN;
     var countryRows = hb('United Kingdom', inr ? ri(T.net_inr - indiaInr(ctx)) : g(uk), uk / net, pct(uk, net) + ' · ' + nUK + ' assets, 3 debts, held in pounds', '', { pill: pct(uk, net), tick: 0.5 }) +
       hb('India', inr ? ri(indiaInr(ctx)) : g(ind), ind / net, pct(ind, net) + ' · 7 assets, 1 loan, held in rupees: ' + ri(indiaInr(ctx)), m === 'c' ? 'b2' : '', { pill: pct(ind, net), tick: 0.5 });
@@ -482,7 +485,7 @@
       (m === 'c'
         ? '<div class="mp5-donut-wrap">' + K.donut([{ v: bm.arun, color: 'var(--mp-chart-line)' }, { v: bm.asha, color: 'var(--mp-chart-5)' }], pct(bm.arun, net), 'Arun') + '<div class="mp5-donut-side">' + memberRows + '</div></div>'
         : memberRows) +
-      K.foot('Joint: Home, Reading, the Pune flat, the mortgage and the Monzo pot, 50% each.') }));
+      K.foot('Joint: Home, Reading, the Pune flat, the mortgage and the Monzo pot, 50% each.') + routes([['All assets', 'assets']]) }));
     var liq = T.liquid_gbp, fix = groupSum(list, 'fix'), lock = own - liq - fix;
     var liqTop = m === 'c'
       ? '<div class="mp5-donut-wrap" style="margin-bottom:6px">' + K.donut([{ v: liq, color: 'var(--mp-chart-line)' }, { v: fix, color: 'var(--mp-chart-2)' }, { v: lock, color: 'var(--mp-chart-3)' }], pct(liq, own), 'liquid') +
@@ -493,8 +496,8 @@
       K.list([
         K.row({ lead: '<span class="sw c1"></span>', t: 'Liquid now', s: list.filter(function (a) { return a.liq === 'liquid'; }).length + ' records: cash, savings, funds and shares', v: M2(liq) }),
         K.row({ lead: '<span class="sw c2"></span>', t: 'Fixed term', s: '4 pay out at maturity; next the saver, ' + g(10460) + ' on Mon 14 Dec', v: M2(fix) }),
-        K.row({ lead: '<span class="sw c3"></span>', t: 'Locked', s: 'two homes, and two pensions that unlock at 57', v: M2(lock) })]) }));
-    cards.push(K.card({ t: 'What’s due', r: '<span class="mp-foot mp-ink2">next 30 days</span>', id: 'w-due', body: dues(ctx) + K.foot('Each check-in arrives in the chat on its day; one tap records it.') }));
+        K.row({ lead: '<span class="sw c3"></span>', t: 'Locked', s: 'two homes, and two pensions that unlock at 57', v: M2(lock) })]) + routes([['All assets', 'assets']]) }));
+    cards.push(K.card({ t: 'What’s due', r: '<span class="mp-foot mp-ink2">next 30 days</span>', id: 'w-due', body: dues(ctx) + K.foot('Each check-in arrives in the chat on its day; one tap records it.') + routes([['Budget', 'budget']]) }));
     if (at(ctx, '2026-11-01T09:02')) {
       var R2 = ((fp(ctx).forecast || {}).R2 || {}).months_2026 || [], nov = R2[0];
       if (nov) {
@@ -505,7 +508,7 @@
           K.row({ icon: 'account_balance', t: 'EMIs and the SIP', s: '3 loans and Parag Parikh', v: '−' + g(nov.emis_total + nov.sip) })]
           .concat(pot ? [K.row({ icon: 'savings', t: 'School fees pot', s: 'added Thu 5 Nov 20:46, on your Confirm', v: '−' + g(nov.to_pot) })] : [])
           .concat([K.row({ icon: 'functions', t: 'Planned surplus', s: pot ? 'was ' + g(nov.surplus + nov.to_pot) + ' before the pot' : 'the lines above, added', v: g(sur) })])) +
-          K.foot('Actuals come in with November’s statements, on Tue 1 Dec.') }));
+          K.foot('Actuals come in with November’s statements, on Tue 1 Dec.') + routes([['Budget', 'budget'], ['Projection', 'projection']]) }));
       }
     }
     var inv = list.filter(function (a) { return a.group === 'inv' || a.id === 'pot'; });
@@ -527,7 +530,7 @@
       return '<div class="fx col g4" style="padding:6px 0"><div class="hb-top"><span class="hb-t">' + x[0] + '</span><span class="hb-v">' + x[1] + '</span></div><span class="mp-foot mp-ink2">' + x[2] + '</span>' +
         barHtml + '<span class="mp-foot">' + x[3] + '</span></div>';
     }).join('') + '<div class="axis5"><span>Now</span><span>2030</span><span>2035</span><span>2040</span><span>Oct 2045</span></div>' +
-      K.foot(ctx.W.octClosed ? 'Barclaycard: the statement of Sun 1 Nov, ' + g(1458) + ', is owed until it is paid, due Fri 20 Nov. Each loan frees its payment when it ends.' : 'Barclaycard: nothing owed; October’s ' + g(1240) + ' was paid in full on Tue 20 Oct. Each loan frees its payment when it ends.') }));
+      K.foot(ctx.W.octClosed ? 'Barclaycard: the statement of Sun 1 Nov, ' + g(1458) + ', is owed until it is paid, due Fri 20 Nov. Each loan frees its payment when it ends.' : 'Barclaycard: nothing owed; October’s ' + g(1240) + ' was paid in full on Tue 20 Oct. Each loan frees its payment when it ends.') + routes([['All debts', 'debts'], ['Projection', 'projection']]) }));
     cards.push(K.card({ t: 'Maturing next', r: '<span class="mp-foot mp-ink2">what the fixed terms pay</span>', body: K.list([
       K.row({ lead: lead('NW'), t: 'Fixed-rate saver · Nationwide', s: 'Mon 14 Dec 2026 · UK · Asha · 4.6% · now ' + g(10000), v: g(10460), go: 'nav:asset/saver' }),
       K.row({ lead: lead('FD'), t: 'Fixed deposit · SBI', s: 'Sat 10 Mar 2029 · India · Arun · 7.1% · now ' + ri(517908), v: ri(617538), go: 'nav:asset/sbi_fd', id: 'w-fdrow' }),
