@@ -1,0 +1,20 @@
+[
+ {
+  "id": "r1-b1",
+  "finding": "MA-329 sat in others with no parent, PLAN bullet or estimate.",
+  "fix": "Parent MA-9, a row in items, a PLAN bullet and an estimate.",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json;t=json.load(open('docs/trace.json'));r=[x for x in t['items'] if x['key']=='MA-329'];assert r and r[0]['epic']=='MA-9' and r[0]['phase']==0;assert not [x for x in t['others'] if x['key']=='MA-329'];assert 'MA-329' in json.load(open('docs/roadmap.json'))['estimates'];assert '(MA-329)' in open('PLAN.md').read()\""
+  }
+ },
+ {
+  "id": "r1-b2",
+  "finding": "The story covered part of F01 with no record of the rest.",
+  "fix": "The acceptance widened to F01, the six-case and surfaces captures added, and the harden and polish pass moved to MA-330.",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json,os;t=json.load(open('docs/trace.json'));k={x['key']:x for x in t['items']};assert 'MA-330' in k;assert 'MA-330' in k['MA-329']['notes'];assert k['MA-330']['status'] in ('To Do','In Progress','In Review','Done');d='docs/design/reviews/MA-329/';assert all(os.path.getsize(d+f)>0 for f in ('six-cases.png','surfaces-dark-browser.png','before-dark-browser.png','after-dark-browser.png'))\""
+  }
+ }
+]

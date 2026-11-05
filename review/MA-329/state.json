@@ -1,0 +1,116 @@
+{
+ "story": "MA-329",
+ "rounds": 1,
+ "reviewed_sha": "ec9c3ca15b46bf60eb05321356db35be099d0ba5",
+ "status": "round 1 fixed; round 2 waits for Arun's yes",
+ "history": [
+  {
+   "round": 1,
+   "reviewed_sha": "ec9c3ca15b46bf60eb05321356db35be099d0ba5",
+   "range": "origin/main...ec9c3ca",
+   "review_approval": "Review first",
+   "gate_results": [
+    {
+     "command": "python3 scripts/plan_sync.py selftest",
+     "result": "PASS (reused)"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py check",
+     "result": "PASS: 247 items, 0 drift, 61 notes"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py pr-files",
+     "result": "PASS: 0 claimed by another story, 0 by none"
+    },
+    {
+     "command": "python3 scripts/review_regress.py MA-329",
+     "result": "PASS: no ledger yet"
+    },
+    {
+     "command": "python3 scripts/review_regress.py --state MA-329",
+     "result": "PASS: no rounds yet"
+    },
+    {
+     "command": "python3 scripts/artifacts_sync.py check",
+     "result": "PASS: 0 stale or broken"
+    },
+    {
+     "command": "cmp of the three ios.css copies",
+     "result": "PASS: identical"
+    }
+   ],
+   "deferred_gates": [
+    {
+     "gate": "iOS and web gates",
+     "reason": "No file under ios/ or web/ changed; CI ran them on the PR"
+    }
+   ],
+   "findings": [
+    {
+     "id": "R1-b1",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "docs/trace.json:8557",
+     "evidence": "Jira MA-329 had no parent, so its row sat in others with no PLAN bullet or estimate; taxonomy.md:34 and :80 put board work under MA-9, and rule 1 asks for a PLAN bullet.",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b2",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "docs/design/reviews/MA-328/handoff.md:63",
+     "evidence": "The story covered part of F01: not the other surfaces, the six-case comparison or the harden and polish pass, and no record said so.",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a1",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "docs/design/ds-v1/ios.css:25",
+     "evidence": "A light frame under a dark ancestor still got dark glass, because .t-dark .mp outweighed .mp; the new comment said a frame that names its theme keeps it.",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a2",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "docs/design/ds-v1/ios.css:37",
+     "evidence": "A theme class with no .mp on the same element is half-honoured. No board has that shape, and ios.css:6 says to put .mp and the theme on a device root.",
+     "status": "wontfix"
+    },
+    {
+     "id": "R1-b3",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "Jira MA-329 issuelinks",
+     "evidence": "No Relates link to MA-328.",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b4",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json:8564",
+     "evidence": "The contrast figures named no board, pixel or foreground (lesson 52).",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b5",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json:8552",
+     "evidence": "The MA-328 row lagged Jira by two steps.",
+     "status": "fixed"
+    }
+   ],
+   "next_round": "The delta since the reviewed sha: ios.css, the MA-329 and MA-330 records, the captures. Lanes a and b, and c if PLAN.md counts as changed."
+  }
+ ]
+}

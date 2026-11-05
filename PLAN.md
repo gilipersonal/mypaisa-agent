@@ -658,6 +658,12 @@ Claude's:
   accessibility gate found under 44x44. Closed by Arun on 2 Nov 2026:
   Prototype v4 is superseded and its gate deleted; tap targets on the built
   web app are MA-304's.
+- **A light board stays light in a dark browser (MA-329):** finding F01 of
+  MA-328. The nearest frame that names a theme decides its glass, so a light
+  frame keeps light glass when the browser is dark, and a frame that names none
+  follows the browser. Boards only: the real apps do not load `ios.css`.
+- **The boards' glass, hardened and polished (MA-330):** F01's last step,
+  `/impeccable harden` then `/impeccable polish`, once F02 to F10 have landed.
 - **Stop the checks on the design boards; plan-sync and the review ledger
   faster and smarter (MA-303):** the six checks on `docs/design/` stopped
   (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code

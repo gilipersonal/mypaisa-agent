@@ -331,6 +331,14 @@ number, so a reference to it holds wherever it now sits.
     Retain the viewport/scale and state needed to reproduce a precise claim, or state the supported
     qualitative observation without false precision (MA-328 round 1).
 
+53. **An issue filed on its own is placed before its row is written:** a new bug or task gets
+    its parent from the taxonomy's path table, and a row left in `others` says why it stays out
+    of the phases. The gate cannot tell: it reads an empty parent as `others` (MA-329 round 1).
+
+54. **A story cut from a finding says what it leaves behind:** its acceptance matches the
+    finding's, or the story and its row name the part left out and the linked issue that owns
+    it, because Done closes whatever the story did not say it left (MA-329 round 1).
+
 ## The lessons from the design-board era
 
 Lessons 1 (its board half), 9 to 11, 13, 19, 21 (its board half), 24 to 31
