@@ -661,7 +661,9 @@ Claude's:
 - **A light board stays light in a dark browser (MA-329):** finding F01 of
   MA-328. The nearest frame that names a theme decides its glass, so a light
   frame keeps light glass when the browser is dark, and a frame that names none
-  follows the browser. Boards only: the real apps do not load `ios.css`.
+  follows the browser. A selected control keeps its tint under Reduce
+  Transparency and Increase Contrast. Boards and Prototype v5 only: the real
+  apps do not load `ios.css`.
 - **The boards' glass, hardened and polished (MA-330):** F01's last step,
   `/impeccable harden` then `/impeccable polish`, once F02 to F10 have landed.
 - **Stop the checks on the design boards; plan-sync and the review ledger

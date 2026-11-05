@@ -333,11 +333,22 @@ number, so a reference to it holds wherever it now sits.
 
 53. **An issue filed on its own is placed before its row is written:** a new bug or task gets
     its parent from the taxonomy's path table, and a row left in `others` says why it stays out
-    of the phases. The gate cannot tell: it reads an empty parent as `others` (MA-329 round 1).
+    of the phases. `/plan-sync`'s Jira compare cannot tell: it sends any issue with no phase epic
+    to `others` and never compares an `others` row's parent, and the offline gate reads no parent
+    (MA-329 round 1).
 
 54. **A story cut from a finding says what it leaves behind:** its acceptance matches the
     finding's, or the story and its row name the part left out and the linked issue that owns
     it, because Done closes whatever the story did not say it left (MA-329 round 1).
+
+55. **A setting an acceptance names is measured under it and recorded before the line is
+    ticked,** on the selected control too: a rule that swaps a surface's fill must keep a tinted
+    control's tint, or its on-tint label vanishes (MA-329 round 2: about 1:1 on the selected
+    Privacy control under Reduce Transparency and Increase Contrast).
+
+56. **A theme is declared on the element that names it and inherited,** as `tokens.css` does.
+    A chain of descendant selectors loses at some nesting depth, and two rounds of narrowing it
+    each left a depth wrong; a nesting test runs every shape to three frames deep (MA-329 round 2).
 
 ## The lessons from the design-board era
 

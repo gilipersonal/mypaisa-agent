@@ -104,8 +104,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-325 | Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it | Done | §1 | none |  |
 | MA-326 | CI scans what exists today on every pull request and every week: secrets in the whole history, the backend's source, every lockfile and the workflows | Done | §13, §17.4 | none |  |
 | MA-327 | CI bundles the iOS app, so a toolchain update that breaks the build cannot pass as green | Done | §17.4 | none |  |
-| MA-329 | A light board stays light in a dark browser: the glass follows the frame's own theme | In Review | §8.3, §8.4 | none |  |
-| MA-330 | The boards' glass gets Impeccable's harden and polish pass, the last step of finding F01 | To Do | §8.3, §8.4 | none |  |
+| MA-329 | A light board stays light in a dark browser: the glass follows the frame's own theme | In Review | §8.1, §8.3, §8.4 | none |  |
+| MA-330 | The boards' glass gets Impeccable's harden and polish pass, the last step of finding F01 | To Do | §8.1, §8.3, §8.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

@@ -186,7 +186,8 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   - Nothing loops forever.
   - Under Reduce Motion (`prefers-reduced-motion` on a board and in the web app) every movement becomes a short
     cross-fade or lands in its final state at once.
-  - Light and dark follow the system's appearance (`prefers-color-scheme` on a board and in the web app); glass turns
+  - Light and dark follow the system's appearance (`prefers-color-scheme` in the web app and on a board frame that names no theme; a frame with
+    `t-light` or `t-dark` keeps it, MA-329); glass turns
     opaque under Reduce Transparency, and Increase Contrast uses the high-contrast colour assets.
 - **Accessibility.** WCAG 2.2 AA and the HIG: contrast measured on the real background, glass included, and at 25%
   brightness (above); 44 pt targets in the app and 44 px in the web app; a spoken label for every figure and an audio

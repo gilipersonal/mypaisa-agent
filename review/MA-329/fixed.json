@@ -14,7 +14,43 @@
   "fix": "The acceptance widened to F01, the six-case and surfaces captures added, and the harden and polish pass moved to MA-330.",
   "check": {
    "type": "cmd",
-   "run": "python3 -c \"import json,os;t=json.load(open('docs/trace.json'));k={x['key']:x for x in t['items']};assert 'MA-330' in k;assert 'MA-330' in k['MA-329']['notes'];assert k['MA-330']['status'] in ('To Do','In Progress','In Review','Done');d='docs/design/reviews/MA-329/';assert all(os.path.getsize(d+f)>0 for f in ('six-cases.png','surfaces-dark-browser.png','before-dark-browser.png','after-dark-browser.png'))\""
+   "run": "python3 -c \"import json;t=json.load(open('docs/trace.json'));k={x['key']:x for x in t['items']};a,b=k['MA-329'],k['MA-330'];assert 'except its last step' in a['notes'] and 'harden and polish' in a['notes'] and 'MA-330' in a['notes'];assert 'F01' in b['summary'] and b['epic']=='MA-9';d='docs/design/reviews/MA-329/';assert all(open(d+f,'rb').read(8)==b'\\\\x89PNG\\\\r\\\\n\\\\x1a\\\\n' for f in ('six-cases.png','surfaces-dark-browser.png','before-dark-browser.png','after-dark-browser.png'))\""
+  }
+ },
+ {
+  "id": "r2-a1",
+  "finding": "An unnamed .mp inside a light frame inside a dark ancestor got dark glass.",
+  "fix": "The glass tokens are declared on :root, .t-light and .t-dark as tokens.css declares its colours, and inherited.",
+  "check": {
+   "type": "manual",
+   "what": "Render ios.css with every nesting of .mp, .mp.t-light, .mp.t-dark, .t-light and .t-dark to three deep, under each root class, in both colour schemes, in Chromium and WebKit. Every glass token and the ::before opacity must follow the nearest named element, or the host if none. Never add this as a gate on the boards (MA-303)."
+  }
+ },
+ {
+  "id": "r2-a2",
+  "finding": "The selected Privacy control vanished under Reduce Transparency and Increase Contrast.",
+  "fix": "The .rt rule and both media rules keep .lg-tint's fill.",
+  "check": {
+   "type": "manual",
+   "what": "Under prefers-reduced-transparency, prefers-contrast: more and .rt, the selected .gbtn.lg.lg-tint on iPhone v4 Check-ins keeps a tinted fill: 5.41:1 in a light frame and 10.83:1 in a dark one. Never add this as a gate on the boards (MA-303)."
+  }
+ },
+ {
+  "id": "r2-a3",
+  "finding": "The acceptance on Reduce Transparency and Increase Contrast had no evidence.",
+  "fix": "Captures of both settings for light, dark and automatic frames, named in the row.",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json;t=json.load(open('docs/trace.json'));n=[x for x in t['items'] if x['key']=='MA-329'][0]['notes'];d='docs/design/reviews/MA-329/';assert all(f in n and open(d+f,'rb').read(4)==b'\\\\x89PNG' for f in ('settings-selected-control.png','settings-surfaces.png'))\""
+  }
+ },
+ {
+  "id": "r2-b1",
+  "finding": "Three F01 clauses were owned by neither MA-329 nor MA-330.",
+  "fix": "MA-329 states the first two as held, and MA-330's acceptance carries all three.",
+  "check": {
+   "type": "manual",
+   "what": "Read Jira MA-329 and MA-330 against F01 in docs/design/reviews/MA-328/handoff.md. Every clause is in one of them, or named as left out with its owner; MA-330 quotes \"Preserve privacy, safe areas and the approved iOS/web material distinction.\" and \"Keep a complete light and dark material set\", and carries the shadow and opacity judgement."
   }
  }
 ]
