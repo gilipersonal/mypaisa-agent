@@ -32,8 +32,9 @@
   --lg-lift: 0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
   --lg-lens: rgba(255, 255, 255, 0.12);
 }
+/* A frame that names its theme keeps it: this rule is for surfaces that leave the choice to the host (MA-329). */
 @media (prefers-color-scheme: dark) {
-  :root:not(.t-light):not(.t-dark) .mp, :root:not(.t-light):not(.t-dark).mp {
+  :root:not(.t-light):not(.t-dark) .mp:not(.t-light, .t-dark, .t-light *, .t-dark *), :root:not(.t-light):not(.t-dark).mp {
     --lg-fill: rgba(24, 30, 40, 0.86);
     --lg-fill-strong: rgba(24, 30, 40, 0.94);
     --lg-accent: #FFC2B3;
@@ -43,7 +44,7 @@
     --lg-lift: 0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
     --lg-lens: rgba(255, 255, 255, 0.12);
   }
-  :root:not(.t-light):not(.t-dark) .lg::before, :root:not(.t-light):not(.t-dark).lg::before { opacity: 0.18; }
+  :root:not(.t-light):not(.t-dark) .lg:not(.t-light, .t-dark, .t-light *, .t-dark *)::before, :root:not(.t-light):not(.t-dark).lg::before { opacity: 0.18; }
 }
 .lg { background: var(--lg-fill); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur); box-shadow: var(--lg-edge), var(--lg-lift); color: var(--lg-ink); position: relative; }
 .lg::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
