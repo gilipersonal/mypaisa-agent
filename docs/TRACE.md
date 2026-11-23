@@ -115,6 +115,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-337 | Primary actions and consequential instructions on the boards use the agreed control and body type | To Do | §8.1, §8.3, §8.4 | none |  |
 | MA-338 | A current-spec map names each screen's one composition, and the design notes agree with later rules | To Do | §8.1, §8.3, §8.4 | none |  |
 | MA-339 | Every foldable example names its OS, door and posture, and follows that door's material | To Do | §8.1, §8.4 | none |  |
+| MA-342 | A new fast-xml-parser advisory turns every PR's security scan red: React Native's CLI pins 5.11.2 | In Progress | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

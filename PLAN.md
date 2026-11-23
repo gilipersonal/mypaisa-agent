@@ -210,6 +210,10 @@ Claude's:
   job builds the app's JavaScript with Metro on Linux, since Jest and tsc pass on
   a toolchain Metro refuses, as Dependabot's Babel 8 showed (PR #96). Dependabot
   skips Babel majors until React Native moves.
+- **A new advisory in React Native's CLI (MA-342):** GHSA-474x-hrwr-fgx4 in
+  fast-xml-parser 5.11.2, which React Native's CLI pins, turned every PR's
+  security scan red on 23 Nov 2026; a pnpm override lifts it to 5.12. It is dev
+  tooling only, never shipped.
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
   `infra/dev` and `infra/prod`, each with its own state key in the existing
   state bucket; `infra/bootstrap`, applied once from the laptop, with the

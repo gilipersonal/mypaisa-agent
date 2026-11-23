@@ -58,3 +58,6 @@ overrides:
   '@tanstack/query-core': 5.105.3
   '@typescript-eslint/typescript-estree>minimatch': '>=11.0.1'
   'eslint>minimatch': '>=11.0.1'
+  # GHSA-474x-hrwr-fgx4 (low, 3.7), fixed in 5.12.0: React Native's CLI (cli-config-android, cli-platform-apple 20.2.0)
+  # pins 5.11.2; dev tooling only, never shipped (MA-342, 23 Nov 2026).
+  'fast-xml-parser': '>=5.12.0'
