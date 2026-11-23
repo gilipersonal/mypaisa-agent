@@ -222,6 +222,11 @@ Claude's:
   `hermes-compiler` apart from `react-native`, which still names the older one,
   so the iOS gate found two compilers. Dependabot now leaves `hermes-compiler`
   alone; it is pinned by hand when React Native moves.
+- **Review tooling takes turns in web/ (MA-345):** two of MA-194's
+  fixed-finding checks ran vitest in `web/` at the same moment, under the
+  regression runner's four workers, and raced on pnpm's install and Vite's
+  cache, so Review tooling failed at random. They now take one lock per
+  checkout.
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
   `infra/dev` and `infra/prod`, each with its own state key in the existing
   state bucket; `infra/bootstrap`, applied once from the laptop, with the
