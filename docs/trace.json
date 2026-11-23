@@ -8099,6 +8099,27 @@
       "notes": "Found on 23 Nov 2026 on Dependabot's web group, PR #113 (MA-326): it raised ios/package.json's hermes-compiler from 260318099.0.5 to 260318099.0.8 while react-native 0.88.1 still names 260318099.0.5, so the iOS gate found two Hermes compilers. The gate was right: a mismatch crashes the app at launch. Dependabot's /web updates now ignore hermes-compiler, which is moved by hand with react-native (ios/CLAUDE.md rule 8). With it put back on #113, the iOS gates without Xcode (types, lint, format, Jest, the Metro bundle) pass on the rest of the group. #113 is recreated once this merges."
     },
     {
+      "key": "MA-345",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Two of MA-194's fixed-finding checks run in web/ at the same time and race, so Review tooling fails at random",
+      "status": "In Progress",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "code": [
+        "review/MA-194/check.sh"
+      ],
+      "notes": "Found on 23 Nov 2026 on Dependabot's web group, PR #113 (MA-326): Review tooling failed MA-194 r1-f1 with 'No such file or directory (os error 2)' while r1-f7 passed. review_regress.py --every --jobs 4 ran check.sh's service-worker and money-compact at once in a checkout with no web/node_modules; pnpm 12 installs before an exec when node_modules is missing, and both did so in the same folder. Reproduced on main locally, where the second try failed with ENOTEMPTY on Vite's optimizer cache under web/node_modules/.vite, which both vitest runs write. Main had passed by timing. check.sh now takes one flock per checkout around every command that runs in web/ or copies it; the lock goes when its holder dies, so a check killed by its timeout never leaves it held. A harness makes no failure of its own (lesson 16)."
+    },
+    {
       "key": "MA-329",
       "type": "Bug",
       "epic": "MA-9",

@@ -6,6 +6,19 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 pnpm() { corepack pnpm@12.16.1 "$@"; }
 
+# locked CMD...: runs CMD holding this checkout's lock on web/ (MA-345). review_regress.py --jobs runs checks at once;
+# pnpm 12 installs before an exec when node_modules is missing, and vitest writes Vite's optimizer cache under
+# node_modules/.vite, so two checks working in web/ at once raced on both (Review tooling on PR #113). Every command that
+# runs in web/ itself, or copies it, takes the lock. An flock goes when its holder dies, so a check its runner kills on a
+# timeout never leaves it held.
+lock="$(git rev-parse --absolute-git-dir)/mypaisa-web-check.lock"
+locked() {
+  python3 -I -c 'import fcntl, subprocess, sys
+with open(sys.argv[1], "w") as f:
+    fcntl.flock(f, fcntl.LOCK_EX)
+    sys.exit(subprocess.call(sys.argv[2:]))' "$lock" "$@"
+}
+
 # copy: a throwaway copy of the web app (node_modules cloned, not reinstalled) with the gate script and the schema.
 copy() {
   local dir; dir=$(mktemp -d)
@@ -13,7 +26,7 @@ copy() {
   cp scripts/web_gates.sh "$dir/scripts/"
   cp backend/openapi.json "$dir/backend/"
   mkdir -p "$dir/docs/design/ds-v1" && cp docs/design/ds-v1/tokens.css docs/design/ds-v1/motion.css "$dir/docs/design/ds-v1/"
-  cp -c -R web "$dir/web" 2>/dev/null || cp -R web "$dir/web"
+  locked cp -c -R web "$dir/web" 2>/dev/null || locked cp -R web "$dir/web"
   rm -rf "$dir/web/build" "$dir/web/.svelte-kit"
   echo "$dir"
 }
@@ -50,7 +63,7 @@ assert ps.pr_findings(files, items, "MA-326") == ([], []), ps.pr_findings(files,
 P
     ;;
   service-worker)  # R1-f1, R1-f2, R1-f3: the page is stored, the fallback is for navigations only
-    (cd web && pnpm --silent exec vitest run src/lib/sw/shell.test.ts)
+    (cd web && locked corepack pnpm@12.16.1 --silent exec vitest run src/lib/sw/shell.test.ts)
     grep -q "shellFiles(" web/src/service-worker.ts && grep -q "kind === 'page'" web/src/service-worker.ts ;;
   dark-variant)  # R1-f4: Tailwind's dark: follows the system unless .t-light forces light
     d=$(copy); trap 'rm -rf "$d"' EXIT
@@ -58,7 +71,7 @@ P
     css=$(cat "$d"/web/build/_app/immutable/assets/*.css)
     grep -q "prefers-color-scheme:dark" <<<"$css" && grep -q ":not(.t-light)" <<<"$css" ;;
   money-compact)  # R1-f7: compact amounts move up a unit when rounding reaches it
-    (cd web && pnpm --silent exec vitest run src/lib/formatting/money.test.ts -t "moves up a unit") ;;
+    (cd web && locked corepack pnpm@12.16.1 --silent exec vitest run src/lib/formatting/money.test.ts -t "moves up a unit") ;;
   targets)  # R1-f5, R1-f6: the skip link and the shell's button keep 44 px targets
     grep -q "focus:min-h-11" web/src/lib/components/shell/AppShell.svelte
     grep -q 'class="min-h-11"' web/src/lib/components/shell/ApiStatus.svelte ;;
