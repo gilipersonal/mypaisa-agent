@@ -218,6 +218,10 @@ Claude's:
   moves prettier to 3.10.1, whose Svelte printer wraps the shell's skip link
   differently, so the web gate failed on it. The link is printed the new way,
   which 3.9 accepts too, so the change lands before the bump.
+- **Hermes moves with React Native (MA-344):** the same group raised
+  `hermes-compiler` apart from `react-native`, which still names the older one,
+  so the iOS gate found two compilers. Dependabot now leaves `hermes-compiler`
+  alone; it is pinned by hand when React Native moves.
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
   `infra/dev` and `infra/prod`, each with its own state key in the existing
   state bucket; `infra/bootstrap`, applied once from the laptop, with the
