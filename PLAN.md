@@ -214,6 +214,10 @@ Claude's:
   fast-xml-parser 5.11.2, which React Native's CLI pins, turned every PR's
   security scan red on 23 Nov 2026; a pnpm override lifts it to 5.12. It is dev
   tooling only, never shipped.
+- **Prettier 3.10 and the skip link (MA-343):** Dependabot's web group (PR #113)
+  moves prettier to 3.10.1, whose Svelte printer wraps the shell's skip link
+  differently, so the web gate failed on it. The link is printed the new way,
+  which 3.9 accepts too, so the change lands before the bump.
 - **Terraform bootstrap (MA-26):** `infra/modules/mypaisa` with the two roots
   `infra/dev` and `infra/prod`, each with its own state key in the existing
   state bucket; `infra/bootstrap`, applied once from the laptop, with the
