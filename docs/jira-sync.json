@@ -1,9 +1,1390 @@
 {
  "version": 1,
  "about": "Jira read incrementally by /plan-sync (MA-303): the last sync's time, the keys still drifting, the trace keys Jira does not have (missing, kept out of the query and reported), the last query printed (its JQL, kind, the keys it names and its time), and per key a short hash of what Jira said (summary, parent, labels, status, due date) and of the trace's row. Written only by `python3 scripts/plan_sync.py jira-sync query` and `record`: `record <file> --for-query` moves last_sync to the query's time only when the file answers that query whole; `record <file> --keys MA-n` records those keys and never moves it. `/plan-sync --all` reads everything again.",
- "last_sync": null,
+ "last_sync": "2026-11-23T23:40:00+00:00",
  "pending": [],
  "missing": [],
  "query": null,
- "issues": {}
+ "issues": {
+  "MA-1": {
+   "jira": "d34b43cedd9c",
+   "repo": "51a276ff3e4e"
+  },
+  "MA-2": {
+   "jira": "e5bc06cbf36e",
+   "repo": "c513980667a5"
+  },
+  "MA-3": {
+   "jira": "9d13f9699365",
+   "repo": "5db0d5cab0f5"
+  },
+  "MA-4": {
+   "jira": "1934722fdd7c",
+   "repo": "76a43cf74e0e"
+  },
+  "MA-5": {
+   "jira": "2a1cf8b4b6ad",
+   "repo": "d1d9096473e3"
+  },
+  "MA-6": {
+   "jira": "6f04abe45810",
+   "repo": "91f22f2c7944"
+  },
+  "MA-7": {
+   "jira": "b4da86cd073b",
+   "repo": "4bf7d3dd267f"
+  },
+  "MA-8": {
+   "jira": "9d2875fa6fc6",
+   "repo": "8a040fc2832e"
+  },
+  "MA-9": {
+   "jira": "e0263130cb01",
+   "repo": "f2e61cb261a6"
+  },
+  "MA-10": {
+   "jira": "d31471ec7de1",
+   "repo": "2fdf20a12ca7"
+  },
+  "MA-11": {
+   "jira": "d0fc6d582063",
+   "repo": "5501d81425b4"
+  },
+  "MA-12": {
+   "jira": "71c5ea11efbb",
+   "repo": "1a0524fc74ed"
+  },
+  "MA-13": {
+   "jira": "64b5ac193df0",
+   "repo": "e24dcc0de9dd"
+  },
+  "MA-14": {
+   "jira": "a5a5059ae6d5",
+   "repo": "285d8bb32fed"
+  },
+  "MA-15": {
+   "jira": "6039b3b77308",
+   "repo": "41062dae9476"
+  },
+  "MA-16": {
+   "jira": "bb26e6bbbc3c",
+   "repo": "74546691bf44"
+  },
+  "MA-17": {
+   "jira": "67220745d1cd",
+   "repo": "80c0cc5a3eb8"
+  },
+  "MA-18": {
+   "jira": "f072e59960be",
+   "repo": "0ce294828dc8"
+  },
+  "MA-19": {
+   "jira": "2492daf037e8",
+   "repo": "47a58d9b7e7e"
+  },
+  "MA-20": {
+   "jira": "98bc5361e101",
+   "repo": "c1c83c1c22e0"
+  },
+  "MA-21": {
+   "jira": "e8d642fa8ae1",
+   "repo": "7d2b5dc14763"
+  },
+  "MA-22": {
+   "jira": "45c875480f9b",
+   "repo": "b43e9f3a467b"
+  },
+  "MA-23": {
+   "jira": "c34bf4c7912f",
+   "repo": "56a0239bc2bb"
+  },
+  "MA-24": {
+   "jira": "ea4694fbb7ec",
+   "repo": "0557eac1b399"
+  },
+  "MA-25": {
+   "jira": "dc454aeb84d3",
+   "repo": "5d142cf64d65"
+  },
+  "MA-26": {
+   "jira": "fcfa38146eeb",
+   "repo": "99dab1a506e6"
+  },
+  "MA-27": {
+   "jira": "5391337e4cd0",
+   "repo": "4e2a13300aa9"
+  },
+  "MA-28": {
+   "jira": "461080a20e20",
+   "repo": "6fadb01ba340"
+  },
+  "MA-29": {
+   "jira": "8512fcbf832f",
+   "repo": "17d0ceb075b9"
+  },
+  "MA-30": {
+   "jira": "83d1fb6443f1",
+   "repo": "974e04120fc9"
+  },
+  "MA-31": {
+   "jira": "6535932ce932",
+   "repo": "e5c4185a5477"
+  },
+  "MA-32": {
+   "jira": "03a8ac6870e5",
+   "repo": "bae43d75cc26"
+  },
+  "MA-33": {
+   "jira": "2fe0d2561e12",
+   "repo": "383bc1f2d806"
+  },
+  "MA-34": {
+   "jira": "a7f13e0ca86f",
+   "repo": "86b694c5dcc9"
+  },
+  "MA-35": {
+   "jira": "df344bd0ab58",
+   "repo": "6b1a25530447"
+  },
+  "MA-36": {
+   "jira": "227f9a473072",
+   "repo": "360f47d24014"
+  },
+  "MA-37": {
+   "jira": "5179845f1ab2",
+   "repo": "db7ced92bd30"
+  },
+  "MA-38": {
+   "jira": "9310bb74c4f3",
+   "repo": "0bfffb185641"
+  },
+  "MA-39": {
+   "jira": "dda60f264e18",
+   "repo": "18f57eb86595"
+  },
+  "MA-40": {
+   "jira": "59f438758add",
+   "repo": "da8896493b29"
+  },
+  "MA-41": {
+   "jira": "f20589b4cc3f",
+   "repo": "75e38b1628f2"
+  },
+  "MA-42": {
+   "jira": "cc26635063a1",
+   "repo": "232c6b57c9ab"
+  },
+  "MA-43": {
+   "jira": "449c406599a6",
+   "repo": "39ca482a91b8"
+  },
+  "MA-44": {
+   "jira": "9c20684bab30",
+   "repo": "10b7975fad57"
+  },
+  "MA-45": {
+   "jira": "24317c73a048",
+   "repo": "712d55ea8520"
+  },
+  "MA-46": {
+   "jira": "a8aec9908ec0",
+   "repo": "84e7f108149a"
+  },
+  "MA-47": {
+   "jira": "7333e3993f0f",
+   "repo": "757f63e570bc"
+  },
+  "MA-48": {
+   "jira": "1d3ce8a1ba4f",
+   "repo": "5c6595354114"
+  },
+  "MA-49": {
+   "jira": "fa53400284b2",
+   "repo": "2d3396e23752"
+  },
+  "MA-50": {
+   "jira": "94e0c26f0e51",
+   "repo": "62d2d8446102"
+  },
+  "MA-51": {
+   "jira": "6624929a60bf",
+   "repo": "3355da441816"
+  },
+  "MA-52": {
+   "jira": "e7f8eae0c974",
+   "repo": "962a74c2396e"
+  },
+  "MA-53": {
+   "jira": "bb7bb4108330",
+   "repo": "578849b3509b"
+  },
+  "MA-54": {
+   "jira": "ea5d268f1ad4",
+   "repo": "47d70fa2375e"
+  },
+  "MA-55": {
+   "jira": "c2c820546288",
+   "repo": "47447d29396d"
+  },
+  "MA-56": {
+   "jira": "17864032d0e8",
+   "repo": "8ab2710734f4"
+  },
+  "MA-57": {
+   "jira": "93c9ea3de498",
+   "repo": "028cbe602593"
+  },
+  "MA-58": {
+   "jira": "985b2e78d230",
+   "repo": "695d51ce8925"
+  },
+  "MA-59": {
+   "jira": "8c67ac2cef66",
+   "repo": "5bbcae049be3"
+  },
+  "MA-60": {
+   "jira": "5ae44d5c922a",
+   "repo": "dfb7d8ff496b"
+  },
+  "MA-61": {
+   "jira": "b628ff1caa48",
+   "repo": "468558128aef"
+  },
+  "MA-62": {
+   "jira": "81862efbf771",
+   "repo": "8c65733656a6"
+  },
+  "MA-63": {
+   "jira": "2b5e38a20aa6",
+   "repo": "4820edd67fed"
+  },
+  "MA-64": {
+   "jira": "df23535159f7",
+   "repo": "9215f6de6082"
+  },
+  "MA-65": {
+   "jira": "507da29898d3",
+   "repo": "3a56d673de19"
+  },
+  "MA-66": {
+   "jira": "fb6d4e6424e4",
+   "repo": "ab312c0b1ce6"
+  },
+  "MA-67": {
+   "jira": "31441fb375dc",
+   "repo": "9134d5c26491"
+  },
+  "MA-68": {
+   "jira": "7d7719985ed2",
+   "repo": "437648811005"
+  },
+  "MA-69": {
+   "jira": "52085abe4364",
+   "repo": "db7a34f28318"
+  },
+  "MA-70": {
+   "jira": "edfc0a117f6a",
+   "repo": "3d97f479544c"
+  },
+  "MA-71": {
+   "jira": "f0c10f905766",
+   "repo": "658ebb38d60d"
+  },
+  "MA-72": {
+   "jira": "f933dc3dab59",
+   "repo": "cca48701fefc"
+  },
+  "MA-73": {
+   "jira": "c44ef4816564",
+   "repo": "24f61e6882bc"
+  },
+  "MA-74": {
+   "jira": "394ab85c63f2",
+   "repo": "14e4db3dd3d6"
+  },
+  "MA-75": {
+   "jira": "f3321888c267",
+   "repo": "e06111dbd03a"
+  },
+  "MA-76": {
+   "jira": "56cf40bba4a9",
+   "repo": "fc25446f698b"
+  },
+  "MA-77": {
+   "jira": "ccb5be5cf3ac",
+   "repo": "80b461bddd16"
+  },
+  "MA-78": {
+   "jira": "5129d0e007c9",
+   "repo": "2f02e345910c"
+  },
+  "MA-79": {
+   "jira": "b35e2c5cf431",
+   "repo": "7f713aa008c7"
+  },
+  "MA-80": {
+   "jira": "82c6ef6e7020",
+   "repo": "42413fde2f35"
+  },
+  "MA-81": {
+   "jira": "81ee84f9d2e2",
+   "repo": "5cb1a0d2123a"
+  },
+  "MA-82": {
+   "jira": "761ffa8b2619",
+   "repo": "dae0c56e2f99"
+  },
+  "MA-83": {
+   "jira": "af9f09e4c76a",
+   "repo": "73dbbd182235"
+  },
+  "MA-84": {
+   "jira": "7cc97e458c63",
+   "repo": "3088a5f61100"
+  },
+  "MA-85": {
+   "jira": "80d753227948",
+   "repo": "95db8f0737be"
+  },
+  "MA-86": {
+   "jira": "49914d23cb40",
+   "repo": "9a310d1dcc40"
+  },
+  "MA-87": {
+   "jira": "d57947222283",
+   "repo": "eb48febe3dc0"
+  },
+  "MA-88": {
+   "jira": "4e25fd6acf69",
+   "repo": "abdbb27a9d9b"
+  },
+  "MA-89": {
+   "jira": "1b5b2e2e37b8",
+   "repo": "940e2ad68cc0"
+  },
+  "MA-90": {
+   "jira": "7b30266da07b",
+   "repo": "de45dc763a30"
+  },
+  "MA-91": {
+   "jira": "ae4dff98179c",
+   "repo": "05977b69123d"
+  },
+  "MA-92": {
+   "jira": "6a3c66fad0c3",
+   "repo": "bfcc768da47f"
+  },
+  "MA-93": {
+   "jira": "573bb82bb65f",
+   "repo": "aa6f5e3996c2"
+  },
+  "MA-94": {
+   "jira": "79c5b54a6bf1",
+   "repo": "cba82e9f287e"
+  },
+  "MA-95": {
+   "jira": "764b0924bea8",
+   "repo": "75dd818b24d6"
+  },
+  "MA-96": {
+   "jira": "4900af1dde40",
+   "repo": "5cdefa8be64b"
+  },
+  "MA-97": {
+   "jira": "58177d68dcd4",
+   "repo": "a5aba88885c9"
+  },
+  "MA-98": {
+   "jira": "76222347d637",
+   "repo": "47b790d54b05"
+  },
+  "MA-99": {
+   "jira": "89da049160df",
+   "repo": "59e6832ccf67"
+  },
+  "MA-100": {
+   "jira": "33bdd6941306",
+   "repo": "527fddc1fa02"
+  },
+  "MA-101": {
+   "jira": "a4c8ccbbc869",
+   "repo": "111b975ec6f5"
+  },
+  "MA-102": {
+   "jira": "0fd6e5b1485b",
+   "repo": "4ed47524bf07"
+  },
+  "MA-103": {
+   "jira": "a8a3d3d1fc32",
+   "repo": "e38ad21f1c19"
+  },
+  "MA-104": {
+   "jira": "7ac71f634438",
+   "repo": "952ad8919889"
+  },
+  "MA-105": {
+   "jira": "2cba4b498651",
+   "repo": "e5eee132c893"
+  },
+  "MA-106": {
+   "jira": "e4fc6668f8a3",
+   "repo": "f97455905c3f"
+  },
+  "MA-107": {
+   "jira": "78bf173ff7f0",
+   "repo": "0c915dfa3bcc"
+  },
+  "MA-108": {
+   "jira": "d9c82f771339",
+   "repo": "10ed1e69ed6d"
+  },
+  "MA-109": {
+   "jira": "786388fd67cb",
+   "repo": "2bf08db8b95d"
+  },
+  "MA-110": {
+   "jira": "1a5d1e4ee3b6",
+   "repo": "5883ebf23d6b"
+  },
+  "MA-111": {
+   "jira": "2ce9482fb170",
+   "repo": "b3427cd169c2"
+  },
+  "MA-112": {
+   "jira": "b1133532c93a",
+   "repo": "3ece5e96043e"
+  },
+  "MA-113": {
+   "jira": "7d4ae7130248",
+   "repo": "99009e19a870"
+  },
+  "MA-114": {
+   "jira": "444323ed6db3",
+   "repo": "943b636363aa"
+  },
+  "MA-115": {
+   "jira": "8db73de7efaa",
+   "repo": "1be138d12d23"
+  },
+  "MA-116": {
+   "jira": "420f6be092e3",
+   "repo": "18acc56886d9"
+  },
+  "MA-117": {
+   "jira": "a810bc49b1e1",
+   "repo": "47bc675f1f35"
+  },
+  "MA-118": {
+   "jira": "627098e13f26",
+   "repo": "bad18fb66255"
+  },
+  "MA-119": {
+   "jira": "b8b9415c6306",
+   "repo": "510c7c9d6896"
+  },
+  "MA-120": {
+   "jira": "9e082cb88612",
+   "repo": "89b2529c92e3"
+  },
+  "MA-121": {
+   "jira": "f2cd4fa01a07",
+   "repo": "09c463f09a13"
+  },
+  "MA-122": {
+   "jira": "d8a2dfc314a7",
+   "repo": "0716d6c780f3"
+  },
+  "MA-123": {
+   "jira": "05c46753536c",
+   "repo": "c6645f2bf9af"
+  },
+  "MA-124": {
+   "jira": "ead985df65bd",
+   "repo": "7c93eb514169"
+  },
+  "MA-125": {
+   "jira": "903cb0b768f5",
+   "repo": "013c73043c15"
+  },
+  "MA-126": {
+   "jira": "8460f931d9ef",
+   "repo": "e341a1fc7b7a"
+  },
+  "MA-127": {
+   "jira": "bea5b71234e5",
+   "repo": "f679b237e678"
+  },
+  "MA-128": {
+   "jira": "c98ccdfd1d81",
+   "repo": "937728b802ef"
+  },
+  "MA-129": {
+   "jira": "69ab744ab75d",
+   "repo": "879001e7bafe"
+  },
+  "MA-130": {
+   "jira": "790f545523c1",
+   "repo": "78b47a4ce1b5"
+  },
+  "MA-131": {
+   "jira": "8042cff65710",
+   "repo": "c1a819564cd7"
+  },
+  "MA-132": {
+   "jira": "87fd352574fe",
+   "repo": "c295f395520b"
+  },
+  "MA-133": {
+   "jira": "b61000619fd1",
+   "repo": "08c7042a8d91"
+  },
+  "MA-134": {
+   "jira": "f9c39ade28f6",
+   "repo": "ea91c2a25f88"
+  },
+  "MA-135": {
+   "jira": "e71a1343b5aa",
+   "repo": "f6f1c96fe2da"
+  },
+  "MA-136": {
+   "jira": "2bcc094307eb",
+   "repo": "82c048e28521"
+  },
+  "MA-137": {
+   "jira": "836f284da216",
+   "repo": "f54e667817c7"
+  },
+  "MA-138": {
+   "jira": "49e5d82de4cf",
+   "repo": "90cbf5235fa0"
+  },
+  "MA-139": {
+   "jira": "ade77f4e27b8",
+   "repo": "088929568f8d"
+  },
+  "MA-140": {
+   "jira": "1e0fac8ee61e",
+   "repo": "bb2d40185962"
+  },
+  "MA-141": {
+   "jira": "9b853a0cb57f",
+   "repo": "ef0eebf7cf9c"
+  },
+  "MA-142": {
+   "jira": "66a6baa11dbc",
+   "repo": "8adf92cf7e78"
+  },
+  "MA-143": {
+   "jira": "8a28f4bccae6",
+   "repo": "9b9fcde94d8a"
+  },
+  "MA-144": {
+   "jira": "ca06a81b28de",
+   "repo": "96f973849783"
+  },
+  "MA-145": {
+   "jira": "870d6b7551ce",
+   "repo": "16f88bb6c65c"
+  },
+  "MA-146": {
+   "jira": "ac3d5f991abb",
+   "repo": "95dc826e8df3"
+  },
+  "MA-147": {
+   "jira": "b661db11d9bc",
+   "repo": "8691a3b5545e"
+  },
+  "MA-148": {
+   "jira": "e02c514e871f",
+   "repo": "1697d829f69b"
+  },
+  "MA-149": {
+   "jira": "107e15b59e0a",
+   "repo": "8a71f7ca9b06"
+  },
+  "MA-150": {
+   "jira": "9a9038a0c836",
+   "repo": "05db992a4529"
+  },
+  "MA-151": {
+   "jira": "56dff0e58695",
+   "repo": "122b6efd8e5b"
+  },
+  "MA-152": {
+   "jira": "5140cfff5a92",
+   "repo": "98d4e4d2a40a"
+  },
+  "MA-153": {
+   "jira": "bdc6b7bdbafb",
+   "repo": "2e5337aedf64"
+  },
+  "MA-154": {
+   "jira": "605b52768ffc",
+   "repo": "b326deefe7bf"
+  },
+  "MA-155": {
+   "jira": "b2feaff132a9",
+   "repo": "a8bb97a78230"
+  },
+  "MA-156": {
+   "jira": "ced7adc9639f",
+   "repo": "ddc8bdd734a3"
+  },
+  "MA-157": {
+   "jira": "b6e2f22c3292",
+   "repo": "3db5ac059ac1"
+  },
+  "MA-158": {
+   "jira": "61c21fe3a14e",
+   "repo": "8d41676e1d97"
+  },
+  "MA-159": {
+   "jira": "7d8fa0787313",
+   "repo": "2fa1408b71b6"
+  },
+  "MA-160": {
+   "jira": "c8fe7aa93423",
+   "repo": "a95c11e70c49"
+  },
+  "MA-161": {
+   "jira": "72786f0e64c3",
+   "repo": "548fb326dfae"
+  },
+  "MA-162": {
+   "jira": "8c05bae694be",
+   "repo": "83854425dc24"
+  },
+  "MA-163": {
+   "jira": "ecc7f3f439fa",
+   "repo": "597cbcb0a5e6"
+  },
+  "MA-164": {
+   "jira": "64d991685b21",
+   "repo": "7ba05ab85238"
+  },
+  "MA-165": {
+   "jira": "3081318d38c2",
+   "repo": "064c8a5636ea"
+  },
+  "MA-166": {
+   "jira": "765e1416c7db",
+   "repo": "456b75140a27"
+  },
+  "MA-167": {
+   "jira": "6e5a7d239003",
+   "repo": "2e7913126a0d"
+  },
+  "MA-168": {
+   "jira": "22bffe965cfa",
+   "repo": "0dedbc657d7b"
+  },
+  "MA-169": {
+   "jira": "b17466cc911d",
+   "repo": "fa8a4bc015bb"
+  },
+  "MA-170": {
+   "jira": "f8d31c562e72",
+   "repo": "5074a828bd0b"
+  },
+  "MA-171": {
+   "jira": "9b546b545802",
+   "repo": "e0104aeb5a11"
+  },
+  "MA-172": {
+   "jira": "7768f27f8ad0",
+   "repo": "cc67ee45bfcd"
+  },
+  "MA-173": {
+   "jira": "379aee738ac1",
+   "repo": "33d0cd7825fc"
+  },
+  "MA-174": {
+   "jira": "b177787e010e",
+   "repo": "0e32425cbb74"
+  },
+  "MA-175": {
+   "jira": "bd33057125c4",
+   "repo": "dc3d97347bc4"
+  },
+  "MA-176": {
+   "jira": "68f96852bf15",
+   "repo": "b649fb10ffb7"
+  },
+  "MA-177": {
+   "jira": "850eeb5d4e40",
+   "repo": "a2262da1013a"
+  },
+  "MA-178": {
+   "jira": "e4f5067cf063",
+   "repo": "4ad0eae4dc61"
+  },
+  "MA-179": {
+   "jira": "d9529571adf9",
+   "repo": "72ee6ce1b132"
+  },
+  "MA-180": {
+   "jira": "2096f8d76e39",
+   "repo": "566e0dc5c7c7"
+  },
+  "MA-181": {
+   "jira": "2266177aa83a",
+   "repo": "8fee71401e5f"
+  },
+  "MA-182": {
+   "jira": "0750b83b3d91",
+   "repo": "547130ebe459"
+  },
+  "MA-183": {
+   "jira": "944ddf68b542",
+   "repo": "01713161b947"
+  },
+  "MA-184": {
+   "jira": "6d18b5171268",
+   "repo": "aa37db6118f8"
+  },
+  "MA-185": {
+   "jira": "f1f73f71f20f",
+   "repo": "90df4a69f680"
+  },
+  "MA-186": {
+   "jira": "d6cd623365de",
+   "repo": "068db28c1a5e"
+  },
+  "MA-187": {
+   "jira": "5e1f70443b58",
+   "repo": "bdf1a12c2bad"
+  },
+  "MA-188": {
+   "jira": "e5de12f408e5",
+   "repo": "9b7cd460f79c"
+  },
+  "MA-189": {
+   "jira": "d44bb439c744",
+   "repo": "0fbd6323720a"
+  },
+  "MA-190": {
+   "jira": "7be419761ff9",
+   "repo": "875a24a9a03c"
+  },
+  "MA-191": {
+   "jira": "6c08ad59e282",
+   "repo": "57f433ae6d0e"
+  },
+  "MA-192": {
+   "jira": "883019508251",
+   "repo": "c39500e3cc93"
+  },
+  "MA-193": {
+   "jira": "ce10ace664d1",
+   "repo": "2cc60954b421"
+  },
+  "MA-194": {
+   "jira": "9c060b598d0b",
+   "repo": "b47f11611ecc"
+  },
+  "MA-195": {
+   "jira": "3c027f30a0d4",
+   "repo": "b0e91bc59c99"
+  },
+  "MA-196": {
+   "jira": "c688771e7994",
+   "repo": "290a105c28cb"
+  },
+  "MA-197": {
+   "jira": "d5f27a555394",
+   "repo": "a01946020902"
+  },
+  "MA-198": {
+   "jira": "fd8e577d1a3d",
+   "repo": "7bb682d19369"
+  },
+  "MA-199": {
+   "jira": "b8071d9e5a59",
+   "repo": "45cf2a4ddb5d"
+  },
+  "MA-200": {
+   "jira": "e86b878b9ce3",
+   "repo": "3d53d7d3d8f3"
+  },
+  "MA-201": {
+   "jira": "b4a187cac17e",
+   "repo": "922124010b74"
+  },
+  "MA-202": {
+   "jira": "e11f797b4c87",
+   "repo": "8788365fdeff"
+  },
+  "MA-203": {
+   "jira": "87a75c43be61",
+   "repo": "8889201dda0f"
+  },
+  "MA-204": {
+   "jira": "b63ca35c6623",
+   "repo": "60a3c0ddcb18"
+  },
+  "MA-205": {
+   "jira": "c4ce9868dee5",
+   "repo": "5545de573f4d"
+  },
+  "MA-206": {
+   "jira": "177f080d4261",
+   "repo": "66ef10f5347a"
+  },
+  "MA-207": {
+   "jira": "cfca5c8f25ba",
+   "repo": "d3573d87f679"
+  },
+  "MA-208": {
+   "jira": "1591d9ebe830",
+   "repo": "c2cfc95e5b35"
+  },
+  "MA-209": {
+   "jira": "5c448744015a",
+   "repo": "b5a17035eb31"
+  },
+  "MA-210": {
+   "jira": "d07e902cd7c0",
+   "repo": "fb4516a35b53"
+  },
+  "MA-211": {
+   "jira": "5361ebc6bb8b",
+   "repo": "807ac6d86234"
+  },
+  "MA-212": {
+   "jira": "da93955a4ff6",
+   "repo": "0f049410e81b"
+  },
+  "MA-213": {
+   "jira": "0204604fa922",
+   "repo": "d6a22d2dc1dd"
+  },
+  "MA-214": {
+   "jira": "192cf3758560",
+   "repo": "5d39865c48d7"
+  },
+  "MA-215": {
+   "jira": "cd6a87e87feb",
+   "repo": "bdae0ff5f0b0"
+  },
+  "MA-216": {
+   "jira": "75fe11bd94ab",
+   "repo": "6630227ec1b5"
+  },
+  "MA-217": {
+   "jira": "c35ad7b807bb",
+   "repo": "8ddaffa3d3a1"
+  },
+  "MA-218": {
+   "jira": "60fa78c7ea52",
+   "repo": "e8fff112dab2"
+  },
+  "MA-219": {
+   "jira": "7fd7c9b8eaac",
+   "repo": "4e020d898577"
+  },
+  "MA-220": {
+   "jira": "b2cd1995753b",
+   "repo": "32007cef0264"
+  },
+  "MA-221": {
+   "jira": "9979401dd035",
+   "repo": "b6e0dfa33c57"
+  },
+  "MA-222": {
+   "jira": "a5f2305d1b87",
+   "repo": "f161b38d9ee9"
+  },
+  "MA-223": {
+   "jira": "6dfa036469f6",
+   "repo": "3847d2ac9ac4"
+  },
+  "MA-224": {
+   "jira": "b7336e43b116",
+   "repo": "171f84b99175"
+  },
+  "MA-225": {
+   "jira": "47aef6138901",
+   "repo": "33ccaf2bb745"
+  },
+  "MA-226": {
+   "jira": "0672507c22da",
+   "repo": "424d94535957"
+  },
+  "MA-227": {
+   "jira": "a661aece26e4",
+   "repo": "59a58476dbef"
+  },
+  "MA-228": {
+   "jira": "9ea55908eb7c",
+   "repo": "628489955178"
+  },
+  "MA-229": {
+   "jira": "a0712643a4dc",
+   "repo": "24babcdf22b3"
+  },
+  "MA-230": {
+   "jira": "94ac125d71eb",
+   "repo": "2963e1e2dc90"
+  },
+  "MA-231": {
+   "jira": "6be27282ee93",
+   "repo": "76750a427316"
+  },
+  "MA-232": {
+   "jira": "9224c994b385",
+   "repo": "c87310fde495"
+  },
+  "MA-233": {
+   "jira": "1593ce3ffda9",
+   "repo": "a088b63427d3"
+  },
+  "MA-234": {
+   "jira": "d03034fc03ae",
+   "repo": "9447a8046f79"
+  },
+  "MA-235": {
+   "jira": "c582271ea373",
+   "repo": "5bed4117762f"
+  },
+  "MA-236": {
+   "jira": "5bfd8f9d24ab",
+   "repo": "1116d23c8466"
+  },
+  "MA-237": {
+   "jira": "7581459d81de",
+   "repo": "07bea0841caa"
+  },
+  "MA-238": {
+   "jira": "3fe7217d088f",
+   "repo": "c2db07e117e5"
+  },
+  "MA-239": {
+   "jira": "6ce492964623",
+   "repo": "6c1c9f56ee17"
+  },
+  "MA-240": {
+   "jira": "a8cdb21d8792",
+   "repo": "efd64fbd9905"
+  },
+  "MA-241": {
+   "jira": "84c099517167",
+   "repo": "ce657eb16768"
+  },
+  "MA-242": {
+   "jira": "a9f35df42c40",
+   "repo": "aa46bbf1f1cc"
+  },
+  "MA-243": {
+   "jira": "fc311cc7e901",
+   "repo": "333d61783cff"
+  },
+  "MA-244": {
+   "jira": "7e9d0679c3a8",
+   "repo": "f961a44956e7"
+  },
+  "MA-245": {
+   "jira": "ab8778a0d668",
+   "repo": "5e5387558e03"
+  },
+  "MA-246": {
+   "jira": "8cc118711fc8",
+   "repo": "30ee8b501763"
+  },
+  "MA-247": {
+   "jira": "d9633c2e385f",
+   "repo": "4c1dcd79257e"
+  },
+  "MA-248": {
+   "jira": "ea84943504fe",
+   "repo": "d0874a179ac1"
+  },
+  "MA-249": {
+   "jira": "1f1812b0dfb8",
+   "repo": "a12ab9be99e0"
+  },
+  "MA-250": {
+   "jira": "a6f4772766d1",
+   "repo": "e3f7ec53c7bc"
+  },
+  "MA-251": {
+   "jira": "15349ed0a3ee",
+   "repo": "45795e99e1ef"
+  },
+  "MA-252": {
+   "jira": "478f508c23fe",
+   "repo": "f7a638d37806"
+  },
+  "MA-253": {
+   "jira": "ca8db235199a",
+   "repo": "6ea47836e380"
+  },
+  "MA-254": {
+   "jira": "491c2e7287a3",
+   "repo": "cbe287e5c951"
+  },
+  "MA-255": {
+   "jira": "40e8717920b4",
+   "repo": "a99a13325c4e"
+  },
+  "MA-256": {
+   "jira": "34e16163ca96",
+   "repo": "ef57ec87d8cd"
+  },
+  "MA-257": {
+   "jira": "6daa8e2d3355",
+   "repo": "f41014ed9ec2"
+  },
+  "MA-258": {
+   "jira": "f5f3ce9ffb3e",
+   "repo": "d0958870cb0d"
+  },
+  "MA-259": {
+   "jira": "de95ac0c0656",
+   "repo": "afb8696068bf"
+  },
+  "MA-260": {
+   "jira": "0ddb7049f8ee",
+   "repo": "d67cc60cf323"
+  },
+  "MA-261": {
+   "jira": "6e6a5ad216dd",
+   "repo": "0b8a09c83d5a"
+  },
+  "MA-262": {
+   "jira": "9710d97bb4ed",
+   "repo": "cefd80f96831"
+  },
+  "MA-263": {
+   "jira": "f1722dcdd3ab",
+   "repo": "498eefde5a81"
+  },
+  "MA-264": {
+   "jira": "318520740ae6",
+   "repo": "a9f53f88dbf4"
+  },
+  "MA-265": {
+   "jira": "d5264617d837",
+   "repo": "1ba0d476b3b6"
+  },
+  "MA-266": {
+   "jira": "bf57deab8b1e",
+   "repo": "7482d66d8d1a"
+  },
+  "MA-267": {
+   "jira": "90ab8c77c47b",
+   "repo": "fc7f28df0800"
+  },
+  "MA-268": {
+   "jira": "a6bc0a49a504",
+   "repo": "61ffa667526a"
+  },
+  "MA-269": {
+   "jira": "9f525701a68f",
+   "repo": "26cacbab80e8"
+  },
+  "MA-270": {
+   "jira": "4e2289052a8c",
+   "repo": "41073439424f"
+  },
+  "MA-271": {
+   "jira": "0ef55d88fe28",
+   "repo": "50b6e1a796ae"
+  },
+  "MA-272": {
+   "jira": "c041de0e79b7",
+   "repo": "025cb36cd970"
+  },
+  "MA-273": {
+   "jira": "0f343939ebad",
+   "repo": "20a5e9db74aa"
+  },
+  "MA-274": {
+   "jira": "5e835f8c8a75",
+   "repo": "842ef7a95fd1"
+  },
+  "MA-275": {
+   "jira": "abeb764dcc9b",
+   "repo": "63f21549b05f"
+  },
+  "MA-276": {
+   "jira": "48e508ec045d",
+   "repo": "df5e82f1120d"
+  },
+  "MA-277": {
+   "jira": "d752cce6da74",
+   "repo": "1200535259d7"
+  },
+  "MA-278": {
+   "jira": "7447590e1ecf",
+   "repo": "51388517e14f"
+  },
+  "MA-279": {
+   "jira": "f52a5a196096",
+   "repo": "73e94a8c2a3e"
+  },
+  "MA-280": {
+   "jira": "1a17b9f9b705",
+   "repo": "6f06525a72ac"
+  },
+  "MA-281": {
+   "jira": "0b9810cf092a",
+   "repo": "5b43466e2eec"
+  },
+  "MA-282": {
+   "jira": "f184585a1e7a",
+   "repo": "3bb18c5a5424"
+  },
+  "MA-283": {
+   "jira": "2b4ce1f7d204",
+   "repo": "089e73f6533b"
+  },
+  "MA-284": {
+   "jira": "a9adae2e3f23",
+   "repo": "8df4ee93182a"
+  },
+  "MA-285": {
+   "jira": "8166f291faa0",
+   "repo": "716d6638664f"
+  },
+  "MA-286": {
+   "jira": "bbf0fa5c7c7b",
+   "repo": "b76f61f0bf57"
+  },
+  "MA-287": {
+   "jira": "cacaaab0e5a1",
+   "repo": "7d5d632c36e1"
+  },
+  "MA-288": {
+   "jira": "177063d70554",
+   "repo": "ec9d36b8984f"
+  },
+  "MA-289": {
+   "jira": "181313c17863",
+   "repo": "d3285b3624c8"
+  },
+  "MA-290": {
+   "jira": "94d89dae61f8",
+   "repo": "c701bb8c78d5"
+  },
+  "MA-291": {
+   "jira": "ba84c8e8a837",
+   "repo": "97cd4fd33a01"
+  },
+  "MA-292": {
+   "jira": "5e11c9e607d8",
+   "repo": "19668b415a2e"
+  },
+  "MA-293": {
+   "jira": "2ae631f9d158",
+   "repo": "60a506a09767"
+  },
+  "MA-294": {
+   "jira": "c3f938a18b7c",
+   "repo": "0e5e078bff8e"
+  },
+  "MA-295": {
+   "jira": "33148f08f541",
+   "repo": "d2b5a56fb7be"
+  },
+  "MA-296": {
+   "jira": "5792f8f16514",
+   "repo": "74f407ad5d59"
+  },
+  "MA-297": {
+   "jira": "3f5271aa9dbd",
+   "repo": "7cd4d6515476"
+  },
+  "MA-298": {
+   "jira": "1fa4fb04e418",
+   "repo": "d7a804b48e61"
+  },
+  "MA-299": {
+   "jira": "37bfbbec266c",
+   "repo": "6fd6c2aec6b8"
+  },
+  "MA-300": {
+   "jira": "4461e4c70244",
+   "repo": "5c523738eb9a"
+  },
+  "MA-301": {
+   "jira": "c3cd460a0b5c",
+   "repo": "b2db47bb07ba"
+  },
+  "MA-302": {
+   "jira": "6718a0e50aa5",
+   "repo": "f5b0bab81b5e"
+  },
+  "MA-303": {
+   "jira": "9953adf42d88",
+   "repo": "d8a51452a6cc"
+  },
+  "MA-304": {
+   "jira": "f3d1ddfc9bf3",
+   "repo": "a6b0a0a007e7"
+  },
+  "MA-305": {
+   "jira": "a129c38b6dfa",
+   "repo": "182855669077"
+  },
+  "MA-306": {
+   "jira": "7d9431760082",
+   "repo": "e28d7a094ced"
+  },
+  "MA-307": {
+   "jira": "89d1ed0c84ae",
+   "repo": "5606f02e79e8"
+  },
+  "MA-308": {
+   "jira": "03da1089496c",
+   "repo": "6294abce717b"
+  },
+  "MA-309": {
+   "jira": "17567843ac8c",
+   "repo": "3bd8e0e97199"
+  },
+  "MA-310": {
+   "jira": "a6735ede1aca",
+   "repo": "9dc143a88adf"
+  },
+  "MA-311": {
+   "jira": "5e257129b332",
+   "repo": "ed4be72f9cde"
+  },
+  "MA-312": {
+   "jira": "747d4fd34509",
+   "repo": "329ca538c6df"
+  },
+  "MA-313": {
+   "jira": "0fca1382352d",
+   "repo": "50cf3ae485ba"
+  },
+  "MA-314": {
+   "jira": "8fa7ecf5757c",
+   "repo": "7076de4f7307"
+  },
+  "MA-315": {
+   "jira": "d20833b5be1b",
+   "repo": "8c02da89dd28"
+  },
+  "MA-316": {
+   "jira": "eb74f303ac4b",
+   "repo": "7cb2192cddb4"
+  },
+  "MA-317": {
+   "jira": "fd4eacfae709",
+   "repo": "0704f48e58ad"
+  },
+  "MA-318": {
+   "jira": "ee6e89ec7d9a",
+   "repo": "71f5a2149fce"
+  },
+  "MA-319": {
+   "jira": "e891ddb38602",
+   "repo": "87cfe67f815f"
+  },
+  "MA-320": {
+   "jira": "2019d5882dc3",
+   "repo": "bf38bc62c406"
+  },
+  "MA-321": {
+   "jira": "6960695a1606",
+   "repo": "8075e71c14fe"
+  },
+  "MA-322": {
+   "jira": "2b36d111fd47",
+   "repo": "1547680d4997"
+  },
+  "MA-323": {
+   "jira": "b493d89fc272",
+   "repo": "8fee5953cbfb"
+  },
+  "MA-324": {
+   "jira": "4aef36ac3631",
+   "repo": "71a6037246c1"
+  },
+  "MA-325": {
+   "jira": "0b9cc4b9d7e4",
+   "repo": "b2f75d04768d"
+  },
+  "MA-326": {
+   "jira": "b3d5a9b28427",
+   "repo": "392c7da15038"
+  },
+  "MA-327": {
+   "jira": "48c0a19362f3",
+   "repo": "b2b2061bf219"
+  },
+  "MA-328": {
+   "jira": "71299e070c56",
+   "repo": "b787b46b806d"
+  },
+  "MA-329": {
+   "jira": "b4554842caf0",
+   "repo": "59fc1db700b4"
+  },
+  "MA-330": {
+   "jira": "47befc536714",
+   "repo": "1d2a3a56c294"
+  },
+  "MA-331": {
+   "jira": "00ccd21a0b94",
+   "repo": "0b7b9ebe14e7"
+  },
+  "MA-332": {
+   "jira": "0a1089779fd9",
+   "repo": "9aa1fc965158"
+  },
+  "MA-333": {
+   "jira": "f6a090056c66",
+   "repo": "b7218bc3cc63"
+  },
+  "MA-334": {
+   "jira": "eb43a0195204",
+   "repo": "e5f3ca6bf662"
+  },
+  "MA-335": {
+   "jira": "1be5ca24f950",
+   "repo": "54660883bdf7"
+  },
+  "MA-336": {
+   "jira": "64574ca4601c",
+   "repo": "e822c3acd098"
+  },
+  "MA-337": {
+   "jira": "17714828e081",
+   "repo": "278f02d89faa"
+  },
+  "MA-338": {
+   "jira": "e296e452ee20",
+   "repo": "e3688224dd90"
+  },
+  "MA-339": {
+   "jira": "e6e63f30e6ec",
+   "repo": "455f53df856b"
+  },
+  "MA-340": {
+   "jira": "b9a976b4f9d7",
+   "repo": "dc8a65f45e5f"
+  },
+  "MA-341": {
+   "jira": "ae65c59744b0",
+   "repo": "7e3272ff9de6"
+  },
+  "MA-342": {
+   "jira": "6f8580171f18",
+   "repo": "92868d883f94"
+  },
+  "MA-343": {
+   "jira": "026ad365ea2d",
+   "repo": "ce9f357a4161"
+  },
+  "MA-344": {
+   "jira": "acb523f3d061",
+   "repo": "f99a5dc6672b"
+  },
+  "MA-345": {
+   "jira": "8b9886819d4f",
+   "repo": "798d654b4b2d"
+  }
+ }
 }
