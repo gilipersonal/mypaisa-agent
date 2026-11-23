@@ -117,6 +117,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-339 | Every foldable example names its OS, door and posture, and follows that door's material | To Do | §8.1, §8.4 | none |  |
 | MA-340 | The web app and the boards load no Google Fonts: self-hosted Inter and a Nunito figures subset, and Lucide icons | To Do | §8.4 | none |  |
 | MA-341 | The Maestro iPad testing plan follows the 1393 pt chat rule: three iPad bands, the beside band at the debug width, its GIF redrawn | To Do | §8.1, §8.5, §17.4 | none |  |
+| MA-342 | A new fast-xml-parser advisory turns every PR's security scan red: React Native's CLI pins 5.11.2 | In Progress | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
