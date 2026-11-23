@@ -48,6 +48,10 @@ updates:
       # these when React Native moves.
       - dependency-name: "@babel/*"
         update-types: ["version-update:semver-major"]
+      # hermes-compiler must be the version react-native names, or the app crashes at launch on a bytecode mismatch and
+      # the iOS gate finds two compilers (PR #113, MA-344). It moves by hand with react-native (ios/CLAUDE.md, rule 8),
+      # never on its own.
+      - dependency-name: "hermes-compiler"
     commit-message:
       prefix: "MA-326:"
   - package-ecosystem: github-actions

@@ -59,7 +59,8 @@ On the local stack: `scripts/local/README.md`.
 7. **`MYPAISA_*` hooks live under `#if DEBUG`, probes under `MP_PROBES`,** and the local journey under `__DEV__`. The gate
    fails if any of them reaches `Release`.
 8. **`hermes-compiler` is pinned to the version `react-native` names.** Move it with every React Native upgrade: a
-   mismatch crashes at launch with a bytecode error, and the gate fails on two versions.
+   mismatch crashes at launch with a bytecode error, and the gate fails on two versions. Dependabot never moves it on
+   its own (PR #113, MA-344), so a Dependabot PR that raises `react-native` fails the gate until it is pinned by hand.
 9. **Colours come from `tokens.css`** through `scripts/ios_tokens.py`. `Colors.xcassets` and `MPColor.swift` are
    generated, never edited.
 10. **Babel stays on 7 until React Native moves.** Babel 8 stops the bundle at its first file while Jest and tsc pass, so

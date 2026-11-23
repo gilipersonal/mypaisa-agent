@@ -8077,6 +8077,28 @@
       "notes": "Found on 23 Nov 2026 on Dependabot's web group, PR #113 (MA-326): prettier 3.10.1 with prettier-plugin-svelte 4.2.0 puts the skip link's text on its own line, so the web gate's format step failed, and with it MA-194 r1-a1's clean copy in Review tooling. The file as 3.10 prints it also passes 3.9.10, so the reformat lands on main ahead of the bump. Nothing a member sees changes: the link keeps its classes and its 44 px target, and the whitespace around its text collapses. The whole web gate passes on #113 with it."
     },
     {
+      "key": "MA-344",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Dependabot bumps hermes-compiler apart from React Native, so the iOS gate refuses the web group",
+      "status": "In Progress",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "code": [
+        ".github/dependabot.yml",
+        "ios/CLAUDE.md"
+      ],
+      "notes": "Found on 23 Nov 2026 on Dependabot's web group, PR #113 (MA-326): it raised ios/package.json's hermes-compiler from 260318099.0.5 to 260318099.0.8 while react-native 0.88.1 still names 260318099.0.5, so the iOS gate found two Hermes compilers. The gate was right: a mismatch crashes the app at launch. Dependabot's /web updates now ignore hermes-compiler, which is moved by hand with react-native (ios/CLAUDE.md rule 8). With it put back on #113, the iOS gates without Xcode (types, lint, format, Jest, the Metro bundle) pass on the rest of the group. #113 is recreated once this merges."
+    },
+    {
       "key": "MA-329",
       "type": "Bug",
       "epic": "MA-9",
