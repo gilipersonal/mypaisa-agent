@@ -53,6 +53,7 @@
           .hero-w { width: 358px; box-sizing: border-box; }
           .herochart { height: 72px; margin: 14px 0 12px; }
           .herochart > svg { height: 100%; }
+          .flatv { align-items: flex-end; text-align: right; }
           .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
           .stat { display: flex; flex-direction: column; }
           /* canvas links: a 44 x 44 tap area around the drawn chip, nothing drawn (MA-300) */
@@ -265,7 +266,7 @@
         <div class="notes">
           <div class="note"><b>Holding row</b>Lead tile 36, radius 10, neutral, two letters. Name in Headline; under it its XIRR in a small neutral chip and a short sub-line in Footnote ink-2 (MyMap · ISA, not the full fund name). Value in Headline, right-aligned and tabular; the week's change under it, ▲ in <code>--mp-up</code> or ▼ in <code>--mp-down-quiet</code>.</div>
           <div class="note"><b>The row box</b>At least 44 high, padding 11 16 (10 for two lines), gap 12. Hairlines in <code>--mp-line</code>, half a pixel, inset 16 from the left. The group has radius 14 and no shadow.</div>
-          <div class="note"><b>Section header</b>Overline in ink-3, inset 16, 6 above the group; a Footnote on the right names the column (week, value).</div>
+          <div class="note"><b>Section header</b>A short sentence-case label (<code>.mp-over</code>, never all capitals) in ink-3, inset 16, 6 above the group; a Footnote on the right names the column (week, value).</div>
           <div class="note"><b>Setting row</b>A 32 icon tile (<code>.mp-icontile</code>, radius 9, neutral), the label in Body, then a value in ink-2, a switch, or a chevron. Settings that write say where they change: in the chat.</div>
           <div class="note"><b>Row that opens a page</b>Ends in <code>chevron_right</code> 18 in ink-3; the whole row is the link. Never a chevron on a row that does nothing.</div>
           <div class="note"><b>Pressed</b>The row fills with <code>--mp-surface-2</code> while it is held and the next page pushes in over 350 ms. Long names clip with an ellipsis; figures never wrap.</div>
@@ -275,7 +276,7 @@
       <!-- ================= 5 HERO CARD ================= -->
       <section class="dv-turn" id="hero" data-screen-label="Components 5: Hero card">
         <div class="dv-thd"><a class="dv-tid" href="#hero">5</a><span class="dv-tname">Hero card</span></div>
-        <p class="dv-intro">Monzo's account card made ours: the one navy surface, holding one number, one plain line and one chart. It opens every Overview across the iOS app and the web app. With privacy on, pounds become masks and everything else stays.</p>
+        <p class="dv-intro">Monzo's account card made ours: the one navy surface, holding one number, one plain line and one chart. It opens every Overview across the iOS app and the web app. With privacy on, pounds become masks and everything else stays. Under the figure, own, owe and liquid sit in three columns ruled by hairlines, never in boxes; the pulse sits on the hero itself (MA-301 d 1a).</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Hero card {{ t.label }}">
@@ -300,16 +301,26 @@
                     <div class="fx ac gap8"><button class="iconbtn" aria-label="Privacy mode"><span class="ms" aria-hidden="true">{{ h.eye }}</span></button><span class="mp-foot mp-ink2">{{ h.eyeNote }}</span></div>
                   </div>
                 </sc-for>
+                <div class="spec w358">
+                  <span class="lbl">With its split · .mp-hairs · Mon 26 Oct</span>
+                  <div class="mp-hero hero-w fx col gap12">
+                    <span class="mp-over mp-hero-2">Net worth · Mon 26 Oct</span>
+                    <div class="fx ac gap10 wrap"><span class="mp-num-hero">£444,951</span><span class="mp-sub mp-w6" style="color: var(--mp-hero-up)">▲ £4,993 since Thu 22 Oct</span></div>
+                    <div class="mp-hairs"><div><span class="mp-foot mp-hero-2">Own</span><span class="mp-sub mp-w6">£691,694</span></div><div><span class="mp-foot mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6">£246,743</span></div><div><span class="mp-foot mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6">£37,596</span></div></div>
+                  </div>
+                  <span class="mp-foot mp-ink2">Three columns, hairlines in <code>--mp-hero-2</code>; no box round a figure.</span>
+                </div>
               </div>
             </div>
           </sc-for>
         </div>
         <div class="notes">
           <div class="note"><b>Card</b><code>.mp-hero</code>: <code>--mp-hero</code> ground, radius 24, padding 20, 358 wide on a phone. It is navy in both themes: the one dark surface in light, a lifted navy in dark.</div>
-          <div class="note"><b>Text</b>Overline and sub-line in hero-ink-2 (9.0:1 and 8.1:1); the figure is <code>.mp-num-hero</code>, 44/48 rounded heavy, in white (16.1:1 and 14.5:1). It counts up once over 600 ms.</div>
+          <div class="note"><b>Text</b>The label (a short sentence-case <code>.mp-over</code>) and sub-line in hero-ink-2 (9.0:1 and 8.1:1); the figure is <code>.mp-num-hero</code>, 44/48 rounded heavy, in white (16.1:1 and 14.5:1). It counts up once over 600 ms.</div>
           <div class="note"><b>Month chip</b><code>.upchip</code>: green ▲ on a 16% green tint, 7.9:1 and 7.1:1. A falling month uses <code>.dnchip</code>, hero-ink-2 on hero-2 with ▼ (7.6:1 and 6.8:1), never red.</div>
           <div class="note"><b>Chart</b>Coral line 2.5 px with round joins over <code>--mp-hero-area</code>, in a <code>.mp-chartbox</code>: the SVG stretches (<code>preserveAspectRatio="none"</code>, non-scaling stroke) and past events (a buy, a statement) are <code>.mp-chartdot</code> spans placed by %, white ringed in coral. No axes: the figure above carries the number. Fades in over 200 ms; <code>.mp-draw</code> breaks under a non-scaling stroke.</div>
           <div class="note"><b>Period</b>The segmented control on the hero, 1M · 6M · 1Y · All, 6M by default.</div>
+          <div class="note"><b>Split</b>Own, owe and liquid under the figure in <code>.mp-hairs</code>: three columns, 12 apart, ruled by 1 px hairlines in <code>--mp-hero-2</code>, a hairline above; labels in Footnote hero-ink-2, figures in Subhead semibold. The pulse chart sits on the hero itself, never in a tinted box (MA-301 d 1a).</div>
           <div class="note"><b>Privacy on</b>Pounds become a mask in hero-2; percentages, the month chip and the chart's shape stay, so the story still reads. The mask holds a placeholder with the same digits (£00,000), never the real figure, and reads as "Hidden".</div>
         </div>
       </section>
@@ -317,7 +328,7 @@
       <!-- ================= 6 SUMMARY AND STAT CARDS ================= -->
       <section class="dv-turn" id="cards" data-screen-label="Components 6: Summary and stat cards">
         <div class="dv-thd"><a class="dv-tid" href="#cards">6</a><span class="dv-tname">Summary and stat cards</span></div>
-        <p class="dv-intro">Summary first: the "this week" card sits under the hero and says, in one sentence, whether there is anything to do. Three tones: all clear (most weeks), worth a look (amber), and asks for action (red, rare). Stat cards hold one figure each.</p>
+        <p class="dv-intro">Summary first: the "this week" card sits under the hero and says, in one sentence, whether there is anything to do. Three tones: all clear (most weeks), worth a look (amber), and asks for action (red, rare). Stat cards hold one figure each. A card that holds several figures or rows is still one surface: they are split by hairlines, never boxed again (MA-301 d 1a).</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Summary and stat cards {{ t.label }}">
@@ -343,6 +354,18 @@
                     </sc-for>
                   </div>
                 </div>
+                <div class="spec w358">
+                  <span class="lbl">One card, several figures · .mp-hairs · .mp-rows</span>
+                  <div class="mp-card fx col gap12">
+                    <div class="fx ac jb gap8"><span class="mp-hl">At a glance</span><span class="mp-foot mp-ink2">Fri close</span></div>
+                    <div class="mp-hairs"><div><span class="mp-foot mp-ink2">XIRR</span><span class="mp-sub mp-w6">9.8%</span></div><div><span class="mp-foot mp-ink2">Surplus</span><span class="mp-sub mp-w6">£1,240</span></div><div><span class="mp-foot mp-ink2">AI cost</span><span class="mp-sub mp-w6">£6.40</span></div></div>
+                    <div class="mp-rows" style="border-top: 1px solid var(--mp-line); padding-top: 10px">
+                      <div class="fx ac jb gap8"><span class="mp-body">Balanced</span><span class="fx col flatv"><span class="mp-sub mp-w6">£18,640</span><span class="mp-foot mp-up">▲ 0.4%</span></span></div>
+                      <div class="fx ac jb gap8"><span class="mp-body">NASDAQ 100</span><span class="fx col flatv"><span class="mp-sub mp-w6">£4,210</span><span class="mp-foot mp-dq">▼ 3.1%</span></span></div>
+                    </div>
+                  </div>
+                  <span class="mp-foot mp-ink2">The pattern: one surface, figures in hairline-ruled columns, rows split by hairlines. Not used: a tinted tile or a second radius inside a card.</span>
+                </div>
                 <div class="spec w420">
                   <span class="lbl">On the browser · a way on instead of a chevron</span>
                   <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink2">Next check-in Sun 1 Nov. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#cards">Open chat</a></div>
@@ -355,9 +378,10 @@
           <div class="note"><b>This week</b><code>.mp-card</code>, padding 14 16, gap 12: a 26 filled icon, the sentence in Headline, the next step in Footnote ink-2, and a chevron to the detail. The whole card is the link.</div>
           <div class="note"><b>Tone by icon and words</b>All clear: <code>check_circle</code> in <code>--mp-up</code>. Worth a look: <code>warning</code> in <code>.c-pause</code>. Asks for action: <code>warning</code> in <code>.c-alert</code>. The sentence always says which; colour is never the only signal.</div>
           <div class="note"><b>Red is rare</b>Only when you set an alert and it fired, or something needs your decision. A normal fall, a check-in a day late or late prices are never red.</div>
-          <div class="note"><b>Stat card</b><code>.mp-card</code>, radius 20, padding 16, <code>--mp-shadow</code>. Overline in ink-3, one figure in <code>.mp-num-l</code> 28/32 rounded on one line, a Footnote saying what it means. Two across at every size; on the browser they sit in the narrow column. Cards in a row share a height.</div>
+          <div class="note"><b>Stat card</b><code>.mp-card</code>, radius 20, padding 16, <code>--mp-shadow</code>. A short sentence-case label in ink-3, one figure in <code>.mp-num-l</code> 28/32 rounded on one line, a Footnote saying what it means. Two across at every size; on the browser they sit in the narrow column. Cards in a row share a height.</div>
           <div class="note"><b>Figures</b>Every figure comes from the ledger with its date. A stat card never shows a number the AI wrote.</div>
-          <div class="note"><b>Browser</b>On wide screens the summary card can carry a small tinted Open chat button instead of the chevron, since the chat is a separate window there.</div>
+          <div class="note"><b>Flat inside</b>A card with several figures uses <code>.mp-hairs</code> (three columns ruled by <code>--mp-line</code>; <code>.two</code> for two) and its rows <code>.mp-rows</code> (a hairline between each). Not used: the boxed sub-tile, a <code>--mp-surface-2</code> tile with its own radius inside a card (MA-301 d 1a, Arun, 2 Nov 2026).</div>
+          <div class="note"><b>Browser</b>On the browser the summary card can carry a small tinted Open chat button instead of the chevron; below 1393 px it opens the same drawer over the page as the sidebar&#8217;s Chat (MA-301 c 1c).</div>
         </div>
       </section>
 

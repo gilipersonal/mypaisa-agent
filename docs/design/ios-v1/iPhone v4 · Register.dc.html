@@ -59,7 +59,8 @@
           .fref { display: inline-flex; align-items: center; gap: 4px; font: 600 13px/18px var(--mp-font); color: var(--mp-accent); }
           .fref .ms { font-size: 16px; }
           .mp-chip .ms { font-size: 16px; }
-          .ownr { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: var(--mp-surface-2); }
+          /* flat inside a card (MA-301 d 1a): the owner's note sits between hairlines, not in a box */
+          .ownr { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--mp-line); border-bottom: 1px solid var(--mp-line); }
           .ownr .ms { font-size: 20px; color: var(--mp-accent); }
           .est { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
           /* the one-asset screen and the in-place correction (R8) */

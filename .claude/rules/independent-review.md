@@ -219,8 +219,8 @@ number, so a reference to it holds wherever it now sits.
 23. **A rule repeated across records is one phrase, copied word for word:**
     the width rule was reworded in each record four rounds running, and each
     rewording missed a case (compact windows, the iPhone, a folded foldable);
-    it now reads the same everywhere: "beside every screen from about 1133 pt,
-    a sheet away from about 600 to 1133 pt, and a tab in a compact window
+    it now reads the same everywhere: "beside every screen from about 1393 pt,
+    a sheet away from about 600 to 1393 pt, and a tab in a compact window
     (every iPhone, a folded foldable, Slide Over)". An iPhone is always
     compact, in either orientation, the one exception to "the window's width,
     never the device" (round 5: the table had said only the smaller iPhones in
@@ -228,6 +228,9 @@ number, so a reference to it holds wherever it now sits.
     its tab bar). The phrase moved from "over about 900 pt" to "from about 1133 pt" on
     27 Oct 2026 (Arun, MA-240), in every record at once: from 900 to 1133 pt
     the screen between the sidebar and the chat fell to about 360 to 480 pt.
+    It moved again to "from about 1393 pt" on 2 Nov 2026, carried on 23 Nov
+    (Arun, MA-301 c 1c, at both doors): no iPad's own screen is that wide, so
+    on iPad the chat is always a sheet away, and on the web a drawer below it.
 
 (Lessons 24 to 31: in `docs/qa/checklist.md`.)
 

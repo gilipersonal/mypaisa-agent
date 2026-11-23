@@ -205,12 +205,12 @@ preferences (§1, rule 4).
 | Type "I put £200 into Balanced today" | Logs a contribution, adjusts units, confirms |
 | Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so MyPaisa says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
 | Type "I want to log a transaction" | Asks one thing at a time, with chips: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
-| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)), plus the audit log of every change and what the agent did and spent; an admin adds and deletes in the chat and corrects a figure where it shows |
-| Open `dashboard.mypaisapp.com` on your laptop or your phone's browser, or the web app you installed | Sign in with Apple, Google or a passkey; the same chat, dashboard, Audit and Activity, and for admins the Admin center; the chat beside the dashboard on a laptop and a tab at phone width; replies stream in as they are written (§8.4, §19.5) |
+| Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)), plus the audit log of every change and what the agent did and spent; an admin adds and deletes in the chat and corrects a figure where it shows |
+| Open `dashboard.mypaisapp.com` on your laptop or your phone's browser, or the web app you installed | Sign in with Apple, Google or a passkey; the same chat, dashboard, Audit and Activity, and for admins the Admin center; the chat beside the dashboard from about 1393 px, a drawer on a smaller laptop, and a tab at phone width; replies stream in as they are written (§8.4, §19.5) |
 | Start something on the laptop and pick up the phone | One conversation per member at every door: a flow started on the laptop finishes on the phone, and a Confirm on the phone moves the laptop's dashboard at once (§19.5) |
 | Type "£5,000 in Monzo savings", or "an SBI FD of ₹5 lakh at 7.1% for three years" | Drafts the record, asks only what is missing (whose is it? which bank?) one thing at a time with chips, and shows a Confirm card with the figures code computed, such as the maturity value and date; an admin registers for any member, and the card names whose it is (§4.8) |
 | As an admin, a check-in arrives: "HDFC home loan: was November's EMI paid?" | Check-ins go to admins only; a member who is not an admin sees it pending, with no buttons. Tap Paid: the card already shows what will be written, so the tap is the Confirm, with Undo. Not yet asks again in a few days; Different amount and Paid off in full open a short flow, and paid off in full closes the loan (§4.9) |
-| Send a bank or card statement (PDF, CSV or XLSX) | Every line categorised, transfers and EMIs recognised so nothing counts twice, one review card by category with the uncertain lines in amber, one Confirm; the file is kept for good (§4.9, §11) |
+| Send a bank or card statement (PDF, CSV or XLSX) | Every line categorised, transfers and EMIs recognised so nothing counts twice, a question card for each uncertain merchant, then one short Confirm card (the total, By category and Not spending folded), one Confirm; the file is kept for good (§4.9, §11) |
 | Tap a figure on any screen, such as an FD's rate, and type the new one | A before → after line with Save; saved as a correction with its audit row; only figures the kind marks editable, and only by an admin, who can also type the correction in the chat (§4.10) |
 | Type "delete the old Monzo pot", or "restore the Monzo pot" | A card naming the record and what goes with it; Confirm, then the second check. The record is marked `deleted` and hidden from every view and total; its history, audit rows and files are kept for good, and a restore brings it back the same way (MA-309, §4.10) |
 | Ask "what has the ISA returned since 2021?" | XIRR on the ISA's dated flows and CAGR beside it, with the working under Technical; every figure from code (§6) |
@@ -425,7 +425,7 @@ off, and a user is created only when someone joins through an invite.
 | The buttons | The app shows Apple's and Google's own buttons, Apple's first, and nothing else. Sign in with Apple runs natively (`ASAuthorizationAppleIDProvider`, no name or email asked for); Google runs through Google's iOS SDK in the system's web sheet, with PKCE. |
 | The token | Before either sheet opens, the app asks the api for a one-time nonce (`/auth/nonce`); Apple's identity token (carrying the nonce's SHA-256) or Google's ID token (carrying the nonce) comes back. |
 | The exchange | The app posts the token to `/auth/apple` or `/auth/google`. The api finds the member that provider account (`sub`) is linked to and starts Cognito's custom auth for them; the verify trigger checks the token against Apple's or Google's published keys: issuer, audience (the app's bundle id for Apple, the environment's Google iOS client id for Google), expiry, an issue time under five minutes, the nonce, and no replay. Cognito then issues that member's tokens. |
-| An unknown account | An Apple or Google account linked to no member is refused, whatever its address, unless the request comes from the app with a valid invite token, which creates the member (Joining, below; a browser never joins). A paused member's sign-in is refused, with Apple, Google or a passkey alike, and they get one line and nothing else: "The household’s owner has paused your access to MyPaisa." Only the owner's Restore in the Admin center lets them back in (Arun, 29 Oct 2026, MA-102). |
+| An unknown account | An Apple or Google account linked to no member is refused, whatever its address, unless the request carries a valid invite token, from the app or from the web app's join page, which creates the member (Joining, below; a browser joins too: Arun, 2 Nov 2026, MA-301 e 1a, settled 23 Nov 2026). A paused member's sign-in is refused, with Apple, Google or a passkey alike, and they get one line and nothing else: "The household’s owner has paused your access to MyPaisa." Only the owner's Restore in the Admin center lets them back in (Arun, 29 Oct 2026, MA-102). |
 | In a browser | The web app (§8.4) shows the same two buttons, through Sign in with Apple's JS (the environment's Services ID as the audience) and Google Identity Services (the environment's Google web client id), and a passkey. The same `/auth/apple` and `/auth/google` exchange runs; no client secret is used. The api then sets an `HttpOnly`, `Secure`, `SameSite=Strict` session cookie for its own host, with five-minute access tokens behind it that page scripts never see. |
 | A passkey | A member adds one from You in the app (MA-77). In the app it answers the second check (below), never the sign-in screen, which shows Apple and Google only; in a browser it signs in to the web app. To sign in with it, the page asks `/auth/passkey/options` for a one-time WebAuthn challenge, the device signs it under Face ID or Touch ID, and the assertion goes to `/auth/passkey`; the api starts Cognito's custom auth for the member whose credential it is, and the verify trigger checks the signature against that credential's stored public key, the challenge, the origin and the relying-party id. The relying-party id is the environment's dashboard domain (`dashboard.mypaisapp.com`, `dashboard-dev.mypaisapp.com`): it is the web app's origin and serves the iOS app's association file, whose `webcredentials` entry lets one passkey work in both. MA-109 confirms it before anyone registers a passkey; changing it later strands every passkey made. In a browser the api then sets the same session cookie. |
 | A new device | Signing in on a device or a browser the member has not used before sends a push to their other devices and a card in their chat: "New sign-in to MyPaisa: an iPad, with Google, today at 19:41. Was this you?", with Yes, it was me and No, sign it out (which signs that device out). Until the member answers, Members and devices shows it as not confirmed, and the owner's chat gets one line with Open Admin center (MA-102, MA-76). |
@@ -455,9 +455,17 @@ optionally `/invite viewer`). The api makes a one-time link,
 `https://dashboard.mypaisapp.com/join/<token>` (`dashboard-dev` for dev), single use,
 24-hour expiry, bound to this household and that role, and the owner sends it
 with iOS's share sheet. The invitee opens it on their own iPhone: the link
-opens MyPaisa (or a page saying where to get it, MA-73), shows the invite
-("Arun invited you to the Dutta household"), and their Sign in with Apple or
-Google creates their member and Cognito user; then the three setup questions.
+opens MyPaisa, shows the invite ("Arun invited you to the Dutta household"),
+and their Sign in with Apple or Google creates their member and Cognito user;
+then the three setup questions. Opened in a browser instead (a laptop, a phone
+without the app), the link is the web app's join page: the same invite, what a
+member can do, how long the link lasts, and Continue with Apple and Continue
+with Google, both live; either creates the member the same way, through the
+same `/auth/apple` or `/auth/google` exchange carrying the invite token, and the
+page then offers a passkey, never before the member exists. A used or expired
+link says so and offers "Already in the household? Sign in" (Arun, 2 Nov 2026,
+MA-301 e 1a; settled 23 Nov 2026: "Browser joins", which overturned "a browser
+never joins").
 The owner removes a member from Members and devices in the Admin center.
 
 **More than one way in** (MA-77). A member can add a second sign-in, Apple or
@@ -764,8 +772,11 @@ file (§4.6), and then read:
 - transfers are recognised (a card payment, a move between the household's own
   accounts, an EMI matched to its commitment), so nothing counts twice; on a
   card only interest and fees are spending, and an EMI's principal is saving;
-- one review card follows, grouped by category with the uncertain lines in
-  amber, and one Confirm;
+- the agent first asks about each uncertain merchant, one question card at a
+  time with its guess as the first chip; then one short Confirm card shows the
+  total and its sources, with By category and Not spending folded, and one
+  Confirm writes every line (Arun, 2 Nov 2026, MA-301 b 1a); the saved card has
+  Undo, and a saved line is corrected in place;
 - a payment it shows answers its check-in.
 
 A statement is routine, so it takes no second check (§4.5); the Excel history
@@ -1408,7 +1419,7 @@ whether a joint record is meant.
 **Statements are categorised** (§4.9). Each line of a bank or card statement
 is matched against the merchant memory first; Haiku categorises the merchants
 it has not seen, and its answers join the memory once the member confirms the
-review card. Transfers, card payments and EMIs are recognised by code.
+statement's Confirm card (its questions first, then one Confirm; MA-301). Transfers, card payments and EMIs are recognised by code.
 
 The mechanics are the `ask_user` tool, which ends the turn with a question and
 its buttons, and a `PendingAction` row per open flow, keyed by flow id, that
@@ -1640,23 +1651,26 @@ foldable or two-panel device (Arun's "Duo"), folded or open:
 | Width | Where | Layout |
 | --- | --- | --- |
 | Compact: under about 600 pt, and every iPhone | Every iPhone, in portrait or landscape; Slide Over and one-third Split View; a foldable when folded | The tab bar; one column; sheets for detail; the chat is a tab |
-| Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet over the screen, from its Ask or ⌘K |
-| Regular, about 900 to 1133 pt | A 13-inch iPad upright; a wide Split View pane or Stage Manager window | The sidebar and the screen; the chat as a sheet over the screen, from the sidebar's Chat, its Ask or ⌘K |
-| Regular, from about 1133 pt | iPad in landscape, from the iPad mini up; a large Stage Manager window | The sidebar, the screen, and the chat beside every screen as a trailing column |
+| Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet over the screen, from its Ask or the ⌘K palette's ask row |
+| Regular, about 900 to 1393 pt | Every iPad in landscape, from the iPad mini (1133 pt) to the 13-inch (1376 pt); a 13-inch iPad upright; a wide Split View pane or Stage Manager window | The sidebar and the screen; the chat as a sheet over the screen, from the sidebar's Chat, its Ask or the ⌘K palette's ask row |
+| Regular, from about 1393 pt | No iPad's own screen: only a Stage Manager window on an external display | The sidebar, the screen, and the chat beside every screen as a trailing column |
 
 The rule is the window's width, never the device, with one exception: an iPhone is always compact, its tab bar in
 either orientation, as option 1a draws it (`iPhone · Landscape`). Widen past about 900 pt and
-the sidebar opens beside the screen; widen past about 1133 pt and the sheet becomes the trailing column, narrow below it
+the sidebar opens beside the screen; widen past about 1393 pt (a Stage Manager window on an external display; no iPad's own screen is that wide) and the sheet becomes the trailing column, narrow below it
 and the column becomes the sheet, with matched geometry and no reload (the boards of
 `iPad v4 · Adaptive shell and foldable.dc.html`). Arun, 27 Oct 2026 (MA-240): from 900 to 1133 pt the screen beside both the sidebar and
-the chat fell to about 360 to 480 pt, too narrow for the screens as drawn, so there the chat is a sheet away. A fold, a rotation or a resize keeps the conversation, the scroll position and
-any guided flow. With a hardware keyboard, Return sends, ⌘K focuses the
-composer, ⌘1 to ⌘5 open the sections and ⌘F searches. Every screen works from
+the chat fell to about 360 to 480 pt, too narrow for the screens as drawn, so there the chat is a sheet away. Arun, 2 Nov 2026 (MA-301 c 1c, at both doors): the chat sits
+beside only from about 1393 pt, so on every iPad's own screen, in either orientation, the screen keeps the room beside the
+sidebar and the chat is a sheet away; the web app's rule is the same in px (§8.4). A fold, a rotation or a resize keeps the conversation, the scroll position and
+any guided flow. With a hardware keyboard, Return sends, ⌘K opens the
+palette (go to a page, find a record, or ask: its first row sends the question to the chat; the same palette as
+the web app's, Arun, 23 Nov 2026, MA-301 g 1a), ⌘1 to ⌘5 open the sections and ⌘F searches. Every screen works from
 xSmall to AX5 Dynamic Type, with VoiceOver, Increase Contrast, Reduce
 Transparency and Reduce Motion (MA-181). Local multi-simulator Maestro flows
 (`.maestro/` and `scripts/maestro_local.py`, MA-273, MA-274; §8.5, §17.4,
-`docs/RESEARCH.md` §8) verify all four width sub-bands and live rotation across
-1133 pt on Apple Silicon, while `XCUITest` exercises the hardware keyboard `⌘*`
+`docs/RESEARCH.md` §8) verify the width sub-bands (under 600, 600 to 899 and 900 to 1392 pt; no iPad's own screen reaches 1393) and live
+rotation across 900 pt on Apple Silicon, while `XCUITest` exercises the hardware keyboard `⌘*`
 shortcuts (MA-166).
 
 **Legible at 25% brightness** (MA-181). Arun, 25 Oct 2026: "the text and
@@ -1776,7 +1790,7 @@ v1: one spec, drawn for iPhone and for iPad and the foldable, in light and
 dark (`docs/design/README.md`). Arun, 25 Oct 2026, asked for the dashboard
 "on the ios tablet duo" too: every one of these screens is
 laid out for the iPad and the open foldable too, with the chat beside it from
-about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§8.1).
+about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§8.1).
 The web app shows the same screens in a browser (§8.4).
 
 The screens, where an admin adds and deletes in the chat and corrects a
@@ -1807,7 +1821,9 @@ figure its kind marks editable in place; every other member views (§4.10):
   corrected or paused in place by the admin, Add in chat) and the Budget
   forecast tab (each year to the horizon, its leanest month against the
   floor first, expandable to months, every figure opening its flows);
-  scenario chips; Ask (§6).
+  scenario chips; Ask (§6). Its header is the title itself (Arun, 2 Nov 2026, MA-301 a 1b): the large title is a
+  menu that switches between Net worth, Plans and Budget forecast; the horizon is a row of chips under the fan; money
+  (nominal or today's money) is one corner button; the currency follows the header's currency pill.
 - **Correction in place** on any of these, by an admin: tap a figure its
   kind marks editable, type the new value, see a before → after line, Save;
   it is saved as a `correction` event with its audit row (`via:
@@ -1817,7 +1833,7 @@ figure its kind marks editable in place; every other member views (§4.10):
   and CAGR with the working, What if?, Ask about it, and, for an admin,
   Update value, which opens the chat with the guided flow already started
   (MA-80); an admin can also correct a figure on it in place. On an iPad or a foldable the chat sits beside them from
-  about 1133 pt, is a sheet away from about 600 to 1133 pt, and is a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§8.1).
+  about 1393 pt, is a sheet away from about 600 to 1393 pt, and is a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§8.1).
 - **Audit**: the audit log of §4.6, newest first, filtered by member, record
   and date; each row shows before and after and links to the run that made it,
   and a row made from a file opens that file in Quick Look; **Files** lists
@@ -1873,8 +1889,14 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   streamed over SSE (§19.5); every card drawn by Svelte components from the
   same versioned JSON (MA-174), with its chips and Confirm, Edit and Cancel;
   files and photos through a presigned upload, kept for good (MA-148); text
-  typed offline kept and sent once the browser is back online. At desktop
-  width the chat sits beside the dashboard; at phone width it is a tab. A flow
+  typed offline kept and sent once the browser is back online. From about
+  1393 px the chat sits beside the dashboard; from 1024 to 1393 px it is a
+  drawer over the page, from the sidebar's Chat (the iPad's sheet, on the web;
+  Arun, 2 Nov 2026, MA-301 c 1c); under 1024 px, where the tab bar stays, it is
+  the Chat tab. ⌘K opens one
+  palette, the same as the iPad's: go to a page, find a record, or ask, its
+  first row sending the question to the chat; nothing is created in it (MA-301
+  g 1a; Arun, 23 Nov 2026). A flow
   started on the laptop finishes on the phone.
 - **The pages:** Overview, Assets, Debts, Budget, Projection, Home, a holding,
   Audit and Files, Activity, and for admins the Admin center: the screens of
@@ -2895,7 +2917,7 @@ a daily digest instead.
 | Orchestration | One tool loop, not an agent graph | One household; cost without accuracy otherwise |
 | Planning and insight | Goals and a solver, what changed and why with a claim check, a scenario workspace, a richer fan with a sensitivity table, tax-year facts, the fan graded, reasoning evals and fewer, richer tools, as tools, views and worker jobs on the concierge and the worker, with no new agent; Opus only for an admin's plan with me, in its own loop and share; a nightly insight job, quiet by default (§6.1 to §6.5, §7.1, §7.2, §10.1, §18.8, §21.3; MA-323, 2 Nov 2026) | Arun, 2 Nov 2026: "I need this to be super intelligent agentic ai based wealth tracker and forecasting engine, interactive chat based conversations etc."; then "Need all of the above". Code still computes every figure and nothing says "should" |
 | Ingestion | Factsheet PDF + screenshot through Claude, Confirm before save | The only path a layman will actually use |
-| Front end | Two full doors, built in parallel in every phase. One app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger), a React Native shell with a native SwiftUI core (§8.5): the chat with native cards and Swift Charts, and the dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat beside them from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§8.1); and the web app, a SvelteKit 3 PWA with the same chat, dashboard and Admin center at desktop and phone width (§8.4); no Telegram (MA-161, 25 Oct 2026; MA-186, 26 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "Performance is key … silky smooth like Monzo"; native sign-in, push and Face ID in the app, the same chat in any browser, and the TypeScript shared between the two |
+| Front end | Two full doors, built in parallel in every phase. One app for iPhone and iPad (iOS 26, Liquid Glass, Warm ledger), a React Native shell with a native SwiftUI core (§8.5): the chat with native cards and Swift Charts, and the dashboard, Audit, Activity and the Admin center on every size of iPhone, iPad and foldable, with the chat beside them from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over) (§8.1); and the web app, a SvelteKit 3 PWA with the same chat, dashboard and Admin center at desktop and phone width (§8.4); no Telegram (MA-161, 25 Oct 2026; MA-186, 26 Oct 2026) | Arun: "a cool mobile chatbot where they can maintain everything and even see the dashboard"; "Performance is key … silky smooth like Monzo"; native sign-in, push and Face ID in the app, the same chat in any browser, and the TypeScript shared between the two |
 | The kill switch's name | `/pause` and `/resume` (Arun, 24 Oct 2026, MA-35) | One word everyone already uses for stopping. Two things share it: `/pause` is the household's kill switch, a flag every scheduled run checks first (§2, §7); the Admin center's Pause of a member disables that person's sign-in through Cognito and signs them out until the owner restores them (MA-102, §4.5) |
 | Admins | Several admins; the owner is always one and alone grants or takes back the role, in the chat with Confirm, the second check and an audit row; only admins add, correct and delete, and every other member views only, their own preferences aside (MA-308, 2 Nov 2026; it supersedes "there is only 1 admin", 25 Oct 2026) | Arun, 2 Nov 2026: "Only admins can do all these. Others users can view only."; each change still has its Confirm, second check where it applies, and audit row |
 | Money in any currency | Each position has one currency; an amount typed in another is never saved as it is: MyPaisa names the holding's currency and asks for the amount that arrived, or offers the ECB rate as a marked estimate; the original amount, rate and source are kept on the transaction (MA-156, 24 Oct 2026) | Rupees are never recorded as pounds; the number stays the member's or the engine's, never Claude's |
@@ -3437,7 +3459,7 @@ keeps daily counts per member, never message text, and learns:
 | Learned | From | How it changes |
 | --- | --- | --- |
 | The order of the composer's chips and of each screen's Ask | What the member asks most | On its own, inside its band: an order, never a new chip |
-| A merchant's category | A category the member corrects on a statement's review card | With that card's Confirm, which writes the correction to the merchant memory (§4.9, MA-218) |
+| A merchant's category | A category the member answers or corrects on a statement's question cards or Confirm card | With the statement's one Confirm, which writes the correction to the merchant memory (§4.9, MA-218) |
 | An alert threshold, a quiet hour, a check-in's usual answer | An alert muted five times; the same answer three months running | Proposed as a preference card, saved only on that member's Confirm (rule 4, MA-69) |
 | A case for the file reader | A field the member corrects on a Confirm card after a file | Rewritten onto the synthetic household as a case, and a regression case on the admin's Confirm behind the second check (§21.5) |
 

@@ -198,7 +198,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 - **Adaptive.**
   - In the app, every screen lays itself out by size class and window width, never by device, except that an iPhone
     is always compact: compact under about 600 pt and on every iPhone (the tab bar, one column, sheets for detail, the chat a tab), regular narrow about 600 to 900 pt (a sidebar
-    that collapses to a tab bar at the top; the chat as a sheet, beside the screen only from about 1133 pt), regular wide about 900 to 1133 pt (the sidebar and the screen; the chat as a sheet, from the sidebar's Chat), and from about 1133 pt the sidebar, the screen, and the chat as a column beside it. That covers
+    that collapses to a tab bar at the top; the chat as a sheet, beside the screen only from about 1393 pt), regular wide about 900 to 1393 pt (the sidebar and the screen; the chat as a sheet, from the sidebar's Chat), and from about 1393 pt the sidebar, the screen, and the chat as a column beside it, which no iPad's own screen reaches (the 13-inch is 1376 pt across; MA-301 c 1c, Arun, 2 Nov 2026). On the web, from 1024 to 1393 px the chat is a drawer over the page, and beside it from about 1393 px. That covers
     every iPhone, every iPad window (Split View, Slide Over, Stage Manager) and a foldable, folded or open. Dynamic
     Type from xSmall to AX5 reflows every card (figures stack under labels from AX1); a fold, a rotation or a resize
     keeps the conversation, the scroll and any guided flow. Show at least one screen at all three size classes
@@ -224,6 +224,10 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   for the app, `ios.css`. A design that is not a board set, such as a prototype, gets its own folder under
   `docs/design/` and loads the shared files from a board folder (`../app-v1/tokens.css`, as `prototype-v5/` does).
   No check runs on a prototype (MA-303).
+- **Only the board folders and the design system change.** A picked design is carried into `ios-v1/`, `app-v1/` and
+  `ds-v1/` and nowhere else: Prototype v5 is not updated, and its artifact is not republished (Arun, 23 Nov 2026,
+  MA-301: "no need to update Prototype v5, just the ios-v1 and app-v1 and design system updates are all that is
+  needed.. make it a rule"; `.claude/rules/plan-sync.md`, rule 5).
 - **No record to write.** Git is the boards' only record (MA-296): there is no record file to update after drawing.
   A file removed on purpose takes every trace row that names its boards with it, in the same change
   (`python3 scripts/plan_sync.py check` refuses a cited board that is gone).
@@ -290,8 +294,9 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 - **When.** Only after Arun picks an option in the current request. Build that option only.
 - **How.** On the same branch:
   1. Update the spec first when the pick changes it: the boards at every size class in `docs/design/ios-v1/` and the
-     browser boards in `docs/design/app-v1/`, or the example
-     cards in `ARCHITECTURE.md` §8.2. Republishing an explainer page's artifact is Arun's call; ask.
+     browser boards in `docs/design/app-v1/`, the design system in `docs/design/ds-v1/`, or the example
+     cards in `ARCHITECTURE.md` §8.2; never Prototype v5 (23 Nov 2026, above). Republishing an explainer page's
+     artifact is Arun's call; ask.
   2. Build with impeccable, comp-led when the pick includes an approved comp: `ios/` for the app (the React Native
      shell in TypeScript, and every piece a member looks at in SwiftUI, hosted through a Fabric component and fed one
      JSON model), `web/` for the web app (SvelteKit 3, Tailwind CSS 4, shadcn-svelte, TanStack, LayerChart; MA-229), `cards/` and the card pieces at both doors

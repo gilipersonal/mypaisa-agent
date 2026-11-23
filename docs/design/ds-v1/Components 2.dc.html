@@ -45,6 +45,7 @@
           .tabdemo { width: 390px; height: 168px; position: relative; overflow: hidden; background: var(--mp-bg); }
           .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; }
           .sidebox { width: 248px; height: 560px; display: flex; }
+          .mp-side-i.on .lc { color: var(--mp-accent); }   /* the selected place's Lucide icon in the accent, as .ms was (MA-301 f 1a; tokens.css styles only .ms) */
           /* sheet and toast */
           .phonefrag { width: 390px; height: 620px; position: relative; overflow: hidden; border-radius: 30px; background: var(--mp-bg); box-shadow: 0 0 0 8px #1B1D22, 0 20px 40px rgba(0, 0, 0, 0.18); flex: none; }
           .sheet-abs { position: absolute; left: 0; right: 0; bottom: 0; }
@@ -100,7 +101,7 @@
       <!-- ================= HEAD ================= -->
       <section class="dv-turn" id="top" data-screen-label="Components 2: index">
         <h1 class="dv-title">MyPaisa DS v1 · Components 2</h1>
-        <p class="dv-intro">Navigation, overlays, the states of a list, charts and tracks, continuing <b>Components</b>. Each is drawn in light and dark from one markup, from the classes in <b>tokens.css</b>, with its anatomy and states underneath. Light sits above dark so every specimen keeps its real width. Illustrative figures; members are "You" and "Asha".</p>
+        <p class="dv-intro">Navigation, overlays, the states of a list, charts and tracks, continuing <b>Components</b>. Each is drawn in light and dark from one markup, from the classes in <b>tokens.css</b>, with its anatomy and states underneath. Light sits above dark so every specimen keeps its real width. Illustrative figures; members are "You" and "Asha". The web&#8217;s icons are Lucide, drawn as inline SVG (MA-301 f 1a, Arun, 2 Nov 2026); the navigation&#8217;s places and layout are as picked, until MA-334 redraws them.</p>
         <nav class="dv-idx" aria-label="Components 2">
           <a href="#nav">8 · Navigation</a><a href="#overlays">9 · Sheet and toast</a><a href="#states">10 · List states</a><a href="#charts">11 · Charts and tracks</a>
         </nav>
@@ -126,12 +127,12 @@
                       </div>
                     </div>
                     <nav class="mp-tabbar tabs-abs" aria-label="Sections">
-                      <sc-for list="{{ tabsA }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                      <sc-for list="{{ tabsA }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><sc-for list="{{ n.lc }}" as="p" hint-placeholder-count="2"><path sc-camel-d="{{ p.d }}"></path></sc-for></svg>{{ n.tab }}</a></sc-for>
                     </nav>
                   </div>
                   <span class="lbl">Holdings selected · focus on Projection</span>
                   <nav class="mp-tabbar frame" aria-label="Sections, second state">
-                    <sc-for list="{{ tabsB }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.tab }}</a></sc-for>
+                    <sc-for list="{{ tabsB }}" as="n" hint-placeholder-count="5"><a class="mp-tab {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><sc-for list="{{ n.lc }}" as="p" hint-placeholder-count="2"><path sc-camel-d="{{ p.d }}"></path></sc-for></svg>{{ n.tab }}</a></sc-for>
                   </nav>
                 </div>
                 <div class="spec">
@@ -139,9 +140,9 @@
                   <div class="sidebox frame">
                     <nav class="mp-side bb" style="background: var(--mp-bg)" aria-label="Sections">
                       <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                      <sc-for list="{{ side }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.side }}</a></sc-for>
+                      <sc-for list="{{ side }}" as="n" hint-placeholder-count="6"><a class="mp-side-i {{ n.on }}" href="#nav" aria-current="{{ n.cur }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><sc-for list="{{ n.lc }}" as="p" hint-placeholder-count="2"><path sc-camel-d="{{ p.d }}"></path></sc-for></svg>{{ n.side }}</a></sc-for>
                       <div style="flex: 1"></div>
-                      <div class="fx gap8 mp-foot mp-ink2" style="padding: 0 12px; align-items: flex-start"><span class="ms ms-s" aria-hidden="true">lock</span><span>Signed in with Apple<br />Arun · admin</span></div>
+                      <div class="fx gap8 mp-foot mp-ink2" style="padding: 0 12px; align-items: flex-start"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-7a2 2 0 0 1 2 -2Z"></path><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>Signed in with Apple<br />Arun · admin</span></div>
                     </nav>
                   </div>
                 </div>
@@ -151,9 +152,11 @@
         </div>
         <div class="notes">
           <div class="note"><b>Tab bar</b>Five tabs: Overview, Holdings, Budget, Projection, More (Activity, Audit and settings). Tabs share the bar (flex 1, at most 120 wide, 48 high), so five fit at 320: a 22 icon over a 10/12 medium label. More is <code>menu</code>, opening the remaining sections in a sheet. <code>--mp-material</code> with a 20 px blur, a half-pixel hairline on top, 22 below for the home indicator.</div>
-          <div class="note"><b>Tab states</b>Selected: <code>--mp-accent</code> with the icon filled, <code>aria-current="page"</code>. Others: ink-3, outlined (5.3:1 and 5.9:1 on the material). Focus: the 3 px ring.</div>
+          <div class="note"><b>Tab states</b>Selected: <code>--mp-accent</code>, the icon in it too, <code>aria-current="page"</code>; Lucide has no filled forms, so the colour marks it (the app&#8217;s SF Symbols fill). Others: ink-3, outlined (5.3:1 and 5.9:1 on the material). Focus: the 3 px ring.</div>
           <div class="note"><b>Sidebar</b>248 wide including its padding (20 14); the coin and name on top, six items, who is signed in at the foot. Items 44 high, radius 10, 15/20 medium in ink-2; selected lifts onto the surface with <code>--mp-shadow</code>, semibold ink, accent icon.</div>
           <div class="note"><b>Which one</b>The tab bar in compact and regular, the sidebar in wide (1024 and over); <code>.mp-shell</code> swaps them from one markup. The labels are the same words in both; only More differs: on the tab bar it holds what the sidebar lists, Activity and Audit.</div>
+          <div class="note"><b>Where the chat sits</b>The chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). On the web: a column beside the page from 1393 px; from 1024 to 1393 px a drawer over the page, opened from the sidebar&#8217;s Chat (the iPad&#8217;s sheet, on the web); under 1024 px, where the tab bar stays, the Chat tab (MA-301 c 1c, Arun, 2 Nov 2026).</div>
+          <div class="note"><b>Icons</b>Lucide, inline SVG in <code>.lc</code> (22, a 2 px stroke in <code>currentColor</code>): house, wallet, chart-pie, trending-up, history, clipboard-check and menu here. In the app the same places use SF Symbols (MA-301 f 1a).</div>
           <div class="note"><b>Pushing a page</b>A row or card that opens a page pushes it in from the right over 350 ms on <code>--mp-ease-sheet</code>; Back pops it. Tabs switch without motion.</div>
         </div>
       </section>
@@ -185,7 +188,7 @@
                         <ul class="wlist mp-sub"><li>Every buy and sale, on its own date</li><li>Today's value at Friday's close</li></ul>
                       </div>
                       <div class="mp-foot mp-ink2">CAGR over the same years: 13.6%.</div>
-                      <div class="fx gap8"><a class="mp-btn mp-btn-primary" href="#overlays" style="flex: 1"><span class="ms" aria-hidden="true">chat</span>Ask in the chat</a><a class="mp-btn mp-btn-tinted" href="#overlays">Technical</a></div>
+                      <div class="fx gap8"><a class="mp-btn mp-btn-primary" href="#overlays" style="flex: 1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path></svg>Ask in the chat</a><a class="mp-btn mp-btn-tinted" href="#overlays">Technical</a></div>
                     </div>
                   </div>
                 </div>
@@ -193,7 +196,7 @@
                   <span class="lbl">Toast · .mp-toast</span>
                   <sc-for list="{{ toasts }}" as="o" hint-placeholder-count="3">
                     <div class="fx col gap6">
-                      <div class="mp-toast fx gap10" role="status" style="align-items: flex-start"><span class="ms ms-s" aria-hidden="true">{{ o.icon }}</span><span>{{ o.text }}</span></div>
+                      <div class="mp-toast fx gap10" role="status" style="align-items: flex-start"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><sc-for list="{{ o.lc }}" as="p" hint-placeholder-count="2"><path sc-camel-d="{{ p.d }}"></path></sc-for></svg><span>{{ o.text }}</span></div>
                       <span class="mp-cap mp-ink2">{{ o.when }}</span>
                     </div>
                   </sc-for>
@@ -226,10 +229,10 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">Holdings</span></div>
                     <div class="mp-group empty">
-                      <div class="ecircle"><span class="ms ms-l" aria-hidden="true">donut_small</span></div>
+                      <div class="ecircle"><svg class="lc lc-l" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg></div>
                       <div class="mp-hl">No holdings yet</div>
                       <div class="mp-foot mp-ink2">Send a factsheet or a screenshot in the chat and I'll add it for you to confirm.</div>
-                      <a class="mp-btn mp-btn-tinted mp-btn-small" href="#states" style="margin-top: 6px"><span class="ms ms-s" aria-hidden="true">chat</span>Open chat</a>
+                      <a class="mp-btn mp-btn-tinted mp-btn-small" href="#states" style="margin-top: 6px"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path></svg>Open chat</a>
                     </div>
                   </div>
                 </div>
@@ -251,7 +254,7 @@
                 <div class="spec">
                   <span class="lbl">Stale prices</span>
                   <div>
-                    <div class="banner" role="status"><span class="ms ms-s mp-ink2" aria-hidden="true">info</span><span class="mp-foot mp-ink2">Prices are from Thursday's close. Friday's are late; we'll update when they land.</span></div>
+                    <div class="banner" role="status"><svg class="lc lc-s mp-ink2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"></path><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg><span class="mp-foot mp-ink2">Prices are from Thursday's close. Friday's are late; we'll update when they land.</span></div>
                     <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">Thu close</span></div>
                     <div class="mp-group">
                       <sc-for list="{{ stale }}" as="h" hint-placeholder-count="3">
@@ -265,7 +268,7 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">Holdings</span></div>
                     <div class="mp-group empty">
-                      <div class="ecircle"><span class="ms ms-l" aria-hidden="true">warning</span></div>
+                      <div class="ecircle"><svg class="lc lc-l" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></div>
                       <div class="mp-hl">We couldn't load your holdings</div>
                       <div class="mp-foot mp-ink2">Nothing in your account has changed; only this page didn't load. Try again, or ask in the chat.</div>
                       <div class="fx ac gap8" style="margin-top: 6px"><a class="mp-btn mp-btn-tinted mp-btn-small" href="#states">Try again</a><a class="mp-btn mp-btn-plain" href="#states">Open chat</a></div>
@@ -376,15 +379,15 @@
       class Component extends DCLogic {
         renderVals() {
           const sections = [
-            { icon: 'home', side: 'Overview', tab: 'Overview' },
-            { icon: 'donut_small', side: 'Holdings', tab: 'Holdings' },
-            { icon: 'savings', side: 'Budget', tab: 'Budget' },
-            { icon: 'trending_up', side: 'Projection', tab: 'Projection' },
-            { icon: 'history', side: 'Activity', tab: '' },
-            { icon: 'fact_check', side: 'Audit', tab: '' }
-          ];
+            { icon: 'house', lc: [{"d":"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"},{"d":"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"}], side: 'Overview', tab: 'Overview' },
+            { icon: 'wallet', lc: [{"d":"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"},{"d":"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"}], side: 'Holdings', tab: 'Holdings' },
+            { icon: 'chart-pie', lc: [{"d":"M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"},{"d":"M21.21 15.89A10 10 0 1 1 8 2.83"}], side: 'Budget', tab: 'Budget' },
+            { icon: 'trending-up', lc: [{"d":"M16 7h6v6"},{"d":"m22 7-8.5 8.5-5-5L2 17"}], side: 'Projection', tab: 'Projection' },
+            { icon: 'history', lc: [{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"},{"d":"M3 3v5h5"},{"d":"M12 7v5l4 2"}], side: 'Activity', tab: '' },
+            { icon: 'clipboard-check', lc: [{"d":"M9 2h6a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1Z"},{"d":"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"},{"d":"m9 14 2 2 4-4"}], side: 'Audit', tab: '' }
+          ];   // Lucide (ISC licence), from @lucide/svelte: the web's icons (MA-301 f 1a)
           const sel = (list, k, focusAt) => list.map((n, i) => Object.assign({}, n, { on: (i === k ? 'on' : '') + (i === focusAt ? ' is-focus' : ''), fill: i === k ? 'ms-fill' : '', cur: i === k ? 'page' : 'false' }));
-          const tabs = sections.filter((n) => n.tab).concat([{ icon: 'menu', tab: 'More' }]);
+          const tabs = sections.filter((n) => n.tab).concat([{ icon: 'menu', lc: [{"d":"M4 5h16"},{"d":"M4 12h16"},{"d":"M4 19h16"}], tab: 'More' }]);
           // chart a: six months on a 0..100 box; dots and labels are HTML placed by %
           const s6 = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
           const lo6 = Math.min.apply(null, s6), hi6 = Math.max.apply(null, s6);
@@ -409,9 +412,9 @@
             tabsB: sel(tabs, 1, 3),
             side: sel(sections, 0, -1),
             toasts: [
-              { icon: 'check_circle', text: 'Prices updated to Friday’s close.', when: 'After a refresh brings new prices' },
-              { icon: 'visibility_off', text: 'Privacy mode on. Pounds are hidden.', when: 'After the eye button' },
-              { icon: 'chat_bubble', text: 'Chat drawer opened.', when: 'After Ask on a narrow browser' }
+              { icon: 'circle-check', lc: [{"d":"M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"},{"d":"m16 9-5.5 5.5L8 12"}], text: 'Prices updated to Friday’s close.', when: 'After a refresh brings new prices' },
+              { icon: 'eye-off', lc: [{"d":"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"},{"d":"M14.084 14.158a3 3 0 0 1-4.242-4.242"},{"d":"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"},{"d":"m2 2 20 20"}], text: 'Privacy mode on. Pounds are hidden.', when: 'After the eye button' },
+              { icon: 'message-circle', lc: [{"d":"M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"}], text: 'Chat drawer opened.', when: 'After Ask in a window under 1393 px' }
             ],
             skel: [{ a: '62%', b: '40%' }, { a: '48%', b: '34%' }, { a: '70%', b: '44%' }, { a: '40%', b: '30%' }],
             stale: [

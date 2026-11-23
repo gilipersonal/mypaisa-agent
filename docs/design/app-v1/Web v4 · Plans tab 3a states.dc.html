@@ -40,7 +40,7 @@
           .bnotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 8px 32px; max-width: 1480px; margin: 18px 0 0; font: 14px/20px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
           .bnotes p { margin: 0; }
           .bnotes b { color: #14171F; }
-          /* the browser frames: the laptop at 1440 (sidebar, page, the chat beside it) and the phone web at 390 (tab bar) */
+          /* the browser frames: the laptop at 1440 (sidebar, page, the chat beside it, from about 1393 px) and the phone web at 390 (tab bar) */
           .board { width: 1440px; border-radius: 14px; overflow: hidden; position: relative; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
           .pframe { width: 390px; height: 844px; border-radius: 20px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 24px 52px rgba(0,0,0,.18); }   /* a phone browser, not an iPhone bezel (MA-300) */
           .pframe > .mp-shell { flex: 1; min-height: 0; }
@@ -56,7 +56,7 @@
           .rtx { flex: 1; min-width: 0; }
           .hctl { display: flex; align-items: center; gap: 12px; flex: none; }
           .mp-pagehead > div:first-child { min-width: 0; }
-          /* the Projection's chrome, the same in every option (MA-264's brief): tabs, then the horizon and the money */
+          /* the Projection's chrome, the same in every option (MA-264's brief): tabs, then the horizon and the money. Since MA-301 1b the title is the picker, and these rules draw nothing. */
           .ptop { display: none; align-items: center; justify-content: space-between; margin: -6px -4px -8px; }
           .utabs { display: flex; gap: 4px; border-bottom: 1px solid var(--mp-line); overflow-x: auto; scrollbar-width: none; }
           .utab { min-height: 44px; padding: 0 14px; border: 0; background: transparent; display: inline-flex; align-items: center; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; flex: none; box-shadow: inset 0 -3px 0 transparent; }
@@ -215,8 +215,8 @@
           .wfield { min-height: 48px; border-radius: 24px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; align-items: center; gap: 8px; padding: 0 6px 0 18px; }
           .wsend { width: 36px; height: 36px; border-radius: 50%; background: var(--mp-accent); color: var(--mp-on-accent); display: grid; place-items: center; flex: none; }
           .wsend .ms { font-size: 20px; }
-          /* the chat beside every screen from about 1133 px (MA-240, MA-300); below it the web shows the page or the chat, never both (docs/design/README.md); under 600, the compact chrome */
-          @container app (max-width: 1132px) { .mp .chatcol { display: none; } }
+          /* the chat beside every screen from about 1393 px, a sheet away from about 600 to 1393 px (on the web a drawer over the page, opened from the sidebar’s Chat), and a tab in a compact window (MA-301 c 1c); under 600, the compact chrome */
+          @container app (max-width: 1392px) { .mp .chatcol { display: none; } }
           @container app (max-width: 599px) {
             .mp .utabs { display: none; }
             .mp .tabseg { display: flex; }
@@ -234,6 +234,45 @@
           button.wsend { position: relative; } button.wsend::after { content: ""; position: absolute; inset: -4px; }   /* 36 drawn, 44 to tap */
           .mp-switch:focus-visible, .fig.ed:focus-visible, .edin:focus-visible, .afield:focus-visible, .wfield .rtx:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
                   :where(button[type="button"].mp-btn) { letter-spacing: inherit; word-spacing: inherit; }   /* MA-300: spans made buttons keep the spacing they inherited; the older plain buttons keep theirs */
+
+/* MA-301 a 1b (Arun, Mon 2 Nov 2026): the title is the picker (Net worth, Plans, Budget forecast); the horizon is a row of
+   chips under the chart; money (Nominal or Today's money) is one corner button. £ or ₹ follow the app's currency pill
+   (MA-279 1a), so the page has no currency control of its own. The title's menu is a popover on paper, never glass.
+   From docs/design/reviews/MA-301, a · Projection header. */
+.ttlmenu { -webkit-appearance: none; appearance: none; margin: 0 0 0 -4px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 4px; border-radius: 10px; font: 700 34px/41px var(--mp-font); letter-spacing: -0.02em; color: var(--mp-ink); text-align: left; white-space: nowrap; }
+.ttlmenu .ms, .ttlmenu .lc { font-size: 26px; width: 26px; height: 26px; color: var(--mp-accent); }
+.ttlmenu:hover { background: var(--mp-surface-2); }
+.ttlmenu[aria-expanded="true"] { background: var(--mp-surface-2); }
+.ttlmenu[aria-expanded="true"] .ms, .ttlmenu[aria-expanded="true"] .lc { transform: rotate(180deg); }
+.ttlmenu:focus-visible, .hzc:focus-visible, .cornerbtn:focus-visible, .tm-i:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+.ttlwrap { position: relative; min-width: 0; }
+.herot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; margin: -8px -6px -2px 0; }
+.herot > :first-child { min-width: 0; }
+.cornerbtn { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 8px 0 14px; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; white-space: nowrap; }
+.cornerbtn .ms { font-size: 20px; }
+.cornerbtn.oncard { background: var(--mp-surface-2); color: var(--mp-ink); }
+.cornerbtn.oncard .ms { color: var(--mp-accent); }
+.hzchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.hzc { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; min-height: 44px; min-width: 60px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; white-space: nowrap; }
+.hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
+.hzchips.oncard .hzc { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.hzchips.oncard .hzc.on { background: var(--mp-ink); color: var(--mp-surface); }
+.tpop { position: absolute; left: -4px; top: calc(100% + 6px); z-index: 30; width: 260px; box-sizing: border-box; padding: 6px; border-radius: 14px; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line), var(--mp-shadow); display: flex; flex-direction: column; }
+.tm-i { -webkit-appearance: none; appearance: none; margin: 0; border: 0; background: none; cursor: pointer; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; border-radius: 8px; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); text-align: left; }
+.tm-i[aria-checked="true"] { font-weight: 600; }
+.tm-i:hover, .tm-i.hov { background: var(--mp-surface-2); }
+.tm-i .ms, .tm-i .lc { font-size: 20px; width: 20px; height: 20px; color: var(--mp-accent); }
+.tm-k { margin-left: auto; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+
+.cornerbtn .lc { width: 18px; height: 18px; }
+.cornerbtn.oncard .lc { color: var(--mp-accent); }
+.tlh.tlhb { align-items: center; flex-wrap: nowrap; margin-bottom: 8px; }
+.tl .hzchips { margin-top: 12px; }
+.bfh { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.bfh > .grow1 { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sumctl { flex: 1 1 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--mp-line); }
+.sumctl .hzchips { margin-top: 0; }
+.ttlwrap { flex: 1 1 0; }
 </style>
       </helmet>
 
@@ -266,16 +305,9 @@
                         <div class="mp-pagepad" style="margin-top: {{ f.off }}">
                           <div class="ptop"><button class="iconbtn" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms" aria-hidden="true">{{ f.eye }}</span></button></div>
                           <header class="mp-pagehead">
-                            <div><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ f.meta }}</div></div>
+                            <div class="ttlwrap"><button type="button" class="ttlmenu" aria-haspopup="menu" aria-expanded="false" aria-label="Projection: Plans. Change view">Plans<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="mp-foot mp-ink2">{{ f.meta }}</div></div>
                             <div class="hctl eyeh"><button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms" aria-hidden="true">{{ f.eye }}</span></button></div>
                           </header>
-                          <nav class="utabs" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="utab {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></nav>
-                          <div class="mp-seg tabseg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-                          <div class="ctlrow">
-                            <div class="mp-seg hzseg" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button class="mp-seg-i {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
-                            <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on" aria-pressed="true">£ GBP</button><button class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
-                            <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" tabindex="0" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
-                          </div>
 
                           <sc-if value="{{ f.banner }}">
                             <div class="okb {{ f.banner.c }}" role="status" data-mo="pop"><span class="ms ms-fill" aria-hidden="true">{{ f.banner.i }}</span><span>{{ f.banner.t }}</span></div>
@@ -288,7 +320,7 @@
                           </div>
 
                           <div class="mp-card tl">
-                            <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
+                            <div class="tlh tlhb"><div class="rtx fx col gap2"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
                             <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
                             <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
                               <div class="tl-row {{ r.cls }}">
@@ -311,6 +343,7 @@
                                 </sc-if>
                               </div>
                             </sc-for>
+                            <div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
                             <div class="lgd2"><span><i class="k-bar k-out"></i>Money out</span><span><i class="k-bar k-in"></i>Money in</span><span><i class="k-bar k-pot"></i>Into a pot</span><span><i class="k-dia"></i>Once</span><sc-if value="{{ f.hasPaused }}"><span><i class="k-hollow"></i>Paused, not counted</span></sc-if><span><i class="k-tk"></i>Each March</span><span><i class="k-step"></i>A change from a date</span><span><i class="k-evt"></i>An event on a record</span><span><i class="k-past"></i>Runs past 2046</span></div>
                             <div class="pp mp-foot mp-ink2 tlfoot"><span class="ms" aria-hidden="true">{{ f.footI }}</span><span>{{ f.foot }}</span></div>
                           </div>
@@ -538,15 +571,15 @@
             { anchor: 's1', id: '3a', name: 'Browser · Plans tab 3a, privacy on', keys: 'MA-224',
               head: { n: '1', t: 'Privacy, then Arun’s changes in place', p: 'Arun at the laptop and in a phone’s browser, after 21:05. Each change is made on the tab, in place: a correction event with its audit row and a new version, and the engine runs again; nothing new is created here.' },
               lead: '21:06: the eye hides every amount on the tab: the summary’s middle path and range, each plan’s figure, and the engine’s figures where the plans meet. Names, dates and the lanes stay, so the tab still reads.',
-              frames: [fr(n1, D, T[0], Object.assign({ off: '0px' }, st.priv)), fr(n1, D, T[1], st.priv), fr(n1, PH, T[0], Object.assign({ off: '-1235px' }, st.priv))],
+              frames: [fr(n1, D, T[0], Object.assign({ off: '0px' }, st.priv)), fr(n1, D, T[1], st.priv), fr(n1, PH, T[0], Object.assign({ off: '-1144px' }, st.priv))],
               notes: [{ h: 'Masks keep their place,', t: 'so nothing reflows when the eye is tapped again; the lanes have no money on them, so they stay.' }, { h: 'The phone', t: 'is scrolled to where the plans meet, the engine’s figures masked.' }] },
             { anchor: 's2', id: '3a', name: 'Browser · Plans tab 3a, a plan paused', keys: 'MA-222 · MA-224',
               lead: '21:08: Arun opens Replace the car’s menu and taps Pause. The row stays where it is, its mark drawn hollow and a Paused chip on it; the summary shows the engine’s new run, and the audit row says what changed, the version, and the run before and after.',
-              frames: [fr(n2, D, T[0], st.menu, 'the menu'), fr(n2, D, T[0], st.paused, 'paused'), fr(n2, D, T[1], st.paused, 'paused'), fr(n2, PH, T[0], Object.assign({ off: '-937px' }, st.paused), 'paused')],
+              frames: [fr(n2, D, T[0], st.menu, 'the menu'), fr(n2, D, T[0], st.paused, 'paused'), fr(n2, D, T[1], st.paused, 'paused'), fr(n2, PH, T[0], Object.assign({ off: '-790px' }, st.paused), 'paused')],
               notes: [{ h: 'Pause, not delete:', t: 'a paused plan keeps its words, its figures and its place on the timeline, and stops counting until it is resumed. It writes a correction event (status active → paused), version 1 → 2.' }, { h: 'The engine’s figures:', t: 'without the car, 2046’s middle path is £2,977,000 (R5), from £2,923,000; 8 in 10 runs end between £2,220,000 and £4,145,000.' }, { h: 'The menu', t: 'is the admin’s: Open, Pause, End it (in the alert colour, since it is the one that removes a plan from the count) and Ask in chat.' }] },
             { anchor: 's3', id: '3a', name: 'Browser · Plans tab 3a, a plan resumed', keys: 'MA-222 · MA-224',
               lead: '21:09: Resume, from the same menu. The car counts again, the figures go back to 20:59’s, and the audit row says so, version 2 → 3.',
-              frames: [fr(n3, D, T[0], st.resumed), fr(n3, PH, T[0], Object.assign({ off: '-937px' }, st.resumed))],
+              frames: [fr(n3, D, T[0], st.resumed), fr(n3, PH, T[0], Object.assign({ off: '-790px' }, st.resumed))],
               notes: [{ h: 'The same run as before:', t: 'the plans are as they were at 20:59, so the engine’s figures are R4’s again: £2,923,000 in 2046.' }] },
             { anchor: 's4', id: '3a', name: 'Browser · Plans tab 3a, a plan corrected in place', keys: 'MA-222 · MA-224',
               lead: '21:11: Arun opens School fees and taps its end, Jul 2041. He types Jul 2040, sees Jul 2041 → Jul 2040, and saves. The pill shows the new month and that he corrected it; the engine’s figures move; the history gains the correction with its version and the run before and after.',
@@ -554,12 +587,12 @@
               notes: [{ h: 'Correct in place:', t: 'tap the figure, type the new one, a before → after line, Save. A correction event, via inline_edit, version 1 → 2; the admin’s words stay the ones he said in the chat.' }, { h: 'The engine’s figures:', t: 'the fees end a year sooner: £6,491 a month by Jul 2040 and £709,817 in all, against £789,759; 2046’s middle path goes from £2,923,000 to £3,037,000 (R6). The pot still tops up £1,361 in Jan and Feb 2029.' }, { h: 'History', t: 'keeps the plan’s creation with his words and the run it made (Thu 5 Nov 09:13 → 20:43), the pot that covered it, and now the correction.' }] },
             { anchor: 's5', id: '3a', name: 'Browser · Plans tab 3a, a plan ended', keys: 'MA-222 · MA-224',
               lead: '21:13: End it asks first, with a field for a word for the audit; Arun types “we’re keeping the car” and ends it. The car leaves the timeline for an Ended list, the count drops to 6, and the audit row carries his words.',
-              frames: [fr(n5, D, T[0], st.confirm, 'the confirm'), fr(n5, D, T[0], st.ended, 'ended'), fr(n5, D, T[1], st.ended, 'ended'), fr(n5, PH, T[0], Object.assign({ off: '-1036px' }, st.ended), 'ended')],
+              frames: [fr(n5, D, T[0], st.confirm, 'the confirm'), fr(n5, D, T[0], st.ended, 'ended'), fr(n5, D, T[1], st.ended, 'ended'), fr(n5, PH, T[0], Object.assign({ off: '-889px' }, st.ended), 'ended')],
               notes: [{ h: 'Ending asks:', t: 'unlike Pause, End takes the plan out of the count for good; it stays in its history and in Audit, and a new one starts in the chat.' }, { h: 'The engine’s figures:', t: 'without the car, and with the fees ending in Jul 2040, 2046’s middle path is £3,091,000 (R7); 8 in 10 runs end between £2,298,000 and £4,296,000.' }, { h: 'His words', t: 'are kept with the event, as source_text is for a plan made in the chat.' }] },
             { anchor: 's6', id: '3a', name: 'Browser · Plans tab 3a, as Asha sees it', keys: 'MA-224 · MA-222 · MA-263',
               head: { n: '2', t: 'As Asha sees it', p: '21:19: Asha, a member, opens the tab after Arun saved his sister’s wedding at 21:16 and undid, at 21:18, the way he had chosen to cover it. She sees every plan and the engine’s figures, and saves nothing.' },
               lead: 'The plans with the wedding, and the car under Ended; no pencils, no menus and no Add in chat, and a lock line instead of the admin’s hint. The engine’s flag on the wedding, and its note: cash goes £19,871 below zero in Jun 2027, back above zero in Mar 2028.',
-              frames: [fr(n6, D, T[0], st.asha), fr(n6, D, T[1], st.asha), fr(n6, PH, T[0], Object.assign({ off: '-290px' }, st.asha))],
+              frames: [fr(n6, D, T[0], st.asha), fr(n6, D, T[1], st.asha), fr(n6, PH, T[0], Object.assign({ off: '-119px' }, st.asha))],
               notes: [{ h: 'Read, ask, never save:', t: 'figures show plain, without pencils, and a plan opens read-only; her chat is her own, where she can ask about a plan, see the ways to cover the wedding, or try a what-if (Web v4 · Plans in the chat 2a states).' }, { h: 'The engine’s figures', t: 'are the run after Arun’s Undo (21:18): 2046’s middle path £3,040,000; 8 in 10 runs end between £2,275,000 and £4,224,000.' }, { h: 'Colour is never alone:', t: 'the wedding’s flag says ▼ and what is short; the Ended chip says Ended.' }] }
           ];
           return {

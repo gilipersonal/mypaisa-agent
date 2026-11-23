@@ -43,7 +43,7 @@
 <p><strong>Statements</strong> (phase 6, MA-218). A bank or card statement (PDF, CSV or XLSX, from UK and Indian banks) sent in the chat is kept in S3 for good, like every file (§4.6), and then read:</p>
 <ul><li>each line is categorised, the merchant memory first, then Haiku for the merchants it has not seen;</li>
 <li>transfers are recognised (a card payment, a move between the household&#x27;s own accounts, an EMI matched to its commitment), so nothing counts twice; on a card only interest and fees are spending, and an EMI&#x27;s principal is saving;</li>
-<li>one review card follows, grouped by category with the uncertain lines in amber, and one Confirm;</li>
+<li>the agent first asks about each uncertain merchant, one question card at a time with its guess as the first chip; then one short Confirm card shows the total and its sources, with By category and Not spending folded, and one Confirm writes every line (Arun, 2 Nov 2026, MA-301 b 1a); the saved card has Undo, and a saved line is corrected in place;</li>
 <li>a payment it shows answers its check-in.</li>
 </ul>
 <p>A statement is routine, so it takes no second check (§4.5); the Excel history importer keeps its own (§17.5).</p>

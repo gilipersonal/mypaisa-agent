@@ -73,7 +73,7 @@ button.edbtn { position: relative; } button.edbtn::after { content: ""; position
 .t-dark .mpm-coin { fill: var(--mp-hero-2); }
 .mpm-pound { fill: none; stroke: #FFFFFF; stroke-linecap: round; stroke-linejoin: round; }
 .mpm-dot { fill: var(--mp-coral); }
-/* the chat: a column beside every screen from about 1133 px (MA-240, MA-300), a tab under 1024 */
+/* the chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over); on the web the unit is px, and from 1024 to 1393 px the chat is a drawer over the page, opened from the sidebar’s Chat, and under 1024 px it is the Chat tab (MA-301 c 1c, after MA-240 and MA-300); the phone-web door draws it as a tab */
 .chatcol { display: none; flex-direction: column; min-height: 0; background: var(--mp-bg); position: relative; }
 .chd { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 12px 10px 20px; border-bottom: 1px solid var(--mp-line); }
 .strip { display: none; flex: none; align-items: center; gap: 12px; margin: 6px 12px 0; padding: 9px 14px; border-radius: 18px; background: var(--mp-surface); box-shadow: 0 0 0 0.5px var(--mp-line), var(--mp-shadow); }
@@ -185,8 +185,9 @@ button.edbtn { position: relative; } button.edbtn::after { content: ""; position
 .bigr { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
 .chipr { display: flex; flex-wrap: wrap; gap: 6px; }
 .chipr .ms { font-size: 14px; }
-.kvt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--mp-line); border-radius: 12px; overflow: hidden; border: 1px solid var(--mp-line); }
+.kvt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--mp-line); }   /* MA-301 d 1a: the terms split by hairlines (the 1 px gaps), never boxed again */
 .kvt > div { background: var(--mp-surface); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kvt > div:nth-child(odd) { padding-left: 0; } .kvt > div:nth-child(-n+2) { padding-top: 0; } .kvt > div:nth-last-child(-n+2) { padding-bottom: 0; }
 .kvt .mp-hl { display: flex; align-items: center; gap: 2px; white-space: nowrap; }
 .edf { text-decoration: underline dotted var(--mp-ink-2); text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
 .edbtn { width: 32px; height: 32px; margin: -6px 0 -6px -2px; display: inline-grid; place-items: center; border-radius: 12px; color: var(--mp-accent); }
@@ -212,7 +213,7 @@ button.edbtn { position: relative; } button.edbtn::after { content: ""; position
 .k-line { width: 16px; height: 3px; border-radius: 2px; background: var(--mp-chart-line); }
 .k-dash { width: 16px; height: 0; border-top: 2px dashed var(--mp-ink-2); }
 /* size classes: the frame decides, never the device */
-@container app (min-width: 1133px) {
+@container app (min-width: 1393px) {
 .sh-a .chatcol { display: flex; flex: none; width: clamp(340px, 28%, 420px); border-left: 1px solid var(--mp-line); }
 }
 @container app (max-width: 1023px) {
@@ -271,7 +272,7 @@ button.edbtn { position: relative; } button.edbtn::after { content: ""; position
 <div class="fx ac gap8"><div class="mp-seg whose" role="group" aria-label="Whose view"><button type="button" class="mp-seg-i on" aria-pressed="true">Household</button><button type="button" class="mp-seg-i" aria-pressed="false">Arun</button><button type="button" class="mp-seg-i" aria-pressed="false">Asha</button></div><button class="iconbtn {{ f.eyeOn }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.priv }}"><span class="ms" aria-hidden="true">{{ f.eye }}</span></button></div>
 </header>
 <div class="mp-hero hero">
-<div class="fx jb ac gap12"><span class="mp-over mp-hero-2">Household net worth</span><div class="mp-seg ccy" role="group" aria-label="Show amounts in"><button type="button" class="mp-seg-i seg-s on" aria-pressed="true" aria-label="Pounds">£ GBP</button><button type="button" class="mp-seg-i seg-s" aria-pressed="false" aria-label="Rupees">₹ INR</button></div></div>
+<div class="fx jb ac gap12"><span class="mp-over mp-hero-2">Net worth</span><div class="mp-seg ccy" role="group" aria-label="Show amounts in"><button type="button" class="mp-seg-i seg-s on" aria-pressed="true" aria-label="Pounds">£ GBP</button><button type="button" class="mp-seg-i seg-s" aria-pressed="false" aria-label="Rupees">₹ INR</button></div></div>
 <div class="fx ac gap12 wrap">
 <sc-if value="{{ f.h.plain }}" hint-placeholder-val="{{ true }}"><span class="mp-num-hero nowrap">{{ f.h.fig }}</span></sc-if>
 <sc-if value="{{ f.h.masked }}" hint-placeholder-val="{{ false }}"><span class="mp-num-hero nowrap"><span class="mp-mask" role="img" aria-label="hidden">{{ f.h.fig }}</span></span></sc-if>

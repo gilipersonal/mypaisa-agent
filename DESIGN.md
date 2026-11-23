@@ -134,17 +134,17 @@ typography:
     lineHeight: 1.2
     letterSpacing: "0"
   icon-sm:
-    fontFamily: "Material Symbols Rounded"
+    fontFamily: "Lucide (inline SVG) on the web; SF Symbols in the app"
     fontSize: "18px"
     fontWeight: 400
     lineHeight: 1
   icon-md:
-    fontFamily: "Material Symbols Rounded"
+    fontFamily: "Lucide (inline SVG) on the web; SF Symbols in the app"
     fontSize: "24px"
     fontWeight: 400
     lineHeight: 1
   icon-lg:
-    fontFamily: "Material Symbols Rounded"
+    fontFamily: "Lucide (inline SVG) on the web; SF Symbols in the app"
     fontSize: "26px"
     fontWeight: 400
     lineHeight: 1
@@ -262,6 +262,7 @@ Warm stone-paper neutrals contrasted against a single deep navy hero card, terra
 
 ## Typography
 
+**Platform type (MA-301 f 1a, Arun, 2 Nov 2026):** SF Pro, SF Pro Rounded and SF Symbols in the app; on the web the system font, then self-hosted `Inter` (variable WOFF2) and a small self-hosted `Nunito` figures subset, with Lucide icons as inline SVG (`.lc`), and no Google Fonts (the boards still load Material Symbols for their `.ms` icons until MA-340 redraws them).
 **Display / Rounded Figure Font:** `SF Pro Rounded` on Apple platforms, `Nunito` fallback (`ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif`)
 **UI & Body Font:** `SF Pro Text` on Apple platforms, `Inter` fallback (`-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif`)
 **Technical / Audit Mono Font:** `SF Mono` (`ui-monospace, "SF Mono", Menlo, monospace`) for expandable technical working (`.ccard-tech`) and audit hashes
@@ -272,6 +273,7 @@ Warm stone-paper neutrals contrasted against a single deep navy hero card, terra
 - **Display Hero Figure (`.mp-num-hero`, `.mp-num-l`)** (`800`, `44px/48px` and `28px/32px`, tracking `-0.03em` / `-0.02em`, `tabular-nums`): Primary net-worth and milestone totals (stepping to `36px/40px` below `375px` so long rupee totals never clip).
 - **Large Title & Headlines (`.mp-large`, `.mp-t1`, `.mp-t2`, `.mp-t3`)** (`700`–`600`, `34px/41px`, `28px/34px`, `22px/28px`, `20px/25px`): Top-level navigation large titles and section headers.
 - **Headline & Body (`.mp-hl`, `.mp-body`, `.mp-callout`, `.mp-sub`)** (`600` / `400`, `17px/22px`, `16px/21px`, `15px/20px`): Grouped row titles, conversational messages, and card subtitles.
+- **Label (`.mp-over`)** (`600`, `13px/18px`, tracking `0`): a short sentence-case label over a card or a figure ("Top holdings", "Net worth · Mon 26 Oct"), never all capitals (MA-301 d 1a).
 - **Footnote & Caption (`.mp-foot`, `.mp-cap`)** (`400`, `13px/18px`, `12px/16px`, tracking `0`): Supporting row metadata, FX notes, axis ticks, and timestamps (`10px/12px` semibold used strictly on iOS system tab bar labels `.tab` / `.mp-tab`).
 
 ### Named Rules
@@ -283,13 +285,15 @@ Warm stone-paper neutrals contrasted against a single deep navy hero card, terra
 
 Spacing runs on a `4px` grid (`s1` = `4px` through `s10` = `40px`). Layout adapts by **container inline-size** (`container: app / inline-size` and `container: page / inline-size` on Web; `container: screen / inline-size` on iOS/foldable frames) rather than device sniffing.
 
-Chat placement obeys one canonical rule across all surfaces: **beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over).** An iPhone is always compact in either orientation.
+Chat placement obeys one canonical rule across all surfaces: **beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over).** An iPhone is always compact in either orientation.
 
 - **Compact (`< 600px`):** Single column, `14px 16px 104px` page padding, bottom tab navigation (`5` slots on Web `<= 1023px`: `Home`, `Assets`, `Projection`, `Chat`, `More`; floating Liquid Glass tab pill + `Search` orb on iPhone).
-- **Regular (`600px`–`1023px` Web / `600pt`–`1132pt` iPad & Foldable Open):** `20px 24px` gutters, two-column card grids from `760px` where each column keeps `>= 340px`, inspector chat hidden below `1133pt` so the ledger keeps full room, and chat opened as a sheet via `Ask` / `Chat`.
-- **Wide (`>= 1024px` Web / `>= 1133pt` iPad):** `248px` Web sidebar (`280px` iPad glass sidebar), main page capped at `1180px` (`1.3fr : 1fr` columns when the page container itself is `>= 700px`, collapsing cleanly to `1` column when the docked `340px`–`380px` chat column narrows the page below `700px`).
+- **Regular (`600px`–`1023px` Web / `600pt`–`1392pt` iPad & Foldable Open, which is every iPad's own screen):** `20px 24px` gutters, two-column card grids from `760px` where each column keeps `>= 340px`, no inspector chat beside the screen, so the ledger keeps the full room; on iPad the chat is a sheet via `Ask` / `Chat`, and on the web the `Chat` tab in the tab bar (MA-301 c 1c, Arun, 2 Nov 2026: no iPad is `1393pt` wide; the 13-inch is `1376pt` across).
+- **Wide (`>= 1024px` Web):** `248px` Web sidebar (`280px` iPad glass sidebar from `900pt`), main page capped at `1180px` (`1.3fr : 1fr` columns when the page container itself is `>= 700px`). From `1024px` to `1392px` the chat is a `380px` drawer over the page from the sidebar's `Chat`; from `1393px` it is a docked `340px`–`380px` column beside the page, which collapses to `1` column when the page narrows below `700px`.
 
 ## Elevation & Depth
+
+**One surface per card (MA-301 d 1a, Arun, 2 Nov 2026).** A card is the only box: inside it, columns and rows are split by hairlines (`.mp-hairs`, `.mp-rows`), never boxed again in `surface-2` or `hero-2` tiles; the hero's own, owe and liquid strip is three hairline-ruled columns and its pulse sits on the hero.
 
 Content cards sit on warm paper (`ground`) with soft ambient contact lift (`--mp-shadow: 0 1px 2px rgba(20, 23, 31, 0.06), 0 8px 24px rgba(20, 23, 31, 0.06)`), while grouped lists (`.mp-group`) stay flat and separate rows with `0.5px`-scaled inset `hairline` dividers.
 
@@ -325,14 +329,15 @@ Charts draw SVG strokes with `preserveAspectRatio="none"` and `vector-effect: no
 
 ### Navigation
 - **Web Desktop (`>= 1024px`):** `248px` `.mp-side` rail with `Search` trigger, grouped routes (`Home`, `Assets`, `Debts`, `Budget`, `Projection`, `Reports`, `Holdings`, `Household`, `Activity`, and `Admin center`), and `.mp-side-i.on` elevated in `surface` with `primary` icon.
+- **Web ⌘K (and iPad's):** one palette at both doors: go to a page (`⌘1`–`⌘4`), find a record, or ask (its first row sends the question to the chat); nothing is created in it (MA-301 g 1a; Arun, 23 Nov 2026).
 - **Web Compact (`<= 1023px`):** Clean `48px` mobile web top bar + 5-tab bottom bar (`Home`, `Assets`, `Projection`, `Chat`, `More`), where `More` opens a Warm ledger drawer (`Escape`-dismissible) containing `Search` and all remaining routes.
-- **iOS & iPadOS:** Floating Liquid Glass `.tabdock` + `.tabsearch` orb on compact iPhone; `280px` floating glass `.sidebar` on iPad (`Ask` sheet from `600pt`–`1132pt`; docked inspector chat from `1133pt`).
+- **iOS & iPadOS:** Floating Liquid Glass `.tabdock` + `.tabsearch` orb on compact iPhone; `280px` floating glass `.sidebar` on iPad, the chat always an `Ask` sheet (no iPad reaches the `1393pt` where it docks beside; MA-301 c 1c).
 
 ## Do's and Don'ts
 
 ### Do:
 - **Do** route every displayed currency value, chart `aria-label`, and scrub tooltip through Privacy Mode masking (`privacy-mask` / `••••` / `aria-label="Hidden"`) when Privacy is active.
-- **Do** put `aria-hidden="true"` on every decorative `.ms` Material Symbols ligature span and provide explicit `aria-label` attributes on icon-only controls.
+- **Do** put `aria-hidden="true"` on every decorative icon (a Lucide `.lc` SVG on the web, a board's `.ms` stand-in until MA-340) and provide explicit `aria-label` attributes on icon-only controls.
 - **Do** keep all colour tokens inside the top-level `:root, .t-light` and `.t-dark` blocks (mirrored identically in `@media (prefers-color-scheme: dark)` for unforced roots) and sync `ds-v1/{tokens.css,ios.css,motion.css,motion.js}` byte-for-byte to `ios-v1/` and `app-v1/` by hand (no gate measures the copies since MA-303).
 - **Do** support keyboard `:focus-visible`, `Escape` dismissal on modals/sheets, and `pointerup` / `ArrowLeft` / `ArrowRight` on interactive `[data-scrub]` charts.
 

@@ -1,6 +1,6 @@
 # MA-301: the deep scan's redesign items, as an options round
 
-Not picked yet. Every board here is an option until Arun picks; none is in `ios-v1/` or `app-v1/`.
+Picked by Arun on Mon 2 Nov 2026 ("The pick", below); two questions the picks raised were settled on Mon 23 Nov 2026. The picked options are carried into `ios-v1/`, `app-v1/` and `ds-v1/` only, not into Prototype v5 (Arun, 23 Nov 2026: "no need to update Prototype v5, just the ios-v1 and app-v1 and design system updates are all that is needed.. make it a rule"; `.claude/rules/plan-sync.md`, rule 5), where the options below name Prototype v5 under "Build would touch". The option boards in this folder stay as the round's record.
 
 ## The request
 
@@ -152,10 +152,6 @@ browser 390, 1180, 1280, 1366, 1440), and read every frame; a script also measur
 
 ## The pick
 
-_Pending: one per item, recorded here with its date, then in `docs/trace.json` (MA-301 `design: picked`)._
-
-## The pick
-
 Arun, Mon 2 Nov 2026, from the published round (https://claude.ai/artifact/YCuDtgRHdMHtj6Xewte6g5):
 
 | Item | Pick | Recommended was |
@@ -179,4 +175,18 @@ What the picks change beyond the boards (to be carried in the same change as the
 - **b 1a:** ARCHITECTURE §4.9's "one review card" wording changes to questions first, then one Confirm.
 - **f 1a:** TECH_STACK's fonts and icons change (SF Pro, SF Pro Rounded and SF Symbols in the app; system font, then
   self-hosted Inter and a Nunito figures subset, and Lucide on the web); the Google Fonts `@import` leaves `tokens.css`.
-- **g 1a:** iPad's ⌘K behaviour is the open question the option names; it stays as drawn until Arun says.
+- **g 1a:** iPad's ⌘K behaviour was the open question the option named; settled below.
+- **e 1a:** a browser joins. ARCHITECTURE's "a browser never joins" (since 26 Oct, MA-161) is overturned; settled below.
+
+## Settled, Mon 23 Nov 2026
+
+The branch sat unmerged from 2 Nov to 23 Nov. When the round was resumed, two questions came back to Arun:
+
+- **Settled: does a browser join the household?** Arun, 23 Nov 2026: "Browser joins". The e 1a pick stands: a
+  browser that opens `/join/<token>` shows the invite and Continue with Apple and Continue with Google; either
+  creates the member and their Cognito user, then the passkey is offered. This overturns ARCHITECTURE's "a browser
+  never joins" (§4.5's identity table and Joining, since 26 Oct 2026) and MA-331's acceptance, which restated it on
+  5 Nov from MA-328's finding F02; both change with the boards. Native first sign-in stays Apple and Google only.
+- **Settled: does iPad's ⌘K open the same palette?** Arun, 23 Nov 2026: "Same palette on iPad". ⌘K opens one
+  palette at both doors: go to a page, find a record, or ask (its first row sends the question to the chat).
+  ARCHITECTURE §9.1's ⌘K on iPad changes with it.

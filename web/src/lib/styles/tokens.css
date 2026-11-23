@@ -6,6 +6,10 @@
    Theme: the root follows prefers-color-scheme; .t-light / .t-dark force one. The iOS app's colour
    assets are generated from these values (MA-165). */
 
+/* Type and icons (MA-301 f 1a, Arun, 2 Nov 2026): the app uses SF Pro, SF Pro Rounded and SF Symbols; the web uses the
+   system font, then self-hosted Inter (variable WOFF2) and a small self-hosted Nunito figures subset, and Lucide icons as
+   inline SVG (.lc). This @import serves the boards only, while boards still draw Material Symbols (.ms); the web app's
+   copy has none (web/src/lib/styles/tokens.css), and it leaves this file with the last .ms (MA-340). */
 
 :root, .t-light {
   /* ground and surfaces */
@@ -194,7 +198,7 @@
 .mp-sub    { font-size: 0.9375rem; line-height: 1.25rem; font-weight: 400; }
 .mp-foot   { font-size: 0.8125rem; line-height: 1.125rem; font-weight: 400; letter-spacing: 0; }
 .mp-cap    { font-size: 0.75rem; line-height: 1rem; font-weight: 400; letter-spacing: 0; }
-.mp-over   { font-size: 0.75rem; line-height: 1rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.mp-over   { font-size: 0.8125rem; line-height: 1.125rem; font-weight: 600; letter-spacing: 0; }   /* a short sentence-case label, never all capitals (MA-301 d 1a) */
 .mp-num-hero { font-family: var(--mp-font-round); font-size: 2.75rem; line-height: 3rem; font-weight: 800; letter-spacing: -0.03em; }
 .mp-num-l    { font-family: var(--mp-font-round); font-size: 1.75rem; line-height: 2rem; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
 .mp-num      { font-variant-numeric: tabular-nums; }
@@ -215,6 +219,9 @@
 .ms { font-family: "Material Symbols Rounded"; font-weight: 500; font-style: normal; font-size: 1.375rem; line-height: 1; display: inline-block; font-variation-settings: "FILL" 0, "wght" 500, "opsz" 24; -webkit-font-feature-settings: "liga"; user-select: none; }
 .ms-fill { font-variation-settings: "FILL" 1, "wght" 500, "opsz" 24; }
 .ms-s { font-size: 1.125rem; } .ms-l { font-size: 1.625rem; }
+/* Lucide (ISC licence) as inline SVG, the web's icons (MA-301 f 1a): <svg class="lc" viewBox="0 0 24 24" aria-hidden="true">paths</svg> */
+.lc { width: 1.375rem; height: 1.375rem; flex: none; display: inline-block; vertical-align: middle; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.lc-s { width: 1.125rem; height: 1.125rem; } .lc-l { width: 1.625rem; height: 1.625rem; }
 
 /* ---------- surfaces ---------- */
 .mp-card  { background: var(--mp-surface); border-radius: var(--mp-r-card); padding: 16px; box-shadow: var(--mp-shadow); }
@@ -226,6 +233,16 @@
 .mp-hero  { background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: var(--mp-r-hero); padding: 20px; position: relative; overflow: hidden; }
 .mp-hero-2 { color: var(--mp-hero-ink-2); }
 .mp-hr { height: 1px; background: var(--mp-line); border: 0; margin: 0; }
+/* flat inside a card (MA-301 d 1a): one surface per card; what sits inside it is split by hairlines, never boxed again */
+.mp-hairs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--mp-line); padding-top: 12px; }
+.mp-hairs > * { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: 0 12px; }
+.mp-hairs > :first-child { padding-left: 0; }
+.mp-hairs > * + * { border-left: 1px solid var(--mp-line); }
+.mp-hero .mp-hairs, .mp-hero .mp-hairs > * + * { border-color: var(--mp-hero-2); }
+.mp-hairs.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mp-rows > * + * { border-top: 1px solid var(--mp-line); }
+.mp-rows > * { padding-block: 10px; }
+.mp-rows > :first-child { padding-top: 0; } .mp-rows > :last-child { padding-bottom: 0; }
 
 /* ---------- chips ---------- */
 .mp-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 10px; font-size: 0.8125rem; line-height: 1.125rem; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; }
@@ -396,7 +413,7 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 @container page (max-width: 599px) {
   .mp-pagehead { flex-direction: column; align-items: stretch; }
 }
-/* With the sidebar and the chat both beside it (a laptop from 1024 to about 1280), a page under 700 stacks its own
+/* With the sidebar and the chat both beside it (a window from about 1393, MA-301 c 1c), and on a narrow window, a page under 700 stacks its own
    two-up parts; under 760 its hero figure steps down and a narrow table scrolls. A phone's page is narrow too, and
    keeps everything as drawn. */
 @container page (max-width: 699px) {
@@ -445,19 +462,11 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
    as drawn at its drawn size (node scripts/board_fit.js measures both). The iPhone's frame and the web app's root
    are named size containers, screen and app. */
 .dev { container: screen / inline-size; }
-/* an iPad's chat sits beside every screen from about 1133 pt (an iPad mini across, and every larger iPad across); from 900
-   to 1132 (a 13-inch iPad upright, a wide Split View pane or Stage Manager window) the screen takes the room and the chat
-   is a sheet away, opened from the sidebar's Chat, as it is from about 600 to 900 (Arun, 27 Oct 2026) */
-@container screen (min-width: 900px) and (max-width: 1132px) { .mp.ipad .scrn.srow > .insp { display: none; } }
-@container screen (max-width: 899px) { .mp.ipad .scrn.srow > .insp { display: none; } }
-@container screen (max-width: 1132px) { .mp:is(.dev-fold-open, .dev-fold-shut) .scrn.srow > .insp { display: none; } }   /* a foldable open (880 pt) or shut, the same way (MA-300) */
-/* and from 1133 to 1179 (an iPad mini across) the chat column is 280, an inspector's narrowest, so the screen keeps the
-   room it has at 1180; a card's value there goes under its key before it falls under 7em */
-@container screen (min-width: 1133px) and (max-width: 1179px) {
-  .mp.ipad .scrn.srow > .insp { width: 280px; }
-  .mp.ipad .insp .kv { flex-wrap: wrap; }
-  .mp.ipad .insp .kv > :last-child { flex: 1 1 0; min-width: min(100%, 7em); }
-}
+/* the chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact
+   window (every iPhone, a folded foldable, Slide Over) (MA-301 c 1c, Arun, 2 Nov 2026). No iPad is that wide (the 13-inch
+   is 1376 pt across), so on every iPad and an open foldable the screen takes the room and the chat is a sheet away,
+   opened from the sidebar's Chat. Until 2 Nov the chat sat beside from about 1133 pt (Arun, 27 Oct 2026, MA-240). */
+@container screen (max-width: 1392px) { .mp:is(.ipad, .dev-fold-open, .dev-fold-shut) .scrn.srow > .insp { display: none; } }
 /* rows that scroll sideways (the composer's shortcuts, suggestions, summary pins) really scroll, as iOS's do: a chip
    cut at the edge, under the row's own fade, is the sign there is more */
 .mp .chips, .mp .sugg, .mp .chiprow, .mp .wsugg, .mp.pw .wsugg { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }

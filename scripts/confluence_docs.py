@@ -77,7 +77,7 @@ CICD_GIFS = [  # (gif in docs/design/cicd-security-regression, tab title, captio
 MAESTRO_GIFS = [  # (gif in docs/design/maestro-ios-ipados-testing, tab title, caption): the local Maestro & private 90-day TestFlight block diagrams, animated (MA-274)
     ("01-local-maestro-pool-mcp-cli.gif", "1 · Cloned pool & MCP isolation", "One Maestro owner per simulator prevents XCTest driver teardowns: interactive MCP sessions stay on standard Xcode simulators while scripts/maestro_local.py drives five cloned flock-locked simulators against stub (£0) or dev-live AWS."),
     ("02-rn-swiftui-fabric-selectors.gif", "2 · RN + SwiftUI mp.* selectors", "One shared mp.* ID schema generates web/src/lib/test-ids.ts and TestIDs.swift, while .accessibilityElement(children: .contain), UITabBarItem IDs and MYPAISA_STATIC_MOTION=1 keep SwiftUI and Liquid Glass controls deterministic."),
-    ("03-ios-ipados-4band-matrix.gif", "3 · 4-band width & rotation matrix", "Maestro tests all four width sub-bands (<600 pt compact, 600–899 pt top bar + sheet, 900–1132 pt MA-240 sidebar + sheet, and ≥1133 pt three-column chat-beside) and rotates iPads mid-flow with zero lost input."),
+    ("03-ios-ipados-4band-matrix.gif", "3 · 4-band width & rotation matrix", "Maestro tests the width sub-bands (<600 pt compact, 600–899 pt top bar + sheet, 900–1392 pt sidebar + sheet, which is every iPad since MA-301, and ≥1393 pt three-column chat-beside, at the debug width only) and rotates iPads mid-flow with zero lost input. The GIF predates MA-301 (MA-341 redraws it)."),
     ("04-simctl-capabilities-phases.gif", "4 · simctl & Phases 0–15 (£0/mo)", "xcrun simctl and host staging drive Face ID match/fail, APNs lock-screen push notifications, Universal Links, Photos images, Local File Provider PDFs/workbooks and AX5 across Phases 0 to 15 locally on Apple Silicon at £0.00/month instead of £42–£65/month on GitHub macos-15."),
     ("05-private-testflight-90day-beta.gif", "5 · Private 90-day TestFlight beta", "testFlightInternalTestingOnly = true hard-locks MyPaisa off the public App Store while silent TestFlight Automatic Updates, least-privilege App Store Connect roles and a day-60 keepalive renew the 90-day (3-month) install window indefinitely."),
 ]
@@ -1331,8 +1331,8 @@ def render_maestro(ctx: Ctx) -> str:
     out = [
         cpanel("#EAE6FF", ":iphone:", '<p>Arun, 29 Oct 2026 (MA-167, MA-273, MA-274): the local iOS and iPadOS testing strategy on Apple Silicon '
                "with Maestro (<code>scripts/maestro_local.py</code>, five cloned simulators guarded by <code>flock</code> so automated runs never collide "
-               "with interactive Maestro MCP sessions, one shared <code>mp.*</code> ID schema across Playwright and SwiftUI, four adaptive width sub-bands "
-               "and live rotation across 1133 pt, <code>xcrun simctl</code> and host Local File Provider bridges for Face ID, APNs push, Universal Links, Photos images, PDFs/workbooks and AX5, and a "
+               "with interactive Maestro MCP sessions, one shared <code>mp.*</code> ID schema across Playwright and SwiftUI, the adaptive width sub-bands "
+               "(the chat beside only from 1393 pt, MA-301) and live rotation, <code>xcrun simctl</code> and host Local File Provider bridges for Face ID, APNs push, Universal Links, Photos images, PDFs/workbooks and AX5, and a "
                "phase-by-phase rollout across Phases 0 to 15 at £0.00/month), together with the 100% private 90-day (3-month) evergreen TestFlight "
                "household beta plan (<code>testFlightInternalTestingOnly = true</code>, least-privilege App Store Connect roles, silent overnight updates "
                "preserving the Keychain and the offline store, and a day-60 keepalive rebuild). "

@@ -43,7 +43,7 @@
           .board { width: 1440px; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
           .board.w390 { width: 390px; position: relative; padding-bottom: 84px; box-sizing: border-box; }
           .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; }
-          /* the Projection's chrome since MA-264 (the brief): the tabs, then the horizon and the money, as the new tabs draw it */
+          /* the Projection's chrome since MA-264 (the brief): the tabs, then the horizon and the money, as the new tabs draw it. Since MA-301 1b the title is the picker, and these rules draw nothing. */
           .utabs { display: flex; gap: 4px; border-bottom: 1px solid var(--mp-line); overflow-x: auto; scrollbar-width: none; }
           .utab { min-height: 44px; padding: 0 14px; border: 0; background: transparent; display: inline-flex; align-items: center; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; flex: none; box-shadow: inset 0 -3px 0 transparent; }
           .utab.on { color: var(--mp-ink); box-shadow: inset 0 -3px 0 var(--mp-accent); }
@@ -144,7 +144,7 @@
           .fig { font: 600 17px/22px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; }
           .fig.ed { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px 0 12px; border-radius: 10px; background: var(--mp-surface-2); color: var(--mp-ink); box-sizing: border-box; }
           .fig.ed .ms { font-size: 16px; color: var(--mp-accent); }
-          .note { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); }
+          .note { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--mp-line); border-bottom: 1px solid var(--mp-line); }   /* MA-301 d 1a: a line in the card, not a box inside it */
           .note .ms { font-size: 18px; color: var(--mp-ink-2); margin-top: 1px; }
           /* option 1b */
           .heroS { padding: 28px 28px 24px; display: flex; flex-direction: column; gap: 12px; }
@@ -204,7 +204,7 @@
           .caret { display: inline-block; width: 2px; height: 22px; background: var(--mp-accent); margin: 0 3px 0 1px; }
           .ba { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font: 400 15px/20px var(--mp-font); }
           .ba .old { color: var(--mp-ink-2); text-decoration: line-through; }
-          .audit { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
+          .audit { display: flex; gap: 8px; align-items: flex-start; padding: 10px 0 0; border-top: 1px solid var(--mp-line); font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
           .audit .ms { font-size: 16px; margin-top: 1px; }
           .saved { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; background: var(--mp-add-bg); color: var(--mp-add); font: 600 15px/20px var(--mp-font); }
           /* the phone door at 390 */
@@ -224,8 +224,8 @@
           button.wsend { position: relative; } button.wsend::after { content: ""; position: absolute; inset: -4px; }   /* 36 drawn, 44 to tap */
           a.drv { color: inherit; text-decoration: none; }
           .mp-switch:focus-visible, .fig.ed:focus-visible, .edin:focus-visible, .wfield .rtx:focus-visible, a.drv:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
-          /* the chat beside every screen from about 1133 px (MA-240, MA-300); below it the web shows the page or the chat, never both; under 600, the compact chrome (MA-264's tabs) */
-          @container app (max-width: 1132px) { .mp .chatcol { display: none; } }
+          /* the chat beside every screen from about 1393 px, a sheet away from about 600 to 1393 px (on the web a drawer over the page, opened from the sidebar’s Chat), and a tab in a compact window (MA-301 c 1c); under 600, the compact chrome */
+          @container app (max-width: 1392px) { .mp .chatcol { display: none; } }
           @container app (max-width: 599px) {
             .mp .utabs { display: none; }
             .mp .tabseg { display: flex; }
@@ -233,12 +233,52 @@
             .mp .ctlrow .ccyseg { flex: 1 1 150px; }
           }
                   :where(button[type="button"].mp-btn) { letter-spacing: inherit; word-spacing: inherit; }   /* MA-300: spans made buttons keep the spacing they inherited; the older plain buttons keep theirs */
+
+/* MA-301 a 1b (Arun, Mon 2 Nov 2026): the title is the picker (Net worth, Plans, Budget forecast); the horizon is a row of
+   chips under the chart; money (Nominal or Today's money) is one corner button. £ or ₹ follow the app's currency pill
+   (MA-279 1a), so the page has no currency control of its own. The title's menu is a popover on paper, never glass.
+   From docs/design/reviews/MA-301, a · Projection header. */
+.ttlmenu { -webkit-appearance: none; appearance: none; margin: 0 0 0 -4px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 4px; border-radius: 10px; font: 700 34px/41px var(--mp-font); letter-spacing: -0.02em; color: var(--mp-ink); text-align: left; white-space: nowrap; }
+.ttlmenu .ms, .ttlmenu .lc { font-size: 26px; width: 26px; height: 26px; color: var(--mp-accent); }
+.ttlmenu:hover { background: var(--mp-surface-2); }
+.ttlmenu[aria-expanded="true"] { background: var(--mp-surface-2); }
+.ttlmenu[aria-expanded="true"] .ms, .ttlmenu[aria-expanded="true"] .lc { transform: rotate(180deg); }
+.ttlmenu:focus-visible, .hzc:focus-visible, .cornerbtn:focus-visible, .tm-i:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+.ttlwrap { position: relative; min-width: 0; }
+.herot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; margin: -8px -6px -2px 0; }
+.herot > :first-child { min-width: 0; }
+.cornerbtn { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 8px 0 14px; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; white-space: nowrap; }
+.cornerbtn .ms { font-size: 20px; }
+.cornerbtn.oncard { background: var(--mp-surface-2); color: var(--mp-ink); }
+.cornerbtn.oncard .ms { color: var(--mp-accent); }
+.hzchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.hzc { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; min-height: 44px; min-width: 60px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; white-space: nowrap; }
+.hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
+.hzchips.oncard .hzc { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.hzchips.oncard .hzc.on { background: var(--mp-ink); color: var(--mp-surface); }
+.tpop { position: absolute; left: -4px; top: calc(100% + 6px); z-index: 30; width: 260px; box-sizing: border-box; padding: 6px; border-radius: 14px; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line), var(--mp-shadow); display: flex; flex-direction: column; }
+.tm-i { -webkit-appearance: none; appearance: none; margin: 0; border: 0; background: none; cursor: pointer; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; border-radius: 8px; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); text-align: left; }
+.tm-i[aria-checked="true"] { font-weight: 600; }
+.tm-i:hover, .tm-i.hov { background: var(--mp-surface-2); }
+.tm-i .ms, .tm-i .lc { font-size: 20px; width: 20px; height: 20px; color: var(--mp-accent); }
+.tm-k { margin-left: auto; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+
+.cornerbtn .lc { width: 18px; height: 18px; }
+.cornerbtn.oncard .lc { color: var(--mp-accent); }
+.tlh.tlhb { align-items: center; flex-wrap: nowrap; margin-bottom: 8px; }
+.tl .hzchips { margin-top: 12px; }
+.bfh { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.bfh > .grow1 { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sumctl { flex: 1 1 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--mp-line); }
+.sumctl .hzchips { margin-top: 0; }
+.ttlwrap { flex: 1 1 0; }
+.herot.hcr { justify-content: flex-end; margin: 0 -6px 8px 0; }
 </style>
       </helmet>
 
       <section class="dv-turn" id="t0" data-screen-label="Web v4 · Projection: intro">
         <div class="dv-thd"><a class="dv-tid" href="#t0">P</a><span class="dv-tname">Projection: where the household's net worth is heading, at the laptop and phone-web doors</span></div>
-        <p class="dv-intro">The old wealth tracker's Forecast, renamed the Projection: a wealth forecast from the household's own numbers (MA-307, 2 Nov 2026: the market side was retired; MyPaisa is a wealth tracker only). Three options for the screen at 1440 with the chat beside it, then the recommended option's states: a what-if in the chat, the member's view, rupees at 2026 prices, privacy, the admin's corrections in place, and a plan item added in the chat at 390. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start): since MA-264, run month by month (future-plans-v4.json, R26 and what_if_26), which replaced the v4 figure set's yearly sketch. The model writes words around the figures and never a number. Since MA-261 the Projection has three tabs and opens at 20 years; 1a and its states draw them, and P8 and P9 add the phone-web door and the evening of Thu 5 Nov, after Arun's plans. Supersedes Wealth.dc.html's Browser · Forecast. The iPhone boards are iPhone v4 · Projection in MyPaisa iOS v1.</p>
+        <p class="dv-intro">The old wealth tracker's Forecast, renamed the Projection: a wealth forecast from the household's own numbers (MA-307, 2 Nov 2026: the market side was retired; MyPaisa is a wealth tracker only). Three options for the screen at 1440 with the chat beside it, then the recommended option's states: a what-if in the chat, the member's view, rupees at 2026 prices, privacy, the admin's corrections in place, and a plan item added in the chat at 390. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start): since MA-264, run month by month (future-plans-v4.json, R26 and what_if_26), which replaced the v4 figure set's yearly sketch. The model writes words around the figures and never a number. Since MA-261 the Projection has three views and opens at 20 years; since MA-301 (1b, Mon 2 Nov) the title is the picker for them, the horizon a row of chips under the fan and money the hero’s corner button. 1a and its states draw them, P8 and P9 add the phone-web door and the evening of Thu 5 Nov, after Arun's plans, and P10 the title’s menu open. Supersedes Wealth.dc.html's Browser · Forecast. The iPhone boards are iPhone v4 · Projection in MyPaisa iOS v1.</p>
         <div class="plan"><span class="plan-s"><b>Jira</b></span><span class="plan-k">MA-224</span><span>the screen</span><span class="plan-k">MA-222</span><span>plan items</span><span class="plan-k">MA-223</span><span>what-ifs and the story</span><span class="plan-k">MA-221</span><span>priors and sources</span><span class="plan-k">MA-219</span><span>the engine, its fan</span></div>
       </section>
 
@@ -267,27 +307,17 @@
                         <main class="mp-shell-main pmain">
                           <div class="mp-pagepad">
                             <header class="mp-pagehead">
-                              <div><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ f.d.meta }}</div></div>
+                              <div class="ttlwrap"><button type="button" class="ttlmenu" aria-haspopup="menu" aria-expanded="{{ f.texp }}" aria-label="Projection: Net worth. Change view">Net worth<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="mp-foot mp-ink2">{{ f.d.meta }}</div><sc-if value="{{ f.tmenu }}"><div class="tpop" role="menu" aria-label="Projection, the view"><sc-for list="{{ tviews }}" as="v" hint-placeholder-count="3"><button type="button" class="tm-i" role="menuitemradio" aria-checked="{{ v.p }}"><span>{{ v.l }}</span><sc-if value="{{ v.on }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></sc-if></button></sc-for></div></sc-if></div>
                               <div class="hctl">
-                                <sc-if value="{{ f.old }}"><div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i {{ f.d.cG }}">£ GBP</button><button class="mp-seg-i {{ f.d.cI }}">₹ INR</button></div>
-                                <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.d.tm }}" role="switch" tabindex="0" aria-checked="{{ f.d.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span></sc-if>
+                                
                                 <button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ f.d.pr }}"><span class="ms" aria-hidden="true">{{ f.d.eye }}</span></button>
                               </div>
                             </header>
-                            <sc-if value="{{ f.tabs }}">
-                              <nav class="utabs" aria-label="Projection"><sc-for list="{{ prtabs }}" as="t" hint-placeholder-count="3"><button class="utab {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></nav>
-                              <div class="mp-seg tabseg" role="group" aria-label="Projection"><sc-for list="{{ prtabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-                              <div class="ctlrow">
-                                <div class="mp-seg hzseg" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button class="mp-seg-i {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
-                                <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i {{ f.d.cG }}" aria-pressed="{{ f.d.pG }}">£ GBP</button><button class="mp-seg-i {{ f.d.cI }}" aria-pressed="{{ f.d.pI }}">₹ INR</button></div>
-                                <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.d.tm }}" role="switch" tabindex="0" aria-checked="{{ f.d.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
-                              </div>
-                            </sc-if>
 
                             <!-- 1a: the fan first -->
                             <sc-if value="{{ f.oa }}">
                               <div class="mp-hero heroP">
-                                <div class="fx col gap2"><span class="mp-sub mp-hero-2">{{ f.d.over }}</span><span class="mp-num-hero {{ f.d.big.m }}">{{ f.d.big.v }}</span></div>
+                                <div class="fx col gap2"><div class="herot"><span class="mp-sub mp-hero-2">{{ f.d.over }}</span><button type="button" class="cornerbtn" aria-haspopup="menu" aria-label="Money: {{ f.d.money }}. Change it">{{ f.d.money }}<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div><span class="mp-num-hero {{ f.d.big.m }}">{{ f.d.big.v }}</span></div>
                                 <p class="pp mp-sub mp-hero-2">From <span class="{{ f.d.from.m }}">{{ f.d.from.v }}</span> today. 8 in 10 of the engine's runs end between <span class="{{ f.d.lo.m }}">{{ f.d.lo.v }}</span> and <span class="{{ f.d.hi.m }}">{{ f.d.hi.v }}</span>.</p>
                                 <div class="fanw onhero">
                                   <div class="mp-chartbox fanbox" role="img" aria-label="{{ f.d.ch.aria }}">
@@ -302,7 +332,7 @@
                                   </div>
                                   <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ f.d.ch.axis }}" as="x" hint-placeholder-count="7"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
                                 </div>
-                                <div class="lgd onhero"><span><i class="sw-line"></i>Middle path</span><span><i class="sw-band"></i>8 in 10 runs</span><span><i class="sw-dot"></i>A loan ends</span><span><i class="sw-sq"></i>A plan item</span><span><i class="sw-tk"></i>A maturity or rate change</span></div>
+                                <div class="lgd onhero"><span><i class="sw-line"></i>Middle path</span><span><i class="sw-band"></i>8 in 10 runs</span><span><i class="sw-dot"></i>A loan ends</span><span><i class="sw-sq"></i>A plan item</span><span><i class="sw-tk"></i>A maturity or rate change</span></div><div class="hzchips" role="group" aria-label="Horizon"><sc-for list="{{ f.d.hzc }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
                               </div>
                               <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>{{ c }}</button></sc-for></div>
                               <div class="pcols">
@@ -331,7 +361,7 @@
                             <!-- 1b: a story first -->
                             <sc-if value="{{ f.ob }}">
                               <div class="mp-hero heroS">
-                                <span class="mp-over mp-hero-2">Where you're heading</span>
+                                <div class="herot"><span class="mp-over mp-hero-2">Where you're heading</span><button type="button" class="cornerbtn" aria-haspopup="menu" aria-label="Money: {{ f.d.money }}. Change it">{{ f.d.money }}<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
                                 <p class="story">On today's plan, the middle path takes the household from <b>£457,951</b> today to <b>£1,508,000</b> by 2036, and <b>£6,626,000</b> by 2056.</p>
                                 <p class="pp mp-callout mp-hero-2">8 in 10 of the engine's runs end 2056 between £3,419,000 and £11,990,000. The car loan ends in Feb 2029, the HDFC loan in Jul 2030 and the mortgage in Oct 2045, and each frees its payment.</p>
                                 <span class="mp-foot mp-hero-2">The figures are the engine's run of Mon 26 Oct, 09:53; the sentences are fixed wording around them.</span>
@@ -349,7 +379,7 @@
                                   </div>
                                   <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ f.d.ch.axis }}" as="x" hint-placeholder-count="7"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
                                 </div>
-                                <div class="lgd oncard" style="margin-top: 12px"><span><i class="sw-line"></i>Middle path</span><span><i class="sw-band"></i>8 in 10 runs</span><span><i class="sw-dot"></i>A loan ends, Arun retires</span><span><i class="sw-sq"></i>A plan item</span><span><i class="sw-tk"></i>A maturity or rate change</span></div>
+                                <div class="lgd oncard" style="margin-top: 12px"><span><i class="sw-line"></i>Middle path</span><span><i class="sw-band"></i>8 in 10 runs</span><span><i class="sw-dot"></i>A loan ends, Arun retires</span><span><i class="sw-sq"></i>A plan item</span><span><i class="sw-tk"></i>A maturity or rate change</span></div><div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ f.d.hzc }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
                               </div>
                               <div class="pcols">
                                 <div class="mp-card cpad">
@@ -367,7 +397,7 @@
                             <sc-if value="{{ f.oc }}">
                               <div class="mp-hero heroC">
                                 <div class="fx col gap8"><span class="mp-sub mp-hero-2">Middle path in 2056</span><span class="mp-num-hero">£6,626,000</span><span class="mp-sub mp-hero-2">From £457,951 today. 8 in 10 runs end between £3,419,000 and £11,990,000.</span></div>
-                                <div class="fanw sm onhero"><div class="mp-chartbox fanbox" role="img" aria-label="{{ f.d.ch.aria }}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="fband" sc-camel-d="{{ f.d.ch.band }}"></path><path class="fline" sc-camel-d="{{ f.d.ch.line }}"></path></svg></div><div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">Today</span><span style="left: 33.33%">2036</span><span style="left: 66.67%">2046</span><span class="ax1" style="left: 100%">2056</span></div></div>
+                                <div class="fanw sm onhero"><div class="herot hcr"><button type="button" class="cornerbtn" aria-haspopup="menu" aria-label="Money: {{ f.d.money }}. Change it">{{ f.d.money }}<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div><div class="mp-chartbox fanbox" role="img" aria-label="{{ f.d.ch.aria }}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="fband" sc-camel-d="{{ f.d.ch.band }}"></path><path class="fline" sc-camel-d="{{ f.d.ch.line }}"></path></svg></div><div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">Today</span><span style="left: 33.33%">2036</span><span style="left: 66.67%">2046</span><span class="ax1" style="left: 100%">2056</span></div><div class="hzchips" role="group" aria-label="Horizon"><sc-for list="{{ f.d.hzc }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div></div>
                               </div>
                               <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>{{ c }}</button></sc-for></div>
                               <div class="decs">
@@ -515,6 +545,8 @@
             const axis = (Yr === 20 ? (o.w390 ? [[0, 'Today', 'ax0'], [10, '2036', ''], [20, '2046', 'ax1']] : [[0, 'Today', 'ax0'], [5, '2031', ''], [10, '2036', ''], [15, '2041', ''], [20, '2046', 'ax1']]) : [[0, 'Today', 'ax0'], [5, '2031', ''], [10, '2036', ''], [15, '2041', ''], [20, '2046', ''], [25, '2051', ''], [30, '2056', 'ax1']]).map((a) => ({ left: pc(c.X(a[0])), l: a[1], c: a[2] }));
             const fromV = o.r4 ? gbp(START4) : (o.inr ? '₹5,15,19,488' : gbp(START));
             return {
+              money: (o.tm || o.inr) ? 'Today’s money' : 'Nominal',
+              hzc: ['5 yrs', '10 yrs', '20 yrs', '30 yrs'].map((l) => ({ l, on: l === Yr + ' yrs' ? 'on' : '', p: l === Yr + ' yrs' ? 'true' : 'false' })),
               meta: (o.inr ? 'In rupees at 2026 prices: today’s money, at ₹112.50 to the pound (ECB, Fri 23 Oct)' : 'Net worth over the next ' + Yr + ' years, in the pounds of each year') + (o.r4 ? ' · the engine’s run, Thu 5 Nov 20:59' : ' · the engine’s run, Mon 26 Oct 09:53'),
               cG: o.inr ? '' : 'on', cI: o.inr ? 'on' : '', pG: o.inr ? 'false' : 'true', pI: o.inr ? 'true' : 'false', tm: (o.tm || o.inr) ? 'on' : '', tmA: (o.tm || o.inr) ? 'true' : 'false', pr: o.priv ? 'true' : 'false', eye: o.priv ? 'visibility_off' : 'visibility',
               over: o.inr ? 'Middle path in ' + last + ', in today’s money' : 'Middle path in ' + last,
@@ -546,7 +578,7 @@
           const chatArun = { msgs: [mA] };
           const chatAsha = { msgs: [{ q: 'What is the shaded band?', qt: '10:08', a: 'It is where 8 in 10 of the engine’s runs land; the line through it is the middle one. Shares swing the most, so the band widens with the years.', wif: false }] };
           const chatWif = { msgs: [mA, { q: 'What if we put £60,000 down on a second flat in June 2028?', qt: '10:20', a: 'Here’s the engine’s run with it.', wif: true }] };
-          const page = (b, o, chat, who) => T.map((t) => ({ cap: b + ' · ' + t[0], cls: t[1] + (o.w390 ? ' w390' : ''), page: true, oa: o.a, ob: o.b, oc: o.c, tabs: !!o.a, old: !o.a, w390: !!o.w390, adm: !o.mem, mem: !!o.mem, who, c: chat, d: view(o) }));
+          const page = (b, o, chat, who) => T.map((t) => ({ cap: b + ' · ' + t[0], cls: t[1] + (o.w390 ? ' w390' : ''), page: true, tmenu: !!o.tmenu, texp: o.tmenu ? 'true' : 'false', oa: o.a, ob: o.b, oc: o.c, tabs: !!o.a, old: !o.a, w390: !!o.w390, adm: !o.mem, mem: !!o.mem, who, c: chat, d: view(o) }));
           const chatPlans = { msgs: [{ q: 'close my HDFC loan with the SBI FD when it matures', qt: '20:58', a: 'Saved. It closes the loan in Mar 2029, when the FD matures; the Plans tab shows it.', wif: false }, { q: 'Show me where all that leaves us', qt: '21:06', a: 'Here it is: the engine ran again at 20:59 with all seven plans. The squares on the line are your plans; the Plans and Budget forecast tabs have the detail.', wif: false }] };
           const ARUN = 'Signed in with Apple · Arun, admin', ASHA = 'Signed in with Google · Asha, member';
           // The admin's corrections in place: Mon 26 Oct 10:40 and 10:44, after every other frame here, so no later frame shows the old run.
@@ -566,7 +598,7 @@
               head: { n: '1', t: 'Three options for the Projection screen', p: 'Each is a complete page for the admin, Arun, at 1440 with the chat beside it, in light and dark. They differ in what comes first: the chart (1a), the words (1b) or the decades (1c). 1a is recommended; the second turn below draws its states.' },
               lead: 'The fan on the navy hero, milestones and plan items marked on the line, a hover on 2036, the scenario chips, then the milestones, the plan items and the assumptions panel, each figure with its source and editable by the admin. Recommended: it is §6.6’s screen as listed (the fan, milestones on the line, the assumptions with sources, scenario chips, Ask), the chart a member reads and hovers comes first, and the summary still leads, as the hero’s one figure and its range.',
               frames: page('Browser · Projection, the fan first', { a: true }, chatArun, ARUN),
-              notes: [{ h: 'Where it sits.', t: 'Projection is its own page in the sidebar (Home, Assets, Debts, Budget, Projection, Activity, Audit), with the chat beside every screen from about 1133 px. MA-224.' }, { h: 'The fan is the engine’s.', t: 'The middle path and the band where 8 in 10 runs land, from the stored run (MA-219); the hover reads 2036 off the same run. The labels and dots are HTML over the SVG.' }, { h: 'Three shapes, never colour alone.', t: 'A dot where a loan ends or Arun retires, a square for a plan item, a tick on the axis for a maturity or the fixed rate’s end; each is named in the lists, with the same shape.' }, { h: 'The tabs and the switches (MA-261, MA-264).', t: 'Net worth, Plans and Budget forecast under the title; the horizon (5, 10, 20 or 30 years, opening at 20), £ or ₹ and Today’s money under them; the eye stays in the page head. They only change the view. Board P3 draws them flipped; 1b and 1c keep the 30 years they were drawn at.' }, { h: 'Sources.', t: 'Contract for the FD and PPF, a prior for prices and property, history shrunk toward a prior for Parag Parikh and pay (MA-221). Arun corrects any figure in place (P5); members cannot.' }, { h: 'Moves.', t: 'The hero rises and its figure rolls up, the band and line wipe in from the left, the dots and labels land after; the cards cascade.' }] },
+              notes: [{ h: 'Where it sits.', t: 'Projection is its own page in the sidebar (Home, Assets, Debts, Budget, Projection, Activity, Audit), with the chat beside every screen from about 1393 px, a sheet away from about 600 to 1393 px (on the web a drawer over the page, opened from the sidebar’s Chat), and a tab in a compact window (MA-301 c 1c). MA-224.' }, { h: 'The fan is the engine’s.', t: 'The middle path and the band where 8 in 10 runs land, from the stored run (MA-219); the hover reads 2036 off the same run. The labels and dots are HTML over the SVG.' }, { h: 'Three shapes, never colour alone.', t: 'A dot where a loan ends or Arun retires, a square for a plan item, a tick on the axis for a maturity or the fixed rate’s end; each is named in the lists, with the same shape.' }, { h: 'The view and its settings (MA-261, MA-264, MA-301 1b).', t: 'The title is the picker: Net worth ▾ opens a menu of Net worth, Plans and Budget forecast (P10); the horizon chips (5, 10, 20 or 30 years, opening at 20) sit under the fan they change; Nominal or Today’s money is the hero’s corner button; £ or ₹ follow the app’s currency pill (MA-279); the eye stays in the page head. They only change the view. Board P3 draws rupees and today’s money; 1b and 1c keep the 30 years they were drawn at.' }, { h: 'Sources.', t: 'Contract for the FD and PPF, a prior for prices and property, history shrunk toward a prior for Parag Parikh and pay (MA-221). Arun corrects any figure in place (P5); members cannot.' }, { h: 'Moves.', t: 'The hero rises and its figure rolls up, the band and line wipe in from the left, the dots and labels land after; the cards cascade.' }] },
             { anchor: 'o1b', id: '1b', name: 'Browser · Projection, a story first', keys: 'MA-224 · MA-223 · MA-219',
               lead: 'Where you’re heading, in plain words built around the engine’s figures, then the fan on a card, then what drives it. The assumptions, plan items and milestones are one click away.',
               frames: page('Browser · Projection, a story first', { b: true }, chatArun, ARUN),
@@ -585,7 +617,7 @@
               frames: page('Browser · Projection, as Asha sees it', { a: true, mem: true }, chatAsha, ASHA),
               notes: [{ h: 'Read, ask, never save.', t: 'Figures show plain, without the edit pill; plan items carry a lock note. She can still ask a what-if in the chat; her card has no Save (iPhone v4 · Projection draws it).' }, { h: 'One family.', t: 'No household switch: Asha sees the household’s whole Projection, as Arun does.' }] },
             { anchor: 'p3', id: 'P3', name: 'Browser · Projection, in rupees at 2026 prices', keys: 'MA-224 · MA-219',
-              lead: '₹ INR and Today’s money switched on. Derived for the board from the engine’s run: each year’s figure divided by 1.025 a year from 2026 (UK inflation), times ₹112.50, rounded to the lakh. The engine drifts the rate by the inflation gap, so at 2026 prices the rupee figure is the pound figure at today’s rate.',
+              lead: '₹ INR from the app’s currency pill (MA-279) and Today’s money from the hero’s corner button. Derived for the board from the engine’s run: each year’s figure divided by 1.025 a year from 2026 (UK inflation), times ₹112.50, rounded to the lakh. The engine drifts the rate by the inflation gap, so at 2026 prices the rupee figure is the pound figure at today’s rate.',
               frames: page('Browser · Projection, in rupees at 2026 prices', { a: true, inr: true }, chatArun, ARUN),
               notes: [{ h: 'Derived, and said so.', t: 'Only the hero, the axis, the end labels and the hover change. Milestones and plan items keep their own currency, as the records do.' }, { h: 'Lakh and crore.', t: '₹25,38,00,000 in 2046, at 20 years; the axis in crore. Today’s ₹5,15,19,488 is the figure set’s own.' }] },
             { anchor: 'p4', id: 'P4', name: 'Browser · Projection, privacy on', keys: 'MA-224',
@@ -602,13 +634,18 @@
               notes: [{ h: 'A plan item has a start, an end, a currency and a growth rate;', t: 'any of them can be corrected in place by the admin, never created here (MA-222). Asha sees the row without the pill.' }] },
             { anchor: 'p8', id: 'P8', name: 'Browser · Projection, the Net worth tab, phone', keys: 'MA-224',
               head: { n: '3', t: 'Since MA-261: the phone-web door, and the evening of Thu 5 Nov', p: 'The Net worth tab at 390 on Mon 26 Oct, the morning of the boards above; then Thu 5 Nov at 21:06, after Arun’s seven plans (Web v4 · Plans in the chat, Web v4 · Plans tab), from the engine’s run of 20:59 (MA-264).' },
-              lead: 'The phone-web door at 390 on Mon 26 Oct, 10:05: the tab bar, the tabs as a segmented control, the horizon on its own row, then £ or ₹ and Today’s money; the fan to 2046 and the milestones under it. The chat is a tab here, so the page has the width.',
+              lead: 'The phone-web door at 390 on Mon 26 Oct, 10:05: the tab bar, the title as the picker (Net worth ▾), the fan to 2046 with its horizon chips under it and the money in the hero’s corner, then the milestones. The chat is a tab here, so the page has the width.',
               frames: page('Browser · Projection, the Net worth tab, phone', { a: true, w390: true }, chatArun, ARUN),
-              notes: [{ h: 'Compact chrome.', t: 'The same tabs and controls as the laptop, stacked: the underline tabs become a segmented control under 600, as the Budget forecast and Plans tabs draw them.' }, { h: 'The hover waits for a tap', t: 'at 390 (tokens.css hides the call-out), so the fan reads clean; the end labels stay.' }] },
+              notes: [{ h: 'Compact chrome.', t: 'The same title picker, horizon chips and corner button as the laptop, from one markup (MA-301 1b), as the Budget forecast and Plans tabs draw them.' }, { h: 'The hover waits for a tap', t: 'at 390 (tokens.css hides the call-out), so the fan reads clean; the end labels stay.' }] },
             { anchor: 'p9', id: 'P9', name: 'Browser · Projection, after the plans', keys: 'MA-224 · MA-222',
               lead: 'Thu 5 Nov, 21:06: the Net worth tab after Arun’s seven plans, from the engine’s run of 20:59. Each plan is a square on the line: the extension, the salary step, the school fees starting and ending, the HDFC loan closed early by the SBI FD, the new car. The milestones list them with the records’ own, and the plan items list all seven.',
               frames: page('Browser · Projection, after the plans', { a: true, r4: true }, chatPlans, ARUN),
               notes: [{ h: 'The run of 20:59 (R4).', t: 'From Thursday’s £456,747: 2046’s middle path £2,923,000, 8 in 10 runs between £2,188,000 and £4,058,000 (future-plans-v4.json, runs.R4).' }, { h: 'Plan items on the line.', t: 'A square for each plan item with a date, named in Milestones with the records’ dots and ticks; the HDFC loan’s own end in Jul 2030 is gone, since the SBI FD closes it in Mar 2029.' }, { h: 'An admin’s to change.', t: 'Each plan is corrected, paused or ended on the Plans tab or in the chat (MA-222); Asha sees the same line without the pencils.' }] },
+            { anchor: 'p10', id: 'P10', name: 'Browser · Projection, the title menu open', keys: 'MA-301 · MA-224',
+              head: { n: '3', t: 'Since MA-301: the title is the picker', p: 'Arun picked 1b for the Projection’s header on Mon 2 Nov 2026 (docs/design/reviews/MA-301, a · Projection header), and every page above draws it: the title names the view and opens a menu of the three, Net worth, Plans and Budget forecast; the horizon is a row of chips under the fan; money, Nominal or Today’s money, is one button in the hero’s corner. £ or ₹ follow the app’s currency pill (MA-279), so the page has no currency control of its own. Icons on the redrawn header are Lucide, inline (MA-301 f 1a).' },
+              lead: 'Thu 5 Nov, 21:06: Arun clicks the title. A popover on paper lists the three views with Net worth ticked; Plans or Budget forecast opens in place under the same title, keeping the horizon and the money. The chat stays beside the page at 1440.',
+              frames: page('Browser · Projection, the title menu open', { a: true, r4: true, tmenu: true }, chatPlans, ARUN),
+              notes: [{ h: 'Paper, not glass:', t: 'on the web a menu is a popover on the page’s own surface with a hairline and a shadow (MA-301 1b, shadcn-svelte DropdownMenu with a radio group).' }, { h: 'Easy to miss,', t: 'as the round said of 1b: the chevron sits beside the title in the accent colour, and the title reads “Projection: Net worth. Change view” to a screen reader.' }] },
             { anchor: 'p7', id: 'P7', name: 'Browser · Plan item in the chat, phone', keys: 'MA-222',
               lead: 'The phone-web door at 390, where the chat is a tab: Arun adds Asha’s bonus in words on Sun 25 Oct; the card reads it back, he confirms, and the audit row follows. The page boards above, the next morning, already show it.',
               frames: phone('Browser · Plan item in the chat, phone'),
@@ -619,6 +656,7 @@
           const wtabs = [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Home' ? 'on' : '', fill: t[1] === 'Home' ? 'ms-fill' : '', cur: t[1] === 'Home' ? 'page' : null }));
           return {
             boards, nav, ptabs, wif, prtabs, hz, wtabs,
+            tviews: ['Net worth', 'Plans', 'Budget forecast'].map((l) => ({ l: l, on: l === 'Net worth', p: l === 'Net worth' ? 'true' : 'false' })),
             cchips: [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']].map((c) => ({ i: c[0], l: c[1] })),
             chips: ['What if we buy a second flat?', 'What if the plan items fall away?', 'What moves the line most?'],
             asm: [

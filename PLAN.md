@@ -611,7 +611,7 @@ Claude's:
   (MA-298):** `PRODUCT.md` and `DESIGN.md` written at the repo root so every
   Impeccable check and design round knows Warm ledger, its dual-currency figures,
   Rule 4 governance, iOS Liquid Glass boundaries (floating controls only, never
-  content or the web app) and the 1133 pt chat-beside adaptive rule; blanket
+  content or the web app) and the chat-beside adaptive rule (1133 pt then; 1393 pt since MA-301); blanket
   per-file wildcard suppressions cleaned in `.impeccable/config.json` and the
   dead `_ds/modernist-*` boilerplate removed; undefined `--mp-uk`/`--mp-in`
   tokens fixed to `--mp-ccy-gbp`/`--mp-ccy-inr` across `Chart options.dc.html`,
@@ -652,7 +652,18 @@ Claude's:
   Projection and Plans header, a lighter statement Confirm, flatter cards and
   shorter overlines, a browser-only `/join/<token>` sign-in, a self-hosted type
   and icon stack and the `Cmd+K` palette, drawn as options and published as a
-  private Claude Artifact for Arun to pick before anything is built.
+  private Claude Artifact for Arun to pick before anything is built. Picked on
+  2 Nov 2026 and carried into the boards and the design system on 23 Nov: the
+  title is the picker, questions before one Confirm, the chat beside only from
+  about 1393 (so a sheet on every iPad, a drawer on a smaller laptop), one
+  surface per card, a browser joins, platform type with Lucide on the web, and
+  one `⌘K` palette at both doors.
+- **The web app and the boards drop Google Fonts (MA-340):** self-hosted Inter
+  and a Nunito figures subset, Lucide icons in the web app, and Lucide on the
+  boards in place of Material Symbols, as MA-301's f 1a picked.
+- **The Maestro iPad plan's bands follow the 1393 rule (MA-341):** the testing
+  page's band GIF redrawn for three iPad bands, the beside band at the debug
+  width only.
 - **Prototype v4's controls at 44 pt (MA-302), closed:** the card actions, links,
   suggestion chips, segmented control and composer that MA-300's live
   accessibility gate found under 44x44. Closed by Arun on 2 Nov 2026:
@@ -902,7 +913,7 @@ arrives from phase 2.
   phone.
 - **The app (MA-163, MA-168, MA-169):** the shell Arun picked, 1a Chat first
   (tabs on iPhone; on iPad and an open foldable the sidebar; the chat beside
-  every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and
+  every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and
   a tab in a compact window (every iPhone, a folded foldable, Slide Over)), built as the React Native shell with SwiftUI
   pieces (MA-165), which the web app follows; the sign-in screen with Apple's
   and Google's buttons; and the chat in a native SwiftUI timeline: the
@@ -2178,22 +2189,22 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 53.75 (and 3.5 of yours) | 43 | Mon 2 Nov 2026 | Fri 8 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 109 (and 0.5 of yours) | 88 | Mon 11 Jan 2027 | Mon 17 May 2027 |
-| 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Tue 18 May 2027 | Wed 14 Jul 2027 |
-| 3 Deposits, policies and four currencies | 18 | 15 | Thu 15 Jul 2027 | Wed 4 Aug 2027 |
-| 4 Debts and check-ins | 19 | 16 | Thu 5 Aug 2027 | Thu 26 Aug 2027 |
-| 5 Investments, priced | 32 | 26 | Fri 27 Aug 2027 | Mon 4 Oct 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Tue 5 Oct 2027 | Mon 18 Oct 2027 |
-| 7 Projection | 33.5 | 27 | Tue 19 Oct 2027 | Wed 24 Nov 2027 |
-| 8 Audit, search and the Admin center at every door | 29 | 24 | Thu 25 Nov 2027 | Thu 6 Jan 2028 |
-| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Fri 7 Jan 2028 | Tue 8 Feb 2028 |
-| 10 Alerts, charts and the Claude client | 15 | 12 | Wed 9 Feb 2028 | Thu 24 Feb 2028 |
-| 11 Ask anything about the household's wealth | 9 | 8 | Fri 25 Feb 2028 | Tue 7 Mar 2028 |
+| 0 Foundations at every door | 55.75 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
+| 1 Talk: sign in and chat with the agent at every door | 109 (and 0.5 of yours) | 88 | Wed 13 Jan 2027 | Wed 19 May 2027 |
+| 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Thu 20 May 2027 | Fri 16 Jul 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Mon 19 Jul 2027 | Fri 6 Aug 2027 |
+| 4 Debts and check-ins | 19 | 16 | Mon 9 Aug 2027 | Tue 31 Aug 2027 |
+| 5 Investments, priced | 32 | 26 | Wed 1 Sep 2027 | Wed 6 Oct 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Thu 7 Oct 2027 | Wed 20 Oct 2027 |
+| 7 Projection | 33.5 | 27 | Thu 21 Oct 2027 | Fri 26 Nov 2027 |
+| 8 Audit, search and the Admin center at every door | 29 | 24 | Mon 29 Nov 2027 | Mon 10 Jan 2028 |
+| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Tue 11 Jan 2028 | Thu 10 Feb 2028 |
+| 10 Alerts, charts and the Claude client | 15 | 12 | Fri 11 Feb 2028 | Mon 28 Feb 2028 |
+| 11 Ask anything about the household's wealth | 9 | 8 | Tue 29 Feb 2028 | Thu 9 Mar 2028 |
 | 12 New kinds of holding (when you add one) | 2 | 2 | When a new kind is added | |
-| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Wed 8 Mar 2028 | Wed 29 Mar 2028 |
-| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Thu 30 Mar 2028 | Tue 11 Apr 2028 |
-| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Wed 12 Apr 2028 | Tue 25 Apr 2028 |
+| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Fri 10 Mar 2028 | Fri 31 Mar 2028 |
+| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Mon 3 Apr 2028 | Thu 13 Apr 2028 |
+| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 18 Apr 2028 | Thu 27 Apr 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 13 to 15 can start sooner if you

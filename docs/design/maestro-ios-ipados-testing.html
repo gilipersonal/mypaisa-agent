@@ -136,7 +136,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     <ul class="rules">
       <li><b>01</b>One Maestro owner per device: MCP interactive vs cloned flock CLI pool</li>
       <li><b>02</b>Shared mp.* TestIDs.swift ↔ test-ids.ts + .accessibilityElement(.contain)</li>
-      <li><b>03</b>4 width bands (&lt;600, 600–899, 900–1132 MA-240, ≥1133 pt) + live rotation</li>
+      <li><b>03</b>width bands (&lt;600, 600–899, 900–1392 pt; ≥1393 only by the debug width, MA-301) + live rotation</li>
       <li><b>04</b>xcrun simctl Face ID, APNs push, Universal Links &amp; AX5 across Phases 0–15 (£0/mo)</li>
       <li><b>05</b>testFlightInternalTestingOnly = true: 100% private 90-day rolling beta</li>
     </ul>
@@ -338,15 +338,15 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 <section id="bands">
   <div class="head">
     <div class="kicker">3 · Four-sub-band adaptive width &amp; live rotation matrix (MA-163, MA-240, MA-273)</div>
-    <h2>Testing the chat beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)</h2>
+    <h2>Testing the chat beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)</h2>
   </div>
   <div class="body">
     <div class="copy plain">
-      <p>The app adapts strictly by window width: the chat sits beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). Maestro rotates iPads mid-conversation to prove that moving between a sheet and a side column never drops what you typed.</p>
+      <p>The app adapts strictly by window width: the chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). Maestro rotates iPads mid-conversation to prove that moving between a sheet and a side column never drops what you typed.</p>
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Exact boundary coverage:</strong> In addition to the 5 physical device geometries (<code>375</code>, <code>402</code>, <code>834</code>, <code>1032</code>, <code>1376 pt</code> + <code>Duo</code>), <code>#if DEBUG</code> honours <code>MYPAISA_VIEWPORT_WIDTH</code> at <code>320</code> (Display Zoom / Slide Over), <code>599</code>, <code>600</code>, <code>899</code>, <code>900</code>, <code>1132</code> and <code>1133 pt</code>, guarding the <code>MA-240</code> 13-inch upright rule where three columns would crush the middle screen.</li>
+        <li><strong>Exact boundary coverage:</strong> In addition to the 5 physical device geometries (<code>375</code>, <code>402</code>, <code>834</code>, <code>1032</code>, <code>1376 pt</code> + <code>Duo</code>), <code>#if DEBUG</code> honours <code>MYPAISA_VIEWPORT_WIDTH</code> at <code>320</code> (Display Zoom / Slide Over), <code>599</code>, <code>600</code>, <code>899</code>, <code>900</code>, <code>1392</code> and <code>1393 pt</code>, guarding the <code>MA-301</code> rule (the chat beside only from about 1393 pt, which no iPad’s own screen reaches) where three columns would crush the middle screen.</li>
       </ul>
     </div>
     <figure class="fig" id="fig-3">
@@ -387,8 +387,8 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="step-ring" data-f3="1" x="284" y="16" width="252" height="298" rx="12"/>
 
         <rect class="s-box2" x="552" y="16" width="252" height="298" rx="12"/>
-        <text class="s-h" x="564" y="42">Band 3 · 900–1132 pt</text>
-        <text class="s-m" x="564" y="60">13-in iPad 1032pt (MA-240)</text>
+        <text class="s-h" x="564" y="42">Band 3 · 900–1392 pt</text>
+        <text class="s-m" x="564" y="60">13-in iPad 1032 / every iPad landscape</text>
         <rect class="s-ambg" x="564" y="74" width="228" height="142" rx="10"/>
         <text class="s-amt" x="576" y="95">Sidebar + Screen + Sheet</text>
         <rect class="s-box2" x="576" y="104" width="54" height="74" rx="6"/>
@@ -408,8 +408,8 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="step-ring" data-f3="2" x="552" y="16" width="252" height="298" rx="12"/>
 
         <rect class="s-box2" x="820" y="16" width="252" height="298" rx="12"/>
-        <text class="s-h" x="832" y="42">Band 4 · ≥1133 pt Beside</text>
-        <text class="s-m" x="832" y="60">iPad 1133 / 1210 / 1376 pt</text>
+        <text class="s-h" x="832" y="42">Band 4 · ≥1393 pt Beside</text>
+        <text class="s-m" x="832" y="60">debug width or external display</text>
         <rect class="s-upbg" x="832" y="74" width="228" height="142" rx="10"/>
         <text class="s-upt" x="844" y="95">3 Columns: Chat Beside</text>
         <rect class="s-box2" x="844" y="104" width="46" height="74" rx="6"/>
@@ -430,7 +430,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="step-ring" data-f3="3" x="820" y="16" width="252" height="298" rx="12"/>
       </svg>
       </div>
-      <figcaption>Maestro tests all four width sub-bands and rotates 11-inch and 13-inch iPads mid-flow across the 1133 pt threshold to verify zero lost input.</figcaption>
+      <figcaption>Maestro tests the width sub-bands and rotates 11-inch and 13-inch iPads mid-flow to verify zero lost input; since MA-301 (2 Nov 2026) no iPad’s own screen reaches the 1393 pt where the chat sits beside, so band 4 runs only at the debug width (the GIF above predates MA-301; MA-341 redraws it).</figcaption>
     </figure>
   </div>
 </section>
