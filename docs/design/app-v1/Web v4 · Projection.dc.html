@@ -208,28 +208,37 @@
           .audit .ms { font-size: 16px; margin-top: 1px; }
           .saved { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; background: var(--mp-add-bg); color: var(--mp-add); font: 600 15px/20px var(--mp-font); }
           /* the phone door at 390 */
-          .pframe { width: 390px; height: 844px; border-radius: 44px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
-          .psb { height: 50px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 30px 0 36px; font: 600 16px/20px var(--mp-font); }
+          .pframe { width: 390px; height: 844px; border-radius: 20px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 24px 52px rgba(0,0,0,.18); }   /* a phone browser, not an iPhone bezel (MA-300) */
+          .psb { height: 50px; flex: none; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 16px; box-sizing: border-box; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }   /* the browser's address bar, not an iPhone status bar (MA-300) */
           .phd { display: flex; align-items: center; justify-content: space-between; padding: 4px 16px 6px 20px; }
           .pchat { overflow: hidden; padding: 8px 16px 12px; }
           .pcomp { padding: 8px 12px 92px; display: flex; flex-direction: column; gap: 8px; }
           .ptabs { position: absolute; left: 0; right: 0; bottom: 0; }
           /* MA-181: on a dark frame, text a member must read is ink-2, never the tertiary grey */
           .t-dark .mp-ink3, .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
-          /* below 1024 the web shows the page or the chat, never both; under 600, the compact chrome (MA-264's tabs) */
-          @container app (max-width: 1023px) { .mp .chatcol { display: none; } }
+          .mp-tab:not(.on) { color: var(--mp-ink-2); }   /* MA-300: a tab label is read; ink-2 in both themes */
+          .mp-tab { font-size: 12px; line-height: 14px; }   /* no product text under 12 px (MA-300) */
+          /* MA-300: an acting control is a button; this reset (no specificity) keeps it drawn exactly as the span was */
+          :where(button.cbtn, button.ccard-fold, button.wsend, button.iconbtn) { appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; text-transform: none; box-sizing: content-box; cursor: pointer; }
+          .ccard-fold { width: 100%; box-sizing: border-box; min-height: 45px; }   /* the div's 44 plus its 1 px rule, so nothing above it moves */
+          button.wsend { position: relative; } button.wsend::after { content: ""; position: absolute; inset: -4px; }   /* 36 drawn, 44 to tap */
+          a.drv { color: inherit; text-decoration: none; }
+          .mp-switch:focus-visible, .fig.ed:focus-visible, .edin:focus-visible, .wfield .rtx:focus-visible, a.drv:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+          /* the chat beside every screen from about 1133 px (MA-240, MA-300); below it the web shows the page or the chat, never both; under 600, the compact chrome (MA-264's tabs) */
+          @container app (max-width: 1132px) { .mp .chatcol { display: none; } }
           @container app (max-width: 599px) {
             .mp .utabs { display: none; }
             .mp .tabseg { display: flex; }
             .mp .hzseg { flex: 1 1 100%; }
             .mp .ctlrow .ccyseg { flex: 1 1 150px; }
           }
-        </style>
+                  :where(button[type="button"].mp-btn) { letter-spacing: inherit; word-spacing: inherit; }   /* MA-300: spans made buttons keep the spacing they inherited; the older plain buttons keep theirs */
+</style>
       </helmet>
 
       <section class="dv-turn" id="t0" data-screen-label="Web v4 · Projection: intro">
         <div class="dv-thd"><a class="dv-tid" href="#t0">P</a><span class="dv-tname">Projection: where the household's net worth is heading, at the laptop and phone-web doors</span></div>
-        <p class="dv-intro">The old wealth tracker's Forecast, renamed: Forecast stays the market's word. Three options for the screen at 1440 with the chat beside it, then the recommended option's states: a what-if in the chat, the member's view, rupees at 2026 prices, privacy, the admin's corrections in place, and a plan item added in the chat at 390. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start): since MA-264, run month by month (future-plans-v4.json, R26 and what_if_26), which replaced the v4 figure set's yearly sketch. The model writes words around the figures and never a number. Since MA-261 the Projection has three tabs and opens at 20 years; 1a and its states draw them, and P8 and P9 add the phone-web door and the evening of Thu 5 Nov, after Arun's plans. Supersedes Wealth.dc.html's Browser · Forecast. The iPhone boards are iPhone v4 · Projection in MyPaisa iOS v1.</p>
+        <p class="dv-intro">The old wealth tracker's Forecast, renamed the Projection: a wealth forecast from the household's own numbers (MA-307, 2 Nov 2026: the market side was retired; MyPaisa is a wealth tracker only). Three options for the screen at 1440 with the chat beside it, then the recommended option's states: a what-if in the chat, the member's view, rupees at 2026 prices, privacy, the admin's corrections in place, and a plan item added in the chat at 390. Every figure is the engine's illustrative run of Mon 26 Oct, 09:53, after the 09:41 Monzo savings record and the 09:52 correction of the home's value (£457,951 to start): since MA-264, run month by month (future-plans-v4.json, R26 and what_if_26), which replaced the v4 figure set's yearly sketch. The model writes words around the figures and never a number. Since MA-261 the Projection has three tabs and opens at 20 years; 1a and its states draw them, and P8 and P9 add the phone-web door and the evening of Thu 5 Nov, after Arun's plans. Supersedes Wealth.dc.html's Browser · Forecast. The iPhone boards are iPhone v4 · Projection in MyPaisa iOS v1.</p>
         <div class="plan"><span class="plan-s"><b>Jira</b></span><span class="plan-k">MA-224</span><span>the screen</span><span class="plan-k">MA-222</span><span>plan items</span><span class="plan-k">MA-223</span><span>what-ifs and the story</span><span class="plan-k">MA-221</span><span>priors and sources</span><span class="plan-k">MA-219</span><span>the engine, its fan</span></div>
       </section>
 
@@ -247,11 +256,11 @@
                   <!-- ============ a page at 1440, the chat beside it ============ -->
                   <sc-if value="{{ f.page }}">
                     <div class="board mp mp-app {{ f.cls }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
-                      <sc-if value="{{ f.w390 }}"><nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ wtabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#p8" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden=\"true\">{{ tb.i }}</span>{{ tb.l }}</a></sc-for></nav></sc-if>
+                      <sc-if value="{{ f.w390 }}"><nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ wtabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#p8" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden="true">{{ tb.i }}</span>{{ tb.l }}</a></sc-for></nav></sc-if>
                       <div class="mp-shell">
                         <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                           <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path fill="var(--mp-hero)" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle fill="var(--mp-coral)" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.i }}</span>{{ n.l }}</a></sc-for>
+                          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.i }}</span>{{ n.l }}</a></sc-for>
                           <div class="grow1"></div>
                           <div class="mp-foot mp-ink2 side-ft">{{ f.who }}</div>
                         </aside>
@@ -261,8 +270,8 @@
                               <div><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ f.d.meta }}</div></div>
                               <div class="hctl">
                                 <sc-if value="{{ f.old }}"><div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i {{ f.d.cG }}">£ GBP</button><button class="mp-seg-i {{ f.d.cI }}">₹ INR</button></div>
-                                <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.d.tm }}" role="switch" aria-checked="{{ f.d.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span></sc-if>
-                                <button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ f.d.pr }}"><span class="ms" aria-hidden=\"true\">{{ f.d.eye }}</span></button>
+                                <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.d.tm }}" role="switch" tabindex="0" aria-checked="{{ f.d.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span></sc-if>
+                                <button class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ f.d.pr }}"><span class="ms" aria-hidden="true">{{ f.d.eye }}</span></button>
                               </div>
                             </header>
                             <sc-if value="{{ f.tabs }}">
@@ -271,7 +280,7 @@
                               <div class="ctlrow">
                                 <div class="mp-seg hzseg" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button class="mp-seg-i {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
                                 <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i {{ f.d.cG }}" aria-pressed="{{ f.d.pG }}">£ GBP</button><button class="mp-seg-i {{ f.d.cI }}" aria-pressed="{{ f.d.pI }}">₹ INR</button></div>
-                                <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.d.tm }}" role="switch" aria-checked="{{ f.d.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+                                <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.d.tm }}" role="switch" tabindex="0" aria-checked="{{ f.d.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
                               </div>
                             </sc-if>
 
@@ -295,25 +304,25 @@
                                 </div>
                                 <div class="lgd onhero"><span><i class="sw-line"></i>Middle path</span><span><i class="sw-band"></i>8 in 10 runs</span><span><i class="sw-dot"></i>A loan ends</span><span><i class="sw-sq"></i>A plan item</span><span><i class="sw-tk"></i>A maturity or rate change</span></div>
                               </div>
-                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden=\"true\">chat_bubble</span>{{ c }}</button></sc-for></div>
+                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>{{ c }}</button></sc-for></div>
                               <div class="pcols">
                                 <div class="pstack">
                                   <div class="mp-card cpad">
                                     <div class="ch"><span class="mp-hl">Milestones</span><span class="mp-foot mp-ink2">from the records, on the line above</span></div>
-                                    <sc-for list="{{ f.d.ms }}" as="m" hint-placeholder-count="8"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ m.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}<sc-if value="{{ m.x.v }}"><span>·</span><span class="{{ m.x.m }}">{{ m.x.v }}</span></sc-if></span></div><span class="mp-foot mp-ink2 lrv"><span class="{{ m.a.m }}">{{ m.a.v }}</span></span></div></sc-for>
+                                    <sc-for list="{{ f.d.ms }}" as="m" hint-placeholder-count="8"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ m.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}<sc-if value="{{ m.x.v }}"><span>·</span><span class="{{ m.x.m }}">{{ m.x.v }}</span></sc-if></span></div><span class="mp-foot mp-ink2 lrv"><span class="{{ m.a.m }}">{{ m.a.v }}</span></span></div></sc-for>
                                   </div>
                                   <div class="mp-card cpad">
                                     <div class="ch"><span class="mp-hl">Plan items</span><span class="mp-foot mp-ink2">{{ f.d.piSub }}</span></div>
-                                    <sc-for list="{{ f.d.pi }}" as="p" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ p.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ p.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="mk-sq"></i></span>{{ p.s }}</span></div><span class="fig {{ p.ed }}"><span class="{{ p.a.m }}">{{ p.a.v }}</span><sc-if value="{{ f.adm }}"><span class="ms" aria-hidden=\"true\">edit</span></sc-if></span></div></sc-for>
-                                    <sc-if value="{{ f.adm }}"><button class="mp-btn mp-btn-tinted mp-btn-small" style="align-self: flex-start; margin-top: 8px"><span class="ms ms-s" aria-hidden=\"true\">chat_bubble</span>Add a plan item in the chat</button></sc-if>
-                                    <sc-if value="{{ f.mem }}"><div class="note" style="margin-top: 8px"><span class="ms" aria-hidden=\"true\">lock</span><span class="mp-foot mp-ink2">Plan items are Arun's, the admin's. You see them on the line; ask a what-if in the chat to try your own.</span></div></sc-if>
+                                    <sc-for list="{{ f.d.pi }}" as="p" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ p.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ p.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="mk-sq"></i></span>{{ p.s }}</span></div><span class="fig {{ p.ed }}" role="{{ f.d.edR }}" tabindex="{{ f.d.edT }}"><span class="{{ p.a.m }}">{{ p.a.v }}</span><sc-if value="{{ f.adm }}"><span class="ms" aria-hidden="true">edit</span></sc-if></span></div></sc-for>
+                                    <sc-if value="{{ f.adm }}"><button class="mp-btn mp-btn-tinted mp-btn-small" style="align-self: flex-start; margin-top: 8px"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>Add a plan item in the chat</button></sc-if>
+                                    <sc-if value="{{ f.mem }}"><div class="note" style="margin-top: 8px"><span class="ms" aria-hidden="true">lock</span><span class="mp-foot mp-ink2">Plan items are Arun's, the admin's. You see them on the line; ask a what-if in the chat to try your own.</span></div></sc-if>
                                   </div>
                                 </div>
                                 <div class="mp-card cpad">
                                   <div class="ch"><span class="mp-hl">Assumptions</span><span class="mp-foot mp-ink2">each with its source</span></div>
-                                  <div class="note"><span class="ms" aria-hidden=\"true\">{{ f.d.asmI }}</span><span class="mp-foot mp-ink2">{{ f.d.asmNote }}</span></div>
+                                  <div class="note"><span class="ms" aria-hidden="true">{{ f.d.asmI }}</span><span class="mp-foot mp-ink2">{{ f.d.asmNote }}</span></div>
                                   <sc-for list="{{ asm }}" as="g" hint-placeholder-count="3"><div class="grp"><span class="mp-over mp-ink2">{{ g.h }}</span>
-                                    <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3"><div class="as-row"><span class="as-n mp-sub mp-w6">{{ r.n }}</span><span class="as-f fig {{ f.d.ed }}">{{ r.v }}<sc-if value="{{ f.adm }}"><span class="ms" aria-hidden=\"true\">edit</span></sc-if></span><span class="as-s"><span class="src"><span class="ms" aria-hidden=\"true\">{{ r.si }}</span>{{ r.src }}</span><span class="mp-foot mp-ink2">{{ r.why }}</span></span></div></sc-for>
+                                    <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3"><div class="as-row"><span class="as-n mp-sub mp-w6">{{ r.n }}</span><span class="as-f fig {{ f.d.ed }}" role="{{ f.d.edR }}" tabindex="{{ f.d.edT }}">{{ r.v }}<sc-if value="{{ f.adm }}"><span class="ms" aria-hidden="true">edit</span></sc-if></span><span class="as-s"><span class="src"><span class="ms" aria-hidden="true">{{ r.si }}</span>{{ r.src }}</span><span class="mp-foot mp-ink2">{{ r.why }}</span></span></div></sc-for>
                                   </div></sc-for>
                                 </div>
                               </div>
@@ -327,7 +336,7 @@
                                 <p class="pp mp-callout mp-hero-2">8 in 10 of the engine's runs end 2056 between £3,419,000 and £11,990,000. The car loan ends in Feb 2029, the HDFC loan in Jul 2030 and the mortgage in Oct 2045, and each frees its payment.</p>
                                 <span class="mp-foot mp-hero-2">The figures are the engine's run of Mon 26 Oct, 09:53; the sentences are fixed wording around them.</span>
                               </div>
-                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden=\"true\">chat_bubble</span>{{ c }}</button></sc-for></div>
+                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>{{ c }}</button></sc-for></div>
                               <div class="mp-card cpad oncard">
                                 <div class="ch"><span class="mp-hl">The next 30 years</span><span class="mp-foot mp-ink2">the middle path, and where 8 in 10 runs land</span></div>
                                 <div class="fanw mid oncard" style="margin-right: 0">
@@ -345,11 +354,11 @@
                               <div class="pcols">
                                 <div class="mp-card cpad">
                                   <div class="ch"><span class="mp-hl">What drives it</span><span class="mp-foot mp-ink2">the engine's inputs</span></div>
-                                  <sc-for list="{{ drivers }}" as="r" hint-placeholder-count="5"><div class="drv"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev" aria-hidden=\"true\">chevron_right</span></div></sc-for>
+                                  <sc-for list="{{ drivers }}" as="r" hint-placeholder-count="5"><a class="drv" href="#t1"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev" aria-hidden="true">chevron_right</span></a></sc-for>
                                 </div>
                                 <div class="mp-card cpad">
                                   <div class="ch"><span class="mp-hl">The detail</span><span class="mp-foot mp-ink2">one click away</span></div>
-                                  <sc-for list="{{ more }}" as="r" hint-placeholder-count="3"><div class="drv"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev" aria-hidden=\"true\">chevron_right</span></div></sc-for>
+                                  <sc-for list="{{ more }}" as="r" hint-placeholder-count="3"><a class="drv" href="#t1"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev" aria-hidden="true">chevron_right</span></a></sc-for>
                                 </div>
                               </div>
                             </sc-if>
@@ -360,7 +369,7 @@
                                 <div class="fx col gap8"><span class="mp-sub mp-hero-2">Middle path in 2056</span><span class="mp-num-hero">£6,626,000</span><span class="mp-sub mp-hero-2">From £457,951 today. 8 in 10 runs end between £3,419,000 and £11,990,000.</span></div>
                                 <div class="fanw sm onhero"><div class="mp-chartbox fanbox" role="img" aria-label="{{ f.d.ch.aria }}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="fband" sc-camel-d="{{ f.d.ch.band }}"></path><path class="fline" sc-camel-d="{{ f.d.ch.line }}"></path></svg></div><div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">Today</span><span style="left: 33.33%">2036</span><span style="left: 66.67%">2046</span><span class="ax1" style="left: 100%">2056</span></div></div>
                               </div>
-                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden=\"true\">chat_bubble</span>{{ c }}</button></sc-for></div>
+                              <div class="chips"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>{{ c }}</button></sc-for></div>
                               <div class="decs">
                                 <sc-for list="{{ decades }}" as="c" hint-placeholder-count="4"><div class="mp-card dec">
                                   <div class="ch" style="margin: 0"><span class="mp-t3">{{ c.t }}</span><span class="mp-foot mp-ink2">{{ c.by }}</span></div>
@@ -371,7 +380,7 @@
                                 </div></sc-for>
                               </div>
                               <div class="mp-card cpad">
-                                <sc-for list="{{ more }}" as="r" hint-placeholder-count="3"><div class="drv"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev" aria-hidden=\"true\">chevron_right</span></div></sc-for>
+                                <sc-for list="{{ more }}" as="r" hint-placeholder-count="3"><a class="drv" href="#t1"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ r.i }}</span></span><div class="fx col"><span class="mp-sub mp-w6">{{ r.h }}</span><span class="mp-foot mp-ink2">{{ r.t }}</span></div><span class="ms chev" aria-hidden="true">chevron_right</span></a></sc-for>
                               </div>
                             </sc-if>
                             <p class="pp mp-foot mp-ink2">Illustrative figures from the v4 figure set. A projection, not a promise: the engine's middle path is no more likely than the band around it.</p>
@@ -379,7 +388,7 @@
                         </main>
 
                         <aside class="chatcol" aria-label="Chat">
-                          <div class="chhd"><span class="mp-t3">Chat</span><span class="iconbtn"><span class="ms" aria-hidden=\"true\">edit_square</span></span></div>
+                          <div class="chhd"><span class="mp-t3">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div>
                           <div class="chat">
                             <div class="daysep">Today</div>
                             <sc-for list="{{ f.c.msgs }}" as="msg" hint-placeholder-count="1"><div class="me">{{ msg.q }}</div><div class="me-time">{{ msg.qt }}</div><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{{ msg.a }}</div>
@@ -401,14 +410,14 @@
                                   <p class="pp mp-foot down">▼ Cash goes £14,462 below zero in Jun 2028, when the deposit is paid, and is back above zero in Nov 2028: code's flag.</p>
                                   <p class="pp mp-foot mp-ink2">The engine's figures, from a run nothing is saved from. £60,000 and June 2028 are your words.</p>
                                 </div>
-                                <div class="ccard-acts"><span class="cbtn cbtn-primary"><span class="ms" aria-hidden=\"true\">bookmark_add</span>Save as a plan item</span><span class="cbtn">Change it</span></div>
-                                <div class="ccard-fold"><span>Technical</span><span class="ms" aria-hidden=\"true\">expand_more</span></div>
+                                <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary"><span class="ms" aria-hidden="true">bookmark_add</span>Save as a plan item</button><button type="button" class="cbtn">Change it</button></div>
+                                <button type="button" class="ccard-fold" aria-expanded="false"><span>Technical</span><span class="ms" aria-hidden="true">expand_more</span></button>
                               </div></sc-if>
                             </div></div></sc-for>
                           </div>
                           <div class="wcomp">
-                            <div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="4"><span class="cbtn"><span class="ms" aria-hidden=\"true\">{{ c.i }}</span>{{ c.l }}</span></sc-for></div>
-                            <div class="wfield"><span class="mp-body mp-ink2 rtx">Ask about the Projection</span><span class="wsend"><span class="ms" aria-hidden=\"true\">arrow_upward</span></span></div>
+                            <div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="4"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">{{ c.i }}</span>{{ c.l }}</button></sc-for></div>
+                            <div class="wfield"><span class="mp-body mp-ink2 rtx" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask about the Projection</span><button type="button" class="wsend" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
                           </div>
                         </aside>
                       </div>
@@ -421,20 +430,20 @@
                       <div class="mp-card cpad">
                         <div class="ch"><span class="mp-hl">{{ f.e.title }}</span><span class="mp-foot mp-ink2">{{ f.e.sub }}</span></div>
                         <sc-for list="{{ f.e.rows }}" as="r" hint-placeholder-count="3">
-                          <sc-if value="{{ r.plain }}"><div class="as-row"><span class="as-n fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></span><span class="as-f fig ed">{{ r.v }}<span class="ms" aria-hidden=\"true\">edit</span></span></div></sc-if>
-                          <sc-if value="{{ r.editing }}"><div class="edrow"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.field }}</span><span class="edin">{{ r.typed }}<span class="caret"></span><span class="mp-ink2">{{ r.unit }}</span></span><div class="ba"><span class="old">{{ r.before }}</span><span class="ms ms-s mp-ink2" aria-hidden=\"true\">arrow_forward</span><b>{{ r.after }}</b></div><span class="mp-foot mp-ink2">{{ r.hint }}</span><div class="fx gap8"><span class="mp-btn mp-btn-primary mp-btn-small">Save</span><span class="mp-btn mp-btn-tinted mp-btn-small cancel">Cancel</span></div></div></sc-if>
-                          <sc-if value="{{ r.done }}"><div class="as-row"><span class="as-n fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></span><span class="as-f fig ed">{{ r.v }}<span class="ms" aria-hidden=\"true\">edit</span></span><span class="as-s"><span class="src"><span class="ms" aria-hidden=\"true\">person</span>{{ r.src }}</span><span class="mp-foot mp-ink2">{{ r.was }}</span></span></div></sc-if>
+                          <sc-if value="{{ r.plain }}"><div class="as-row"><span class="as-n fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></span><span class="as-f fig ed" role="button" tabindex="0">{{ r.v }}<span class="ms" aria-hidden="true">edit</span></span></div></sc-if>
+                          <sc-if value="{{ r.editing }}"><div class="edrow"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.field }}</span><span class="edin" role="textbox" tabindex="0" aria-label="New value">{{ r.typed }}<span class="caret"></span><span class="mp-ink2">{{ r.unit }}</span></span><div class="ba"><span class="old">{{ r.before }}</span><span class="ms ms-s mp-ink2" aria-hidden="true">arrow_forward</span><b>{{ r.after }}</b></div><span class="mp-foot mp-ink2">{{ r.hint }}</span><div class="fx gap8"><button type="button" class="mp-btn mp-btn-primary mp-btn-small">Save</button><button type="button" class="mp-btn mp-btn-tinted mp-btn-small cancel">Cancel</button></div></div></sc-if>
+                          <sc-if value="{{ r.done }}"><div class="as-row"><span class="as-n fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></span><span class="as-f fig ed" role="button" tabindex="0">{{ r.v }}<span class="ms" aria-hidden="true">edit</span></span><span class="as-s"><span class="src"><span class="ms" aria-hidden="true">person</span>{{ r.src }}</span><span class="mp-foot mp-ink2">{{ r.was }}</span></span></div></sc-if>
                         </sc-for>
                       </div>
-                      <sc-if value="{{ f.e.saved }}"><div class="saved" data-mo="pop"><span class="ms ms-fill" aria-hidden=\"true\">check_circle</span>Saved. The Projection runs again with it.</div><div class="audit"><span class="ms" aria-hidden=\"true\">fact_check</span><span>{{ f.e.audit }}</span></div></sc-if>
+                      <sc-if value="{{ f.e.saved }}"><div class="saved" data-mo="pop"><span class="ms ms-fill" aria-hidden="true">check_circle</span>Saved. The Projection runs again with it.</div><div class="audit"><span class="ms" aria-hidden="true">fact_check</span><span>{{ f.e.audit }}</span></div></sc-if>
                     </div>
                   </sc-if>
 
                   <!-- ============ the phone-web door at 390: the chat tab ============ -->
                   <sc-if value="{{ f.phone }}">
                     <div class="pframe mp mp-app {{ f.cls }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
-                      <div class="psb"><span>{{ f.p.clock }}</span><span class="fx ac gap4"><span class="ms ms-s" aria-hidden=\"true\">signal_cellular_alt</span><span class="ms ms-s" aria-hidden=\"true\">wifi</span><span class="ms ms-s" aria-hidden=\"true\">battery_horiz_075</span></span></div>
-                      <div class="phd"><span class="mp-t1">Chat</span><span class="iconbtn"><span class="ms" aria-hidden=\"true\">edit_square</span></span></div>
+                      <div class="psb" aria-hidden="true"><span class="ms ms-s" aria-hidden="true">lock</span><span>dashboard.mypaisapp.com</span></div>
+                      <div class="phd"><span class="mp-t1">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div>
                       <div class="chat pchat">
                         <div class="daysep">Sun 25 Oct</div>
                         <div class="me">Add Asha's bonus to the plan: £3,000 every March from 2027 to 2052</div>
@@ -442,18 +451,18 @@
                         <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{{ f.p.say }}</div>
                           <sc-if value="{{ f.p.ask }}"><div class="ccard">
                             <div class="ccard-h"><span class="mp-over mp-ink2">New plan item · check and confirm</span><span class="mp-hl">Asha's annual bonus</span></div>
-                            <div class="ccard-b"><div class="kv"><span>Amount</span><span>+£3,000</span></div><div class="kv"><span>When</span><span>Every March, 2027 to 2052</span></div><div class="kv"><span>Currency</span><span>GBP</span></div><div class="kv"><span>Grows</span><span>No growth</span></div><p class="pp mp-foot mp-ink2">Your words, as a plan item. The engine re-runs the Projection once you confirm; only you can change it later.</p></div>
-                            <div class="ccard-acts"><span class="cbtn cbtn-primary">Confirm</span><span class="cbtn">Change</span><span class="cbtn cbtn-ghost">Cancel</span></div>
+                            <div class="ccard-b"><div class="kv"><span>Amount</span><span>+£3,000</span></div><div class="kv"><span>When</span><span>Every March, 2027 to 2052</span></div><div class="kv"><span>Currency</span><span>GBP</span></div><div class="kv"><span>Grows</span><span>No growth</span></div><p class="pp mp-foot mp-ink2">Your words, as a plan item. The engine re-runs the Projection once you confirm; only an admin can change it later.</p></div>
+                            <div class="ccard-acts"><button type="button" class="cbtn cbtn-primary">Confirm</button><button type="button" class="cbtn">Change</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div>
                           </div></sc-if>
                           <sc-if value="{{ f.p.done }}"><div class="ccard">
-                            <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden=\"true\">check_circle</span>Added to the plan</span><span class="mp-hl">Asha's annual bonus</span><span class="mp-sub mp-ink2">+£3,000 every March, 2027 to 2052</span></div>
+                            <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">Asha's annual bonus</span><span class="mp-sub mp-ink2">+£3,000 every March, 2027 to 2052</span></div>
                             <div class="ccard-tech">Audit · Plan item added · Arun · Sun 25 Oct 20:15 · in the chat</div>
-                            <div class="ccard-acts" style="padding-top: 14px"><span class="cbtn"><span class="ms" aria-hidden=\"true\">show_chart</span>See the Projection</span></div>
+                            <div class="ccard-acts" style="padding-top: 14px"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">show_chart</span>See the Projection</button></div>
                           </div></sc-if>
                         </div></div>
                       </div>
-                      <div class="pcomp"><div class="chips crow"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="4"><span class="cbtn"><span class="ms" aria-hidden=\"true\">{{ c.i }}</span>{{ c.l }}</span></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx">Message MyPaisa</span><span class="wsend"><span class="ms" aria-hidden=\"true\">arrow_upward</span></span></div></div>
-                      <nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}" aria-hidden=\"true\">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav>
+                      <div class="pcomp"><div class="chips crow"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="4"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">{{ c.i }}</span>{{ c.l }}</button></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx" role="textbox" tabindex="0" aria-label="Message MyPaisa">Message MyPaisa</span><button type="button" class="wsend" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div></div>
+                      <nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav>
                     </div>
                   </sc-if>
                 </div>
@@ -495,13 +504,14 @@
           const MS4 = [['savings', 'Asha’s fixed-rate saver matures', '14 Dec 2026', '£10,460', 'mk-tk', 2026, 12, ''], ['construction', 'Home extension', 'Jun 2027', '−£35,000', 'mk-sq', 2027, 6, ''], ['percent', 'Mortgage fixed rate ends', '30 Jun 2028', '', 'mk-tk', 2028, 6, 'then a variable rate'], ['work', 'Arun’s salary steps up', 'Sep 2028', '£5,500', 'mk-sq', 2028, 9, 'a month'], ['school', 'School fees start', 'Jan 2029', '−£4,000', 'mk-sq', 2029, 1, 'a month'], ['directions_car', 'Car loan paid off', '20 Feb 2029', '', 'mk-dot', 2029, 2, 'frees £347 a month'], ['real_estate_agent', 'HDFC loan closed by the SBI FD', 'Mar 2029', '₹5,93,849', 'mk-sq', 2029, 3, '16 EMIs early'], ['shield', 'LIC policy matures', '28 Mar 2031', '', 'mk-tk', 2031, 3, ''], ['directions_car', 'Replace the car', 'Jun 2031', '−£25,000', 'mk-sq', 2031, 6, ''], ['school', 'School fees end', 'Jul 2041', '', 'mk-sq', 2041, 7, 'frees £6,784 a month'], ['home', 'Mortgage paid off', '1 Oct 2045', '', 'mk-dot', 2045, 10, 'frees £1,456 a month']];
           const PI4 = [['savings', 'School fees pot', 'A month, Nov 2026 to Dec 2028', '−£690'], ['construction', 'Home extension', 'Once, Jun 2027', '−£35,000'], ['redeem', 'Asha’s annual bonus', 'Each March, grows 3.5%', '+£3,000'], ['work', 'Arun’s salary', 'A month, from Sep 2028', '£5,500'], ['school', 'School fees', 'A month, Jan 2029 to Jul 2041', '−£4,000'], ['real_estate_agent', 'Close the HDFC home loan', 'SBI FD, Mar 2029', '₹5,93,849'], ['directions_car', 'Replace the car', 'Once, Jun 2031', '−£25,000']];
           const view = (o) => {
-            const mk = (v) => ({ v, m: o.priv ? 'mp-mask' : '' });
+            const HID = (s) => String(s).replace(/[0-9£₹$€]/g, '\u2007').replace(/[,.]/g, '\u2008'); // MA-300: a mask keeps the figure's width, never its digits
+            const mk = (v) => ({ v: o.priv && v ? HID(v) : v, m: o.priv && v ? 'mp-mask' : '' });   // no empty mask: it drew nothing
             const k = (v, y) => o.inr ? Math.round(v / Math.pow(1.025, y - 2026) * 112.5 / 1e5) * 1e5 : v;
             const fmt = o.inr ? inr : gbp;
             const Yr = o.a ? 20 : 30, base = o.r4 ? F4 : F0, MSx = o.r4 ? MS4 : MS, last = 2026 + Yr;
             const rows = base.map((r) => [r[0], k(r[1], r[0]), k(r[2], r[0]), k(r[3], r[0])]);
             const vmax = o.inr ? (Yr === 20 ? 4.5e8 : 7e8) : (Yr === 20 ? 6.5e6 : 1.3e7), c = chart(rows.slice(0, Yr + 1), Yr, vmax), end = rows[Yr], y36 = rows[10];
-            const grid = (o.inr ? (Yr === 20 ? [[1e8, '₹10 crore'], [2e8, '₹20 crore'], [3e8, '₹30 crore']] : [[2e8, '₹20 crore'], [4e8, '₹40 crore'], [6e8, '₹60 crore']]) : (Yr === 20 ? [[2e6, '£2m'], [4e6, '£4m'], [6e6, '£6m']] : [[4e6, '£4m'], [8e6, '£8m'], [1.2e7, '£12m']])).map((g) => ({ y: c.Y(g[0]).toFixed(2), top: pc(c.Y(g[0])), l: g[1], m: o.priv ? 'mp-mask' : '' }));
+            const grid = (o.inr ? (Yr === 20 ? [[1e8, '₹10 crore'], [2e8, '₹20 crore'], [3e8, '₹30 crore']] : [[2e8, '₹20 crore'], [4e8, '₹40 crore'], [6e8, '₹60 crore']]) : (Yr === 20 ? [[2e6, '£2m'], [4e6, '£4m'], [6e6, '£6m']] : [[4e6, '£4m'], [8e6, '£8m'], [1.2e7, '£12m']])).map((g) => ({ y: c.Y(g[0]).toFixed(2), top: pc(c.Y(g[0])), l: o.priv ? HID(g[1]) : g[1], m: o.priv ? 'mp-mask' : '' }));
             const axis = (Yr === 20 ? (o.w390 ? [[0, 'Today', 'ax0'], [10, '2036', ''], [20, '2046', 'ax1']] : [[0, 'Today', 'ax0'], [5, '2031', ''], [10, '2036', ''], [15, '2041', ''], [20, '2046', 'ax1']]) : [[0, 'Today', 'ax0'], [5, '2031', ''], [10, '2036', ''], [15, '2041', ''], [20, '2046', ''], [25, '2051', ''], [30, '2056', 'ax1']]).map((a) => ({ left: pc(c.X(a[0])), l: a[1], c: a[2] }));
             const fromV = o.r4 ? gbp(START4) : (o.inr ? '₹5,15,19,488' : gbp(START));
             return {
@@ -515,13 +525,13 @@
                 ticks: MSx.filter((m) => m[4] === 'mk-tk' && m[5] <= last).map((m) => ({ left: pc(c.X(tOf(m[5], m[6]))) })),
                 sq: o.r4 ? MS4.filter((m) => m[4] === 'mk-sq').map((m) => c.P(tOf(m[5], m[6]), 2)) : PI.filter((p) => p[5] && p[5] <= last).map((p) => c.P(tOf(p[5], p[6]), 2)),
                 lbls: (Yr === 20 ? (o.inr || o.w390 ? [] : o.r4 ? [['Fees start', 2029, 1]] : [['HDFC loan ends', 2030, 7]]) : [['Mortgage paid off', 2045, 10], ['Arun retires', 2051, 1]]).map((l) => Object.assign(c.P(tOf(l[1], l[2]), 2), { l: l[0] })),
-                ends: [[3, 'lbl-2'], [2, ''], [1, 'lbl-2']].map((e) => ({ top: pc(c.Y(end[e[0]])), l: fmt(end[e[0]]), c: e[1], m: o.priv ? 'mp-mask' : '' })) },
+                ends: [[3, 'lbl-2'], [2, ''], [1, 'lbl-2']].map((e) => ({ top: pc(c.Y(end[e[0]])), l: o.priv ? HID(fmt(end[e[0]])) : fmt(end[e[0]]), c: e[1], m: o.priv ? 'mp-mask' : '' })) },
               scrub: o.priv ? null : { left: pc(c.X(10)), t90: pc(c.Y(y36[3])), t10: pc(c.Y(y36[1])), y: '2036', m: fmt(y36[2]), r: fmt(y36[1]) + ' to ' + fmt(y36[3]) },
               ms: MSx.filter((m) => m[5] <= last).map((m) => ({ i: m[0], w: m[1], d: m[2], a: mk(m[3]), x: /[£₹]/.test(m[7]) ? mk(m[7]) : { v: m[7], m: '' }, k: m[4] })),
               pi: o.r4 ? PI4.map((p) => ({ i: p[0], w: p[1], s: p[2], a: mk(p[3]), ed: o.mem ? '' : 'ed' })) : PI.map((p) => ({ i: p[0], w: p[1], s: p[2], a: mk((p[3] > 0 ? '+' : '') + gbp(p[3]) + p[4]), ed: o.mem ? '' : 'ed' })),
-              piSub: o.mem ? 'Arun’s, the admin’s' : 'yours alone, as the admin',
-              ed: o.mem ? '' : 'ed', asmI: o.mem ? 'lock' : 'edit',
-              asmNote: o.mem ? 'Arun keeps these figures. Ask in the chat to see what other figures would do.' : 'Click a figure to correct it. Only you can, as the admin; each change is audited.'
+              piSub: o.mem ? 'Arun’s, the admin’s' : 'yours to change, as an admin',
+              ed: o.mem ? '' : 'ed', edR: o.mem ? 'none' : 'button', edT: o.mem ? '-1' : '0', asmI: o.mem ? 'lock' : 'edit',
+              asmNote: o.mem ? 'Arun keeps these figures. Ask in the chat to see what other figures would do.' : 'Click a figure to correct it. Only an admin can; each change is audited.'
             };
           };
           // The what-if: the engine's run with the member's override (what_if in the figure set), against today's plan, to 2036.
@@ -556,7 +566,7 @@
               head: { n: '1', t: 'Three options for the Projection screen', p: 'Each is a complete page for the admin, Arun, at 1440 with the chat beside it, in light and dark. They differ in what comes first: the chart (1a), the words (1b) or the decades (1c). 1a is recommended; the second turn below draws its states.' },
               lead: 'The fan on the navy hero, milestones and plan items marked on the line, a hover on 2036, the scenario chips, then the milestones, the plan items and the assumptions panel, each figure with its source and editable by the admin. Recommended: it is §6.6’s screen as listed (the fan, milestones on the line, the assumptions with sources, scenario chips, Ask), the chart a member reads and hovers comes first, and the summary still leads, as the hero’s one figure and its range.',
               frames: page('Browser · Projection, the fan first', { a: true }, chatArun, ARUN),
-              notes: [{ h: 'Where it sits.', t: 'Projection is its own page in the sidebar (Home, Assets, Debts, Budget, Projection, Activity, Audit), with the chat beside it over about 1024 px. MA-224.' }, { h: 'The fan is the engine’s.', t: 'The middle path and the band where 8 in 10 runs land, from the stored run (MA-219); the hover reads 2036 off the same run. The labels and dots are HTML over the SVG.' }, { h: 'Three shapes, never colour alone.', t: 'A dot where a loan ends or Arun retires, a square for a plan item, a tick on the axis for a maturity or the fixed rate’s end; each is named in the lists, with the same shape.' }, { h: 'The tabs and the switches (MA-261, MA-264).', t: 'Net worth, Plans and Budget forecast under the title; the horizon (5, 10, 20 or 30 years, opening at 20), £ or ₹ and Today’s money under them; the eye stays in the page head. They only change the view. Board P3 draws them flipped; 1b and 1c keep the 30 years they were drawn at.' }, { h: 'Sources.', t: 'Contract for the FD and PPF, a prior for prices and property, history shrunk toward a prior for Parag Parikh and pay (MA-221). Arun corrects any figure in place (P5); members cannot.' }, { h: 'Moves.', t: 'The hero rises and its figure rolls up, the band and line wipe in from the left, the dots and labels land after; the cards cascade.' }] },
+              notes: [{ h: 'Where it sits.', t: 'Projection is its own page in the sidebar (Home, Assets, Debts, Budget, Projection, Activity, Audit), with the chat beside every screen from about 1133 px. MA-224.' }, { h: 'The fan is the engine’s.', t: 'The middle path and the band where 8 in 10 runs land, from the stored run (MA-219); the hover reads 2036 off the same run. The labels and dots are HTML over the SVG.' }, { h: 'Three shapes, never colour alone.', t: 'A dot where a loan ends or Arun retires, a square for a plan item, a tick on the axis for a maturity or the fixed rate’s end; each is named in the lists, with the same shape.' }, { h: 'The tabs and the switches (MA-261, MA-264).', t: 'Net worth, Plans and Budget forecast under the title; the horizon (5, 10, 20 or 30 years, opening at 20), £ or ₹ and Today’s money under them; the eye stays in the page head. They only change the view. Board P3 draws them flipped; 1b and 1c keep the 30 years they were drawn at.' }, { h: 'Sources.', t: 'Contract for the FD and PPF, a prior for prices and property, history shrunk toward a prior for Parag Parikh and pay (MA-221). Arun corrects any figure in place (P5); members cannot.' }, { h: 'Moves.', t: 'The hero rises and its figure rolls up, the band and line wipe in from the left, the dots and labels land after; the cards cascade.' }] },
             { anchor: 'o1b', id: '1b', name: 'Browser · Projection, a story first', keys: 'MA-224 · MA-223 · MA-219',
               lead: 'Where you’re heading, in plain words built around the engine’s figures, then the fan on a card, then what drives it. The assumptions, plan items and milestones are one click away.',
               frames: page('Browser · Projection, a story first', { b: true }, chatArun, ARUN),
@@ -598,7 +608,7 @@
             { anchor: 'p9', id: 'P9', name: 'Browser · Projection, after the plans', keys: 'MA-224 · MA-222',
               lead: 'Thu 5 Nov, 21:06: the Net worth tab after Arun’s seven plans, from the engine’s run of 20:59. Each plan is a square on the line: the extension, the salary step, the school fees starting and ending, the HDFC loan closed early by the SBI FD, the new car. The milestones list them with the records’ own, and the plan items list all seven.',
               frames: page('Browser · Projection, after the plans', { a: true, r4: true }, chatPlans, ARUN),
-              notes: [{ h: 'The run of 20:59 (R4).', t: 'From Thursday’s £456,747: 2046’s middle path £2,923,000, 8 in 10 runs between £2,188,000 and £4,058,000 (future-plans-v4.json, runs.R4).' }, { h: 'Plan items on the line.', t: 'A square for each plan item with a date, named in Milestones with the records’ dots and ticks; the HDFC loan’s own end in Jul 2030 is gone, since the SBI FD closes it in Mar 2029.' }, { h: 'The admin’s alone.', t: 'Each plan is corrected, paused or ended on the Plans tab or in the chat (MA-222); Asha sees the same line without the pencils.' }] },
+              notes: [{ h: 'The run of 20:59 (R4).', t: 'From Thursday’s £456,747: 2046’s middle path £2,923,000, 8 in 10 runs between £2,188,000 and £4,058,000 (future-plans-v4.json, runs.R4).' }, { h: 'Plan items on the line.', t: 'A square for each plan item with a date, named in Milestones with the records’ dots and ticks; the HDFC loan’s own end in Jul 2030 is gone, since the SBI FD closes it in Mar 2029.' }, { h: 'An admin’s to change.', t: 'Each plan is corrected, paused or ended on the Plans tab or in the chat (MA-222); Asha sees the same line without the pencils.' }] },
             { anchor: 'p7', id: 'P7', name: 'Browser · Plan item in the chat, phone', keys: 'MA-222',
               lead: 'The phone-web door at 390, where the chat is a tab: Arun adds Asha’s bonus in words on Sun 25 Oct; the card reads it back, he confirms, and the audit row follows. The page boards above, the next morning, already show it.',
               frames: phone('Browser · Plan item in the chat, phone'),

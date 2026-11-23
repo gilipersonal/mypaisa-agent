@@ -16,7 +16,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
 .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -115,6 +115,16 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .cfile { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 10px; border-radius: 12px; background: var(--mp-surface-2); }
 .mp-foot .mp-mask { margin-top: 2px; }
 
+/* MA-300: the drawn controls are real buttons (the reset skips the classes that were buttons already, so they draw as before) (type="button"; the older plain <button>s keep their own look). A
+   zero-specificity reset strips the browser's button look, so every class rule (tokens.css, ios.css, this board) still draws them as before. */
+:where(button[type="button"]:not(.cbtn, .edf, .iconbtn, .mp-btn, .mp-seg-i)) {
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
+  align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* the household strip carries balances, so it is solid ledger, never glass (MA-300, P1-2) */
+.strip.solid { position: relative; background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line), 0 2px 10px rgba(0, 0, 0, 0.08); }
+.strip.solid .mp-up { color: var(--mp-up); }
+.strip.solid .mp-mask { background: var(--mp-mask); }
 </style>
 </helmet>
 
@@ -136,9 +146,9 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="dv-col">
 <div class="bd-theme">{{ f.cap }}</div>
 <div class="dev dev-iphone mp {{ f.cls }}" data-screen-label="{{ f.cap }}"><div class="island"></div><div class="scrn">
-<div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
 <sc-if value="{{ f.isPage }}" hint-placeholder-val="{{ true }}">
-<div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Budget</span></sc-if><span class="fx gap8"><span class="gbtn lg {{ f.eyeT }}"><span class="ms {{ f.eyeF }}">{{ f.pg.eye }}</span></span><span class="gtext lg"><span class="ms">chat_bubble</span><span>Ask</span></span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Budget</span></sc-if><span class="fx gap8"><button type="button" class="gbtn lg {{ f.eyeT }}" aria-label="Privacy mode"><span class="ms {{ f.eyeF }}" aria-hidden="true">{{ f.pg.eye }}</span></button><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></span></div>
 <div class="under"><div class="pg" style="margin-top: {{ f.pg.off }}">
 <div class="largetitle" style="padding: 0 4px">Budget</div>
 <div class="mp-foot mp-ink2 subt">{{ f.pg.meta }}</div>
@@ -146,7 +156,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="mp-seg sg-m" role="group" aria-label="Month"><sc-for list="{{ f.pg.months }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div>
 <div class="mp-seg sg-w" role="group" aria-label="Whose budget"><sc-for list="{{ f.pg.whose }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div>
 <div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s {{ f.pg.gOn }}" aria-pressed="{{ f.pg.gP }}">£ GBP</button><button class="mp-seg-i seg-s {{ f.pg.iOn }}" aria-pressed="{{ f.pg.iP }}">₹ INR</button></div>
-<button class="iconbtn {{ f.pg.eyeC }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.pg.eyeP }}"><span class="ms">{{ f.pg.eye }}</span></button>
+<button class="iconbtn {{ f.pg.eyeC }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.pg.eyeP }}"><span class="ms" aria-hidden="true">{{ f.pg.eye }}</span></button>
 </div>
 <sc-if value="{{ f.pg.hasBanner }}" hint-placeholder-val="{{ false }}"><div class="banner"><span class="ms ms-s" aria-hidden="true">receipt_long</span><div class="mp-foot grow1"><span class="mp-w6">Two statements are waiting for your Confirm in the chat.</span> October’s actuals fill in when you confirm them.</div></div></sc-if>
 <div class="mp-cols">
@@ -200,7 +210,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="edge-bot"></div>
 </sc-if>
 <sc-if value="{{ f.isChat }}" hint-placeholder-val="{{ false }}">
-<div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · prices to Fri 23 Oct</span><span class="strip-n {{ f.nw.c }}" role="{{ f.nw.r }}" aria-label="{{ f.nw.l }}">{{ f.nw.v }}</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>
+<div class="strip solid"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household · prices to Fri 23 Oct</span><span class="strip-n {{ f.nw.c }}" role="{{ f.nw.r }}" aria-label="{{ f.nw.l }}">{{ f.nw.v }}</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
 <div class="scroll"><div class="fadet"></div><div class="chat cb" style="{{ f.cpos }}">
 <sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
 <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
@@ -224,15 +234,15 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 </sc-for>
 </div>
 <sc-if value="{{ m.card.hasActs }}" hint-placeholder-val="{{ true }}"><div class="ccard-acts"><sc-for list="{{ m.card.acts }}" as="b" hint-placeholder-count="3"><button class="cbtn {{ b.c }}" type="button">{{ b.t }}</button></sc-for></div></sc-if>
-<sc-if value="{{ m.card.hasFold }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold quiet"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">{{ m.card.fold.i }}</span>{{ m.card.fold.t }}</span><span class="mp-foot mp-ink2">{{ m.card.fold.r }}</span></div></sc-if>
+<sc-if value="{{ m.card.hasFold }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold quiet" role="button" tabindex="0" aria-expanded="false"><span class="fx ac gap8"><span class="ms ms-s" aria-hidden="true">{{ m.card.fold.i }}</span>{{ m.card.fold.t }}</span><span class="mp-foot mp-ink2">{{ m.card.fold.r }}</span></div></sc-if>
 </div>
 </sc-if></div></div></sc-if>
 </sc-for>
 </div></div>
 <div class="edgeB"></div>
-<div class="composer cmp"><div class="chips"><span class="gchip lg"><span class="ms">event_note</span><span>Budget</span></span><span class="gchip lg"><span class="ms">receipt_long</span><span>Send a statement</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2"><span class="ms">mic</span></span></span></div></div>
+<div class="composer cmp"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event_note</span><span>Budget</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">receipt_long</span><span>Send a statement</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">payments</span><span>Log money</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </sc-if>
-<sc-if value="{{ f.hasTabs }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><span class="tab {{ tb.on }}"><span class="ms">{{ tb.icon }}</span>{{ tb.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div></sc-if>
+<sc-if value="{{ f.hasTabs }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><button type="button" class="tab {{ tb.on }}"><span class="ms" aria-hidden="true">{{ tb.icon }}</span>{{ tb.label }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms" aria-hidden="true">search</span></button></div></sc-if>
 <sc-if value="{{ f.hasKbd }}" hint-placeholder-val="{{ false }}"><div class="kbd" role="group" aria-label="Number pad, drawn by iOS"><sc-for list="{{ kpad }}" as="k" hint-placeholder-count="12"><span class="key {{ k.c }}"><span>{{ k.t }}</span><small>{{ k.s }}</small></span></sc-for></div></sc-if>
 <div class="homebar"></div>
 </div></div>
@@ -250,7 +260,7 @@ renderVals() {
 const R = 112.5;
 const gbp = (n, dp) => '£' + Math.abs(n).toLocaleString('en-GB', { minimumFractionDigits: dp || 0, maximumFractionDigits: dp || 0 });
 const inr = (n) => { const s = String(Math.round(Math.abs(n))); let h = s.length > 3 ? s.slice(0, -3) : '', o = s.slice(-3); while (h.length > 2) { o = h.slice(-2) + ',' + o; h = h.slice(0, -2); } if (h) o = h + ',' + o; return '₹' + o; };
-const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: String(s), c: '', r: null, l: null });
+const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden' } : { v: String(s), c: '', r: null, l: null });
 const T = (s) => ({ v: s, c: '', r: null, l: null });
 const rt = function () { return Array.prototype.slice.call(arguments).map((x) => (typeof x === 'string' ? T(x) : x)); };
 const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
@@ -418,7 +428,7 @@ const BUD_2 = 650, BUD_3 = 1277, BUD_4 = 1930, REV_2 = 500, REV_3 = 1000, CI_TOP
 const boards = [
 { id: 'i1', tag: 'I1', name: 'iPhone · Budget', keyline: 'MA-96', arch: 'ARCHITECTURE.md §12 (Budget), §4.10, §9', intro: 'Budget on iPhone, pushed from Home in shell 1a, after October closed at 09:02 on Sun 1 Nov: the surplus and savings rate on the hero, plan against actual for each category, income by member with the Pune rent in rupees and pounds, the EMIs and the SIP, and each member’s salary history with its measured growth. Drawn as Arun scrolls, in light and dark, then the ₹ INR view and privacy on.', keys: [key('MA-96')],
   frames: both('iPhone · Budget', [['as it opens', { state: 'closed' }], ['scrolled to plan against actual', { state: 'closed', off: BUD_2 }], ['scrolled to income', { state: 'closed', off: BUD_3 }], ['scrolled to the end', { state: 'closed', off: BUD_4 }]]).concat([FR('iPhone · Budget · Light · in rupees', 'Light', { state: 'closed', inr: true }), FR('iPhone · Budget · Dark · privacy on', 'Dark', { state: 'closed', priv: true })]),
-  notes: N2([['Jira: MA-96.', 'Budget at the iOS door; the web door is Web v4 · Budget in MyPaisa app v1, with the same figures and blocks.'], ['Superseded:', 'the old Budget board said “MyPaisa does not read your bank”. The member now sends statements in the chat; MyPaisa still never connects to the bank.'], ['Every figure is budget_oct’s:', 'plan £2,682, actual £2,246, income £7,560, EMIs £2,153, SIP £89, surplus £2,636 planned and £3,072 actual, savings rate 40.6%. Derived: £436 over plan (£3,072 − £2,636), the plan’s savings rate 34.9% (£2,636 ÷ £7,560), and each category’s over or under (actual − plan).'], ['Lines keep their own currency, totals follow £/₹:', 'the Pune rent ₹18,000 is £160, HDFC’s ₹39,389.58 EMI £350 (shown ₹39,390), the SIP’s ₹10,000 £89, at £1 = ₹112.50. In rupees: income ₹8,50,500, EMIs ₹2,42,228, spending ₹2,52,675 of ₹3,01,725, surplus ₹3,45,597.'], ['Salary history', 'is each member’s yearly net pay, from 0, with the engine’s measured growth: Arun 4.8% a year since 2022, Asha 3.5% a year since 2023.'], ['Correct in place, create in the chat:', 'a plan, income or salary figure is tapped and corrected (iPhone · Budget, correct a plan amount); a new category is made only in the chat, as the note under the list says.'], ['Glass is the controls only:', 'the back button, the eye, Ask and the tab bar float; the hero, the cards and the bars are solid Warm ledger. Privacy on tints the eye and masks every amount.'], ['Moves:', 'the surplus rolls up once, the meters grow from the left and the salary bars rise; under Reduce Motion they land at once.']]) },
+  notes: N2([['Jira: MA-96.', 'Budget at the iOS door; the web door is Web v4 · Budget in MyPaisa app v1, with the same figures and blocks.'], ['Superseded:', 'the old Budget board said “MyPaisa does not read your bank”. An admin now sends statements in the chat; MyPaisa still never connects to the bank.'], ['Every figure is budget_oct’s:', 'plan £2,682, actual £2,246, income £7,560, EMIs £2,153, SIP £89, surplus £2,636 planned and £3,072 actual, savings rate 40.6%. Derived: £436 over plan (£3,072 − £2,636), the plan’s savings rate 34.9% (£2,636 ÷ £7,560), and each category’s over or under (actual − plan).'], ['Lines keep their own currency, totals follow £/₹:', 'the Pune rent ₹18,000 is £160, HDFC’s ₹39,389.58 EMI £350 (shown ₹39,390), the SIP’s ₹10,000 £89, at £1 = ₹112.50. In rupees: income ₹8,50,500, EMIs ₹2,42,228, spending ₹2,52,675 of ₹3,01,725, surplus ₹3,45,597.'], ['Salary history', 'is each member’s yearly net pay, from 0, with the engine’s measured growth: Arun 4.8% a year since 2022, Asha 3.5% a year since 2023.'], ['Correct in place, create in the chat:', 'an admin taps a plan, income or salary figure and corrects it (iPhone · Budget, correct a plan amount); a new category is made only in the chat, as the note under the list says.'], ['Glass is the controls only:', 'the back button, the eye, Ask and the tab bar float; the hero, the cards and the bars are solid Warm ledger. Privacy on tints the eye and masks every amount.'], ['Moves:', 'the surplus rolls up once, the meters grow from the left and the salary bars rise; under Reduce Motion they land at once.']]) },
 { id: 'i2', tag: 'I2', name: 'iPhone · Statement review', keyline: 'MA-218', arch: 'ARCHITECTURE.md §4.9 (Statements), §4.6', intro: 'Sun 1 Nov, 08:41. Arun sends the Barclaycard statement of Sun 1 Nov and Monzo’s for October from the Chat tab. One review card follows: grouped by category, the two uncertain lines in amber, the five lines that are not spending recognised, and one Confirm. Drawn as he scrolls through it, in light and dark.', keys: [key('MA-218')],
   frames: both('iPhone · Statement review', [['1, sent', { chat: true, when: 'review', clock: '08:41', top: 8 }], ['2, the amber lines', { chat: true, when: 'review', clock: '08:41', top: -REV_2 }], ['3, by category', { chat: true, when: 'review', clock: '08:41', top: -REV_3 }], ['4, recognised and Confirm', { chat: true, when: 'review', clock: '08:42' }]]),
   notes: N2([['Jira: MA-218.', 'The statement review card at the iOS door; the web door is Browser · Statement review.'], ['statements_oct:', 'Barclaycard’s 16 lines come to its £1,458 balance; Monzo has 6 spending lines and 5 that are not spending. The 22 lines by category equal budget_oct’s actuals to the pound: £2,246.'], ['Amber, never red:', 'AMZN Mktp £165 (Shopping?) and PAYPAL *EBAY £42 (Other?). Confirm keeps the guess; Change sets another category first; the merchant memory learns either way.'], ['Recognised, so nothing counts twice:', 'the Barclaycard payment £1,240, the mortgage £1,456.46 and the car loan £346.55 (EMIs matched to their commitments), the move of £5,000 to savings, and Arun’s salary £4,350.'], ['One Confirm, no second check:', 'a statement is routine (§4.5). Both files are kept for good before anything reads them. Line counts (22, 11 categories, 11 Monzo lines) are derived; file names are illustrative.'], ['The household strip', 'shows £457,951 here, before Confirm: the set’s net worth after Mon 26 Oct (totals_after_correction: the £5,000 savings record at 09:41 and the Home correction from £415,000 to £428,000 at 09:52), prices still at the Fri 23 Oct close. From Confirm at 08:44 it shows £456,493: the Barclaycard statement’s £1,458 is owed, due Fri 20 Nov (totals_after_statement_sun_1_nov).'], ['Context only:', 'the composer’s shortcut chips (Budget, Send a statement, Log money) stand in for whatever the chat’s own boards settle.']]) },
@@ -435,7 +445,7 @@ const boards = [
 const index = boards.map((b) => ({ id: b.id, name: b.name, keys: b.keyline }));
 return {
   intro1: 'Phase 6 (Budget: statements and monthly check-ins), drawn on MA-193 for the iPhone in shell 1a (Chat first, the Liquid Glass tab bar Chat · Home · Activity · You), in MyPaisa DS v1 “Warm ledger” and the iOS kit. Budget (MA-96), the statement review card (MA-218), a statement answering a check-in (MA-218) and the month-end check-in (MA-220), each in light and dark, with the ₹ INR view and privacy on for Budget. The web door is Web v4 · Budget in MyPaisa app v1, drawn from the same blocks and figures.',
-  intro2: 'Superseded: the old Budget board’s “MyPaisa does not read your bank”. The member now sends statements in the chat; MyPaisa still never connects to the bank. The boards run from the figure set’s clock (Mon 26 Oct) to Sun 1 Nov: 08:40 statements sent, 08:44 confirmed, 09:00 the check-in, 09:02 October closed, 09:06 a plan corrected. Every figure is the set’s (budget_oct, statements_oct, members) or derived from it, as each board’s notes say; Arun (admin) and Asha (member) are illustrative.',
+  intro2: 'Superseded: the old Budget board’s “MyPaisa does not read your bank”. An admin now sends statements in the chat; MyPaisa still never connects to the bank. The boards run from the figure set’s clock (Mon 26 Oct) to Sun 1 Nov: 08:40 statements sent, 08:44 confirmed, 09:00 the check-in, 09:02 October closed, 09:06 a plan corrected. Every figure is the set’s (budget_oct, statements_oct, members) or derived from it, as each board’s notes say; Arun (admin) and Asha (member) are illustrative.',
   allKeys: ['MA-96', 'MA-218', 'MA-220'].map(key), index: index, boards: boards, kpad: kpad
 };
 

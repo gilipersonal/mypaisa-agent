@@ -35,7 +35,7 @@
   --mp-alert: #B5123F;       /* red tier alerts and destructive actions only: a crimson, clearly apart from the coral accent; 6.7:1 */
   --mp-alert-bg: #FCE4EA;
   --mp-on-alert: #FFFFFF;    /* a count badge on the crimson */
-  /* stances: text on tint, all ≥4.6:1 */
+  /* status chips: text on tint, all ≥4.6:1 (the --mp-add to --mp-watch names are older than MA-307's retirement of stances) */
   --mp-add: #1D7A3E;   --mp-add-bg: #E2F2E7;
   --mp-hold: #2453C9;  --mp-hold-bg: #E5ECFB;
   --mp-pause: #8A5300; --mp-pause-bg: #FCEED6;
@@ -185,19 +185,19 @@
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.01em;
 }
-.mp-large  { font-size: 34px; line-height: 41px; font-weight: 700; letter-spacing: -0.02em; }
-.mp-t1     { font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -0.02em; }
-.mp-t2     { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.015em; }
-.mp-t3     { font-size: 20px; line-height: 25px; font-weight: 600; }
-.mp-hl     { font-size: 17px; line-height: 22px; font-weight: 600; }
-.mp-body   { font-size: 17px; line-height: 22px; font-weight: 400; }
-.mp-callout{ font-size: 16px; line-height: 21px; font-weight: 400; }
-.mp-sub    { font-size: 15px; line-height: 20px; font-weight: 400; }
-.mp-foot   { font-size: 13px; line-height: 18px; font-weight: 400; letter-spacing: 0; }
-.mp-cap    { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0; }
-.mp-over   { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-.mp-num-hero { font-family: var(--mp-font-round); font-size: 44px; line-height: 48px; font-weight: 800; letter-spacing: -0.03em; }
-.mp-num-l    { font-family: var(--mp-font-round); font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+.mp-large  { font-size: 2.125rem; line-height: 2.5625rem; font-weight: 700; letter-spacing: -0.02em; }
+.mp-t1     { font-size: 1.75rem; line-height: 2.125rem; font-weight: 700; letter-spacing: -0.02em; }
+.mp-t2     { font-size: 1.375rem; line-height: 1.75rem; font-weight: 700; letter-spacing: -0.015em; }
+.mp-t3     { font-size: 1.25rem; line-height: 1.5625rem; font-weight: 600; }
+.mp-hl     { font-size: 1.0625rem; line-height: 1.375rem; font-weight: 600; }
+.mp-body   { font-size: 1.0625rem; line-height: 1.375rem; font-weight: 400; }
+.mp-callout{ font-size: 1rem; line-height: 1.3125rem; font-weight: 400; }
+.mp-sub    { font-size: 0.9375rem; line-height: 1.25rem; font-weight: 400; }
+.mp-foot   { font-size: 0.8125rem; line-height: 1.125rem; font-weight: 400; letter-spacing: 0; }
+.mp-cap    { font-size: 0.75rem; line-height: 1rem; font-weight: 400; letter-spacing: 0; }
+.mp-over   { font-size: 0.75rem; line-height: 1rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.mp-num-hero { font-family: var(--mp-font-round); font-size: 2.75rem; line-height: 3rem; font-weight: 800; letter-spacing: -0.03em; }
+.mp-num-l    { font-family: var(--mp-font-round); font-size: 1.75rem; line-height: 2rem; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
 .mp-num      { font-variant-numeric: tabular-nums; }
 .mp-ink2 { color: var(--mp-ink-2); }
 .mp-ink3 { color: var(--mp-ink-3); }
@@ -206,25 +206,30 @@
 .mp-acc  { color: var(--mp-accent); }
 .mp-w6 { font-weight: 600; } .mp-w7 { font-weight: 700; }
 .mp a:not([class]), .mp a.mp-link { color: var(--mp-accent); text-underline-offset: 2px; }
+.mp a:not([class]):hover, .mp a.mp-link:hover { color: var(--mp-accent); text-decoration-thickness: 2px; }   /* a link's hover underlines, never darkens; a classed link (a button, a tab) keeps its own colours (MA-300) */
+/* the browser's own surfaces take the theme: a selection, the text caret (MA-300) */
+.mp ::selection, .mp::selection { background: var(--mp-hold-bg); color: var(--mp-ink); }
+.mp { caret-color: var(--mp-accent); }
+@supports not selector(::-webkit-scrollbar) { .mp { scrollbar-color: var(--mp-track) transparent; } }   /* Firefox; Chromium and WebKit draw theirs from color-scheme, and a scrollbar-color there would undo the boards' hidden scrollbars */
 
 /* ---------- icons: Material Symbols Rounded (an SF Symbols stand-in on the web) ---------- */
-.ms { font-family: "Material Symbols Rounded"; font-weight: 500; font-style: normal; font-size: 22px; line-height: 1; display: inline-block; font-variation-settings: "FILL" 0, "wght" 500, "opsz" 24; -webkit-font-feature-settings: "liga"; user-select: none; }
+.ms { font-family: "Material Symbols Rounded"; font-weight: 500; font-style: normal; font-size: 1.375rem; line-height: 1; display: inline-block; font-variation-settings: "FILL" 0, "wght" 500, "opsz" 24; -webkit-font-feature-settings: "liga"; user-select: none; }
 .ms-fill { font-variation-settings: "FILL" 1, "wght" 500, "opsz" 24; }
-.ms-s { font-size: 18px; } .ms-l { font-size: 26px; }
+.ms-s { font-size: 1.125rem; } .ms-l { font-size: 1.625rem; }
 
 /* ---------- surfaces ---------- */
 .mp-card  { background: var(--mp-surface); border-radius: var(--mp-r-card); padding: 16px; box-shadow: var(--mp-shadow); }
 .mp-group { background: var(--mp-surface); border-radius: var(--mp-r-row); overflow: hidden; }
 .mp-row   { min-height: 44px; padding: 11px 16px; display: flex; align-items: center; gap: 12px; box-sizing: border-box; position: relative; }
 .mp-group .mp-row + .mp-row::before { content: ""; position: absolute; left: 16px; right: 0; top: 0; height: 1px; background: var(--mp-line); transform: scaleY(0.5); transform-origin: top; }
-.mp-row-lead { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex: none; font-weight: 700; font-size: 13px; }
+.mp-row-lead { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex: none; font-weight: 700; font-size: 0.8125rem; }
 .mp-section { padding: 0 4px 6px 16px; }
 .mp-hero  { background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: var(--mp-r-hero); padding: 20px; position: relative; overflow: hidden; }
 .mp-hero-2 { color: var(--mp-hero-ink-2); }
 .mp-hr { height: 1px; background: var(--mp-line); border: 0; margin: 0; }
 
 /* ---------- chips ---------- */
-.mp-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 10px; font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; }
+.mp-chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 10px; font-size: 0.8125rem; line-height: 1.125rem; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; }
 .mp-add   { color: var(--mp-add);   background: var(--mp-add-bg); }
 .mp-hold  { color: var(--mp-hold);  background: var(--mp-hold-bg); }
 .mp-pause { color: var(--mp-pause); background: var(--mp-pause-bg); }
@@ -236,21 +241,23 @@
 .mp-ring { width: 18px; height: 18px; border-radius: 50%; flex: none; }
 
 /* ---------- controls (all ≥44px tall where tappable) ---------- */
-.mp-btn { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; font: 600 17px/22px var(--mp-font); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mp-t-tap) var(--mp-ease), opacity var(--mp-t-tap); }
+.mp-btn { min-height: 50px; padding: 0 20px; border-radius: 14px; border: 0; font: 600 1.0625rem/1.375rem var(--mp-font); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; white-space: nowrap; transition: transform var(--mp-t-tap) var(--mp-ease), opacity var(--mp-t-tap); }
 .mp-btn:active { transform: scale(0.97); }
 .mp-btn:focus-visible, .mp-seg-i:focus-visible, .mp-tab:focus-visible,
 .mp-side-i:focus-visible, .iconbtn:focus-visible, .mp-switch:focus-visible,
 a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visible,
-[role="switch"]:focus-visible, [role="tab"]:focus-visible, [data-scrub]:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+[role="switch"]:focus-visible, [role="tab"]:focus-visible, [data-scrub]:focus-visible,
+.mp :is(a, button, summary, input, select, textarea, [tabindex]):focus-visible, .mp-link:focus-visible, .mp-chip:focus-visible,
+.toptab:focus-visible, .wchip:focus-visible, .sendb:focus-visible, .edbtn:focus-visible, .tabsx button:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
 .mp-btn-primary { background: var(--mp-accent); color: var(--mp-on-accent); }
 .mp-btn-primary:hover { color: var(--mp-on-accent); filter: brightness(0.94); }
 .mp-btn-tinted  { background: var(--mp-surface-2); color: var(--mp-ink); }
 .mp-btn-tinted:hover  { color: var(--mp-ink); filter: brightness(0.97); }
 .mp-btn-plain   { background: transparent; color: var(--mp-accent); padding: 0 8px; min-height: 44px; }
 .mp-btn-plain:hover   { color: var(--mp-accent); background: var(--mp-surface-2); }
-.mp-btn-small   { min-height: 44px; padding: 0 14px; font-size: 15px; border-radius: 12px; }
+.mp-btn-small   { min-height: 44px; padding: 0 14px; font-size: 0.9375rem; border-radius: 12px; }
 .mp-seg   { display: flex; background: var(--mp-surface-2); border-radius: 10px; padding: 2px; gap: 2px; }
-.mp-seg-i { flex: 1; min-height: 40px; border: 0; background: transparent; border-radius: 8px; font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); cursor: pointer; position: relative; }
+.mp-seg-i { flex: 1; min-height: 40px; border: 0; background: transparent; border-radius: 8px; font: 600 0.8125rem/1.125rem var(--mp-font); color: var(--mp-ink-2); cursor: pointer; position: relative; }
 .mp-seg-i::after { content: ""; position: absolute; inset: -2px 0; }
 .mp-seg-i.on { background: var(--mp-seg-on); color: var(--mp-ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .mp-hero .mp-seg { background: var(--mp-hero-2); }
@@ -262,12 +269,18 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 .mp-switch-k { position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); transition: transform var(--mp-t-fast) var(--mp-ease); }
 .mp-switch.on .mp-switch-k { transform: translateX(20px); }
 
+/* small controls drawn under 44 pt keep a 44 pt target (HIG): an invisible area round each, the drawn size unchanged (MA-300).
+   :where() keeps it at no specificity, so a board that places one of these itself still wins. */
+:where(.toptab, .wchip, .sendb, .edbtn) { position: relative; }
+:where(.toptab, .wchip, .sendb, .edbtn)::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
+
 /* ---------- navigation ---------- */
 .mp-tabbar { display: flex; justify-content: space-around; padding: 6px 4px 22px; background: var(--mp-material); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 0.5px solid var(--mp-line); }
-.mp-tab { flex: 1 1 0; min-width: 0; max-width: 120px; min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--mp-ink-3); font: 500 10px/12px var(--mp-font); text-decoration: none; background: none; border: 0; cursor: pointer; }
+.mp-tab { flex: 1 1 0; min-width: 0; max-width: 120px; min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--mp-ink-2); font: 500 0.75rem/0.875rem var(--mp-font); text-decoration: none; background: none; border: 0; cursor: pointer; }   /* a web page's tab bar: product text keeps the 12 px floor, in ink-2 (MA-300) */
 .mp-tab.on { color: var(--mp-accent); }
+.mp-tab:hover { color: var(--mp-ink-2); } .mp-tab.on:hover { color: var(--mp-accent); }   /* a tab drawn as a link keeps its colour under a canvas's a:hover (MA-300) */
 .mp-side { width: 248px; box-sizing: border-box; flex: none; padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
-.mp-side-i { min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 10px; color: var(--mp-ink-2); font: 500 15px/20px var(--mp-font); text-decoration: none; }
+.mp-side-i { min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 12px; border-radius: 10px; color: var(--mp-ink-2); font: 500 0.9375rem/1.25rem var(--mp-font); text-decoration: none; }
 .mp-side-i:hover:not(.on) { background: var(--mp-surface-2); color: var(--mp-ink); }
 .mp-side-i.on { background: var(--mp-surface); color: var(--mp-ink); font-weight: 600; box-shadow: var(--mp-shadow); }
 .mp-side-i.on:hover { color: var(--mp-ink); }
@@ -280,7 +293,7 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 .mp-skel { background: var(--mp-surface-2); border-radius: 8px; }
 .mp-sheet { background: var(--mp-surface); border-radius: 16px 16px 0 0; box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.18); padding: 8px 16px max(24px, calc(env(safe-area-inset-bottom) + 12px)); }
 .mp-grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--mp-line); margin: 0 auto 10px; }
-.mp-toast { background: var(--mp-ink); color: var(--mp-bg); border-radius: 14px; padding: 12px 16px; font: 500 15px/20px var(--mp-font); box-shadow: var(--mp-shadow); }
+.mp-toast { background: var(--mp-ink); color: var(--mp-bg); border-radius: 14px; padding: 12px 16px; font: 500 0.9375rem/1.25rem var(--mp-font); box-shadow: var(--mp-shadow); }
 
 /* ---------- motion: transform and opacity only; nothing loops; reduced motion lands at once ---------- */
 @media (prefers-reduced-motion: no-preference) {
@@ -309,10 +322,10 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 .mp-icontile { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex: none; }
 
 /* ---------- shared small parts (were repeated per page) ---------- */
-.chip-s { padding: 2px 8px; font-size: 12px; line-height: 16px; }
-.mp-seg .seg-s { min-height: 40px; font-size: 12px; }   /* 40 in a 2 px track = 44 pt */
+.chip-s { padding: 2px 8px; font-size: 0.75rem; line-height: 1rem; }
+.mp-seg .seg-s { min-height: 40px; font-size: 0.75rem; }   /* 40 in a 2 px track = 44 pt */
 .iconbtn { width: 44px; height: 44px; border-radius: 12px; border: 0; display: grid; place-items: center; background: var(--mp-surface-2); color: var(--mp-ink); cursor: pointer; flex: none; }
-.coin { width: 32px; height: 32px; border-radius: 50%; background: var(--mp-hero); color: var(--mp-coral); display: grid; place-items: center; font: 800 16px/1 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; flex: none; }
+.coin { width: 32px; height: 32px; border-radius: 50%; background: var(--mp-hero); color: var(--mp-coral); display: grid; place-items: center; font: 800 1rem/1 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; flex: none; }
 .upchip { color: var(--mp-hero-up); background: rgba(68, 209, 122, 0.16); }   /* a rising month on the hero: 7.9:1 / 7.1:1 */
 .dnchip { color: var(--mp-hero-ink-2); background: var(--mp-hero-2); } /* a falling month on the hero, never red: 7.6:1 / 6.8:1 */
 .mp-scrim { position: absolute; inset: 0; background: rgba(5, 8, 14, 0.42); }
@@ -330,8 +343,8 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 .mp-chartbox path, .mp-chartbox line { vector-effect: non-scaling-stroke; }
 .mp-chartbox .mp-draw { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }  /* a dash draw breaks under non-scaling strokes; fade the box in instead */
 .mp-chartdot { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--mp-hero-ink); box-shadow: 0 0 0 2px var(--mp-coral); }
-.mp-chartlbl { position: absolute; transform: translate(-50%, -100%); margin-top: -8px; font: 700 12px/16px var(--mp-font); letter-spacing: 0.02em; white-space: nowrap; }
-.mp-chartaxis { position: relative; height: 16px; font: 500 12px/16px var(--mp-font); }
+.mp-chartlbl { position: absolute; transform: translate(-50%, -100%); margin-top: -8px; font: 700 0.75rem/1rem var(--mp-font); letter-spacing: 0.02em; white-space: nowrap; }
+.mp-chartaxis { position: relative; height: 16px; font: 500 0.75rem/1rem var(--mp-font); }
 .mp-chartaxis > span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
 
 /* ---------- adaptive layout: one markup, three size classes ----------
@@ -400,7 +413,7 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
 }
 @container app (min-width: 1024px) {
   @container page (max-width: 759px) {
-    .mp .mp-num-hero { font-size: 36px; line-height: 40px; }   /* under 700 one column; from 700 two narrow ones */
+    .mp .mp-num-hero { font-size: 2.25rem; line-height: 2.5rem; }   /* under 700 one column; from 700 two narrow ones */
     .mp .tb4 { overflow-x: auto; }
     .mp .tb4:has(> .th4:nth-child(4)):not(:has(> .th4:nth-child(5))) { grid-template-columns: minmax(max-content, 1fr) repeat(3, max-content) !important; }
     .mp .tb4:has(> .th4:nth-child(3)):not(:has(> .th4:nth-child(4))) { grid-template-columns: minmax(max-content, 1fr) repeat(2, max-content) !important; }
@@ -438,6 +451,7 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
    is a sheet away, opened from the sidebar's Chat, as it is from about 600 to 900 (Arun, 27 Oct 2026) */
 @container screen (min-width: 900px) and (max-width: 1132px) { .mp.ipad .scrn.srow > .insp { display: none; } }
 @container screen (max-width: 899px) { .mp.ipad .scrn.srow > .insp { display: none; } }
+@container screen (max-width: 1132px) { .mp:is(.dev-fold-open, .dev-fold-shut) .scrn.srow > .insp { display: none; } }   /* a foldable open (880 pt) or shut, the same way (MA-300) */
 /* and from 1133 to 1179 (an iPad mini across) the chat column is 280, an inspector's narrowest, so the screen keeps the
    room it has at 1180; a card's value there goes under its key before it falls under 7em */
 @container screen (min-width: 1133px) and (max-width: 1179px) {
@@ -588,7 +602,7 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
   .mp .tb4:has(> .th4:nth-child(4)):not(:has(> .th4:nth-child(5))) { grid-template-columns: minmax(max-content, 1fr) repeat(3, max-content) !important; }
   .mp .tb4:has(> .th4:nth-child(3)):not(:has(> .th4:nth-child(4))) { grid-template-columns: minmax(max-content, 1fr) repeat(2, max-content) !important; }
   .mp .tb4 > .td4.r > span { white-space: nowrap; }
-  .mp-hero .mp-num-hero { font-size: 36px; line-height: 40px; }   /* a rupee figure fits the hero */
+  .mp-hero .mp-num-hero { font-size: 2.25rem; line-height: 2.5rem; }   /* a rupee figure fits the hero */
   .mp .lrow { grid-template-columns: 36px minmax(0, 1fr); }
   .mp .lrow > :nth-child(3) { grid-column: 2; justify-self: end; }
   .mp .row4 > .rt { min-width: min(100%, 9em); }
@@ -598,13 +612,95 @@ a.mp-row:focus-visible, button.mp-row:focus-visible, [role="button"]:focus-visib
   .mp .tb4:has(> .th4:nth-child(4)):not(:has(> .th4:nth-child(5))) { grid-template-columns: minmax(max-content, 1fr) repeat(3, max-content) !important; }
   .mp .tb4:has(> .th4:nth-child(3)):not(:has(> .th4:nth-child(4))) { grid-template-columns: minmax(max-content, 1fr) repeat(2, max-content) !important; }
   .mp .tb4 > .td4.r > span { white-space: nowrap; }
-  .mp-hero .mp-num-hero { font-size: 36px; line-height: 40px; }   /* a rupee figure fits the hero */
+  .mp-hero .mp-num-hero { font-size: 2.25rem; line-height: 2.5rem; }   /* a rupee figure fits the hero */
   .mp .lrow { grid-template-columns: 36px minmax(0, 1fr); }
   .mp .lrow > :nth-child(3) { grid-column: 2; justify-self: end; }
   .mp .row4 > .rt { min-width: min(100%, 9em); }
 }
 
+/* ---------- picked kits, shared and opt-in (MA-300, P1-1) ----------
+   1a · Monzo Pulse, the picked chart kit (MA-295, ds-v1/Chart options), and Option B · Crisp Filled, the picked kind tiles
+   (MA-241, ds-v1/Kind icons). They apply only inside an element carrying .mp-ck-pulse or .mp-ck-kinds, which no board does yet:
+   each board keeps its own copy until it moves to these, so nothing draws differently. :where() keeps each rule at the
+   specificity of the board's own copy. The tiles' colours (--bg-* and --fg-*, Option B's nine gradients, one set for both
+   themes) stay on the Kind icons board, where review/MA-240 r2-30 reads them; a board that uses the tiles defines them. */
+:where(.mp-ck-pulse) .hpulse { background:var(--mp-hero-2); border-radius:14px; padding:10px 12px; display:flex; flex-direction:column; gap:6px }
+:where(.mp-ck-pulse) .hpulse-box { height:58px }
+:where(.mp-ck-pulse) .hpulse-box>svg { width:100%; height:100%; display:block }
+:where(.mp-ck-pulse) .hgrid { stroke:var(--mp-hero-ink-2); stroke-opacity:0.24; stroke-width:1; stroke-dasharray:2 3; vector-effect:non-scaling-stroke }
+:where(.mp-ck-pulse) .harea { fill:var(--mp-coral); fill-opacity:0.24 }
+:where(.mp-ck-pulse) .hline { fill:none; stroke:var(--mp-coral); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke }
+:where(.mp-ck-pulse) .mp-chartdot.hdot-a { background:var(--mp-coral); box-shadow:0 0 0 2px var(--mp-hero) }
+:where(.mp-ck-pulse) .mp-chartdot.hdot-b { width:8px; height:8px; background:var(--mp-surface); box-shadow:0 0 0 2px var(--mp-chart-line) }
+:where(.mp-ck-pulse) .mp-chartdot.beacon { box-shadow:0 0 0 2.5px var(--mp-surface),0 0 0 6px var(--mp-band) }
+:where(.mp-ck-pulse) .hpulse .mp-chartdot.beacon { box-shadow:0 0 0 2px var(--mp-hero),0 0 0 6px var(--mp-band) }
+:where(.mp-ck-pulse) .hpulse-bars { display:flex; align-items:flex-end; gap:6px; height:54px; padding-top:4px }
+:where(.mp-ck-pulse) .hpulse-col { flex:1 1 0; min-height:12px; border-radius:6px 6px 3px 3px; background:var(--mp-hero-ink-2); opacity:0.42; display:block }
+:where(.mp-ck-pulse) .hpulse-col.is-now { background:var(--mp-coral); opacity:1 }
+:where(.mp-ck-pulse) .hpulse-ax { display:flex; justify-content:space-between; font:500 0.75rem/0.875rem var(--mp-font); color:var(--mp-hero-ink-2) }
+:where(.mp-ck-pulse) .fgrid { stroke:var(--mp-chart-grid); stroke-width:1; vector-effect:non-scaling-stroke }
+:where(.mp-ck-pulse) .fline { fill:none; stroke:var(--mp-chart-line); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke }
+:where(.mp-ck-pulse) .fdet { fill:none; stroke:var(--mp-ink-2); stroke-width:1.5; stroke-dasharray:4 3; vector-effect:non-scaling-stroke }
+:where(.mp-ck-pulse) .fmid { fill:none; stroke:var(--mp-chart-line); stroke-width:2; stroke-dasharray:4 3; vector-effect:non-scaling-stroke }
+:where(.mp-ck-pulse) .ftoday { stroke:var(--mp-ink-2); stroke-width:1; stroke-dasharray:2 3; vector-effect:non-scaling-stroke }
+:where(.mp-ck-pulse) .ffloor { stroke:var(--mp-pause); stroke-width:1.4; stroke-dasharray:4 3; vector-effect:non-scaling-stroke }
+:where(.mp-ck-pulse) .mbar { height:10px }
+:where(.mp-ck-pulse) .mbar>span:first-child:not(.mp-track-clip), :where(.mp-ck-pulse) .mbar>.mp-track-clip>span:first-child { display:block; height:100%; border-radius:999px }
+:where(.mp-ck-pulse) .bartick { position:absolute; top:-2px; bottom:-2px; width:2.5px; border-radius:2px; background:var(--mp-ink); box-shadow:0 0 0 1px var(--mp-surface); pointer-events:none }
+:where(.mp-ck-pulse) .bar-bullet { position:absolute; top:-3px; bottom:-3px; width:3px; border-radius:1px; background:var(--mp-ink); pointer-events:none }
+:where(.mp-ck-pulse) .pil-row { display:grid; grid-template-columns:minmax(84px,1.15fr) minmax(72px,1fr) auto; align-items:center; gap:8px; min-height:28px }
+:where(.mp-ck-pulse) .pil-trk { position:relative; height:9px }
+:where(.mp-ck-pulse) .pil-trk>.mp-track-clip { position:relative }
+:where(.mp-ck-pulse) .pil-zero { position:absolute; left:50%; top:-2px; bottom:-2px; width:1.5px; background:var(--mp-ink-2); display:block }
+:where(.mp-ck-pulse) .pil-bar { position:absolute; top:0; bottom:0; border-radius:999px; display:block }
+:where(.mp-ck-pulse) .pfor { background:var(--mp-pillar-for) }
+:where(.mp-ck-pulse) .pag { background:var(--mp-pillar-against) }
+:where(.mp-ck-pulse) .pval { font-variant-numeric:tabular-nums; white-space:nowrap }
+:where(.mp-ck-pulse) .lgd { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; font:400 0.75rem/1rem var(--mp-font); color:var(--mp-ink-2) }
+:where(.mp-ck-pulse) .lgd>span { display:inline-flex; align-items:center; gap:5px }
+:where(.mp-ck-pulse) .lgd i { display:inline-block; flex:none }
+:where(.mp-ck-pulse) .sw-line { width:14px; height:0; border-top:2.5px solid var(--mp-chart-line) }
+:where(.mp-ck-pulse) .sw-det { width:14px; height:0; border-top:1.5px dashed var(--mp-ink-2) }
+:where(.mp-ck-pulse) .sw-band { width:14px; height:10px; border-radius:3px; background:var(--mp-band) }
+:where(.mp-ck-pulse) .sw-ok, :where(.mp-ck-pulse) .sw-m { width:11px; height:9px; border-radius:2px; background:var(--mp-meter) }
+:where(.mp-ck-pulse) .sw-low, :where(.mp-ck-pulse) .sw-w { width:11px; height:9px; border-radius:2px; background:var(--mp-pause) }
+:where(.mp-ck-pulse) .sw-flr { width:14px; height:0; border-top:1.5px dashed var(--mp-pause) }
+:where(.mp-ck-pulse) .sw-tk { width:3px; height:11px; border-radius:1px; background:var(--mp-ink) }
+:where(.mp-ck-pulse) .sw-up { width:6px; height:11px; border-radius:1px; background:var(--mp-up) }
+:where(.mp-ck-pulse) .sw-dn { width:6px; height:11px; border-radius:1px; background:var(--mp-down-quiet) }
+:where(.mp-ck-pulse) .sw-pa { width:14px; height:0; border-top:2px dashed var(--mp-chart-4) }
+:where(.mp-ck-pulse) .sw-pb { width:14px; height:0; border-top:2px dashed var(--mp-chart-2) }
+:where(.mp-ck-pulse) .sw-for { width:11px; height:8px; border-radius:2px; background:var(--mp-pillar-for) }
+:where(.mp-ck-pulse) .sw-ag { width:11px; height:8px; border-radius:2px; background:var(--mp-pillar-against) }
+:where(.mp-ck-pulse) .mp5-scrub { display:none; position:absolute; inset:0; pointer-events:none; z-index:8 }
+:where(.mp-ck-pulse) .mp5-scrub.on { display:block }
+:where(.mp-ck-pulse) .mp5-scrub-line { position:absolute; top:0; bottom:0; width:1.5px; background:var(--mp-ink); opacity:0.45; transform:translateX(-50%) }
+:where(.mp-ck-pulse) .mp5-scrub-dot { position:absolute; width:11px; height:11px; border-radius:50%; background:var(--mp-coral); box-shadow:0 0 0 2.5px var(--mp-surface); transform:translate(-50%,-50%) }
+:where(.mp-ck-pulse) .mp5-scrub-pill { position:absolute; top:4px; transform:translateX(-50%); padding:4px 8px; border-radius:8px; background:var(--mp-hero); color:var(--mp-hero-ink); font:600 0.75rem/0.875rem var(--mp-font); white-space:nowrap; box-shadow:var(--mp-shadow) }
+:where(.mp-ck-kinds) .kt { width: 36px; height: 36px; display: grid; place-items: center; flex: none; box-sizing: border-box; border-radius: 10px; box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.28); }
+:where(.mp-ck-kinds) .kt .ms { font-size: 1.25rem; font-variation-settings: "FILL" 1, "wght" 500, "opsz" 20; }
+:where(.mp-ck-kinds) .kt-l { width: 44px; height: 44px; border-radius: 12px; }
+:where(.mp-ck-kinds) .kt-l .ms { font-size: 1.5rem; font-variation-settings: "FILL" 1, "wght" 500, "opsz" 24; }
+:where(.mp-ck-kinds) .kt-mono { font: 700 0.8125rem/1 var(--mp-font); letter-spacing: 0.02em; }
+:where(.mp-ck-kinds) .kt-l .kt-mono { font-size: 0.9375rem; }
+:where(.mp-ck-kinds) .f-cash { background: var(--bg-cash); color: var(--fg-cash); }
+:where(.mp-ck-kinds) .f-dep { background: var(--bg-dep); color: var(--fg-dep); }
+:where(.mp-ck-kinds) .f-inv { background: var(--bg-inv); color: var(--fg-inv); }
+:where(.mp-ck-kinds) .f-bond { background: var(--bg-bond); color: var(--fg-bond); }
+:where(.mp-ck-kinds) .f-metal { background: var(--bg-metal); color: var(--fg-metal); }
+:where(.mp-ck-kinds) .f-pen { background: var(--bg-pen); color: var(--fg-pen); }
+:where(.mp-ck-kinds) .f-prop { background: var(--bg-prop); color: var(--fg-prop); }
+:where(.mp-ck-kinds) .f-pol { background: var(--bg-pol); color: var(--fg-pol); }
+:where(.mp-ck-kinds) .f-debt { background: var(--bg-debt); color: var(--fg-debt); }
+
 @media (prefers-contrast: more) {
   .mp-card, .mp-group, .ccard { box-shadow: 0 0 0 1px var(--mp-ink-3); }
   .mp-group .mp-row + .mp-row::before { transform: none; background: var(--mp-ink-3); }
+  .mp .mp-ink3, .mp-tab { color: var(--mp-ink-2); }                       /* Increase Contrast: tertiary text steps up to secondary */
+  .mp-track { box-shadow: inset 0 0 0 1px var(--mp-ink-3); }               /* a bar's empty track keeps a plain edge */
+  .mp-tabbar { background: var(--mp-surface); backdrop-filter: none; -webkit-backdrop-filter: none; border-top-color: var(--mp-ink-3); }
+  .mp-chip, .mp-seg { box-shadow: inset 0 0 0 1px var(--mp-ink-3); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .mp-tabbar { background: var(--mp-surface); backdrop-filter: none; -webkit-backdrop-filter: none; }   /* Reduce Transparency: the material is opaque */
 }

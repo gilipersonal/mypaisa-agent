@@ -15,7 +15,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-300: a bare link only; never recolours a button drawn as a link */
 /* canvas */
 .dv-turn { padding: 44px 48px 40px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 8px; }
@@ -42,6 +42,9 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .mainc { container: app / inline-size; overflow: hidden; background: var(--mp-bg); }
 .tabs-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; }
 .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
+.mp-tab:not(.on) { color: var(--mp-ink-2); }   /* MA-300: a tab label is read; ink-2 in both themes */
+.mp-tab { font-size: 12px; line-height: 14px; }   /* no product text under 12 px (MA-300) */
+.edin:focus-visible, .cfw:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
 .mpm { display: block; flex: none; }
 .mpm-coin { fill: var(--mp-hero); }
 .t-dark .mpm-coin { fill: var(--mp-hero-2); }
@@ -49,9 +52,9 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .mpm-dot { fill: var(--mp-coral); }
 @container app (min-width: 600px) { .crumb { display: none !important; } }
 .crumb { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -8px 0 -10px; color: var(--mp-accent); font: 600 15px/20px var(--mp-font); text-decoration: none; }
-/* the chat column: beside the page from 1024, a tab below 600 */
+/* the chat column: beside every screen from about 1133 px, a sheet away from about 600 to 1133 px, a tab below 600 (MA-240, MA-300) */
 .chatcol { display: none; flex-direction: column; width: 420px; flex: none; border-left: 1px solid var(--mp-line); background: var(--mp-bg); position: relative; }
-@container app (min-width: 1024px) { .chatcol { display: flex; } }
+@container app (min-width: 1133px) { .chatcol { display: flex; } }
 .tabchat .mainc { display: none; }
 .tabchat .chatcol { display: flex; width: 100%; border-left: 0; padding-bottom: 76px; box-sizing: border-box; }
 .chead { flex: none; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 16px; border-bottom: 1px solid var(--mp-line); }
@@ -160,19 +163,19 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-shell shell">
 <aside class="mp-shell-side mp-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#{{ n.href }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#{{ n.href }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
 <div class="grow1"></div>
 <div class="mp-foot mp-ink2 side-ft">Arun · admin</div>
 </aside>
 <main class="mp-shell-main mainc">
 <div class="mp-pagepad" style="margin-top: {{ f.pg.off }}">
-<a class="crumb mp-only-compact" href="#b2"><span class="ms ms-s">arrow_back_ios_new</span>Home</a>
+<a class="crumb mp-only-compact" href="#b2"><span class="ms ms-s" aria-hidden="true">arrow_back_ios_new</span>Home</a>
 <header class="mp-pagehead"><div><div class="mp-large">Budget</div><div class="mp-foot mp-ink2">{{ f.pg.meta }}</div></div></header>
 <div class="ctls">
 <div class="mp-seg sg-m" role="group" aria-label="Month"><sc-for list="{{ f.pg.months }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div>
 <div class="mp-seg sg-w" role="group" aria-label="Whose budget"><sc-for list="{{ f.pg.whose }}" as="s" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div>
 <div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s {{ f.pg.gOn }}" aria-pressed="{{ f.pg.gP }}">£ GBP</button><button class="mp-seg-i seg-s {{ f.pg.iOn }}" aria-pressed="{{ f.pg.iP }}">₹ INR</button></div>
-<button class="iconbtn {{ f.pg.eyeC }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.pg.eyeP }}"><span class="ms">{{ f.pg.eye }}</span></button>
+<button class="iconbtn {{ f.pg.eyeC }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.pg.eyeP }}"><span class="ms" aria-hidden="true">{{ f.pg.eye }}</span></button>
 </div>
 <sc-if value="{{ f.pg.hasBanner }}" hint-placeholder-val="{{ false }}"><div class="banner"><span class="ms ms-s" aria-hidden="true">receipt_long</span><div class="mp-foot grow1"><span class="mp-w6">Two statements are waiting for your Confirm in the chat.</span> October’s actuals fill in when you confirm them.</div></div></sc-if>
 <div class="mp-cols">
@@ -191,7 +194,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-for list="{{ f.pg.cats.rows }}" as="r" hint-placeholder-count="12">
 <div class="ctd"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-track cmeter" role="img" aria-label="{{ r.aria }}"><span style="width: {{ r.w }}"></span></span></div>
 <div class="ctd cnum"><span class="mp-sub mp-w6 nowrap {{ r.act.c }}" role="{{ r.act.r }}" aria-label="{{ r.act.l }}">{{ r.act.v }}</span><span class="mp-foot mp-ink2 nowrap"><sc-for list="{{ r.d }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div>
-<div class="ctd cnum"><sc-if value="{{ r.notEd }}" hint-placeholder-val="{{ true }}"><button class="edf" type="button" aria-label="Correct the {{ r.name }} plan"><span class="{{ r.plan.c }}" role="{{ r.plan.r }}" aria-label="{{ r.plan.l }}">{{ r.plan.v }}</span></button></sc-if><sc-if value="{{ r.isEd }}" hint-placeholder-val="{{ false }}"><span class="edin" role="textbox" aria-label="Groceries plan, a month">£700<span class="caret"></span></span></sc-if></div>
+<div class="ctd cnum"><sc-if value="{{ r.notEd }}" hint-placeholder-val="{{ true }}"><button class="edf" type="button" aria-label="Correct the {{ r.name }} plan"><span class="{{ r.plan.c }}" role="{{ r.plan.r }}" aria-label="{{ r.plan.l }}">{{ r.plan.v }}</span></button></sc-if><sc-if value="{{ r.isEd }}" hint-placeholder-val="{{ false }}"><span class="edin" role="textbox" tabindex="0" aria-label="Groceries plan, a month">£700<span class="caret"></span></span></sc-if></div>
 <sc-if value="{{ r.isEd }}" hint-placeholder-val="{{ false }}"><div class="edrow"><span class="mp-sub mp-w6" style="flex-basis: 100%"><sc-for list="{{ f.pg.edLine }}" as="s" hint-placeholder-count="1"><span>{{ s.v }}</span></sc-for></span><button class="mp-btn mp-btn-primary mp-btn-small" type="button">Save</button><button class="mp-btn mp-btn-plain mp-btn-small" type="button">Cancel</button><span class="mp-foot mp-ink2" style="flex-basis: 100%">October is closed and keeps £650. Save writes a correction with its audit row.</span></div></sc-if>
 <sc-if value="{{ r.isSaved }}" hint-placeholder-val="{{ false }}"><div class="audl"><span class="ms ms-s" aria-hidden="true">history</span><span class="mp-foot"><sc-for list="{{ f.pg.audLine }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div></sc-if>
 </sc-for>
@@ -255,10 +258,10 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </sc-for>
 </div>
 </div>
-<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms">add</span></button><span class="cfw">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms">arrow_upward</span></button></div>
+<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms" aria-hidden="true">add</span></button><span class="cfw" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
 </aside>
 </div>
-<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ f.tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#{{ tb.href }}" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden="true">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
 </div>
 </div>
 </sc-for>
@@ -274,7 +277,8 @@ renderVals() {
 const R = 112.5;
 const gbp = (n, dp) => '£' + Math.abs(n).toLocaleString('en-GB', { minimumFractionDigits: dp || 0, maximumFractionDigits: dp || 0 });
 const inr = (n) => { const s = String(Math.round(Math.abs(n))); let h = s.length > 3 ? s.slice(0, -3) : '', o = s.slice(-3); while (h.length > 2) { o = h.slice(-2) + ',' + o; h = h.slice(0, -2); } if (h) o = h + ',' + o; return '₹' + o; };
-const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: String(s), c: '', r: null, l: null });
+const HID = (s) => String(s).replace(/[0-9£₹$€]/g, '\u2007').replace(/[,.]/g, '\u2008'); // MA-300: a mask keeps the figure's width, never its digits
+const V = (s, priv) => (priv ? { v: HID(s), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: String(s), c: '', r: null, l: null });
 const T = (s) => ({ v: s, c: '', r: null, l: null });
 const rt = function () { return Array.prototype.slice.call(arguments).map((x) => (typeof x === 'string' ? T(x) : x)); };
 const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
@@ -463,7 +467,7 @@ const boards = [
   notes: N2([['Jira: MA-220.', 'The check-in at the phone-web door.'], ['Closed,', 'the card edits in place: spent £2,246 of £2,682, surplus £3,072, savings rate 40.6%, and its audit row. MyPaisa says November is open and when it will ask again: Tue 1 Dec.']]) },
 { id: 'b9', tag: 'B9', name: 'Browser · Budget, correct a plan amount', arch: 'ARCHITECTURE.md §4.10 (correct in place)', intro: 'Sun 1 Nov, 09:06. Arun taps October’s Groceries plan, £650, and types £700: the before → after line appears with Save. A plan is a monthly amount, so the change runs from November, the open month; closed October keeps £650.', keys: [key('MA-96')],
   frames: [FR('Browser · Budget, correct a plan amount · Light', 'Light', D, 1640, { state: 'closed', when: 'closed', edit: 'editing' }), FR('Browser · Budget, correct a plan amount · Dark', 'Dark', D, 1640, { state: 'closed', when: 'closed', edit: 'editing' })],
-  notes: N2([['Jira: MA-96.', 'Correcting a figure in place on Budget, desktop width; the saved state is on the phone board.'], ['Only an existing figure:', 'tap, type, before → after, Save. Save writes a correction event with its audit row (via inline_edit). Nothing here can create a category or a line.'], ['£700 is what Arun types', '(near October’s £702 actual); it is his input, not a figure of the set, and no October figure changes.'], ['Admin or owner:', 'Arun is the admin, so he may correct the household’s plan; a member corrects only their own figures.']]) },
+  notes: N2([['Jira: MA-96.', 'Correcting a figure in place on Budget, desktop width; the saved state is on the phone board.'], ['Only an existing figure:', 'tap, type, before → after, Save. Save writes a correction event with its audit row (via inline_edit). Nothing here can create a category or a line.'], ['£700 is what Arun types', '(near October’s £702 actual); it is his input, not a figure of the set, and no October figure changes.'], ['Admin or owner:', 'Arun is an admin, so he may correct the household’s plan in place; a member who is not an admin views only.']]) },
 { id: 'b10', tag: 'B10', name: 'Browser · Budget, correct a plan amount, phone', arch: 'ARCHITECTURE.md §4.10', intro: 'At 390, just after Save: Groceries still shows October’s £650, and the audit line under it records the correction from November.', keys: [key('MA-96')],
   frames: [FR('Browser · Budget, correct a plan amount, phone · Light', 'Light', PH, 844, { state: 'closed', when: 'closed', edit: 'saved', off: '-430px' }), FR('Browser · Budget, correct a plan amount, phone · Dark', 'Dark', PH, 844, { state: 'closed', when: 'closed', edit: 'saved', off: '-430px' })],
   notes: N2([['Jira: MA-96.', 'The saved correction at the phone-web door, scrolled to the list.'], ['The audit line', 'names the figure, before and after, who, when and how: “Corrected in place · £650 → £700 a month from November · Arun · Sun 1 Nov 09:06”.']]) }
@@ -471,7 +475,7 @@ const boards = [
 const index = boards.map((b) => ({ id: b.id, name: b.name, keys: b.keys.map((k) => k.k).join(', ') }));
 return {
   intro1: 'Phase 6 (Budget: statements and monthly check-ins), drawn on MA-193 for the web door at desktop 1440 and phone 390, in MyPaisa DS v1 “Warm ledger”. Budget (MA-96): plan against actual for each category, income by member with the Pune rent in rupees and pounds, the EMIs and the SIP, the surplus and savings rate, each member’s salary history with its measured growth, the £/₹ switch, and a plan amount corrected in place. The statement review card in the chat (MA-218), a statement answering a check-in by itself (MA-218), and the month-end check-in on the 1st (MA-220).',
-  intro2: 'Superseded: Wealth.dc.html’s Budget board said “MyPaisa does not read your bank”. Now the member sends statements in the chat and MyPaisa reads them; it still never connects to the bank. These boards run on from the figure set’s clock (Mon 26 Oct) to Sun 1 Nov, the day of the Barclaycard statement and the month-end check-in: 08:40 the statements are sent, 08:44 confirmed, 09:00 the check-in, 09:02 October closed, 09:06 a plan corrected. Every figure is the figure set’s (budget_oct, statements_oct, members) or derived from it, as each board’s notes say; Arun (admin) and Asha (member) are illustrative. The shell (sidebar, page, chat beside from 1024; the chat a tab under 600) follows whichever web-shell option Arun picks.',
+  intro2: 'Superseded: Wealth.dc.html’s Budget board said “MyPaisa does not read your bank”. Now the member sends statements in the chat and MyPaisa reads them; it still never connects to the bank. These boards run on from the figure set’s clock (Mon 26 Oct) to Sun 1 Nov, the day of the Barclaycard statement and the month-end check-in: 08:40 the statements are sent, 08:44 confirmed, 09:00 the check-in, 09:02 October closed, 09:06 a plan corrected. Every figure is the figure set’s (budget_oct, statements_oct, members) or derived from it, as each board’s notes say; Arun (admin) and Asha (member) are illustrative. The shell (sidebar, page, the chat beside every screen from about 1133 px; a sheet away from about 600 to 1133 px; the chat a tab under 600) follows whichever web-shell option Arun picks.',
   allKeys: ['MA-96', 'MA-218', 'MA-220'].map(key), index: index, boards: boards, nav: nav
 };
 

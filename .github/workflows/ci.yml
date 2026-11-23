@@ -1,0 +1,237 @@
+name: CI
+
+# One workflow, its jobs in parallel (MA-305; Arun, 2 Nov 2026: "See how MP has
+# so nice steps on CI ... MA does not have anything like that").
+#
+# The plan, the designs and Jira stay in step (MA-155, .claude/rules/plan-sync.md):
+# docs/trace.json against ARCHITECTURE.md, PLAN.md, the docs that cite Jira keys,
+# the roadmap, the Confluence pages rendered in the repo, and the board files the
+# trace cites in docs/design/ (their canvas titles only). No secrets, no network
+# but the package installs: the boards are drawn in the repo and nowhere else
+# (MA-260), and git is their only record (MA-296).
+#
+# Nothing here checks a board's content or Prototype v5: MA-303 stopped those
+# checks (Arun, 2 Nov 2026: "All the 6 checks currently run on docs/design. Lets
+# stop that."). Playwright, axe and Argos run only when Arun asks (MA-304). The
+# Backend job runs the backend's gates in backend/ (MA-24), the Web job the web
+# app's (MA-194), and the Security job
+# the repo's scans (MA-326; weekly too, security-weekly.yml); the iOS job joins with
+# its code (MA-165).
+#
+# jira-key.yml stays its own workflow: it must rerun when a PR's title is
+# edited, and nothing here needs to.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan-sync:
+    name: Plan sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # The whole history, so the PR can be compared with its base.
+          fetch-depth: 0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Trace, docs, roadmap, Confluence pages and cited boards agree
+        run: python3 scripts/plan_sync.py check
+      # A pull_request run checks out the PR's merge commit, detached: its first
+      # parent is the base the PR merges into, so HEAD^1 is the base and the diff
+      # is the PR's own change. The story's key comes from the PR's head branch
+      # (GITHUB_HEAD_REF); with no key there it fails closed (CI is set), never
+      # passes every file (MA-303 review, R1-a1).
+      # Dependabot's PRs (by their author, not github.actor) belong to MA-326,
+      # whose trace row claims the lockfiles and manifests they update (backend/, web/).
+      - name: Every code file the PR changes belongs to its story
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          if [ "$AUTHOR" = "dependabot[bot]" ]; then
+            python3 scripts/plan_sync.py pr-files --base HEAD^1 --key MA-326
+          else
+            python3 scripts/plan_sync.py pr-files --base HEAD^1
+          fi
+
+  plan-sync-selftest:
+    name: Plan-sync selftest
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      # Plan-sync's own checks still refuse what they must: each case mutates a
+      # copy and expects the refusal, the PR hook's cases included. About nine
+      # seconds; CI has no cache, so it runs every time.
+      - name: Plan-sync's checks still bite
+        run: python3 scripts/plan_sync.py selftest
+
+  review-tooling:
+    name: Review tooling
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # Some fixed-finding checks compare with an older commit (MA-240 r2-35).
+          fetch-depth: 0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: scripts/package-lock.json
+      - name: The regression runner's own cases
+        run: python3 scripts/review_regress.py --selftest
+      # Fixed stays fixed: every live check in every story's ledger. Exit 3 means
+      # every check passed and only checks a person makes remain, so it passes
+      # here; the review's verifier looks at those.
+      - name: Every fixed finding still holds
+        run: |
+          set +e
+          python3 scripts/review_regress.py --every --jobs 4
+          code=$?
+          if [ "$code" -ne 0 ] && [ "$code" -ne 3 ]; then exit "$code"; fi
+      - name: Every review state file is whole
+        run: |
+          for f in review/*/state.json; do
+            python3 scripts/review_regress.py --state "$(basename "$(dirname "$f")")"
+          done
+
+  confluence-receipts:
+    name: Confluence receipts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: A page that comes back cut short or changed is refused
+        run: python3 scripts/confluence_docs.py selftest
+
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version-file: backend/.python-version
+      # uv pinned to the version the lock was made with; the project's tools come
+      # from uv.lock, so CI runs exactly what a laptop runs.
+      - name: Install uv
+        run: python3 -m pip install --disable-pip-version-check "uv==0.12.9"
+      - name: Install the locked environment
+        working-directory: backend
+        run: uv sync --locked
+      - name: Lock, lint, format, types, layers, tests and the dependency audit
+        run: scripts/backend_gates.sh
+
+  web:
+    name: Web
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      # pnpm comes from corepack at the version web/package.json pins; the
+      # packages from web/pnpm-lock.yaml, so CI installs what a laptop does.
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@12.16.1 --activate
+      - name: Types, lint, format, tests, build and the dependency audit
+        run: scripts/web_gates.sh
+
+  ios-shell:
+    name: iOS shell
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@12.16.1 --activate
+      # The gates that need no Mac: the colour assets, the selectors, types, lint and Jest. Xcode's own gates run on
+      # the laptop until MA-166 brings a macOS runner.
+      - name: Tokens, selectors, types, lint, format and Jest
+        run: scripts/ios_gates.sh --no-xcode
+
+  security:
+    name: Security scans
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # gitleaks reads every commit in the history.
+          fetch-depth: 0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+      - name: Install uv
+        run: python3 -m pip install --disable-pip-version-check "uv==0.12.9"
+      # Secrets in the whole history (gitleaks), SAST over backend/, web/, scripts/
+      # and the workflows (semgrep; .svelte files are eslint's), every lockfile (osv-scanner) and the workflows
+      # themselves (zizmor); each tool pinned and checksum-checked (MA-326).
+      - name: Secrets, SAST, dependencies and workflows
+        run: scripts/security_scan.sh
+
+  workflow-lint:
+    name: Workflow lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install checksum-verified actionlint
+        env:
+          ACTIONLINT_ARCHIVE: actionlint_1.7.12_linux_amd64.tar.gz
+          ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+        run: |
+          curl --fail --silent --show-error --location --retry 2 --max-time 60 \
+            "https://github.com/rhysd/actionlint/releases/download/v1.7.12/$ACTIONLINT_ARCHIVE" \
+            --output "$RUNNER_TEMP/$ACTIONLINT_ARCHIVE"
+          echo "$ACTIONLINT_SHA256  $RUNNER_TEMP/$ACTIONLINT_ARCHIVE" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/$ACTIONLINT_ARCHIVE" -C "$RUNNER_TEMP" actionlint
+      - name: Validate all GitHub workflows
+        run: '"$RUNNER_TEMP/actionlint" -color .github/workflows/*.yml'

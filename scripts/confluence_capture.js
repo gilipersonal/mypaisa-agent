@@ -53,7 +53,7 @@ async function frame(page, r) {
   if (!box0 || box0.width < 10 || box0.height < 10) throw new Error('element ' + r.target + ' is not visible');
   const need = Math.ceil(box0.height) + 48;
   if (need > r.viewport[1]) await page.setViewportSize({ width: r.viewport[0], height: need });
-  await page.evaluate((t) => { const e = document.querySelector(t); window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - 24); }, r.target);
+  await page.evaluate((t) => { const e = document.querySelector(t); window.scrollTo({ top: e.getBoundingClientRect().top + window.scrollY - 24, behavior: 'instant' }); }, r.target);  // instant: a page's smooth scrolling would move the target while it is clipped
   await sleep(150);
   const b = await el.boundingBox();
   return { x: Math.max(0, Math.floor(b.x)), y: Math.max(0, Math.floor(b.y)), width: Math.ceil(b.width), height: Math.ceil(b.height) };

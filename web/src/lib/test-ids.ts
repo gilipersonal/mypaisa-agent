@@ -1,0 +1,12 @@
+/** The one selector dictionary (MA-165, MA-273, MA-274): every element a test reaches, as `mp.<surface>.<component>`.
+ * `ios/MyPaisaCore/Testing/TestIDs.swift` mirrors this file and `scripts/ios_gates.sh` fails when they differ, so a
+ * Maestro or Playwright flow names the same element at both doors. */
+export const TestIDs = {
+	tabChat: 'mp.tab.chat',
+	tabHome: 'mp.tab.home',
+	tabActivity: 'mp.tab.activity',
+	tabYou: 'mp.tab.you',
+	homeHero: 'mp.home.hero'
+} as const;
+
+export type TestID = (typeof TestIDs)[keyof typeof TestIDs];

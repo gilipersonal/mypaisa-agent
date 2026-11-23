@@ -1,0 +1,62 @@
+{
+	"name": "@mypaisa/web",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@12.16.1+sha512.091d1dee7927575661b25dab3c2ae31cafc1c54d6b71ed6a6600cf0c1cb10434a447eae14015f1b23e2e6bedeed79df94a932e2164d2832280dce3fb32f656d1",
+	"engines": {
+		"node": ">=24"
+	},
+	"imports": {
+		"#lib": "./src/lib",
+		"#lib/*": "./src/lib/*"
+	},
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+		"lint": "eslint . --max-warnings 0",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"api:types": "openapi-typescript ../backend/openapi.json -o src/lib/api-types.d.ts"
+	},
+	"dependencies": {
+		"@tanstack/query-core": "catalog:",
+		"@tanstack/svelte-query": "catalog:",
+		"openapi-fetch": "catalog:"
+	},
+	"devDependencies": {
+		"@eslint/js": "catalog:",
+		"@lucide/svelte": "catalog:",
+		"@sveltejs/adapter-static": "catalog:",
+		"@sveltejs/kit": "catalog:",
+		"@sveltejs/vite-plugin-svelte": "catalog:",
+		"@tailwindcss/vite": "catalog:",
+		"@types/node": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"bits-ui": "catalog:",
+		"clsx": "catalog:",
+		"eslint": "catalog:",
+		"eslint-config-prettier": "catalog:",
+		"eslint-plugin-svelte": "catalog:",
+		"globals": "catalog:",
+		"openapi-typescript": "catalog:",
+		"prettier": "catalog:",
+		"prettier-plugin-svelte": "catalog:",
+		"prettier-plugin-tailwindcss": "catalog:",
+		"svelte": "catalog:",
+		"svelte-check": "catalog:",
+		"tailwind-merge": "catalog:",
+		"tailwind-variants": "catalog:",
+		"tailwindcss": "catalog:",
+		"tw-animate-css": "catalog:",
+		"typescript": "catalog:",
+		"typescript-eslint": "catalog:",
+		"vite": "catalog:",
+		"vitest": "catalog:"
+	}
+}

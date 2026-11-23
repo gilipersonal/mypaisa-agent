@@ -25,13 +25,19 @@
     "labels": {
       "bug": "bug",
       "platforms": [],
-      "themes": ["manual", "design"]
+      "themes": [
+        "manual",
+        "design",
+        "retired"
+      ]
     },
     "taxonomy": ".claude/jira/taxonomy.md"
   },
   "git": {
     "baseBranch": "main",
-    "protectedBranches": ["main"],
+    "protectedBranches": [
+      "main"
+    ],
     "requireKey": true,
     "branch": "{key}-{slug}",
     "commit": "{key}: {subject}",
@@ -43,20 +49,56 @@
     {
       "name": "plan-sync",
       "cwd": ".",
-      "run": "python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py",
-      "paths": ["**"]
+      "run": "python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files",
+      "paths": [
+        "**"
+      ]
     },
     {
-      "name": "board-fit",
+      "name": "backend",
       "cwd": ".",
-      "run": "npm ci --prefix scripts --silent --no-audit --no-fund && node scripts/board_fit.js --selftest && node scripts/board_fit.js",
-      "paths": ["docs/design/**", "scripts/board_fit*"]
+      "run": "scripts/backend_gates.sh",
+      "paths": [
+        "backend/**",
+        "scripts/local/**",
+        "scripts/backend_gates.sh",
+        ".pre-commit-config.yaml"
+      ]
     },
     {
-      "name": "prototype-v5",
+      "name": "web",
       "cwd": ".",
-      "run": "npm ci --prefix scripts --silent --no-audit --no-fund && node scripts/prototype_smoke.js --selftest && python3 docs/design/figures/make_prototype_v5.py --check && node scripts/prototype_smoke.js && node scripts/prototype_smoke.js --priv",
-      "paths": ["docs/design/prototype-v5/**", "docs/design/figures/**", "scripts/prototype_smoke.js", "ARCHITECTURE.md"]
+      "run": "scripts/web_gates.sh",
+      "paths": [
+        "web/**",
+        "backend/openapi.json",
+        "scripts/web_gates.sh",
+        ".pre-commit-config.yaml",
+        "docs/design/ds-v1/tokens.css",
+        "docs/design/ds-v1/motion.css"
+      ]
+    },
+    {
+      "name": "ios",
+      "cwd": ".",
+      "run": "scripts/ios_gates.sh",
+      "paths": [
+        "ios/**",
+        "web/src/lib/**",
+        "web/pnpm-workspace.yaml",
+        "web/pnpm-lock.yaml",
+        "scripts/ios_gates.sh",
+        "scripts/ios_tokens.py",
+        "docs/design/ds-v1/tokens.css"
+      ]
+    },
+    {
+      "name": "security",
+      "cwd": ".",
+      "run": "scripts/security_scan.sh",
+      "paths": [
+        "**"
+      ]
     }
   ],
   "work": {
@@ -69,7 +111,9 @@
     "comments": false
   },
   "ship": {
-    "askBefore": ["merge"],
+    "askBefore": [
+      "merge"
+    ],
     "mergeMethod": "merge",
     "deleteBranchOnMerge": true,
     "waitForChecks": true

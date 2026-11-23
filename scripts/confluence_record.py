@@ -7,7 +7,7 @@ with animations and effects, make it really colourful and engaging and detailed.
 The record is a tree of pages under the hub, generated like every other page (plan-sync rule 8): scripts/confluence_docs.py
 lists them in pages() and renders them through render_body. Their words are the records' own: ARCHITECTURE.md section by
 section, in full, every section on exactly one page (or on the page another story gives it, ELSEWHERE); and the explainer
-pages in docs/design/ (Architecture v4, Inside MyPaisa, the Agent Journey, the Market Agent and the first journeys), read
+pages in docs/design/ (Architecture v4, Inside MyPaisa, the Agent Journey and the first journeys), read
 for their text and their data. Confluence runs no script, so the motion comes as GIFs and the rest as stills, captured
 from those pages by scripts/confluence_capture.js from the recipes in MEDIA. Each picture's source is its page's hash and
 its recipe, so an explainer page that changes asks for a new capture, as a board that changes asks for a new preview.
@@ -31,10 +31,10 @@ import confluence_docs as cd  # noqa: E402
 
 ROOT = cd.ROOT
 DESIGN = ROOT / "docs" / "design"
-V4, INSIDE, FLOWS, MARKET, FIRST = (f"docs/design/{n}.html" for n in
-                                    ("architecture-v4", "inside-mypaisa", "agent-journey", "market-agent", "journeys"))
+V4, INSIDE, FLOWS, FIRST = (f"docs/design/{n}.html" for n in
+                            ("architecture-v4", "inside-mypaisa", "agent-journey", "journeys"))
 CAPTURE = "capture-v1"  # bump to capture every picture again
-ELSEWHERE = {"23": "guardrails"}  # an ARCHITECTURE section that another page carries in full (MA-245)
+ELSEWHERE = {"21": "guardrails"}  # an ARCHITECTURE section that another page carries in full (MA-245)
 
 
 class RecordError(Exception):
@@ -448,70 +448,66 @@ ARCH = [
      "Signing in with Apple, Google or a passkey, the household and its members, invites, the second check, sessions and what each member may see.",
      ["4.5"], ["inside-step-1", "inside-step-3"], ["Inside MyPaisa", "MyPaisa Agent Journey"]),
     ("rec-a-writing", "✍️", ":pencil:", "#FFFAE6", "Commitments, check-ins and writing",
-     "The promises the household keeps (EMIs, SIPs, bills, maturities), the check-ins code decides on, and the one way anything is written: create in the chat, correct in place.",
+     "The promises the household keeps (EMIs, SIPs, bills, maturities), the check-ins code decides on, and the one way anything is written, by admins only: add and delete in the chat, correct in the chat or in place.",
      ["4.9", "4.10"], ["v4-checkin", "v4-file"], ["MyPaisa Architecture v4", "MyPaisa Agent Journey"]),
-    ("rec-a-engine", "📡", ":bar_chart:", "#EAE6FF", "Prices, FX and the rules engine",
-     "One plugin per price feed, a chain per kind, look-through, FX and calendars, then the deterministic engine: indicators, pillars, the holder's cascade, confidence and forecast ranges, and the research cards.",
-     ["5", "6/", "6.1", "6.2", "6.3", "6.4", "6.5", "7"], ["market-s3"], ["MyPaisa Market Agent"]),
+    ("rec-a-engine", "📡", ":bar_chart:", "#EAE6FF", "Prices and FX, to value what the household holds",
+     "One plugin per price feed, a chain per kind, look-through, FX and calendars: prices exist only to value the holdings, and nothing predicts a market (MA-307).",
+     ["5"], [], []),
     ("rec-a-wealth", "🧮", ":abacus:", "#E3FCEF", "The wealth maths",
-     "Net worth, XIRR, the budget, the month close and the Projection: the maths of phases 2 to 7, ported from the wealth tracker and computed by code.",
-     ["6.6"], ["inside-step-6", "inside-step-9"], ["Inside MyPaisa"]),
+     "Net worth, XIRR and CAGR, the budget, the month close and the Projection: the maths of phases 2 to 7, ported from the wealth tracker and computed by code.",
+     ["6"], ["inside-step-6", "inside-step-9"], ["Inside MyPaisa"]),
     ("rec-a-agent", "🤖", ":robot:", "#FFEBE6", "The agent: one tool loop, its tools and its models",
      "The concierge's Claude tool loop: the cached prefix, the strict tools, the guided flows, which model answers what, and how a run is bounded.",
-     ["8"], ["v4-loop", "v4-models"], ["MyPaisa Architecture v4", "MyPaisa Agent Journey"]),
+     ["7"], ["v4-loop", "v4-models"], ["MyPaisa Architecture v4", "MyPaisa Agent Journey"]),
     ("rec-a-apps", "📱", ":iphone:", "#DEEBFF", "The two doors: the iOS app and the web app",
      "The shell, the chat and the size classes, the cards, the dashboard inside the app, the web app in a browser, and the iOS app's build: a React Native shell with a native SwiftUI core.",
-     ["9"], ["inside-step-4", "inside-step-5"], ["Inside MyPaisa", "MyPaisa Agent Journey"]),
+     ["8"], ["inside-step-4", "inside-step-5"], ["Inside MyPaisa", "MyPaisa Agent Journey"]),
     ("rec-a-observability", "🔭", ":telescope:", "#E6FCFF", "Observability: one trace from the door to the model",
      "The RunRecord, one OpenTelemetry trace end to end, the model and tool spans, the metrics, the alarms and who hears them, and the agent team's view.",
-     ["10"], ["v4-trace"], ["MyPaisa Architecture v4"]),
+     ["9"], ["v4-trace"], ["MyPaisa Architecture v4"]),
     ("rec-a-notify", "🔔", ":bell:", "#FFFAE6", "Notifications, the road from the wealth tracker, and the stack",
-     "Briefs, alerts and check-ins by push; the road from the old wealth tracker to MyPaisa with any question answered from a read-only SQL copy; and the tech stack.",
-     ["11", "12", "13"], ["inside-step-7"], ["Inside MyPaisa"]),
+     "Alerts and check-ins by push; the road from the old wealth tracker to MyPaisa with any question answered from a read-only SQL copy; and the tech stack.",
+     ["10", "11", "12"], ["inside-step-7"], ["Inside MyPaisa"]),
     ("rec-a-security", "🛡️", ":shield:", "#FFEBE6", "Security and privacy",
      "What is enforced in code, what never leaves the account, privacy mode, secrets, and what a member's data is used for.",
-     ["14"], ["v4-rules", "inside-safety"], ["MyPaisa Architecture v4", "Inside MyPaisa"]),
+     ["13"], ["v4-rules", "inside-safety"], ["MyPaisa Architecture v4", "Inside MyPaisa"]),
     ("rec-a-cost", "💷", ":pound:", "#E3FCEF", "Cost, the Claude budget, caps and alerts",
      "The monthly cost at $1.30 to £1, the Claude budget and its ceiling with the spend ladder, and the caps and alerts the admin sets in the Admin center.",
-     ["15"], ["v4-models"], ["MyPaisa Architecture v4"]),
+     ["14"], ["v4-models"], ["MyPaisa Architecture v4"]),
     ("rec-a-decisions", "📜", ":scroll:", "#F4F5F7", "The decisions and the open questions",
      "Every architecture decision with its reason, and the questions still open.",
-     ["16", "17"], [], []),
+     ["15", "16"], [], []),
     ("rec-a-delivery", "🚀", ":rocket:", "#EAE6FF", "Environments, domains and delivery",
      "Dev and prod in one account, the domains, identity per environment, Terraform only with prod through CI, and hydrating prod with the Excel importer.",
-     ["18"], ["v4-delivery", "inside-homes"], ["MyPaisa Architecture v4", "Inside MyPaisa"]),
-    ("rec-a-forecaster", "🔮", ":crystal_ball:", "#EAE6FF", "The Forecaster",
-     "A second engine beside the rules engine: what can and cannot be forecast, data as it was known each day, news matched to holdings, the models, the strategy layer and how it proves itself.",
-     ["19"], ["market-s5", "market-s6"], ["MyPaisa Market Agent"]),
+     ["17"], ["v4-delivery", "inside-homes"], ["MyPaisa Architecture v4", "Inside MyPaisa"]),
     ("rec-a-team", "👥", ":busts_in_silhouette:", "#FFFAE6", "The agent team",
-     "Nine agents that never call each other: one store for every setting, the admin desk, the learning loop, self-healing, where the data lives and the team's budgets.",
-     ["20"], ["v4-team", "inside-agents"], ["MyPaisa Architecture v4", "Inside MyPaisa"]),
+     "Agents that never call each other: one store for every setting, the admin desk, self-healing, where the data lives and the team's budgets.",
+     ["18"], ["v4-team", "inside-agents"], ["MyPaisa Architecture v4", "Inside MyPaisa"]),
     ("rec-a-queues", "📬", ":incoming_envelope:", "#DEEBFF", "Queues and live delivery",
      "Nothing lost, everything retried: the three queues, the rules every consumer keeps, dead-letter queues and replay, and live delivery over SSE.",
-     ["21"], ["v4-failure", "inside-tour-fail"], ["MyPaisa Architecture v4", "Inside MyPaisa"]),
-    ("rec-a-india", "🇮🇳", ":flag_in:", "#FFFAE6", "Indian markets",
-     "Indian shares, ETFs and mutual funds beside the UK ones: free sources first, the existing portfolio imported once, accounts and currency, and the engine and the Forecaster for India.",
-     ["22"], ["market-s12"], ["MyPaisa Market Agent", "MyPaisa Agent Journey"]),
+     ["19"], ["v4-failure", "inside-tour-fail"], ["MyPaisa Architecture v4", "Inside MyPaisa"]),
+    ("rec-a-india", "🇮🇳", ":flag_in:", "#FFFAE6", "Indian holdings",
+     "Indian shares, ETFs and mutual funds beside the UK ones: free sources first to value them, the existing portfolio imported once, and accounts in INR and GBP.",
+     ["20"], [], ["MyPaisa Agent Journey"]),
     ("rec-a-memory", "🧠", ":brain:", "#E6FCFF", "Caching and memory for every agent",
      "Every agent gets both from the one runner: each call cached in one frozen order with a lifetime per route and checks that catch a broken cache, and Claude's memory tool on MyPaisa's own store, a member's notes theirs alone, never a figure, a record, a setting or a secret.",
-     ["24"], [], []),
+     ["22"], [], []),
 ]
 FLOW_GROUPS = [  # (slug, emoji, colour, title, flow ids), in the Agent Journey's own order
     ("rec-j-flows-join", "🔑", "#FFEBE6", "Joining and signing in", ["invite", "signin"]),
     ("rec-j-flows-add", "➕", "#E3FCEF", "Adding a holding and logging money", ["holding", "money"]),
-    ("rec-j-flows-day", "🌅", "#FFFAE6", "The market's day: the brief and an alert", ["brief", "alert"]),
+    ("rec-j-flows-day", "🌅", "#FFFAE6", "The day's prices: every holding valued", ["prices"]),
     ("rec-j-flows-see", "💬", "#DEEBFF", "Asking, and seeing it at every door", ["ask", "dashboard", "ipad", "web"]),
     ("rec-j-flows-run", "🛠️", "#EAE6FF", "Running it: the Admin center, failures, the ladder and the month", ["admin", "failure", "ladder", "monthly"]),
     ("rec-j-flows-india", "🇮🇳", "#FFFAE6", "India in the picture", ["currency", "india-import", "inr", "india-day"]),
     ("rec-j-flows-wealth", "🏡", "#E3FCEF", "The household's whole wealth, by talking", ["register", "correct", "checkin", "statement", "month-close", "projection"]),
 ]
 JOURNEY_PAGES = [  # (slug, emoji, panel icon, colour, title, parent)
-    ("rec-j-v4", "🛰️", ":satellite_orbital:", "#DEEBFF", "Five journeys through AWS, hop by hop", "rec-journeys"),
+    ("rec-j-v4", "🛰️", ":satellite_orbital:", "#DEEBFF", "Nine journeys through AWS, hop by hop", "rec-journeys"),
     ("rec-j-v4-parts", "🧩", ":jigsaw:", "#EAE6FF", "Architecture v4: every part, the trace, the loop, the agents and the models", "rec-journeys"),
     ("rec-j-inside", "🏠", ":house:", "#FFFAE6", "Inside MyPaisa: the admin's journey in nine steps", "rec-journeys"),
     ("rec-j-inside-more", "✉️", ":envelope_with_arrow:", "#E3FCEF", "Inside MyPaisa: one message, the agent team, the safety nets and a day", "rec-journeys"),
-    ("rec-j-flows", "🧭", ":compass:", "#FFEBE6", "The Agent Journey: twenty-four flows end to end", "rec-journeys"),
-    ("rec-j-market", "📈", ":chart_with_upwards_trend:", "#EAE6FF", "The Market Agent, end to end", "rec-journeys"),
+    ("rec-j-flows", "🧭", ":compass:", "#FFEBE6", "The Agent Journey: twenty-three flows end to end", "rec-journeys"),
     ("rec-j-first", "📟", ":pager:", "#F4F5F7", "The first journeys, on the Telegram bot (kept for reference)", "rec-journeys"),
 ]
 MODEL_COLOUR = {"opus": "purple", "sonnet": "red", "haiku": "green", "haiku-batch": "green", "code": "neutral"}
@@ -554,6 +550,9 @@ def is_record(slug: str) -> bool:
 
 # ---------- the pictures ----------
 
+V4_JOURNEYS = ("question", "goal", "plan", "file", "delete", "checkin", "value", "digest", "failure")  # the SCEN ids of architecture-v4.html, in its order
+
+
 def _v4_journey(sid: str) -> dict:
     return {"src": V4, "kind": "gif", "target": "#map .stage", "actions": [{"click": f'#tabs .tab[data-id="{sid}"]'}],
             "until": "document.querySelector('#play span').textContent === 'Replay'", "max": 70000, "hold": 2500, "width": 960}
@@ -566,14 +565,14 @@ def _inside_step(n: int) -> dict:
 
 
 def _inside_tour(k: str) -> dict:
-    return {"src": INSIDE, "kind": "gif", "target": "#engine .wrap", "actions": [{"click": f'.tour[data-tour="{k}"]'}],
+    return {"src": INSIDE, "kind": "gif", "target": "#inside .wrap", "actions": [{"click": f'.tour[data-tour="{k}"]'}],
             "until": "document.getElementById('play').textContent === 'Play again'", "max": 70000, "hold": 2500, "width": 900, "fps": 6}
 
 
 MEDIA: dict[str, dict] = {
     "mark": {"src": "docs/mark-animated.svg", "kind": "gif", "target": "svg", "viewport": [360, 360], "until": "animations",
              "min": 600, "max": 4000, "hold": 2500, "width": 200, "fps": 20, "show": 18, "hide": []},
-    **{f"v4-{k}": _v4_journey(k) for k in ("question", "file", "checkin", "brief", "failure")},
+    **{f"v4-{k}": _v4_journey(k) for k in V4_JOURNEYS},
     "v4-hero": {"src": V4, "kind": "png", "target": "section.hero"},
     "v4-trace": {"src": V4, "kind": "gif", "target": "#tracebox", "until": "animations", "min": 2000, "max": 12000, "hold": 2500, "width": 960,
                  "actions": [{"js": "(() => { const t = document.getElementById('tracebox'); t.classList.remove('play'); void t.offsetWidth; t.classList.add('play'); })()"}]},
@@ -593,7 +592,6 @@ MEDIA: dict[str, dict] = {
     "inside-homes": {"src": INSIDE, "kind": "png", "target": "#homes"},
     "inside-day": {"src": INSIDE, "kind": "png", "target": "#day"},
     **{f"flow-{f}": {"src": FLOWS, "kind": "png", "target": f"#{f} .mocks"} for g in FLOW_GROUPS for f in g[4]},
-    **{f"market-{s}": {"src": MARKET, "kind": "png", "target": f"#{s}"} for s in ["map"] + [f"s{n}" for n in range(1, 14)]},
     "first-phone": {"src": FIRST, "kind": "gif", "target": ".stage", "record": 26000, "width": 900, "fps": 6, "hold": 1500},
 }
 for _name, _m in MEDIA.items():
@@ -645,15 +643,13 @@ def page_media(slug: str) -> list[str]:
     if slug == "rec-journeys":
         return ["inside-tour-ask"]
     if slug == "rec-j-v4":
-        return [f"v4-{k}" for k in ("question", "file", "checkin", "brief", "failure")]
+        return [f"v4-{k}" for k in V4_JOURNEYS]
     if slug == "rec-j-v4-parts":
         return ["v4-trace", "v4-loop", "v4-team", "v4-models", "v4-state", "v4-delivery", "v4-rules"]
     if slug == "rec-j-inside":
         return ["inside-hero", "inside-cast"] + [f"inside-step-{n}" for n in range(1, 10)]
     if slug == "rec-j-inside-more":
         return [f"inside-tour-{k}" for k in ("ask", "file", "checkin", "fail")] + ["inside-agents", "inside-safety", "inside-homes", "inside-day"]
-    if slug == "rec-j-market":
-        return ["market-map"] + [f"market-s{n}" for n in range(1, 14)]
     if slug == "rec-j-first":
         return ["first-phone"]
     if g := next((g for g in FLOW_GROUPS if g[0] == slug), None):
@@ -791,7 +787,7 @@ def guardrails_note(ctx: cd.Ctx) -> str:
     if not ctx.manifest.get("pages", {}).get("guardrails", {}).get("id"):
         return ""
     return cd.cpanel("#E3FCEF", ":shield:", f"<p><strong>🛡️ The guardrails and evals</strong> have a page of their own, with their own "
-                     f"explainer and diagrams: {ctx.link('guardrails', 'Guardrails and evals')} (ARCHITECTURE §23).</p>")
+                     f"explainer and diagrams: {ctx.link('guardrails', 'Guardrails and evals')} (ARCHITECTURE §{cd.GUARDRAILS[0]}).</p>")
 
 
 def explainer_cards(names: list[str]) -> str:
@@ -844,14 +840,18 @@ def pictures_line(slug: str, media: list[str]) -> str:
 MEDIA_CAPTION = {
     "mark": "The mark arriving: the coin, the orbit and the coral dot that comes to rest at half past one",
     "v4-question": "A question, typed on the iPhone and answered at both doors, hop by hop (Architecture v4)",
+    "v4-goal": "A goal: code solves what £40,000 by Sep 2028 takes, and one Confirm saves it (Architecture v4)",
+    "v4-plan": "Plan with me: an admin's /plan runs on Opus in its own loop and ends in one plan card (Architecture v4)",
     "v4-file": "A factsheet sent from the iPhone becomes a holding, with one Confirm (Architecture v4)",
-    "v4-checkin": "Code decides an EMI is due; the owner taps Paid on the push (Architecture v4)",
-    "v4-brief": "The 07:15 brief: prices in, the engine decides, Haiku files the news, Sonnet writes (Architecture v4)",
+    "v4-checkin": "Code decides an EMI is due; an admin taps Paid on the push (Architecture v4)",
+    "v4-value": "The nightly run: prices in only to value the holdings, XIRR and CAGR, the Projection again, and the insight job (Architecture v4)",
+    "v4-digest": "The Monday digest: facts from code, worded by Haiku and Sonnet, silent, to the admins only (Architecture v4)",
+    "v4-delete": "A delete in the chat: a card, Confirm, the second check and an audit row, the files kept (Architecture v4)",
     "v4-failure": "A statement job meets an overloaded API: retried, kept, alarmed, replayed once (Architecture v4)",
     "v4-hero": "Architecture v4: from a tap at either door to Claude and back, on AWS",
     "v4-trace": "One message is one trace, from the finger to the last word (Architecture v4)",
     "v4-loop": "One Claude tool loop, with code doing every sum (Architecture v4)",
-    "v4-team": "Nine agents that never call each other, around one event bus (Architecture v4)",
+    "v4-team": "Six agents that never call each other, around one event bus (Architecture v4)",
     "v4-models": "Three Claude models, each where it earns its cost, and the spend ladder (Architecture v4)",
     "v4-state": "One table for state, one lake for the record, one store for secrets (Architecture v4)",
     "v4-delivery": "Terraform only, one image, prod after a person says yes (Architecture v4)",
@@ -876,8 +876,6 @@ def media_caption(m: str) -> str:
         return f"One message through MyPaisa: {TOURS[m.rsplit('-', 1)[1]]} (Inside MyPaisa)"
     if m.startswith("flow-"):
         return f"What the member sees: {flow(m[5:])['title']} (Agent Journey)"
-    if m.startswith("market-"):
-        return f"{market_sections()[m[7:]]['title']} (Market Agent)"
     return m
 
 
@@ -890,8 +888,8 @@ def render_rec(ctx: cd.Ctx) -> str:
     gifs = sum(1 for m in MEDIA.values() if m["kind"] == "gif")
     out = [
         cd.cpanel("#DEEBFF", ":blue_book:", "<p><strong>📘 The whole architecture, and every journey, in one place</strong></p>"
-                  "<p>Everything MyPaisa is designed to be, recorded in full: ARCHITECTURE.md section by section, the five journeys that play "
-                  "through AWS hop by hop, the admin's nine steps in plain words, the twenty-four agent flows, the market agent, the first "
+                  "<p>Everything MyPaisa is designed to be, recorded in full: ARCHITECTURE.md section by section, the nine journeys that play "
+                  "through AWS hop by hop, the admin's nine steps in plain words, the agent flows, the first "
                   "journeys, and the Lucid drawings. Nothing is built yet; this is the design every phase is built to.</p>"
                   "<p>Arun, 27 Oct 2026 (MA-257): <em>\"I need full record of everything.\"</em></p>"),
         pic(ctx, "rec", "mark", media_caption("mark")), pic(ctx, "rec", "v4-question", media_caption("v4-question")),
@@ -899,17 +897,16 @@ def render_rec(ctx: cd.Ctx) -> str:
                         f"<p>{len(tops)} sections of ARCHITECTURE.md on {len(ARCH)} pages, every word, with the Lucid drawings where the text puts them "
                         "and the stories that build each part.</p>"),
               cd.cpanel("#E3FCEF", ":compass:", f"<h3>{ctx.link('rec-journeys', '🧭 The journeys')}</h3>"
-                        f"<p>Five journeys through AWS, nine steps of the admin's journey, four tours of one message, {len(flows)} agent flows, "
-                        "the market agent and the first journeys.</p>"),
+                        f"<p>Nine journeys through AWS, nine steps of the admin's journey, four tours of one message, {len(flows)} agent flows "
+                        "and the first journeys.</p>"),
               cd.cpanel("#FFFAE6", ":building_construction:", f"<h3>{ctx.link('rec-drawings', '🏗️ The drawings')}</h3>"
                         f"<p>The {len(cd.LUCID)} Lucid drawings on AWS shapes, what each explains, and how they are generated.</p>")], 3),
         "<h2>🎨 How to read it</h2><ul>"
         f"<li>🎬 <strong>The {gifs} animations</strong> are captured from the explainer pages and play here as they do there; the live pages "
         "are a click away, and play every journey on demand.</li>"
-        "<li>🟦 <strong>The colours</strong> follow the parts: blue for the doors and the plumbing, green for the money, purple for the market "
-        "side and the models, amber for the agents, red for safety.</li>"
+        "<li>🟦 <strong>The colours</strong> follow the parts: blue for the doors and the plumbing, green for the money, purple for the models, amber for the agents, red for safety.</li>"
         "<li>🧩 <strong>Every area</strong> ends with the Jira stories that build it, live from the trace.</li>"
-        + (f"<li>🛡️ <strong>The guardrails and evals</strong> (§23) are on {ctx.link('guardrails', 'their own page')}, with their own explainer.</li>"
+        + (f"<li>🛡️ <strong>The guardrails and evals</strong> (§21) are on {ctx.link('guardrails', 'their own page')}, with their own explainer.</li>"
            if ctx.manifest.get("pages", {}).get("guardrails", {}).get("id") else "") +
         "<li>🔁 <strong>It stays in step.</strong> These pages are generated from the repo; a change to ARCHITECTURE.md or an explainer page "
         "shows here at the next publish, and the check fails until it does.</li></ul>",
@@ -999,7 +996,6 @@ def render_rec_journeys(ctx: cd.Ctx) -> str:
             ("rec-j-inside", "Inside MyPaisa", f"{len(steps)} steps", ", ".join(s["title"] for s in steps)),
             ("rec-j-inside-more", "Inside MyPaisa", f"{len(TOURS)} tours", "One message through MyPaisa (" + ", ".join(TOURS.values()) + "), the agent team, the safety nets, the two homes, a day"),
             ("rec-j-flows", "The Agent Journey", f"{sum(len(g[4]) for g in FLOW_GROUPS)} flows", "; ".join(g[3] for g in FLOW_GROUPS)),
-            ("rec-j-market", "The Market Agent", f"{len(market_sections())} sections", "; ".join(s["title"] for s in market_sections().values())),
             ("rec-j-first", "The first journeys", f"{len(first_journeys())} journeys", ", ".join(j["title"] for j in first_journeys()))]
     titles = {s: t for s, t, _ in pages()}
     colour = {s: c for s, _, _, c, _, _ in JOURNEY_PAGES}
@@ -1027,12 +1023,15 @@ def render_v4(ctx: cd.Ctx) -> str:
     root = dom(V4)
     hero = root.need("section", cls="hero")
     _, h2, intro = sec_head(root, "map")
-    emoji = {"question": "❓", "file": "📄", "checkin": "✅", "brief": "🌅", "failure": "🧯"}
+    emoji = {"question": "❓", "goal": "🎯", "plan": "🧭", "file": "📄", "delete": "🗑️", "checkin": "✅", "value": "🌙", "digest": "📬", "failure": "🧯"}
     out = [cd.cpanel("#DEEBFF", ":satellite_orbital:", f"<p><strong>🛰️ {line(hero.find('h1'))}</strong></p>" + "".join(f"<p>{line(p)}</p>" for p in hero.find_all("p", cls="lede")[:1])
                      + f'<p>From <a href="{cd.gh(V4)}">architecture-v4.html</a> (MA-244), live at <a href="{cd.ARTIFACTS["MyPaisa Architecture v4"]}">MyPaisa Architecture v4</a>, '
                      "where each journey plays on demand and any part can be inspected.</p>"),
            f"<h2>🗺️ {h2}</h2>{intro}", legend(), toc(2)]
-    for s in js(V4, "SCEN"):
+    scen = js(V4, "SCEN")
+    if tuple(s["id"] for s in scen) != V4_JOURNEYS:
+        raise RecordError(f"{V4}: its journeys are {[s['id'] for s in scen]}, not V4_JOURNEYS; update the record's pictures and captions with them")
+    for s in scen:
         out.append(f"<h2>{emoji.get(s['id'], '•')} {cd.esc(s['name'])}: {len(s['steps'])} steps</h2>")
         out.append(cd.cpanel("#F4F5F7", ":arrow_forward:", f"<p><strong>{cd.esc(s['sum'])}</strong></p>"))
         out.append(pic(ctx, "rec-j-v4", f"v4-{s['id']}", media_caption(f"v4-{s['id']}")))
@@ -1057,8 +1056,8 @@ def render_v4_parts(ctx: cd.Ctx) -> str:
     root = dom(V4)
     slug = "rec-j-v4-parts"
     out = [cd.cpanel("#EAE6FF", ":jigsaw:", "<p><strong>🧩 Every part of Architecture v4</strong></p><p>The system map's parts as its inspector describes them, one message "
-                     "as an OpenTelemetry trace, the concierge's tool loop and its tools, the nine agents with the kind of agent each is and the model "
-                     "it uses, the three Claude models and the spend ladder, where the data lives, delivery and the guardrails.</p>"
+                     "as an OpenTelemetry trace, the concierge's tool loop and its tools, the agents with the kind of agent each is and the model "
+                     "it uses, the two Claude models and the spend ladder, where the data lives, delivery and the guardrails.</p>"
                      f'<p>From <a href="{cd.gh(V4)}">architecture-v4.html</a> (MA-244). Timings, tokens, costs and the bus events are illustrative.</p>'), toc(2)]
     out.append("<h2>🗺️ Every part on the map</h2><p>As the map's inspector tells it, part by part.</p>"
                '<table data-layout="full-width"><thead><tr><th>Part</th><th>Kind</th><th>What it does</th><th>Facts</th></tr></thead><tbody>')
@@ -1168,9 +1167,9 @@ def render_inside_more(ctx: cd.Ctx) -> str:
     root = dom(INSIDE)
     slug = "rec-j-inside-more"
     tours = js(INSIDE, "T")
-    eng = root.need("section", id="engine")
+    eng = root.need("section", id="inside")
     out = [cd.cpanel("#E3FCEF", ":envelope_with_arrow:", "<p><strong>✉️ Inside MyPaisa, the rest of the way</strong></p><p>One message played through the system in four "
-                     "tours, the agent team of phase 18 and the admin's approval, what stops it going wrong, the two homes on AWS, and a day with MyPaisa.</p>"
+                     "tours, the agent team of phase 13 and the admin's approval, what stops it going wrong, the two homes on AWS, and a day with MyPaisa.</p>"
                      f'<p>From <a href="{cd.gh(INSIDE)}">inside-mypaisa.html</a> (MA-239).</p>'), toc(2),
            f"<h2>✉️ {line(eng.find('h2'))}</h2>", "".join(f"<p>{line(p)}</p>" for p in eng.find(cls="sec-head").children("p") if "eyebrow" not in p.cls())]
     temoji = {"ask": "❓", "file": "📄", "checkin": "🔔", "fail": "🧯"}
@@ -1302,7 +1301,7 @@ def render_flows(ctx: cd.Ctx) -> str:
                 else:
                     out.append(blocks(n, shift=1) if n.tag != "p" else f"<p>{line(n)}</p>")
             i += 1
-    out.append("<h2>🗂️ The twenty-four flows</h2>"
+    out.append("<h2>🗂️ The twenty-three flows</h2>"
                '<table data-layout="full-width"><thead><tr><th>#</th><th>Flow</th><th>When</th><th>Recorded on</th></tr></thead><tbody>')
     titles = {s: t for s, t, _ in pages()}
     for g in FLOW_GROUPS:
@@ -1326,42 +1325,7 @@ def render_flow_group(ctx: cd.Ctx, g: tuple) -> str:
                                                                                                         ("External data", "neutral"), ("A note", "green"))) + "</p>"),
            toc(2)]
     out += [flow_blocks(ctx, slug, fid) for fid in fids]
-    out.append(f"<p>All twenty-four: {ctx.link('rec-j-flows', 'the Agent Journey')}.</p>")
-    return "".join(out) + footer()
-
-
-# ---------- the Market Agent ----------
-
-@functools.lru_cache(maxsize=None)
-def _market(stamp: float) -> dict[str, dict]:
-    root = dom(MARKET)
-    out = {}
-    for s in root.find_all("section", cls="sec"):
-        out[s.attrs["id"]] = {"title": s.need("h2").text(), "node": s}
-    return out
-
-
-def market_sections() -> dict[str, dict]:
-    got = _market((ROOT / MARKET).stat().st_mtime)
-    want = ["map"] + [f"s{n}" for n in range(1, 14)]
-    if list(got) != want:
-        raise RecordError(f"{MARKET}'s sections are {list(got)}, not {want}; update the record's pictures")
-    return got
-
-
-def render_market(ctx: cd.Ctx) -> str:
-    slug = "rec-j-market"
-    root = dom(MARKET)
-    h1 = root.find("h1")
-    lede = root.find("p", cls="lede") or root.find("p")
-    out = [cd.cpanel("#EAE6FF", ":chart_with_upwards_trend:", f"<p><strong>📈 {line(h1) or 'The Market Agent'}</strong></p><p>{line(lede)}</p>"
-                     f'<p>From <a href="{cd.gh(MARKET)}">market-agent.html</a> (MA-141, India in MA-155, the iOS app in MA-161), live at '
-                     f'<a href="{cd.ARTIFACTS["MyPaisa Market Agent"]}">MyPaisa Market Agent</a>. The market side is built in phases 10 to 20, after the whole wealth.</p>'),
-           toc(2)]
-    emo = ["🗺️", "🎯", "📥", "📐", "📰", "⚖️", "🃏", "🎓", "🧭", "🧪", "🔁", "💰", "🇮🇳", "🧩"]
-    for k, (sid, s) in enumerate(market_sections().items()):
-        out += [f"<h2>{emo[k]} {cd.esc(s['title'])}</h2>", pic(ctx, slug, f"market-{sid}", media_caption(f"market-{sid}")),
-                f"<details><summary>The words of this section</summary>{blocks(s['node'], shift=1, skip=('eyebrow',), drop=(s['node'].find('h2'),))}</details>"]
+    out.append(f"<p>All twenty-three: {ctx.link('rec-j-flows', 'the Agent Journey')}.</p>")
     return "".join(out) + footer()
 
 
@@ -1385,7 +1349,7 @@ def render_first(ctx: cd.Ctx) -> str:
     root = dom(FIRST)
     out = [cd.cpanel("#F4F5F7", ":pager:", f"<p><strong>📟 {line(root.find('h1'))}</strong></p><p>{line(root.find('p', cls='lede'))}</p>"),
            '<div data-type="panel-warning"><p><strong>Kept for reference.</strong> Eight user journeys on a phone frame, in the Nocturne look, from '
-           f'23 Oct 2026 (<a href="{cd.gh(FIRST)}">journeys.html</a>). Superseded by the Agent Journey ({ctx.link("rec-j-flows", "its twenty-four flows")}); '
+           f'23 Oct 2026 (<a href="{cd.gh(FIRST)}">journeys.html</a>). Superseded by the Agent Journey ({ctx.link("rec-j-flows", "its twenty-three flows")}); '
            "the Telegram bot they show was superseded by the iOS app (MA-161), and the web app was kept beside it.</p></div>",
            pic(ctx, slug, "first-phone", media_caption("first-phone")), toc(2)]
     for j in first_journeys():
@@ -1435,7 +1399,7 @@ def render(ctx: cd.Ctx, slug: str) -> str:
         if g := next((g for g in FLOW_GROUPS if g[0] == slug), None):
             return render_flow_group(ctx, g)
         return {"rec-j-v4": render_v4, "rec-j-v4-parts": render_v4_parts, "rec-j-inside": render_inside, "rec-j-inside-more": render_inside_more,
-                "rec-j-flows": render_flows, "rec-j-market": render_market, "rec-j-first": render_first}[slug](ctx)
+                "rec-j-flows": render_flows, "rec-j-first": render_first}[slug](ctx)
     except (RecordError, KeyError, StopIteration, AttributeError, TypeError) as e:
         raise RecordError(f"record page {slug}: {type(e).__name__}: {e}") from e
 

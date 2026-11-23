@@ -7,6 +7,16 @@ and the actual code stay the same and do not drift, in this repo only; and
 whenever a new design or feature is discussed, it gets its Jira issue and its
 feature or phase document in Confluence.
 
+And on 2 Nov 2026 (MA-303): "All the 6 checks currently run on docs/design.
+Lets stop that... Plan Sync is for keeping the Jira, confluence and
+implementation in sync. We can keep that but it needs to faster and smart.
+No need to any check on prototype v5." So plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). What stays
+of the boards is the trace's link to them (a cited file and its board name
+exist, a UI story has a board before it starts); plan-sync keeps Jira,
+Confluence and the code in step. A board edit can leave a Confluence preview
+stale until the preview is composed again: that is Confluence sync, not a
+check on the board.
+
 These records describe the same planned work. They are kept in step, and a
 check says so before any story starts and before any PR.
 
@@ -17,7 +27,7 @@ check says so before any story starts and before any PR.
 | The designs | The repo, three board folders: `docs/design/ios-v1/` (MyPaisa iOS v1, the app's screens, from MA-161), `docs/design/ds-v1/` (MyPaisa DS v1, the system and its iOS kit) and `docs/design/app-v1/` (MyPaisa app v1, the web app's browser boards, its spec; its Mini App and Telegram boards are the superseded record), git their only record; a record that is not a board set in its own folder (`docs/design/prototype-v5/`). Arun sees each design round's options as a private Claude Artifact, or as a local page for a round run in Antigravity | What a member sees |
 | The trace | `docs/trace.json`, rendered to `docs/TRACE.md` | Which story follows which ARCHITECTURE section and which boards, and which code builds it |
 | Confluence | Space mypaisaa-agent: the hub, the roadmap, a page per phase, a page per screen area, the design decisions, the explainers. Rendered by `scripts/confluence_docs.py` into `docs/confluence/`; page ids, versions and previews in `docs/confluence.json` | The plan as one readable tree, phase by phase and screen by screen |
-| The code | `web/`, `ios/`, `src/`, `infra/`, named per story in the trace's `code` paths | What was built, traced to its story |
+| The code | `backend/`, `web/`, `ios/`, `infra/` (Arun, 3 Nov 2026, MA-24), named per story in the trace's `code` paths | What was built, traced to its story |
 
 The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 
@@ -52,18 +62,28 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
 7. **Boards are drawn in the repo; each round is shown as an Artifact.**
    Boards are drawn and edited in their folders under `docs/design/` and
    nowhere else; git is their only record, and a PR reviews them. There is
-   no record file to update and no whole-set Artifact to republish (MA-296,
-   Arun, 30 Oct 2026: "I dont need claude-design sync anymore"):
-   `python3 scripts/plan_sync.py check` reads every board as it is on disk.
+   no record file to update (MA-296, Arun, 30 Oct 2026: "I dont need
+   claude-design sync anymore"). The MyPaisa Boards Artifact, which shows
+   the whole set, is published again from the repo whenever a board changes
+   (MA-324, Arun, 3 Nov 2026: "All artifacts and design should be in sync
+   with local"): `python3 scripts/boards_page/build.py docs/design <out>`
+   builds it, and `docs/design/artifacts.json` lists it, with every other
+   published artifact and the repo files each is published from;
+   `python3 scripts/plan_sync.py check` fails while one is older than its
+   sources, until it is published and recorded with
+   `python3 scripts/artifacts_sync.py record <name> <version>`.
+   `python3 scripts/plan_sync.py check` finds the boards the trace cites on
+   disk; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303).
    Arun reviews each `/design-first` round as a private Claude Artifact: the
    round publishes its options as one and gives him its link. A round run in
    Google Antigravity, which cannot publish a Claude Artifact, shows the same
    options page on localhost instead, and its `decision.md` names the page
    (MA-297, Arun, 30 Oct 2026). A board is
-   linked by its file in the repo (on GitHub, in Confluence). The MyPaisa
-   Boards Artifact, `scripts/design_sync.py`, `scripts/boards_page/`,
-   `docs/design/claude-design.json` and `docs/design/boards-artifact.json`
-   were retired by MA-296. Until 30 Oct 2026 the boards were drawn in Claude
+   linked by its file in the repo (on GitHub, in Confluence).
+   `scripts/design_sync.py`, `docs/design/claude-design.json` and
+   `docs/design/boards-artifact.json` were retired by MA-296; it retired the
+   MyPaisa Boards Artifact and `scripts/boards_page/` too, which MA-324
+   brought back. Until 30 Oct 2026 the boards were drawn in Claude
    Design and copied here with their etags (MA-259). Standalone Claude Design
    closes by 14 Dec 2026, so Arun moved the drawing into the repo (30 Oct
    2026, MA-260: "for all future design use Local folder and then Claude
@@ -84,7 +104,7 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    by changing an estimate or a setting there.
 10. **Code is traced to its story.** A story's `code` lists the repo paths
     that build it (globs allowed). A Story In Review or Done names its code,
-    and every path must exist; a file under `web/`, `ios/`, `src/` or
+    and every path must exist; a file under `backend/`, `web/`, `ios/` or
     `infra/` that no story claims is reported. A picked board is the spec
     the code is built to (rule 4); a UI story's PR shows its screens beside
     their boards.
@@ -110,12 +130,12 @@ A hook reminds the session when a prompt talks about a new design or feature
 
 | When | Run | What must be true |
 | --- | --- | --- |
-| Starting a story (`/jira-flow:work`, or by hand) | `/plan-sync MA-<n>` (refreshes the row, and checks the story's boards against their record), then `python3 scripts/plan_sync.py start MA-<n>` | The story is traced, its sections exist, its boards exist and are current; a UI story's design is `planned` (run `/design-first`) or `picked`; no `open` question |
-| After any change to a record | `python3 scripts/roadmap.py write` (when an estimate or a phase changed), `python3 scripts/plan_sync.py render`, `python3 scripts/confluence_docs.py write`, then `/plan-sync --confluence` to publish the changed pages and previews | The check is clean; the hook after each edit reports new drift at once |
-| Before every PR (`/autoship` step 1) | `/plan-sync --confluence`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/contrast_check.py --selftest && python3 scripts/contrast_check.py`) | No drift, every cited board on disk; `docs/TRACE.md` is rendered |
-| On every PR, in CI | `.github/workflows/plan-sync.yml` | The same checks, offline, with nothing to sign in to: the `plan-sync` gate |
-| After planning (a new phase, a new story, a design round) | `/plan-sync` | Jira, the boards and the trace agree; drift is fixed or filed |
-| Weekly, or when unsure | `/plan-sync --all` | The whole backlog and every board folder under `claude_design` agree with the trace |
+| Starting a story (`/jira-flow:work`, or by hand) | `/plan-sync MA-<n>` (refreshes the row from Jira), then `python3 scripts/plan_sync.py start MA-<n>` | The story is traced, its sections exist, its cited board files and board names exist; a UI story's design is `planned` (run `/design-first`) or `picked`; no `open` question |
+| After any change to a record | `python3 scripts/roadmap.py write` (when an estimate or a phase changed), `python3 scripts/plan_sync.py render`, `python3 scripts/confluence_docs.py write`, then `/plan-sync --confluence` to publish the changed pages and record their read-back | The check is clean; the hook after each edit to a record reports new drift at once (an edit to a board runs nothing) |
+| Before every PR (`/autoship` step 1) | `/plan-sync --confluence`, `python3 scripts/plan_sync.py pr-files`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`) | No drift; every product file the branch changes is claimed by its story; `docs/TRACE.md` is rendered. The selftest runs only when its code or fixtures changed since a pass in the last 7 days (`selftest REUSED`); `selftest --force` always runs it. CI has no cache and runs it on every PR (about 9 s) |
+| On every PR, in CI | `.github/workflows/ci.yml` (MA-305: one CI workflow, its jobs in parallel: Plan sync, Plan-sync selftest, Review tooling, Confluence receipts, Workflow lint) | The same checks, offline, with nothing to sign in to: the `plan-sync` gate |
+| After planning (a new phase, a new story, a design round) | `/plan-sync` | Jira (read incrementally, from `docs/jira-sync.json`), the trace's boards and the trace agree; drift is fixed or filed |
+| Weekly, or when unsure | `/plan-sync --all` | The whole backlog, read in full from Jira, and every board folder under `claude_design` agree with the trace |
 
 ## What the check fails on
 
@@ -128,13 +148,30 @@ A hook reminds the session when a prompt talks about a new design or feature
 - `ui` and the `design` label disagreeing: the label marks exactly the stories with UI (`.claude/jira/taxonomy.md`).
 - A board file a story cites missing from its board folder; a board folder the trace's `claude_design` names missing from the repo; a board name that is not exactly one of its canvas's titles (a caption, or a numbered board as `<number> · <name>` with its own number), optionally after the door the whole file draws.
 - A key in both `items` and `others`; a row, phase or entry that is not an object; a row with no key, summary, status or type; a phase with no epic or title; a field of the wrong type.
-- A board element given the `label` or `dot` motion role without the class whose transform that role's keyframe ends on (`mp-chartlbl`, `mp-chartdot`): once the arrival settles it is moved off its place; use `fade`. And a board rule giving a `.mp-chartlbl` or `.mp-chartdot` variant its own transform without `!important`: motion.js gives every chart label and dot the board leaves unmarked its role at run time, so the arrival overrides the variant's transform; add `!important` to it (MA-161 review, rounds 2 and 3).
-- A tool a board's run or Activity row names that ARCHITECTURE §8's **Tools** list does not define (`render_chart`, `read_file`; MA-161 review, rounds 3 and 4). Fix the board through `/design-first` if the name is wrong; if the tool is new, add it to §8 (and PLAN and the trace) first.
-- A weekday and date on a board that do not agree ("Thu 23 Oct"); the boards are set in October 2026, and a date with no year may fall in 2027 from January to September (MA-161 review, round 1).
 - `docs/TRACE.md` not rendered from the current trace.
 - A traced story with no estimate in `docs/roadmap.json`, an estimate for an untraced key, a schedule not worked out from the current estimates, or PLAN.md's Timeline table not matching it (MA-228).
-- A Confluence page in `docs/confluence/` not rendered from the current records, a page with no Confluence id, a page changed in the repo but not published, a file there the generator does not make, a board preview not uploaded or older than its boards, a cited board file in no screen area, an interactive app older than the data it was made from, or the story explorer database (`docs/confluence/stories.csv`) stale or not published (MA-228).
+- A Confluence page in `docs/confluence/` not rendered from the current records, a page with no Confluence id, a page changed in the repo but not published, a file there the generator does not make, a board preview not uploaded or older than its boards, a cited board file in no screen area, an interactive app older than the data it was made from, or the story explorer database (`docs/confluence/stories.csv`) stale or not published (MA-228); a page whose read-back, recorded after publishing, differs from what was sent, or a page published under the receipts but never read back (pages published before the receipts are listed as notes) (MA-303).
 - A Story In Review or Done that names no `code`, or a `code` path that matches nothing (MA-228).
+
+Since MA-303, plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). The weekday-and-date,
+tool-name, motion-role, chart-label transform, shared-stroke and Telegram checks
+on the boards went, with `contrast_check.py`, `board_fit.js`, `a11y_live.js` and
+`prototype_smoke.js`. Arun judges each design round by eye. The same checks
+come back as QA on the built code when Arun asks: MA-304 for the web app
+(Playwright, axe and Argos, with the 25% contrast floors and the 320 to 1920
+width sweep; it depends on MA-194), and the iOS app's after MA-165, with no
+story yet.
+
+`python3 scripts/plan_sync.py pr-files [--base <ref>]` (default: the merge-base
+with `origin/main`) is the branch's own check, run before every PR: it lists the
+files the branch changes under `backend/`, `web/`, `ios/` and `infra/` (committed,
+uncommitted and untracked; a rename is its old path and its new one), maps each
+to the trace rows whose `code` claims it (a path, a folder, or a glob where `*`
+stays in a folder and `**` spans folders), and fails, on a branch with an MA key,
+on a file claimed only by another story, or by none. A deletion no story claims
+is no fault. On CI's checkout, a detached merge commit with no branch, the key
+comes from `GITHUB_HEAD_REF`; on CI with no key it fails closed (exit 2), and
+CI passes `--base HEAD^1`, the merge commit's first parent (lesson 42).
 
 A UI story with no board, or with screens still to draw (`undrawn`), may sit
 in the backlog with a note (rule 2); the check lists it as a note and `start`
@@ -146,11 +183,9 @@ may not reach In Review until they are drawn and the row says so.
 
 `python3 scripts/plan_sync.py selftest` runs the board-name check against
 names it must accept and names it must refuse (every case the reviews of PR
-#32 raised), the date, motion-role and tool checks against cases they must
-accept and refuse, and `check` itself on a copy of the repo whose board says
-"Thu 23 Oct", puts a `label` role on a non-label element and names `render_chart`,
-all of which it must refuse; the jira-flow gate and CI run it before the check. `start` also runs every row check
-above on the story's own row (the board-wide date, motion and tool checks run in `check`), so a missing section or board stops it too.
+#32 raised), `pr-files` against known cases and on a throwaway branch, and the
+hook's selftest; the jira-flow gate and CI run it before the check. `start` also runs every row check
+above on the story's own row, so a missing section or board stops it too.
 The selftest also mutates a copy of the repo for each MA-228 check (a Story
 Done with no code, a code path that does not exist, a missing estimate, an
 estimate changed without the schedule, a page edited by hand, a page not
@@ -161,11 +196,18 @@ something without it was kept (lesson 22 of
 expecting its refusal (lesson 16): a cited board file gone, and a board
 folder the trace names gone. The record's own refusals (a file edited after
 it was recorded, a size that disagrees, a file the record does not list, a
-stamp older than the record) went with the record.
+stamp older than the record) went with the record. MA-303 retired the date,
+motion-role, tool, stroke and Telegram cases with the checks they tested, and
+the mutated board that proved them inside `check`; every other case stays. The
+mutated records now run on one clone of the repo per worker, four at once, each
+case's file put back after it and the copy checked clean before the next; and
+the selftest is reused while its code and fixtures hash as they did at a pass
+recorded in the last 7 days (`review/.cache/plan_sync_selftest.json`, not
+committed; `selftest --force` always runs).
 
 Three hooks in `.claude/settings.json` (this repo only) hold the line between
 checks: after an edit to a record the check runs and new drift is reported at
-once; raising a PR (`gh pr create`, `gh pr ready`) is refused while the check
+once, while an edit to a board in `docs/design/` runs nothing (MA-303); raising a PR (`gh pr create`, `gh pr ready`) is refused while the check
 fails, exits without saying why, or cannot run; and a prompt about a new design or feature
 brings the New work rule above into the session (`.claude/hooks/plan_sync_hook.py`). Each hook checks
 the checkout the call acts on: the folder a command runs in (or the last `cd`
@@ -177,9 +219,18 @@ checkout beside it (MA-260); `plan_sync_hook.py selftest`, run by
 Jira-side drift (a key, parent, label or status that differs from the trace,
 or an epic's due date that differs from the roadmap) and Confluence drift (a
 page whose live version moved past the one recorded, because someone edited
-it there) need their MCP tools, so `/plan-sync` checks those. The boards need
+it there) need their MCP tools, so `/plan-sync` checks those. Jira is read
+incrementally: `docs/jira-sync.json` records the last sync and a short hash
+per key, so a normal `/plan-sync` asks only for the issues updated since, the
+keys still drifting and the rows changed in the repo, and `/plan-sync --all`
+reads the whole backlog (weekly, or when unsure). `jira-sync query` saves the
+JQL it prints, and `record` moves the last sync only for a file that answers
+that query; a narrower read, such as one story's, records only its own keys
+(lesson 43). Drift is reported as one
+table: the item, the repo's value, Jira's or Confluence's, which wins and why,
+and the fix. The boards need
 no tool: they live only in the repo, so `scripts/plan_sync.py check` reads
-them offline, and the same command works in a session, in the gate, in the
+the cited ones offline, and the same command works in a session, in the gate, in the
 PR hook and in CI. `/autoship` runs `/plan-sync --confluence` and the gate
 before every PR.
 A status the trace records lags Jira by one step at most: Done is set after

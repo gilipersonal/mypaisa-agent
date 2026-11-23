@@ -1,0 +1,181 @@
+--- round-1/handoff.md
++++ round-2/handoff.md
+@@ -1,8 +1,8 @@
+ # MyPaisa UI design assessment and Claude handoff
+ 
+-**5 November 2026 · MA-328 · Status: unreviewed draft for handoff.**
+-
+-**Method:** single-author Impeccable design assessment of the adaptive product's HTML design boards, with rendered visual inspection and targeted source/browser observations. This is a review of the proposed UX and its design artifacts, not a production accessibility audit or verification of the native app. No UI fixes were made. Independent review of this report has not run.
++**5 November 2026 · MA-328 · Status: independent round 1 completed; report corrections applied, pending a review of those corrections.**
++
++**Method:** single-author Impeccable design assessment of the adaptive product's HTML design boards, with rendered visual inspection and targeted source/browser observations, followed by two fresh independent report-review lanes. This is a review of the proposed UX and its design artifacts, not a production accessibility audit or verification of the native app. No UI fixes were made. Round 1 retained all ten findings and identified two blocking omissions and two smaller clarifications in this report. Those report corrections are applied below but have not yet received a delta review. See [the round 1 review record](../../../../review/MA-328/round-1-summary.md).
+ 
+ **Conclusion:** keep Warm Ledger, the navy summary cards and the chosen Chat-first shell. The dark bottom navigation in Arun's screenshot is a reproducible theme-cascade defect, not an intentional reason to replace the visual direction. The other main problems are uneven design completeness and conflicting specifications: several polished-looking screens contain requirements prose, authentication states are mixed together, navigation varies between sources, and some prototype controls promise behavior they do not deliver.
+ 
+@@ -19,6 +19,24 @@
+ Browser evidence was rendered in the Playwright Chromium session from a local static server, at the artboards' specified dimensions. Reduced Motion was enabled for stable captures; host colour scheme was deliberately changed for the theme reproduction. Typical artboards are iPhone 402 × 874, phone web 390 × 844, web 1440 wide and iPad 1180 × 820; some web boards intentionally expand vertically to show the whole page. Outer canvas scrolling and a long exported page are not themselves responsive defects.
+ 
+ The review follows Impeccable's Operate mode: clarity, task completion, familiar navigation and restrained expression. Its adaptive/native critique route does not use the web detector as a native-app quality signal. No `impeccable detect`, axe, Argos, retired board check, native build or native simulator audit was run. The current request authorizes this assessment; it does not reinstate permanent board gates retired under MA-303.
++
++## Recorded decisions and current design status
++
++These choices are already settled. The presence of an alternative in the same file is not evidence that the alternative remains a candidate for implementation. A selected shared style also does not approve every individual task flow drawn in that style.
++
++| Area | Governing pick and source | What is historical or still planned |
++| --- | --- | --- |
++| Native shell | **MA-163: 1a Chat first**, picked 26 October; [design README](../../README.md), lines 74–79, and the MA-163 row in [trace](../../../trace.json) | Shell options 1b Ask from anywhere and 1c One timeline are retained records, not current alternatives. |
++| Web shell | **MA-193: 1a Chat beside**, picked 26 October; [decision](../MA-193/decision.md), lines 113–126 | 1b Chat first and 1c Ask bar remain historical options. Compact navigation drawn within selected sources must still agree. |
++| Home/Dashboard | **MA-193: 1a Net worth first**; the same decision and the picked MA-208/MA-95/MA-213 trace rows | 1b Two countries and 1c What's next remain in the files as the option record. Home's composition is not undecided. |
++| Check-in and Projection | **MA-193: 1b Paid as the Confirm; Projection 1a the fan first** | Other options remain records. Additional stories drawn in the chosen styles may remain planned under their own trace rows. |
++| Budget forecast and Plans | **MA-264: forecast 1a The surplus first; chat 2a A card per step; Plans tab 3a Bars on a timeline**; [decision](../MA-264/decision.md), lines 163–173 | Other options remain historical. The named 1a/2a/3a state files extend the selected options. |
++| Consolidated v4 treatment | **MA-279: 1a Unified Whole-Wealth Ledger & Header 4-Currency Pill**, picked 31 October; [decision](../MA-279/decision.md), lines 91–99 | Consolidated 1b and 1c are explicitly Not picked · record. The generated suite adopts 1a; it does not erase individual stories' planned status. |
++| Chart treatment | **MA-295: 1a Monzo Pulse**, picked 30 October; [decision](../MA-295/decision.md) | 1b Apple Health Editorial and 1c Monzo Modular Bento remain comparison records. This picks the chart treatment, not a replacement for MA-193's Home composition. |
++| Later product constraints | **MA-307/308/309:** wealth tracking only, admins write, chat-based delete/restore; [decision](../MA-307/decision.md) and current [architecture](../../../../ARCHITECTURE.md) | Earlier MA-279/MA-295 references to market calls, forecasting a market or retired market screens do not regain authority through their historical design picks. |
++| Auth and account/admin flows | The current [trace](../../../trace.json) marks **MA-32, MA-168, MA-170, MA-76, MA-77 and MA-102 planned** | Consolidated “Picked · v4” styling must not be read as approval of every auth/settings/admin interaction. MA-308/309 remain todo with undrawn cards. |
++
++F05 and F09 concern stale labels and contradictions that remain between selected sources and their DS/documentation references. They do not ask Claude to choose again between the recorded unpicked alternatives. The [coverage index](coverage.md) carries this lifecycle distinction alongside its file inventory.
+ 
+ ## The dark navigation issue
+ 
+@@ -62,11 +80,23 @@
+ 
+ The Welcome screen asks the user to sign in while showing linked/verified identities, a selected You tab, Home/Chat/Activity navigation, Search and Ask. The web version also shows the authenticated sidebar and a populated household conversation. The welcome card exposes relying-party and OAuth/PKCE details in user-facing copy. These may be useful implementation notes, but their placement makes the intended user state unclear.
+ 
++There are also concrete contract errors: the native Welcome frame offers **Use a passkey**, although [ARCHITECTURE.md](../../../../ARCHITECTURE.md), lines 425–430, permits only Apple and Google at native first sign-in. The board's relying-party annotation uses `mypaisapp.com`; the architecture requires the environment's dashboard domain. Moving that annotation outside the screen without correcting it would preserve an incorrect implementation instruction.
++
++| Door or action | Existing authentication contract to preserve |
++| --- | --- |
++| Native iPhone/iPad first sign-in | Apple's and Google's own buttons, Apple first; no passkey sign-in action. |
++| Browser first sign-in | Apple, Google and passkey sign-in. |
++| Native passkey | Added through authenticated You/settings; used for the action-bound second check, not first sign-in. |
++| Invite joining | Native invite acceptance followed by Apple/Google creates the member. A browser displays the installation/landing page and never joins the household. |
++| Passkey relying-party annotation | `dashboard.mypaisapp.com` for prod; `dashboard-dev.mypaisapp.com` for dev, as specified by the current architecture. |
++
++The invite distinction is explicit in [ARCHITECTURE.md](../../../../ARCHITECTURE.md), lines 428 and 453–460. These are existing contracts, not new product choices.
++
+ **Impact:** Claude cannot reliably infer what is available before authentication, what identity information is already known, or what happens after a successful sign-in. A household member cannot tell whether they are signing in, linking another method or reauthenticating. This is a design ambiguity, not a claim that the running application exposes account data.
+ 
+-**Claude's fix:** draw distinct signed-out welcome, invite acceptance, sign-in-in-progress, cancelled/failed sign-in, expired/revoked invite and authenticated sign-in-method settings. Put linked identities in the authenticated settings state. Keep action-bound reauthentication as a separate confirmation flow. Move relying-party/PKCE details outside the device frame. Use the platform authentication component treatment and user-facing language such as “Sign in to your household.”
+-
+-**Acceptance:** every auth frame declares its state outside the device; signed-out screens show only actions appropriate before authentication; successful authentication has an explicit destination; cancellation preserves the prior state; account-linking and second-check flows cannot be confused with first sign-in. Preserve invited-household-only access and the existing security contracts. Use `/impeccable onboard` and `/impeccable clarify`.
++**Claude's fix:** draw distinct signed-out welcome, native invite acceptance, browser invite landing, sign-in-in-progress, cancelled/failed sign-in, expired/revoked invite and authenticated sign-in-method settings. Remove passkey first sign-in from the native Welcome frame; retain it on web and preserve its native second-check use. Put linked identities in the authenticated settings state. Keep action-bound reauthentication as a separate confirmation flow. Correct the relying-party annotation to the environment's dashboard domain when moving it and the PKCE details outside the device frame. Use the platform authentication component treatment and user-facing language such as “Sign in to your household.”
++
++**Acceptance:** every auth frame declares its state outside the device and conforms to the door/action table above. Native first sign-in shows Apple and Google only; web includes passkeys; native passkeys remain available for second checks. Native joining and browser installation/landing are separate states. Both environment-specific relying-party annotations are correct. Signed-out screens expose only pre-authentication actions; successful authentication has an explicit destination; cancellation preserves the prior state; linking and second-check flows cannot be confused with first sign-in. Use `/impeccable onboard` and `/impeccable clarify`.
+ 
+ ### F03 · P1 · Several screens are requirements summaries instead of actionable UI
+ 
+@@ -108,7 +138,7 @@
+ | Several consolidated Web v4 boards | Chat, Overview, Register, Projection, More |
+ | Some other Web v4 boards | Chat, Home, Activity, You; or Chat, Overview, Assets, Budget/Debts, More |
+ 
+-The same underlying area is also labelled Home or Overview, and Assets, Holdings and Register are used with different scopes. Platform-specific shell differences can be intentional; contradictory web shells for the same product cannot all be implementation specifications.
++The same underlying area is also labelled Home or Overview, and Assets, Holdings and Register are used with different scopes. The table compares definitions used by selected compositions/prototype routes and their DS/written references; it does not count MA-193's or MA-279's unpicked 1b/1c options as defects. MA-193 already picks Chat beside for the web shell and Net worth first for Home; MA-279 later picks the consolidated 1a treatment. Their selected sources and reference navigation still disagree. Platform-specific shell differences can be intentional; those residual differences need reconciliation without reopening the recorded picks.
+ 
+ **Claude's fix:** establish one current navigation table with destinations, labels, order, selected states, nested routes and More contents. Reconcile it with the user's actual picks and trace before changing the information architecture. Make every current web board use that contract; mark historical alternatives explicitly. Keep the chosen iOS Chat/Home/Activity/You shell unless a separate decision changes it.
+ 
+@@ -124,7 +154,7 @@
+ 
+ **Impact:** someone using the clickable handoff may conclude that the scope filter is broken or that it intentionally changes nothing. It also leaves the filtered total, joint-share allocation, empty scope and permissions behavior unspecified. Static board buttons are not being judged as broken runtime controls here; this finding concerns the explicitly interactive prototype.
+ 
+-**Claude's fix:** wire the selector to the existing illustrative scope data and render the selected state, or visibly label this feature as a noninteractive design example outside the product frame. For the intended complete prototype, implement Household/current member/other permitted member behavior, including correct labels for the active viewer. Expose selected state to assistive technology.
++**Claude's fix:** wire the selector to the existing illustrative scope data and render the selected state. For this interactive-prototype finding, a static-example annotation alone does not resolve the defect. Implement Household/current member/other permitted member behavior, including correct labels for the active viewer. Expose selected state to assistive technology. If interaction is deliberately deferred later, record that as an open prototype limitation rather than marking F06 fixed.
+ 
+ **Acceptance:** clicking or keyboard-activating a scope updates the selected state, heading, totals and relevant supporting data coherently. Switching viewer does not leave duplicate person choices. Use `/impeccable harden`.
+ 
+@@ -134,7 +164,7 @@
+ 
+ **Where:** [prototype-v5-ch-wealth.js](../../prototype-v5/prototype-v5-ch-wealth.js), lines 411–415 and 484–485. Compare [iPhone Home](<../../ios-v1/iPhone v4 · Home.dc.html>), lines 108–110 and its summary-card navigation rows. Evidence: [prototype Home at the top](evidence/09-prototype-home-top.png).
+ 
+-In the measured iPhone dashboard scenario the page has an 820px scroll viewport and 5,359px of content. The first All assets button is roughly 3,981 rendered pixels below the viewport top. The “Everything else” destination list comes later. The early own/owe summary lacks the All assets and All debts rows that the static Home design already draws. Search remains an alternative, so this is friction rather than a blocked task. There are also two visible Search controls in the compact prototype.
++In Prototype v5's Dashboard chapter, the Home overview step (`p9-overview`, Fri 6 Nov at 08:30), the first All assets button comes after several screens of supporting content, and the “Everything else” destination list comes later. The early own/owe summary lacks the All assets and All debts rows that the static Home design already draws. The prototype scales its frame to the review viewport, so earlier scroll dimensions and transformed bounding-rectangle distances are not presented here as a single reproducible pixel measurement. The source order and Home-top screenshot establish the navigation issue without those exact figures. Search remains an alternative, so this is friction rather than a blocked task. There are also two visible Search controls in the compact prototype.
+ 
+ **Claude's fix:** carry the summary-card routes from the selected static design into the prototype. Give assets and debts a clear route from their own summary; provide similarly contextual routes for Budget and Projection. Preserve the long supporting ledger for people who want it. Consolidate duplicate Search affordances only after checking the chosen compact shell.
+ 
+@@ -160,7 +190,7 @@
+ 
+ **Where:** [Home board](<../../ios-v1/iPhone v4 · Home.dc.html>), [Chart options](<../../ios-v1/iPhone v4 · Chart options.dc.html>), [MA-295 decision](../MA-295/decision.md), [DS Foundations](<../../ds-v1/Foundations.dc.html>) line 500, [DESIGN.md](../../../../DESIGN.md), and [design README](../../README.md).
+ 
+-The folder contains older screen-specific compositions, consolidated boards, selected chart options and Prototype v5, all reachable as normal design sources. For example, the Home file still presents its three structures as options/recommendations, while the chart decision selects Monzo Pulse and the prototype calls its Home picked. Foundations describes tertiary ink as suitable for axis ticks and unselected tabs, while the newer written rules reserve it for decoration and forbid it for meaningful labels. There are conflicting navigation definitions too (F05).
++The folder contains selected compositions, retained unpicked alternatives, consolidated boards, chart options and Prototype v5, all reachable as normal design sources. **Home's composition is already settled as 1a Net worth first** by [MA-193](../MA-193/decision.md), lines 113–126, and the picked MA-208/MA-95/MA-213 trace rows; MA-295 separately selects Monzo Pulse for its chart treatment. The Home file's options/recommendations wording fails to make that settled precedence clear. MA-279 likewise selects consolidated 1a and explicitly retains 1b/1c only as records. The decision map above identifies those distinctions rather than transferring that research to Claude. Separately, Foundations describes tertiary ink as suitable for axis ticks and unselected tabs, while the later [design-first rule](../../../../.claude/skills/design-first/SKILL.md), lines 144–145, forbids tertiary ink for meaningful labels. The residual navigation differences in F05 are between selected sources and their references, not a problem with preserving historical alternatives.
+ 
+ **Impact:** a fixer can choose a plausible source and still implement the wrong version. Archived decisions are valuable, but a file's existence, polished appearance or “Picked” badge is not enough to establish which parts supersede which earlier designs.
+ 
+@@ -244,7 +274,7 @@
+ | Appearance | Explicit light/dark/automatic under both host schemes; toolbar, tabs, composer, sidebar and sheet; worst actual backdrops | Design renders now; native/system-material behavior in the implemented app later |
+ | Readability | Primary/secondary/control labels follow project tokens; text and meaningful UI contrasts; low-brightness usability | Browser computed styles and rendered samples; physical display for the 25% brightness requirement |
+ | Navigation | One current route map; More, Search, selected tab, pushed page and return path | Current boards and clickable prototype |
+-| Authentication | Signed out, signing in, signed in, linking, second check, refusal/cancel/expired invite | Named states at both doors, then actual implementation |
++| Authentication | Native Apple/Google first sign-in; web Apple/Google/passkey; native passkey second check; separate native invite acceptance and browser installation/landing; correct environment dashboard relying-party annotation; signed-in/linking/refusal/cancel states | Door-specific named states matching ARCHITECTURE §4.5, then actual implementation |
+ | Role/state | Owner/admin/member, new/empty/loading/stale/error, before/after/save/undo | Existing acceptance and trace plus completed drawings |
+ | Adaptive layout | 320/390/440 phone widths; relevant 600/900/1133 thresholds; wide web and iPad; long GBP/INR and long names | Artboard inspection for design; actual app QA when requested |
+ | Accessibility | Dynamic Type/AX5, keyboard focus, VoiceOver order, selected-state announcements, keyboard-safe controls, Reduce Motion/Transparency | Built code and native runtime; do not infer success from HTML boards |
+@@ -260,9 +290,10 @@
+ - **Plan-sync check:** passed: 247 items, 0 drift, 61 informational notes. Existing notes include the planned gaps above. This checks the plan record, not visual quality.
+ - **PR file ownership check:** passed with `--key MA-328`: 0 product files changed against `origin/main`. The new report/evidence are uncommitted local artifacts; this is not a PR check for a future UI fix.
+ - **Report checks:** local link/image targets, cited source line bounds, evidence inventory, source hashes and whitespace are checked before delivery; results are recorded in [validation.txt](evidence/validation.txt).
+-- **Not run:** implementation test suites, full security pipeline, retired board gates, axe/Argos, native simulator/hardware/VoiceOver or full gesture/performance tests. No application, dependency, infrastructure or build source was changed. Full implementation and shipping gates belong to the later fix task.
+-- **Independent review:** not run; this report remains **unreviewed** until Arun opts in. The optional review should check source/evidence accuracy and UX/handoff completeness in separate fresh lanes. This repo asks again before a later review round.
++- **Security before independent round 1:** the full repository scan passed: gitleaks, semgrep, OSV and zizmor under the repository's existing filters/suppression and zizmor offline configuration. This is additional to the original assessment's delivery checks.
++- **Not run:** implementation test suites, retired board gates, axe/Argos, native simulator/hardware/VoiceOver or full gesture/performance tests. No application, dependency, infrastructure or build source was changed. Full implementation and shipping gates belong to the later fix task.
++- **Independent review:** round 1 completed in two fresh parallel lanes. All ten design findings were retained; two blocking report omissions and two nonblocking clarifications were corrected. The corrections await a delta review. The evidence reviewer independently confirmed the screenshot sample and approximately 1.62:1 ratio; fresh browser replay was unavailable because the browser profile was occupied, so no fresh runtime replay is claimed. This repo requires a new yes before a later round.
+ 
+ Deliverable: this report, the per-file [coverage index](coverage.md), and the local [evidence directory](evidence/). No UI fixes, commits, pushes, PRs, merges, issue closures or design publishing were performed. MA-328 records the assessment; it is not a claim that the fixes are complete.
+ 
+-Questions about implementing the findings are deferred to Claude's fix pass. The only requested next decision for this assessment is whether Arun wants an independent review of the report.
++Questions about implementing the findings are deferred to Claude's fix pass. The next review decision is whether Arun wants round 2 limited to these report corrections and their direct joins.
+--- round-1/coverage.md
++++ round-2/coverage.md
+@@ -86,6 +86,26 @@
+ 
+ Contact sheets are visual indexes. The file named ios-dark uses the second captured frame: a few source files order another light state before their dark state. Web-mobile uses the compact capture where available, otherwise a desktop fallback. Web and mobile contact sheets show only the top of long export frames. Use the individual PNG for full-size judgment and the JSON for the exact class/dimensions.
+ 
++## Selected compositions and retained alternatives
++
++The file inventory above is a rendering inventory, not an approval list. The following map identifies the selected parts of files that also retain historical options. See the governing-decision table in [the handoff](handoff.md) for the current precedence and later product constraints.
++
++| Files or family | Selected composition | Retained alternatives / lifecycle |
++| --- | --- | --- |
++| iOS Shell options | MA-163: 1a Chat first | 1b/1c are not picked; kept as records. |
++| Web Shell and chat | MA-193: 1a Chat beside | 1b/1c are historical options. |
++| iPhone Home / Web Dashboard | MA-193: 1a Net worth first | 1b/1c are historical options; Home's composition is already picked. |
++| iPhone/Web Check-ins | MA-193: 1b Paid as the Confirm | Other card options are records; related task stories may still be planned. |
++| iPhone/Web Projection | MA-193: 1a the fan first | 1b/1c are historical options. |
++| iPhone/Web Budget forecast, including 1a states | MA-264: 1a The surplus first | 1b/1c are historical options; 1a states extend the pick. |
++| iPhone/Web Plans in the chat, including 2a states | MA-264: 2a A card per step | 2b/2c are historical options; 2a states extend the pick. |
++| iPhone/Web Plans tab, including 3a states | MA-264: 3a Bars on a timeline | 3b is historical; 3a states extend the pick. |
++| iPhone/Web Consolidated options | MA-279: 1a Unified Whole-Wealth Ledger & Header 4-Currency Pill | 1b/1c are explicitly Not picked · record. Generated consolidated canvases adopt 1a styling, not blanket approval of every flow. |
++| All three Chart options files | MA-295: 1a Monzo Pulse | 1b Editorial and 1c Modular are records; later MA-307 retires market-specific content from these historical decisions. |
++| Auth, settings and admin task flows | Use current architecture and each story's trace row | MA-32/168/170/76/77/102 remain planned; a shared v4 Picked badge does not supersede this. MA-308/309 are todo with undrawn cards. |
++| Remaining task/state files | Follow the per-story trace; the inventory does not elevate their status | Screens drawn in a picked shell can remain planned. A screenshot or file name alone does not grant approval. |
++| DS specimens and prototypes | Reference and walkthrough artifacts using the chosen treatments | Do not treat a legacy specimen's route labels or a prototype badge as a new product decision. |
++
+ ## Limits
+ 
+ The assessment does not cover every possible viewport, every frame or every transition. It does not establish production conformance, actual 25% screen-brightness behavior, native VoiceOver, Dynamic Type implementation, system gestures, touch hit-testing or hardware performance. Architecture pages, diagrams and historical design rounds were not reviewed as current product UX. The findings name their demonstrated scope.
+diff --git a/.claude/rules/independent-review.md b/.claude/rules/independent-review.md
+index cdb6d91..063b784 100644
+--- a/.claude/rules/independent-review.md
++++ b/.claude/rules/independent-review.md
+@@ -315,6 +315,22 @@ number, so a reference to it holds wherever it now sits.
+     nothing fails (MA-198: the sign-in stub sat in the Release bundle while the
+     gate passed; Metro drops `if (__DEV__) { }`, not code after an early return).
+ 
++50. **A UX assessment carries the exact door-specific authentication contract into its fix criteria.**
++    Generic wording such as "preserve security contracts" is insufficient when the cited frame shows a
++    contradictory action or annotation. Native first sign-in, browser first sign-in, native second checks,
++    native invite joining and browser invite landing are distinct; moving an incorrect technical annotation
++    outside a frame does not correct it (MA-328 round 1).
++
++51. **A design assessment names the recorded picks before calling sources inconsistent.**
++    A file may contain a picked composition and retained unpicked alternatives. Record which is which,
++    distinguish stale labels from an undecided composition, and preserve individual stories' planned status
++    even when their shared visual style was picked (MA-328 round 1).
++
++52. **A reported UI measurement names its scenario and coordinate space.**
++    An unscaled scroll dimension and a transformed bounding-rectangle distance are not interchangeable.
++    Retain the viewport/scale and state needed to reproduce a precise claim, or state the supported
++    qualitative observation without false precision (MA-328 round 1).
++
+ ## The lessons from the design-board era
+ 
+ Lessons 1 (its board half), 9 to 11, 13, 19, 21 (its board half), 24 to 31

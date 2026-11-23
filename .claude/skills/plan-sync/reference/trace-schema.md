@@ -56,18 +56,22 @@ hand.
 | `notes` | Anything a reader needs: why a UI item has no board yet, which option was picked, what supersedes what |
 | `open` | Optional list of questions that must be settled before the work starts, such as a board that disagrees with the docs. `start` refuses while it is not empty; settle it with Arun, change the boards, docs and Jira together, then clear it, and say in the notes `Settled: <the question's words up to its first colon>` with the answer (the review ledgers look for it) |
 | `undrawn` | Optional list of screens the story needs that have no board yet, when some of its screens are drawn, or board fixes not made in the same change (each naming the issue that lands them, such as MA-160). `start` refuses while it is not empty; draw them (MA-158, `/design-first`), add their boards, then clear each item, and say in the notes `Drawn: <the item, as it was listed>` with the board that draws it (the review ledgers look for it) |
-| `code` | Optional list of the repo paths that build the story, globs allowed (`web/src/lib/chat/**`, `ios/MyPaisa/Chat/`, `src/mypaisa/agent/tools.py`). Required once a Story is In Review or Done; every path must match something. A file under `web/`, `ios/`, `src/` or `infra/` that no story claims is reported (MA-228) |
-| `others[]` | Issues with no phase epic (repo tooling such as MA-1 to MA-8, a superseded task): `key`, `type`, `summary`, `status`, `notes`. Listed so the docs may cite them; they carry no sections or boards |
+| `code` | Optional list of the repo paths that build the story, globs allowed (`web/src/lib/chat/**`, `ios/MyPaisa/Chat/`, `backend/src/mypaisa_agent/agent/tools.py`). Required once a Story is In Review or Done; every path must match something. A file under `web/`, `ios/`, `src/` or `infra/` that no story claims is reported (MA-228) |
+| `others[]` | Issues with no phase epic (MA-1 to MA-8, which came before the epics; a superseded task; a row whose notes say why it stays out): `key`, `type`, `summary`, `status`, `notes`. Listed so the docs may cite them; they carry no sections or boards |
 
 ## The boards: no record beside them
 
-Git is the boards' only record (MA-296, 30 Oct 2026). `check` reads every
-`.html` file in each board folder under `claude_design` as it is on disk, and
-refuses a cited board file that is missing and a board folder that is not in
-the repo. A board drawn or changed is checked against the trace's `boards` in
+Git is the boards' only record (MA-296, 30 Oct 2026). `check` refuses a cited
+board file that is missing, a board folder that is not in the repo, and a
+board name that is not one of its canvas's titles; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). The checks on dates, tools, motion roles, strokes and Telegram on the
+boards were stopped by MA-303 (Arun, 2 Nov 2026: "All the 6 checks currently
+run on docs/design. Lets stop that"). A board drawn or changed is checked against the trace's `boards` in
 the same change. `docs/design/claude-design.json` (each file's bytes and
 sha256, MA-260) and the MyPaisa Boards Artifact with its stamp,
-`docs/design/boards-artifact.json`, were retired by MA-296.
+`docs/design/boards-artifact.json`, were retired by MA-296. MA-324 brought
+the Boards Artifact back (`scripts/boards_page/build.py`), kept in step
+with the repo by `docs/design/artifacts.json` and `scripts/artifacts_sync.py`,
+which `check` runs.
 
 ## The roadmap: `docs/roadmap.json`
 
@@ -84,3 +88,14 @@ Jira is its target end (MA-228).
 `docs/confluence.json` records the space, then per page its Confluence `id`, the `version` last published and the
 `sha256` of the HTML published (empty until the page is first published), and per board preview its owning `page`, its
 `media` id and `collection`, and the `source` hash of the boards and layout it was composed from (MA-228).
+
+## Jira's last sync: `docs/jira-sync.json`
+
+Written only by `python3 scripts/plan_sync.py jira-sync record` (MA-303):
+`last_sync` (the time the last query ran), `pending` (keys still drifting,
+read again next time whatever their date), and per key in `issues` a `jira`
+hash (the first 12 hex of the sha256 of its summary, parent, sorted labels,
+status and due date as Jira said them) and a `repo` hash of the trace's row.
+`jira-sync query` asks Jira only for the issues updated since the day before
+`last_sync`, the `pending` keys and the rows whose `repo` hash moved; with no
+`last_sync`, or `--all`, it asks for every issue.

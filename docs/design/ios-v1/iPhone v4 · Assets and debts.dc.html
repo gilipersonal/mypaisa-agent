@@ -16,7 +16,7 @@
 <script src="motion.js"></script>
 <style>
 html, body { margin: 0; background: #ECEAE6; }
-a { color: #C2381F; } a:hover { color: #8F2915; }
+a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }
 .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
 .dv-tid { font: 600 10px ui-monospace, Menlo, monospace; padding: 3px 7px; background: #1a1a1a; color: #fff; border-radius: 4px; text-decoration: none; }
@@ -69,6 +69,8 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .edf { text-decoration: underline dotted var(--mp-ink-2); text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
 .edbtn { width: 44px; height: 44px; margin: -10px -8px -10px -6px; border: 0; background: transparent; color: var(--mp-accent); display: inline-grid; place-items: center; border-radius: 12px; vertical-align: middle; }
 .edbtn-s { width: 32px; height: 32px; margin: -6px 0 -6px -2px; }
+.edbtn { position: relative; }
+.edbtn-s::after { content: ""; position: absolute; inset: -6px; }   /* 32 drawn, 44 to tap (MA-300, P1-3) */
 .edfield { display: flex; align-items: center; gap: 2px; min-height: 56px; padding: 0 14px; box-sizing: border-box; border-radius: 14px; background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-focus); font: 800 28px/32px var(--mp-font-round); color: var(--mp-ink); }
 .edfield .cur { width: 2px; height: 30px; background: var(--mp-accent); margin-left: 2px; }
 .ba4 { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 15px/20px var(--mp-font); }
@@ -91,7 +93,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .hline { fill: none; stroke: var(--mp-coral); stroke-width: 2.5; stroke-linejoin: round; } .harea { fill: var(--mp-hero-area); }
 .cline { fill: none; stroke: var(--mp-chart-line); stroke-width: 2.5; stroke-linejoin: round; } .carea { fill: var(--mp-chart-area); }
 .cdash { fill: none; stroke: var(--mp-ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
-.gy4 { position: absolute; left: 0; transform: translateY(-100%); margin-top: -3px; font: 500 11px/14px var(--mp-font); white-space: nowrap; }
+.gy4 { position: absolute; left: 0; transform: translateY(-100%); margin-top: -3px; font: 500 12px/16px var(--mp-font); white-space: nowrap; }
 .gy-h { color: var(--mp-hero-ink-2); } .gy-c { color: var(--mp-ink-2); }
 .gy4.mp-mask { min-width: 34px; color: transparent; }
 .ax-h { color: var(--mp-hero-ink-2); } .ax-c { color: var(--mp-ink-2); }
@@ -117,7 +119,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .colb > span { display: block; width: 100%; border-radius: 3px; }
 .colb.cplan > span { opacity: 0.5; }
 .colw.now .mp-cap { color: var(--mp-ink); font-weight: 700; }
-.colw .mp-cap { color: var(--mp-ink-2); white-space: nowrap; font-size: 11px; }
+.colw .mp-cap { color: var(--mp-ink-2); white-space: nowrap; font-size: 12px; }   /* product text is 12 or larger (MA-300, P1-5) */
 .filerow { display: flex; align-items: center; gap: 10px; padding: 0 0 0 10px; border-radius: 12px; background: var(--mp-surface-2); min-height: 56px; }
 .filerow .mp-icontile { background: var(--mp-surface); color: var(--mp-ink-2); }
 .tb4 { display: grid; align-items: stretch; }
@@ -138,6 +140,16 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 .fpill { min-height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid var(--mp-line); background: var(--mp-surface); color: var(--mp-ink); font: 600 15px/20px var(--mp-font); display: inline-flex; align-items: center; }
 .fpill.on { background: var(--mp-ink); border-color: var(--mp-ink); color: var(--mp-bg); }
 .mp-mask { color: transparent; }
+/* MA-300: the drawn controls are real buttons (type="button"; the older plain <button>s keep their own look). A
+   zero-specificity reset strips the browser's button look, so every class rule (tokens.css, ios.css, this board) still draws them as before. */
+:where(button[type="button"]) {
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
+  align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* the household strip carries balances, so it is solid ledger, never glass (MA-300, P1-2) */
+.strip.solid { position: relative; background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line), 0 2px 10px rgba(0, 0, 0, 0.08); }
+.strip.solid .mp-up { color: var(--mp-up); }
+.strip.solid .mp-mask { background: var(--mp-mask); }
 </style>
 </helmet>
 
@@ -163,12 +175,12 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="dev dev-iphone mp {{ f.theme }}" data-screen-label="{{ f.cap }}">
 <div class="island"></div>
 <div class="scrn">
-<div class="sbar"><span>{{ f.time }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-<div class="nav"><span class="gbtn lg" aria-label="Back to {{ f.back }}"><span class="ms">chevron_left</span></span><sc-if value="{{ f.inline }}" hint-placeholder-val="{{ true }}"><span class="navc">{{ f.p.title }}</span></sc-if><span class="ggroup lg navr"><sc-for list="{{ f.tools }}" as="tl" hint-placeholder-count="2"><span class="gbtn" aria-label="{{ tl.l }}"><span class="ms">{{ tl.i }}</span></span></sc-for></span></div>
+<div class="sbar"><span>{{ f.time }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to {{ f.back }}"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.inline }}" hint-placeholder-val="{{ true }}"><span class="navc">{{ f.p.title }}</span></sc-if><span class="ggroup lg navr"><sc-for list="{{ f.tools }}" as="tl" hint-placeholder-count="2"><button type="button" class="gbtn" aria-label="{{ tl.l }}"><span class="ms" aria-hidden="true">{{ tl.i }}</span></button></sc-for></span></div>
 <sc-if value="{{ f.large }}" hint-placeholder-val="{{ false }}"><div class="largetitle">{{ f.p.title }}</div></sc-if>
 <div class="scroll {{ f.endv }}"><div class="pg4">
 <sc-if value="{{ f.p.hasMeta }}" hint-placeholder-val="{{ true }}"><div class="mp-foot mp-ink2 meta4">{{ f.p.meta }}</div></sc-if>
-<sc-if value="{{ f.p.hasFilt }}" hint-placeholder-val="{{ false }}"><div class="filt4" role="group" aria-label="Filters"><sc-for list="{{ f.p.filters.items }}" as="fi" hint-placeholder-count="4"><span class="fb4 {{ fi.on }}"><span class="fv"><span class="mp-foot mp-ink2">{{ fi.k }}</span><span class="mp-sub mp-w6">{{ fi.v }}</span></span><span class="ms ms-s" aria-hidden="true">expand_more</span></span></sc-for></div></sc-if>
+<sc-if value="{{ f.p.hasFilt }}" hint-placeholder-val="{{ false }}"><div class="filt4" role="group" aria-label="Filters"><sc-for list="{{ f.p.filters.items }}" as="fi" hint-placeholder-count="4"><button type="button" class="fb4 {{ fi.on }}"><span class="fv"><span class="mp-foot mp-ink2">{{ fi.k }}</span><span class="mp-sub mp-w6">{{ fi.v }}</span></span><span class="ms ms-s" aria-hidden="true">expand_more</span></button></sc-for></div></sc-if>
 <sc-for list="{{ f.p.blocks }}" as="k" hint-placeholder-count="3">
 <sc-if value="{{ k.isBanner }}" hint-placeholder-val="{{ false }}"><div class="banner4"><span class="ms ms-s" aria-hidden="true">{{ k.icon }}</span><div class="mp-foot"><span class="mp-w6">{{ k.b }}</span> {{ k.t }}</div></div></sc-if>
 <sc-if value="{{ k.isHero }}" hint-placeholder-val="{{ false }}">
@@ -196,7 +208,7 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="sh4"><span class="mp-over mp-ink2">{{ k.over }}</span><span class="mp-foot mp-ink2 mp-w6"><span class="{{ k.a.c }}" role="{{ k.a.r }}" aria-label="{{ k.a.l }}">{{ k.a.v }}</span></span></div>
 <div class="mp-group">
 <sc-for list="{{ k.rows }}" as="r" hint-placeholder-count="3">
-<div class="mp-row row4">
+<div class="mp-row row4" role="link" tabindex="0">
 <div class="mp-row-lead {{ r.leadC }}">{{ r.lead }}</div>
 <div class="rt"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span><div class="tags"><sc-for list="{{ r.tags }}" as="tg" hint-placeholder-count="1"><span class="mp-chip chip-s {{ tg.c }}"><span class="ms" aria-hidden="true">{{ tg.i }}</span>{{ tg.t }}</span></sc-for></div></div>
 <div class="rv"><span class="mp-sub mp-w6"><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span></span><span class="mp-foot {{ r.bC }}"><span class="{{ r.b.c }}" role="{{ r.b.r }}" aria-label="{{ r.b.l }}">{{ r.b.v }}</span></span></div>
@@ -209,13 +221,13 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 <div class="mp-card cpad {{ k.cc }}">
 <sc-if value="{{ k.hasHead }}" hint-placeholder-val="{{ true }}"><div class="chead"><span class="mp-hl">{{ k.title }}</span><span class="mp-foot mp-ink2">{{ k.right }}</span></div></sc-if>
 <sc-for list="{{ k.parts }}" as="q" hint-placeholder-count="2">
-<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx col gap4"><sc-if value="{{ q.hasOver }}" hint-placeholder-val="{{ true }}"><span class="mp-over mp-ink2">{{ q.over }}</span></sc-if><div class="bigr"><span class="mp-num-l {{ q.edc }}"><span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></span><sc-if value="{{ q.ed }}" hint-placeholder-val="{{ false }}"><span class="edbtn" aria-label="Correct this figure"><span class="ms ms-s">edit</span></span></sc-if><span class="mp-sub mp-ink2"><span class="{{ q.b.c }}" role="{{ q.b.r }}" aria-label="{{ q.b.l }}">{{ q.b.v }}</span></span></div></div></sc-if>
-<sc-if value="{{ q.isEdit }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8"><span class="mp-over mp-ink2">{{ q.over }}</span><span class="mp-foot mp-ink2">{{ q.label }}</span><div class="edfield" role="textbox" aria-label="{{ q.label }}"><span>£</span><span>{{ q.val }}</span><span class="cur" aria-hidden="true"></span></div><div class="ba4"><span class="mp-ink2">Before</span><s>{{ q.before }}</s><span class="ms ms-s" aria-hidden="true">arrow_forward</span><span class="mp-ink2">After</span><span class="mp-w6">{{ q.after }}</span><span class="mp-chip chip-s mp-add">{{ q.delta }}</span></div><div class="btns4"><span class="cbtn cbtn-primary"><span class="ms" aria-hidden="true">check</span>Save</span><span class="cbtn cbtn-ghost">Cancel</span></div><p class="mp-foot mp-ink2 pp">{{ q.hint }}</p></div></sc-if>
+<sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx col gap4"><sc-if value="{{ q.hasOver }}" hint-placeholder-val="{{ true }}"><span class="mp-over mp-ink2">{{ q.over }}</span></sc-if><div class="bigr"><span class="mp-num-l {{ q.edc }}"><span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span></span><sc-if value="{{ q.ed }}" hint-placeholder-val="{{ false }}"><button type="button" class="edbtn" aria-label="Correct this figure"><span class="ms ms-s" aria-hidden="true">edit</span></button></sc-if><span class="mp-sub mp-ink2"><span class="{{ q.b.c }}" role="{{ q.b.r }}" aria-label="{{ q.b.l }}">{{ q.b.v }}</span></span></div></div></sc-if>
+<sc-if value="{{ q.isEdit }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8"><span class="mp-over mp-ink2">{{ q.over }}</span><span class="mp-foot mp-ink2">{{ q.label }}</span><div class="edfield" role="textbox" aria-label="{{ q.label }}"><span>£</span><span>{{ q.val }}</span><span class="cur" aria-hidden="true"></span></div><div class="ba4"><span class="mp-ink2">Before</span><s>{{ q.before }}</s><span class="ms ms-s" aria-hidden="true">arrow_forward</span><span class="mp-ink2">After</span><span class="mp-w6">{{ q.after }}</span><span class="mp-chip chip-s mp-add">{{ q.delta }}</span></div><div class="btns4"><button type="button" class="cbtn cbtn-primary"><span class="ms" aria-hidden="true">check</span>Save</button><button type="button" class="cbtn cbtn-ghost">Cancel</button></div><p class="mp-foot mp-ink2 pp">{{ q.hint }}</p></div></sc-if>
 <sc-if value="{{ q.isAudit }}" hint-placeholder-val="{{ false }}"><div class="audit4"><span class="ms ms-s ms-fill" data-mo="saved" aria-hidden="true">{{ q.icon }}</span><div class="fx col gap4"><span class="mp-foot">{{ q.t }}</span><span class="mp-foot mp-w6 mp-acc">{{ q.link }}</span></div></div></sc-if>
 <sc-if value="{{ q.isP }}" hint-placeholder-val="{{ false }}"><p class="mp-sub pp"><span class="mp-w6">{{ q.b }}</span> {{ q.t }}</p></sc-if>
 <sc-if value="{{ q.isFoot }}" hint-placeholder-val="{{ false }}"><div class="fx gap8 mp-foot mp-ink2"><sc-if value="{{ q.hasI }}" hint-placeholder-val="{{ true }}"><span class="ms ms-s" aria-hidden="true">{{ q.i }}</span></sc-if><p class="pp">{{ q.t }}</p></div></sc-if>
 <sc-if value="{{ q.isChips }}" hint-placeholder-val="{{ false }}"><div class="chipr"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><span class="mp-chip {{ it.c }}"><span class="ms" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</span></sc-for></div></sc-if>
-<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><span class="mp-foot mp-ink2">{{ it.k }}</span><span class="mp-hl {{ it.c }}"><span class="{{ it.edc }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><sc-if value="{{ it.ed }}" hint-placeholder-val="{{ false }}"><span class="edbtn edbtn-s" aria-label="Correct {{ it.k }}"><span class="ms ms-s">edit</span></span></sc-if></span><span class="mp-foot mp-ink2">{{ it.s }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div><span class="mp-foot mp-ink2">{{ it.k }}</span><span class="mp-hl {{ it.c }}"><span class="{{ it.edc }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><sc-if value="{{ it.ed }}" hint-placeholder-val="{{ false }}"><button type="button" class="edbtn edbtn-s" aria-label="Correct {{ it.k }}"><span class="ms ms-s" aria-hidden="true">edit</span></button></sc-if></span><span class="mp-foot mp-ink2">{{ it.s }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="li4"><sc-if value="{{ it.hasI }}" hint-placeholder-val="{{ true }}"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span></sc-if><div class="rt"><span class="mp-sub">{{ it.name }}</span><span class="mp-foot mp-ink2">{{ it.sub }}</span><sc-if value="{{ it.hasX }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-w6 {{ it.xc }}"><span class="{{ it.x.c }}" role="{{ it.x.r }}" aria-label="{{ it.x.l }}">{{ it.x.v }}</span></span></sc-if></div><div class="rv"><sc-if value="{{ it.hasChip }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s {{ it.chipC }}">{{ it.chip }}</span></sc-if><span class="mp-sub mp-w6 {{ it.ac }}"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></span><span class="mp-foot mp-ink2"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></span></div></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isChart }}" hint-placeholder-val="{{ false }}">
 <div class="chart4 {{ q.ch.cv }}">
@@ -230,25 +242,25 @@ a { color: #C2381F; } a:hover { color: #8F2915; }
 </div>
 </sc-if>
 <sc-if value="{{ q.isCols }}" hint-placeholder-val="{{ false }}"><div><div class="cols4" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="8"><div class="colw {{ it.now }}"><div class="colb {{ it.c }}"><sc-for list="{{ it.segs }}" as="s" hint-placeholder-count="2"><span data-mo="bary" style="height: {{ s.h }}; background: {{ s.col }}"></span></sc-for></div><span class="mp-cap">{{ it.l }}</span></div></sc-for></div><div class="lgd4 mp-ink2"><sc-for list="{{ q.keys }}" as="kk" hint-placeholder-count="2"><span class="lgk"><span class="swa" style="background: {{ kk.col }}"></span>{{ kk.t }}</span></sc-for></div></div></sc-if>
-<sc-if value="{{ q.isFiles }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="1"><div class="filerow"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><span class="rt"><span class="mp-foot mp-w6">{{ it.n }}</span><span class="mp-cap mp-ink2">{{ it.s }}</span></span><span class="cbtn cbtn-ghost">Open</span></div></sc-for></div></sc-if>
-<sc-if value="{{ q.isBtns }}" hint-placeholder-val="{{ false }}"><div class="btns4"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="1"><span class="cbtn"><span class="ms" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</span></sc-for></div></sc-if>
+<sc-if value="{{ q.isFiles }}" hint-placeholder-val="{{ false }}"><div class="fx col gap8"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="1"><div class="filerow"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><span class="rt"><span class="mp-foot mp-w6">{{ it.n }}</span><span class="mp-cap mp-ink2">{{ it.s }}</span></span><button type="button" class="cbtn cbtn-ghost">Open</button></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isBtns }}" hint-placeholder-val="{{ false }}"><div class="btns4"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="1"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</button></sc-for></div></sc-if>
 <sc-if value="{{ q.isTbl }}" hint-placeholder-val="{{ false }}"><div class="tb4" style="grid-template-columns: {{ q.cols }}"><sc-for list="{{ q.head }}" as="h" hint-placeholder-count="3"><div class="th4 {{ h.c }}">{{ h.t }}</div></sc-for><sc-for list="{{ q.cells }}" as="cl" hint-placeholder-count="6"><div class="td4 {{ cl.c }}"><span class="{{ cl.a.c }}" role="{{ cl.a.r }}" aria-label="{{ cl.a.l }}">{{ cl.a.v }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isCode }}" hint-placeholder-val="{{ false }}"><div class="code4" role="note" aria-label="The engine's solve"><sc-for list="{{ q.lines }}" as="ln" hint-placeholder-count="3"><span>{{ ln.t }}</span></sc-for></div></sc-if>
-<sc-if value="{{ q.isAsk }}" hint-placeholder-val="{{ false }}"><div class="ask4"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ q.icon }}</span></span><div class="fx col gap8"><span class="mp-hl">{{ q.t }}</span><p class="mp-sub pp">{{ q.s }}</p><div class="btns4"><sc-for list="{{ q.btns }}" as="it" hint-placeholder-count="2"><span class="cbtn {{ it.cc }}"><span class="ms" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</span></sc-for></div></div></div></sc-if>
+<sc-if value="{{ q.isAsk }}" hint-placeholder-val="{{ false }}"><div class="ask4"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ q.icon }}</span></span><div class="fx col gap8"><span class="mp-hl">{{ q.t }}</span><p class="mp-sub pp">{{ q.s }}</p><div class="btns4"><sc-for list="{{ q.btns }}" as="it" hint-placeholder-count="2"><button type="button" class="cbtn {{ it.cc }}"><span class="ms" aria-hidden="true">{{ it.i }}</span>{{ it.t }}</button></sc-for></div></div></div></sc-if>
 </sc-for>
 </div>
 </sc-if>
 </sc-for>
 </div></div>
-<sc-if value="{{ f.tabs }}" hint-placeholder-val="{{ true }}"><div class="edge-bot"></div><div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.tabList }}" as="b" hint-placeholder-count="4"><span class="tab {{ b.on }}"><span class="ms">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div><span class="tabsearch lg"><span class="ms">search</span></span></div></sc-if>
+<sc-if value="{{ f.tabs }}" hint-placeholder-val="{{ true }}"><div class="edge-bot"></div><div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.tabList }}" as="b" hint-placeholder-count="4"><button type="button" class="tab {{ b.on }}"><span class="ms" aria-hidden="true">{{ b.icon }}</span>{{ b.label }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms" aria-hidden="true">search</span></button></div></sc-if>
 <sc-if value="{{ f.kb }}" hint-placeholder-val="{{ false }}"><div class="kb4" aria-label="Number pad"><sc-for list="{{ f.keys }}" as="kk" hint-placeholder-count="12"><span class="kb4-k {{ kk.c }}"><span>{{ kk.d }}</span><span class="kb4-l">{{ kk.l }}</span></span></sc-for></div></sc-if>
 <sc-if value="{{ f.hasSheet }}" hint-placeholder-val="{{ false }}">
 <div class="dim"></div>
-<div class="sheet lg lg-strong" role="dialog" aria-label="{{ f.sheet.title }}">
+<div class="sheet lg lg-strong" role="dialog" aria-modal="true" aria-label="{{ f.sheet.title }}">
 <div class="sheet-grab"></div>
-<div class="sheet-h"><span class="mp-t3">{{ f.sheet.title }}</span><span class="cbtn cbtn-ghost">Clear</span></div>
-<sc-for list="{{ f.sheet.groups }}" as="sg" hint-placeholder-count="4"><div class="fx col gap8"><span class="mp-over mp-ink2">{{ sg.l }}</span><div class="fpills" role="group" aria-label="{{ sg.l }}"><sc-for list="{{ sg.segs }}" as="s" hint-placeholder-count="3"><span class="fpill {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</span></sc-for></div></div></sc-for>
-<span class="cbtn cbtn-primary wide">{{ f.sheet.btn }}</span>
+<div class="sheet-h"><span class="mp-t3">{{ f.sheet.title }}</span><button type="button" class="cbtn cbtn-ghost">Clear</button></div>
+<sc-for list="{{ f.sheet.groups }}" as="sg" hint-placeholder-count="4"><div class="fx col gap8"><span class="mp-over mp-ink2">{{ sg.l }}</span><div class="fpills" role="group" aria-label="{{ sg.l }}"><sc-for list="{{ sg.segs }}" as="s" hint-placeholder-count="3"><button type="button" class="fpill {{ s.on }}" aria-pressed="{{ s.p }}">{{ s.t }}</button></sc-for></div></div></sc-for>
+<button type="button" class="cbtn cbtn-primary wide">{{ f.sheet.btn }}</button>
 </div>
 </sc-if>
 <div class="homebar"></div>
@@ -283,7 +295,7 @@ const U = (y, m, d) => Date.UTC(y, m - 1, d);
 const dd = (t, yr) => { const d = new Date(t); return DW[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MN[d.getUTCMonth()] + (yr ? ' ' + d.getUTCFullYear() : ''); };
 const mon = (y, m, k) => { const d = new Date(Date.UTC(y, m - 1 + k, 1)); return MN[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); };
 /* ---------- privacy: an amount is a {v, c, r, l} the templates draw; masked, its digits become a pill ---------- */
-const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden amount' } : { v: s, c: '', r: null, l: null });
+const V = (s, priv) => (priv ? { v: String(s).replace(/[0-9]/g, '0'), c: 'mp-mask', r: 'img', l: 'Hidden' } : { v: s, c: '', r: null, l: null });
 const T = (s) => V(s, false);
 const E = T('');
 const key = (k) => ({ k: k, href: 'https://duttaarun2015.atlassian.net/browse/' + k });
@@ -477,8 +489,8 @@ tbl('minmax(0,1.5fr) minmax(0,1fr) 64px', [['Date and flow'], ['Amount', 'r'], [
 code(['solve  Σ flow ÷ (1 + r)^years = 0', 'newton 8% → ' + steps.slice(0, 3).map(pc3).join(' → '), 'check  at r = ' + pc3(ppX) + ' the 47 flows net to ₹' + Math.abs(Math.round(npv(ppX))), 'shown  10.7% a year']),
 F('Years count 365.25 days. Newton’s method, with bisection if it ever strays; the same code checks every fixture against a spreadsheet’s XIRR. Claude only puts it into words.', 'function')]);
 const sip = card('The SIP', 'a commitment', [list([
-{ hasI: true, i: 'event_upcoming', name: 'Next: Tue 10 Nov', sub: 'MyPaisa asks Asha whether it went through', a: V('₹10,000', priv), b: V('£89', priv), hasChip: true, chip: 'Due', chipC: 'mp-hold' },
-{ hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[45], true), sub: 'went through, Asha said so', a: V('−₹10,000', priv) },
+{ hasI: true, i: 'event_upcoming', name: 'Next: Tue 10 Nov', sub: 'MyPaisa asks an admin whether it went through', a: V('₹10,000', priv), b: V('£89', priv), hasChip: true, chip: 'Due', chipC: 'mp-hold' },
+{ hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[45], true), sub: 'went through, Arun said so', a: V('−₹10,000', priv) },
 { hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[44], true), sub: 'went through', a: V('−₹10,000', priv) },
 { hasI: true, i: 'event_available', name: 'SIP · ' + dd(sipT[43], true), sub: 'went through', a: V('−₹10,000', priv) },
 { hasI: true, i: 'flag', name: 'First SIP · ' + dd(sipT[0], true), sub: '46 in all, ₹10,000 each', a: V('−₹10,000', priv) }
@@ -536,7 +548,7 @@ const valPts = [[0, 330000], [4.87, 415000]].concat(saved ? [[5.35, 428000]] : [
 const valChart = chartP({ cv: o.wide ? 'ch-m' : 'ch-s', n: 5.4, lo: 300000, hi: 450000, series: [{ pts: valPts.concat(saved ? [] : [[5.35, 415000]]), c: 'cline', area: 'carea', step: true }],
 grid: [[400000, '£400k']], xs: [[0, 'Jun 2021'], [2.54, '2024'], [5.35, 'Oct 2026', 'ax-end']], priv: priv,
 dots: valPts.map((p) => [p[0], p[1]]), lbls: [[0, 330000, 'Bought ' + gbp(330000), 'ar', 1]].concat(saved ? [[5.35, 428000, gbp(428000), 'al', 1]] : [[4.87, 415000, gbp(415000), 'al', 1]]),
-keys: [{ c: 'k-line', t: 'Value as recorded, a step at each valuation' }], aria: 'Home, Reading: bought for £330,000 in June 2021, valued at £415,000 in April 2026' + (saved ? ', corrected to £428,000 on 26 October 2026' : '') });
+keys: [{ c: 'k-line', t: 'Value as recorded, a step at each valuation' }], aria: priv ? 'Home, Reading: value as recorded from June 2021 to October 2026, amounts hidden' + (saved ? ', corrected on 26 October 2026' : '') : 'Home, Reading: bought for £330,000 in June 2021, valued at £415,000 in April 2026' + (saved ? ', corrected to £428,000 on 26 October 2026' : '') });
 const head = st === 'edit'
 ? [prt('Edit', { over: 'Property · UK · Arun and Asha, half each', label: 'Value of Home, Reading', val: '428,000', before: gbp(415000), after: gbp(428000), delta: '▲ £13,000', hint: 'Save writes a correction with its audit row. Nothing else on the record changes.' })]
 : [big(V(gbp(v), priv), T('your estimate, Mon 26 Oct'), { over: 'Property · UK · Arun and Asha, half each', hasOver: true, ed: true, edc: 'edf' }), prt('Audit', { icon: 'task_alt', saved: true, t: priv ? 'Corrected in place by Arun, ' + HT + ', as his estimate. Written as a correction with its audit row (via inline edit); privacy mode hides the before and after.' : 'Corrected in place by Arun, ' + HT + ': £415,000 → £428,000, his estimate. Written as a correction with its audit row (via inline edit). Net worth is now £457,951, the engine’s figure.', link: 'Open in Audit' })];
@@ -773,7 +785,7 @@ B({ id: 'p-ml', tid: 'P8', name: 'iPhone · Mortgage and car loan', arch: 'ARCHI
 const allK = ['MA-217', 'MA-212', 'MA-215', 'MA-201', 'MA-214', 'MA-204', 'MA-209', 'MA-210'];
 return {
 intro1: 'MA-193’s iPhone boards for MA-217 (Assets and one asset) and MA-214 (Debts and one loan), in shell 1a, Chat first, with the Liquid Glass tab bar (Chat · Home · Activity · You); Assets and Debts are pushed from Home. Light and dark. Figures from the household figure set: today Mon 26 Oct 2026, prices at the Fri 23 Oct close, £1 = ₹112.50.',
-intro2: 'Anything new is made in the chat; an existing figure is corrected in place (a dotted figure with a pencil). Every figure is the engine’s or the registry’s; an estimate the member gave says so. The web boards are in MyPaisa app v1, Web v4 · Assets and debts.',
+intro2: 'Anything new is made in the chat; an existing figure is corrected in place (a dotted figure with a pencil). Every figure is the engine’s or the registry’s; an estimate an admin gave says so. The web boards are in MyPaisa app v1, Web v4 · Assets and debts.',
 allKeys: allK.map(key), index: boards.map((b) => ({ id: b.id, name: b.name, keys: b.keyline })), boards: boards
 };
 }

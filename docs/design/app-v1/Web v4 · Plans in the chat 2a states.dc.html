@@ -122,15 +122,22 @@
           .wfield { min-height: 48px; border-radius: 24px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; align-items: center; gap: 8px; padding: 0 6px 0 18px; }
           .wsend { width: 36px; height: 36px; border-radius: 50%; background: var(--mp-accent); color: var(--mp-on-accent); display: grid; place-items: center; flex: none; }
           .wsend .ms { font-size: 20px; }
-          .pframe { width: 390px; height: 844px; border-radius: 44px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 0 10px #1B1D22, 0 30px 60px rgba(0,0,0,.22); }
+          .pframe { width: 390px; height: 844px; border-radius: 20px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 24px 52px rgba(0,0,0,.18); }   /* a phone browser, not an iPhone bezel (MA-300) */
           .pframe > .pcol { flex: 1; min-height: 0; display: flex; flex-direction: column; }
           .pchat { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-          .psb { height: 50px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 30px 0 36px; font: 600 16px/20px var(--mp-font); }
+          .psb { height: 50px; flex: none; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 16px; box-sizing: border-box; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
           .phd { display: flex; align-items: center; justify-content: space-between; padding: 4px 16px 6px 20px; flex: none; }
           .pframe .chat { padding: 8px 16px 12px; }
           .pframe .wcomp { padding: 8px 12px 92px; border-top: 0; }
           .ptabs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; }
           .t-dark .mp-ink3, .t-dark .mp-tab:not(.on) { color: var(--mp-ink-2); }
+          .mp-tab:not(.on) { color: var(--mp-ink-2); }   /* MA-300: a tab label is read; ink-2 in both themes */
+          .mp-tab { font-size: 12px; line-height: 14px; }   /* no product text under 12 px (MA-300) */
+          /* MA-300: an acting control is a button; this reset (no specificity) keeps it drawn exactly as the span was */
+          :where(button.cbtn, button.wsend, button.iconbtn, button.pk-tab, button.pk-chip) { appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; text-transform: none; box-sizing: content-box; cursor: pointer; }
+          button.pk-tab { position: relative; } button.pk-tab::after { content: ""; position: absolute; inset: 0 -12px; }   /* a short tab name still taps at 44 (MA-300) */
+          button.wsend { position: relative; } button.wsend::after { content: ""; position: absolute; inset: -4px; }   /* 36 drawn, 44 to tap */
+          .mp-switch:focus-visible, .pk-opt:focus-visible, .wfield .rtx:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
           /* the cards this round adds to the chat: plain Warm ledger content, never glass */
           .pk-qs { display: flex; flex-direction: column; gap: 14px; }
           .pk-q { display: flex; flex-direction: column; gap: 8px; }
@@ -161,7 +168,7 @@
           .pk-bar { position: absolute; background: var(--mp-meter); border-radius: 2px 2px 0 0; min-height: 2px; }
           .pk-bar.neg { border-radius: 0 0 2px 2px; }
           .pk-bar.flag { background: var(--mp-alert); }
-          .pk-fm { position: absolute; transform: translate(-50%, -100%); margin-top: -2px; font: 700 11px/11px var(--mp-font); color: var(--mp-alert); }
+          .pk-fm { position: absolute; transform: translate(-50%, -100%); margin-top: -2px; font: 700 12px/12px var(--mp-font); color: var(--mp-alert); }   /* 12 px floor (MA-300) */
           .pk-zero { stroke: var(--mp-ink-2); stroke-width: 1; }
           .pk-before { fill: none; stroke: var(--mp-ink-2); stroke-width: 1.5; stroke-dasharray: 4 3; }
           .oncard .fgrid { stroke: var(--mp-chart-grid); }
@@ -290,7 +297,7 @@
                       <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}">
                         <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                           <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path fill="var(--mp-hero)" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle fill="var(--mp-coral)" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                          <sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}" aria-hidden=\"true\">{{ n.i }}</span>{{ n.l }}</a></sc-for>
+                          <sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.i }}</span>{{ n.l }}</a></sc-for>
                           <div class="grow1"></div>
                           <div class="mp-foot mp-ink2 side-ft">{{ f.who }}</div>
                         </aside>
@@ -298,9 +305,9 @@
                           <sc-if value="{{ f.p.isBud }}" hint-placeholder-val="{{ false }}"><div class="mp-pagepad">
                             <header class="pk-head">
                               <div><div class="mp-large">Budget</div><div class="mp-foot mp-ink2">November 2026 · open · the plan, take-home</div></div>
-                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden=\"true\">visibility</span></button>
+                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button>
                             </header>
-                            <div class="pk-ctl"><div class="mp-seg wbseg" role="group" aria-label="Month"><button class="mp-seg-i">October</button><button class="mp-seg-i on">November</button></div><div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on">£ GBP</button><button class="mp-seg-i">₹ INR</button></div></div>
+                            <div class="pk-ctl"><div class="mp-seg wbseg" role="group" aria-label="Month"><button type="button" class="mp-seg-i" aria-pressed="false">October</button><button type="button" class="mp-seg-i on" aria-pressed="true">November</button></div><div class="mp-seg ccyseg" role="group" aria-label="Currency"><button type="button" class="mp-seg-i on" aria-pressed="true">£ GBP</button><button type="button" class="mp-seg-i" aria-pressed="false">₹ INR</button></div></div>
                             <div class="wbcols">
                               <div>
                                 <div class="mp-hero wbhero">
@@ -311,16 +318,16 @@
                                 </div>
                                 <div class="mp-card cpad">
                                   <div class="fx jb ac"><span class="mp-hl">Income · November</span><span class="mp-hl tnum">£7,560</span></div>
-                                  <sc-for list="{{ bud.inc }}" as="r" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
+                                  <sc-for list="{{ bud.inc }}" as="r" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
                                 </div>
                               </div>
                               <div>
                                 <div class="mp-card cpad">
                                   <div class="fx jb ac"><span class="mp-hl">November’s plan</span><span class="mp-foot mp-ink2">plan, a month</span></div>
-                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">savings</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">School fees pot</span><span class="mp-foot mp-ink2">{{ bud.potSub }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£690</span><span class="mp-chip newchip">added 20:46</span></div></div>
-                                  <div class="pk-aud"><span>{{ bud.aud }}</span><span class="cbtn cbtn-ghost">Undo</span></div>
-                                  <sc-for list="{{ bud.cats }}" as="r" hint-placeholder-count="12"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
-                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">functions</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">Spending plan</span><span class="mp-foot mp-ink2">12 categories, the pot apart</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£2,682</span></div></div>
+                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">savings</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">School fees pot</span><span class="mp-foot mp-ink2">{{ bud.potSub }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£690</span><span class="mp-chip newchip">added 20:46</span></div></div>
+                                  <div class="pk-aud"><span>{{ bud.aud }}</span><button type="button" class="cbtn cbtn-ghost">Undo</button></div>
+                                  <sc-for list="{{ bud.cats }}" as="r" hint-placeholder-count="12"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
+                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">functions</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">Spending plan</span><span class="mp-foot mp-ink2">12 categories, the pot apart</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£2,682</span></div></div>
                                 </div>
                               </div>
                             </div>
@@ -328,13 +335,13 @@
                           <sc-if value="{{ f.p.isProj }}" hint-placeholder-val="{{ true }}"><div class="mp-pagepad">
                             <header class="pk-head">
                               <div><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">Net worth over the next 20 years, in the pounds of each year · run {{ f.p.run }}</div></div>
-                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden=\"true\">visibility</span></button>
+                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button>
                             </header>
-                            <div class="pk-tabs" role="tablist" aria-label="Projection"><span class="pk-tab on" role="tab" aria-selected="true">Net worth</span><span class="pk-tab" role="tab" aria-selected="false">Plans</span><span class="pk-tab" role="tab" aria-selected="false">Budget forecast</span></div>
+                            <div class="pk-tabs" role="tablist" aria-label="Projection"><button type="button" class="pk-tab on" role="tab" aria-selected="true" tabindex="0">Net worth</button><button type="button" class="pk-tab" role="tab" aria-selected="false" tabindex="-1">Plans</button><button type="button" class="pk-tab" role="tab" aria-selected="false" tabindex="-1">Budget forecast</button></div>
                             <div class="pk-ctl">
-                              <div class="mp-seg pk-hz" role="group" aria-label="Horizon"><button class="mp-seg-i">5 yrs</button><button class="mp-seg-i">10 yrs</button><button class="mp-seg-i on">20 yrs</button><button class="mp-seg-i">30 yrs</button></div>
-                              <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on">£ GBP</button><button class="mp-seg-i">₹ INR</button></div>
-                              <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
+                              <div class="mp-seg pk-hz" role="group" aria-label="Horizon"><button type="button" class="mp-seg-i" aria-pressed="false">5 yrs</button><button type="button" class="mp-seg-i" aria-pressed="false">10 yrs</button><button type="button" class="mp-seg-i on" aria-pressed="true">20 yrs</button><button type="button" class="mp-seg-i" aria-pressed="false">30 yrs</button></div>
+                              <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button type="button" class="mp-seg-i on" aria-pressed="true">£ GBP</button><button type="button" class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
+                              <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" tabindex="0" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
                             </div>
                             <sc-if value="{{ f.p.isFan }}" hint-placeholder-val="{{ true }}">
                               <div class="mp-hero heroP">
@@ -352,15 +359,15 @@
                             <div class="mp-card cpad">
                               <sc-if value="{{ f.p.isList }}" hint-placeholder-val="{{ false }}"><div class="pk-sum"><span class="mp-sub mp-w6">Middle path in 2046 <span class="tnum">{{ f.p.mid }}</span></span><span class="mp-foot mp-ink2">run {{ f.p.run }} · the fan is above</span></div></sc-if>
                               <div class="fx jb ac"><span class="mp-hl">Milestones</span><span class="mp-foot mp-ink2">on the line</span></div>
-                              <sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="lrow {{ m.alc }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden=\"true\">{{ m.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></div></div></sc-for>
+                              <sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="lrow {{ m.alc }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ m.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></div></div></sc-for>
                             </div>
                           </div></sc-if>
                         </main>
                       </sc-if>
 
                       <aside class="chside {{ f.chatc }}" aria-label="Chat">
-                        <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chhd"><span class="mp-t3">Chat</span><span class="iconbtn"><span class="ms" aria-hidden=\"true\">edit_square</span></span></div></sc-if>
-                        <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="psb"><span>{{ f.clock }}</span><span class="fx ac gap4"><span class="ms ms-s" aria-hidden=\"true\">signal_cellular_alt</span><span class="ms ms-s" aria-hidden=\"true\">wifi</span><span class="ms ms-s" aria-hidden=\"true\">battery_horiz_075</span></span></div><div class="phd"><span class="mp-t1">Chat</span><span class="iconbtn"><span class="ms" aria-hidden=\"true\">edit_square</span></span></div></sc-if>
+                        <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chhd"><span class="mp-t3">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div></sc-if>
+                        <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="psb" aria-hidden="true"><span class="ms ms-s" aria-hidden="true">lock</span><span>dashboard.mypaisapp.com</span></div><div class="phd"><span class="mp-t1">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div></sc-if>
                         <div class="chv {{ f.viewc }}"><div class="chat" style="margin-top: {{ f.mt }}">
 
                         <sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
@@ -372,7 +379,7 @@
                             <sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><div class="ai-meta">{{ m.meta }}</div></sc-if>
                             <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ true }}"><div class="ccard">
                               <div class="ccard-h">
-                                <sc-if value="{{ m.c.ok }}" hint-placeholder-val="{{ false }}"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden=\"true\">check_circle</span>{{ m.c.over }}</span></sc-if>
+                                <sc-if value="{{ m.c.ok }}" hint-placeholder-val="{{ false }}"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.c.over }}</span></sc-if>
                                 <sc-if value="{{ m.c.plain }}" hint-placeholder-val="{{ true }}"><span class="mp-over mp-ink2">{{ m.c.over }}</span></sc-if>
                                 <span class="mp-hl">{{ m.c.title }}</span>
                                 <sc-if value="{{ m.c.hasSub }}" hint-placeholder-val="{{ true }}"><span class="mp-sub mp-ink2">{{ m.c.sub }}</span></sc-if>
@@ -390,32 +397,32 @@
                                 </div><div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">{{ k.a0 }}</span><span style="left: {{ k.amx }}">{{ k.a1 }}</span><span class="ax1" style="left: {{ k.a2l }}">{{ k.a2 }}</span></div></div>
                                 <div class="lgd"><span><i class="sw-bar"></i>Cash at each month’s end</span><span><span class="sw-flag">▼</span>Below zero</span></div></sc-if>
                                 <sc-if value="{{ k.isFlag }}" hint-placeholder-val="{{ false }}"><div class="pk-flag" role="note"><span>{{ k.ft }}</span></div></sc-if>
-                                <sc-if value="{{ k.isOk }}" hint-placeholder-val="{{ false }}"><div class="pk-ok"><span class="ms ms-s ms-fill" aria-hidden=\"true\">check_circle</span><span>{{ k.ot }}</span></div></sc-if>
-                                <sc-if value="{{ k.isLock }}" hint-placeholder-val="{{ false }}"><div class="pk-lock"><span class="ms ms-s" aria-hidden=\"true\">lock</span><span>{{ k.lt }}</span></div></sc-if>
+                                <sc-if value="{{ k.isOk }}" hint-placeholder-val="{{ false }}"><div class="pk-ok"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span><span>{{ k.ot }}</span></div></sc-if>
+                                <sc-if value="{{ k.isLock }}" hint-placeholder-val="{{ false }}"><div class="pk-lock"><span class="ms ms-s" aria-hidden="true">lock</span><span>{{ k.lt }}</span></div></sc-if>
                                 <sc-if value="{{ k.isFoot }}" hint-placeholder-val="{{ false }}"><p class="pp mp-foot mp-ink2">{{ k.pt }}</p></sc-if>
                                 <sc-if value="{{ k.isChg }}" hint-placeholder-val="{{ false }}"><ul class="pk-chg"><sc-for list="{{ k.items }}" as="x" hint-placeholder-count="2"><li><i></i><span>{{ x }}</span></li></sc-for></ul></sc-if>
-                                <sc-if value="{{ k.isAud }}" hint-placeholder-val="{{ false }}"><div class="pk-aud"><span>{{ k.at }}</span><sc-if value="{{ k.undo }}" hint-placeholder-val="{{ true }}"><span class="cbtn cbtn-ghost">Undo</span></sc-if></div></sc-if>
+                                <sc-if value="{{ k.isAud }}" hint-placeholder-val="{{ false }}"><div class="pk-aud"><span>{{ k.at }}</span><sc-if value="{{ k.undo }}" hint-placeholder-val="{{ true }}"><button type="button" class="cbtn cbtn-ghost">Undo</button></sc-if></div></sc-if>
                               </sc-for></div></sc-if>
                               <sc-if value="{{ m.c.hasWays }}" hint-placeholder-val="{{ false }}"><sc-for list="{{ m.c.ways }}" as="w" hint-placeholder-count="3"><div class="pk-way">
                                 <div class="pk-wh"><span class="pk-rk {{ w.rk }}">{{ w.n }}</span><span class="mp-hl f1">{{ w.t }}</span></div>
                                 <sc-if value="{{ w.open }}" hint-placeholder-val="{{ true }}"><ul class="pk-chg"><sc-for list="{{ w.chg }}" as="x" hint-placeholder-count="2"><li><i></i><span>{{ x }}</span></li></sc-for></ul></sc-if>
                                 <div class="pk-eff"><sc-for list="{{ w.effs }}" as="e" hint-placeholder-count="2"><span class="mp-chip tnum {{ e.c }}">{{ e.t }}</span></sc-for></div>
                                 <sc-if value="{{ w.open }}" hint-placeholder-val="{{ true }}"><p class="pp mp-foot mp-ink2">{{ w.why }}</p></sc-if>
-                                <sc-if value="{{ w.canApply }}" hint-placeholder-val="{{ true }}"><div class="fx ac gap8 wrapx"><span class="cbtn {{ w.bc }}">Confirm this way</span><sc-if value="{{ w.shut }}" hint-placeholder-val="{{ false }}"><span class="cbtn cbtn-ghost">What changes</span></sc-if></div></sc-if>
+                                <sc-if value="{{ w.canApply }}" hint-placeholder-val="{{ true }}"><div class="fx ac gap8 wrapx"><button type="button" class="cbtn {{ w.bc }}">Confirm this way</button><sc-if value="{{ w.shut }}" hint-placeholder-val="{{ false }}"><button type="button" class="cbtn cbtn-ghost">What changes</button></sc-if></div></sc-if>
                               </div></sc-for></sc-if>
-                              <sc-if value="{{ m.c.hasActs }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.c.acts }}" as="a" hint-placeholder-count="2"><span class="cbtn {{ a.c }}">{{ a.t }}</span></sc-for></div></sc-if>
-                              <sc-if value="{{ m.c.hasMore }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold"><span>{{ m.c.foldMore }}</span><span class="ms" aria-hidden=\"true\">expand_less</span></div><div class="pk-more"><sc-for list="{{ m.c.more }}" as="x" hint-placeholder-count="2"><div class="pk-mw"><span class="mp-sub mp-w6">{{ x.t }}</span><span class="mp-foot mp-ink2">{{ x.n }}</span><sc-if value="{{ x.hasBtn }}" hint-placeholder-val="{{ false }}"><span class="cbtn">{{ x.btn }}</span></sc-if></div></sc-for></div></sc-if>
-                              <sc-for list="{{ m.c.folds }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms" aria-hidden=\"true\">{{ fo.i }}</span></div></sc-for>
+                              <sc-if value="{{ m.c.hasActs }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.c.acts }}" as="a" hint-placeholder-count="2"><button type="button" class="cbtn {{ a.c }}">{{ a.t }}</button></sc-for></div></sc-if>
+                              <sc-if value="{{ m.c.hasMore }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold"><span>{{ m.c.foldMore }}</span><span class="ms" aria-hidden="true">expand_less</span></div><div class="pk-more"><sc-for list="{{ m.c.more }}" as="x" hint-placeholder-count="2"><div class="pk-mw"><span class="mp-sub mp-w6">{{ x.t }}</span><span class="mp-foot mp-ink2">{{ x.n }}</span><sc-if value="{{ x.hasBtn }}" hint-placeholder-val="{{ false }}"><button type="button" class="cbtn">{{ x.btn }}</button></sc-if></div></sc-for></div></sc-if>
+                              <sc-for list="{{ m.c.folds }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms" aria-hidden="true">{{ fo.i }}</span></div></sc-for>
                               <sc-if value="{{ m.c.hasTech }}" hint-placeholder-val="{{ false }}"><div class="ccard-tech pk-tech"><sc-for list="{{ m.c.tech }}" as="t" hint-placeholder-count="5"><span>{{ t }}</span></sc-for></div></sc-if>
-                              <sc-for list="{{ m.c.foldsB }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms" aria-hidden=\"true\">{{ fo.i }}</span></div></sc-for>
+                              <sc-for list="{{ m.c.foldsB }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms" aria-hidden="true">{{ fo.i }}</span></div></sc-for>
                             </div></sc-if>
                           </div></div></sc-if>
                         </sc-for>
                         </div></div>
-                        <div class="wcomp"><div class="wchips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><span class="cbtn"><span class="ms" aria-hidden=\"true\">{{ c.i }}</span>{{ c.l }}</span></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx">{{ f.ph }}</span><span class="wsend"><span class="ms" aria-hidden=\"true\">arrow_upward</span></span></div></div>
+                        <div class="wcomp"><div class="wchips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">{{ c.i }}</span>{{ c.l }}</button></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx" role="textbox" tabindex="0" aria-label="Message MyPaisa">{{ f.ph }}</span><button type="button" class="wsend" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div></div>
                       </aside>
                     </div>
-                    <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}" aria-hidden=\"true\">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav></sc-if>
+                    <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav></sc-if>
                   </div>
                 </div>
               </sc-for>
@@ -601,7 +608,7 @@
 
           // 21:20, Asha, a member, in her own conversation
           const refusePlan = card({ over: 'Not saved', title: 'Plans are Arun’s', sub: '£300 a month for your gym from January, your words',
-            blocks: [lock('Plan items are the admin’s alone; Arun adds them. Nothing is saved.'), foot('I can show it as a what-if instead: the engine runs it, and nothing in the plan moves.')],
+            blocks: [lock('Plan items are an admin’s to add; Arun is one. Nothing is saved.'), foot('I can show it as a what-if instead: the engine runs it, and nothing in the plan moves.')],
             acts: [btn('Show it as a what-if', 'cbtn-primary'), btn('Tell Arun', '')] });
           const refuseAsm = card({ over: 'Not saved', title: 'The saved assumptions are Arun’s', sub: 'UK inflation is 2.5% a year, the prior Arun keeps',
             blocks: [lock('Only Arun can change a saved assumption. Nothing is saved.'), foot('I can run a what-if at 3% for you; nothing in the plan moves.')],
@@ -655,7 +662,9 @@
           const n6 = 'Browser · Plans in the chat 2a, Asha asks';
           const n7 = 'Browser · Plans in the chat 2a, plans it cannot set up';
           const ph = (n) => n.replace(', the wedding, cash below zero', ', the wedding, cash below zero, phone').replace(', Asha asks', ', Asha asks, phone');
-          const asha = (f) => f;
+          const CHIPS_M = [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['help', 'What if…']].map((c) => ({ i: c[0], l: c[1] }));
+          // a member's chat offers no Add or statement chip: only admins write (MA-307)
+          const asha = (f) => Object.assign(f, { chips: CHIPS_M });
           const S2w = S2.concat([me('See November’s budget'), tm('20:47')]);
           const boards = [
             { anchor: 's1', id: 'S1', name: 'Browser · Plans in the chat 2a, the two more ways opened', keys: 'MA-263 · MA-264',
@@ -692,8 +701,8 @@
                 { h: 'The page is scrolled to the milestones', t: 'because way 1’s run has a middle path in the figure set but no fan; the hero above it is the fan, as on the other boards.' }] },
             { anchor: 's6', id: 'S6', name: 'Browser · Plans in the chat 2a, Asha asks', keys: 'MA-263 · MA-222 · MA-264',
               lead: 'At 21:20 Asha, a member, asks in her own conversation: the wedding’s ways, with a lock where Confirm would be; then a plan and a saved assumption, each refused with a what-if offered. Nothing she does here is saved; her page is the same Projection.',
-              frames: [desk(n6 + ' · 21:20', T[0], '21:20', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -40, { member: true }), desk(n6 + ' · 21:21', T[1], '21:21', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -990, { member: true }),
-                phone(ph(n6) + ' · 21:20', T[0], '21:20', S6, -60), phone(ph(n6) + ' · 21:21', T[1], '21:21', S6, -1060)],
+              frames: [asha(desk(n6 + ' · 21:20', T[0], '21:20', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -40, { member: true })), asha(desk(n6 + ' · 21:21', T[1], '21:21', S6, page('fan', 'W', 'Thu 5 Nov 21:18'), -990, { member: true })),
+                asha(phone(ph(n6) + ' · 21:20', T[0], '21:20', S6, -60)), asha(phone(ph(n6) + ' · 21:21', T[1], '21:21', S6, -1060))],
               notes: [{ h: 'Draws (MA-263):', t: '“a member asking for ways to cover a shortfall: the options shown, nothing saved, at both doors”.' },
                 { h: 'Draws (MA-222):', t: '“refusal and validation outcomes in the chat and in place: plan items and saved assumptions refused to a member (…)”. In place, a member’s figures have no pencil (Plans tab 3a states).' },
                 { h: 'Asha’s words', t: 'are the board’s own, illustrative; the £300 and the 3% are hers. Her sidebar’s foot says she is a member.' }] },

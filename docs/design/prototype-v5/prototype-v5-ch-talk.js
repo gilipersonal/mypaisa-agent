@@ -62,7 +62,7 @@
     '.pv5-talk-view{border-radius:16px;min-height:300px;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;color:var(--mp-ink-2);font:500 15px/20px var(--mp-font);background:repeating-linear-gradient(135deg,var(--mp-surface-2) 0 12px,var(--mp-surface) 12px 24px);box-shadow:inset 0 0 0 1px var(--mp-line)}',
     '.pv5-talk-chips{display:flex;gap:6px;flex-wrap:wrap}',
     '.pv5-talk-seg{display:inline-flex;gap:2px;background:var(--mp-surface-2);border-radius:10px;padding:2px}',
-    '.pv5-talk-seg button{min-height:40px;border:0;background:transparent;border-radius:8px;padding:0 12px;font:600 13px/18px var(--mp-font);color:var(--mp-ink-2);cursor:pointer}',
+    '.pv5-talk-seg button{min-height:44px;min-width:44px;border:0;background:transparent;border-radius:8px;padding:0 12px;font:600 13px/18px var(--mp-font);color:var(--mp-ink-2);cursor:pointer}',
     '.pv5-talk-seg button.on{background:var(--mp-seg-on);color:var(--mp-ink);box-shadow:var(--mp-shadow)}',
     '.pv5-talk-step2{display:flex;gap:10px;align-items:flex-start;font:400 14px/19px var(--mp-font)}',
     '.pv5-talk-step2 b{width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--mp-surface-2);font:700 12px/1 var(--mp-font)}',
@@ -179,9 +179,9 @@
       '<div class="pv5-talk-col">' + left + '</div><div class="pv5-talk-col">' + right + '</div>') + '</div>';
   }
   function swrow(o) {
-    return '<button type="button" class="mp-row rowbtn pv5-talk-swrow' + (o.ring ? ' pnext' : '') + '"' + K.go(o.go) + '>' + (o.icon ? '<span class="mp-icontile" style="background:var(--mp-surface-2)">' + K.ms(o.icon) + '</span>' : '') +
+    return '<button type="button" class="mp-row rowbtn pv5-talk-swrow' + (o.ring ? ' pnext' : '') + '" role="switch" aria-checked="' + !!o.on + '" aria-label="' + String(o.t).replace(/"/g, '&quot;') + '"' + K.go(o.go) + '>' + (o.icon ? '<span class="mp-icontile" style="background:var(--mp-surface-2)">' + K.ms(o.icon) + '</span>' : '') +
       '<div class="f1 fx col"><span class="mp-sub" style="font-weight:600">' + o.t + '</span>' + (o.s ? '<span class="mp-foot mp-ink2">' + o.s + '</span>' : '') + '</div>' +
-      '<span class="mp-switch' + (o.on ? ' on' : '') + '" role="switch" aria-checked="' + !!o.on + '"><span class="mp-switch-k"></span></span></button>';
+      '<span class="mp-switch' + (o.on ? ' on' : '') + '" aria-hidden="true"><span class="mp-switch-k"></span></span></button>';
   }
   function meter(frac, marks) {
     var m = (marks || []).map(function (p) { return '<b style="left:' + p + '%"></b>'; }).join('');
@@ -383,7 +383,7 @@
       K.list(rows) + K.foot(asha ? 'You see your own runs and the household’s jobs.' : 'Asha’s runs show their cost and tools, never her words. Costs come from the API’s own token counts.') });
     var fr = HH().assets ? ['balanced', 'nasdaq', 'robotics', 'silver', 'ppfas', 'infosys'].map(function (id) { return HH().assets.filter(function (a) { return a.id === id; })[0].name.replace(' · Direct Growth', '').replace(' (BlackRock MyMap 5)', ''); }) : [];
     var sched = K.card({ t: 'Schedule and price freshness', r: '<span class="mp-foot mp-ink2">UK time</span>', body:
-      K.list([['Prices', '07:00', '21:00'], ['Nightly views', '01:00', 'Tue 27 Oct 01:00'], ['Check-ins', '09:00', 'Tue 27 Oct 09:00'], ['Saturday review', 'Sat 24 Oct 09:00', 'Sat 31 Oct 09:00']].map(function (s) {
+      K.list([['Prices', '07:00', '21:00'], ['Nightly views', '01:00', 'Tue 27 Oct 01:00'], ['Check-ins', '09:00', 'Tue 27 Oct 09:00']].map(function (s) {
         return K.row({ t: s[0], s: 'Last ' + s[1] + ' · next ' + s[2] }); })) +
       K.note('check', '6 priced at the Fri 23 Oct close: ' + fr.join(', ') + '.') + K.note('remove', 'Monzo pot and the savings: cash, no price.') });
     var alarms = asha ? '' : K.card({ t: 'Alarms, last 7 days', r: '<span class="mp-foot mp-ink2">0 red · 1 amber</span>', body:
@@ -445,7 +445,7 @@
     if (!D) return null;
     var me = mem(ctx.viewer), owner = ctx.isAdmin, here = thisDev(ctx), c = cut(ctx);
     var head = K.card({ body: '<div class="fx ac g12"><span class="pv5-talk-init" style="width:52px;height:52px;font-size:18px">' + me.init + '</span><div class="fx col f1"><span class="mp-hl">' + me.full + '</span><span class="mp-foot mp-ink2">' +
-      (owner ? 'Owner · the Dutta household · the household’s one admin' : 'Member · the Dutta household') + '</span></div></div>' });
+      (owner ? 'Owner · admin · the Dutta household' : 'Member · views only · the Dutta household') + '</span></div></div>' });
     var admin = owner ? K.group([K.row({ icon: 'admin_panel_settings', t: 'Admin center', s: 'Members, spend, caps and alerts. Only you see this row.', v: replayed(ctx) ? null : badge(1), go: 'nav:admin' })]) : '';
     var priv = K.card({ id: 'pv5-you-priv', t: 'Privacy and Face ID', r: DRAFT, body: K.group([
       swrow({ icon: 'visibility_off', t: 'Privacy mode', s: 'Hides every amount in cards, screens, charts and notifications; percentages stay. It acts at once, as /privacy does.', on: ctx.priv, go: 'priv' }),
@@ -455,13 +455,13 @@
       K.row({ icon: 'layers', t: 'The app switcher', s: 'MyPaisa shows only its mark there, never a figure.' })]) });
     var ntf = K.group([K.row({ icon: 'notifications_active', t: 'Notifications', s: 'Replies, check-ins and alerts; quiet hours 22:00 to 07:00', go: 'nav:notifications' })]);
     var ns = (D.notes[ctx.viewer] || []).filter(function (n) { return n.t <= c; }), hs = D.notes.household.filter(function (n) { return n.t <= c; });
-    var noteRow = function (n, whose) {
+    var noteRow = function (n, whose, ro) {
       return '<div class="pv5-talk-ar"><span class="pv5-talk-init mk"><span class="ms" aria-hidden="true" style="font-size:16px">bookmark</span></span><div class="f1"><span class="mp-sub" style="font-weight:600">' + q(n.text) + '</span><span class="mp-foot mp-ink2">' + whose + ' · written ' + when(ctx, n.t) + ' · <span class="pv5-talk-nw">run ' + n.run + '</span></span>' +
-        '<div class="fx g8 wrap">' + K.btn('Correct', 'mem:fix', 'plain small', 'edit') + K.btn('Forget', 'mem:forget', 'plain small', 'delete') + '</div></div></div>';
+        (ro ? '' : '<div class="fx g8 wrap">' + K.btn('Correct', 'mem:fix', 'plain small', 'edit') + K.btn('Forget', 'mem:forget', 'plain small', 'delete') + '</div>') + '</div></div>';
     };
     var memo = K.card({ id: 'pv5-you-mem', t: 'What MyPaisa remembers', r: DRAFT, body:
       '<div class="pv5-talk-day">Yours · read only in your own conversations</div>' + ns.map(function (n) { return noteRow(n, 'Your note'); }).join('') +
-      '<div class="pv5-talk-day">The household’s · read in everyone’s</div>' + hs.map(function (n) { return noteRow(n, owner ? 'The household’s note; you correct or forget it' : 'The household’s note; Arun corrects or forgets it'); }).join('') +
+      '<div class="pv5-talk-day">The household’s · read in everyone’s</div>' + hs.map(function (n) { return noteRow(n, owner ? 'The household’s note; you correct or forget it, as an admin' : 'The household’s note; an admin corrects or forgets it', !owner); }).join('') +
       K.foot('Nothing is added here: a new note comes only from the chat. A note never holds a figure, a record, a setting or anyone else’s detail; every note written is an audit row and a line in Activity. Correct shows before and after, with Save; Forget asks for Confirm.') });
     var ways = K.list(me.ways.map(function (w) {
       return K.row({ lead: w[0] === 'Passkey' ? icontile('passkey') : '<span class="pv5-talk-g" style="width:32px;height:32px">' + w[0].charAt(0) + '</span>', t: w[0], s: w[1], v: w[0] === 'Passkey' ? K.btn('Add', 'way:add', 'tinted small') : K.ms('check', 'mp-ink2') });
@@ -578,7 +578,7 @@
     if (!D) return null;
     var S = D.search, c = cut(ctx), asha = ctx.viewer === 'asha', w = S.q;
     var recs = S.records.filter(function (r) { return (r.id !== 'monzo_savings' || c >= '2026-10-26T09:41') && (!asha || r.who === 'Joint' || r.who === 'Asha'); }).map(function (r) {
-      return K.row({ icon: r.id === 'pot' ? 'savings' : r.id === 'balanced' ? 'candlestick_chart' : 'account_balance', t: hl(r.name, w), s: hl(r.who + ' · ' + r.s, w), v: G(r.v), go: 'nav:asset/' + r.id }); });
+      return K.row({ icon: r.id === 'pot' ? 'savings' : r.id === 'balanced' ? 'pie_chart' : 'account_balance', t: hl(r.name, w), s: hl(r.who + ' · ' + r.s, w), v: G(r.v), go: 'nav:asset/' + r.id }); });
     var chg = auditRows(ctx).filter(function (e) { return /Monzo/.test(e.what); }).map(function (e) {
       return K.row({ icon: e.icon, t: hl(e.what, w), s: dlabel(e.t) + ', ' + hm(e.t) + ' · ' + e.rec + ' · ' + change(e) + ' · ' + (e.who === 'mypaisa' ? 'MyPaisa' : mem(e.who).name), go: 'nav:audit' }); });
     var fil = D.files.filter(function (f) { return /monzo/i.test(f.name) && f.sent <= c && (!asha || f.by === 'asha'); }).map(function (f) {
@@ -588,7 +588,7 @@
     var body = pg('<div class="pv5-talk-q">' + K.ms('search') + '<span class="f1">' + w + '<span class="caret"></span></span><button type="button" class="gbtn" aria-label="Clear"' + K.go('q:clear') + '>' + K.ms('cancel') + '</button></div>' +
       '<div class="pv5-talk-seg" role="group" style="align-self:flex-start;max-width:100%;overflow-x:auto">' + ['All', 'Records', 'Changes', 'Files', 'Answers'].map(function (x, i) { return '<button type="button" class="' + (i ? '' : 'on') + '"' + K.go('q:scope') + '>' + x + '</button>'; }).join('') + '</div>' +
       cols(sec('Records and holdings', recs) + sec('Changes', chg), sec('Files', fil) + sec('Your past answers', ans) +
-        K.card({ body: K.note('lock', asha ? 'Within your rights: your own records and answers, and the household’s.' : 'Within your rights: as the owner, every record, change and file; past answers only from your own conversation.') })));
+        K.card({ body: K.note('lock', asha ? 'Within your rights: the household’s records, to view, and your own past answers. An admin makes every change.' : 'Within your rights: as an admin, every record, change and file; past answers only from your own conversation.') })));
     return { title: 'Search', sub: 'Records, holdings, changes, files and your own past answers', chip: DRAFT, body: body };
   });
 
@@ -614,7 +614,7 @@
       K.row({ icon: 'cloud', t: 'Caps and alerts', s: 'AWS and others · 6% · ' + (rp ? 'no alert waiting' : '1 failed job waits for Replay'), v: G(D.aws.spent) + ' of ' + G(D.aws.cap), vs: rp ? null : badge(1), go: 'nav:admin/caps' }),
       K.row({ icon: 'rule', t: 'Labels for the judges', s: D.evals.sample + ' · ' + D.evals.labelled + ' of ' + D.evals.runs + ' runs labelled', go: 'nav:admin/evals' })]) +
       K.note('verified_user', 'Every action here asks for the second check, writes an audit row and sends you a message in the chat. Nothing here changes the household’s records.') +
-      cols(cycleCard(ctx), K.card({ t: 'Agent team', body: K.p('The agents’ requests, approvals and incidents join this center in phase 18, on the Agent team page.') + '<div style="height:8px"></div>' + K.btn('Agent team', 'nav:team', 'tinted small', 'groups') })));
+      cols(cycleCard(ctx), K.card({ t: 'Agent team', body: K.p('The agents’ requests, approvals and incidents join this center in phase 13, on the Agent team page.') + '<div style="height:8px"></div>' + K.btn('Agent team', 'nav:team', 'tinted small', 'groups') })));
     return { title: 'Admin center', sub: 'Owner only · the Dutta household · ' + dlabel(ctx.t), chip: DRAFT, body: body };
   });
 
@@ -697,7 +697,7 @@
         K.kv('Queue', F.queue) + K.kv('Job', F.job) + K.kv('Tried', F.tries + ' times, ' + F.window) + K.kv('Sent', F.alarm) + K.note('check', F.since) +
         '<div style="height:10px"></div>' + abtn('Replay 1 job', 'rp:go', 'mp-btn-primary', 'replay', ring(ctx.step && ctx.step.id === 'p8-caps')) + K.foot('Moves it back to its queue. Handlers are idempotent, so nothing runs twice. Asks for the second check.') });
     var aws = K.card({ t: 'AWS and others · October', r: '<span class="mp-foot mp-ink2">read ' + A.read + '</span>', body: '<div class="fx ac g8 wrap" style="align-items:baseline"><span class="pv5-talk-big">' + G(A.spent) + '</span><span class="mp-sub mp-ink2">of ' + G(A.cap) + ' · 6% · forecast ' + G(A.forecast, { dp: 2 }) + '</span></div>' +
-      meter(A.spent / A.cap, [50, 80]) + K.list(A.steps.map(function (s) { return K.row({ t: s.p + '% · ' + G(s.at), s: s.d }); }).concat([K.row({ icon: 'lock', t: 'Never', s: 'The brief, alerts and the chat never stop, at any step.' })])) +
+      meter(A.spent / A.cap, [50, 80]) + K.list(A.steps.map(function (s) { return K.row({ t: s.p + '% · ' + G(s.at), s: s.d }); }).concat([K.row({ icon: 'lock', t: 'Never', s: 'Alerts and the chat never stop, at any step.' })])) +
       K.note('shield', 'Backstop: an AWS Budgets budget at ' + G(A.backstop) + ', made by Terraform, not from here. Each step is a flag the jobs read, never a change to AWS. Its figures lag by up to a day.') });
     var mx = '<div class="pv5-talk-mx"><div class="h">Alert</div><div class="h">App</div><div class="h">Push</div><div class="h">Email</div>' + D.routing.map(function (r) {
       var cell = function (v) { return '<div class="c">' + K.ms(v === 'Off' ? 'remove' : v === 'Always' ? 'lock' : v === 'Own' ? 'person' : 'check') + '<span>' + v + '</span></div>'; };

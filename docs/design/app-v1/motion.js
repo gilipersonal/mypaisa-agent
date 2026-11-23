@@ -134,18 +134,19 @@
     item.classList.add('on');
   }, true);
 
-  // the canvas renders after this script loads; scan as frames appear
+  // the canvas renders after this script loads; scan as frames appear, at most once a frame, and never for a figure
+  // that is only rolling to its value (its digits change every frame)
   var pending = 0;
-  new MutationObserver(function () {
-    if (pending) return;
-    pending = setTimeout(function () { pending = 0; scan(); }, 120);
+  new MutationObserver(function (list) {
+    if (pending || __mpOwnRoll(list)) return;
+    pending = setTimeout(function () { requestAnimationFrame(function () { pending = 0; scan(); }); }, 120);
   }).observe(document.documentElement, { childList: true, subtree: true });
   if (document.readyState !== 'loading') scan(); else document.addEventListener('DOMContentLoaded', scan);
 })();
 
 /* Axis labels thin themselves where they would touch (MA-240), as Swift Charts and LayerChart do: on a chart narrower
    than drawn, a label that would sit within 2 px of the one kept before it, or of the last, is hidden; the first and
-   the last always stay. A meter's labels and the market mood strip's segment labels (.mlab) thin the same way, the
+   the last always stay. A meter's labels and a segment strip's labels (.mlab) thin the same way, the
    strip's colours keeping their legend. Labels that fit are never touched, so every chart keeps its drawn axis. This
    is layout, not motion, so it runs under Reduce Motion and ?static=1 too, and again whenever an axis changes width. */
 (function () {
@@ -199,9 +200,18 @@
     if (direct.length) fitMany(direct);
   }
   var pending = 0;
-  new MutationObserver(function () {
-    if (pending) return;
-    pending = setTimeout(function () { pending = 0; scan(); }, 120);
+  new MutationObserver(function (list) {
+    if (pending || __mpOwnRoll(list)) return;   // a rolling figure changes no axis
+    pending = setTimeout(function () { requestAnimationFrame(function () { pending = 0; scan(); }); }, 120);
   }).observe(document.documentElement, { childList: true, subtree: true });
   if (document.readyState !== 'loading') scan(); else document.addEventListener('DOMContentLoaded', scan);
 })();
+
+/* A mutation list made only by motion.js rolling a figure ([data-mo-count]) brings no new frame or axis. */
+function __mpOwnRoll(list) {
+  for (var i = 0; i < list.length; i++) {
+    var t = list[i].target;
+    if (!(t && t.nodeType === 1 && t.hasAttribute('data-mo-count'))) return false;
+  }
+  return list.length > 0;
+}

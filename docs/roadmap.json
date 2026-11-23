@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-30",
+ "updated": "2026-11-02",
  "about": "Estimates and dates for every phase (MA-228). An estimate is build days for one story at every door it touches: Claude builds, Arun reviews and tests. A phase's working days are its stories' build days, plus the buffer for review rounds, the demo and fixes, divided by how much runs side by side (the web app and the iOS app are built in parallel, as Arun asked on 26 Oct 2026). Arun's own tasks (label manual) run beside the lane and are due before their phase starts. Change a figure here, run `python3 scripts/roadmap.py write`, and the dates, PLAN's Timeline, the Confluence pages and the epics' due dates follow.",
  "start": "2026-11-02",
  "buffer": 0.2,
@@ -48,14 +48,7 @@
   "2029-12-26"
  ],
  "phases": {
-  "15": {
-   "not_before": {
-    "phase_end": 10,
-    "weeks": 8
-   },
-   "why": "Stances go live only after 8 weeks of shadow stances, which begin when phase 10 ends."
-  },
-  "16": {
+  "12": {
    "on_demand": true,
    "why": "A new kind of holding is built when one is added, so it has no date."
   }
@@ -88,27 +81,13 @@
   "MA-44": 2,
   "MA-45": 1,
   "MA-46": 1,
-  "MA-47": 2,
-  "MA-48": 3,
-  "MA-49": 2,
-  "MA-50": 3,
-  "MA-51": 2,
-  "MA-52": 2,
-  "MA-53": 2,
   "MA-54": 2,
   "MA-55": 1,
   "MA-56": 1,
-  "MA-57": 3,
   "MA-58": 2,
   "MA-59": 3,
-  "MA-60": 1,
   "MA-61": 2,
   "MA-62": 3,
-  "MA-63": 1,
-  "MA-64": 3,
-  "MA-65": 2,
-  "MA-66": 2,
-  "MA-67": 2,
   "MA-68": 2,
   "MA-69": 1,
   "MA-70": 2,
@@ -119,28 +98,14 @@
   "MA-75": 2,
   "MA-76": 3,
   "MA-77": 2,
-  "MA-78": 3,
   "MA-79": 3,
   "MA-80": 2,
-  "MA-81": 2,
-  "MA-82": 2,
-  "MA-83": 2,
-  "MA-84": 2,
-  "MA-85": 2,
-  "MA-86": 2,
-  "MA-87": 2,
-  "MA-88": 2,
-  "MA-89": 2,
-  "MA-90": 2,
-  "MA-91": 2,
-  "MA-92": 1,
   "MA-93": 5,
   "MA-94": 3,
   "MA-95": 5,
   "MA-96": 5.5,
   "MA-97": 3,
   "MA-98": 2,
-  "MA-99": 3,
   "MA-101": 0,
   "MA-102": 3,
   "MA-103": 0,
@@ -156,22 +121,10 @@
   "MA-114": 2,
   "MA-115": 2,
   "MA-116": 2,
-  "MA-118": 0,
-  "MA-119": 8,
-  "MA-120": 5,
-  "MA-121": 5,
-  "MA-122": 3,
-  "MA-123": 5,
-  "MA-124": 3,
-  "MA-125": 3,
-  "MA-126": 0,
   "MA-128": 0,
   "MA-129": 3,
   "MA-130": 3,
   "MA-131": 3,
-  "MA-132": 2,
-  "MA-133": 2,
-  "MA-134": 3,
   "MA-135": 3,
   "MA-136": 2,
   "MA-137": 3,
@@ -190,7 +143,6 @@
   "MA-151": 3,
   "MA-152": 5,
   "MA-153": 3,
-  "MA-154": 3,
   "MA-155": 0,
   "MA-156": 2,
   "MA-157": 0,
@@ -218,7 +170,6 @@
   "MA-180": 3,
   "MA-181": 3,
   "MA-182": 2,
-  "MA-183": 3,
   "MA-184": 3,
   "MA-185": 3,
   "MA-193": 0,
@@ -307,11 +258,9 @@
   "MA-277": 4,
   "MA-278": 3,
   "MA-279": 4,
-  "MA-280": 3,
   "MA-111": 3,
   "MA-273": 0,
   "MA-274": 0,
-  "MA-281": 0,
   "MA-285": 0,
   "MA-286": 1.5,
   "MA-287": 3,
@@ -325,17 +274,54 @@
   "MA-298": 0,
   "MA-299": 0,
   "MA-300": 0,
-  "MA-301": 0
+  "MA-301": 0,
+  "MA-302": 0,
+  "MA-303": 1,
+  "MA-304": 0.5,
+  "MA-305": 0,
+  "MA-306": 0,
+  "MA-307": 1,
+  "MA-308": 1,
+  "MA-309": 1,
+  "MA-310": 0,
+  "MA-311": 0,
+  "MA-312": 0,
+  "MA-313": 0,
+  "MA-314": 2,
+  "MA-315": 2,
+  "MA-316": 2,
+  "MA-317": 1.5,
+  "MA-318": 2,
+  "MA-319": 1,
+  "MA-320": 1,
+  "MA-321": 1.5,
+  "MA-322": 1.5,
+  "MA-323": 0.5,
+  "MA-324": 0.5,
+  "MA-325": 0.5,
+  "MA-326": 0,
+  "MA-327": 0,
+  "MA-329": 0,
+  "MA-330": 0,
+  "MA-331": 0,
+  "MA-332": 0,
+  "MA-333": 0,
+  "MA-334": 0,
+  "MA-335": 0,
+  "MA-336": 0,
+  "MA-337": 0,
+  "MA-338": 0,
+  "MA-339": 0
  },
  "schedule": {
   "0": {
    "epic": "MA-9",
    "title": "Foundations at every door",
-   "lane_days": 49.75,
+   "lane_days": 53.75,
    "arun_days": 3.5,
-   "working_days": 40,
+   "working_days": 43,
    "start": "2026-11-02",
-   "end": "2027-01-05"
+   "end": "2027-01-08"
   },
   "1": {
    "epic": "MA-10",
@@ -343,17 +329,17 @@
    "lane_days": 109.0,
    "arun_days": 0.5,
    "working_days": 88,
-   "start": "2027-01-06",
-   "end": "2027-05-12"
+   "start": "2027-01-11",
+   "end": "2027-05-17"
   },
   "2": {
    "epic": "MA-187",
    "title": "The first record: one dynamic structure, one write path",
-   "lane_days": 49.5,
+   "lane_days": 50.5,
    "arun_days": 0,
-   "working_days": 40,
-   "start": "2027-05-13",
-   "end": "2027-07-08"
+   "working_days": 41,
+   "start": "2027-05-18",
+   "end": "2027-07-14"
   },
   "3": {
    "epic": "MA-188",
@@ -361,8 +347,8 @@
    "lane_days": 18,
    "arun_days": 0,
    "working_days": 15,
-   "start": "2027-07-09",
-   "end": "2027-07-29"
+   "start": "2027-07-15",
+   "end": "2027-08-04"
   },
   "4": {
    "epic": "MA-192",
@@ -370,17 +356,17 @@
    "lane_days": 19,
    "arun_days": 0,
    "working_days": 16,
-   "start": "2027-07-30",
-   "end": "2027-08-20"
+   "start": "2027-08-05",
+   "end": "2027-08-26"
   },
   "5": {
    "epic": "MA-189",
    "title": "Investments, priced",
-   "lane_days": 23,
+   "lane_days": 32,
    "arun_days": 0,
-   "working_days": 19,
-   "start": "2027-08-23",
-   "end": "2027-09-17"
+   "working_days": 26,
+   "start": "2027-08-27",
+   "end": "2027-10-04"
   },
   "6": {
    "epic": "MA-190",
@@ -388,133 +374,88 @@
    "lane_days": 12.5,
    "arun_days": 0,
    "working_days": 10,
-   "start": "2027-09-20",
-   "end": "2027-10-01"
+   "start": "2027-10-05",
+   "end": "2027-10-18"
   },
   "7": {
    "epic": "MA-191",
    "title": "Projection",
-   "lane_days": 28.0,
+   "lane_days": 33.5,
    "arun_days": 0,
-   "working_days": 23,
-   "start": "2027-10-04",
-   "end": "2027-11-03"
+   "working_days": 27,
+   "start": "2027-10-19",
+   "end": "2027-11-24"
   },
   "8": {
    "epic": "MA-14",
    "title": "Audit, search and the Admin center at every door",
-   "lane_days": 28,
+   "lane_days": 29,
    "arun_days": 0,
-   "working_days": 23,
-   "start": "2027-11-04",
-   "end": "2027-12-06"
+   "working_days": 24,
+   "start": "2027-11-25",
+   "end": "2028-01-06"
   },
   "9": {
    "epic": "MA-18",
    "title": "The whole dashboard, and the old wealth tracker retired",
-   "lane_days": 26,
+   "lane_days": 28,
    "arun_days": 0,
-   "working_days": 21,
-   "start": "2027-12-07",
-   "end": "2028-01-13"
+   "working_days": 23,
+   "start": "2028-01-07",
+   "end": "2028-02-08"
   },
   "10": {
-   "epic": "MA-11",
-   "title": "Prices and the engine",
-   "lane_days": 23,
-   "arun_days": 0,
-   "working_days": 19,
-   "start": "2028-01-14",
-   "end": "2028-02-09"
-  },
-  "11": {
    "epic": "MA-12",
-   "title": "Briefs, alerts, charts, technical mode",
-   "lane_days": 17,
-   "arun_days": 0,
-   "working_days": 14,
-   "start": "2028-02-10",
-   "end": "2028-02-29"
-  },
-  "12": {
-   "epic": "MA-13",
-   "title": "Ask anything: research cards and scenarios",
-   "lane_days": 19,
-   "arun_days": 0,
-   "working_days": 16,
-   "start": "2028-03-01",
-   "end": "2028-03-22"
-  },
-  "13": {
-   "epic": "MA-15",
-   "title": "Track record and calibration",
-   "lane_days": 13,
-   "arun_days": 0,
-   "working_days": 11,
-   "start": "2028-03-23",
-   "end": "2028-04-06"
-  },
-  "14": {
-   "epic": "MA-16",
-   "title": "News, events, sentiment (shadow)",
-   "lane_days": 8,
-   "arun_days": 0,
-   "working_days": 7,
-   "start": "2028-04-07",
-   "end": "2028-04-19"
-  },
-  "15": {
-   "epic": "MA-17",
-   "title": "Stances go live",
-   "lane_days": 5,
-   "arun_days": 0,
-   "working_days": 4,
-   "start": "2028-04-20",
-   "end": "2028-04-25"
-  },
-  "16": {
-   "epic": "MA-19",
-   "title": "New kinds of holding (when you add one)",
-   "lane_days": 5,
-   "arun_days": 0,
-   "working_days": 4,
-   "on_demand": true
-  },
-  "17": {
-   "epic": "MA-117",
-   "title": "The Forecaster: a second engine beside the rules engine",
-   "lane_days": 35,
-   "arun_days": 0,
-   "working_days": 28,
-   "start": "2028-04-26",
-   "end": "2028-06-06"
-  },
-  "18": {
-   "epic": "MA-127",
-   "title": "The agent team: configured, approved, self-healing, self-learning",
-   "lane_days": 27,
-   "arun_days": 0,
-   "working_days": 22,
-   "start": "2028-06-07",
-   "end": "2028-07-06"
-  },
-  "19": {
-   "epic": "MA-147",
-   "title": "Indian markets and the existing Indian portfolio",
-   "lane_days": 14,
+   "title": "Alerts, charts and the Claude client",
+   "lane_days": 15,
    "arun_days": 0,
    "working_days": 12,
-   "start": "2028-07-07",
-   "end": "2028-07-24"
+   "start": "2028-02-09",
+   "end": "2028-02-24"
   },
-  "20": {
+  "11": {
+   "epic": "MA-13",
+   "title": "Ask anything about the household's wealth",
+   "lane_days": 9.0,
+   "arun_days": 0,
+   "working_days": 8,
+   "start": "2028-02-25",
+   "end": "2028-03-07"
+  },
+  "12": {
+   "epic": "MA-19",
+   "title": "New kinds of holding (when you add one)",
+   "lane_days": 2,
+   "arun_days": 0,
+   "working_days": 2,
+   "on_demand": true
+  },
+  "13": {
+   "epic": "MA-127",
+   "title": "The agent team: configured, approved, self-healing, self-learning",
+   "lane_days": 20,
+   "arun_days": 0,
+   "working_days": 16,
+   "start": "2028-03-08",
+   "end": "2028-03-29"
+  },
+  "14": {
+   "epic": "MA-147",
+   "title": "Indian holdings and the existing Indian portfolio",
+   "lane_days": 11,
+   "arun_days": 0,
+   "working_days": 9,
+   "start": "2028-03-30",
+   "end": "2028-04-11"
+  },
+  "15": {
    "epic": "MA-175",
    "title": "The app beyond the chat: widgets, Siri, the share sheet, Live Activities",
    "lane_days": 10,
    "arun_days": 0,
    "working_days": 8,
-   "start": "2028-07-25",
-   "end": "2028-08-03"
+   "start": "2028-04-12",
+   "end": "2028-04-25"
   }
  }
 }

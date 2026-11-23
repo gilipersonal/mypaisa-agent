@@ -1,0 +1,30 @@
+<title>MyPaisa Prototype v5</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: the prototype itself fills the window; this page only hosts it and passes a #step link into it.
+   Colours are MyPaisa DS v1's ground ("Warm ledger"), the canvas every board sits on. */
+:root { --bg: #ECEAE6; --fg: #14171F; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0A0F18; --fg: #F3F5F8; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0A0F18; --fg: #F3F5F8; color-scheme: dark; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px)); box-sizing: border-box; }
+.host { position: fixed; inset: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+.host iframe { width: 100%; height: 100%; border: 0; display: block; background: #ECEAE6; }
+.load { position: absolute; left: 16px; top: 16px; font: 500 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #4E5462; }
+</style>
+
+<div class="host">
+  <span class="load" id="load">Loading the prototype…</span>
+  <iframe id="proto" title="MyPaisa Prototype v5" allow="clipboard-write"></iframe>
+</div>
+
+<script>
+(function () {
+  var f = document.getElementById('proto');
+  var at = (location.hash || '').slice(1);
+  var src = 'prototype-v5/' + encodeURIComponent('Prototype v5.dc.html') + '?static=1' + (/^[\w-]+$/.test(at) ? '&at=' + at : '');
+  f.addEventListener('load', function () { document.getElementById('load').hidden = true; });
+  f.src = src;
+  addEventListener('hashchange', function () { location.reload(); });
+})();
+</script>

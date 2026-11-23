@@ -1,0 +1,17 @@
+# osv-scanner's exceptions for web/pnpm-lock.yaml (MA-194, MA-326). Each one names its reason and ends on a date, after
+# which the scan fails again until it is fixed or reviewed.
+
+[[IgnoredVulns]]
+id = "GHSA-gcqx-w48m-w2h4"
+ignoreUntil = 2027-02-03
+reason = "deepmerge 4.3.1, prototype poisoning (low in pnpm audit, 5.3 medium in OSV): only in @sveltejs/vite-plugin-svelte at build time, never shipped to the browser; no fixed version exists yet. Dependabot proposes one when it does."
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+ignoreUntil = 2027-02-03
+reason = "minimatch 5.1.9, glob-pattern denial of service (moderate): only in @redocly/openapi-core under openapi-typescript, a dev tool that reads our own backend/openapi.json, never a pattern from outside; it calls minimatch 5's API, so 11 cannot be forced on it. Every other minimatch is the patched 11.x (pnpm-workspace.yaml overrides)."
+
+[[IgnoredVulns]]
+id = "GHSA-3g3m-2fjr-6pw4"
+ignoreUntil = 2027-02-03
+reason = "glob 9.3.5, an aborted async walk keeps reading directories (6.3 medium, no data at risk): only in React Native's dev tooling on a developer's machine or CI, never in the app, and only when a caller passes an AbortSignal. React Native pins the old major, so 14 cannot be forced on it; a React Native upgrade clears it (MA-165)."

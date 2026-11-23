@@ -16,7 +16,7 @@
         <script src="motion.js"></script>
         <style>
           html, body { margin: 0; background: #ECEAE6; }
-          a { color: #C2381F; } a:hover { color: #8F2915; }
+          a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
           .dv-turn { padding: 44px 48px 40px; border-bottom: 1px solid rgba(0,0,0,.08); }
           .dv-thd { display: flex; align-items: baseline; gap: 12px; margin: 0 0 10px; }
           .dv-tname { font: 700 26px/32px -apple-system, "SF Pro Display", system-ui, sans-serif; color: #14171F; letter-spacing: -0.02em; }
@@ -144,6 +144,8 @@
           .vocap { background: #1F2329; color: #FFFFFF; border-radius: 12px; padding: 10px 12px; font: 400 14px/19px var(--mp-font); text-wrap: pretty; }
           .t-dark .vocap { background: #2C323B; }
           .hit { outline: 1.5px dashed var(--mp-accent); }
+          /* the chip's tap area is its own ::after (ios.css), so the dash is drawn on it, not guessed around the chip */
+          .gchip.hit { outline: none; } .gchip.hit::after { outline: 1.5px dashed var(--mp-accent); border-radius: 999px; }
           .icg { border-radius: 12px; background: var(--mp-bg); overflow: hidden; }
           .icr { padding: 8px 10px; display: flex; flex-direction: column; }
           .rmf { width: 44px; height: 60px; border-radius: 9px; background: var(--mp-bg); box-shadow: inset 0 0 0 1px var(--mp-line); position: relative; overflow: hidden; flex: none; }
@@ -178,6 +180,8 @@
           .mtr b { color: #14171F; }
           .mth { border-top: 0; font: 600 11px/14px ui-monospace, Menlo, monospace; color: #5A606C; }
           .mcode { font: 12.5px/19px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 0; color: #14171F; }
+          /* canvas links: a 44 x 44 tap area around the drawn chip, nothing drawn (MA-300) */
+          .dv-idx a, .dv-tid, .dv-oid { position: relative; } .dv-idx a::after, .dv-tid::after, .dv-oid::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
         </style>
       </helmet>
 
@@ -207,8 +211,8 @@
                   <div class="dev dev-s">
                     <div class="island"></div>
                     <div class="scrn">
-                      <div class="sbar sb-s"><span>9:41</span><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                      <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span></div>
+                      <div class="sbar sb-s"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                      <div class="nav"><span class="gbtn lg"><span class="ms" aria-hidden="true">chevron_left</span></span><span class="ggroup lg"><span class="gbtn"><span class="ms" aria-hidden="true">visibility_off</span></span><span class="gbtn"><span class="ms" aria-hidden="true">more_horiz</span></span></span></div>
                       <div class="largetitle">Home</div>
                       <div class="scroll">
                         <div class="fx col gap12" style="padding: 4px 14px 0">
@@ -221,20 +225,20 @@
                         </div>
                       </div>
                       <div class="edge-bot" style="height: 120px"></div>
-                      <div class="tabdock" style="left: 10px; right: 10px; bottom: 18px; gap: 8px"><div class="tabs lg" style="height: 58px"><span class="tab on" style="height: 50px"><span class="ms">chat_bubble</span>Chat</span><span class="tab" style="height: 50px"><span class="ms">home</span>Home</span><span class="tab" style="height: 50px"><span class="ms">insights</span>Activity</span><span class="tab" style="height: 50px"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg" style="width: 58px; height: 58px"><span class="ms">search</span></span></div>
+                      <div class="tabdock" style="left: 10px; right: 10px; bottom: 18px; gap: 8px"><div class="tabs lg" style="height: 58px"><span class="tab on" style="height: 50px"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab" style="height: 50px"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" style="height: 50px"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab" style="height: 50px"><span class="ms" aria-hidden="true">account_circle</span>You</span></div><span class="tabsearch lg" style="width: 58px; height: 58px"><span class="ms" aria-hidden="true">search</span></span></div>
                       <div class="homebar"></div>
                     </div>
                   </div>
                   </div>
                   <div class="ks" style="flex: 1; gap: 20px; padding-top: 34px">
                     <div class="ks"><span class="kl">Layer 2 · Liquid Glass · the controls</span>
-                      <div class="klist"><span class="kli"><span class="ms">check</span><span>Tab bar and sidebar</span></span><span class="kli"><span class="ms">check</span><span>Toolbar buttons and groups</span></span><span class="kli"><span class="ms">check</span><span>The composer and its shortcut chips</span></span><span class="kli"><span class="ms">check</span><span>Menus, partial sheets, alerts</span></span><span class="kli"><span class="ms">check</span><span>Notification platters, the search field</span></span></div>
+                      <div class="klist"><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Tab bar and sidebar</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Toolbar buttons and groups</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>The composer and its shortcut chips</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Menus, partial sheets, alerts</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Notification platters, the search field</span></span></div>
                     </div>
                     <div class="ks"><span class="kl">Layer 1 · Warm ledger · the content</span>
-                      <div class="klist"><span class="kli"><span class="ms">check</span><span>The navy hero and the cards</span></span><span class="kli"><span class="ms">check</span><span>Grouped lists and charts</span></span><span class="kli"><span class="ms">check</span><span>Messages, and Confirm on a card</span></span></div>
+                      <div class="klist"><span class="kli"><span class="ms" aria-hidden="true">check</span><span>The navy hero and the cards</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Grouped lists and charts</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Messages, and Confirm on a card</span></span></div>
                     </div>
                     <div class="ks"><span class="kl">Never</span>
-                      <div class="klist"><span class="kli"><span class="ms">close</span><span>Content made of glass</span></span><span class="kli"><span class="ms">close</span><span>Glass on glass: a button in a glass group has none of its own</span></span><span class="kli"><span class="ms">close</span><span>More than one tinted control in a group</span></span></div>
+                      <div class="klist"><span class="kli"><span class="ms" aria-hidden="true">close</span><span>Content made of glass</span></span><span class="kli"><span class="ms" aria-hidden="true">close</span><span>Glass on glass: a button in a glass group has none of its own</span></span><span class="kli"><span class="ms" aria-hidden="true">close</span><span>More than one tinted control in a group</span></span></div>
                     </div>
                   </div>
                 </div>
@@ -245,22 +249,22 @@
                     <div class="ktile">
                       <div class="mp-row"><span class="mp-hl" style="flex: 1">Balanced</span><span class="mp-hl">£22,925</span></div>
                       <div class="mp-row" style="border-top: 1px solid var(--mp-line)"><span class="mp-hl" style="flex: 1">Silver ETC</span><span class="mp-hl">£188</span></div>
-                      <div class="kfloat" style="right: 10px; bottom: 10px"><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span></div>
+                      <div class="kfloat" style="right: 10px; bottom: 10px"><span class="ggroup lg"><span class="gbtn"><span class="ms" aria-hidden="true">visibility_off</span></span><span class="gbtn"><span class="ms" aria-hidden="true">more_horiz</span></span></span></div>
                     </div>
                   </div>
                   <div class="ks"><span class="kl">Over the hero · dark glass</span>
                     <div class="ktile"><div class="mp-hero fx col gap4" style="border-radius: 0; height: 100%; box-sizing: border-box; padding: 14px 16px"><span class="mp-foot mp-hero-2">Household</span><span class="mp-num-l">£24,110</span></div>
-                      <div class="kfloat t-dark mp" style="left: 10px; bottom: 10px; background: transparent"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span></div>
+                      <div class="kfloat t-dark mp" style="left: 10px; bottom: 10px; background: transparent"><span class="gchip lg"><span class="ms" aria-hidden="true">pie_chart</span><span>Portfolio</span></span></div>
                     </div>
                   </div>
                   <div class="ks"><span class="kl">Reduce Transparency</span>
                     <div class="ktile rt"><div class="mp-hero fx col gap4" style="border-radius: 0; height: 100%; box-sizing: border-box; padding: 14px 16px"><span class="mp-foot mp-hero-2">Household</span><span class="mp-num-l">£24,110</span></div>
-                      <div class="kfloat t-dark mp" style="left: 10px; bottom: 10px; background: transparent"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span></div>
+                      <div class="kfloat t-dark mp" style="left: 10px; bottom: 10px; background: transparent"><span class="gchip lg"><span class="ms" aria-hidden="true">pie_chart</span><span>Portfolio</span></span></div>
                     </div>
                   </div>
                 </div>
                 <div class="ks"><span class="kl">The tinted primary · Send is the one coral control in its group</span>
-                  <div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="txt">£200 into Balanced</span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></div>
+                  <div class="cbar"><span class="cplus lg"><span class="ms" aria-hidden="true">add</span></span><span class="cfield lg"><span class="txt">£200 into Balanced</span><span class="csend lg-tint"><span class="ms" aria-hidden="true">arrow_upward</span></span></span></div>
                 </div>
                 </div>
                 </div>
@@ -298,8 +302,8 @@
           <div class="bd-note">
             <p><b>Tokens become assets.</b> Each <code>--mp-*</code> token is a colour set in MyPaisaUI's asset catalog with four slots: light, dark, and each with Increase Contrast. A script writes the catalog from tokens.css, so the two never drift (MA-165).</p>
             <p><b>Swift names.</b> <code>--mp-ink</code> becomes <code>Color.mpInk</code>; views use the names, never a hex.</p>
-            <p><b>Two figures a pair.</b> WCAG's ratio at full brightness, then at a simulated 25% (each luminance a quarter, plus room glare), from <code>scripts/contrast_check.py --report</code>, against the card (the hero for hero ink and coral, its tint for a stance). Body text needs 7:1 and 4.5:1, other text 4.5:1 and 3:1, meaningful marks 3:1 and 1.8:1.</p>
-            <p><b>Dark raised for 25% (MA-181).</b> ink-2, ink-3, accent, down-quiet, alert and hold were lighter than they could hold dimmed; each row shows the old value and its figures. Rebalance and Watch rose too.</p>
+            <p><b>Two figures a pair.</b> WCAG's ratio at full brightness, then at a simulated 25% (each luminance a quarter, plus room glare), from <code>scripts/contrast_check.py --report</code>, against the card (the hero for hero ink and coral, its tint for a status chip). Body text needs 7:1 and 4.5:1, other text 4.5:1 and 3:1, meaningful marks 3:1 and 1.8:1.</p>
+            <p><b>Dark raised for 25% (MA-181).</b> ink-2, ink-3, accent, down-quiet, alert and hold were lighter than they could hold dimmed; each row shows the old value and its figures. Closed and Draft rose too.</p>
             <p><b>Drawn here first.</b> The Increase Contrast values are new on this board; tokens.css takes them in MA-165, before the catalog is generated.</p>
           </div>
         </div>
@@ -364,28 +368,28 @@
                       <div class="tbfr">
                         <div class="tbbg"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-text">Good morning. Balanced rose 0.6% yesterday. Nothing to do this week.</div></div></div>
                         <div class="edge-bot" style="height: 96px"></div>
-                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px"><div class="tabs lg"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms">search</span></span></div>
+                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px"><div class="tabs lg"><span class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</span></div><span class="tabsearch lg"><span class="ms" aria-hidden="true">search</span></span></div>
                       </div>
                     </div>
                     <div class="ks"><span class="kl">Minimised on scroll · the selected tab and Search</span>
                       <div class="tbfr" style="height: 140px">
                         <div class="tbbg"><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-text">Mostly the pound: it fell 0.5% against the dollar.</div></div></div>
                         <div class="edge-bot" style="height: 90px"></div>
-                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px; align-items: center"><span class="tabmin lg"><span class="ms ms-fill">chat_bubble</span></span><span class="cfield lg" style="min-height: 52px"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms">mic</span></span></span><span class="tabmin lg" style="color: var(--mp-ink)"><span class="ms">search</span></span></div>
+                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px; align-items: center"><span class="tabmin lg"><span class="ms ms-fill" aria-hidden="true">chat_bubble</span></span><span class="cfield lg" style="min-height: 52px"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms" aria-hidden="true">mic</span></span></span><span class="tabmin lg" style="color: var(--mp-ink)"><span class="ms" aria-hidden="true">search</span></span></div>
                       </div>
                     </div>
                     <div class="ks"><span class="kl">Search · the field takes the bar</span>
                       <div class="tbfr" style="height: 140px">
-                        <div class="tbbg"><div class="mp-group"><div class="mp-row"><span class="ms mp-ink2">history</span><span class="mp-sub" style="flex: 1">Recent: NASDAQ 100 ETF</span></div></div></div>
+                        <div class="tbbg"><div class="mp-group"><div class="mp-row"><span class="ms mp-ink2" aria-hidden="true">history</span><span class="mp-sub" style="flex: 1">Recent: NASDAQ 100 ETF</span></div></div></div>
                         <div class="edge-bot" style="height: 90px"></div>
-                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px; align-items: center"><span class="tabmin lg" style="color: var(--mp-ink)"><span class="ms">chat_bubble</span></span><span class="cfield lg" style="min-height: 52px; padding-left: 14px"><span class="ms mp-ink2" style="font-size: 20px">search</span><span class="ph">Holdings, changes, files</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms">close</span></span></span></div>
+                        <div class="tabdock" style="left: 12px; right: 12px; bottom: 12px; align-items: center"><span class="tabmin lg" style="color: var(--mp-ink)"><span class="ms" aria-hidden="true">chat_bubble</span></span><span class="cfield lg" style="min-height: 52px; padding-left: 14px"><span class="ms mp-ink2" style="font-size: 20px" aria-hidden="true">search</span><span class="ph">Holdings, changes, files</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms" aria-hidden="true">close</span></span></span></div>
                       </div>
                     </div>
                   </div>
                   <div class="ks"><span class="kl">iPad and an open foldable · the sidebar</span>
                     <div class="sbfr">
                       <div class="mp-hero" style="position: absolute; left: 170px; right: -40px; top: 70px; height: 150px"></div>
-                      <div class="sidebar lg" style="position: absolute; left: 0; top: 0; bottom: 0; width: 260px; margin: 10px"><div class="side-h" style="padding-top: 4px">MyPaisa</div><span class="side-i"><span class="ms">search</span>Search</span><span class="side-i"><span class="ms">chat_bubble</span>Chat</span><span class="side-i on"><span class="ms">home</span>Home</span><span class="side-i"><span class="ms">pie_chart</span>Holdings</span><span class="side-i"><span class="ms">insights</span>Activity</span><span class="side-i"><span class="ms">history</span>Audit</span><div class="side-h">Owner</div><span class="side-i"><span class="ms">shield_person</span><span style="flex: 1">Admin center</span><span class="badge">1</span></span><span class="side-i"><span class="ms">account_circle</span>You</span><div class="side-h" style="margin-top: auto">The Dutta household · Arun, owner</div></div>
+                      <div class="sidebar lg" style="position: absolute; left: 0; top: 0; bottom: 0; width: 260px; margin: 10px"><div class="side-h" style="padding-top: 4px">MyPaisa</div><span class="side-i"><span class="ms" aria-hidden="true">search</span>Search</span><span class="side-i"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="side-i on"><span class="ms" aria-hidden="true">home</span>Home</span><span class="side-i"><span class="ms" aria-hidden="true">pie_chart</span>Holdings</span><span class="side-i"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="side-i"><span class="ms" aria-hidden="true">history</span>Audit</span><div class="side-h">Owner</div><span class="side-i"><span class="ms" aria-hidden="true">shield_person</span><span style="flex: 1">Admin center</span><span class="badge">1</span></span><span class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</span><div class="side-h" style="margin-top: auto">The Dutta household · Arun, owner</div></div>
                     </div>
                   </div>
                 </div>
@@ -416,8 +420,8 @@
                     <div class="ks"><span class="kl">Large title, at rest</span>
                       <div class="navfr" style="height: 266px">
                         <div class="island"></div>
-                        <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                        <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span></div>
+                        <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="gbtn lg"><span class="ms" aria-hidden="true">chevron_left</span></span><span class="ggroup lg"><span class="gbtn"><span class="ms" aria-hidden="true">visibility_off</span></span><span class="gbtn"><span class="ms" aria-hidden="true">more_horiz</span></span></span></div>
                         <div class="largetitle">Balanced</div>
                         <div style="padding: 0 16px"><div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">Monzo · ISA</span><span class="mp-num-l">£22,925</span></div></div>
                       </div>
@@ -427,36 +431,36 @@
                         <div class="mp-group" style="position: absolute; left: 16px; right: 16px; top: 92px"><div class="mp-row"><span class="mp-sub" style="flex: 1">Units</span><span class="mp-hl">1,234.50</span></div><div class="mp-row"><span class="mp-sub" style="flex: 1">Price</span><span class="mp-hl">18.57</span></div><div class="mp-row"><span class="mp-sub" style="flex: 1">Today</span><span class="mp-hl mp-up">▲ 0.6%</span></div></div>
                         <div class="edge-top"></div>
                         <div class="island"></div>
-                        <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
-                        <div class="nav"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="nav-title">Balanced</span><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span></div>
+                        <div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="gbtn lg"><span class="ms" aria-hidden="true">chevron_left</span></span><span class="nav-title">Balanced</span><span class="ggroup lg"><span class="gbtn"><span class="ms" aria-hidden="true">visibility_off</span></span><span class="gbtn"><span class="ms" aria-hidden="true">more_horiz</span></span></span></div>
                       </div>
                     </div>
                     <div class="ks"><span class="kl">Toolbar buttons</span>
                       <div class="fx" style="gap: 22px; align-items: flex-start">
-                        <div class="bspec"><span class="gbtn lg"><span class="ms">chevron_left</span></span><span class="kl">one · 44 pt</span></div>
-                        <div class="bspec"><span class="ggroup lg"><span class="gbtn"><span class="ms">visibility_off</span></span><span class="gbtn"><span class="ms">more_horiz</span></span></span><span class="kl">a group</span></div>
+                        <div class="bspec"><span class="gbtn lg"><span class="ms" aria-hidden="true">chevron_left</span></span><span class="kl">one · 44 pt</span></div>
+                        <div class="bspec"><span class="ggroup lg"><span class="gbtn"><span class="ms" aria-hidden="true">visibility_off</span></span><span class="gbtn"><span class="ms" aria-hidden="true">more_horiz</span></span></span><span class="kl">a group</span></div>
                         <div class="bspec"><span class="gtext lg"><span>Edit</span></span><span class="kl">a word</span></div>
-                        <div class="bspec"><span class="gbtn lg-tint"><span class="ms">check</span></span><span class="kl">the primary</span></div>
+                        <div class="bspec"><span class="gbtn lg-tint"><span class="ms" aria-hidden="true">check</span></span><span class="kl">the primary</span></div>
                       </div>
                     </div>
                   </div>
                   <div class="ks" style="gap: 20px">
                     <div class="ks"><span class="kl">Composer · empty, with shortcut chips</span>
                       <div class="cpfr">
-                        <div class="chips"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">history</span><span>Audit</span></span></div>
-                        <div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms">mic</span></span></span></div>
+                        <div class="chips"><span class="gchip lg"><span class="ms" aria-hidden="true">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">history</span><span>Audit</span></span></div>
+                        <div class="cbar"><span class="cplus lg"><span class="ms" aria-hidden="true">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms" aria-hidden="true">mic</span></span></span></div>
                       </div>
                     </div>
                     <div class="ks"><span class="kl">Typing · Send appears, tinted</span>
-                      <div class="cpfr"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg"><span class="txt">I put £200 into Bal<span class="caret"></span></span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></div></div>
+                      <div class="cpfr"><div class="cbar"><span class="cplus lg"><span class="ms" aria-hidden="true">add</span></span><span class="cfield lg"><span class="txt">I put £200 into Bal<span class="caret"></span></span><span class="csend lg-tint"><span class="ms" aria-hidden="true">arrow_upward</span></span></span></div></div>
                     </div>
                     <div class="ks"><span class="kl">With an attachment</span>
-                      <div class="cpfr"><div class="cbar"><span class="cplus lg"><span class="ms">add</span></span><span class="cfield lg cfield-col"><span class="att"><span class="att-ic"><span class="ms">description</span></span><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-sub mp-w6 clip">Balanced factsheet.pdf</span><span class="mp-foot mp-ink2">PDF · 182 KB</span></span><span class="gbtn" style="width: 44px; height: 44px"><span class="ms" style="font-size: 20px">close</span></span></span><span class="cf-row"><span class="txt">This month's factsheet</span><span class="csend lg-tint"><span class="ms">arrow_upward</span></span></span></span></div></div>
+                      <div class="cpfr"><div class="cbar"><span class="cplus lg"><span class="ms" aria-hidden="true">add</span></span><span class="cfield lg cfield-col"><span class="att"><span class="att-ic"><span class="ms" aria-hidden="true">description</span></span><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-sub mp-w6 clip">Balanced factsheet.pdf</span><span class="mp-foot mp-ink2">PDF · 182 KB</span></span><span class="gbtn" style="width: 44px; height: 44px"><span class="ms" style="font-size: 20px" aria-hidden="true">close</span></span></span><span class="cf-row"><span class="txt">This month's factsheet</span><span class="csend lg-tint"><span class="ms" aria-hidden="true">arrow_upward</span></span></span></span></div></div>
                     </div>
                     <div class="ks"><span class="kl">The + menu</span>
                       <div class="cpfr" style="height: 286px; justify-content: flex-end">
-                        <div class="menu lg" style="left: 12px; bottom: 78px; min-width: 0; width: 236px"><span class="menu-i"><span>Camera</span><span class="ms">photo_camera</span></span><span class="menu-i"><span>Scan a document</span><span class="ms">document_scanner</span></span><span class="menu-i"><span>Photos</span><span class="ms">photo_library</span></span><span class="menu-i"><span>Files</span><span class="ms">folder</span></span></div>
-                        <div class="cbar"><span class="cplus lg"><span class="ms">close</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms">mic</span></span></span></div>
+                        <div class="menu lg" style="left: 12px; bottom: 78px; min-width: 0; width: 236px"><span class="menu-i"><span>Camera</span><span class="ms" aria-hidden="true">photo_camera</span></span><span class="menu-i"><span>Scan a document</span><span class="ms" aria-hidden="true">document_scanner</span></span><span class="menu-i"><span>Photos</span><span class="ms" aria-hidden="true">photo_library</span></span><span class="menu-i"><span>Files</span><span class="ms" aria-hidden="true">folder</span></span></div>
+                        <div class="cbar"><span class="cplus lg"><span class="ms" aria-hidden="true">close</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend" style="color: var(--mp-ink-2)"><span class="ms" aria-hidden="true">mic</span></span></span></div>
                       </div>
                     </div>
                   </div>
@@ -492,7 +496,7 @@
                       <span class="me-time">20:40</span>
                       <div class="ai"><div class="ai-mark"><i></i></div><div class="typing"><i></i><i></i><i></i></div></div>
                     </div>
-                    <div class="legend"><span class="ms" style="font-size: 18px">person</span><span><b>The member:</b> a navy bubble, on the right.</span><span class="ms" style="font-size: 18px">forum</span><span><b>MyPaisa:</b> its words beside the mark, no bubble.</span><span class="ms" style="font-size: 18px">more_horiz</span><span><b>Typing:</b> until the first word, then the words stream.</span></div>
+                    <div class="legend"><span class="ms" style="font-size: 18px" aria-hidden="true">person</span><span><b>The member:</b> a navy bubble, on the right.</span><span class="ms" style="font-size: 18px" aria-hidden="true">forum</span><span><b>MyPaisa:</b> its words beside the mark, no bubble.</span><span class="ms" style="font-size: 18px" aria-hidden="true">more_horiz</span><span><b>Typing:</b> until the first word, then the words stream.</span></div>
                     <span class="kl">The Confirm card</span>
                     <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ccard">
                       <div class="ccard-h"><span class="mp-over mp-ink2">Confirm</span><span class="mp-hl">Bought £200 of Balanced</span></div>
@@ -510,8 +514,8 @@
                         <div class="kv"><span>Balanced</span><span>£22,925</span></div>
                         <div class="kv"><span>Three ETFs and cash</span><span>£1,185</span></div>
                       </div>
-                      <div class="ccard-acts" style="align-items: center"><span class="atag">3</span><span class="cbtn">Open Home</span><span class="cbtn cbtn-ghost">Why?</span></div>
-                      <div class="ccard-fold"><span class="fx ac gap8"><span class="atag">4</span><span>Technical</span></span><span class="ms">expand_less</span></div>
+                      <div class="ccard-acts" style="align-items: center"><span class="atag">3</span><span class="cbtn">Open Home</span><span class="cbtn cbtn-ghost">Ask about it</span></div>
+                      <div class="ccard-fold"><span class="fx ac gap8"><span class="atag">4</span><span>Technical</span></span><span class="ms" aria-hidden="true">expand_less</span></div>
                       <div class="ccard-tech"><span>Balanced 1,234.50 u × 18.57 = £22,925</span><span>ETFs £512 + £304 + £188 = £1,004</span><span>Cash, Monzo pot = £181</span><span>Close Thu 22 Oct · GBP/USD 1.2945</span></div>
                     </div>
                     <div class="plainl"><span class="atag">5</span><span>Household £24,110, up £96, 0.4%, today.</span></div>
@@ -527,7 +531,7 @@
             <p><b>Two voices.</b> The member writes in navy bubbles on the right; MyPaisa's words sit beside its mark with no bubble, so its cards read as part of what it says.</p>
             <p><b>Typing, then streaming.</b> The typing mark shows until the first word; words stream in as MyPaisa writes; a card arrives whole.</p>
             <p><b>One card, five parts.</b> Heading, figures, actions, the Technical fold and a plain line. Every figure is the engine's, a typed number in the card's JSON; the words never work one out (MA-174).</p>
-            <p><b>Summary first.</b> Technical opens in place, one tap away; Why? asks in the chat. A card type the app does not know shows its plain line and asks to update.</p>
+            <p><b>Summary first.</b> Technical opens in place, one tap away; Ask about it asks in the chat. A card type the app does not know shows its plain line and asks to update.</p>
             <p><b>Motion.</b> The member's message pushes up from the composer, a card rises whole with <code>.smooth</code>, and Confirm turns into its saved check with <code>.bouncy</code> and a success haptic.</p>
             <p><b>Confirm is content.</b> Confirm, Edit and Cancel are content buttons on the card, and nothing is saved until Confirm. The Portfolio and Confirm cards are MA-34's pick, drawn natively in MA-169.</p>
           </div>
@@ -549,9 +553,9 @@
                     <sc-for list="{{ b.cells }}" as="s" hint-placeholder-count="3"><span><span class="{{ s.cls }}" data-mo="{{ s.mo }}">{{ s.label }}</span></span></sc-for>
                   </sc-for>
                   <span class="ks gap2"><span class="mp-foot mp-w6">Shortcut chip</span><span class="kl">glass · 36</span></span>
-                  <span><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span></span>
-                  <span><span class="gchip lg g-pressed" data-mo="still"><span class="ms">pie_chart</span><span>Portfolio</span></span></span>
-                  <span><span class="gchip lg mp-disabled" data-mo="still"><span class="ms">pie_chart</span><span>Portfolio</span></span></span>
+                  <span><span class="gchip lg"><span class="ms" aria-hidden="true">pie_chart</span><span>Portfolio</span></span></span>
+                  <span><span class="gchip lg g-pressed" data-mo="still"><span class="ms" aria-hidden="true">pie_chart</span><span>Portfolio</span></span></span>
+                  <span><span class="gchip lg mp-disabled" data-mo="still"><span class="ms" aria-hidden="true">pie_chart</span><span>Portfolio</span></span></span>
                   <span class="ks gap2"><span class="mp-foot mp-w6">Segmented</span><span class="kl">system · 44</span></span>
                   <span><span class="mp-seg"><span class="mp-seg-i segc on">Simple</span><span class="mp-seg-i segc">Technical</span></span></span>
                   <span><span class="mp-seg"><span class="mp-seg-i segc on">Simple</span><span class="mp-seg-i segc seg-pr">Technical</span></span></span>
@@ -561,8 +565,8 @@
                   <span class="fx"><span class="mp-switch on"><span class="mp-switch-k" style="width: 33px; transform: translateX(14px)"></span></span></span>
                   <span class="fx"><span class="mp-switch on mp-disabled"><span class="mp-switch-k"></span></span></span>
                 </div>
-                <div class="ks"><span class="kl">The six stances · a word and, on a holding's own card, its confidence</span>
-                  <div class="fx" style="gap: 8px; flex-wrap: wrap"><span class="mp-chip mp-add">Add</span><span class="mp-chip mp-hold">Hold</span><span class="mp-chip mp-pause">Pause</span><span class="mp-chip mp-trim">Trim</span><span class="mp-chip mp-reb">Rebalance</span><span class="mp-chip mp-watch">Watch</span></div>
+                <div class="ks"><span class="kl">The six status chips · a word, and a figure where it helps</span>
+                  <div class="fx" style="gap: 8px; flex-wrap: wrap"><span class="mp-chip mp-add">Paid</span><span class="mp-chip mp-hold">Due</span><span class="mp-chip mp-pause">Over plan</span><span class="mp-chip mp-trim">Failed</span><span class="mp-chip mp-reb">Closed</span><span class="mp-chip mp-watch">Draft</span></div>
                 </div>
               </div>
             </div>
@@ -570,7 +574,7 @@
           <div class="bd-note">
             <p><b>Content buttons.</b> Primary (filled accent) for the one action that matters, tinted for the others, ghost for Cancel, alert red only for a destructive act. Never glass; at least 44 pt tall.</p>
             <p><b>Pressed and disabled.</b> Pressed scales to 97% and darkens a step (lightens in dark); glass brightens and swells. Disabled is 40% and takes no tap, with the reason said nearby.</p>
-            <p><b>Chips.</b> Shortcut chips are glass, they live with the composer, and their tap area is 44 pt. Stance chips are content: always a word, and on a holding's own card its confidence and "a view, not advice".</p>
+            <p><b>Chips.</b> Shortcut chips are glass, they live with the composer, and their tap area is 44 pt. Status chips are content: always a word, and a figure where it helps.</p>
             <p><b>Motion.</b> Every control answers the finger with <code>.snappy(extraBounce: 0.08)</code>: buttons dip to 95%, the segmented lens and the switch knob glide, a chip ticks with a selection haptic.</p>
             <p><b>No Buy or Sell.</b> MyPaisa cannot trade, so no button anywhere offers to. The segmented control and switch are the system's, coloured by the tokens. MA-165 builds them in MyPaisaUI.</p>
           </div>
@@ -591,7 +595,7 @@
                       <div class="dev dev-m">
                         <div class="island"></div>
                         <div class="scrn">
-                          <div class="sbar sb-s"><span>9:41</span><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+                          <div class="sbar sb-s"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
                           <sc-if value="{{ f.home }}" hint-placeholder-val="{{ true }}">
                             <div class="largetitle" style="font-size: 30px; line-height: 36px">Home</div>
                             <div class="fx col gap12" style="padding: 0 14px">
@@ -610,23 +614,23 @@
                           <sc-if value="{{ f.part }}" hint-placeholder-val="{{ false }}">
                             <div class="dline" style="top: 66px"></div><span class="detent" style="top: 52px">large</span>
                             <div class="dline" style="top: 262px"></div><span class="detent" style="top: 268px">medium</span>
-                            <div class="sheet lg" style="height: 270px; box-sizing: border-box; gap: 12px"><div class="sheet-grab"></div><div class="sheet-h"><span class="mp-hl">Why did Balanced rise?</span><span class="gbtn lens"><span class="ms">close</span></span></div><div class="mp-callout" style="text-wrap: pretty">Mostly the pound: it fell 0.5% against the dollar, and 58% of Balanced is in dollars underneath.</div><div class="kv"><span>Balanced today</span><span class="mp-up">▲ 0.6%</span></div><div class="kv"><span>Pound to dollar</span><span class="mp-dq">▼ 0.5%</span></div></div>
+                            <div class="sheet lg" style="height: 270px; box-sizing: border-box; gap: 12px"><div class="sheet-grab"></div><div class="sheet-h"><span class="mp-hl">Why did Balanced rise?</span><span class="gbtn lens"><span class="ms" aria-hidden="true">close</span></span></div><div class="mp-callout" style="text-wrap: pretty">Mostly the pound: it fell 0.5% against the dollar, and 58% of Balanced is in dollars underneath.</div><div class="kv"><span>Balanced today</span><span class="mp-up">▲ 0.6%</span></div><div class="kv"><span>Pound to dollar</span><span class="mp-dq">▼ 0.5%</span></div></div>
                           </sc-if>
                           <sc-if value="{{ f.full }}" hint-placeholder-val="{{ false }}">
-                            <div class="sheet full" style="gap: 12px; padding: 10px 16px 30px"><div class="sheet-grab"></div><div class="sheet-h"><span class="gbtn lg"><span class="ms">close</span></span><span class="mp-hl">Balanced</span><span class="gbtn lg"><span class="ms">chat_bubble</span></span></div><div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">BlackRock MyMap · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot heroup">▲ 0.6% today</span></div><div class="mp-group"><div class="mp-row"><span class="mp-sub" style="flex: 1">Units</span><span class="mp-hl">1,234.50</span></div><div class="mp-row"><span class="mp-sub" style="flex: 1">Price</span><span class="mp-hl">18.57</span></div></div><span class="cbtn cbtn-primary">Update in the chat</span></div>
+                            <div class="sheet full" style="gap: 12px; padding: 10px 16px 30px"><div class="sheet-grab"></div><div class="sheet-h"><span class="gbtn lg"><span class="ms" aria-hidden="true">close</span></span><span class="mp-hl">Balanced</span><span class="gbtn lg"><span class="ms" aria-hidden="true">chat_bubble</span></span></div><div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">BlackRock MyMap · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot heroup">▲ 0.6% today</span></div><div class="mp-group"><div class="mp-row"><span class="mp-sub" style="flex: 1">Units</span><span class="mp-hl">1,234.50</span></div><div class="mp-row"><span class="mp-sub" style="flex: 1">Price</span><span class="mp-hl">18.57</span></div></div><span class="cbtn cbtn-primary">Update in the chat</span></div>
                           </sc-if>
                           <sc-if value="{{ f.menu }}" hint-placeholder-val="{{ false }}">
                             <div class="lift mp-group" style="top: 228px"><div class="mp-row"><span class="fx col" style="flex: 1; min-width: 0"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></span><span class="rowv"><span class="mp-hl">£22,925</span><span class="mp-foot mp-up">▲ 0.6%</span></span></div></div>
-                            <div class="menu lg lg-strong" style="left: 14px; top: 304px; min-width: 0; width: 236px; --mo-origin: 30% 0"><span class="menu-i"><span>Open Balanced</span><span class="ms">chevron_right</span></span><span class="menu-i"><span>Ask about it</span><span class="ms">chat_bubble</span></span><span class="menu-i"><span>Update in the chat</span><span class="ms">edit</span></span><div class="menu-sep"></div><span class="menu-i"><span>Copy the value</span><span class="ms">content_copy</span></span></div>
+                            <div class="menu lg lg-strong" style="left: 14px; top: 304px; min-width: 0; width: 236px; --mo-origin: 30% 0"><span class="menu-i"><span>Open Balanced</span><span class="ms" aria-hidden="true">chevron_right</span></span><span class="menu-i"><span>Ask about it</span><span class="ms" aria-hidden="true">chat_bubble</span></span><span class="menu-i"><span>Update in the chat</span><span class="ms" aria-hidden="true">edit</span></span><div class="menu-sep"></div><span class="menu-i"><span>Copy the value</span><span class="ms" aria-hidden="true">content_copy</span></span></div>
                           </sc-if>
                           <sc-if value="{{ f.alert }}" hint-placeholder-val="{{ false }}">
                             <div class="sysalert lg lg-strong" style="width: 244px; margin-left: -122px; box-sizing: border-box"><span class="mp-hl">Sign out of this iPhone?</span><span class="mp-foot mp-ink2">You will need Apple or Google to sign in again. Your records stay with the household.</span><div class="abtns"><span class="abtn">Cancel</span><span class="abtn c-alert">Sign out</span></div></div>
                           </sc-if>
                           <sc-if value="{{ f.face }}" hint-placeholder-val="{{ false }}">
-                            <div class="sheet lg lg-strong apple" style="gap: 10px"><div class="sheet-grab"></div><div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="gbtn lens"><span class="ms">close</span></span></div><div class="mp-sub mp-ink2" style="text-align: center">Use your Apple Account to sign in to MyPaisa.</div><div class="faceid"><span class="ms">familiar_face_and_zone</span></div><div class="mp-foot mp-ink2" style="text-align: center">Face ID</div></div>
+                            <div class="sheet lg lg-strong apple" style="gap: 10px"><div class="sheet-grab"></div><div class="sheet-h"><span class="mp-hl">Sign in with Apple</span><span class="gbtn lens"><span class="ms" aria-hidden="true">close</span></span></div><div class="mp-sub mp-ink2" style="text-align: center">Use your Apple Account to sign in to MyPaisa.</div><div class="faceid"><span class="ms" aria-hidden="true">familiar_face_and_zone</span></div><div class="mp-foot mp-ink2" style="text-align: center">Face ID</div></div>
                           </sc-if>
                           <sc-if value="{{ f.toast }}" hint-placeholder-val="{{ false }}">
-                            <div class="mp-toast ftoast" data-mo="rise"><span class="ms" style="font-size: 20px">check_circle</span><span>Back online. 1 message sent.</span></div>
+                            <div class="mp-toast ftoast" data-mo="rise"><span class="ms" style="font-size: 20px" aria-hidden="true">check_circle</span><span>Back online. 1 message sent.</span></div>
                           </sc-if>
                           <div class="homebar"></div>
                         </div>
@@ -638,7 +642,7 @@
             </div>
           </sc-for>
           <div class="bd-note">
-            <p><b>Partial sheets float in glass,</b> inset from the edges with concentric corners, at the medium or large detent: Why?, What if? and the pickers. What they hold is solid content.</p>
+            <p><b>Partial sheets float in glass,</b> inset from the edges with concentric corners, at the medium or large detent: a what-if, a sum explained and the pickers. What they hold is solid content.</p>
             <p><b>Full sheets are solid ground,</b> edge to edge, for a screen opened over the chat: close at the left, Ask at the right, Update opens the chat.</p>
             <p><b>Menus and alerts are glass</b> and grow out of what opened them. A destructive choice is red and never the default.</p>
             <p><b>The second check is iOS's own sheet:</b> a fresh Sign in with Apple under Face ID, or a passkey, bound to the action and verified by the server. A local Face ID alone never authorises anything (MA-76).</p>
@@ -667,32 +671,32 @@
                   <div class="spec"><b>The hero line</b><span>LineMark · coral, 2.5 pt, .catmullRom</span><span>AreaMark · coral at 18%</span><span>PointMark · today, labelled in text</span><span>No grid and no y axis on the hero</span></div>
 
                   <div class="mp-card" style="padding: 16px 16px 12px">
-                    <div class="fx ac jb"><span class="mp-hl">Balanced · 90 days</span><span class="mp-chip mp-hold">Hold · 71%</span></div>
+                    <div class="fx ac jb"><span class="mp-hl">Balanced · 90 days</span><span class="mp-chip mp-neutral">XIRR 8.4%</span></div>
                     <div class="fx ac gap8" style="margin-top: 2px"><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span></div>
                     <div class="cplot">
-                      <div class="mp-chartbox cc"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="8.33" y2="8.33" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="50" y2="50" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="91.67" y2="91.67" stroke="var(--mp-chart-grid)" stroke-width="1"></line><rect x="86.5" y="0" width="13.5" height="100" fill="var(--mp-hold-bg)" stroke="var(--mp-hold)" stroke-width="1" stroke-dasharray="3 3"></rect><path d="{{ bal.area }}" fill="var(--mp-chart-area)"></path><path d="{{ bal.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ bal.ex }}; top: {{ bal.ey }}"></span><span class="hzl mp-hold" style="left: 93.25%">Hold</span></div>
+                      <div class="mp-chartbox cc"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line x1="0" x2="100" y1="8.33" y2="8.33" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="50" y2="50" stroke="var(--mp-chart-grid)" stroke-width="1"></line><line x1="0" x2="100" y1="91.67" y2="91.67" stroke="var(--mp-chart-grid)" stroke-width="1"></line><path d="{{ bal.area }}" fill="var(--mp-chart-area)"></path><path d="{{ bal.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ bal.ex }}; top: {{ bal.ey }}"></span></div>
                       <span class="ylab" style="top: 8.33%">£23k</span><span class="ylab" style="top: 50%">£22k</span><span class="ylab" style="top: 91.67%">£21k</span>
                     </div>
-                    <div class="mp-chartaxis mp-ink2" style="margin: 6px 40px 0 0"><span style="left: 6.7%">Aug</span><span style="left: 36.5%">Sep</span><span style="left: 65.4%">Oct</span><span class="ax-e" style="left: 100%">6 Nov</span></div>
-                    <div class="mp-foot mp-ink2" style="margin-top: 10px">Hold for the next 2 weeks · a view, not advice</div>
+                    <div class="mp-chartaxis mp-ink2" style="margin: 6px 40px 0 0"><span style="left: 7.7%">Aug</span><span style="left: 42.2%">Sep</span><span style="left: 75.6%">Oct</span><span class="ax-e" style="left: 100%">23 Oct</span></div>
+                    <div class="mp-foot mp-ink2" style="margin-top: 10px">XIRR 8.4% · CAGR 8.0% from 38 dated buys</div>
                   </div>
-                  <div class="spec"><b>A holding's history</b><span>LineMark and AreaMark · the chart line and area</span><span>RectangleMark · the stance horizon, in the stance's tint, dashed edge</span><span>AxisMarks · trailing, pounds masked in privacy mode</span><span>The stance only on the holding's own card</span></div>
+                  <div class="spec"><b>A holding's history</b><span>LineMark and AreaMark · the chart line and area</span><span>AxisMarks · trailing, pounds masked in privacy mode</span><span>XIRR and CAGR as text under the plot</span></div>
 
                   <div class="mp-card fx col gap12">
-                    <div class="fx col gap2"><span class="mp-hl">Overlap · what your funds share</span><span class="mp-foot mp-ink2">Share of the smaller fund that the other also holds</span></div>
-                    <sc-for list="{{ overlap }}" as="o" hint-placeholder-count="3">
-                      <div class="obar"><div class="obar-t"><span>{{ o.a }}</span><span class="mp-w6">{{ o.p }}</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: {{ o.p }}"></div></div></div>
+                    <div class="fx col gap2"><span class="mp-hl">Returns · each holding's XIRR</span><span class="mp-foot mp-ink2">From the dated ledger, every buy on its date</span></div>
+                    <sc-for list="{{ returns }}" as="o" hint-placeholder-count="3">
+                      <div class="obar"><div class="obar-t"><span>{{ o.a }}</span><span class="mp-w6">{{ o.p }}</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: {{ o.w }}"></div></div></div>
                     </sc-for>
                   </div>
-                  <div class="spec"><b>The overlap bars</b><span>BarMark · one colour, the meter blue, never green</span><span>The value as text beside each bar</span><span>Largest first</span></div>
+                  <div class="spec"><b>The return bars</b><span>BarMark · one colour, the meter blue, never green</span><span>The value as text beside each bar</span><span>Largest first</span></div>
                 </div>
               </div>
             </div>
           </sc-for>
           <div class="bd-note">
             <p><b>One house style in Swift Charts.</b> The chat's cards and the dashboard draw the same charts from the engine's series; no chart is an image any more (MA-56, MA-58).</p>
-            <p><b>Lines and areas are marks; words are text.</b> Labels, values and the stance's word are SwiftUI text over the plot, as tokens.css's chart rule says: never a value baked into a drawing.</p>
-            <p><b>The coral line is the house's,</b> on the navy hero and on the card. A stance's horizon is shaded in its own tint, and the card says "a view, not advice".</p>
+            <p><b>Lines and areas are marks; words are text.</b> Labels, values and a status word are SwiftUI text over the plot, as tokens.css's chart rule says: never a value baked into a drawing.</p>
+            <p><b>The coral line is the house's,</b> on the navy hero and on the card. A forecast is its own chart (the Projection, the Budget forecast), never a tail on a price line.</p>
             <p><b>Motion.</b> The line and its area draw in under an animated mask, dots and labels land after, bars grow from zero, and scrubbing moves a glass lollipop with a selection tick per point.</p>
             <p><b>Never green for a bar.</b> Bars and meters are the meter blue; green stays for gains with ▲. Every chart has an audio graph (board 11).</p>
           </div>
@@ -756,8 +760,8 @@
               <div class="kp mp {{ t.cls }}" data-mo-frame-root="1" style="width: 720px">
                 <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start">
                   <div class="atile" style="grid-column: 1 / -1"><span class="kl">25% brightness · the same card at full and at a simulated 25%</span>
-                    <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px"><div class="ks gap6"><span class="kl">Full brightness</span><div style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Why?</span></div></div></div></div><div class="ks gap6"><span class="kl">25%, drawn as brightness 0.35</span><div class="dimmed" style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Why?</span></div></div></div></div></div>
-                    <div class="brule"><span class="kli"><span class="ms">check</span><span>No tertiary grey for anything a member must read</span></span><span class="kli"><span class="ms">check</span><span>Nothing under 12 pt; secondary text 13 pt or more</span></span><span class="kli"><span class="ms">check</span><span>Regular weight or heavier, never light or thin</span></span><span class="kli"><span class="ms">check</span><span>No hairline as the only edge of a control</span></span><span class="kli"><span class="ms">check</span><span>Glass carries labels only, in ink or ink-2</span></span><span class="kli"><span class="ms">check</span><span>iOS turns glass dark over dark content</span></span></div>
+                    <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px"><div class="ks gap6"><span class="kl">Full brightness</span><div style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Ask about it</span></div></div></div></div><div class="ks gap6"><span class="kl">25%, drawn as brightness 0.35</span><div class="dimmed" style="background: var(--mp-bg); border-radius: 16px; padding: 12px"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Balanced · Monzo · ISA</span><span class="mp-num-l">£22,925</span><span class="mp-foot mp-up mp-w6">▲ 0.6% today</span><span class="mp-sub mp-ink2">Prices to Thu 22 Oct close</span></div><div class="ccard-acts"><span class="cbtn cbtn-primary">Open</span><span class="cbtn cbtn-ghost">Ask about it</span></div></div></div></div></div>
+                    <div class="brule"><span class="kli"><span class="ms" aria-hidden="true">check</span><span>No tertiary grey for anything a member must read</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Nothing under 12 pt; secondary text 13 pt or more</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Regular weight or heavier, never light or thin</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>No hairline as the only edge of a control</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>Glass carries labels only, in ink or ink-2</span></span><span class="kli"><span class="ms" aria-hidden="true">check</span><span>iOS turns glass dark over dark content</span></span></div>
                   </div>
                   <div class="ks" style="gap: 16px">
                     <div class="atile"><span class="kl">VoiceOver · a figure</span>
@@ -777,8 +781,8 @@
                   <div class="ks" style="gap: 16px">
                     <div class="atile"><span class="kl">Increase Contrast</span>
                       <div class="kg" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
-                        <div class="ks" style="gap: 8px"><span class="kl">Standard</span><div class="icg"><div class="icr"><span class="mp-sub mp-w6">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></div><div class="icr" style="border-top: 1px solid var(--mp-line)"><span class="mp-sub mp-w6">Cash</span><span class="mp-foot mp-ink2">Monzo pot</span></div></div><span class="gbtn lg"><span class="ms">more_horiz</span></span></div>
-                        <div class="ks" style="gap: 8px"><span class="kl">Increased</span><div class="icg" style="box-shadow: inset 0 0 0 1px {{ t.icLine }}"><div class="icr"><span class="mp-sub mp-w6">Balanced</span><span class="mp-foot" style="color: {{ t.ic3 }}">Monzo · ISA</span></div><div class="icr" style="border-top: 1px solid {{ t.icLine }}"><span class="mp-sub mp-w6">Cash</span><span class="mp-foot" style="color: {{ t.ic3 }}">Monzo pot</span></div></div><span class="gbtn lg lg-strong" style="box-shadow: 0 0 0 1.5px {{ t.icLine }}, var(--lg-lift)"><span class="ms">more_horiz</span></span></div>
+                        <div class="ks" style="gap: 8px"><span class="kl">Standard</span><div class="icg"><div class="icr"><span class="mp-sub mp-w6">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span></div><div class="icr" style="border-top: 1px solid var(--mp-line)"><span class="mp-sub mp-w6">Cash</span><span class="mp-foot mp-ink2">Monzo pot</span></div></div><span class="gbtn lg"><span class="ms" aria-hidden="true">more_horiz</span></span></div>
+                        <div class="ks" style="gap: 8px"><span class="kl">Increased</span><div class="icg" style="box-shadow: inset 0 0 0 1px {{ t.icLine }}"><div class="icr"><span class="mp-sub mp-w6">Balanced</span><span class="mp-foot" style="color: {{ t.ic3 }}">Monzo · ISA</span></div><div class="icr" style="border-top: 1px solid {{ t.icLine }}"><span class="mp-sub mp-w6">Cash</span><span class="mp-foot" style="color: {{ t.ic3 }}">Monzo pot</span></div></div><span class="gbtn lg lg-strong" style="box-shadow: 0 0 0 1.5px {{ t.icLine }}, var(--lg-lift)"><span class="ms" aria-hidden="true">more_horiz</span></span></div>
                       </div>
                     </div>
                     <div class="atile"><span class="kl">Reduce Motion</span>
@@ -788,14 +792,14 @@
                     </div>
                     <div class="atile"><span class="kl">44 pt targets</span>
                       <div class="fx" style="gap: 30px; align-items: flex-start; padding: 6px 4px 0 6px">
-                        <div class="bspec"><span class="gbtn lg hit"><span class="ms">more_horiz</span></span><span class="kl nw">44 · 44</span></div>
-                        <div class="bspec"><span class="gchip lg hit" style="outline-offset: 4px"><span class="ms">wb_sunny</span><span>Today</span></span><span class="kl nw" style="margin-top: 4px">36 drawn<br />44 to tap</span></div>
-                        <div class="bspec"><span class="ms hit" style="font-size: 22px; outline-offset: 11px; margin: 11px">info</span><span class="kl nw">22 glyph<br />44 to tap</span></div>
+                        <div class="bspec"><span class="gbtn lg hit"><span class="ms" aria-hidden="true">more_horiz</span></span><span class="kl nw">44 · 44</span></div>
+                        <div class="bspec"><span class="gchip lg hit"><span class="ms" aria-hidden="true">wb_sunny</span><span>Today</span></span><span class="kl nw" style="margin-top: 4px">36 drawn<br />44 tall to tap</span></div>
+                        <div class="bspec"><span class="ms hit" style="font-size: 22px; outline-offset: 11px; margin: 11px" aria-hidden="true">info</span><span class="kl nw">22 glyph<br />44 to tap</span></div>
                       </div>
                     </div>
                     <div class="atile"><span class="kl">Colour is never the only signal</span>
-                      <div class="fx ac" style="gap: 14px; flex-wrap: wrap"><span class="mp-sub mp-up mp-w6">▲ 0.6%</span><span class="mp-sub mp-dq mp-w6">▼ 1.2%</span><span class="mp-chip mp-alertchip"><span class="ms" style="font-size: 16px">warning</span>Needs a look</span></div>
-                      <span class="mp-foot mp-ink2">Gains carry ▲, falls ▼; a stance is a word; an alert has an icon and a word; a chart labels its lines.</span>
+                      <div class="fx ac" style="gap: 14px; flex-wrap: wrap"><span class="mp-sub mp-up mp-w6">▲ 0.6%</span><span class="mp-sub mp-dq mp-w6">▼ 1.2%</span><span class="mp-chip mp-alertchip"><span class="ms" style="font-size: 16px" aria-hidden="true">warning</span>Needs a look</span></div>
+                      <span class="mp-foot mp-ink2">Gains carry ▲, falls ▼; a status is a word; an alert has an icon and a word; a chart labels its lines.</span>
                     </div>
                   </div>
                 </div>
@@ -834,16 +838,16 @@
                 <div class="kg" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 20px">
                   <div class="ks"><span class="kl dv-cap">Card arrives · .smooth</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Portfolio</span><span class="mp-num-l">£24,110</span><span class="mp-foot mp-up mp-w6">▲ £96 · 0.4% today</span></div></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Sent and received</span><div class="mdemo" data-mo-frame-root="1"><div class="chat" style="padding: 0; gap: 10px"><div class="me">£200 into Balanced</div><div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Got it. Read it, then Confirm.</div></div></div></div></div></div>
-                  <div class="ks"><span class="kl dv-cap">Chips · 45 ms apart</span><div class="mdemo" data-mo-frame-root="1"><div class="chips" style="flex-wrap: wrap; overflow: visible"><span class="gchip lg"><span class="ms">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms">history</span><span>Audit</span></span><span class="gchip lg"><span class="ms">payments</span><span>Log money</span></span></div></div></div>
-                  <div class="ks"><span class="kl dv-cap">Sheet rises</span><div class="mdemo" data-mo-frame-root="1" style="justify-content: flex-start"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span><div class="dim"></div><div class="sheet lg" style="border-radius: 26px; padding: 8px 16px 16px; gap: 6px"><div class="sheet-grab"></div><span class="mp-hl">What if?</span><span class="mp-foot mp-ink2">Drag up for the large detent</span></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Chips · 45 ms apart</span><div class="mdemo" data-mo-frame-root="1"><div class="chips" style="flex-wrap: wrap; overflow: visible"><span class="gchip lg"><span class="ms" aria-hidden="true">pie_chart</span><span>Portfolio</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">wb_sunny</span><span>Today</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">history</span><span>Audit</span></span><span class="gchip lg"><span class="ms" aria-hidden="true">payments</span><span>Log money</span></span></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Sheet rises</span><div class="mdemo" data-mo-frame-root="1" style="justify-content: flex-start"><span class="mp-hl">Balanced</span><span class="mp-foot mp-ink2">Monzo · ISA</span><div class="dim"></div><div class="sheet lg" style="border-radius: 26px; padding: 8px 16px 16px; gap: 6px"><div class="sheet-grab"></div><span class="mp-hl">A what-if</span><span class="mp-foot mp-ink2">Drag up for the large detent</span></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Chart draws in</span><div class="mdemo" data-mo-frame-root="1"><div class="mp-chartbox" style="height: 96px; margin-top: 16px"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="height: 100%"><path d="{{ hero.area }}" fill="var(--mp-chart-area)"></path><path d="{{ hero.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path></svg><span class="mp-chartdot" style="left: {{ hero.ex }}; top: {{ hero.ey }}"></span><span class="mp-chartlbl" style="left: {{ hero.ex }}; top: {{ hero.ey }}">Today</span></div><div class="mp-chartaxis mp-ink2"><span class="ax-s" style="left: 0">1 Oct</span><span class="ax-e" style="left: 100%">23 Oct</span></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Meters grow</span><div class="mdemo" data-mo-frame-root="1"><div class="obar"><div class="obar-t"><span>Claude this cycle</span><span class="mp-w6">$18 of $160</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: 11%"></div></div></div><div class="obar"><div class="obar-t"><span>AWS and others</span><span class="mp-w6">£3 of £50</span></div><div class="mp-track" style="height: 10px"><div class="obar-f" style="width: 6%"></div></div></div><span class="mp-foot mp-ink2">Renews on the 3rd</span></div></div>
                   <div class="ks"><span class="kl dv-cap">Figure rolls · numericText</span><div class="mdemo" data-mo-frame-root="1"><div class="mp-hero fx col gap4"><span class="mp-foot mp-hero-2">Household · counts once</span><span class="mp-num-hero">£24,110</span></div></div></div>
                   <div class="ks"><span class="kl dv-cap">Segmented lens · tap it</span><div class="mdemo" data-mo-frame-root="1"><div class="mp-seg"><span class="mp-seg-i segc on">Household</span><span class="mp-seg-i segc">Me</span><span class="mp-seg-i segc">Asha</span></div><span class="mp-foot mp-ink2">The selection glides to the tapped segment with .snappy.</span></div></div>
-                  <div class="ks"><span class="kl dv-cap">Tab bar lens · tap it</span><div class="mdemo" data-mo-frame-root="1"><div class="tabs lg" style="flex: none"><span class="tab on"><span class="ms">chat_bubble</span>Chat</span><span class="tab"><span class="ms">home</span>Home</span><span class="tab"><span class="ms">insights</span>Activity</span><span class="tab"><span class="ms">account_circle</span>You</span></div><span class="mp-foot mp-ink2">One glass lens, morphed with glassEffectID.</span></div></div>
-                  <div class="ks"><span class="kl dv-cap">Confirm, then Saved</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Confirm</span><span class="mp-hl">Bought £200 of Balanced</span></div><div class="ccard-acts" style="align-items: center"><span class="ms ms-fill msaved" data-mo="saved">check_circle</span><span class="mp-hl">Saved</span><span class="mp-foot mp-ink2">to the audit log</span></div></div></div></div>
-                  <div class="ks"><span class="kl dv-cap">Face ID</span><div class="mdemo" data-mo-frame-root="1" style="align-items: center"><div class="faceid" data-mo="face"><span class="ms">familiar_face_and_zone</span></div><span class="mp-foot mp-ink2">iOS's glyph settles, then the action runs</span></div></div>
-                  <div class="ks"><span class="kl dv-cap">Red alert · one pulse</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard" data-mo="attn" style="box-shadow: inset 0 0 0 1.5px var(--mp-alert), var(--mp-shadow)"><div class="ccard-h"><span class="fx ac gap6 c-alert mp-foot mp-w6"><span class="ms" style="font-size: 18px">warning</span>Act today</span><span class="mp-hl">NASDAQ 100 ETF passed your alert</span><span class="mp-foot mp-ink2">8.4% below its high, past the 8% you set.</span></div></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Tab bar lens · tap it</span><div class="mdemo" data-mo-frame-root="1"><div class="tabs lg" style="flex: none"><span class="tab on"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab"><span class="ms" aria-hidden="true">account_circle</span>You</span></div><span class="mp-foot mp-ink2">One glass lens, morphed with glassEffectID.</span></div></div>
+                  <div class="ks"><span class="kl dv-cap">Confirm, then Saved</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Confirm</span><span class="mp-hl">Bought £200 of Balanced</span></div><div class="ccard-acts" style="align-items: center"><span class="ms ms-fill msaved" data-mo="saved" aria-hidden="true">check_circle</span><span class="mp-hl">Saved</span><span class="mp-foot mp-ink2">to the audit log</span></div></div></div></div>
+                  <div class="ks"><span class="kl dv-cap">Face ID</span><div class="mdemo" data-mo-frame-root="1" style="align-items: center"><div class="faceid" data-mo="face"><span class="ms" aria-hidden="true">familiar_face_and_zone</span></div><span class="mp-foot mp-ink2">iOS's glyph settles, then the action runs</span></div></div>
+                  <div class="ks"><span class="kl dv-cap">Red alert · one pulse</span><div class="mdemo" data-mo-frame-root="1"><div class="ccard" data-mo="attn" style="box-shadow: inset 0 0 0 1.5px var(--mp-alert), var(--mp-shadow)"><div class="ccard-h"><span class="fx ac gap6 c-alert mp-foot mp-w6"><span class="ms" style="font-size: 18px" aria-hidden="true">warning</span>Have a look today</span><span class="mp-hl">A job failed twice</span><span class="mp-foot mp-ink2">Prices for 2 holdings did not arrive.</span></div></div></div></div>
                 </div>
               </div>
             </div>
@@ -854,7 +858,7 @@
             <p><b>Nothing loops forever.</b> The typing mark and a skeleton stop on their own; a red alert pulses for attention and stops.</p>
             <p><b>Figures count once.</b> A figure counts up on its first appearance; after that only its changed digits roll.</p>
             <p><b>Reduce Motion.</b> Everything becomes a 150 ms cross-fade or lands at once; haptics stay.</p>
-            <p><b>Both apps, one choreography.</b> The iOS app ships it in SwiftUI; the web app (the read-only dashboard and Admin center, a PWA) plays the same keyframes in CSS and the Web Animations API (MA-182).</p>
+            <p><b>Both apps, one choreography.</b> The iOS app ships it in SwiftUI; the web app (a PWA with the same chat, dashboard and Admin center) plays the same keyframes in CSS and the Web Animations API (MA-182).</p>
           </div>
         </div>
         <div class="mtab">
@@ -930,11 +934,11 @@
               T('mp-cap', 'caption 12/16', '.mp-cap', 'Fri 23 Oct · 07:15')
             ],
             hero: mk([23614, 23580, 23650, 23700, 23660, 23720, 23810, 23790, 23760, 23840, 23900, 23870, 23930, 23980, 23950, 23890, 23940, 24010, 23990, 24050, 24030, 24014, 24110], 0, 97, 23500, 24300),
-            bal: mk([21650, 21800, 21720, 21950, 22100, 22040, 22300, 22250, 22480, 22610, 22550, 22790, 22925], 0, 86.5, 20800, 23200),
-            overlap: [
-              { a: 'NASDAQ 100 ETF and Balanced', p: '37%' },
-              { a: 'Robotics ETF and Balanced', p: '9%' },
-              { a: 'Robotics ETF and NASDAQ 100 ETF', p: '3%' }
+            bal: mk([21650, 21800, 21720, 21950, 22100, 22040, 22300, 22250, 22480, 22610, 22550, 22790, 22925], 0, 100, 20800, 23200),
+            returns: [
+              { a: 'NASDAQ 100 ETF', p: '14.2%', w: '89%' },
+              { a: 'Balanced', p: '8.4%', w: '53%' },
+              { a: 'Robotics ETF', p: '6.1%', w: '38%' }
             ],
             btns: [
               B('Primary', 'filled accent', 'cbtn cbtn-primary', 'Confirm'),
@@ -942,7 +946,7 @@
               B('Ghost', 'accent label', 'cbtn cbtn-ghost', 'Cancel'),
               B('Alert', 'destructive only', 'cbtn cbtn-alert', 'Sign out'),
               B('Large', 'sheets · 50', 'mp-btn mp-btn-primary', 'Continue'),
-              B('Stance chip', 'content', 'mp-chip mp-hold', 'Hold · 71%')
+              B('Status chip', 'content', 'mp-chip mp-hold', 'Due Sun 1 Nov')
             ],
             icons: [
               { lab: 'Default', cls: 'appicon-default ic-def' },

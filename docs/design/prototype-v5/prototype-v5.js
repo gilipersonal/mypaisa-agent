@@ -1,8 +1,9 @@
-/* MyPaisa · Prototype v5 (MA-291): the controller. One journey of chapters (one per phase, 0 to 20), each a
+/* MyPaisa · Prototype v5 (MA-291): the controller. One journey of chapters (one per phase walked: 0 to 9, 13 to 15), each a
    run of steps with its date and time; five doors (the web app at 1440 and at 390, the iPhone, the iPad in
    landscape with the chat beside, the foldable open); light and dark; privacy; Arun's or Asha's view.
-   Chapter files register pages and chapters (MP5.page, MP5.chapter, MP5.holdingTab); this file draws the
-   frames, the control bar and the ledger as of each step's time, and routes every click (data-go). */
+   Chapter files register pages and chapters (MP5.page, MP5.chapter); this file draws the frames, the control bar
+   and the ledger as of each step's time, and routes every click (data-go). MA-307, 2 Nov 2026: the market side was
+   retired; MyPaisa is a wealth tracker only. */
 (function () {
   'use strict';
   /* the board runtime may run its scripts twice: the controller is made once, so its state and its mount stay one */
@@ -13,16 +14,12 @@
   MP5.K = K;
   MP5.chapters = MP5.chapters || [];
   MP5.pages = MP5.pages || {};
-  MP5.tabsFor = MP5.tabsFor || {};
   /* the board runtime may run a script twice: a chapter registered again under its key replaces the first */
   MP5.chapter = function (def) {
     for (var i = 0; i < MP5.chapters.length; i++) if (MP5.chapters[i].key === def.key) { MP5.chapters[i] = def; return; }
     MP5.chapters.push(def);
   };
   MP5.page = function (id, fn) { MP5.pages[id] = fn; };
-  /* a holding page's tabs are drawn by more than one chapter file: Overview and Track record (phases 10 to 15),
-     Forecast (phase 17); holdingTab(id, {t: 'Forecast', order, draw(ctx, holdingId)}) */
-  MP5.holdingTab = function (id, def) { MP5.tabsFor[id] = def; };
 
   var DOORS = [
     { id: 'desk', t: 'Desktop', w: 1440, h: 900, web: true, wide: true },
@@ -37,7 +34,6 @@
   /* the web app's navigation, and the app's (shell 1a: Chat · Home · Activity · You, and the search circle) */
   var NAV = [
     { sec: 'Money', items: [['home', 'Home', 'home'], ['assets', 'Assets', 'account_balance_wallet'], ['debts', 'Debts', 'credit_card'], ['budget', 'Budget', 'pie_chart'], ['projection', 'Projection', 'show_chart'], ['plans', 'Plans', 'event_note'], ['reports', 'Reports', 'summarize']] },
-    { sec: 'Investing', items: [['holdings', 'Holdings', 'candlestick_chart'], ['overlap', 'Overlap', 'join'], ['track', 'Track record', 'fact_check'], ['news', 'News and events', 'newspaper']] },
     { sec: 'Household', items: [['activity', 'Activity', 'history'], ['audit', 'Audit', 'receipt_long'], ['files', 'Files', 'folder'], ['you', 'You', 'person']] },
     { sec: 'Admin', admin: true, items: [['admin', 'Admin center', 'admin_panel_settings'], ['team', 'Agent team', 'groups']] }
   ];
@@ -72,12 +68,12 @@
     W.homeValue = W.homeCorrected ? 428000 : 415000;
     W.pricesAt = 'Fri 23 Oct close';
     /* a record's value as of the time (W.value(id)): the registry's, and from Sat 7 Nov the investments at the
-       Fri 6 Nov close (engine-v5.json's fri_6_nov, phase 15), carried into every total so they still add up */
+       Fri 6 Nov close (the daily prices' fri_6_nov), carried into every total so they still add up */
     var vals = {};
     (h.assets || []).forEach(function (a) { vals[a.id] = a.value; });
     vals.home = W.homeValue;
     if (W.monzoSavings && h.new_record_in_prototype) vals[h.new_record_in_prototype.id] = h.new_record_in_prototype.value;
-    var E = D.engine;
+    var E = D.prices;
     if (E && E.fri_6_nov && t >= '2026-11-07T00:00') {
       var by = E.fri_6_nov.by, ch = 0, mem = {};
       Object.keys(by).forEach(function (id) {
@@ -95,7 +91,7 @@
       W.pricesAt = 'Fri 6 Nov close';
     }
     /* before Friday's close (the funds' prices land that evening), the investments are at the Thu 22 Oct close:
-       Friday's own move (engine-v5.json's day) taken back out of every total */
+       Friday's own move (the daily prices' day) taken back out of every total */
     if (E && E.day && t < '2026-10-23T21:00') {
       var dby = E.day.by, dch = 0, dmem = {};
       Object.keys(dby).forEach(function (id) {
@@ -119,7 +115,7 @@
 
   /* ---------- state ---------- */
   var CHARTS = [['a', 'A · Pulse'], ['b', 'B · Editorial'], ['c', 'C · Modular'], ['classic', 'Classic']];
-  var st = { door: 'desk', dark: false, priv: false, charts: 'a', viewer: 'arun', ci: 0, si: 0, view: null, pane: null, hist: [], open: {}, seen: {}, toast: null, sheet: null, moreOpen: false, sheetOff: false };
+  var st = { door: 'desk', dark: false, priv: false, charts: 'a', viewer: 'arun', scope: 'all', ci: 0, si: 0, view: null, pane: null, hist: [], open: {}, seen: {}, toast: null, sheet: null, moreOpen: false, sheetOff: false };
   MP5.state = function () { return st; };
   function load() {
     try {
@@ -140,7 +136,7 @@
     var t = iso(step && step.d, step && step.tm);
     var ctx = {
       door: d.id, web: !!d.web, app: !!d.app, compact: !!d.compact, wide: !!d.wide, narrow: !!d.narrow,
-      dark: st.dark, priv: st.priv, charts: st.charts, viewer: st.viewer, isAdmin: st.viewer === 'arun', who: st.viewer === 'arun' ? 'Arun' : 'Asha',
+      dark: st.dark, priv: st.priv, charts: st.charts, viewer: st.viewer, scope: st.scope, isAdmin: st.viewer === 'arun', who: st.viewer === 'arun' ? 'Arun' : 'Asha',
       t: t, d: step ? step.d : '', tm: step ? step.tm : '', step: step, ch: ch, W: world(t), D: window.MP5D || {}, K: K,
       open: st.open, view: st.view, MP5: MP5
     };
@@ -171,6 +167,13 @@
   function drawChat(ctx) {
     var s = ctx.step, msgs = [];
     try { msgs = s && s.chat ? s.chat(ctx) : []; } catch (e) { console.error('[pv5] chat ' + (s && s.id), e); msgs = [K.ai(K.note('error', K.esc(String(e && e.message || e))))]; }
+    /* MA-307: only admins write. A step's chat that draws the same conversation whoever views it is the admin's own
+       (its Confirm cards, approvals and undo); a member who is not an admin sees her own, view-only chat instead. */
+    if (!ctx.isAdmin && s && s.chat && msgs && msgs.length) {
+      var actx = Object.assign({}, ctx, { viewer: 'arun', isAdmin: true, who: 'Arun' }), amsgs = null;
+      try { amsgs = s.chat(actx); } catch (e2) { amsgs = null; }
+      if (amsgs && amsgs.join('') === msgs.join('')) msgs = [K.ai(ctx.who + '’s own conversation: ask anything about the household’s money. Adding, correcting and deleting are an admin’s, in the admin’s own chat; switch the Viewer to Arun to follow this step.')];
+    }
     if (!msgs || !msgs.length) msgs = [K.ai('Ask or tell MyPaisa anything about the household’s money.')];
     return '<div class="chat">' + msgs.join('') + '</div>';
   }
@@ -179,6 +182,8 @@
     var g = ctx.web ? '' : ' lg';
     var sendOn = (c.typed || c.files) ? (ctx.web ? ' on' : ' lg-tint') : '';
     var chips = c.chips || [['Add something', 'add', 'chip:add'], ['What changed?', 'history', 'chip:changed'], ['Why?', 'help', 'chip:why']];
+    /* MA-307: a member who is not an admin views only, so her composer offers no Add */
+    if (!ctx.isAdmin) chips = chips.filter(function (x) { return x[2] !== 'chip:add'; });
     var sug = c.sug ? '<button type="button" class="gchip' + g + '"' + K.go(c.sug[1]) + '>' + K.ms('north_east') + '<span>' + c.sug[0] + '</span></button>' : '';
     var typed = c.typed ? '<span class="txt">' + c.typed + '</span>' : '<span class="ph">' + (c.ph || 'Ask or tell MyPaisa…') + '</span>';
     var files = c.files ? '<span class="txt fx ac g6">' + c.files.map(function (f) { return K.ms('picture_as_pdf') + K.esc(f); }).join(' ') + '</span>' : '';
@@ -215,7 +220,7 @@
   }
   function themeCls() { return 'mp' + (st.dark ? ' t-dark' : ' t-light') + (st.priv ? ' privon' : '') + ' charts-' + st.charts; }
   function moreDrawer(ctx, active) {
-    var h = '<div class="dim"' + K.go('more:close') + '></div><nav class="w-more" role="dialog" aria-modal="true" aria-label="All sections">' +
+    var h = '<div class="dim" aria-hidden="true"' + K.go('more:close') + '></div><nav class="w-more" role="dialog" aria-modal="true" aria-label="All sections">' +
       '<div class="w-more-h"><span class="mp-hl">Sections</span><button type="button" class="iconbtn" aria-label="Close sections"' + K.go('more:close') + '>' + K.ms('close') + '</button></div>' +
       '<div class="w-more-b"><button type="button" class="mp-side-i' + (active === 'search' ? ' on' : '') + '"' + K.go('nav:search') + '>' + K.ms('search') + '<span>Search</span></button>';
     NAV.forEach(function (g) {
@@ -230,8 +235,8 @@
     var sheet = (!st.sheetOff && ctx.step && ctx.step.sheet) ? ctx.step.sheet(ctx) : null;
     if (sheet) {
       var closeKey = (ctx.step && ctx.step.sheetClose) || 'sheet:dismiss';
-      if (ctx.web) h += '<div class="dim"' + K.go(closeKey) + '></div><div class="sheet w-sheet" role="dialog" aria-modal="true">' + sheet + '</div>';
-      else h += '<div class="dim"' + K.go(closeKey) + '></div><div class="sheet lg" role="dialog" aria-modal="true"><div class="sheet-grab"></div>' + sheet + '</div>';
+      if (ctx.web) h += '<div class="dim" aria-hidden="true"' + K.go(closeKey) + '></div><div class="sheet w-sheet" role="dialog" aria-modal="true">' + sheet + '</div>';
+      else h += '<div class="dim" aria-hidden="true"' + K.go(closeKey) + '></div><div class="sheet lg" role="dialog" aria-modal="true"><div class="sheet-grab"></div>' + sheet + '</div>';
     }
     if (ctx.web && st.moreOpen) h += moreDrawer(ctx, active);
     if (st.toast) h += '<div class="mp-toast" role="status" aria-live="polite" style="position:absolute;left:50%;bottom:120px;transform:translateX(-50%);z-index:60;max-width:80%">' + st.toast + '</div>';
@@ -305,12 +310,68 @@
     return h;
   }
 
+  /* ---------- focus (MA-300 P2-4, P0-8) ----------
+     render() redraws the whole root, so the element that had focus is replaced: before the redraw, note it by what
+     it does (its data-go, which of that kind it is, or the chart it scrubs); after, focus the one that does the same.
+     A dialog (a sheet, the More drawer) takes focus when it opens and keeps Tab inside it; when it closes, focus goes
+     back to what opened it. Focus is moved only while a member is using the prototype (focus already inside it), so a
+     frame drawn by a script or a gate is left as drawn. */
+  var FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+  var opener = null;
+  function focusKey(root) {
+    var a = document.activeElement;
+    if (!a || a === document.body || !root.contains(a)) return null;
+    var go = a.getAttribute('data-go'), inFrame = !!a.closest('.pframe');
+    if (go) {
+      var same = root.querySelectorAll('[data-go="' + go.replace(/"/g, '\\"') + '"]');
+      return { go: go, i: Array.prototype.indexOf.call(same, a), inFrame: inFrame };
+    }
+    if (a.hasAttribute('data-scrub')) return { scrub: Array.prototype.indexOf.call(root.querySelectorAll('[data-scrub]'), a), inFrame: inFrame };
+    return { any: true, inFrame: inFrame };
+  }
+  function dialogIn(root) { return root.querySelector('.pframe [role="dialog"][aria-modal="true"]'); }
+  function restoreFocus(root, k, wasDialog) {
+    if (!k) return;
+    var dlg = dialogIn(root), el = null;
+    if (k.go) { var same = root.querySelectorAll('[data-go="' + k.go.replace(/"/g, '\\"') + '"]'); el = same[Math.min(k.i, same.length - 1)] || null; }
+    else if (k.scrub != null) el = root.querySelectorAll('[data-scrub]')[k.scrub] || null;
+    /* the walk-through's own control bar keeps its focus (Next stays on Next); a member inside the product is taken
+       into a dialog that opens */
+    if (dlg && k.inFrame && (!el || !dlg.contains(el))) {
+      /* a dialog that has just opened, or one that holds focus: its first control */
+      if (!wasDialog) opener = k;
+      el = dlg.querySelector(FOCUSABLE);
+      if (!el) { dlg.setAttribute('tabindex', '-1'); el = dlg; }
+    } else if (!dlg && wasDialog && opener) {
+      /* the dialog closed: back to what opened it, if it is still drawn */
+      var o = opener; opener = null;
+      if (o.go) { var s2 = root.querySelectorAll('[data-go="' + o.go.replace(/"/g, '\\"') + '"]'); el = s2[Math.min(o.i, s2.length - 1)] || el; }
+    }
+    if (!el && k.inFrame) el = root.querySelector('.pframe ' + FOCUSABLE.split(', ')[0]);
+    if (el && el.focus) el.focus({ preventScroll: true });
+  }
+  function trapTab(e) {
+    if (e.key !== 'Tab' || !root) return;
+    var dlg = dialogIn(root), a = document.activeElement;
+    if (!dlg) return;
+    var fr = root.querySelector('.pframe');
+    if (!fr || !a || !fr.contains(a)) return;   /* the prototype's own control bar sits outside the product */
+    var list = Array.prototype.filter.call(dlg.querySelectorAll(FOCUSABLE), function (x) { return x.offsetParent !== null || x === document.activeElement; });
+    if (!list.length) { e.preventDefault(); dlg.setAttribute('tabindex', '-1'); dlg.focus({ preventScroll: true }); return; }
+    var first = list[0], last = list[list.length - 1];
+    if (!dlg.contains(a)) { e.preventDefault(); first.focus({ preventScroll: true }); }
+    else if (e.shiftKey && (a === first || a === dlg)) { e.preventDefault(); last.focus({ preventScroll: true }); }
+    else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus({ preventScroll: true }); }
+  }
+  MP5.trapTab = trapTab;
+
   /* ---------- render ---------- */
   var root = null, lastKey = null;
   function render() {
     if (!root) return;
     var c = cur(), ctx = ctxFor(c.ch, c.step), d = door(st.door);
     if (!c.ch) { root.innerHTML = '<div class="pv5"><div class="pstage">Loading…</div></div>'; return; }
+    var fk = focusKey(root), wasDialog = !!dialogIn(root);
     var pid = pageId(ctx), p = drawPage(ctx, pid);
     var focus = st.pane || (c.step && c.step.focus) || (c.step && c.step.page ? 'page' : 'chat');
     var frame = (d.web ? frameWeb : frameApp)(ctx, p, focus, d);
@@ -341,6 +402,7 @@
       if (anchor) { var a = e.querySelector('#' + anchor); if (a) { e.scrollTop = Math.max(0, a.offsetTop - 120); return; } }
       if (k === 'chat') e.scrollTop = e.scrollHeight;
     });
+    restoreFocus(root, fk, wasDialog);
   }
   MP5.render = render;
   function fit(d) {
@@ -361,7 +423,7 @@
     ci = Math.max(0, Math.min(cs.length - 1, ci));
     si = Math.max(0, Math.min(cs[ci].steps.length - 1, si));
     if (cs[st.ci]) st.seen[cs[st.ci].key] = true;
-    st.ci = ci; st.si = si; st.view = null; st.pane = null; st.hist = []; st.toast = null; st.open = {}; st.moreOpen = false; st.sheetOff = false;
+    st.ci = ci; st.si = si; st.view = null; st.pane = null; st.hist = []; st.toast = null; st.open = {}; st.moreOpen = false; st.sheetOff = false; st.scope = 'all';
     var s = cs[ci].steps[si];
     st.viewer = (s && s.viewer) || cs[ci].viewer || 'arun';
     if (s && s.open) s.open.forEach(function (k) { st.open[k] = true; });
@@ -379,6 +441,7 @@
     else if (key.indexOf('charts:') === 0) { var cm = key.slice(7); if (['a', 'b', 'c', 'classic'].indexOf(cm) >= 0) { st.charts = cm; save(); } }
     else if (key === 'priv') st.priv = !st.priv;
     else if (key.indexOf('viewer:') === 0) st.viewer = key.slice(7);
+    else if (key.indexOf('scope:') === 0) st.scope = key.slice(6);
     else if (key.indexOf('ch:') === 0) goStep(+key.slice(3), 0);
     else if (key.indexOf('st:') === 0) goStep(st.ci, +key.slice(3));
     else if (key === 'next') next();
@@ -406,6 +469,15 @@
   }
   MP5.act = act;
   MP5.go = function (ci, si) { goStep(ci, si); render(); };
+  /* whether a key does something on this step, rather than the walk-through's "not part of this" toast: the gate
+     reads it to prove every sheet's close control and backdrop close it (MA-300 P0-8) */
+  MP5.handles = function (key) {
+    var s = cur().step || {};
+    if (!key) return false;
+    return /^(door|charts|viewer|scope|ch|st|nav|tab|fold|open):/.test(key) ||
+      ['theme:dark', 'theme:light', 'priv', 'next', 'prev', 'restart', 'more:close', 'sheet:dismiss', 'back'].indexOf(key) >= 0 ||
+      !!(s.on && s.on[key] != null) || key === s.target;
+  };
 
   function parseScrub(box) {
     if (st.priv || !box) return null;
@@ -479,12 +551,21 @@
     if (/[?&]priv=1\b/.test(location.search)) st.priv = true;
     root.addEventListener('click', function (e) { var t = e.target.closest('[data-go]'); if (t && root.contains(t)) { e.preventDefault(); act(t.getAttribute('data-go')); } });
     var activeBox = null;
+    /* a scrub follows the pointer once a frame (requestAnimationFrame), never once per move event */
+    var rafId = 0, rafBox = null, rafX = 0;
+    function scrubSoon(b, x) {
+      rafBox = b; rafX = x;
+      if (rafId) return;
+      rafId = requestAnimationFrame(function () { rafId = 0; if (rafBox && root.contains(rafBox) && activeBox === rafBox) showScrub(rafBox, rafX); });
+    }
+    function scrubEnd() { if (rafId) { cancelAnimationFrame(rafId); rafId = 0; } if (activeBox) { hideScrub(activeBox); activeBox = null; } }
+    MP5.scrubEnd = scrubEnd;
     if (location.search.indexOf('static=1') < 0) {
       root.addEventListener('pointermove', function (e) {
         var b = e.target.closest && e.target.closest('[data-scrub]');
         if (activeBox && activeBox !== b) hideScrub(activeBox);
         activeBox = b;
-        if (b && root.contains(b)) showScrub(b, e.clientX);
+        if (b && root.contains(b)) scrubSoon(b, e.clientX);
       });
       root.addEventListener('pointerdown', function (e) {
         var b = e.target.closest && e.target.closest('[data-scrub]');
@@ -492,24 +573,26 @@
         activeBox = b;
         if (b && root.contains(b)) showScrub(b, e.clientX);
       });
-      root.addEventListener('pointerup', function (e) {
-        if (e.pointerType === 'touch' && activeBox) { hideScrub(activeBox); activeBox = null; }
-      });
-      root.addEventListener('pointercancel', function () { if (activeBox) { hideScrub(activeBox); activeBox = null; } });
-      root.addEventListener('pointerleave', function () { if (activeBox) { hideScrub(activeBox); activeBox = null; } });
+      /* a finger lifted, a scroll that took the gesture over, or the pointer gone: the pill goes, so it never sticks */
+      root.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') scrubEnd(); });
+      root.addEventListener('pointercancel', scrubEnd);
+      root.addEventListener('pointerleave', scrubEnd);
       root.addEventListener('focusout', function (e) {
         var b = e.target.closest && e.target.closest('[data-scrub]');
         if (b && (!e.relatedTarget || !b.contains(e.relatedTarget))) { hideScrub(b); if (activeBox === b) activeBox = null; }
       });
     }
     window.addEventListener('keydown', function (e) {
+      trapTab(e);
+      if (e.defaultPrevented && e.key === 'Tab') return;
       var b = e.target && e.target.closest && e.target.closest('[data-scrub]');
-      if (b && root && root.contains(b) && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+      if (b && root && root.contains(b) && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) {
         var sc = parseScrub(b);
         if (sc) {
           e.preventDefault();
           var curIdx = parseInt(b.getAttribute('data-scrub-idx') || '-1', 10);
-          var nextIdx = curIdx < 0 ? (e.key === 'ArrowRight' ? 0 : sc.pts.length - 1) : curIdx + (e.key === 'ArrowRight' ? 1 : -1);
+          var nextIdx = e.key === 'Home' ? 0 : e.key === 'End' ? sc.pts.length - 1
+            : curIdx < 0 ? (e.key === 'ArrowRight' ? 0 : sc.pts.length - 1) : curIdx + (e.key === 'ArrowRight' ? 1 : -1);
           activeBox = b;
           renderScrubPt(b, sc.ui, sc.pts, nextIdx);
           return;

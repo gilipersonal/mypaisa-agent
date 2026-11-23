@@ -229,9 +229,10 @@
   "check": {
    "type": "grep",
    "file": "ARCHITECTURE.md",
-   "pattern": "scoring, extraction, search, notes, evals\\)",
+   "pattern": "`mypaisa\\.feature` \\(chat,[^)]*\\bevals\\)",
    "present": true
-  }
+  },
+  "updated": "MA-307, 2 Nov 2026: the span feature list lost brief, wrap, review and scoring with the market side and now reads (chat, extraction, statements, search, notes, reviews, memory, evals); evals is still in it"
  },
  {
   "id": "r1-c17",
@@ -333,8 +334,9 @@
   "finding": "MA-249 promised refusals hidden in files and stance cards, which arrive in later phases (lane B)",
   "check": {
    "type": "manual",
-   "what": "Jira MA-249: file-hidden asks join with MA-253; the stance card's line is the stance card's own (9.2)."
-  }
+   "what": "Jira MA-249: file-hidden asks join with MA-253."
+  },
+  "updated": "MA-307, 2 Nov 2026: stance cards are retired (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"); the verifier reads only the file-hidden half"
  },
  {
   "id": "r1-b8a",

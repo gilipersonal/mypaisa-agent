@@ -5,13 +5,17 @@ Confluence (space mypaisaa-agent) is the fifth record beside PLAN.md and ARCHITE
 docs/design/ and the code (.claude/rules/plan-sync.md). Every page is rendered here from docs/trace.json, PLAN.md,
 ARCHITECTURE.md, docs/roadmap.json, the design decision records and the boards in docs/design/, written to docs/confluence/<page>.html, and
 published through the Atlassian MCP by /plan-sync. docs/confluence.json records each page's id, the version
-published and the hash of the HTML sent, and each board preview's media id and the boards it shows.
+published and the hash of the HTML sent, and each board preview's media id and the boards it shows. A page sent by
+hand can arrive cut short (MA-300), so each publish is read back: set-readback compares the body Confluence returns with
+the file sent, once both are normalised, and records the receipt beside the page (MA-303).
 
     python3 scripts/confluence_docs.py write                 # render every page into docs/confluence/
     python3 scripts/confluence_docs.py check                 # fail on a stale or unpublished page or preview
     python3 scripts/confluence_docs.py pending               # the pages and previews that need publishing
     python3 scripts/confluence_docs.py images CAPTURES OUT   # compose the board previews from captured boards
     python3 scripts/confluence_docs.py set-page SLUG ID VERSION [published]  # record a page created, or published
+    python3 scripts/confluence_docs.py set-readback SLUG FILE  # compare the page as read back from Confluence with what was sent
+    python3 scripts/confluence_docs.py selftest              # prove the read-back receipt passes and refuses what it should
     python3 scripts/confluence_docs.py set-image NAME MEDIA COLLECTION # record an uploaded preview
     python3 scripts/confluence_docs.py app-prompt NAME       # the prompt a Maui app (roadmap-gantt, decision-cards) is made from
     python3 scripts/confluence_docs.py set-app NAME ID URL   # record a Maui app made from that prompt
@@ -22,9 +26,11 @@ from __future__ import annotations
 import hashlib
 import html
 import json
+import os
 import re
 import sys
 import urllib.parse
+from html.parser import HTMLParser
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -42,9 +48,8 @@ CLOUD_ID = "81c51173-bbea-4905-bbc5-1a880fa348bb"
 GITHUB = "https://github.com/gilipersonal/mypaisa-agent/blob/main/"
 ARTIFACTS = {
     "Inside MyPaisa": "https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5",
-    "MyPaisa Architecture v4": "https://claude.ai/artifact/QputM7CuDn3Zv5s7TGyGL9",
-    "MyPaisa Agent Journey": "https://claude.ai/artifact/Mg2VPWVEAdbJPfeivYZ5J7",
-    "MyPaisa Market Agent": "https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb",
+    "MyPaisa Architecture v4": "https://claude.ai/artifact/Ns3DLFTCvnLcBxJvRvygBo",
+    "MyPaisa Agent Journey": "https://claude.ai/artifact/HPcNrDt2TvR2hdMBzjFE9u",
     "MyPaisa Guardrails and Evals": "https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT",
 }
 GUARDRAILS_GIFS = [  # (gif in docs/design/guardrails-evals, tab title, caption): the explainer's diagrams, animated (MA-258)
@@ -59,45 +64,44 @@ STACK_GIFS = [  # (gif in docs/design/tech-stack-observability, tab title, capti
     ("01-e2e-trace-fastapi.gif", "1 · E2E trace & FastAPI", "One W3C trace and request ID flow from the browser or iPhone through FastAPI (Mangum and Uvicorn + LWA), the FIFO queues, the agent's Claude GenAI spans and SSE back to the door."),
     ("02-observability-surfaces-cost.gif", "2 · Surfaces & £2.50/mo cost", "Every run feeds the in-app Activity screen (£0), the 8-panel CloudWatch Watch Tower and Transaction Search, and the owner's alerts, for £2.46/month in prod."),
     ("03-frontend-sveltekit-stack.gif", "3 · Web stack (SvelteKit 3)", "SvelteKit 3.1, Svelte 5 runes, Tailwind CSS 4.3, shadcn-svelte, LayerChart and TanStack Query/Table/Virtual/Form sit over web/src/lib/, whose OpenAPI types come straight from FastAPI."),
-    ("04-ios-rn-swiftui-stack.gif", "4 · iOS stack (RN + SwiftUI)", "React Native 0.88 handles state, offline MMKV caching and SSE in TypeScript; every visible screen, card and chart is Swift 6 SwiftUI at 120 Hz across the Fabric C++ bridge."),
+    ("04-ios-rn-swiftui-stack.gif", "4 · iOS stack (RN + SwiftUI)", "React Native 0.88 handles state, the offline cache and SSE in TypeScript; every visible screen, card and chart is Swift 6 SwiftUI at 120 Hz across the Fabric C++ bridge."),
     ("05-backend-fastapi-dynamodb.gif", "5 · FastAPI & DynamoDB", "FastAPI serves both REST and SSE; a thin typed repository on Pydantic v2, boto3 and mypy-boto3-dynamodb handles single-table DynamoDB at £0/mo, whereas DocumentDB would cost £75–£110/mo."),
-    ("06-agent-framework-architecture.gif", "6 · Agent loop & frameworks", "The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge in Phase 18."),
+    ("06-agent-framework-architecture.gif", "6 · Agent loop & frameworks", "The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge for the six-agent team in Phase 13."),
 ]
 CICD_GIFS = [  # (gif in docs/design/cicd-security-regression, tab title, caption): the CI/CD, security, smoke & regression block diagrams, animated (MA-272)
     ("01-cicd-pipeline-dev-prod.gif", "1 · CI/CD pipeline (dev & prod)", "One arm64 container build on AWS CodeBuild is scanned with trivy image, pushed to ECR, auto-deployed to dev with smoke and X-Ray trace checks, and promoted by exact sha256 digest to prod after Arun approves."),
     ("02-vulnerability-7-gates.gif", "2 · 7-layer security gate", "Seven open-source and free-tier security gates (gitleaks, ruff Bandit S + semgrep, pip-audit + pnpm audit + trivy fs, tflint + trivy config, trivy image + ECR scan, T0 taint/PII check, live 401/CSP + Monday sweep) block High/Critical CVEs at £0/month."),
     ("03-smoke-and-rollback.gif", "3 · Smoke & <5s rollback", "scripts/smoke.py runs a full synthetic chat and X-Ray trace check in dev and a strictly read-only health/auth/alarm probe in prod (zero writes to prod tables), rewinding Lambda :live aliases in under five seconds on any fault."),
-    ("04-regression-pyramid-and-costs.gif", "4 · 5-layer regression & £0/mo cost", "The five-layer regression pyramid across Phases 0 to 20 and the Option D hybrid runner strategy keep both GitHub Actions (<2,000 free mins) and AWS CodeBuild (<100 free arm64 mins) at £0.00/month."),
+    ("04-regression-pyramid-and-costs.gif", "4 · 5-layer regression & £0/mo cost", "The five-layer regression pyramid across Phases 0 to 15 (web and iOS UI checks on request, 646 golden maths fixtures) and the Option D hybrid runner strategy keep both GitHub Actions (<2,000 free mins) and AWS CodeBuild (<100 free arm64 mins) at £0.00/month."),
 ]
 MAESTRO_GIFS = [  # (gif in docs/design/maestro-ios-ipados-testing, tab title, caption): the local Maestro & private 90-day TestFlight block diagrams, animated (MA-274)
     ("01-local-maestro-pool-mcp-cli.gif", "1 · Cloned pool & MCP isolation", "One Maestro owner per simulator prevents XCTest driver teardowns: interactive MCP sessions stay on standard Xcode simulators while scripts/maestro_local.py drives five cloned flock-locked simulators against stub (£0) or dev-live AWS."),
     ("02-rn-swiftui-fabric-selectors.gif", "2 · RN + SwiftUI mp.* selectors", "One shared mp.* ID schema generates web/src/lib/test-ids.ts and TestIDs.swift, while .accessibilityElement(children: .contain), UITabBarItem IDs and MYPAISA_STATIC_MOTION=1 keep SwiftUI and Liquid Glass controls deterministic."),
     ("03-ios-ipados-4band-matrix.gif", "3 · 4-band width & rotation matrix", "Maestro tests all four width sub-bands (<600 pt compact, 600–899 pt top bar + sheet, 900–1132 pt MA-240 sidebar + sheet, and ≥1133 pt three-column chat-beside) and rotates iPads mid-flow with zero lost input."),
-    ("04-simctl-capabilities-phases.gif", "4 · simctl & Phases 0–20 (£0/mo)", "xcrun simctl and host staging drive Face ID match/fail, APNs lock-screen push notifications, Universal Links, Photos images, Local File Provider PDFs/workbooks and AX5 across Phases 0 to 20 locally on Apple Silicon at £0.00/month instead of £42–£65/month on GitHub macos-15."),
+    ("04-simctl-capabilities-phases.gif", "4 · simctl & Phases 0–15 (£0/mo)", "xcrun simctl and host staging drive Face ID match/fail, APNs lock-screen push notifications, Universal Links, Photos images, Local File Provider PDFs/workbooks and AX5 across Phases 0 to 15 locally on Apple Silicon at £0.00/month instead of £42–£65/month on GitHub macos-15."),
     ("05-private-testflight-90day-beta.gif", "5 · Private 90-day TestFlight beta", "testFlightInternalTestingOnly = true hard-locks MyPaisa off the public App Store while silent TestFlight Automatic Updates, least-privilege App Store Connect roles and a day-60 keepalive renew the 90-day (3-month) install window indefinitely."),
 ]
 VPC_GIFS = [  # (gif in docs/design/aws-vpc-enterprise-lockdown, tab title, caption): the optional AWS VPC enterprise lockdown & costing block diagrams, animated (MA-283, MA-284)
     ("01-vpc-topology-ingress.gif", "1 · Dual-stack VPC & ingress", "Non-overlapping dual-stack dev and prod VPCs with VPC Block Public Access, zero-egress Isolated subnets for deterministic and quarantined functions, S3 OAC static web doors, and CloudFront Pro WAF + API Gateway mTLS origin lock ($0 ALB) vs CloudFront VPC Origin + Internal ALB."),
     ("02-three-way-data-perimeter.gif", "2 · 3-way Data Perimeter", "Free S3 and DynamoDB Gateway Endpoints enforce PrincipalAccount, ResourceAccount and SourceVpce IAM perimeters at £0.00/month so stolen credentials fail outside the VPC and rogue code cannot exfiltrate to foreign S3, while bounded presigned/OAC carve-outs preserve 5-minute Audit previews and MA-111 .xlsx uploads."),
     ("03-egress-dns-sni-ci.gif", "3 · DNS + TLS-SNI egress & CI", "Route 53 Resolver DNS Firewall default-deny allowlists + Graviton t4g.nano fck-nat/Envoy TLS-SNI filtering (£5.66/month/env) stop unlisted FQDNs and raw-IP bypasses while private arm64 CodeBuild runners, S3 v5 Flow Logs, GuardDuty and VPC Reachability Analyzer handle all four serverless VPC gotchas."),
-    ("04-five-option-cost-rollout.gif", "4 · 5-option costing & rollout", "Side-by-side us-east-1 costing across Option 1 (£729.91/mo), Option 2A (£149.01/mo), Option 2B (£70.39/mo), Option 3A (+£13.32/mo lowest cost) and Preferred Option 3B (+£24.86/mo with prod CloudFront Pro WAF, keeping total AWS spend ~£28.36/mo inside the £50/mo cap), decided last after Phase 20 in a five-step zero-lockout rollout."),
+    ("04-five-option-cost-rollout.gif", "4 · 5-option costing & rollout", "Side-by-side us-east-1 costing across Option 1 (£729.91/mo), Option 2A (£149.01/mo), Option 2B (£70.39/mo), Option 3A (+£13.32/mo lowest cost) and Preferred Option 3B (+£24.86/mo with prod CloudFront Pro WAF, keeping total AWS spend ~£28.36/mo inside the £50/mo cap), decided last after Phase 15 in a five-step zero-lockout rollout."),
 ]
 ARGOS_GIFS = [  # (gif in docs/design/argos-visual-a11y, tab title, caption): the SvelteKit 3 visual regression, ARIA snapshot & WCAG 2.2 AA pipeline, animated (MA-194, MA-269)
     ("01-one-helper-four-gates.gif", "1 · One helper, four gates", "One shared auditAndCapture() Playwright 1.64 fixture at 390x844 and 1440x900 in Light and Dark runs deterministic stabilization, fail-closed @axe-core/playwright 4.14 WCAG 2.2 AA before capture, landmark/focus checks, and argosScreenshot."),
-    ("02-argos-cloud-diff-aria.gif", "2 · Cloud visual & ARIA diffing", "Tokenless GitHub App OIDC uploads 2x Retina PNGs (Light & Dark) and deduplicated YAML ariaSnapshot trees from ubuntu-24.04-arm (1x) to Argos CI, pairing pixel heatmaps with Git-style accessibility tree diffs against main."),
-    ("03-five-cost-guardrails.gif", "3 · Five £0/mo cost guardrails", "Strict web/** and cards/** path filtering, light-theme-only ariaSnapshot deduplication (saving 50% ARIA quota), fail-fast axe-core before Argos, cancel-in-progress concurrency, and repo-local static board gates trim 89% of naive snapshot volume."),
+    ("02-argos-cloud-diff-aria.gif", "2 · Cloud visual & ARIA diffing", "Tokenless GitHub App OIDC uploads 2x Retina PNGs (Light & Dark) and deduplicated YAML ariaSnapshot trees from ubuntu-24.04-arm (1x) to Argos CI, pairing pixel heatmaps with Git-style accessibility tree diffs against main, such as a button renamed from “Confirm” to “Confirm delete”."),
+    ("03-five-cost-guardrails.gif", "3 · Five £0/mo cost guardrails", "UI runs on request only (the qa label, at most 40 a month), light-theme-only ariaSnapshot deduplication, fail-fast axe-core before Argos in CI only, cancel-in-progress concurrency and no gates on the static boards (stopped by MA-303) trim 89% of naive snapshot volume, from 34,000 to 3,600 a month."),
     ("04-quota-math-scenarios.gif", "4 · 5,000/mo quota math", "Side-by-side monthly quota comparison showing Option 1 Selected at 3,600 snapshots/month (72.0% of the 5,000/month Free Hobby cap, 1,400 buffer, £0.00/month) versus Option 2 (4,800/mo, 96%) and Option 3 Naive (34,000/mo, $100/mo Pro)."),
 ]
 LUCID = [  # (png in docs/design/lucid, title, Lucid document, ARCHITECTURE sections)
     ("01-overview.png", "System overview", "4ae817c6-847f-45f8-a10c-4509971c9c09", "§3"),
-    ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§18"),
+    ("02-environments.png", "Environments, domains and delivery", "350c6593-a915-495f-88f1-a781b3ed1c5b", "§17"),
     ("03-identity.png", "Identity and sign-in", "c23040ec-b253-47e2-a614-612dab962292", "§4.5"),
-    ("04-queues.png", "Queues, retries and replay", "ddc9bde5-18d4-468b-af6e-c1f86d7d7647", "§21"),
-    ("05-data.png", "Where the data lives", "674e3574-9c79-403c-9157-72769a8d5fce", "§20.6"),
-    ("06-market-agent.png", "The market agent and the learning loop", "6f1b4c75-353c-49e5-b6e7-29fd2c18d356", "§19, §22"),
-    ("07-agents-caps.png", "The agent team, settings, caps and alerts", "3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4", "§15.2, §20"),
+    ("04-queues.png", "Queues, retries and replay", "ddc9bde5-18d4-468b-af6e-c1f86d7d7647", "§19"),
+    ("05-data.png", "Where the data lives", "674e3574-9c79-403c-9157-72769a8d5fce", "§18.5"),
+    ("07-agents-caps.png", "The agent team, settings, caps and alerts", "3c1a6c63-dd6b-4d6e-bd15-c2ea8fed15d4", "§14.2, §18"),
     ("08-add-holding-sequence.png", "Adding a record (sequence)", "b50d49fd-c941-44a0-b623-7d3e99b57fd8", "§4.2, §4.10"),
-    ("09-observability.png", "One trace from the door to the model", "3692ebe8-3794-4ff5-9658-83a8da565dfb", "§10"),
+    ("09-observability.png", "One trace from the door to the model", "3692ebe8-3794-4ff5-9658-83a8da565dfb", "§9"),
 ]
 # The screen areas, each a page; every board file a story cites belongs to exactly one.
 AREAS = [
@@ -108,10 +112,10 @@ AREAS = [
       "iPhone v4 · Chat and guided flows.dc.html", "iPhone v4 · Sign-in and invite.dc.html",
       "iPhone v4 · You and settings.dc.html", "iPad v4 · Adaptive shell and foldable.dc.html"]),
     ("home", "Home and the dashboard",
-     "Net worth first, across the UK and India: the Overview in the browser, Home on iPhone and iPad, the consolidated 1a whole-wealth options and market/India views across every door (MA-279), and the livelier chart options (MA-295).",
+     "Net worth first, across the UK and India: the Overview in the browser, Home on iPhone and iPad, the consolidated 1a whole-wealth options and the holdings and India views across every door (MA-279), and the livelier chart options (MA-295).",
      ["Web v4 · Dashboard.dc.html", "iPhone v4 · Home.dc.html",
       "Web v4 · Consolidated options.dc.html", "iPhone v4 · Consolidated options.dc.html",
-      "Web v4 · Market, holdings and India.dc.html", "iPhone v4 · Market, holdings and India.dc.html",
+      "Web v4 · Holdings and India.dc.html", "iPhone v4 · Holdings and India.dc.html",
       "Web v4 · Chart options.dc.html", "iPhone v4 · Chart options.dc.html"]),
     ("register", "Registering and check-ins",
      "Anything new is created in the chat: a sentence, a screenshot or a statement, the questions only for what is missing, a Confirm card and the audit row. Check-ins ask when a payment, a maturity or a valuation is due, and one tap records it.",
@@ -123,20 +127,19 @@ AREAS = [
     ("budget", "Budget and statements",
      "Each member's income, a plan per category, plan against actual, statements read and categorised, and the month closed on the 1st.",
      ["Web v4 · Budget.dc.html", "iPhone v4 · Budget.dc.html"]),
-    ("projection", "Projection, Budget forecast and the stock Forecaster",
-     "The Projection of the household's net worth over the years (the fan, its milestones and the editable assumptions), its Plans and Budget forecast tabs, a plan made in the admin's chat with the budget rearranged on Confirm (MA-264's options, Arun's picks 1a, 2a and 3a, and their states), and the Forecaster's view of a holding on the market side across web and iOS (Arun picked 1a, MA-281 and MA-279) with the chat's card and the proof page.",
+    ("projection", "Projection and the Budget forecast",
+     "The Projection of the household's net worth over the years (the fan, its milestones and the editable assumptions), its Plans and Budget forecast tabs, a plan made in the admin's chat with the budget rearranged on Confirm (MA-264's options, Arun's picks 1a, 2a and 3a, and their states).",
      ["Web v4 · Projection.dc.html", "iPhone v4 · Projection.dc.html", "Web v4 · Budget forecast.dc.html",
       "iPhone v4 · Budget forecast.dc.html", "Web v4 · Plans in the chat.dc.html", "iPhone v4 · Plans in the chat.dc.html",
       "Web v4 · Plans tab.dc.html", "iPhone v4 · Plans tab.dc.html", "Web v4 · Budget forecast 1a states.dc.html",
       "iPhone v4 · Budget forecast 1a states.dc.html", "Web v4 · Plans in the chat 2a states.dc.html",
       "iPhone v4 · Plans in the chat 2a states.dc.html", "Web v4 · Plans tab 3a states.dc.html",
-      "iPhone v4 · Plans tab 3a states.dc.html", "Web v4 · Forecast.dc.html", "iPhone v4 · Forecast.dc.html",
-      "iPhone v4 · Forecaster proof and chat.dc.html"]),
+      "iPhone v4 · Plans tab 3a states.dc.html"]),
     ("audit", "Activity, Audit and files",
      "What the agent did and what it cost, every change with who and when, and the file behind it.",
      ["iPhone v4 · Audit, activity and files.dc.html", "Web v4 · Audit, activity and files.dc.html"]),
     ("admin", "The Admin center",
-     "The owner's controls, behind the second check: people and their devices, the Claude and AWS caps, alerts and replay.",
+     "The admins' controls, behind the second check: people, their roles and their devices, the Claude and AWS caps, alerts and replay.",
      ["Web v4 · Admin center.dc.html", "iPhone v4 · Admin center.dc.html"]),
     ("system", "The design system, the mark and the iOS kit",
      "Warm ledger (MA-101): the tokens, the components, the chart style and its three redesign options (MA-295), the mark (MA-103), the iOS kit on Liquid Glass (MA-161) and the options for a colourful icon for each kind of holding, asset and debt (MA-241).",
@@ -237,7 +240,29 @@ def arch_sections() -> dict[str, str]:
     return out
 
 
-GUARDRAILS = ("23", "Guardrails and evals")  # the ARCHITECTURE section the guardrails page shows, and its title (MA-245)
+GUARDRAILS = ("21", "Guardrails and evals")
+# The ARCHITECTURE sections each explainer page's "sources" line cites, with the title each must have: a renumbering
+# that moves a section fails the check instead of linking the page to another section (MA-307 review, F1).
+SOURCE_CITES = {
+    "stack": [("3", "System context"), ("4.8", "The dynamic structure"), ("7", "The agent"), ("8.4", "The web app"),
+              ("9", "Observability")],
+    "cicd": [("17.4", "Delivery")],
+    "maestro": [("8.1", "The shell, the chat"), ("8.5", "The iOS app's build"), ("17.4", "Delivery")],
+    "vpc": [("13", "Security and privacy"), ("14", "Cost"), ("17.1", "Two environments"), ("17.4", "Delivery")],
+    "argos": [("8.4", "The web app"), ("17.4", "Delivery")],
+}
+
+
+def cite_links(page: str, sections: dict[str, str]) -> str:
+    """The cited sections as links, joined in prose: '§3, §4.8 and §9'."""
+    links = [arch_link(n, sections) for n, _ in SOURCE_CITES[page]]
+    return links[0] if len(links) == 1 else ", ".join(links[:-1]) + " and " + links[-1]
+
+
+def cite_errors(sections: dict[str, str]) -> list[str]:
+    return [f"confluence: the {page} page cites ARCHITECTURE §{n} as {want!r}, but §{n} is {sections.get(n, 'missing')!r}"
+            for page, cites in SOURCE_CITES.items() for n, want in cites
+            if not sections.get(n, "").removeprefix(n).lstrip(". ").startswith(want)]  # the ARCHITECTURE section the guardrails page shows, and its title (MA-245)
 
 
 def arch_text(num: str) -> tuple[str, str]:
@@ -449,7 +474,7 @@ def pages(ctx: Ctx) -> list[tuple[str, str, str | None]]:
     """Every page: (slug, title, parent slug), parents first."""
     out = [("home", "mypaisaa-agent", None),
            ("hub", "MyPaisa: the build plan", "home"),
-           ("roadmap", "Roadmap: the journey from phase 0 to phase 20", "hub"),
+           ("roadmap", "Roadmap: the journey from phase 0 to phase 15", "hub"),
            ("phases", "The phases, one page each", "hub")]
     out += [(phase_slug(p["phase"]), f"Phase {p['phase']} · {p['title']}", "phases") for p in ctx.phases]
     out.append(("screens", "Screens, area by area", "hub"))
@@ -568,7 +593,7 @@ DECISION_CARDS = [
     ("MA-193", "26 Oct 2026", "The check-in card", ["1a Chips in one row", "1b Paid as the Confirm", "1c A compact row"], "1b Paid as the Confirm",
      "Paid looks like every other Confirm button, and \"Paid off in full\", which closes a loan, cannot be hit by accident."),
     ("MA-193", "26 Oct 2026", "The Projection", ["1a The fan first", "1b A story first", "1c Decades"], "1a The fan first",
-     "It is the screen ARCHITECTURE 6.6 lists: the fan, milestones on the line, assumptions with sources, scenario chips and Ask."),
+     "It is the screen ARCHITECTURE §6 lists: the fan, milestones on the line, assumptions with sources, scenario chips and Ask."),
     ("MA-197", "26 Oct 2026", "Does approving a new kind of record need the second check?", ["Yes, the second check", "No"], "Yes, the second check",
      "A new kind changes what every member can register, so the admin approves it behind the second check."),
     ("MA-76", "26 Oct 2026", "When does the second check arrive?", ["Phase 1, with sign-in", "Phase 8, with the Admin center"], "Phase 1, with sign-in",
@@ -601,13 +626,13 @@ def app_prompt(ctx: Ctx, name: str) -> str:
             prev = p["phase"]
         miles = "\n".join(f"- {ctx.schedule[str(n)]['end']}: {what}" for n, what in (
             (0, "Empty shells at every door"), (2, "The first record, moving live"), (4, "Debts kept by check-ins"),
-            (7, "The Projection"), (9, "The whole wealth on prod; the old tracker retired"), (15, "Stances go live"), (20, "The app beyond the chat")))
+            (7, "The Projection"), (9, "The whole wealth on prod; the old tracker retired"), (13, "The agent team"), (15, "The app beyond the chat")))
         return ("Make an interactive Gantt chart of MyPaisa's build roadmap. Do not show any visible title on the app or the chart.\n"
                 "One task per phase, in this order, with exactly these labels, dates and groups; each phase starts after the one before it ends. "
-                "Colour the bars by group (three groups: Foundations and talk, The whole wealth, The market side) with a legend. On hover, show the epic "
+                "Colour the bars by group (three groups: Foundations and talk, The whole wealth, The agents and beyond) with a legend. On hover, show the epic "
                 "key, the build days and the dates. Keep the axis in months.\n" + "\n".join(lines) +
                 "\nMilestones (diamonds on their date, with these labels):\n" + miles +
-                "\nPhase 16 (New kinds of holding) is built on demand and has no dates; leave it out.")
+                "\nPhase 12 (New kinds of holding) is built on demand and has no dates; leave it out.")
     if name == "decision-cards":
         cards = "\n".join(f"- Front: {q} ({k}, {d}). Back: options: {'; '.join(o)}. Picked: {pick}. Why: {why}"
                           for k, d, q, o, pick, why in DECISION_CARDS)
@@ -699,9 +724,9 @@ def explorer_link(ctx: Ctx) -> str:
 GROUPS = [  # (phases, name, panel colour, cell colour, emoji shortname)
     (range(0, 2), "Foundations and talk", "#EAE6FF", "#EAE6FF", ":bricks:"),
     (range(2, 10), "The whole wealth", "#E3FCEF", "#E3FCEF", ":moneybag:"),
-    (range(10, 21), "The market side", "#DEEBFF", "#DEEBFF", ":chart_with_upwards_trend:"),
+    (range(10, 16), "The agents and beyond", "#DEEBFF", "#DEEBFF", ":robot:"),
 ]
-PHASE_EMOJI = ["🧱", "💬", "🗂️", "🏦", "🧾", "📈", "🧮", "🔭", "🛡️", "🏠", "⚙️", "📰", "❓", "🎯", "🗞️", "🚦", "🧩", "🔮", "🤖", "🇮🇳", "📱"]
+PHASE_EMOJI = ["🧱", "💬", "🗂️", "🏦", "🧾", "📈", "🧮", "🔭", "🛡️", "🏠", "🔔", "❓", "🧩", "🤖", "🇮🇳", "📱"]
 STATUS_CELL = {"Done": "#E3FCEF", "In Review": "#DEEBFF", "In Progress": "#FFFAE6"}
 DESIGN_CELL = {"picked": "#E3FCEF", "planned": "#DEEBFF", "todo": "#FFEBE6"}
 
@@ -753,7 +778,7 @@ def jql_link(jql: str, text: str) -> str:
 
 def footer(ctx: Ctx) -> str:
     return ('<hr><p style="font-size: 14px"><em>Generated from the repo by scripts/confluence_docs.py (MA-228) from docs/trace.json, '
-            "PLAN.md, docs/roadmap.json, the design decision records and the boards' record. Change those, not this page: "
+            "PLAN.md, docs/roadmap.json, the design decision records and the boards in the repo. Change those, not this page: "
             "/plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>")
 
 
@@ -820,7 +845,8 @@ def render_hub(ctx: Ctx) -> str:
     out = [
         cpanel("#DEEBFF", ":house:", "<p><strong>MyPaisa</strong> keeps one household's whole wealth across the UK and India, registered and kept "
                "through a chat, with no forms: what the family owns and owes, each member's income and spending, a Projection of where it is "
-               "heading, and later a market agent for the investments. Every phase ships at both doors at once: the web app (a SvelteKit 3 "
+               "heading from the household's actual numbers (XIRR and CAGR), and a team of agents that keeps it all current. Only admins write, "
+               "through the chat; every other member views. MyPaisa gives no buy, sell or hold calls and never predicts a market (MA-307). Every phase ships at both doors at once: the web app (a SvelteKit 3 "
                "PWA at dashboard.mypaisapp.com, desktop and phone) and the iOS app (a React Native shell with a native SwiftUI core, iPhone "
                "and iPad).</p>"),
         '<section data-type="layout-three-equal">'
@@ -844,7 +870,7 @@ def render_hub(ctx: Ctx) -> str:
         '<section data-type="layout-three-equal">'
         + "".join(f'<div data-type="column">{cpanel(c, i, f"<h3>{ctx.link(sl, t)}</h3><p>{esc(d)}</p>")}</div>' for sl, t, d, c, i in (
             ("decisions", "Design decisions", "Every design round: the question, the options drawn, the pick and why.", "#FFEBE6", ":dart:"),
-            ("explainers", "Explainers", "The Inside MyPaisa, Architecture v4, Agent Journey, Market Agent and Guardrails and Evals pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
+            ("explainers", "Explainers", "The Inside MyPaisa, Architecture v4, Agent Journey and Guardrails and Evals pages, the clickable prototype, the architecture drawings.", "#E6FCFF", ":movie_camera:"),
             ("sync", "Staying in step", "How this space, Jira, the boards, the plan and the code are kept the same.", "#F4F5F7", ":link:")))
         + "</section>",
         cpanel("#E3FCEF", ":shield:", f"<h3>{ctx.link('guardrails', 'Guardrails and evals')}</h3><p>How every agent is guarded in code, "
@@ -854,14 +880,14 @@ def render_hub(ctx: Ctx) -> str:
                "single-table DynamoDB versus DocumentDB; the agent framework comparison) and end-to-end tracing and LLM observability with monthly costing (MA-265, MA-266).</p>"),
         cpanel("#FFFAE6", ":rocket:", f"<h3>{ctx.link('cicd', 'CI/CD, vulnerability scanning, smoke and regression architecture')}</h3><p>"
                "The GitHub Actions + AWS CodeBuild arm64 + ECR delivery pipeline for dev and prod, the seven-layer vulnerability scanning gate, the "
-               "phase-progressive smoke runner with &lt;5s auto-rollback, the five-layer regression pyramid across Phases 0 to 20, and the £0/month Option D runner cost model (MA-267 to MA-272).</p>"),
+               "phase-progressive smoke runner with &lt;5s auto-rollback, the five-layer regression pyramid across Phases 0 to 15, and the £0/month Option D runner cost model (MA-267 to MA-272).</p>"),
         cpanel("#EAE6FF", ":iphone:", f"<h3>{ctx.link('maestro', 'Local iOS and iPadOS Maestro testing and private TestFlight beta plan')}</h3><p>"
                "The local Apple Silicon Maestro architecture (cloned simulator pool with flock isolation from interactive MCP), the React Native 0.88 + SwiftUI "
-               "selector contract, the four-sub-band iOS and iPadOS adaptive matrix, the phase-by-phase rollout across Phases 0 to 20 at £0/month, and the "
+               "selector contract, the four-sub-band iOS and iPadOS adaptive matrix, the phase-by-phase rollout across Phases 0 to 15 at £0/month, and the "
                "100% private 90-day (3-month) evergreen TestFlight household beta plan (MA-167, MA-273, MA-274).</p>"),
         cpanel("#FFEBE6", ":lock:", f"<h3>{ctx.link('vpc', 'Optional AWS VPC enterprise lockdown, data perimeter and costing')}</h3><p>"
                "The optional end-of-roadmap seven-layer AWS VPC enterprise lockdown and three-way aws:SourceVpce Data Perimeter across dev and prod "
-               "(decided last after Phase 20, enable_vpc_lockdown = false by default), comparing Option 1 (£729.91/mo), Option 2A/2B (£149.01 and £70.39/mo) "
+               "(decided last after Phase 15, enable_vpc_lockdown = false by default), comparing Option 1 (£729.91/mo), Option 2A/2B (£149.01 and £70.39/mo) "
                "and Preferred Option 3 (+£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod, staying inside the £50/mo AWS cap; MA-283, MA-284).</p>"),
         cpanel("#E3FCEF", ":sparkles:", f"<h3>{ctx.link('argos', 'Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI')}</h3><p>"
                "How the built SvelteKit 3 (web/) app runs Playwright 1.64, fail-closed @axe-core/playwright 4.14 WCAG 2.2 AA and Argos CI (@argos-ci/playwright, "
@@ -897,7 +923,7 @@ def render_roadmap(ctx: Ctx) -> str:
     for n, what in ((0, "Empty shells at every door, with the seed household"), (1, "Talking to the agent at three doors, replies streaming"),
                     (2, "The first record registered by chat, moving live"), (4, "Debts kept current by check-ins"),
                     (7, "The Projection, with a what-if"), (9, "The whole wealth on prod; the old tracker retired"),
-                    (15, "Stances go live after the shadow weeks"), (20, "The app beyond the chat")):
+                    (13, "The agent team, running the household's records"), (15, "The app beyond the chat")):
         out.append(f'<li data-type="decision-item" data-state="DECIDED">{emoji(n)} {date(s.get(str(n), {}).get("end"))}: phase {n}, {esc(what)}</li>')
     out.append("</ul><h2>📅 Phase by phase</h2>"
                '<table data-layout="full-width"><thead><tr><th>Phase</th><th>Epic</th><th>Build days</th><th>Working days</th><th>Starts</th>'
@@ -916,7 +942,7 @@ def render_roadmap(ctx: Ctx) -> str:
                f"<li><strong>Buffer.</strong> Each phase adds {rm['buffer']:.0%} for review rounds, the demo and fixes.</li>"
                f"<li><strong>Side by side.</strong> The web app and the iOS app are built in parallel, so a phase's working days are its build days with the buffer, divided by {rm['parallel']:g}.</li>"
                "<li><strong>Days off.</strong> English bank holidays and a Christmas break each year.</li>"
-               f"<li><strong>Order.</strong> Build order from {date(rm['start'])}. Phase 15 waits for 8 weeks of shadow stances after phase 10; phase 16 is built when a new kind of holding is added.</li>"
+               f"<li><strong>Order.</strong> Build order from {date(rm['start'])}. Phase 12 is built when a new kind of holding is added.</li>"
                "<li><strong>Your tasks</strong> (label manual) run beside the build and are due before their phase starts.</li></ul>")
     manual = [i for i in ctx.items if "manual" in (i.get("labels") or []) and i.get("status") != "Done"]
     if manual:
@@ -1076,14 +1102,13 @@ def render_explainers(ctx: Ctx) -> str:
            f'<p>Kept in the repo as <a href="{gh("docs/design/inside-mypaisa.html")}">inside-mypaisa.html</a> (the whole architecture in plain words, MA-239), '
            f'<a href="{gh("docs/design/architecture-v4.html")}">architecture-v4.html</a> (the same architecture, technical and animated, MA-244), '
            f'<a href="{gh("docs/design/agent-journey.html")}">agent-journey.html</a>, '
-           f'<a href="{gh("docs/design/market-agent.html")}">market-agent.html</a>, '
            f'<a href="{gh("docs/design/guardrails-evals.html")}">guardrails-evals.html</a> (the guardrails and the evals, plain or technical, animated, MA-258), '
            f'<a href="{gh("docs/design/tech-stack-observability.html")}">tech-stack-observability.html</a> (the implementation stack, FastAPI, DynamoDB vs DocumentDB, agent frameworks and end-to-end observability, MA-265; see {ctx.link("stack", "Tech stack, FastAPI, DynamoDB, agents and end-to-end observability")}), '
            f'<a href="{gh("docs/design/cicd-security-regression.html")}">cicd-security-regression.html</a> (the CI/CD pipeline, seven-layer security gate, smoke suite, phase-wise regression pyramid and runner cost analysis, MA-267 to MA-272; see {ctx.link("cicd", "CI/CD, vulnerability scanning, smoke and regression architecture")}), '
            f'<a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">maestro-ios-ipados-testing.html</a> (the local iOS and iPadOS Maestro testing strategy, four-sub-band adaptive matrix, phase-wise rollout and private 90-day TestFlight beta plan, MA-167, MA-273, MA-274; see {ctx.link("maestro", "Local iOS and iPadOS Maestro testing and private TestFlight beta plan")}), '
-           f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">aws-vpc-enterprise-lockdown.html</a> (the optional seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing, decided last after Phase 20, MA-283, MA-284; see {ctx.link("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing")}) and '
+           f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">aws-vpc-enterprise-lockdown.html</a> (the optional seven-layer AWS VPC enterprise lockdown, three-way Data Perimeter and five-option us-east-1 costing, decided last after Phase 15, MA-283, MA-284; see {ctx.link("vpc", "Optional AWS VPC enterprise lockdown, data perimeter and costing")}) and '
            f'<a href="{gh("docs/design/argos-visual-a11y.html")}">argos-visual-a11y.html</a> (the SvelteKit 3 web visual regression, YAML ariaSnapshot diffing and fail-closed @axe-core/playwright WCAG 2.2 AA pipeline with Argos CI at £0/month, MA-194, MA-269; see {ctx.link("argos", "Web visual regression, ARIA snapshot diffing and WCAG 2.2 AA accessibility pipeline with Argos CI")}); '
-           'the first five are also published as Claude artifacts below, while the stack, CI/CD, Maestro, VPC and Argos CI explainers embed their animated block diagrams directly on their Confluence pages.</p>',
+           'the first four are also published as Claude artifacts below, while the stack, CI/CD, Maestro, VPC and Argos CI explainers embed their animated block diagrams directly on their Confluence pages.</p>',
            "".join('<section data-type="layout-two-equal">' + "".join(
                f'<div data-type="column"><h3>{esc(t)}</h3><p><a href="{u}" data-card-appearance="block"></a></p></div>' for t, u in pair)
                + "</section>" for pair in (list(ARTIFACTS.items())[k:k + 2] for k in range(0, len(ARTIFACTS), 2))),
@@ -1112,20 +1137,26 @@ def render_sync(ctx: Ctx) -> str:
         '<tr><td data-background="#FFFAE6">The designs</td><td>The boards, drawn, edited and kept in docs/design/ (MyPaisa app v1, iOS v1, DS v1), '
         'git their history; each design round\'s options reviewed as a private Claude Artifact, or on a local page for a round run in Antigravity (MA-297)</td><td>What a member sees</td></tr>'
         '<tr><td data-background="#E3FCEF">Confluence</td><td>This space, rendered from the repo into docs/confluence/</td><td>The plan as one readable tree, phase by phase and screen by screen</td></tr>'
-        f'<tr><td data-background="#FFEBE6">The code</td><td>web/, ios/, src/, infra/, and each story\'s code paths in <a href="{gh("docs/trace.json")}">the trace</a></td><td>What was built, traced to its story</td></tr>'
+        f'<tr><td data-background="#FFEBE6">The code</td><td>backend/, web/, ios/, infra/, and each story\'s code paths in <a href="{gh("docs/trace.json")}">the trace</a></td><td>What was built, traced to its story</td></tr>'
         "</tbody></table>",
         "<h2>🔁 What keeps them the same</h2><ul>"
         "<li><strong>One source each.</strong> Estimates and dates live in docs/roadmap.json; stories, boards and code paths in docs/trace.json; the words in PLAN.md and ARCHITECTURE.md. Every page here is generated from them.</li>"
         "<li><strong>The check.</strong> <code>python3 scripts/plan_sync.py check</code> runs on every PR and in CI. It fails when a page in docs/confluence/ is stale or unpublished, a board preview is older than its board, the roadmap or PLAN's Timeline is stale, a board or a section a story cites is missing, or a story In Review or Done names no code, or code that does not exist.</li>"
         "<li><strong>The live side.</strong> <code>/plan-sync</code> compares each page's version here, each epic's due date and every story's key, epic, labels and status in Jira, and fixes or files what differs.</li>"
+        "<li><strong>The receipt</strong> (MA-303). A page sent by hand can arrive cut short (MA-300), so each page is read back from Confluence once it is published and compared with the file sent: <code>python3 scripts/confluence_docs.py set-readback</code> records the receipt, and the check fails while a page published is not read back, or as read back differs from what was published.</li>"
         '<li><strong>The designs, in the repo</strong> (MA-260). Arun, 30 Oct 2026: "for all future design use Local folder and then Claude '
         'Artifact. Claude Design is going away, so no need to push to claude design". The boards are drawn and edited in docs/design/, and '
         "nothing is read from or written to Claude Design again. Git is the boards' only record (MA-296: \"I dont need claude-design sync "
-        "anymore\"): there is no record file to update and no whole-set Artifact to republish; <code>python3 scripts/plan_sync.py check</code> "
-        "reads every board as it is on disk. Each design round's options are published as a private Claude Artifact for Arun to look at, "
+        "anymore\"): there is no record file to update; <code>python3 scripts/plan_sync.py check</code> "
+        "reads each board a trace row cites for its canvas titles only. Each design round's options are published as a private Claude Artifact for Arun to look at, "
         "comment on and pick from; a round run in Google Antigravity, which cannot publish one, shows the same page locally (MA-297). Until 30 Oct "
         "2026 the boards were drawn in standalone Claude Design, which closes by 14 Dec 2026, and copied in (MA-259); the choice is recorded "
         "in docs/design/reviews/MA-259/decision.md.</li>"
+        "<li><strong>The artifacts, in step with the repo</strong> (MA-324). Arun, 3 Nov 2026: \"All artifacts and design should be in sync "
+        "with local\". docs/design/artifacts.json lists every published artifact (the explainer pages, the Agent Journey, Prototype v5 and "
+        "the MyPaisa Boards page, built by scripts/boards_page/build.py) with the repo files it is published from and their hash at its last "
+        "publish; the check fails while one is older than its sources, until it is published again and recorded with "
+        "<code>python3 scripts/artifacts_sync.py record</code>. Retired artifacts and dated design rounds are listed, never compared.</li>"
         "<li><strong>The hooks</strong>, in this repo only. After an edit to a record, the check runs and reports drift at once. Raising a PR with drift is refused. When a new design or feature is discussed, the session is reminded to file its Jira issue and its Confluence page in the same change.</li></ul>",
         "<h2>🆕 New work</h2>"
         + cpanel("#E3FCEF", ":seedling:", "<p>A new design or feature gets, in the same change: its Jira story or task under its phase epic, its PLAN.md "
@@ -1226,8 +1257,7 @@ def render_stack(ctx: Ctx) -> str:
                "SwiftUI core), the Python 3.14 backend (FastAPI, Pydantic v2, single-table DynamoDB versus DocumentDB, and the Python DynamoDB library "
                "comparison), and the agent framework evaluation and recommendation. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §6, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a>, and '
-               f'{arch_link("3", ctx.sections)}, {arch_link("4.8", ctx.sections)}, {arch_link("8", ctx.sections)}, {arch_link("9.4", ctx.sections)} and '
-               f'{arch_link("10", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
+               f'{cite_links("stack", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
                f'<a href="{gh("docs/design/tech-stack-observability.html")}">docs/design/tech-stack-observability.html</a>.</p>'),
         toc(),
         "<h2>🎞️ Block diagrams (animated)</h2>"
@@ -1265,10 +1295,10 @@ def render_cicd(ctx: Ctx) -> str:
         cpanel("#FFFAE6", ":rocket:", '<p>Arun, 28 Oct 2026 (MA-267 to MA-272): the end-to-end GitHub Actions + AWS CodeBuild arm64 + ECR delivery '
                "pipeline for dev and prod, the seven-layer open-source vulnerability scanning gate, the phase-progressive smoke runner "
                "(<code>scripts/smoke.py</code>) with prod read-only safety and under-five-second Lambda <code>:live</code> alias rollback, the five-layer "
-               "regression pyramid (<code>scripts/regression.py</code>) across Phases 0 to 20, and the GitHub Actions versus AWS CodeBuild runner cost "
+               "regression pyramid (<code>scripts/regression.py</code>) across Phases 0 to 15, and the GitHub Actions versus AWS CodeBuild runner cost "
                "analysis showing how Option D stays at £0.00 a month inside both free tiers. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7 and '
-               f'{arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
+               f'{cite_links("cicd", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
                f'<a href="{gh("docs/design/cicd-security-regression.html")}">docs/design/cicd-security-regression.html</a>.</p>'),
         toc(),
         "<h2>🎞️ Block diagrams (animated)</h2>"
@@ -1303,11 +1333,11 @@ def render_maestro(ctx: Ctx) -> str:
                "with Maestro (<code>scripts/maestro_local.py</code>, five cloned simulators guarded by <code>flock</code> so automated runs never collide "
                "with interactive Maestro MCP sessions, one shared <code>mp.*</code> ID schema across Playwright and SwiftUI, four adaptive width sub-bands "
                "and live rotation across 1133 pt, <code>xcrun simctl</code> and host Local File Provider bridges for Face ID, APNs push, Universal Links, Photos images, PDFs/workbooks and AX5, and a "
-               "phase-by-phase rollout across Phases 0 to 20 at £0.00/month), together with the 100% private 90-day (3-month) evergreen TestFlight "
+               "phase-by-phase rollout across Phases 0 to 15 at £0.00/month), together with the 100% private 90-day (3-month) evergreen TestFlight "
                "household beta plan (<code>testFlightInternalTestingOnly = true</code>, least-privilege App Store Connect roles, silent overnight updates "
-               "preserving Keychain and MMKV, and a day-60 keepalive rebuild). "
+               "preserving the Keychain and the offline store, and a day-60 keepalive rebuild). "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §8, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a> §2 and §4, and '
-               f'{arch_link("9.1", ctx.sections)}, {arch_link("9.5", ctx.sections)} and {arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
+               f'{cite_links("maestro", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
                f'the interactive explainer page is <a href="{gh("docs/design/maestro-ios-ipados-testing.html")}">docs/design/maestro-ios-ipados-testing.html</a>.</p>'),
         toc(),
         "<h2>🎞️ Block diagrams (animated)</h2>"
@@ -1342,13 +1372,13 @@ def render_vpc(ctx: Ctx) -> str:
     out = [
         cpanel("#FFEBE6", ":lock:", '<p>Arun, 29 Oct 2026 (MA-283, MA-284): optional end-of-roadmap AWS VPC enterprise lockdown and seven-layer '
                "data perimeter across dev and prod in <code>us-east-1</code> (<code>enable_vpc_lockdown = false</code> by default; serverless IAM/tag "
-               "isolation at £3.50/month stands across Phases 0 to 20, and whether to turn VPC lockdown on is <strong>decided last, after Phase 20</strong>). "
+               "isolation at £3.50/month stands across Phases 0 to 15, and whether to turn VPC lockdown on is <strong>decided last, after Phase 15</strong>). "
                "Records all five costing options side by side — Option 1 Bank-Grade Hub &amp; Spoke (£729.91/month), Option 2A/2B AWS-Managed Serverless "
                "NAT Gateway VPC (£149.01/month and £70.39/month), Option 3A Leanest Zero-Trust VPC (+£13.32/month), and <strong>Preferred Option 3B Lean "
                "Zero-Trust VPC + CloudFront Pro bundled AWS WAF on prod (+£24.86/month = +$32.32/month, keeping total MyPaisa AWS spend at ~£28.36/month "
                "inside the £50/month AWS cap)</strong> — together with the four serverless VPC operational gotchas and the five-step zero-lockout rollout. "
-               f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §9, <a href="{gh("PLAN.md")}">PLAN.md</a> Phase 0 and Phase 20, and '
-               f'{arch_link("14", ctx.sections)}, {arch_link("15", ctx.sections)}, {arch_link("18.1", ctx.sections)} and {arch_link("18.4", ctx.sections)} of '
+               f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §9, <a href="{gh("PLAN.md")}">PLAN.md</a> Phase 0 and Phase 15, and '
+               f'{cite_links("vpc", ctx.sections)} of '
                f'<a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
                f'<a href="{gh("docs/design/aws-vpc-enterprise-lockdown.html")}">docs/design/aws-vpc-enterprise-lockdown.html</a>.</p>'),
         toc(),
@@ -1366,7 +1396,7 @@ def render_vpc(ctx: Ctx) -> str:
         image(ctx, "vpc-04-five-option-cost-rollout.gif", VPC_GIFS[3][2], 100),
         "<h2>📖 Full blueprint, seven-layer architecture, serverless gotchas &amp; five-option costing (docs/RESEARCH.md §9)</h2>",
         md(sec9, shift=-1),
-        "<h2>🧩 The stories that record, join with or implement it</h2><p>Every story in the trace that records, joins with or optionally builds the VPC enterprise perimeter, in phase order (MA-283 sits in Phase 20, decided last).</p>",
+        "<h2>🧩 The stories that record, join with or implement it</h2><p>Every story in the trace that records, joins with or optionally builds the VPC enterprise perimeter, in phase order (MA-283 sits in Phase 15, decided last).</p>",
         story_rows(ctx, items),
         jira_macro("project = MA AND key in (" + ", ".join(i["key"] for i in items) + ") ORDER BY key") if items else "",
     ]
@@ -1383,13 +1413,16 @@ def render_argos(ctx: Ctx) -> str:
         cpanel("#E3FCEF", ":art:", '<p>Arun, 30 Oct 2026 (MA-194, MA-269): the SvelteKit 3 (<code>web/</code>) visual regression, ARIA accessibility '
                "tree diffing and fail-closed WCAG 2.2 Level A &amp; AA accessibility pipeline in GitHub Actions with Playwright 1.64, "
                "<code>@axe-core/playwright</code> 4.14 and Argos CI (<code>@argos-ci/playwright</code> 6.4). Every primary web route passes one shared "
-               "<code>auditAndCapture(page, name, opts)</code> fixture combining four gates in one Chromium load — mathematical 100% and 25% brightness "
-               "token contrast (<code>scripts/contrast_check.py</code>), runtime computed DOM contrast and WCAG 2.2 AA audit "
-               "(<code>@axe-core/playwright</code>), Argos CI visual pixel diffing in Light and Dark at desktop (<code>1280x800</code>) and mobile "
-               "(<code>390x844</code>), and Argos CI <code>ariaSnapshot: opts.theme === 'light'</code> YAML accessibility tree diffing — with five "
-               "cost guardrails keeping usage at ~3,600 snapshots/month (72% of Argos CI's 5,000/month Free Hobby cap) at <strong>£0.00/month</strong>. "
+               "<code>auditAndCapture(page, name, opts)</code> fixture combining its gates in one Chromium load — runtime computed DOM contrast "
+               "and WCAG 2.2 AA audit (<code>@axe-core/playwright</code>), Argos CI visual pixel diffing in Light and Dark at desktop "
+               "(<code>1280x800</code>) and mobile (<code>390x844</code>), and Argos CI <code>ariaSnapshot: opts.theme === 'light'</code> YAML "
+               "accessibility tree diffing — with five cost guardrails keeping usage at ~3,600 snapshots/month (72% of Argos CI's 5,000/month "
+               "Free Hobby cap) at <strong>£0.00/month</strong>. The token contrast at 100% and 25% brightness was measured on the boards by "
+               "<code>scripts/contrast_check.py</code>, a jira-flow gate until MA-303 stopped it with the other checks on the boards (Arun, "
+               "2 Nov 2026: &quot;I need this checks as QA when I ask, but on actual code implemented&quot;). This QA runs on the code, with "
+               "Playwright and Argos, only when Arun asks (a manual run or a <code>qa</code> label on the PR), and follows with MA-194 and MA-165. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7.4 and §10, <a href="{gh("TECH_STACK.md")}">TECH_STACK.md</a> §3 and §4, and '
-               f'{arch_link("9.4", ctx.sections)} and {arch_link("18.4", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
+               f'{cite_links("argos", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; '
                f'the interactive explainer page is <a href="{gh("docs/design/argos-visual-a11y.html")}">docs/design/argos-visual-a11y.html</a>.</p>'),
         toc(),
         "<h2>🎞️ Block diagrams (animated)</h2>"
@@ -1450,6 +1483,7 @@ def errors(ctx: Ctx | None = None) -> list[str]:
     cited = {r[1] for r in ctx.cites}
     for f in sorted(cited - set(ctx.file_area)):
         out.append(f"confluence: board file {f!r} is cited by a story but belongs to no screen area in scripts/confluence_docs.py AREAS")
+    out += cite_errors(ctx.sections)
     if out:
         return out
     model = pages(ctx)
@@ -1490,6 +1524,7 @@ def errors(ctx: Ctx | None = None) -> list[str]:
             out.append(f"confluence: database {name} has no Confluence id in docs/confluence.json; create it with /plan-sync")
         elif rec.get("sha256") != sha(want):
             out.append(f"confluence: database {name} changed in the repo but is not published: update its rows with /plan-sync")
+    out += receipt_findings(recorded, [s for s, _, _ in model])[0]
     images = ctx.manifest.get("images", {})
     for name, w in wanted_images(ctx).items():
         rec = images.get(name, {})
@@ -1498,6 +1533,350 @@ def errors(ctx: Ctx | None = None) -> list[str]:
         elif rec.get("source") != w["source"]:
             out.append(f"confluence: preview {name} is older than its boards or inputs: compose it again and upload it")
     return out
+
+
+# ---------- receipts: each page read back after it is published (MA-303) ----------
+# Confluence stores a page as its own document and returns it in its own words: an id on every block, a <p> inside
+# every cell and list item, a date in its own format, a card's URL as its text, a macro's id and placeholder, a
+# picture's pixel size, a default layout. The reader below drops exactly those and keeps every word, tag, link, status
+# and parameter we sent, so a page cut short or changed in transit still differs (the cases are in selftest; the rules
+# were drawn from four live pages read back on 2 Nov 2026: home, phase-14, rec and rec-drawings).
+
+RB_DROP = {"data-local-id", "data-icon-id", "data-icon-text", "data-status-style", "style",
+           "data-width", "data-height", "data-width-type"}
+RB_VOID = {"area", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}
+# Inline marks: Confluence splits and reorders them (a <code> inside a <strong> comes back between two <strong>s), so
+# only their text is compared; a dropped word or a page cut short still differs. A strike-through is not one of them:
+# struck text that lost its strike reads as current, so <s> is compared as a tag (<del> and <strike> read as <s>).
+RB_INLINE = {"b", "code", "em", "i", "mark", "span", "strong", "sub", "sup", "u"}
+RB_SAME = {"del": "s", "strike": "s"}
+
+
+def _macro_params(raw: str) -> str:
+    """A macro's parameters without what Confluence adds: its id, placeholder and title, and the _parentId param."""
+    try:
+        p = json.loads(raw)
+    except ValueError:
+        return raw
+    if isinstance(p, dict):
+        p.pop("macroMetadata", None)
+        if isinstance(p.get("macroParams"), dict):
+            p["macroParams"] = {k: v for k, v in p["macroParams"].items() if not k.startswith("_")}
+    return json.dumps(p, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+class _Canon(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.out: list[str] = []
+        self.buf: list[str] = []
+        self.stack: list[tuple[str, bool]] = []  # (tag, muted): a muted element's content is Confluence's to render
+
+    def muted(self) -> bool:
+        return any(m for _, m in self.stack)
+
+    def flush(self) -> None:
+        text = " ".join("".join(self.buf).split())  # joined as written: Confluence merges adjacent marks
+        self.buf = []
+        if text:
+            self.out.append(text)
+
+    def handle_starttag(self, tag, attrs):  # noqa: ANN001
+        tag = RB_SAME.get(tag, tag)
+        if self.muted():
+            if tag not in RB_VOID:
+                self.stack.append((tag, True))
+            return
+        if tag == "p":  # Confluence wraps every cell's and item's text in one; a paragraph break is a space
+            self.buf.append(" ")
+            return
+        if tag in RB_INLINE and not any(k in ("data-parameters", "data-type", "data-card-appearance") for k, _ in attrs):
+            return
+        a = {k: v or "" for k, v in attrs if k not in RB_DROP and (k, v) != ("data-layout", "default")}
+        self.flush()
+        if (tag == "a" and "data-card-appearance" in a) or a.get("data-type") in ("block-card", "inline-card", "embed-card"):
+            self.out.append(f"<card {a.get('href') or a.get('data-url', '')}>")
+            self.stack.append((tag, True))
+            return
+        if "data-parameters" in a:
+            a["data-parameters"] = _macro_params(a["data-parameters"])
+        self.out.append(f"<{tag}" + "".join(f' {k}="{a[k]}"' for k in sorted(a)) + ">")
+        if tag not in RB_VOID:
+            self.stack.append((tag, tag == "time"))  # a date's words are Confluence's; its datetime is ours
+
+    def handle_startendtag(self, tag, attrs):  # noqa: ANN001
+        self.handle_starttag(tag, attrs)
+        if tag not in RB_VOID and tag != "p":
+            self.handle_endtag(tag)
+
+    def handle_endtag(self, tag):  # noqa: ANN001
+        tag = RB_SAME.get(tag, tag)
+        if tag in RB_VOID:
+            return
+        if tag == "p":
+            if not self.muted():
+                self.buf.append(" ")
+            return
+        if tag in RB_INLINE and not any(t == tag for t, _ in self.stack):
+            return
+        if not any(t == tag for t, _ in self.stack):
+            return
+        while self.stack:
+            t, m = self.stack.pop()
+            if t == tag:
+                break
+        if not m and not self.muted():
+            self.flush()
+            self.out.append(f"</{tag}>")
+
+    def handle_data(self, data):  # noqa: ANN001
+        if not self.muted():
+            self.buf.append(data)
+
+
+def canonical(body: str) -> list[str]:
+    """A storage body as the parts the read-back compares: tags with their kept attributes in order, and text."""
+    c = _Canon()
+    c.feed(body)
+    c.close()
+    c.flush()
+    return c.out
+
+
+def readback_body(raw: str) -> tuple[str, dict]:
+    """The page body in a read-back file, which must be getConfluenceContent's whole reply (detail full, html): a bare
+    body is refused, since only the reply carries the page's id and version, and both are checked."""
+    try:
+        d = json.loads(raw)
+    except ValueError:
+        raise ValueError("the file is not JSON: a bare body names no page or version; save getConfluenceContent's "
+                         "whole reply (detail full, html), whose id and version are checked") from None
+    d = d.get("data", d) if isinstance(d, dict) else {}
+    body = d.get("body", {}) if isinstance(d, dict) else {}
+    if not isinstance(body, dict) or not isinstance(body.get("value"), str):
+        raise ValueError("the file is JSON but holds no body.value: save getConfluenceContent's reply (detail full, html)")
+    pid = d.get("id")
+    version = ((d.get("metadata") or {}).get("version") or {}).get("number")
+    if pid in (None, "") or isinstance(version, bool) or not isinstance(version, int):
+        raise ValueError(f"the reply has no page id or version number (id {pid!r}, version {version!r}): save "
+                         "getConfluenceContent's whole reply (detail full, html)")
+    return body["value"], {"id": str(pid), "version": version, "title": d.get("title")}
+
+
+def first_difference(want: list[str], got: list[str], around: int = 3) -> str:
+    n = next((i for i, (a, b) in enumerate(zip(want, got)) if a != b), min(len(want), len(got)))
+    if n == len(got) < len(want):
+        head = f"the read-back ends early: {len(got)} of {len(want)} parts arrived"
+    elif n == len(want) < len(got):
+        head = f"the read-back carries {len(got) - len(want)} parts the source does not"
+    else:
+        head = f"part {n + 1} of {len(want)} differs"
+    lo = max(0, n - around)
+    show = lambda xs: "\n".join(f"    {i + 1}: {x[:200]}" for i, x in enumerate(xs[lo:n + around], lo)) or "    (nothing)"  # noqa: E731
+    return f"{head}\n  sent:\n{show(want)}\n  read back:\n{show(got)}"
+
+
+def published_sha(rec: dict) -> str:
+    """The hash of the file last published to a page; pages published before MA-303 have only sha256."""
+    return rec.get("source_sha256") or rec.get("sha256") or ""
+
+
+def receipt_findings(recorded: dict, slugs: list[str]) -> tuple[list[str], list[str]]:
+    """(errors, notes) from the read-back receipts. A failed read-back of what is live is an error; so is a page
+    published under the receipts (its record holds source_sha256, from `set-page ... published`) with no read-back of
+    that publish. Only a page last published before MA-303 (sha256 alone, no source_sha256) with none is a note."""
+    errs, unread = [], []
+    for s in slugs:
+        rec = recorded.get(s, {})
+        src = published_sha(rec)
+        if not src:
+            continue
+        if rec.get("readback_source_sha256") != src:  # none yet, or one for an older publish
+            if rec.get("source_sha256"):
+                errs.append(f"confluence: page {s} is published but not read back: read it back and run set-readback")
+            else:
+                unread.append(s)
+        elif not rec.get("readback_ok"):
+            errs.append(f"confluence: page {s} as read back differs from what was published: re-publish it, then set-readback")
+    notes = []
+    if unread:
+        more = f" and {len(unread) - 8} more" if len(unread) > 8 else ""
+        notes.append(f"confluence: {len(unread)} published pages have no read-back of what was published "
+                     f"({', '.join(unread[:8])}{more}): read each back and run set-readback")
+    return errs, notes
+
+
+def record_page(slug_: str, pid: str, version: int, title: str, published: bool) -> None:
+    """set-page: the page's id, version and, once published, the hash of the file sent. A read-back recorded before
+    stays, and counts only while it is for the hash published."""
+    path = PAGES / f"{slug_}.html"
+    h = sha(path.read_text()) if published and path.exists() else ""
+
+    def change(m: dict) -> None:
+        old = m.setdefault("pages", {}).get(slug_, {})
+        rec = {"id": pid, "title": title, "version": version, "sha256": h, "source_sha256": h}
+        rec.update({k: v for k, v in old.items() if k.startswith("readback_")})
+        m["pages"][slug_] = rec
+    update_manifest(change)
+
+
+def record_readback(slug_: str, raw: str) -> int:
+    """set-readback: compare the page as Confluence returns it with docs/confluence/SLUG.html as sent; record the
+    receipt. 0 when they agree, 1 when they differ, 2 when there is nothing to compare against."""
+    path = PAGES / f"{slug_}.html"
+    rec = (load(MANIFEST) if MANIFEST.exists() else {}).get("pages", {}).get(slug_, {})
+    try:
+        body, meta = readback_body(raw)
+    except ValueError as e:
+        print(f"set-readback {slug_}: {e}")
+        return 2
+    if not path.exists() or not published_sha(rec) or sha(path.read_text()) != published_sha(rec):
+        print(f"set-readback {slug_}: docs/confluence/{slug_}.html is not what was last published; publish it and run "
+              f"`set-page {slug_} <id> <version> published` first")
+        return 2
+    if meta["id"] != str(rec.get("id")):
+        print(f"set-readback {slug_}: the read-back is page {meta['id']}, but {slug_} is page {rec.get('id')}")
+        return 2
+    if meta["version"] != rec.get("version"):
+        print(f"set-readback {slug_}: the read-back is version {meta['version']}, but version {rec.get('version')} is "
+              f"recorded; read the page again, or record the version published with set-page")
+        return 2
+    want, got = canonical(path.read_text()), canonical(body)
+    # MA-307: a publish that sends the body alone leaves the old title live; the read-back checks the title too.
+    title_ok = meta["title"] is None or meta["title"] == rec.get("title")
+    ok = want == got and title_ok
+    import datetime  # noqa: PLC0415
+    receipt = {"readback_sha256": sha("\n".join(got)), "readback_source_sha256": published_sha(rec), "readback_ok": ok,
+               "readback_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+    update_manifest(lambda m: m.setdefault("pages", {}).setdefault(slug_, {}).update(receipt))
+    if ok:
+        print(f"set-readback {slug_}: the read-back matches what was sent ({len(want)} parts)")
+        return 0
+    if not title_ok:
+        print(f"set-readback {slug_}: the page is titled {meta['title']!r} in Confluence, not {rec.get('title')!r}; "
+              "re-publish it with its title")
+        return 1
+    print(f"set-readback {slug_}: the read-back differs from what was sent; re-publish it\n{first_difference(want, got)}")
+    return 1
+
+
+def selftest() -> int:
+    """The read-back receipt on a copy: a temporary manifest and page, never docs/confluence.json."""
+    import tempfile  # noqa: PLC0415
+    global MANIFEST, PAGES  # noqa: PLW0603
+    saved = MANIFEST, PAGES
+    page = ('<div data-type="panel-custom" data-icon=":house:" data-color="#DEEBFF"><p><strong>MyPaisa\'s plan.</strong> '
+            'From <time datetime="2026-11-02">Mon 2 Nov 2026</time>, epic <a href="https://x/browse/MA-16" '
+            'data-card-appearance="inline"></a> <span data-type="status" data-color="neutral">To Do</span></p>\n</div>\n'
+            '<table><tbody><tr><td>Story</td><td>Days</td></tr>\n<tr><td>The news job</td><td>2</td></tr>\n</tbody></table>\n'
+            '<div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" '
+            'data-parameters=\'{"macroParams":{"maxLevel":{"value":"2"}},"macroMetadata":{"schemaVersion":{"value":"1"},"title":"Toc"}}\'></div>\n'
+            '<figure data-type="media-single" data-width="100" data-width-type="percentage"><div data-type="media" data-id="m1"></div>\n'
+            '<figcaption>The web app</figcaption></figure>\n<hr><p style="font-size: 14px"><em>Generated from the repo.</em></p>')
+    live = ('<div data-local-id="a1" data-type="panel-custom" data-icon=":house:" data-color="#DEEBFF" data-icon-id="1f3e0">'
+            '<p data-local-id="a2"><strong>MyPaisa&#39;s plan.</strong> From <time data-local-id="a3" datetime="2026-11-02">'
+            'November 2, 2026</time>, epic <a href="https://x/browse/MA-16" data-card-appearance="inline">https://x/browse/MA-16</a> '
+            '<span data-local-id="a4" data-type="status" data-color="neutral" data-status-style="bold">To Do</span></p></div>'
+            '<table data-local-id="a5"><tbody><tr><td><p>Story</p></td><td><p>Days</p></td></tr><tr><td><p>The news job</p></td>'
+            '<td><p>2</p></td></tr></tbody></table><div data-type="extension" data-extension-key="toc" data-layout="default" '
+            'data-extension-type="com.atlassian.confluence.macro.core" data-parameters="{&quot;macroParams&quot;:{&quot;maxLevel&quot;:'
+            '{&quot;value&quot;:&quot;2&quot;},&quot;_parentId&quot;:{&quot;value&quot;:&quot;9&quot;}},&quot;macroMetadata&quot;:'
+            '{&quot;macroId&quot;:{&quot;value&quot;:&quot;u&quot;},&quot;title&quot;:&quot;Table of Contents&quot;}}"></div>'
+            '<figure data-type="media-single" data-width="680" data-width-type="pixel"><div data-type="media" data-id="m1" '
+            'data-height="919" data-width="1720"></div><figcaption>The web app</figcaption></figure><hr data-local-id="a6">'
+            '<p style="font-size: 12px"><em>Generated from the repo.</em></p>')
+    envelope = lambda body, v=3, title="P": json.dumps({"data": {"id": "42", "title": title,  # noqa: E731
+                                                                 "body": {"format": "html", "value": body},
+                                                                 "metadata": {"version": {"number": v}}}})
+    fails: list[str] = []
+    cases: list[str] = []
+
+    def expect(name: str, got: object, want: object) -> None:
+        cases.append(name)
+        if got != want:
+            fails.append(f"{name}: got {got!r}, expected {want!r}")
+    try:
+        with tempfile.TemporaryDirectory() as tmp, open(os.devnull, "w") as quiet:
+            MANIFEST, PAGES = Path(tmp) / "confluence.json", Path(tmp) / "confluence"
+            PAGES.mkdir()
+            MANIFEST.write_text('{"pages": {}}\n')
+            (PAGES / "p.html").write_text(page)
+            record_page("p", "42", 3, "P", published=True)
+            rec = lambda: load(MANIFEST)["pages"]["p"]  # noqa: E731
+            expect("set-page records source_sha256", rec().get("source_sha256"), sha(page))
+            errs, notes = receipt_findings(load(MANIFEST)["pages"], ["p"])
+            expect("a page published under the receipts with no read-back is an error (R1-a101)",
+                   [e for e in errs if "published but not read back" in e and "set-readback" in e], errs[:1] or ["(none)"])
+            expect("... one error, and no note", (len(errs), notes), (1, []))
+            legacy = {"p": {"id": "42", "title": "P", "version": 3, "sha256": sha(page)}}  # last published before MA-303
+            expect("a page published before MA-303 (sha256 alone) with no read-back is a note, not an error",
+                   [len(x) for x in receipt_findings(legacy, ["p"])], [0, 1])
+            out = sys.stdout
+            sys.stdout = quiet
+            try:
+                r_same = record_readback("p", envelope(live))
+                ok_same = rec().get("readback_ok")
+                r_ws = record_readback("p", envelope(page.replace("\n", "\n\n   ").replace("> <", ">  <")))
+                r_bare = record_readback("p", live)
+                r_noid = record_readback("p", json.dumps({"data": {"body": {"value": live}, "metadata": {"version": {"number": 3}}}}))
+                r_nover = record_readback("p", json.dumps({"data": {"id": "42", "body": {"value": live}}}))
+                r_marks = record_readback("p", envelope(live.replace("<strong>MyPaisa&#39;s plan.</strong>",
+                                                                     "<strong>MyPaisa&#39;s</strong> <code>plan.</code>")))
+                (PAGES / "p.html").write_text(page.replace("The news job", "<em>The news</em><em> job</em>"))
+                record_page("p", "42", 3, "P", published=True)
+                r_merged = record_readback("p", envelope(live.replace("The news job", "<em>The news job</em>")))
+                (PAGES / "p.html").write_text(page)
+                record_page("p", "42", 3, "P", published=True)
+                r_cut = record_readback("p", envelope(live[: len(live) * 2 // 3]))
+                ok_cut = rec().get("readback_ok")
+                errs_cut = receipt_findings(load(MANIFEST)["pages"], ["p"])[0]
+                r_word = record_readback("p", envelope(live.replace("The news job", "The news")))
+                r_ver = record_readback("p", envelope(live, 2))
+                r_json = record_readback("p", '{"data": {}}')
+                struck = page.replace("The news job", "<s>The news job</s>")
+                (PAGES / "p.html").write_text(struck)
+                record_page("p", "42", 3, "P", published=True)
+                r_strike_lost = record_readback("p", envelope(live))
+                r_strike_del = record_readback("p", envelope(live.replace("The news job", "<del>The news job</del>")))
+                (PAGES / "p.html").write_text(page)
+                record_page("p", "42", 3, "P", published=True)
+                r_strike_added = record_readback("p", envelope(live.replace("The news job", "<s>The news job</s>")))
+                r_title_old = record_readback("p", envelope(live, title="P, the old title"))
+                ok_title_old = rec().get("readback_ok")
+            finally:
+                sys.stdout = out
+            expect("an identical body (Confluence's own ids, dates, cards and macro ids aside) passes", (r_same, ok_same), (0, True))
+            expect("whitespace-only differences pass", r_ws, 0)
+            expect("two adjacent marks Confluence merges into one pass (rec-j-market's <em>prod $160</em><em>dev $40</em>)", r_merged, 0)
+            expect("inline marks Confluence splits or reorders pass (a <code> moved out of a <strong>, MA-303's phase-00)", r_marks, 0)
+            expect("a truncated body fails", (r_cut, ok_cut), (1, False))
+            expect("a failed read-back of what is live is an error", len(errs_cut), 1)
+            expect("a changed word fails", r_word, 1)
+            expect("a read-back of another version is refused", r_ver, 2)
+            expect("a JSON file with no body is refused", r_json, 2)
+            expect("a bare body, not getConfluenceContent's whole reply, is refused (R1-a108)", r_bare, 2)
+            expect("a reply with no page id is refused", r_noid, 2)
+            expect("a reply with no version number is refused", r_nover, 2)
+            expect("struck text read back without its strike fails (R1-a107)", r_strike_lost, 1)
+            expect("a strike read back as <del> passes", r_strike_del, 0)
+            expect("a strike the source lacks fails", r_strike_added, 1)
+            expect("a page whose live title is not the recorded title fails (MA-307: a body-only publish kept six old titles)",
+                   (r_title_old, ok_title_old), (1, False))
+            (PAGES / "p.html").write_text(page + "<p>More.</p>")
+            record_page("p", "42", 4, "P", published=True)
+            errs, notes = receipt_findings(load(MANIFEST)["pages"], ["p"])
+            expect("a stale read-back (for an older publish) does not count: the page is published but not read back",
+                   [len(errs), len(notes), "published but not read back" in "".join(errs)], [1, 0, True])
+            expect("... while the stale receipt is kept", rec().get("readback_ok"), False)
+            legacy = {"p": {**rec(), "source_sha256": None}}
+            legacy["p"].pop("source_sha256")
+            expect("a stale read-back of a page published before MA-303 is a note", [len(x) for x in receipt_findings(legacy, ["p"])], [0, 1])
+    finally:
+        MANIFEST, PAGES = saved
+    for f in fails:
+        print(f"FAIL: {f}")
+    print(f"confluence_docs selftest: {len(cases) - len(fails)} of {len(cases)} cases pass")
+    return 1 if fails else 0
 
 
 def pending(ctx: Ctx) -> dict:
@@ -1545,11 +1924,19 @@ def main(argv: list[str]) -> int:
         print(f"wrote {len(pages(ctx))} pages to {PAGES.relative_to(ROOT)}")
         return 0
     if cmd == "check":
-        errs = errors()
+        ctx = Ctx()
+        errs = errors(ctx)
         for e in errs:
             print(f"DRIFT: {e}")
+        for n in receipt_findings(ctx.manifest.get("pages", {}), [s for s, _, _ in pages(ctx)])[1]:
+            print(f"NOTE: {n}")
         print(f"confluence: {len(errs)} drift")
         return 1 if errs else 0
+    if cmd == "selftest":
+        return selftest()
+    if cmd == "set-readback" and len(argv) == 4:
+        # set-readback SLUG FILE: FILE holds the page as read back after the publish (getConfluenceContent, detail full)
+        return record_readback(argv[2], Path(argv[3]).read_text())
     if cmd == "pending":
         print(json.dumps(pending(Ctx()), indent=1, ensure_ascii=False))
         return 0
@@ -1558,13 +1945,10 @@ def main(argv: list[str]) -> int:
         return confluence_images.compose(Ctx(), Path(argv[2]), Path(argv[3]))
     if cmd == "set-page" and len(argv) in (5, 6):
         # set-page SLUG ID VERSION [published]: "published" says the page now shows docs/confluence/SLUG.html
-        ctx = Ctx()
-        slug_, pid, version = argv[2], argv[3], int(argv[4])
-        path = PAGES / f"{slug_}.html"
-        published = len(argv) == 6 and argv[5] == "published" and path.exists()
-        rec = {"id": pid, "title": dict((s, t) for s, t, _ in pages(ctx))[slug_], "version": version,
-               "sha256": sha(path.read_text()) if published else ""}
-        update_manifest(lambda m: m.setdefault("pages", {}).__setitem__(slug_, rec))
+        # (and its source_sha256, which a read-back is checked against: set-readback)
+        slug_ = argv[2]
+        record_page(slug_, argv[3], int(argv[4]), dict((s, t) for s, t, _ in pages(Ctx()))[slug_],
+                    published=len(argv) == 6 and argv[5] == "published")
         return 0
     if cmd == "app-prompt" and len(argv) == 3:
         print(app_prompt(Ctx(), argv[2]))

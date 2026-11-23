@@ -6,3 +6,12 @@
 __pycache__/
 # the scripts' own tooling (npm ci --prefix scripts)
 scripts/node_modules/
+# the review runner's cache
+review/.cache/
+# the backend's local tooling (MA-24)
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/

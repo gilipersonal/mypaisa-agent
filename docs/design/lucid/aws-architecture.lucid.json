@@ -94,7 +94,7 @@
       "w": 300,
       "h": 100
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Members</b><br>owner, member, viewer<br>joined by an invite link</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Members</b><br>owner, admin, member, viewer<br>joined by an invite link</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -435,7 +435,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "Step Functions\ndaily run (phase 18)"
+     "text": "Step Functions\ndaily run (phase 13)"
     },
     {
      "id": "bus",
@@ -447,7 +447,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "EventBridge bus\nagent team (phase 18)"
+     "text": "EventBridge bus\nagent team (phase 13)"
     },
     {
      "id": "sns",
@@ -519,7 +519,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "worker \u03bb\ningest \u00b7 news \u00b7 docs\nengine \u00b7 briefs\ncheck-ins \u00b7 views"
+     "text": "worker \u03bb\nprice ingest \u00b7 docs\ncheck-ins \u00b7 views\nProjection runs"
     },
     {
      "id": "budg",
@@ -579,7 +579,7 @@
       "w": 300,
       "h": 170
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free data first</b><br>yfinance \u00b7 Twelve Data free<br>FRED \u00b7 BoE \u00b7 ECB \u00b7 EIA<br>GDELT \u00b7 RSS<br>EODHD only on approval</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Prices, free first</b><br>to value the holdings<br>yfinance \u00b7 Twelve Data free<br>ECB rates \u00b7 issuer pages<br>EODHD only on approval</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -3335,7 +3335,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "work queue\ningest \u00b7 news \u00b7 docs\nengine \u00b7 briefs \u00b7 scoring"
+     "text": "work queue\nprice ingest \u00b7 docs\ncheck-ins \u00b7 views\nProjection runs"
     },
     {
      "id": "q_worker",
@@ -3358,7 +3358,7 @@
       "w": 300,
       "h": 120
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free data sources</b><br>yfinance \u00b7 Twelve Data (8/min)<br>FRED \u00b7 GDELT \u00b7 RSS</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free price sources</b><br>yfinance \u00b7 Twelve Data (8/min)<br>ECB \u00b7 issuer pages</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -3487,7 +3487,7 @@
       "w": 640,
       "h": 180
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Replay</b> moves messages back to their queue<br>phase 1: scripts/redrive.sh \u00b7 phase 8: [Replay] on the alert<br>in the Admin center \u00b7 phase 18: the ops warden, once the cause<br>is healthy, at most 3 times, then an incident<br>a message over an hour old asks \"still want this?\"</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Replay</b> moves messages back to their queue<br>phase 1: scripts/redrive.sh \u00b7 phase 8: [Replay] on the alert<br>in the Admin center \u00b7 phase 13: the ops warden, once the cause<br>is healthy, at most 3 times, then an incident<br>a message over an hour old asks \"still want this?\"</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -3936,7 +3936,7 @@
      },
      "text": [
       {
-       "text": "briefs",
+       "text": "check-ins",
        "position": 0.5,
        "side": "top"
       }
@@ -4359,7 +4359,7 @@
       "w": 270,
       "h": 190
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Market and files</b><br>Instrument (shared)<br>Valuation \u00b7 Document<br>Signal \u00b7 Stance<br>Forecast \u00b7 ModelVersion<br>ScoreDaily</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Prices, files, learning</b><br>Instrument (shared)<br>Valuation \u00b7 Document<br>MonthGrade<br>LearnedProposal<br>MemberSignal</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -4484,7 +4484,7 @@
       "w": 350,
       "h": 120
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>curated/</b><br>prices, economy, events, news matches<br>with the date each was known</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>curated/</b><br>prices and exchange rates<br>with the date each was known</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -4506,7 +4506,7 @@
       "w": 350,
       "h": 120
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>features/dt=</b><br>each day's feature snapshot</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>household/&lt;household&gt;/learning/</b><br>month grades, proposals, daily counts<br>never message text</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -4528,7 +4528,7 @@
       "w": 350,
       "h": 120
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>predictions/model=/dt=</b><br>every stance and forecast as made</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>reports/ \u00b7 config/snapshots/</b><br>the tuner's monthly notes<br>the daily settings snapshot</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -4547,72 +4547,6 @@
      "boundingBox": {
       "x": 1500,
       "y": 600,
-      "w": 350,
-      "h": 120
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>outcomes/model=/dt=</b><br>every grade</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#F1F6EA"
-      },
-      "stroke": {
-       "color": "#1D7A3E",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "pf5",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 1880,
-      "y": 600,
-      "w": 350,
-      "h": 120
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>models/ \u00b7 calibration/</b><br>model files, test reports, maps</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#F1F6EA"
-      },
-      "stroke": {
-       "color": "#1D7A3E",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "pf6",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 1500,
-      "y": 740,
-      "w": 350,
-      "h": 120
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>reports/ \u00b7 config/snapshots/</b><br>backtests, reviews, daily settings</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#F1F6EA"
-      },
-      "stroke": {
-       "color": "#1D7A3E",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "pf7",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 1880,
-      "y": 740,
       "w": 350,
       "h": 120
      },
@@ -4777,954 +4711,6 @@
    ]
   },
   {
-   "id": "p6",
-   "title": "6 Market agent and learning loop",
-   "shapes": [
-    {
-     "id": "t_p6",
-     "type": "text",
-     "boundingBox": {
-      "x": 40,
-      "y": 30,
-      "w": 2000,
-      "h": 90
-     },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The market agent: rules engine, Forecaster and the learning loop</b></span></p><p style=\"text-align:left\">phase 10 rules engine \u00b7 phase 17 Forecaster (MA-117) \u00b7 phase 18 learning loop and agents (MA-127) \u00b7 phase 19 India (MA-147) \u00b7 code decides, Claude explains</p></div>"
-    },
-    {
-     "id": "m_src",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 40,
-      "y": 190,
-      "w": 300,
-      "h": 330
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Free data first</b><br>yfinance \u00b7 Twelve Data free<br>FRED / ALFRED \u00b7 BoE \u00b7 ECB \u00b7 ONS<br>EIA (oil) \u00b7 GDELT \u00b7 GPR index<br>RSS \u00b7 calendars<br><b>India</b>: AMFI NAVs, phase 5<br>mfapi.in \u00b7 NSE/BSE bhavcopy<br>RBI \u00b7 NSDL flows: phase 19<br>EODHD only if approved</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FCEED6"
-      },
-      "stroke": {
-       "color": "#8A5300",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "cl6",
-     "type": "namedContainer",
-     "className": "AWSCloudAWS2024",
-     "boundingBox": {
-      "x": 400,
-      "y": 170,
-      "w": 1900,
-      "h": 1340
-     },
-     "text": "<p style=\"font-size:9pt;text-align:left\"><b>AWS \u00b7 prod</b></p>"
-    },
-    {
-     "id": "wf",
-     "type": "namedContainer",
-     "className": "AWSStepFunctionsWorkflowAWS2024",
-     "boundingBox": {
-      "x": 440,
-      "y": 230,
-      "w": 1540,
-      "h": 600
-     },
-     "text": "<p style=\"font-size:9pt;text-align:left\"><b>Daily run \u00b7 Step Functions \u00b7 retries on every step (phase 18)</b></p>"
-    },
-    {
-     "id": "m_steward",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 500,
-      "y": 320,
-      "w": 90,
-      "h": 90
-     },
-     "text": "data steward\nfailover \u00b7 gaps \u00b7 quotas"
-    },
-    {
-     "id": "m_lake",
-     "type": "namedShape",
-     "className": "ArchAmazonSimpleStorageServiceAWS2024",
-     "boundingBox": {
-      "x": 760,
-      "y": 320,
-      "w": 90,
-      "h": 90
-     },
-     "text": "S3 curated\nknown-date stamped"
-    },
-    {
-     "id": "m_feat",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1000,
-      "y": 320,
-      "w": 90,
-      "h": 90
-     },
-     "text": "features\ntrend \u00b7 momentum \u00b7 risk\nmacro \u00b7 news tone"
-    },
-    {
-     "id": "m_rules",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1260,
-      "y": 270,
-      "w": 90,
-      "h": 90
-     },
-     "text": "analyst \u00b7 rules engine\npillars \u00b7 cascade \u00b7 confidence"
-    },
-    {
-     "id": "m_fc",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1260,
-      "y": 520,
-      "w": 90,
-      "h": 90
-     },
-     "text": "Forecaster models\nmood \u00b7 risk \u00b7 similar days\nevent impacts \u00b7 direction"
-    },
-    {
-     "id": "m_cal",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1540,
-      "y": 400,
-      "w": 90,
-      "h": 90
-     },
-     "text": "calibrate and combine\nCalibrationMap"
-    },
-    {
-     "id": "m_store",
-     "type": "namedShape",
-     "className": "ArchAmazonDynamoDBAWS2024",
-     "boundingBox": {
-      "x": 1800,
-      "y": 300,
-      "w": 90,
-      "h": 90
-     },
-     "text": "DynamoDB\nStance \u00b7 Forecast"
-    },
-    {
-     "id": "m_pred",
-     "type": "namedShape",
-     "className": "ArchAmazonSimpleStorageServiceAWS2024",
-     "boundingBox": {
-      "x": 1800,
-      "y": 560,
-      "w": 90,
-      "h": 90
-     },
-     "text": "S3 predictions/\nevery one as made"
-    },
-    {
-     "id": "m_card",
-     "type": "namedShape",
-     "className": "ArchAmazonSimpleQueueServiceAWS2024",
-     "boundingBox": {
-      "x": 2100,
-      "y": 400,
-      "w": 90,
-      "h": 90
-     },
-     "text": "outbox \u2192 the app\nside-by-side card"
-    },
-    {
-     "id": "m_news",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 500,
-      "y": 620,
-      "w": 90,
-      "h": 90
-     },
-     "text": "news scout\nHaiku through Batches"
-    },
-    {
-     "id": "m_expo",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 720,
-      "y": 610,
-      "w": 420,
-      "h": 150
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Exposure map per holding</b> \u00b7 news relevance<br>fund: holdings, countries, sectors, currencies<br>share: company, sector, markets, rivals<br>commodity: gold, silver, oil drivers</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FFFFFF"
-      },
-      "stroke": {
-       "color": "#646A78",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "learn",
-     "type": "rectangleContainer",
-     "boundingBox": {
-      "x": 440,
-      "y": 900,
-      "w": 1540,
-      "h": 560
-     },
-     "containerTitle": {
-      "text": "Learning loop \u00b7 daily, bounded, approved (phase 18, MA-132 to MA-134)"
-     },
-     "assistedLayout": false,
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#EEE7FA"
-      },
-      "stroke": {
-       "color": "#6B3FB8",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "m_calrule",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 480,
-      "y": 1000,
-      "w": 480,
-      "h": 170
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Daily calibration</b><br>refit on a rolling window<br>at most 2 points per bucket a day<br>used only when better \u00b7 10 days' probation<br>rolls back on its own</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FFFFFF"
-      },
-      "stroke": {
-       "color": "#6B3FB8",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "m_score",
-     "type": "namedShape",
-     "className": "ArchAmazonDynamoDBAWS2024",
-     "boundingBox": {
-      "x": 1120,
-      "y": 1040,
-      "w": 90,
-      "h": 90
-     },
-     "text": "ScoreDaily\n30 \u00b7 90 \u00b7 365 days"
-    },
-    {
-     "id": "m_out",
-     "type": "namedShape",
-     "className": "ArchAmazonSimpleStorageServiceAWS2024",
-     "boundingBox": {
-      "x": 1440,
-      "y": 1040,
-      "w": 90,
-      "h": 90
-     },
-     "text": "S3 outcomes/\nnever overwritten"
-    },
-    {
-     "id": "m_grade",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1760,
-      "y": 1040,
-      "w": 90,
-      "h": 90
-     },
-     "text": "grader\nafter each close\nBrier \u00b7 log loss \u00b7 range"
-    },
-    {
-     "id": "m_chal",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 500,
-      "y": 1290,
-      "w": 90,
-      "h": 90
-     },
-     "text": "tuner\nchallengers: retrain,\nparameters, rule ranges"
-    },
-    {
-     "id": "m_lab",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 700,
-      "y": 1270,
-      "w": 420,
-      "h": 150
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Backtest lab</b> (MA-120)<br>ten years, walk-forward with a gap<br>last two years held out<br>then 8 live weeks in shadow</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FFFFFF"
-      },
-      "stroke": {
-       "color": "#6B3FB8",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "m_cr",
-     "type": "namedShape",
-     "className": "ArchAmazonDynamoDBAWS2024",
-     "boundingBox": {
-      "x": 1270,
-      "y": 1290,
-      "w": 90,
-      "h": 90
-     },
-     "text": "ChangeRequest\nwith scores side by side"
-    },
-    {
-     "id": "m_desk",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 1490,
-      "y": 1270,
-      "w": 440,
-      "h": 150
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admin desk</b><br>a card in the owner's chat in the app<br>or the Admin center<br>approve with the second check<br>then ModelVersion goes live</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FCE4EA"
-      },
-      "stroke": {
-       "color": "#B5123F",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    },
-    {
-     "id": "m_claude",
-     "type": "rectangle",
-     "boundingBox": {
-      "x": 40,
-      "y": 580,
-      "w": 300,
-      "h": 140
-     },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Claude</b><br>Haiku tags news<br>Sonnet explains<br>never a number</p>",
-     "style": {
-      "fill": {
-       "type": "color",
-       "color": "#FCEED6"
-      },
-      "stroke": {
-       "color": "#8A5300",
-       "width": 2,
-       "style": "solid"
-      }
-     }
-    }
-   ],
-   "lines": [
-    {
-     "id": "p6_l1",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_src",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_steward",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#8A5300",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l2",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_steward",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_lake",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l3",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_lake",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_feat",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l4",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_feat",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_rules",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l5",
-     "lineType": "elbow",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_feat",
-      "position": {
-       "x": 1,
-       "y": 0.8
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_fc",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l6",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_rules",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_cal",
-      "position": {
-       "x": 0,
-       "y": 0.2
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l7",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_fc",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_cal",
-      "position": {
-       "x": 0,
-       "y": 0.8
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l8",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_cal",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_store",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l9",
-     "lineType": "elbow",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_cal",
-      "position": {
-       "x": 1,
-       "y": 0.8
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_pred",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l10",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_store",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_card",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l11",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_news",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_expo",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     },
-     "text": [
-      {
-       "text": "tags",
-       "position": 0.5,
-       "side": "top"
-      }
-     ]
-    },
-    {
-     "id": "p6_l12",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_expo",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_fc",
-      "position": {
-       "x": 0,
-       "y": 0.8
-      }
-     },
-     "stroke": {
-      "color": "#C2381F",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l13",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_news",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_claude",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#8A5300",
-      "width": 2,
-      "style": "dashed"
-     },
-     "text": [
-      {
-       "text": "Haiku",
-       "position": 0.5,
-       "side": "top"
-      }
-     ]
-    },
-    {
-     "id": "p6_l14",
-     "lineType": "elbow",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_pred",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_grade",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#6B3FB8",
-      "width": 2,
-      "style": "solid"
-     },
-     "text": [
-      {
-       "text": "horizon passed",
-       "position": 0.5,
-       "side": "top"
-      }
-     ]
-    },
-    {
-     "id": "p6_l15",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_grade",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_out",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#6B3FB8",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l16",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_out",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_score",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#6B3FB8",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l17",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_score",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_calrule",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#6B3FB8",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l18",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_chal",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_lab",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#6B3FB8",
-      "width": 2,
-      "style": "solid"
-     }
-    },
-    {
-     "id": "p6_l19",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_lab",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_cr",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#6B3FB8",
-      "width": 2,
-      "style": "solid"
-     },
-     "text": [
-      {
-       "text": "beats current",
-       "position": 0.5,
-       "side": "top"
-      }
-     ]
-    },
-    {
-     "id": "p6_l20",
-     "lineType": "straight",
-     "endpoint1": {
-      "type": "shapeEndpoint",
-      "style": "none",
-      "shapeId": "m_cr",
-      "position": {
-       "x": 1,
-       "y": 0.5
-      }
-     },
-     "endpoint2": {
-      "type": "shapeEndpoint",
-      "style": "arrow",
-      "shapeId": "m_desk",
-      "position": {
-       "x": 0,
-       "y": 0.5
-      }
-     },
-     "stroke": {
-      "color": "#6B3FB8",
-      "width": 2,
-      "style": "solid"
-     }
-    }
-   ]
-  },
-  {
    "id": "p7",
    "title": "7 Agent team, caps and alerts",
    "shapes": [
@@ -5737,7 +4723,7 @@
       "w": 2000,
       "h": 90
      },
-     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The agent team, settings, spend caps and alerts</b></span></p><p style=\"text-align:left\">phase 8 caps and alerts (MA-137) \u00b7 phase 18 agents and settings (MA-127) \u00b7 alerts reach the app, push and email (MA-161) \u00b7 everything configurable by the admin, nothing changed without asking</p></div>"
+     "text": "<div style=\"font-size:9pt;text-align:left\"><p style=\"text-align:left\"><span style=\"font-size:18pt\"><b>The agent team, settings, spend caps and alerts</b></span></p><p style=\"text-align:left\">phase 8 caps and alerts (MA-137) \u00b7 phase 13 agents and settings (MA-127) \u00b7 alerts reach the app, push and email (MA-161) \u00b7 everything configurable by the admin, nothing changed without asking</p></div>"
     },
     {
      "id": "adm",
@@ -5773,7 +4759,7 @@
       "w": 340,
       "h": 150
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Owner's chat in the app</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with the second check</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>Admins' chat in the app</b><br>request cards: [Approve] [Reject] [Why?] [Later]<br>instructions in plain words<br>approve with the second check</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -5874,7 +4860,7 @@
       "h": 220
      },
      "containerTitle": {
-      "text": "Nine agents \u00b7 Lambda \u00b7 each with its own IAM role and tools"
+      "text": "Six agents \u00b7 Lambda \u00b7 each with its own IAM role and tools"
      },
      "assistedLayout": false,
      "style": {
@@ -5894,7 +4880,7 @@
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 580,
+      "x": 620,
       "y": 330,
       "w": 80,
       "h": 80
@@ -5906,67 +4892,31 @@
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 765,
+      "x": 910,
       "y": 330,
       "w": 80,
       "h": 80
      },
-     "text": "data steward\nsources"
-    },
-    {
-     "id": "ag2",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 950,
-      "y": 330,
-      "w": 80,
-      "h": 80
-     },
-     "text": "news scout\ntags news"
-    },
-    {
-     "id": "ag3",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1135,
-      "y": 330,
-      "w": 80,
-      "h": 80
-     },
-     "text": "analyst\nrules engine"
-    },
-    {
-     "id": "ag4",
-     "type": "namedShape",
-     "className": "ArchAWSLambdaAWS2024",
-     "boundingBox": {
-      "x": 1320,
-      "y": 330,
-      "w": 80,
-      "h": 80
-     },
-     "text": "Forecaster\nmodels"
+     "text": "data steward\nprices"
     },
     {
      "id": "ag5",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 1505,
+      "x": 1200,
       "y": 330,
       "w": 80,
       "h": 80
      },
-     "text": "grader and tuner\nlearning loop"
+     "text": "grader and tuner\nthe household learns"
     },
     {
      "id": "ag6",
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 1690,
+      "x": 1490,
       "y": 330,
       "w": 80,
       "h": 80
@@ -5978,7 +4928,7 @@
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 1875,
+      "x": 1780,
       "y": 330,
       "w": 80,
       "h": 80
@@ -5990,7 +4940,7 @@
      "type": "namedShape",
      "className": "ArchAWSLambdaAWS2024",
      "boundingBox": {
-      "x": 2060,
+      "x": 2070,
       "y": 330,
       "w": 80,
       "h": 80
@@ -6137,7 +5087,7 @@
       "w": 480,
       "h": 220
      },
-     "text": "<p style=\"font-size:9pt;text-align:center\"><b>AWS and others: \u00a350 a month</b><br>steps 50% \u00b7 80% \u00b7 100% \u00b7 forecast over cap<br>80%: dev's schedules pause<br>100%: non-essential prod jobs pause<br>never the brief, alerts or chat<br>actions are flags, not resource changes</p>",
+     "text": "<p style=\"font-size:9pt;text-align:center\"><b>AWS and others: \u00a350 a month</b><br>steps 50% \u00b7 80% \u00b7 100% \u00b7 forecast over cap<br>80%: dev's schedules pause<br>100%: non-essential prod jobs pause<br>never alerts, check-ins or the chat<br>actions are flags, not resource changes</p>",
      "style": {
       "fill": {
        "type": "color",
@@ -6869,7 +5819,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "Step Functions\ndaily run, tracing on\n(phase 18)"
+     "text": "Step Functions\ndaily run, tracing on\n(phase 13)"
     },
     {
      "id": "t_bus",
@@ -6881,7 +5831,7 @@
       "w": 90,
       "h": 90
      },
-     "text": "EventBridge bus\nevents carry the header\n(phase 18)"
+     "text": "EventBridge bus\nevents carry the header\n(phase 13)"
     },
     {
      "id": "t_keys",

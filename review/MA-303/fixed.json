@@ -1,0 +1,247 @@
+[
+ {
+  "id": "r1-a1",
+  "round": 1,
+  "lanes": [
+   "a"
+  ],
+  "finding": "CI's pr-files could never fail: a pull request is a detached merge commit, so no MA key was found and it exited 0",
+  "check": {
+   "type": "cmd",
+   "run": "python3 scripts/plan_sync.py selftest && grep -q 'a detached HEAD in CI with no key fails closed' scripts/plan_sync.py && grep -q 'a detached HEAD with GITHUB_HEAD_REF set refuses an unclaimed file' scripts/plan_sync.py && grep -q 'pr-files --base HEAD^1' .github/workflows/ci.yml && grep -q 'GITHUB_HEAD_REF' .github/workflows/ci.yml"
+  },
+  "amended": "MA-305 (2 Nov 2026): the PR job moved from plan-sync.yml into ci.yml; the check reads it there."
+ },
+ {
+  "id": "r1-a2",
+  "round": 1,
+  "lanes": [
+   "a"
+  ],
+  "finding": "jira-sync record moved last_sync for any file, so a one-story read skipped every issue updated since",
+  "check": {
+   "type": "cmd",
+   "run": "python3 scripts/plan_sync.py selftest && grep -q 'a partial file is refused and leaves last_sync' scripts/plan_sync.py && grep -q 'a one-key record leaves last_sync' scripts/plan_sync.py"
+  }
+ },
+ {
+  "id": "r1-a101",
+  "round": 1,
+  "lanes": [
+   "a"
+  ],
+  "finding": "check passed a page published under the receipts but never read back",
+  "check": {
+   "type": "cmd",
+   "run": "python3 scripts/confluence_docs.py selftest && grep -q 'a page published under the receipts with no read-back is an error' scripts/confluence_docs.py"
+  }
+ },
+ {
+  "id": "r1-b1",
+  "round": 1,
+  "lanes": [
+   "b"
+  ],
+  "finding": "Ledger checks retired whole though only part touched the boards; their records half (the width-rule phrase, owner decisions) lost its guard",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import json,sys; want={'MA-240':['r2-o2','r2-o1','r2-29'],'MA-155':['r6-admin'],'MA-281':['r1-7','r1-10'],'MA-161':['r1-d6','r2-d2']}; bad=[k+' '+e['id'] for k,ids in want.items() for e in json.load(open('review/'+k+'/fixed.json')) if e['id'] in ids and 'retired' in e and not (k=='MA-281' and 'MA-307' in e['retired'])]; sys.exit('still retired: '+', '.join(bad) if bad else 0)\" && python3 scripts/review_regress.py MA-240 --only r2-o2,r2-o1,r2-29 && python3 scripts/review_regress.py MA-155 --only r6-admin && python3 scripts/review_regress.py MA-281 --only r1-7,r1-10 && python3 scripts/review_regress.py MA-161 --only r1-d6,r2-d2"
+  },
+  "updated": "MA-307, 2 Nov 2026: MA-281's r1-7 and r1-10 guarded the Forecaster, which MA-307 retired (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"); they may be retired by MA-307's words, never by MA-303's design-check retirement; the others stay unretired"
+ },
+ {
+  "id": "r1-b2",
+  "round": 1,
+  "lanes": [
+   "b"
+  ],
+  "finding": "Open Jira stories still prescribed the deleted gates (MA-269, MA-301, MA-243, MA-241, MA-288, MA-277, MA-276, MA-181, MA-153, MA-102)",
+  "check": {
+   "type": "manual",
+   "what": "JQL project = MA AND statusCategory != Done AND (text ~ \"board_fit\" OR text ~ \"contrast_check\" OR text ~ \"a11y_live\" OR text ~ \"prototype_smoke\"): no description prescribes a deleted gate as one to run (mentions as history, and MA-242's duplicate note, are fine)"
+  }
+ },
+ {
+  "id": "r1-b3",
+  "round": 1,
+  "lanes": [
+   "b"
+  ],
+  "finding": "Trace notes stated the deleted gates in the present tense",
+  "check": {
+   "type": "grep",
+   "file": "docs/trace.json",
+   "pattern": "contrast_check\\.py is its gate|the pair joins scripts/contrast_check\\.py|board_fit_allow\\.json points its|board_fit_allow\\.json allows the three until|The gate is scripts/board_fit\\.js",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c1",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "RESEARCH's selected CI option still started Playwright when docs/design/** changed",
+  "check": {
+   "type": "grep",
+   "files": [
+    "docs/RESEARCH.md",
+    "docs/design/cicd-security-regression.html"
+   ],
+   "pattern": "or `docs/design/\\*\\*` change",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c2",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "Records still said Playwright, axe or Argos run on every PR touching web/",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import re,sys; bad=[f for f in ['README.md','TECH_STACK.md','ARCHITECTURE.md','PLAN.md','docs/RESEARCH.md'] if re.search(r'vitest and Playwright when it touches|Playwright screenshots at 390 and 1440 in both themes on every PR', open(f).read())]; miss=[f for f in ['README.md','TECH_STACK.md','ARCHITECTURE.md','PLAN.md','docs/RESEARCH.md'] if not re.search(r'Playwright, axe and Argos run only when Arun asks', open(f).read())]; sys.exit(('per-PR claim in '+', '.join(bad)+'; ' if bad else '')+('phrase missing in '+', '.join(miss) if miss else '') or 0)\""
+  }
+ },
+ {
+  "id": "r1-c3",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "The 25% floors and the width sweep were promised to QA from MA-194 and MA-165, which build neither",
+  "check": {
+   "type": "grep",
+   "files": [
+    "docs/RESEARCH.md",
+    "DESIGN.md",
+    "PRODUCT.md",
+    "ARCHITECTURE.md",
+    "PLAN.md",
+    "TECH_STACK.md",
+    "docs/design/ds-v1/README.md",
+    ".impeccable/design.json"
+   ],
+   "pattern": "by QA on request, from `?MA-194`?\\s+and\\s+`?MA-165",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-c4",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "PLAN said the selftest runs only when its code changed, while CI runs it every time",
+  "check": {
+   "type": "grep",
+   "file": "PLAN.md",
+   "pattern": "CI runs it on every PR \\(about 9 s\\)",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-c5",
+  "round": 1,
+  "lanes": [
+   "c"
+  ],
+  "finding": "RESEARCH's quality gates still listed board-fit checks across 320 to 1920 px",
+  "check": {
+   "type": "grep",
+   "files": [
+    "docs/RESEARCH.md",
+    "TECH_STACK.md",
+    "ARCHITECTURE.md",
+    "PLAN.md"
+   ],
+   "pattern": "board-fit checks across 320",
+   "present": false
+  }
+ },
+ {
+  "id": "r1-d1",
+  "round": 1,
+  "lanes": [
+   "d"
+  ],
+  "finding": "The plan-sync gate was quoted without pr-files in three records",
+  "check": {
+   "type": "grep",
+   "files": [
+    ".claude/rules/independent-review.md",
+    ".claude/rules/ship-autopilot.md",
+    ".claude/skills/autoship/SKILL.md",
+    ".claude/rules/plan-sync.md"
+   ],
+   "pattern": "plan_sync\\.py\\s+selftest\\s+&&\\s+python3\\s+scripts/plan_sync\\.py\\s+check\\s+&&\\s+python3\\s+scripts/plan_sync\\.py\\s+pr-files",
+   "present": true
+  }
+ },
+ {
+  "id": "r1-d2",
+  "round": 1,
+  "lanes": [
+   "d"
+  ],
+  "finding": "Records said plan-sync reads no board content while it reads each cited board's canvas titles",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import re,sys,glob; fs=glob.glob('.claude/rules/*.md')+glob.glob('.claude/skills/*/SKILL.md')+['.claude/skills/plan-sync/reference/trace-schema.md','scripts/plan_sync.py']; bad=[f for f in fs if re.search(r'reads nothing inside a board|reads no board.s content|never their content|Nothing on a board.s content is checked', open(f).read())]; miss=[f for f in ['.claude/rules/plan-sync.md','.claude/skills/plan-sync/SKILL.md','.claude/skills/design-first/SKILL.md','.claude/skills/plan-sync/reference/trace-schema.md'] if 'reads each board a trace row cites only for its canvas titles' not in open(f).read()]; sys.exit(('old claim in '+', '.join(bad)+'; ' if bad else '')+('phrase missing in '+', '.join(miss) if miss else '') or 0)\""
+  }
+ },
+ {
+  "id": "r1-d3",
+  "round": 1,
+  "lanes": [
+   "d"
+  ],
+  "finding": "Lessons 1 and 9 still told reviewers to judge boards from the active checklist",
+  "check": {
+   "type": "cmd",
+   "run": "python3 -c \"import sys; s=open('.claude/rules/independent-review.md').read(); q=open('docs/qa/checklist.md').read(); a='Every change drawn on a board shows its card'; b='A board is checked against its story'; sys.exit(0 if a not in s and b not in s and a in q and b in q else 'lesson 1 or 9 is in the active list, or missing from the QA checklist')\""
+  },
+  "amended": "MA-306 (2 Nov 2026): the design-board lessons moved out of the rule into docs/qa/checklist.md; the check reads both."
+ },
+ {
+  "id": "r1-o1",
+  "round": 1,
+  "lanes": [
+   "d"
+  ],
+  "finding": "Owner decision (Arun, 2 Nov 2026, MA-303 review): keep plan-sync's board-name check; it reads each cited board's canvas titles only",
+  "check": {
+   "type": "cmd",
+   "run": "python3 scripts/plan_sync.py selftest && grep -q 'def canvas_titles' scripts/plan_sync.py"
+  }
+ },
+ {
+  "id": "r1-o2",
+  "round": 1,
+  "lanes": [
+   "b"
+  ],
+  "finding": "Owner decision (Arun, 2 Nov 2026, MA-303 review): the 25% floors and the 320 to 1920 width sweep move to MA-304, QA on request for the web app",
+  "check": {
+   "type": "trace",
+   "key": "MA-304",
+   "field": "notes",
+   "contains": "25% brightness floors"
+  }
+ },
+ {
+  "id": "r1-o3",
+  "round": 1,
+  "lanes": [
+   "b"
+  ],
+  "finding": "Owner decision (Arun, 2 Nov 2026, MA-303 review): MA-302 closed unbuilt; Prototype v4 is superseded and its gate deleted",
+  "check": {
+   "type": "trace",
+   "key": "MA-302",
+   "field": "status",
+   "value": "Done"
+  }
+ }
+]

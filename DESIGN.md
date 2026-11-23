@@ -26,14 +26,14 @@ colors:
   positive-soft: "#E2F2E7"
   alert: "#B5123F"
   alert-soft: "#FCE4EA"
-  stance-hold: "#2453C9"
-  stance-hold-soft: "#E5ECFB"
-  stance-pause: "#8A5300"
-  stance-pause-soft: "#FCEED6"
-  stance-trim: "#B13A22"
-  stance-trim-soft: "#FBE5DF"
-  stance-rebalance: "#6B3FB8"
-  stance-rebalance-soft: "#EEE7FA"
+  series-blue: "#2453C9"
+  series-blue-soft: "#E5ECFB"
+  series-amber: "#8A5300"
+  series-amber-soft: "#FCEED6"
+  series-rust: "#B13A22"
+  series-rust-soft: "#FBE5DF"
+  series-violet: "#6B3FB8"
+  series-violet-soft: "#EEE7FA"
   currency-usd: "#2453C9"
   currency-gbp: "#4E5462"
   currency-inr: "#8A5300"
@@ -206,7 +206,7 @@ components:
     textColor: "{colors.hero-ink}"
     rounded: "{rounded.hero}"
     padding: "20px"
-  chip-stance:
+  chip-filter:
     backgroundColor: "{colors.surface-raised}"
     textColor: "{colors.ink-secondary}"
     rounded: "{rounded.pill}"
@@ -219,7 +219,7 @@ components:
 
 **Creative North Star: "The Private Family Ledger"**
 
-MyPaisa DS v1 ("Warm ledger", MA-101) combines Monzo's approachable warmth — a deep navy hero account card (`hero`), a crisp terracotta/coral accent (`primary`, `coral`), rounded hero numerals, and plain-spoken language — with Apple Human Interface Guidelines structure: Dynamic Type Large defaults (`17px` body), grouped inset lists, `>= 44×44` targets, semantic light and dark tokens, and legibility verified even at `25%` mobile screen brightness (`scripts/contrast_check.py`, MA-181).
+MyPaisa DS v1 ("Warm ledger", MA-101) combines Monzo's approachable warmth — a deep navy hero account card (`hero`), a crisp terracotta/coral accent (`primary`, `coral`), rounded hero numerals, and plain-spoken language — with Apple Human Interface Guidelines structure: Dynamic Type Large defaults (`17px` body), grouped inset lists, `>= 44×44` targets, semantic light and dark tokens, and legibility held even at `25%` mobile screen brightness (MA-181; measured on the built web app by MA-304, QA on request; iOS QA comes after MA-165, with no story yet; MA-303 stopped the board gate).
 
 The system is **adaptive across two native materials** built on one token sheet (`docs/design/ds-v1/tokens.css`). On iPhone and iPad (`docs/design/ds-v1/ios.css`), navigation bars, floating tab pills, toolbars, partial sheets, and the chat composer float in iOS 26 **Liquid Glass** above Warm ledger content. On the Web PWA and Android foldables, Liquid Glass and iOS sheet grabbers step aside completely for crisp Warm ledger paper chrome, hairline dividers, and keyboard-first focus rings.
 
@@ -232,7 +232,7 @@ The system is **adaptive across two native materials** built on one token sheet 
 
 ## Colors
 
-Warm stone-paper neutrals contrasted against a single deep navy hero card, terracotta/coral action and primary chart strokes, quiet everyday drawdowns (never alarm red for routine market dips), and fixed semantic encodings for stances, currencies, and asset classes.
+Warm stone-paper neutrals contrasted against a single deep navy hero card, terracotta/coral action and primary chart strokes, quiet everyday drawdowns (never alarm red for a routine fall in a holding's value), and fixed semantic encodings for chart series, currencies, and asset classes.
 
 ### Primary
 - **Terracotta Accent** (`primary`): Filled primary buttons (`.mp-btn-primary`), text links, active navigation labels, and primary chart strokes on light cards (`night-primary` lifts on dark surfaces so links hold at `25%` brightness).
@@ -240,13 +240,13 @@ Warm stone-paper neutrals contrasted against a single deep navy hero card, terra
 - **Navy Hero Card** (`hero`, `hero-raised`, `hero-ink`, `hero-ink-secondary`, `hero-up`): Signature account/net-worth summary card inspired by Monzo's account card.
 
 ### Secondary
-- **Hold / Focus / Meter Blue** (`stance-hold` / `focus-ring` / `currency-usd`): Hold stance chips, secondary comparison series (`--mp-chart-2`), spend/budget meters, USD currency marks, and `3px` `:focus-visible` outlines.
+- **Focus / Meter Blue** (`series-blue` / `focus-ring` / `currency-usd`): Secondary comparison series (`--mp-chart-2`), spend/budget meters, USD currency marks, and `3px` `:focus-visible` outlines.
 - **Sterling Slate & Rupee Amber** (`currency-gbp`, `currency-inr`): Fixed currency encodings (`>= 3:1` on both `surface` and `track`, including at `25%` brightness).
 
 ### Tertiary
-- **Emerald Gain** (`positive`, `positive-soft`): Positive gains (`▲`), Add stance chips (`--mp-add`), and funded states. Everyday downward moves use quiet slate (`ink-secondary` with `▼`), never alarm red.
+- **Emerald Gain** (`positive`, `positive-soft`): Positive gains (`▲`) and funded states. Everyday downward moves use quiet slate (`ink-secondary` with `▼`), never alarm red.
 - **Alert Crimson** (`alert`, `alert-soft`): Red-tier system alerts, overdue warnings, and destructive confirmations only — kept visually distinct from `primary` terracotta.
-- **Pause Amber, Trim Rust & Rebalance Violet** (`stance-pause`, `stance-trim`, `stance-rebalance`): Fixed stance chips and multi-series chart strokes (`--mp-chart-4`, `--mp-chart-5`).
+- **Series Amber, Rust & Violet** (`series-amber`, `series-rust`, `series-violet`): Multi-series chart strokes (`--mp-chart-4`, `--mp-chart-5`). In `tokens.css` these hues still carry the names of the stance chips MA-307 retired (`--mp-hold`, `--mp-pause`, `--mp-trim`, `--mp-reb`, with `--mp-add` and `--mp-watch`); no design shows a stance or a buy, add, hold, pause, trim or sell call.
 
 ### Neutral
 - **Warm Grouped Ground** (`ground` / `night-ground`): Screen background behind grouped lists and ledger cards.
@@ -256,9 +256,9 @@ Warm stone-paper neutrals contrasted against a single deep navy hero card, terra
 - **Ledger Hairline, Empty Bar Track & Privacy Masks** (`hairline`, `track`, `privacy-mask`, `privacy-mask-hero`): Structural `1px` dividers, clearly visible empty meter troughs, and unmistakable redacted balance pills.
 
 ### Named Rules
-**The Quiet Drawdown Rule.** Green (`positive` with `▲`) is reserved for gains, while routine daily market dips use quiet secondary ink (`ink-secondary` with `▼`); crimson (`alert`) appears only on genuine red-tier alerts and destructive actions.
+**The Quiet Drawdown Rule.** Green (`positive` with `▲`) is reserved for gains, while a routine daily fall in a holding's value uses quiet secondary ink (`ink-secondary` with `▼`); crimson (`alert`) appears only on genuine red-tier alerts and destructive actions.
 
-**The 25% Brightness Rule.** Every colour token lives in the measured top-level `:root, .t-light` and `.t-dark` blocks of `tokens.css` (and `.mp` / `.t-dark .mp` in `ios.css`) and must pass `python3 scripts/contrast_check.py` both at `100%` and at `25%` indoor screen luminance.
+**The 25% Brightness Rule.** Every colour token lives in the top-level `:root, .t-light` and `.t-dark` blocks of `tokens.css` (and the same blocks in `ios.css`) and must stay legible both at `100%` and at `25%` indoor screen luminance. The `contrast_check.py` gate that measured this on the boards was stopped by MA-303 (Arun, 2 Nov 2026); the rule is now measured on the built web app by MA-304, QA on request; iOS QA comes after MA-165, with no story yet.
 
 ## Typography
 
@@ -277,7 +277,7 @@ Warm stone-paper neutrals contrasted against a single deep navy hero card, terra
 ### Named Rules
 **The Tabular Numerals Rule.** `.mp` sets `font-variant-numeric: tabular-nums` globally so every currency figure, delta, percentage, share count, and scrub readout aligns without horizontal jitter.
 
-**The No-Clip Reflow Rule.** Flex and grid cells never rely on `text-overflow: ellipsis` for financial figures; below narrow container thresholds (`374px`, `359px`, `699px`), key-value pairs and table columns wrap or scroll horizontally inside their card (`scripts/board_fit.js`).
+**The No-Clip Reflow Rule.** Flex and grid cells never rely on `text-overflow: ellipsis` for financial figures; below narrow container thresholds (`374px`, `359px`, `699px`), key-value pairs and table columns wrap or scroll horizontally inside their card. The `board_fit.js` gate that measured this on the boards was stopped by MA-303; the rule is now measured on the built web app by MA-304, QA on request, with the 320 to 1920 width sweep.
 
 ## Layout
 
@@ -302,7 +302,7 @@ Content cards sit on warm paper (`ground`) with soft ambient contact lift (`--mp
 
 ## Shapes
 
-Corner radii step concentrically from inner controls to outer containers: `10px` (`ctl`) on segmented controls and icon tiles; `14px` (`row`) on grouped inset lists and `.mp-btn` buttons; `16px` (`sheet`) on bottom sheets; `20px` (`card`) on ledger and chat cards; `24px` (`hero`) on the navy hero card; and `999px` (`pill`) on stance chips, progress tracks, floating glass pills, and chat action buttons.
+Corner radii step concentrically from inner controls to outer containers: `10px` (`ctl`) on segmented controls and icon tiles; `14px` (`row`) on grouped inset lists and `.mp-btn` buttons; `16px` (`sheet`) on bottom sheets; `20px` (`card`) on ledger and chat cards; `24px` (`hero`) on the navy hero card; and `999px` (`pill`) on chips, progress tracks, floating glass pills, and chat action buttons.
 
 Charts draw SVG strokes with `preserveAspectRatio="none"` and `vector-effect: non-scaling-stroke` directly inside each chart's SVG (never stretching stroked `<defs>` via `<use>`), while dots, callouts, and axis labels render as sharp HTML overlays positioned in percentages. Progress tracks (`.mp-track`) clip inner fills while `.has-tick` + `.mp-track-clip` let `100%` plan benchmark ticks overhang cleanly without right-edge clipping.
 
@@ -314,7 +314,7 @@ Charts draw SVG strokes with `preserveAspectRatio="none"` and `vector-effect: no
 - **Hover, Active & Focus:** `:hover` preserves explicit foreground contrast (`color: var(--mp-on-accent)` on primary buttons so link hover rules never bleed in); `:active` scales gently to `0.97`; `:focus-visible` renders `3px solid` `focus-ring` (`#2453C9` light / `#8FB2FF` dark) at `2px` offset.
 
 ### Chips
-- **Stance & Filter Chips (`.mp-chip`, `.gchip`):** `999px` capsule, `13px/18px` semibold on semantic washes (`.mp-add`, `.mp-hold`, `.mp-pause`, `.mp-trim`, `.mp-reb`, `.mp-watch`, `.mp-neutral`). Interactive compact chips expand their touch area to `>= 44px` via invisible `::after` hit-slop without altering visual height.
+- **Filter & Status Chips (`.mp-chip`, `.gchip`):** `999px` capsule, `13px/18px` semibold on semantic washes (`.mp-neutral`, and the series washes of `tokens.css`; never a stance or a call, MA-307). Interactive compact chips expand their touch area to `>= 44px` via invisible `::after` hit-slop without altering visual height.
 
 ### Cards / Containers
 - **Navy Hero (`.mp-hero`):** `24px` radius, `20px` padding, `hero` (`#13213A`) fill, `hero-ink` figures, `hero-up` gain pills, and coral sparkline/fan bands (`--mp-band`).
@@ -324,7 +324,7 @@ Charts draw SVG strokes with `preserveAspectRatio="none"` and `vector-effect: no
 - **Chat Composer (`.cfield` / Web composer):** `>= 48px` capsule input paired with `48px` attachment button (`.cplus`) and `>= 44×44` hit-area send/voice trigger (`.csend`), plus horizontal shortcut chips above.
 
 ### Navigation
-- **Web Desktop (`>= 1024px`):** `248px` `.mp-side` rail with `Search` trigger, grouped routes (`Home`, `Assets`, `Debts`, `Budget`, `Projection`, `Reports`, `Holdings`, `Forecast`, `Proof`, `Household`, `Activity`, and `Admin center`), and `.mp-side-i.on` elevated in `surface` with `primary` icon.
+- **Web Desktop (`>= 1024px`):** `248px` `.mp-side` rail with `Search` trigger, grouped routes (`Home`, `Assets`, `Debts`, `Budget`, `Projection`, `Reports`, `Holdings`, `Household`, `Activity`, and `Admin center`), and `.mp-side-i.on` elevated in `surface` with `primary` icon.
 - **Web Compact (`<= 1023px`):** Clean `48px` mobile web top bar + 5-tab bottom bar (`Home`, `Assets`, `Projection`, `Chat`, `More`), where `More` opens a Warm ledger drawer (`Escape`-dismissible) containing `Search` and all remaining routes.
 - **iOS & iPadOS:** Floating Liquid Glass `.tabdock` + `.tabsearch` orb on compact iPhone; `280px` floating glass `.sidebar` on iPad (`Ask` sheet from `600pt`–`1132pt`; docked inspector chat from `1133pt`).
 
@@ -333,7 +333,7 @@ Charts draw SVG strokes with `preserveAspectRatio="none"` and `vector-effect: no
 ### Do:
 - **Do** route every displayed currency value, chart `aria-label`, and scrub tooltip through Privacy Mode masking (`privacy-mask` / `••••` / `aria-label="Hidden"`) when Privacy is active.
 - **Do** put `aria-hidden="true"` on every decorative `.ms` Material Symbols ligature span and provide explicit `aria-label` attributes on icon-only controls.
-- **Do** keep all colour tokens inside the measured `:root, .t-light` and `.t-dark` blocks (mirrored identically in `@media (prefers-color-scheme: dark)` for unforced roots) and sync `ds-v1/{tokens.css,ios.css,motion.css,motion.js}` byte-for-byte to `ios-v1/` and `app-v1/`.
+- **Do** keep all colour tokens inside the top-level `:root, .t-light` and `.t-dark` blocks (mirrored identically in `@media (prefers-color-scheme: dark)` for unforced roots) and sync `ds-v1/{tokens.css,ios.css,motion.css,motion.js}` byte-for-byte to `ios-v1/` and `app-v1/` by hand (no gate measures the copies since MA-303).
 - **Do** support keyboard `:focus-visible`, `Escape` dismissal on modals/sheets, and `pointerup` / `ArrowLeft` / `ArrowRight` on interactive `[data-scrub]` charts.
 
 ### Don't:

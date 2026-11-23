@@ -81,8 +81,9 @@
    "type": "trace",
    "key": "MA-167",
    "field": "arch",
-   "contains": "15.2"
-  }
+   "contains": "14.2"
+  },
+  "updated": "MA-307, 2 Nov 2026: ARCHITECTURE's §15.2 (the Admin center's alert router) is now §14.2; Phase 8 is still Phase 8"
  },
  {
   "id": "r1-b2-c7c",
@@ -99,8 +100,14 @@
   "finding": "PLAN.md Phases 0-20 Tests lines, ARCHITECTURE 9.1 and RESEARCH 7.4 did not carry the phase-by-phase Maestro packs and L1/L4 harness joins (lane B)",
   "check": {
    "type": "cmd",
-   "run": "python3 -c 'import pathlib; plan = pathlib.Path(\"PLAN.md\").read_text(); arch = pathlib.Path(\"ARCHITECTURE.md\").read_text(); res = pathlib.Path(\"docs/RESEARCH.md\").read_text(); missing = [f\"p{i:02d}\" for i in range(21) if f\"`p{i:02d}\" not in plan]; assert not missing, missing; assert \"MA-273\" in arch.split(\"### 9.1 \")[1].split(\"### 9.2\")[0]; s74 = res.split(\"### 7.4 \")[1].split(\"### 7.5\")[0]; assert \"maestro_local.py check-syntax\" in s74 and \"MA-273\" in s74'"
-  }
+   "argv": [
+    "python3",
+    "-I",
+    "-c",
+    "import pathlib, re\nplan = pathlib.Path('PLAN.md').read_text(); arch = pathlib.Path('ARCHITECTURE.md').read_text(); res = pathlib.Path('docs/RESEARCH.md').read_text()\nphases = sorted({int(n) for n in re.findall(r'^## Phase (\\d+) ', plan, re.M)})\nassert phases == list(range(len(phases))) and len(phases) >= 16, phases\nmissing = [f'p{i:02d}' for i in phases if f'`p{i:02d}' not in plan]; assert not missing, missing\nassert 'MA-273' in arch.split('### 8.1 ')[1].split('### 8.2')[0]\ns74 = res.split('### 7.4 ')[1].split('### 7.5')[0]; assert 'maestro_local.py check-syntax' in s74 and 'MA-273' in s74\n"
+   ]
+  },
+  "updated": "MA-307, 2 Nov 2026: PLAN now has phases 0 to 15, so the Maestro pack ids run p00 to p15 (the check reads the phases from PLAN's headings, at least 16); ARCHITECTURE's §9.1 (the iOS shell) is now §8.1"
  },
  {
   "id": "r1-b3b",
@@ -221,6 +228,7 @@
   "check": {
    "type": "cmd",
    "run": "python3 -c 'import pathlib, re, sys; sys.path.insert(0, \"scripts\"); import contrast_check as cc; h = pathlib.Path(\"docs/design/maestro-ios-ipados-testing.html\").read_text(); assert \"beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)\" in h; assert \"overflow-wrap:anywhere\" in h and \"min-height:44px\" in h and \"ArrowRight\" in h; assert \".s-line{stroke:var(--ink-3)\" in h and \".s-tr{fill:var(--ink-3)}\" in h; assert \"--track:#BEC1C8\" in h and \"--track:#485160\" in h; assert not re.search(r\"[┌─┐│└┘├►]\", h); assert cc.ratio(cc.rgba(\"#646A78\"), cc.rgba(\"#FFFFFF\")) >= 3.0 and cc.ratio(cc.rgba(\"#ADB6C4\"), cc.rgba(\"#151C27\")) >= 3.0; assert cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#151C27\")) >= 4.5 and cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#151C27\"), cc.DIM) >= 3.0; assert cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#1C2E4D\")) >= 4.5 and cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#1C2E4D\"), cc.DIM) >= 3.0; assert cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#233558\")) >= 4.5 and cc.ratio(cc.rgba(\"#FFAF9B\"), cc.rgba(\"#233558\"), cc.DIM) >= 3.0'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  }
 ]

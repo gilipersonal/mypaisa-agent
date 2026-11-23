@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I '/Users/arundutta/projects/mypaisa-agent/.codex/hooks/plan_sync_hook.py' before-pr",
+            "timeout": 200
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I '/Users/arundutta/projects/mypaisa-agent/.codex/hooks/plan_sync_hook.py' after-edit",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I '/Users/arundutta/projects/mypaisa-agent/.codex/hooks/plan_sync_hook.py' new-work",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -241,8 +241,8 @@ def footer() -> str:
 
 
 def ask_chips(extra: str = "") -> str:
-    return ('<div class="chiprow"><span class="cbtn"><span class="ms">chat_bubble</span>Why? in the chat</span>'
-            '<span class="cbtn"><span class="ms">fact_check</span>How it proves itself</span>' + extra + "</div>")
+    return ('<div class="chiprow"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Why? in the chat</button>'
+            '<button type="button" class="cbtn"><span class="ms" aria-hidden="true">fact_check</span>How it proves itself</button>' + extra + "</div>")
 
 
 def seg_tabs(on: str = "Forecast") -> str:
@@ -252,7 +252,8 @@ def seg_tabs(on: str = "Forecast") -> str:
 
 def meta(priv: bool = False, fund: bool = False) -> str:
     amount = f'£{(B if fund else N)["value_gbp"]:,}'
-    v = f'<span class="mp-mask">{amount}</span>' if priv else amount
+    zero = "".join("0" if c.isdigit() else c for c in amount)  # the figure never reaches the page; the width holds
+    v = f'<span class="mp-mask" role="img" aria-label="Hidden">{zero}</span>' if priv else amount
     who = f'{B["full"]} · Arun · ISA' if fund else f'{N["full"]} · Asha · ISA'
     return f'<div class="mp-foot mp-ink2 meta">{who} · {v}</div>'
 
@@ -397,9 +398,9 @@ def tabdock(on: str = "Home") -> str:
 def iphone(cap: str, theme: str, body: str, title: str = "NASDAQ 100 ETF", off: int = 0, priv: bool = False, back: str = "Assets") -> str:
     eye = "visibility_off" if priv else "visibility"
     small = off > 0
-    nav = (f'<div class="nav"><span class="gbtn lg" aria-label="Back to {back}"><span class="ms z1">chevron_left</span></span>'
+    nav = (f'<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to {back}"><span class="ms z1" aria-hidden="true">chevron_left</span></button>'
            + (f'<span class="navc">{title}</span>' if small else "") +
-           f'<span class="gbtn lg" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1">{eye}</span></span></div>')
+           f'<button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1" aria-hidden="true">{eye}</span></button></div>')
     lt = "" if small else f'<div class="largetitle lt2">{title}</div>'
     fade = '<div class="fadet"></div>' if small else ""
     return (f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div><div class="dev dev-iphone mp {theme}"><div class="island"></div><div class="scrn">'
@@ -411,11 +412,11 @@ SIDE = [("chat_bubble", "Chat"), ("home", "Home"), ("donut_small", "Assets"), ("
 
 def chat_column(q: str, a: str, chips: tuple[str, str] = ("Why?", "Track record")) -> str:
     return ('<div class="insp"><div class="sbar sbar-r"><span class="sbar-ic"><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>'
-            '<div class="nav"><span class="mp-hl">Chat</span><span class="gbtn lg"><span class="ms z1">edit_square</span></span></div><div class="chfadet"></div>'
+            '<div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New conversation"><span class="ms z1" aria-hidden="true">edit_square</span></button></div><div class="chfadet"></div>'
             f'<div class="ichat"><div class="chat"><div class="daysep">Today</div><div class="me">{q}</div><div class="me-time">09:38</div>'
             f'<div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">{a}</div></div></div></div></div><div class="edge-bot"></div>'
-            f'<div class="composer cb20"><div class="chips"><span class="gchip lg"><span class="ms">help</span><span>{chips[0]}</span></span><span class="gchip lg"><span class="ms">fact_check</span><span>{chips[1]}</span></span></div>'
-            '<div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask about this holding</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div></div>')
+            f'<div class="composer cb20"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>{chips[0]}</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>{chips[1]}</span></button></div>'
+            '<div class="cbar"><button type="button" class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask about this holding</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div></div>')
 
 
 CHAT_Q = "Why is my NASDAQ ETF on PAUSE?"
@@ -429,22 +430,22 @@ def ipad(cap: str, theme: str, body: str, title: str = "NASDAQ 100 ETF") -> str:
     return (f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div><div class="dev dev-ipad-l mp ipad {theme}"><div class="scrn srow">'
             f'<div class="sidebar sb lg"><div class="side-h sh0">MyPaisa</div>{side}<div class="side-h">Asha</div><span class="side-i"><span class="ms">account_circle</span>You</span></div>'
             f'<div class="main"><div class="sbar"><span>9:41 Mon 26 Oct</span><span></span></div>'
-            f'<div class="nav"><span class="navl"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1">chevron_left</span></span><span class="largetitle navt">{title}</span></span>'
-            '<span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1">visibility</span></span></span></div>'
+            f'<div class="nav"><span class="navl"><button type="button" class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></button><span class="largetitle navt">{title}</span></span>'
+            '<span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></button></span></div>'
             f'<div class="scroll"><div class="ipg" style="margin-top: @@OFF@@">{body}</div></div><div class="edge-bot"></div></div>{chat_column(CHAT_Q, CHAT_A)}</div></div></div>')
 
 
 def fold(cap: str, theme: str, body: str, open_: bool) -> str:
     if not open_:
         return (f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div><div class="dev dev-fold-shut mp {theme}"><div class="island"></div><div class="scrn">'
-                f'<div class="sbar"><span>9:41</span>{SB}</div><div class="nav"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1">chevron_left</span></span>'
-                f'<span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1">visibility</span></span></div><div class="largetitle lt2">NASDAQ 100 ETF</div>'
+                f'<div class="sbar"><span>9:41</span>{SB}</div><div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></button>'
+                f'<button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></button></div><div class="largetitle lt2">NASDAQ 100 ETF</div>'
                 f'<div class="scroll"><div class="pg">{body}</div></div>{tabdock()}</div></div></div>')
     top = "".join(f'<span class="ttab{" on" if l == "Home" else ""}"><span class="ms">{i}</span>{l}</span>' for i, l in TABS)
     return (f'<div class="dv-col" data-screen-label="{cap}"><div class="bd-theme">{cap}</div><div class="dev dev-fold-open mp {theme}"><div class="scrn">'
             f'<div class="sbar"><span>9:41</span>{SB}</div><div class="toptabs"><div class="tabs lg ttabs">{top}</div></div>'
-            f'<div class="nav"><span class="navl"><span class="gbtn lg" aria-label="Back to Assets"><span class="ms z1">chevron_left</span></span><span class="largetitle navt">NASDAQ 100 ETF</span></span>'
-            '<span class="navr"><span class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1">visibility</span></span><span class="gtext lg"><span class="ms z1">chat_bubble</span><span class="z1">Ask</span></span></span></div>'
+            f'<div class="nav"><span class="navl"><button type="button" class="gbtn lg" aria-label="Back to Assets"><span class="ms z1" aria-hidden="true">chevron_left</span></button><span class="largetitle navt">NASDAQ 100 ETF</span></span>'
+            '<span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></button><button type="button" class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button></span></div>'
             f'<div class="scroll"><div class="ipg">{body}</div></div><div class="edge-bot"></div></div></div></div>')
 
 
@@ -461,9 +462,9 @@ def group(name: str, frames: list[tuple[str, str, int]], device: str) -> str:
 
 def iphone_t(body: str, title: str = "NASDAQ 100 ETF", priv: bool = False, back: str = "Assets") -> str:
     eye = "visibility_off" if priv else "visibility"
-    nav = (f'<div class="nav"><span class="gbtn lg" aria-label="Back to {back}"><span class="ms z1">chevron_left</span></span>'
+    nav = (f'<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to {back}"><span class="ms z1" aria-hidden="true">chevron_left</span></button>'
            f'<sc-if value="{{{{ t.small }}}}"><span class="navc">{title}</span></sc-if>'
-           f'<span class="gbtn lg" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1">{eye}</span></span></div>')
+           f'<button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="{"true" if priv else "false"}"><span class="ms z1" aria-hidden="true">{eye}</span></button></div>')
     return ('<div class="dv-col" data-screen-label="{{ t.cap }}"><div class="bd-theme">{{ t.cap }}</div><div class="dev dev-iphone mp {{ t.c }}"><div class="island"></div><div class="scrn">'
             f'<div class="sbar"><span>9:41</span>{SB}</div>{nav}<sc-if value="{{{{ t.large }}}}"><div class="largetitle lt2">{title}</div></sc-if>'
             f'<div class="scroll"><sc-if value="{{{{ t.small }}}}"><div class="fadet"></div></sc-if><div class="pg" style="margin-top: {{{{ t.off }}}}">{body}</div></div>{tabdock()}</div></div></div>')
@@ -491,7 +492,7 @@ def chat_card(c: dict, tech: bool = False) -> str:
     if c["state"] == "no_view":
         return (f'<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">{c["name"]}</span></div>'
                 f'<div class="ccard-b"><div class="kv"><span>Rules engine</span><span>{c["rules"]}</span></div><div class="nov"><span class="ms">blur_on</span><span class="mp-sub mp-w6">No clear view</span></div>'
-                f'<p class="pp mp-foot mp-ink2">{c["why"]}</p></div><div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Track record</span></div></div>')
+                f'<p class="pp mp-foot mp-ink2">{c["why"]}</p></div><div class="ccard-acts"><button type="button" class="cbtn">Why?</button><button type="button" class="cbtn">Track record</button></div></div>')
     flag = ""
     if c["state"] == "disagree":
         flag = (f'<div class="dis"><span class="ms ms-s">call_split</span><span class="mp-foot"><b>The two engines disagree.</b> The rules engine says HOLD; the Forecaster sees a rougher month '
@@ -506,7 +507,7 @@ def chat_card(c: dict, tech: bool = False) -> str:
                  '<span>mood stressed 0.71 · choppy 0.18 · falling 0.07 · calm 0.04</span><span>pattern double top · n 9 · 20d mean −2.1% · 6 of 9 lower</span>'
                  '<span>gate week 5 of 8 · W1 to W5 beat base rate and rules engine</span></div>')
     return (f'<div class="ccard"><div class="ccard-h"><span class="mp-over mp-ink2">Forecaster · in practice · 4 weeks</span><span class="mp-hl">{c["name"]}</span></div>'
-            f'<div class="ccard-b">{flag}{kv}</div>{techb}<div class="ccard-acts"><span class="cbtn">Why?</span><span class="cbtn">Chart</span><span class="cbtn">Track record</span></div>'
+            f'<div class="ccard-b">{flag}{kv}</div>{techb}<div class="ccard-acts"><button type="button" class="cbtn">Why?</button><button type="button" class="cbtn">Chart</button><button type="button" class="cbtn">Track record</button></div>'
             f'<div class="ccard-fold"><span>Technical</span><span class="ms">{"expand_less" if tech else "expand_more"}</span></div></div>')
 
 
@@ -518,8 +519,8 @@ def chat_frame(cap: str, theme: str, cards: list[str], off: int = 0, lead: bool 
             f'<div class="sbar"><span>9:41</span>{SB}</div><div class="strip lg"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Saturday review</span>'
             f'<span class="mp-hl">Sat 24 Oct, 09:00</span></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></div>'
             f'<div class="scroll"><div class="fadet thin"></div><div class="chat cpad" style="margin-top: -{off}px">{head}{"".join(cards)}</div></div></div></div>'
-            '<div class="edge-bot"></div><div class="composer cmpb"><div class="chips"><span class="gchip lg"><span class="ms">help</span><span>Why?</span></span><span class="gchip lg"><span class="ms">fact_check</span><span>Track record</span></span></div>'
-            '<div class="cbar"><span class="cplus lg"><span class="ms z1">add</span></span><span class="cfield lg"><span class="ph">Ask MyPaisa</span><span class="csend mp-ink2 z1"><span class="ms">mic</span></span></span></div></div>'
+            '<div class="edge-bot"></div><div class="composer cmpb"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>Why?</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">fact_check</span><span>Track record</span></button></div>'
+            '<div class="cbar"><button type="button" class="cplus lg" aria-label="Attach"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>'
             f'{tabdock("Chat")}</div></div></div>')
 
 
@@ -550,6 +551,7 @@ def body_proof() -> str:
 
 # ------------------------------------------------------------------ the canvases
 CSS = """
+          :where(button.gbtn, button.gtext, button.cbtn, button.gchip, button.cplus, button.csend) { -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; text-align: inherit; cursor: pointer; }   /* the toolbar, chip and composer controls are buttons drawn as their spans were */
           html, body { margin: 0; background: #ECEAE6; }
           a { color: #C2381F; } a:hover { color: #8F2915; }
           .dv-turn { padding: 44px 48px 24px; border-bottom: 1px solid rgba(0,0,0,.08); }

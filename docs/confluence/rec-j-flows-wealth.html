@@ -3,8 +3,8 @@
 <p><span data-type="status" data-color="red">Member</span> <span data-type="status" data-color="blue">App and web app</span> <span data-type="status" data-color="yellow">AWS</span> <span data-type="status" data-color="purple">Claude</span> <span data-type="status" data-color="neutral">External data</span> <span data-type="status" data-color="green">A note</span></p>
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
-<h2>19 · Registering anything by talking</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>There are no forms. Say what you own or owe in your own words, at either door: <em>£5,000 in Monzo savings</em>. The agent drafts the record against its kind, asks only what is missing (here, whose it is) with chips, and shows a Confirm card with the figures code worked out. Confirm saves it with its audit row, and at 09:41 on Mon 26 Oct the household&#x27;s net worth moves from £439,951 to £444,951 at every open door: your iPhone, Asha&#x27;s, and the laptop beside them. When nothing the household has fits, the agent proposes a new kind, and the admin approves it behind the second check.</p>
+<h2>18 · Registering anything by talking</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>There are no forms. An admin says what the household owns or owes in plain words, at either door: <em>£5,000 in Monzo savings</em>. The agent drafts the record against its kind, asks only what is missing (here, whose it is) with chips, and shows a Confirm card with the figures code worked out. Confirm saves it with its audit row, and at 09:41 on Mon 26 Oct the household&#x27;s net worth moves from £439,951 to £444,951 at every open door: your iPhone, Asha&#x27;s, and the laptop beside them. When nothing the household has fits, the agent proposes a new kind, and an admin approves it behind the second check. Deleting goes through the chat too. Every other member views only.</p>
 <p><em><strong>Trigger</strong> &quot;£5,000 in Monzo savings&quot;, a screenshot or a statement, or the <strong>Add anything</strong> chip</em> <span data-type="status" data-color="blue">Phase 1 (the stream)</span> <em>Phase 2 (kinds, records, the write service)</em> <span data-type="status" data-color="blue">Phase 1 (the second check)</span></p>
 </div>
 <h3>🛤️ The paths</h3>
@@ -22,37 +22,40 @@
 <tr><td data-background="#FFEBE6"><strong>9</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Confirm</td></tr>
 <tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS</td><td>The <strong>write service</strong> commits exactly the hashed draft: the <strong>Record</strong>, its opening <strong>Event</strong> and the audit row, in one DynamoDB transaction. The views move: net worth £439,951 → £444,951, the UK £338,468, Arun £250,868</td></tr>
 <tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to every door</td><td>The card edits in place to Saved, and <code>records.changed</code> goes down the <strong>SSE</strong> stream of every open door, in order and never twice: your strip, Asha&#x27;s and Home on the laptop move with no reload</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Any kind, the same way.</strong> <em>Our flat in Pune, half each, valued at 1.1 crore</em> becomes a property with two owners and its rent; <em>SBI FD, 5 lakh at 7.1% for 3 years</em> a deposit whose maturity, ₹6,17,538, code works out; <em>HDFC home loan, ₹15,13,257 left</em> a loan that starts from a balance checkpoint and asks only its rate. The admin can register a record for Asha, and the card names her as its owner. A screenshot or a statement starts the same draft.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Any kind, the same way.</strong> <em>Our flat in Pune, half each, valued at 1.1 crore</em> becomes a property with two owners and its rent; <em>SBI FD, 5 lakh at 7.1% for 3 years</em> a deposit whose maturity, ₹6,17,538, code works out; <em>HDFC home loan, ₹15,13,257 left</em> a loan that starts from a balance checkpoint and asks only its rate. An admin registers a record for Asha, and the card names her as its owner. A screenshot or a statement starts the same draft.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Deleting, the same way, admin only.</strong> <em>Delete the old Monzo pot</em> shows the record on a card; Confirm, then the second check, marks it <code>deleted</code>: hidden from every view, restorable through the chat, its events, audit rows and files kept for good, with its audit row (MA-309). Closing a record (<code>closed</code>, <code>matured</code>, <code>sold</code>) stays separate.</td></tr>
 </tbody>
 </table>
-<p><strong>Route 2: a new kind, approved by the adminSat 31 Oct: Asha&#x27;s Premium Bonds fit no kind yet; Arun approves one behind the second check</strong></p>
+<p><strong>Route 2: a new kind, approved by an adminSat 31 Oct: Asha views only, so Arun registers her Premium Bonds; they fit no kind yet, and he approves one behind the second check</strong></p>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
 </thead>
 <tbody><tr><td data-background="#FFEBE6"><strong>1</strong></td><td data-background="#FFEBE6">Member (Asha) to App</td><td>Sat 31 Oct, 10:12: Asha types <em>I have NS&amp;I Premium Bonds too</em></td></tr>
 <tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td>Her lane on the updates queue, then <strong>agent λ</strong></td></tr>
-<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>Sonnet checks <code>list_kinds</code>: no kind fits Premium Bonds</td></tr>
-<tr><td data-background="#EAE6FF"><strong>4</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>The agent proposes one from the templates with <code>propose_kind</code>: built from cash at the last figure given, no interest, prizes as income, UK, in pounds, liquid</td></tr>
-<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>Only the admin can approve a kind, enforced in code, not in the prompt. The proposal waits; nothing is saved and no amount is taken yet</td></tr>
-<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to App (Asha)</td><td>Asha hears why, in plain words: not a kind yet, Arun has been asked, nothing saved</td></tr>
-<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS to App (the admin)</td><td>Arun&#x27;s chat gets <strong>New kind · to approve</strong>: what it is built from and who asked, with Approve and Reject, shown to the admin only</td></tr>
-<tr><td data-background="#FFEBE6"><strong>8</strong></td><td data-background="#FFEBE6">Member (admin) to App</td><td>Arun taps <strong>Approve</strong></td></tr>
-<tr><td data-background="#DEEBFF"><strong>9</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app asks the server for a challenge bound to this approval: one use, five minutes</td></tr>
-<tr><td data-background="#DEEBFF"><strong>10</strong></td><td data-background="#DEEBFF">App to External (Apple or Google)</td><td>The second check, as in flow 2, route 4: a fresh assertion under Face ID, with the challenge as its nonce</td></tr>
-<tr><td data-background="#F4F5F7"><strong>11</strong></td><td data-background="#F4F5F7">External (Apple or Google) to App</td><td>The fresh assertion</td></tr>
-<tr><td data-background="#DEEBFF"><strong>12</strong></td><td data-background="#DEEBFF">App to AWS</td><td>Approve and the assertion together</td></tr>
-<tr><td data-background="#FFFAE6"><strong>13</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>api λ</strong> accepts it only with an assertion under five minutes old whose nonce is that challenge. The <strong>Kind</strong> is saved as data, version 1, with its audit row; no screen, form or tool is added</td></tr>
-<tr><td data-background="#FFFAE6"><strong>14</strong></td><td data-background="#FFFAE6">AWS to App (Asha)</td><td>Asha&#x27;s chat picks her registration up where it stopped, as route 1 runs; her own record still waits for her own Confirm</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Arun settled it on 26 Oct 2026 (MA-197): approving a new kind changes what every member can register, so it is one of the admin&#x27;s actions and takes the second check. Reject tells the member plainly. A statement (flow 22) and a plan item (flow 24) take none.</td></tr>
+<tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td>Asha views only: only an admin can add a record, enforced in code, not in the prompt. Nothing is drafted or saved</td></tr>
+<tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to App (Asha)</td><td>Asha hears why, in plain words: an admin adds records, and Arun can add them for her</td></tr>
+<tr><td data-background="#FFEBE6"><strong>5</strong></td><td data-background="#FFEBE6">Member (admin) to App</td><td>10:13: Arun types <em>Add Asha&#x27;s NS&amp;I Premium Bonds</em></td></tr>
+<tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>Sonnet checks <code>list_kinds</code>: no kind fits Premium Bonds</td></tr>
+<tr><td data-background="#EAE6FF"><strong>7</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>The agent proposes one from the templates with <code>propose_kind</code>: built from cash at the last figure given, no interest, prizes as income, UK, in pounds, liquid</td></tr>
+<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS</td><td>Only an admin can approve a kind, enforced in code, not in the prompt. The proposal waits; nothing is saved and no amount is taken yet</td></tr>
+<tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS to App (the admin)</td><td>Arun&#x27;s chat gets <strong>New kind · to approve</strong>: what it is built from and who asked, with Approve and Reject, shown to admins only</td></tr>
+<tr><td data-background="#FFEBE6"><strong>10</strong></td><td data-background="#FFEBE6">Member (admin) to App</td><td>Arun taps <strong>Approve</strong></td></tr>
+<tr><td data-background="#DEEBFF"><strong>11</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The app asks the server for a challenge bound to this approval: one use, five minutes</td></tr>
+<tr><td data-background="#DEEBFF"><strong>12</strong></td><td data-background="#DEEBFF">App to External (Apple or Google)</td><td>The second check, as in flow 2, route 4: a fresh assertion under Face ID, with the challenge as its nonce</td></tr>
+<tr><td data-background="#F4F5F7"><strong>13</strong></td><td data-background="#F4F5F7">External (Apple or Google) to App</td><td>The fresh assertion</td></tr>
+<tr><td data-background="#DEEBFF"><strong>14</strong></td><td data-background="#DEEBFF">App to AWS</td><td>Approve and the assertion together</td></tr>
+<tr><td data-background="#FFFAE6"><strong>15</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>api λ</strong> accepts it only with an assertion under five minutes old whose nonce is that challenge. The <strong>Kind</strong> is saved as data, version 1, with its audit row; no screen, form or tool is added</td></tr>
+<tr><td data-background="#FFFAE6"><strong>16</strong></td><td data-background="#FFFAE6">AWS to App (the admin)</td><td>Arun&#x27;s registration picks up where it stopped, as route 1 runs: the record names Asha as its owner and waits for his Confirm</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Arun settled it on 26 Oct 2026 (MA-197): approving a new kind changes what can be registered, so it is one of the admin&#x27;s actions and takes the second check. Reject says so plainly. A statement (flow 21) and a plan item (flow 23) take none.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the members see</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="a8d9bdfb-9568-4d7d-a182-86ffa80138cd" data-collection="contentId-1442122" data-alt="rec-j-flows-wealth--flow-register.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="03a8d0f7-09a3-48ed-a66d-bb40d01bc30b" data-collection="contentId-1442122" data-alt="rec-j-flows-wealth--flow-register.png"></div>
 <figcaption>What the member sees: Registering anything by talking (Agent Journey)</figcaption></figure>
 <ul><li><strong>One sentence, one question.</strong> The kind, the bank and the amount were said; only the owner is missing, so the card asks it with chips. Joint asks the shares next.</li>
 <li><strong>Confirm, then saved.</strong> The card says what will be saved; Confirm saves it and the card edits in place. The strip&#x27;s figure rolls to £444,951.</li>
 <li><strong>The laptop, at the same moment.</strong> The web app in 1a, Chat beside: the sidebar, Home in 1a, Net worth first, and the same conversation. The Confirm tapped on the iPhone moves Home here over the stream, with one line saying so; India and Asha stand still.</li>
-<li><strong>Asha&#x27;s chat, Sat 31 Oct.</strong> She hears why, in plain words, and that the admin was asked. Nothing is saved and no amount is taken yet.</li>
-<li><strong>Arun&#x27;s chat, the admin&#x27;s card.</strong> Only the admin sees Approve and Reject. Approve asks for the second check first: a fresh sign-in bound to this one approval, checked by the server.</li>
+<li><strong>Asha&#x27;s chat, Sat 31 Oct.</strong> She views only, and hears why in plain words. Nothing is drafted or saved.</li>
+<li><strong>Arun&#x27;s chat, the admin&#x27;s card.</strong> Only admins see Approve and Reject. Approve asks for the second check first: a fresh sign-in bound to this one approval, checked by the server.</li>
 </ul>
 <h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Confirm before any write</strong></strong></p>
@@ -69,26 +72,33 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Owners, with their shares</strong></strong></p>
-<p>Every record names its owners; a joint one has two, half each unless said. The admin can register for a member, and the card names her.</p>
+<p>Every record names its owners; a joint one has two, half each unless said. An admin registers for a member, and the card names her.</p>
 </div>
 </div>
 </section>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Live at every door</strong></strong></p>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Admins write; others view</strong></strong></p>
+<p>Adding, correcting and deleting are an admin&#x27;s, enforced in code. Every other member&#x27;s request is answered in plain words, with nothing drafted. A delete takes Confirm and the second check, and only marks the record <code>deleted</code>; it is restored through the chat.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Live at every door</strong></strong></p>
 <p><code>records.changed</code> on the stream of every open door, in order and never twice; a door that was closed catches up when it opens.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A new kind, behind the second check</strong></strong></p>
-<p>Proposed from the templates, approved by the admin alone (enforced in code) after a fresh sign-in, versioned, with its audit row. No screen or form is added.</p>
-</div>
-</div>
 </section>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Privacy mode</strong></strong></p>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A new kind, behind the second check</strong></strong></p>
+<p>Proposed from the templates, approved by an admin alone (enforced in code) after a fresh sign-in, versioned, with its audit row. No screen or form is added.</p>
+</div>
+</div>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Privacy mode</strong></strong></p>
 <p>The strip and the card&#x27;s amounts are masked; Confirm still saves what the card holds, and Show amounts on this card reveals that card only.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit row</strong></strong></p>
+</section>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The audit row</strong></strong></p>
 <p>The record, its opening event and a new kind each leave a row in the same transaction, naming who and through what.</p>
 </div>
+</div>
+<div data-type="column"><p></p>
 </div>
 </section>
 <h3>🧩 Built by</h3>
@@ -96,6 +106,7 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-203" data-card-appearance="inline"></a></td><td>Savings, cash, a property&#x27;s value and a pension&#x27;s value are registered through the chat and corrected in place</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-27" data-card-appearance="inline"></a></td><td>The household&#x27;s records live in one dynamic structure: kinds as data, records as documents, history as events, figures as views</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-33" data-card-appearance="inline"></a></td><td>Each member&#x27;s records have their owners, and a joint record has two owners with their shares</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-309" data-card-appearance="inline"></a></td><td>An admin deletes a record, an event or a plan item only through the chat, with a card, Confirm and an audit row, and the files kept</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-201" data-card-appearance="inline"></a></td><td>One write service takes the chat&#x27;s Confirm and an in-place correction alike, checked against the kind and audited</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-209" data-card-appearance="inline"></a></td><td>Loans, mortgages and EMIs are registered through the chat, with dated terms, rate changes, prepayments and closure</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-206" data-card-appearance="inline"></a></td><td>Shares, ETFs, OEICs, mutual funds, bonds and gold in the UK and India are registered through the chat as holdings in their accounts</td></tr>
@@ -106,8 +117,8 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-76" data-card-appearance="inline"></a></td><td>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server; in the browser, a passkey or a fresh sign-in</td></tr>
 </tbody>
 </table>
-<h2>20 · Correcting a figure in place</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>An existing figure that its kind marks editable is corrected where it is shown, on any screen, at either door: tap it, type the new value, see the before and after, Save. Home, Reading has shown £415,000 since its April valuation; at 09:52 on Mon 26 Oct Arun puts it right at £428,000. Save writes a correction event and its audit row through the same write service as the chat&#x27;s Confirm, £415,000 stays in the history, and net worth moves from £444,951 to £457,951. Nothing is created in place: anything new is made only in the chat.</p>
+<h2>19 · Correcting a figure in place</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>An existing figure that its kind marks editable is corrected where it is shown, on any screen, at either door: tap it, type the new value, see the before and after, Save. Home, Reading has shown £415,000 since its April valuation; at 09:52 on Mon 26 Oct Arun puts it right at £428,000. Save writes a correction event and its audit row through the same write service as the chat&#x27;s Confirm, £415,000 stays in the history, and net worth moves from £444,951 to £457,951. Nothing is created or deleted in place: that happens only in the chat. Only an admin corrects, here or in the chat; every other member views, and sees no pencil.</p>
 <p><em><strong>Trigger</strong> a tap on a figure marked with a pencil, on any screen</em> <em>Phase 2 (the write service, the correction route)</em></p>
 </div>
 <h3>🛤️ The path</h3>
@@ -117,11 +128,11 @@
 <tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App</td><td>The figure opens for typing with the number pad. You type 428000, and a <strong>before → after</strong> line appears, £415,000 → £428,000, ▲ £13,000, with Save and Cancel. Nothing has left the phone</td></tr>
 <tr><td data-background="#FFEBE6"><strong>3</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Save</td></tr>
 <tr><td data-background="#DEEBFF"><strong>4</strong></td><td data-background="#DEEBFF">App to AWS</td><td><code>PATCH /v1/records/{id}</code>: the field, the new value and the figure the screen showed</td></tr>
-<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>The authorizer checks the session. The <strong>write service</strong> checks the change against the kind&#x27;s spec: the field exists, is <code>editable</code>, has the right type and range, and Arun may change it (half of it is his, and the owner may correct anyone&#x27;s). No model is called</td></tr>
+<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>The authorizer checks the session. The <strong>write service</strong> checks the change against the kind&#x27;s spec: the field exists, is <code>editable</code>, has the right type and range, and Arun may change it, since only an admin corrects and he is one. No model is called</td></tr>
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>The record has not moved since £415,000 was shown, so Save is accepted; had another door changed it, Save would be refused, never overwrite it. A <strong>correction</strong> event, labelled <em>your estimate</em>, and its audit row (<code>via: inline_edit</code>), in one transaction</td></tr>
 <tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td>The views move: net worth £444,951 → £457,951, the UK £351,468, Arun £257,368 and Asha £200,583, half each</td></tr>
 <tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to every door</td><td>The screen shows £428,000 with its audit line; <code>records.changed</code> moves every other open door over the stream</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>A correction says a figure shown was wrong. A new valuation dated today is an event made in the chat, from the valuation check-in (flow 21). A derived figure (an EMI, a maturity value, net worth) cannot be corrected: its inputs can. Plan items and saved Projection assumptions are corrected in place by the admin only (flow 24).</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>A correction says a figure shown was wrong. A new valuation dated today is an event made in the chat, from the valuation check-in (flow 20). A derived figure (an EMI, a maturity value, net worth) cannot be corrected: its inputs can. Plan items and saved Projection assumptions are corrected in place by an admin only (flow 23).</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
@@ -152,11 +163,11 @@
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Who may change what</strong></strong></p>
-<p>A member corrects their own records&#x27; figures, the owner anyone&#x27;s; plan items and saved Projection assumptions are the admin&#x27;s alone.</p>
+<p>Only admins correct a figure, in the chat or in place, and only admins add or delete; every other member views. Plan items and saved Projection assumptions are the admins&#x27; too.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>No model in the loop</strong></strong></p>
-<p>Claude is not called. The figure is the member&#x27;s own, labelled your estimate wherever it shows.</p>
+<p>Claude is not called. The figure is the admin&#x27;s own, labelled an estimate wherever it shows.</p>
 </div>
 </div>
 </section>
@@ -169,8 +180,8 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-79" data-card-appearance="inline"></a></td><td>The Audit screen shows every change with who, when and the file behind it, at every door</td></tr>
 </tbody>
 </table>
-<h2>21 · A check-in: the agent asks, one tap records it</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>When an EMI, a card bill, a SIP, rent, a premium, a salary, a maturity or a valuation is due, code (no model) puts a check-in card in the right member&#x27;s chat. On Thu 5 Nov the HDFC home loan&#x27;s EMI of ₹39,390 is due. The card says exactly what Paid saves, so the Paid tap is the Confirm, with Undo. The rarer answers wait behind Something else, among them Paid off in full, which closes the loan after its own Confirm. Several due at once fold into one card, and an autopay is assumed paid and listed once a week.</p>
+<h2>20 · A check-in: the agent asks, one tap records it</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>When an EMI, a card bill, a SIP, rent, a premium, a salary, a maturity or a valuation is due, code (no model) puts a check-in card in the chat of the admin it concerns; only an admin answers, since an answer writes a record. On Thu 5 Nov the HDFC home loan&#x27;s EMI of ₹39,390 is due. The card says exactly what Paid saves, so the Paid tap is the Confirm, with Undo. The rarer answers wait behind Something else, among them Paid off in full, which closes the loan after its own Confirm. Several due at once fold into one card, and an autopay is assumed paid and listed once a week.</p>
 <p><em><strong>Trigger</strong> the daily check-in job finds a commitment due</em> <em>Phase 4 (commitments and check-ins)</em></p>
 </div>
 <h3>🛤️ The path</h3>
@@ -182,14 +193,14 @@
 <tr><td data-background="#FFEBE6"><strong>4</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap it; the chat opens at the card: <strong>Paid saves ₹39,390 on Thu 5 Nov</strong>, over <strong>Paid</strong> and <strong>Something else</strong></td></tr>
 <tr><td data-background="#FFEBE6"><strong>5</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Paid. The card already shows exactly what it writes, so the tap is the Confirm</td></tr>
 <tr><td data-background="#DEEBFF"><strong>6</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The tap, through <code>/v1/chat/actions</code>, queued in your lane</td></tr>
-<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>One transaction</strong>: the check-in moves to answered, the payment event on the loan is written with its audit row (<code>via: checkin</code>), and the commitment moves on to Sat 5 Dec. The engine&#x27;s schedule: ₹10,719 of interest, ₹28,671 off the balance, ₹14,84,587 left</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>One transaction</strong>: the check-in moves to answered, the payment event on the loan is written with its audit row (<code>via: checkin</code>), and the commitment moves on to Sat 5 Dec. Code&#x27;s schedule: ₹10,719 of interest, ₹28,671 off the balance, ₹14,84,587 left</td></tr>
 <tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to every door</td><td>The card edits in place to <strong>Paid</strong>, with <strong>Undo</strong>; <code>records.changed</code> moves every open door: net worth £456,493 → £456,747</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Undo</strong> writes a reversal event, never a delete: the check-in opens again and both events stay in the audit log. <strong>Not yet</strong> asks again on Mon 9 Nov, then shows as overdue on Home, in amber. <strong>Different amount</strong> asks how much and, over the EMI, whether the extra shortens the term or lowers the EMI, then a Confirm card. <strong>Paid off in full</strong> asks the final amount (HDFC&#x27;s figure, or the engine&#x27;s ₹15,23,976 in one tap) and the date, then a Confirm card: the loan closes and is kept in the history, its check-ins end, and the Projection runs again with ₹39,390 a month freed.</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Several due at once</strong> become one card with one Confirm for every row, as the two valuations of Mon 26 Oct do. A joint record asks the payer and tells the other owner. An <strong>autopay</strong> commitment, like the mortgage and the car loan, is assumed paid after its grace period and listed in a weekly digest, unless a statement (flow 22) or the member says otherwise. That keeps MyPaisa to about ten notifications a week.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Undo</strong> writes a reversal event, never a delete: the check-in opens again and both events stay in the audit log. <strong>Not yet</strong> asks again on Mon 9 Nov, then shows as overdue on Home, in amber. <strong>Different amount</strong> asks how much and, over the EMI, whether the extra shortens the term or lowers the EMI, then a Confirm card. <strong>Paid off in full</strong> asks the final amount (HDFC&#x27;s figure, or code&#x27;s ₹15,23,976 in one tap) and the date, then a Confirm card: the loan closes and is kept in the history, its check-ins end, and the Projection runs again with ₹39,390 a month freed.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Several due at once</strong> become one card with one Confirm for every row, as the two valuations of Mon 26 Oct do. A joint record asks the payer and tells the other owner. An <strong>autopay</strong> commitment, like the mortgage and the car loan, is assumed paid after its grace period and listed in a weekly digest, unless a statement (flow 21) or an admin says otherwise. That keeps MyPaisa to about ten notifications a week.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="87996734-88c1-49a4-8199-71b21b1477b2" data-collection="contentId-1442122" data-alt="rec-j-flows-wealth--flow-checkin.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="a087811e-e47f-4cf6-addb-cb1cb9b37067" data-collection="contentId-1442122" data-alt="rec-j-flows-wealth--flow-checkin.png"></div>
 <figcaption>What the member sees: A check-in: the agent asks, one tap records it (Agent Journey)</figcaption></figure>
 <ul><li><strong>The lock screen, Thu 5 Nov.</strong> The loan and the question, no amount. There is no answer from the lock screen: a tap opens the card, where Paid shows what it saves.</li>
 <li><strong>As it arrives, Something else open.</strong> Paid is the filled Confirm button, under the line that says what it saves. The rarer answers wait one tap away, and Paid off in full is never beside the first tap.</li>
@@ -244,7 +255,7 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
 </tbody>
 </table>
-<h2>22 · Sending a statement</h2>
+<h2>21 · Sending a statement</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>MyPaisa never connects to a bank. On Sun 1 Nov at 08:40 Arun sends October&#x27;s statements in the chat: Barclaycard&#x27;s of Sun 1 Nov and Monzo&#x27;s for October. Both files are kept for good, then read. Every line is categorised, the merchant memory first and Haiku for the merchants it has not seen; transfers, the card payment and the EMIs are recognised by code, so nothing counts twice; the two lines it is unsure of come back in amber; and one review card takes one Confirm. The Monzo statement shows the car loan&#x27;s EMI, so the autopay the weekly digest had assumed paid is confirmed by itself.</p>
 <p><em><strong>Trigger</strong> a statement (PDF, CSV or XLSX) attached in the chat, or the <strong>Send a statement</strong> chip</em> <span data-type="status" data-color="blue">Phase 6 (statements)</span> <em>Phase 4 (the check-ins it answers)</em></p>
 </div>
@@ -257,7 +268,7 @@
 <tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>worker λ</strong> reads each file into dated lines: Barclaycard&#x27;s 16 come to its £1,458 balance; Monzo has 6 spending lines and 5 that are not spending. Each merchant is looked up in the household&#x27;s <strong>merchant memory</strong> first</td></tr>
 <tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The merchants the memory has not seen, to <strong>Haiku</strong></td></tr>
 <tr><td data-background="#EAE6FF"><strong>6</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>A category for each, and how sure it is. Haiku names a category, never an amount</td></tr>
-<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td>Code recognises what is not spending: the Barclaycard payment of £1,240 (a transfer), the mortgage&#x27;s £1,456.46 and the car loan&#x27;s £346.55 (EMIs matched to their commitments), the £5,000 moved to savings (flow 19) and Arun&#x27;s salary. On a card only interest and fees are spending; an EMI&#x27;s principal is saving</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td>Code recognises what is not spending: the Barclaycard payment of £1,240 (a transfer), the mortgage&#x27;s £1,456.46 and the car loan&#x27;s £346.55 (EMIs matched to their commitments), the £5,000 moved to savings (flow 18) and Arun&#x27;s salary. On a card only interest and fees are spending; an EMI&#x27;s principal is saving</td></tr>
 <tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to App</td><td>One review card at 08:41: October by category, the two unsure lines in amber (AMZN Mktp £165, Shopping? and PAYPAL *EBAY £42, Other?), the five recognised lines, and one Confirm</td></tr>
 <tr><td data-background="#FFEBE6"><strong>9</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap Confirm at 08:44; Change on an amber line would set another category first</td></tr>
 <tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS</td><td>In one transaction: 22 lines in October&#x27;s budget, £2,246 across 11 categories, each pointing to its file; the Barclaycard&#x27;s £1,458 owed, due Fri 20 Nov; the merchant memory taught AMZN Mktp and PAYPAL *EBAY; and the audit rows</td></tr>
@@ -318,7 +329,7 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
 </tbody>
 </table>
-<h2>23 · Closing the month on the 1st</h2>
+<h2>22 · Closing the month on the 1st</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>On the 1st the month closes with a check-in, in place of the old first-of-the-month question. At 09:00 on Sun 1 Nov, after the statements confirmed at 08:44, the card shows October&#x27;s plan against actual for each category, with the income, the EMIs and the SIP, the surplus and the savings rate, then asks only for what no statement covered: cash, or another bank. One tap closes October, with Undo, and Budget reads the result at every door.</p>
 <p><em><strong>Trigger</strong> the check-in on the 1st</em> <span data-type="status" data-color="blue">Phase 6 (the month close)</span></p>
 </div>
@@ -332,7 +343,7 @@
 <tr><td data-background="#DEEBFF"><strong>5</strong></td><td data-background="#DEEBFF">App to AWS</td><td>The tap, through <code>/v1/chat/actions</code></td></tr>
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>One transaction answers the check-in and closes October with its audit row; November opens on the same plan</td></tr>
 <tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS to every door</td><td>The card edits to <strong>October closed</strong>, with Undo; Budget shows October as closed at every door</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Add cash spending</strong> asks the amount and the category, then a Confirm card; <strong>Another bank&#x27;s statement</strong> runs flow 22 first. A plan amount is corrected in place on Budget, from the next month: Groceries £650 → £700 from November, while closed October keeps £650. A new category is made only in the chat.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Add cash spending</strong> asks the amount and the category, then a Confirm card; <strong>Another bank&#x27;s statement</strong> runs flow 21 first. A plan amount is corrected in place on Budget, from the next month: Groceries £650 → £700 from November, while closed October keeps £650. A new category is made only in the chat.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
@@ -379,8 +390,8 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
 </tbody>
 </table>
-<h2>24 · The Projection, and a what-if</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Projection, not forecast: Forecast stays the market&#x27;s word for a holding&#x27;s next four weeks, and the Projection is the household&#x27;s net worth over the years. Code computes every figure, month by month to the horizon; the agent explains. The screen has three tabs, Net worth, Plans and Budget forecast, and opens at 20 years, with 5, 10, 20 and 30 to choose (MA-261); this flow is drawn at 20 years, to 2046. From £457,951 on Mon 26 Oct the middle path reaches £1,508,000 by 2036 and £3,697,000 by 2046, and every assumption shows its source. A what-if is a typed override the engine runs and nobody saves: <em>£60,000 down on a second flat in June 2028</em> puts 2036&#x27;s middle path at £1,417,000 against £1,508,000, and code flags cash £14,462 below zero in Jun 2028. Plan items, and the saved assumptions, are the admin&#x27;s alone. Since MA-261 the admin says what is coming (<em>£4,000 a month from Jan 2029 for my kid&#x27;s schooling</em>, <em>my salary goes to £5,500 a month from Sep 2028</em>, <em>close my HDFC loan with the SBI FD when it matures</em>); one card at a time (MA-264&#x27;s 2a): the agent asks only what is missing, then the engine&#x27;s impact card and its Confirm save the plan with its audit row, and the Projection and the Budget forecast move; if the household falls short, a card of ways to rearrange the budget follows, and the admin&#x27;s Confirm applies one.</p>
+<h2>23 · The Projection, and a what-if</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The Projection is the household&#x27;s wealth forecast: its net worth over the years, worked out from its actual numbers (XIRR and CAGR from the dated ledger, contractual rates, salaries, debts, commitments and plans), never from a market prediction. Code computes every figure, month by month to the horizon; the agent explains. The Budget forecast, its third tab, is graded each month against what happened (E9, MA-276). The screen has three tabs, Net worth, Plans and Budget forecast, and opens at 20 years, with 5, 10, 20 and 30 to choose (MA-261); this flow is drawn at 20 years, to 2046. From £457,951 on Mon 26 Oct the middle path reaches £1,508,000 by 2036 and £3,697,000 by 2046, and every assumption shows its source. A what-if is a typed override the engine runs and nobody saves: <em>£60,000 down on a second flat in June 2028</em> puts 2036&#x27;s middle path at £1,417,000 against £1,508,000, and code flags cash £14,462 below zero in Jun 2028. Plan items, and the saved assumptions, are the admins&#x27; alone. Since MA-261 an admin says what is coming (<em>£4,000 a month from Jan 2029 for my kid&#x27;s schooling</em>, <em>my salary goes to £5,500 a month from Sep 2028</em>, <em>close my HDFC loan with the SBI FD when it matures</em>); one card at a time (MA-264&#x27;s 2a): the agent asks only what is missing, then the engine&#x27;s impact card and its Confirm save the plan with its audit row, and the Projection and the Budget forecast move; if the household falls short, a card of ways to rearrange the budget follows, and the admin&#x27;s Confirm applies one.</p>
 <p><em><strong>Trigger</strong> Projection from Home, a question that starts <em>What if</em>, or a plan item in the admin&#x27;s chat</em> <span data-type="status" data-color="blue">Phase 7 (the Projection)</span></p>
 </div>
 <h3>🛤️ The path</h3>
@@ -400,7 +411,7 @@
 <tr><td data-background="#FFFAE6"><strong>12</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>The engine&#x27;s figures, for the words around them</td></tr>
 <tr><td data-background="#EAE6FF"><strong>13</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>What the deposit costs by 2036, and why; every number in it is the engine&#x27;s</td></tr>
 <tr><td data-background="#FFFAE6"><strong>14</strong></td><td data-background="#FFFAE6">AWS to App</td><td>An unsaved scenario card: 2036&#x27;s middle path £1,417,000 with the flat, against £1,508,000 on today&#x27;s plan, ▼ £91,000, and code&#x27;s flag: cash £14,462 below zero in Jun 2028, back above zero in Nov 2028. <strong>Save as a plan item</strong> is shown to the admin only</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Plan items are the admin&#x27;s alone:</strong> future income, spends, changes to existing flows and events on records (such as a loan closed), made in the admin&#x27;s chat with <code>propose_plan_item</code>, one card at a time: the questions, only for what is missing; then the impact card (the middle path at 5, 10 and 20 years, the surplus each year, the first month cash goes negative, new milestones); then the admin&#x27;s Confirm saves it with its audit row (a home extension, −£35,000 in Jun 2027; Asha&#x27;s bonus, +£3,000 every March; a new car, −£25,000 in Jun 2031), then corrected, paused or ended in place by the admin, as the saved assumptions are; when a plan leaves the household short, <code>rearrange_budget</code> proposes options and the admin&#x27;s Confirm applies one, today&#x27;s budget included. They change a plan, not the records, so they need no second check. Asha views the Projection and asks her own what-if at 10:26; she saves nothing.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td><strong>Plan items are the admins&#x27; to write:</strong> future income, spends, changes to existing flows and events on records (such as a loan closed), made in the admin&#x27;s chat with <code>propose_plan_item</code>, one card at a time: the questions, only for what is missing; then the impact card (the middle path at 5, 10 and 20 years, the surplus each year, the first month cash goes negative, new milestones); then the admin&#x27;s Confirm saves it with its audit row (a home extension, −£35,000 in Jun 2027; Asha&#x27;s bonus, +£3,000 every March; a new car, −£25,000 in Jun 2031), then corrected, paused or ended in place by the admin, as the saved assumptions are; when a plan leaves the household short, <code>rearrange_budget</code> proposes options and the admin&#x27;s Confirm applies one, today&#x27;s budget included. They change a plan, not the records, so they need no second check. Asha views the Projection and asks her own what-if at 10:26; she saves nothing.</td></tr>
 <tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>The agent also explains what drives the curve, raises the trouble flags code computes, and notices milestones: the car loan ends in Feb 2029 and frees £347 a month, the HDFC loan in Jul 2030, the mortgage in Oct 2045. A locked pension cannot cover a shortfall before it unlocks.</td></tr>
 </tbody>
 </table>
@@ -411,7 +422,7 @@
 <li><strong>Arun&#x27;s what-if, 10:20.</strong> An unsaved scenario card, the engine&#x27;s run beside today&#x27;s plan. Save as a plan item is the admin&#x27;s; Asha&#x27;s own what-if at 10:26 shows no Save, only that Arun can save it as a plan item.</li>
 <li><strong>A plan item, one card at a time (MA-264&#x27;s 2a).</strong> From the what-if&#x27;s Save as a plan item: the one thing missing, asked with chips, then the engine&#x27;s impact before Confirm. Confirm saves it with its audit row and no second check, since it changes a plan, not the records; here, with cash going below zero, a card of ways to cover it would follow. This walk-through cancels, so the plan keeps its three items.</li>
 </ul>
-<p><strong>Picked.</strong> Three Projection screens were drawn for MA-193 (<a href="https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g#ios-iphone-v4-projection"><code>iPhone v4 · Projection.dc.html</code></a>, <a href="https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g#app-web-v4-projection"><code>Web v4 · Projection.dc.html</code></a>): 1a, the fan first; 1b, a story first; 1c, decades. On 26 Oct 2026 Arun picked <strong>1a, the fan first</strong>, the screen ARCHITECTURE §6.6 lists. The old wealth tracker&#x27;s Forecast is renamed Projection. Every figure is an illustrative engine run from the v4 figure set, run month by month since MA-264 (<code>future-plans-v4.json</code>). On 28 Oct 2026 Arun picked the screens MA-261 added (MA-264): the Budget forecast tab 1a, the surplus first; a plan in the chat 2a, a card per step; the Plans tab 3a, bars on a timeline.</p>
+<p><strong>Picked.</strong> Three Projection screens were drawn for MA-193 (<a href="https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g#ios-iphone-v4-projection"><code>iPhone v4 · Projection.dc.html</code></a>, <a href="https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g#app-web-v4-projection"><code>Web v4 · Projection.dc.html</code></a>): 1a, the fan first; 1b, a story first; 1c, decades. On 26 Oct 2026 Arun picked <strong>1a, the fan first</strong>, the screen ARCHITECTURE §6 lists. The old wealth tracker&#x27;s Forecast is renamed Projection. Every figure is an illustrative engine run from the v4 figure set, run month by month since MA-264 (<code>future-plans-v4.json</code>). On 28 Oct 2026 Arun picked the screens MA-261 added (MA-264): the Budget forecast tab 1a, the surplus first; a plan in the chat 2a, a card per step; the Plans tab 3a, bars on a timeline.</p>
 <h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Code computes, the agent explains</strong></strong></p>
 <p>Every figure on the screen and in the chat is the engine&#x27;s. Claude proposes assumptions with their reasons, fills a what-if&#x27;s override, explains the curve and raises the flags code computes.</p>
@@ -426,7 +437,7 @@
 <p>A contract; a prior, a versioned setting with its source; or history shrunk toward a prior, weighted by how many years there are.</p>
 </div>
 </div>
-<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The admin&#x27;s alone</strong></strong></p>
+<div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Admins only</strong></strong></p>
 <p>Plan items and saved assumptions. Members view the Projection and ask what-ifs, but save nothing. A plan change takes no second check.</p>
 </div>
 </div>
@@ -452,5 +463,5 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-215" data-card-appearance="inline"></a></td><td>With no history, the agent asks for past transactions to compute the return, or an estimate it marks as one</td></tr>
 </tbody>
 </table>
-<p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
+<p>All twenty-three: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

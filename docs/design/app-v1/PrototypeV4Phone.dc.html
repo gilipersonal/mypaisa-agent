@@ -64,7 +64,7 @@
 </helmet>
 <div class="pi mp {{ themeCls }} {{ privCls }}">
 <div class="island"></div>
-<div class="sbar"><span>{{ time }}</span><span class="sbar-ic"><span class="ms">signal_cellular_alt</span><span class="ms">wifi</span><span class="ms">battery_horiz_075</span></span></div>
+<div class="sbar"><span>{{ time }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
 <sc-if value="{{ isSignin }}" hint-placeholder-val="{{ false }}">
 <div class="wel">
 <div class="wel-mid">
@@ -80,34 +80,34 @@
 </div>
 </sc-if>
 <sc-if value="{{ isChat }}" hint-placeholder-val="{{ true }}">
-<button class="strip lg" type="button" onclick="{{ strip.go }}"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">{{ strip.lbl }}</span><sc-if value="{{ strip.hasN }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><span class="strip-n mny">{{ strip.n }}</span><sc-if value="{{ strip.hasUp }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-up mp-w6 mny">{{ strip.up }}</span></sc-if><sc-if value="{{ strip.noUp }}" hint-placeholder-val="{{ true }}"><span class="mp-foot mp-ink2">net worth</span></sc-if></span></sc-if><sc-if value="{{ strip.hasSub }}" hint-placeholder-val="{{ false }}"><span class="strip-n">{{ strip.sub }}</span></sc-if></div><span class="ms z1 mp-ink2">keyboard_arrow_down</span></button>
+<button class="strip lg" type="button" onclick="{{ strip.go }}"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">{{ strip.lbl }}</span><sc-if value="{{ strip.hasN }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><span class="strip-n mny">{{ strip.n }}</span><sc-if value="{{ strip.hasUp }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-up mp-w6 mny">{{ strip.up }}</span></sc-if><sc-if value="{{ strip.noUp }}" hint-placeholder-val="{{ true }}"><span class="mp-foot mp-ink2">net worth</span></sc-if></span></sc-if><sc-if value="{{ strip.hasSub }}" hint-placeholder-val="{{ false }}"><span class="strip-n">{{ strip.sub }}</span></sc-if></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></button>
 <div class="body"><div class="fadet"></div><div class="pscroll" data-scroll="chat"><div class="chatpad"><dc-import name="PrototypeV4Chat" dc-props="{{ chatp }}" hint-size="100%,600px"></dc-import></div></div></div>
 <div class="edge-bot"></div>
 <div class="composer">
 <div class="chips">
-<sc-if value="{{ composer.hasSug }}" hint-placeholder-val="{{ false }}"><button class="gchip sug {{ composer.sugCls }}" type="button" onclick="{{ composer.sugGo }}"><span class="ms">north_east</span><span>{{ composer.sug }}</span></button></sc-if>
-<sc-for list="{{ composer.chips }}" as="c" hint-placeholder-count="4"><button class="gchip lg" type="button" onclick="{{ c.go }}"><span class="ms">{{ c.icon }}</span><span>{{ c.t }}</span></button></sc-for>
+<sc-if value="{{ composer.hasSug }}" hint-placeholder-val="{{ false }}"><button class="gchip sug {{ composer.sugCls }}" type="button" onclick="{{ composer.sugGo }}"><span class="ms" aria-hidden="true">north_east</span><span>{{ composer.sug }}</span></button></sc-if>
+<sc-for list="{{ composer.chips }}" as="c" hint-placeholder-count="4"><button class="gchip lg" type="button" onclick="{{ c.go }}"><span class="ms" aria-hidden="true">{{ c.icon }}</span><span>{{ c.t }}</span></button></sc-for>
 </div>
 <div class="cbar">
-<button class="cplus lg {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><span class="ms">add</span></button>
+<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}"><button class="cplus lg {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><span class="ms" aria-hidden="true">add</span></button></sc-if>
 <div class="cfield lg">
-<sc-if value="{{ composer.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><sc-for list="{{ composer.files }}" as="f" hint-placeholder-count="2"><span class="cfile"><span class="ms">picture_as_pdf</span>{{ f.name }}</span></sc-for></div></sc-if>
+<sc-if value="{{ composer.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><sc-for list="{{ composer.files }}" as="f" hint-placeholder-count="2"><span class="cfile"><span class="ms" aria-hidden="true">picture_as_pdf</span>{{ f.name }}</span></sc-for></div></sc-if>
 <sc-if value="{{ composer.notFiles }}" hint-placeholder-val="{{ true }}"><input class="cin" type="text" autocomplete="off" aria-label="Message" placeholder="{{ composer.ph }}" value="{{ composer.typed }}" onchange="{{ composer.onType }}" onkeydown="{{ composer.onKey }}" /></sc-if>
-<button class="csend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><span class="ms">{{ composer.sendIcon }}</span></button>
+<button class="csend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><span class="ms" aria-hidden="true">{{ composer.sendIcon }}</span></button>
 </div>
 </div>
 </div>
 </sc-if>
 <sc-if value="{{ isPage }}" hint-placeholder-val="{{ false }}">
-<div class="nav"><sc-if value="{{ hasBack }}" hint-placeholder-val="{{ false }}"><button class="gbtn lg" type="button" aria-label="Back" onclick="{{ backGo }}"><span class="ms z1">chevron_left</span></button></sc-if><span class="navsp"></span>
-<sc-if value="{{ isRoot }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><button class="gbtn lg" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><span class="ms z1">{{ eyeIcon }}</span></button><button class="gtext lg" type="button" onclick="{{ askGo }}"><span class="ms z1">chat_bubble</span><span class="z1">Ask</span></button></span></sc-if>
-<sc-if value="{{ notRoot }}" hint-placeholder-val="{{ false }}"><span class="ggroup lg"><button class="gbtn" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><span class="ms z1">{{ eyeIcon }}</span></button><button class="gbtn" type="button" aria-label="Ask" onclick="{{ askGo }}"><span class="ms z1">chat_bubble</span></button></span></sc-if>
+<div class="nav"><sc-if value="{{ hasBack }}" hint-placeholder-val="{{ false }}"><button class="gbtn lg" type="button" aria-label="Back" onclick="{{ backGo }}"><span class="ms z1" aria-hidden="true">chevron_left</span></button></sc-if><span class="navsp"></span>
+<sc-if value="{{ isRoot }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><button class="gbtn lg" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><span class="ms z1" aria-hidden="true">{{ eyeIcon }}</span></button><button class="gtext lg" type="button" onclick="{{ askGo }}"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button></span></sc-if>
+<sc-if value="{{ notRoot }}" hint-placeholder-val="{{ false }}"><span class="ggroup lg"><button class="gbtn" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><span class="ms z1" aria-hidden="true">{{ eyeIcon }}</span></button><button class="gbtn" type="button" aria-label="Ask" onclick="{{ askGo }}"><span class="ms z1" aria-hidden="true">chat_bubble</span></button></span></sc-if>
 </div>
 <div class="body"><div class="pscroll" data-scroll="page"><div class="pagepad"><dc-import name="PrototypeV4Pages" dc-props="{{ pagep }}" hint-size="100%,900px"></dc-import></div></div></div>
 <div class="edge-bot"></div>
 </sc-if>
-<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="n" hint-placeholder-count="4"><span class="tabw"><button class="tab {{ n.cls }}" type="button" onclick="{{ n.go }}"><span class="ms">{{ n.icon }}</span>{{ n.label }}</button></span></sc-for></div><button class="tabsearch lg" type="button" aria-label="Search" onclick="{{ nopeGo }}"><span class="ms z1">search</span></button></div></sc-if>
-<sc-if value="{{ kp.has }}" hint-placeholder-val="{{ false }}"><div class="kpad" aria-label="Number pad"><sc-for list="{{ kp.keys }}" as="k" hint-placeholder-count="12"><button class="kk {{ k.cls }}" type="button" onclick="{{ k.go }}"><sc-if value="{{ k.isDel }}" hint-placeholder-val="{{ false }}"><span class="ms">backspace</span></sc-if>{{ k.t }}</button></sc-for></div></sc-if>
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="n" hint-placeholder-count="4"><span class="tabw"><button class="tab {{ n.cls }}" type="button" onclick="{{ n.go }}"><span class="ms" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></span></sc-for></div><button class="tabsearch lg" type="button" aria-label="Search" onclick="{{ nopeGo }}"><span class="ms z1" aria-hidden="true">search</span></button></div></sc-if>
+<sc-if value="{{ kp.has }}" hint-placeholder-val="{{ false }}"><div class="kpad" aria-label="Number pad"><sc-for list="{{ kp.keys }}" as="k" hint-placeholder-count="12"><button class="kk {{ k.cls }}" type="button" onclick="{{ k.go }}"><sc-if value="{{ k.isDel }}" hint-placeholder-val="{{ false }}"><span class="ms" aria-hidden="true">backspace</span></sc-if>{{ k.t }}</button></sc-for></div></sc-if>
 <div class="homebar"></div>
 </div>
 </x-dc>

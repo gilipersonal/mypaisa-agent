@@ -3,7 +3,7 @@
 <p><span data-type="status" data-color="red">Member</span> <span data-type="status" data-color="blue">App and web app</span> <span data-type="status" data-color="yellow">AWS</span> <span data-type="status" data-color="purple">Claude</span> <span data-type="status" data-color="neutral">External data</span> <span data-type="status" data-color="green">A note</span></p>
 </div>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
-<h2>15 · Money in any currency, checked against the holding</h2>
+<h2>14 · Money in any currency, checked against the holding</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Every holding has one currency: the one it is bought and valued in, as the platform shows it, confirmed once on the card that added it. Type money in any currency and MyPaisa looks up that holding&#x27;s currency and checks the amount against it. Rupees typed for a pound holding are never saved as typed: MyPaisa says why and asks again, in pounds.</p>
 <p><em><strong>Trigger</strong> &quot;I put ₹20,000 into Balanced&quot;</em> <span data-type="status" data-color="blue">Phase 2 (the check)</span> <em>Phase 3 (the ECB-rate estimate)</em> <span data-type="status" data-color="blue">Phase 5 (rupee holdings)</span></p>
 </div>
@@ -30,34 +30,34 @@
 <tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>The <strong>parser</strong> in code reads <code>₹20,000</code>: rupees. Balanced&#x27;s <strong>Position</strong> has <code>ccy</code> GBP. The currency check: they differ, so nothing is saved</td></tr>
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The question, in pounds: <strong>How many pounds arrived?</strong> Buttons: the estimate with its figure (<strong>About £177.78 · ECB estimate</strong>), a rupee holding by name (only when there is one) and <strong>Cancel</strong></td></tr>
 <tr><td data-background="#FFEBE6"><strong>7</strong></td><td data-background="#FFEBE6">Member to App</td><td>You type the pounds, <em>176.10</em>, or attach the platform&#x27;s confirmation; or tap the estimate</td></tr>
-<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS</td><td>Your figure is recorded, and the <strong>engine</strong> works out the rate from it. The estimate is the engine&#x27;s conversion at the ECB reference rate for that day, from the rates loaded every day (MA-44), marked an estimate</td></tr>
+<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS</td><td>Your figure is recorded, and <strong>code</strong> works out the rate from it. The estimate is code&#x27;s conversion at the ECB reference rate for that day, from the rates loaded every day (MA-44), marked an estimate</td></tr>
 <tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS to App</td><td>The Confirm card with two currencies: the pounds, the rupees, the rate and its date</td></tr>
 <tr><td data-background="#FFEBE6"><strong>10</strong></td><td data-background="#FFEBE6">Member to App</td><td>Confirm</td></tr>
 <tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>Transaction</strong> saved in the position&#x27;s currency (<code>amount</code>, <code>ccy</code> GBP), with <code>orig_amount</code>, <code>orig_ccy</code>, <code>fx_rate</code>, <code>fx_source</code> and <code>fx_date</code> beside it. The audit row shows both amounts</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>The ECB-rate figure stays marked an estimate until a statement, a screenshot or the next valuation confirms it. Before the daily rates are loaded (phase 3), the estimate button is left out and nothing else changes. The same check runs on the guided flow, a screenshot, and a CAS or broker line (flow 16): every pair, both ways.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>The ECB-rate figure stays marked an estimate until a statement, a screenshot or the next valuation confirms it. Before the daily rates are loaded (phase 3), the estimate button is left out and nothing else changes. The same check runs on the guided flow, a screenshot, and a CAS or broker line (flow 15): every pair, both ways.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="fb23bb52-72ea-4b73-a39a-84a989ad8249" data-collection="contentId-1736765" data-alt="rec-j-flows-india--flow-currency.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="f5836970-ef76-48dc-9652-c8463a527ccf" data-collection="contentId-1736765" data-alt="rec-j-flows-india--flow-currency.png"></div>
 <figcaption>What the member sees: Money in any currency, checked against the holding (Agent Journey)</figcaption></figure>
 <ul><li><strong>The question, in pounds.</strong> Nothing saved. The estimate shows its figure before you choose it; a rupee holding is offered by name only when one is held.</li>
-<li><strong>The ECB estimate.</strong> One tap, the engine&#x27;s conversion, its rate and date on the card, marked an estimate; Confirm is still its own tap.</li>
-<li><strong>The pounds that arrived.</strong> Typed in answer; the question drops its buttons. Your figure is recorded; the rupees and the rate the engine works out from them stay beside it.</li>
+<li><strong>The ECB estimate.</strong> One tap, code&#x27;s conversion, its rate and date on the card, marked an estimate; Confirm is still its own tap.</li>
+<li><strong>The pounds that arrived.</strong> Typed in answer; the question drops its buttons. Your figure is recorded; the rupees and the rate code works out from them stay beside it.</li>
 <li><strong>The other way.</strong> Lakh read by code, no question for rupees; pounds against a rupee holding get the same question, in rupees.</li>
 </ul>
-<p><strong>Designed first.</strong> Three options were drawn in Claude Design (<a href="https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g#app-currency-check-options"><code>Currency check options.dc.html</code></a>, MA-156), and on 25 Oct 2026 Arun picked <strong>1b, Ask again, in pounds</strong>. These mocks carry its content and order into the app (MA-161); its iOS rendering is shown to Arun before the build. Rate and figures illustrative.</p>
+<p><strong>Designed first.</strong> Three options were drawn in Claude Design (<a href="https://claude.ai/artifact/GfNnLMaQ1WsyC2vypvCJGe">MA-156&#x27;s design round</a>; the board, <code>Currency check options.dc.html</code>, went with MA-307), and on 25 Oct 2026 Arun picked <strong>1b, Ask again, in pounds</strong>. These mocks carry its content and order into the app (MA-161); its iOS rendering is shown to Arun before the build. Rate and figures illustrative.</p>
 <h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>One currency per holding</strong></strong></p>
 <p><code>Position.ccy</code>, read from the factsheet or screenshot and shown on the Confirm card that added it: confirmed once, never guessed again. A fund&#x27;s own base currency (often USD) can differ; the position&#x27;s is the one that counts.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Reading amounts is code</strong></strong></p>
-<p>Symbols, the codes of every currency the ECB publishes, the words, lakh and crore. The figure is always the member&#x27;s own, echoed back for Confirm.</p>
+<p>Symbols, the codes of every currency the ECB publishes, the words, lakh and crore. The figure is always the admin&#x27;s own, echoed back for Confirm.</p>
 </div>
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>A converted figure is never Claude&#x27;s</strong></strong></p>
-<p>Either the pounds that arrived, or the engine&#x27;s estimate at the ECB rate of the day, its figure on the button before you choose it, then on the card with the rate and its date, marked an estimate.</p>
+<p>Either the pounds that arrived, or code&#x27;s estimate at the ECB rate of the day, its figure on the button before you choose it, then on the card with the rate and its date, marked an estimate.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The original kept</strong></strong></p>
@@ -79,14 +79,14 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-38" data-card-appearance="inline"></a></td><td>&quot;I put £200 into Balanced&quot; becomes a transaction after Confirm</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-39" data-card-appearance="inline"></a></td><td>Guided flows with buttons log a transaction, add a holding, update a valuation or change a setting</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-44" data-card-appearance="inline"></a></td><td>ECB FX rates and market calendars are loaded daily (the ECB-rate button, phase 3)</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-153" data-card-appearance="inline"></a></td><td>IN3: Indian accounts show in INR and GBP; rupees and pounds checked both ways (phase 19)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-153" data-card-appearance="inline"></a></td><td>IN3: Indian accounts show in INR and GBP, with a tax flag where UK rules differ; rupees and pounds checked both ways (phase 14)</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-169" data-card-appearance="inline"></a></td><td>The chat in the app renders every card natively; its buttons post to /v1/chat/actions</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-28" data-card-appearance="inline"></a></td><td>Every record change writes a hash-chained audit row in the same transaction</td></tr>
 </tbody>
 </table>
-<h2>16 · Importing the existing Indian portfolio, once</h2>
+<h2>15 · Importing the existing Indian portfolio, once</h2>
 <div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>The household&#x27;s Indian mutual funds, shares and ETFs arrive once, with their whole history, from the statements India already produces. Each file is kept first; code parses it; every holding is matched by ISIN; a dry run shows everything; one Confirm, with the second check, writes it all. Anything that does not match is listed, never guessed.</p>
-<p><em><strong>Trigger</strong> you attach a CAS statement or a broker export in the chat</em> <span data-type="status" data-color="blue">Phase 19 (IN2)</span> <em>Needs IN1, the Excel importer and file keeping</em></p>
+<p><em><strong>Trigger</strong> you attach a CAS statement or a broker export in the chat</em> <span data-type="status" data-color="blue">Phase 14 (IN2)</span> <em>Needs IN1, the Excel importer and file keeping</em></p>
 </div>
 <h3>📌 The files to send</h3>
 <p>Mutual funds, every fund house</p>
@@ -109,11 +109,11 @@
 <tr><td data-background="#FFFAE6"><strong>9</strong></td><td data-background="#FFFAE6">AWS to App</td><td>One summary card, with <strong>Confirm</strong></td></tr>
 <tr><td data-background="#FFEBE6"><strong>10</strong></td><td data-background="#FFEBE6">Member to App</td><td>Confirm, then the second check: an import is one of the actions that need it</td></tr>
 <tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS</td><td>Written in batches under <strong>one import id</strong>: the <code>mf_folio</code> and <code>demat</code> Accounts, the <code>in_mutual_fund</code> and <code>in_listed</code> Instruments, Positions in INR and every past Transaction, each with an audit row that names the file it came from</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Any import can be <strong>rolled back by its id</strong>, behind the second check. The files stay in S3 for good and open from the Audit screen, in the app or the web app; a change card&#x27;s Source button opens the original. Prices follow from the Indian chains (flow 18), and a CAS or broker line in another currency than its holding&#x27;s takes the check of flow 15. Later (phase 20), a Live Activity follows a long import on the Lock Screen.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Any import can be <strong>rolled back by its id</strong>, behind the second check. The files stay in S3 for good and open from the Audit screen, in the app or the web app; a change card&#x27;s Source button opens the original. Prices follow from the Indian chains (flow 17), and a CAS or broker line in another currency than its holding&#x27;s takes the check of flow 14. Later (phase 15), a Live Activity follows a long import on the Lock Screen.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ca084a89-6865-4baa-a8c5-bd592cbe6f1f" data-collection="contentId-1736765" data-alt="rec-j-flows-india--flow-india-import.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="129040aa-ddfb-4215-aad3-2225d91e72d9" data-collection="contentId-1736765" data-alt="rec-j-flows-india--flow-india-import.png"></div>
 <figcaption>What the member sees: Importing the existing Indian portfolio, once (Agent Journey)</figcaption></figure>
 <ul><li><strong>The files.</strong> Kept before they are read; the password typed once in a secure field, used in memory.</li>
 <li><strong>One summary card.</strong> Everything at once; the unmatched share in amber, left out. Identifiers shortened.</li>
@@ -161,13 +161,13 @@
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-148" data-card-appearance="inline"></a></td><td>Every file and image a member sends is kept in S3 for good, with a Document row and an audit entry that point to it</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-149" data-card-appearance="inline"></a></td><td>The Audit screen opens the original file behind each change, through a short-lived link only the right member can use</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-76" data-card-appearance="inline"></a></td><td>The second check: a fresh Sign in with Apple or passkey under Face ID, or Google again for a Google-only member, bound to the action and verified by the server</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-179" data-card-appearance="inline"></a></td><td>A Live Activity follows a long job, such as an import, on the Lock Screen and in the Dynamic Island (phase 20, later)</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian markets and the existing Indian portfolio (phase 19)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-179" data-card-appearance="inline"></a></td><td>A Live Activity follows a long job, such as an import, on the Lock Screen and in the Dynamic Island (phase 15, later)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian holdings and the existing Indian portfolio (phase 14)</td></tr>
 </tbody>
 </table>
-<h2>17 · The household in INR and GBP</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Indian holdings sit in Indian accounts, in rupees, with the pound value beside every figure. The household total stays in the base currency, pounds, with the rupee view one tap away. Privacy mode hides rupees as it hides pounds; a suggestion names only what suits its account; and a holding the UK may tax differently is flagged in plain words.</p>
-<p><em><strong>Trigger</strong> Home in the app or the web app, a holding&#x27;s card or its screen, once Indian accounts exist</em> <span data-type="status" data-color="blue">Phase 19 (IN3)</span> <span data-type="status" data-color="purple">Designed first</span></p>
+<h2>16 · The household in INR and GBP</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>Indian holdings sit in Indian accounts, in rupees, with the pound value beside every figure. The household total stays in the base currency, pounds, with the rupee view one tap away. Privacy mode hides rupees as it hides pounds, and a holding the UK may tax differently is flagged in plain words. Nothing suggests what to do with a holding.</p>
+<p><em><strong>Trigger</strong> Home in the app or the web app, a holding&#x27;s card or its screen, once Indian accounts exist</em> <span data-type="status" data-color="blue">Phase 14 (IN3)</span> <span data-type="status" data-color="purple">Designed first</span></p>
 </div>
 <h3>📌 The accounts, and how a figure is kept</h3>
 <p>Indian accounts</p>
@@ -185,15 +185,15 @@
 <tr><td data-background="#DEEBFF"><strong>2</strong></td><td data-background="#DEEBFF">App to AWS</td><td><code>GET /v1/home</code>, signed in as in flow 2</td></tr>
 <tr><td data-background="#FFFAE6"><strong>3</strong></td><td data-background="#FFFAE6">AWS</td><td><strong>api λ</strong> reads your Accounts, Positions and Valuations from <strong>DynamoDB</strong>. Each Indian valuation already holds both figures, rupees and pounds on the day</td></tr>
 <tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS</td><td>The household total in pounds, the base currency. Each Indian line in rupees with its pounds beside it; the ECB rate and its date with them</td></tr>
-<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>Per holding: wrapper-aware suggestions that name only actions suiting the account, and the reporting-fund flag in plain words where the UK may tax gains differently</td></tr>
+<tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">AWS</td><td>Per holding: the reporting-fund flag in plain words where the UK may tax gains differently, and its XIRR in rupees and in pounds</td></tr>
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS to App</td><td>Home: UK lines in pounds, Indian lines in rupees with pounds beside, the total in pounds</td></tr>
 <tr><td data-background="#FFEBE6"><strong>7</strong></td><td data-background="#FFEBE6">Member to App</td><td>You tap <strong>INR</strong>: the same household in rupees, pounds still beside every line; the app already holds both figures</td></tr>
-<tr><td data-background="#FFEBE6"><strong>8</strong></td><td data-background="#FFEBE6">Member to App</td><td>To change anything, the chat: rupees typed for a pound holding, or pounds for an Indian one, take the currency check of flow 15</td></tr>
+<tr><td data-background="#FFEBE6"><strong>8</strong></td><td data-background="#FFEBE6">Member to App</td><td>To change anything, an admin uses the chat: rupees typed for a pound holding, or pounds for an Indian one, take the currency check of flow 14</td></tr>
 <tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>Privacy mode hides rupees as it hides pounds, in every card, every screen of the app and the web app, and every notification. The cards and screens are designed first, as boards in the repo, before any is built.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="0b845bf5-a869-422c-b299-0a159e54c79e" data-collection="contentId-1736765" data-alt="rec-j-flows-india--flow-inr.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d92c0ff2-868c-4157-af68-47af33e1ab63" data-collection="contentId-1736765" data-alt="rec-j-flows-india--flow-inr.png"></div>
 <figcaption>What the member sees: The household in INR and GBP (Agent Journey)</figcaption></figure>
 <ul><li><strong>iPhone · Home.</strong> The total in pounds, rupees a tap away; each Indian line in rupees with pounds beside it.</li>
 <li><strong>A holding in the chat.</strong> Rupees with pounds beside; the tax flag in plain words; privacy mode hides both.</li>
@@ -209,8 +209,8 @@
 </div>
 </div>
 </section>
-<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Wrapper-aware, never a trade</strong></strong></p>
-<p>&quot;ISA-safe&quot; becomes &quot;wrapper-aware&quot;: a suggestion names only actions that suit the account it is about, and the app still never trades.</p>
+<section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Never a trade, never a call</strong></strong></p>
+<p>The app never trades and never says buy, add, hold, pause, trim or sell, in either currency; it records, values and forecasts the household&#x27;s wealth from its actual numbers.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Plain words, never tax advice</strong></strong></p>
@@ -226,24 +226,21 @@
 </div>
 </section>
 <h3>🧩 Built by</h3>
-<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-153" data-card-appearance="inline"></a></td><td>IN3: Indian accounts show in INR and GBP, with wrapper-aware suggestions and a tax flag where UK rules differ</td></tr>
+<table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-153" data-card-appearance="inline"></a></td><td>IN3: Indian accounts show in INR and GBP, with a tax flag where UK rules differ (phase 14)</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-156" data-card-appearance="inline"></a></td><td>A transaction can be typed in any currency and is checked against the holding&#x27;s own currency</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-94" data-card-appearance="inline"></a></td><td>Wealth maths and a daily net worth, with the household&#x27;s INR view one tap away (phase 3)</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-78" data-card-appearance="inline"></a></td><td>Overlap and Scorecard work at every door: iPhone, iPad, the foldable and the browser</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-183" data-card-appearance="inline"></a></td><td>A holding&#x27;s market view, its stance, signals and Technical section, shows at every door</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian markets and the existing Indian portfolio (phase 19)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian holdings and the existing Indian portfolio (phase 14)</td></tr>
 </tbody>
 </table>
-<h2>18 · India in the daily rhythm</h2>
-<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>India closes while the UK is at work, and its fund prices arrive in the UK evening. Every schedule stays in <code>Europe/London</code>: the Indian jobs run on the work queue after those times, and the 07:15 brief carries India&#x27;s previous day beside the UK&#x27;s.</p>
-<p><em><strong>Trigger</strong> EventBridge Scheduler, Europe/London, after the Indian close and after AMFI&#x27;s NAVs</em> <em>Phase 19 (IN1 prices, IN4 engine)</em></p>
+<h2>17 · India in the daily rhythm</h2>
+<div data-type="panel-custom" data-icon=":round_pushpin:" data-color="#F4F5F7"><p>India closes while the UK is at work, and its fund prices arrive in the UK evening. Every schedule stays in <code>Europe/London</code>: the Indian jobs run on the work queue after those times, so by the UK morning every Indian holding is valued in rupees and pounds beside the UK&#x27;s. Prices only value what the household holds.</p>
+<p><em><strong>Trigger</strong> EventBridge Scheduler, Europe/London, after the Indian close and after AMFI&#x27;s NAVs</em> <span data-type="status" data-color="blue">Phase 14 (IN1 prices)</span></p>
 </div>
 <h3>📌 The Indian day, on the UK clock</h3>
 <p><strong>10:00 or 11:00</strong>NSE and BSE close at 15:30 IST: 10:00 UK time in winter, 11:00 in British Summer Time. NSE&#x27;s holiday calendar says which days trade.</p>
 <p><strong>After the close</strong>Ingest for Indian shares and ETFs (<code>in_listed</code>): yfinance <code>.NS</code>, then <code>.BO</code>, then the exchanges&#x27; bhavcopy, <code>stale</code> last.</p>
 <p><strong>UK evening</strong>AMFI&#x27;s NAVs for every scheme are out. Ingest for Indian funds (<code>in_mutual_fund</code>): AMFI&#x27;s file, then mfapi.in or a screenshot, <code>stale</code> last.</p>
-<p><strong>07:10</strong>The engine has scored every holding; the Indian ones read the India basket in their macro pillar.</p>
-<p><strong>07:15</strong>The brief carries India&#x27;s previous day, in rupees with pounds beside them.</p>
+<p><strong>07:10</strong>Every holding is valued: the Indian ones in rupees, with pounds beside them at the day&#x27;s rate.</p>
 <h3>🛤️ The path</h3>
 <table data-layout="full-width"><thead><tr><th>#</th><th>Lanes</th><th>What happens</th></tr>
 </thead>
@@ -253,19 +250,16 @@
 <tr><td data-background="#FFFAE6"><strong>4</strong></td><td data-background="#FFFAE6">AWS to External data</td><td>In the UK evening, one job per Indian fund: <strong>AMFI</strong>&#x27;s daily NAV file, matched by scheme code and ISIN, with mfapi.in behind it</td></tr>
 <tr><td data-background="#FFFAE6"><strong>5</strong></td><td data-background="#FFFAE6">External data to AWS</td><td>One NAV a day per scheme, no candles, like a UK OEIC</td></tr>
 <tr><td data-background="#FFFAE6"><strong>6</strong></td><td data-background="#FFFAE6">AWS</td><td>The <strong>ECB</strong> reference rate includes INR, with the RBI/FBIL rate behind it: each Indian <strong>Valuation</strong> is stored in rupees and in pounds on the day</td></tr>
-<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS to External data</td><td>News jobs read Economic Times, Mint and Business Standard by RSS, NSE company announcements and GDELT&#x27;s India coverage</td></tr>
-<tr><td data-background="#FFFAE6"><strong>8</strong></td><td data-background="#FFFAE6">AWS to Claude</td><td>Haiku tags each story through Batches: the companies, sectors and central bank it names, its event type</td></tr>
-<tr><td data-background="#EAE6FF"><strong>9</strong></td><td data-background="#EAE6FF">Claude to AWS</td><td>The tags. Code matches each story to the holdings through exposure maps from the fund houses&#x27; monthly disclosures</td></tr>
-<tr><td data-background="#FFFAE6"><strong>10</strong></td><td data-background="#FFFAE6">AWS</td><td>07:10 the <strong>engine</strong> scores every holding. For Indian holdings the macro pillar reads the <strong>India basket</strong>: the Nifty 50 against Indian government bonds, India VIX, the rupee against the dollar, foreign portfolio investor flows and the RBI&#x27;s policy rate</td></tr>
-<tr><td data-background="#FFFAE6"><strong>11</strong></td><td data-background="#FFFAE6">AWS to App</td><td>07:15 the brief, India&#x27;s previous day included, through the outbox and sender λ; a push to a closed app, with no amount on the lock screen</td></tr>
-<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>A source that answers nothing is skipped and the chain falls through to <code>stale</code>: labelled, left out of scoring, as in flow 5. The calendars add the RBI&#x27;s policy dates, India&#x27;s inflation releases, NSE holidays and results season. The Forecaster (phase 17) takes the Indian holdings on the same terms: nothing is shown until its gates are passed.</td></tr>
+<tr><td data-background="#FFFAE6"><strong>7</strong></td><td data-background="#FFFAE6">AWS</td><td>07:10 code values every holding: each Indian one in rupees and in pounds, and the household&#x27;s net worth with it. No model is called</td></tr>
+<tr><td data-background="#FFEBE6"><strong>8</strong></td><td data-background="#FFEBE6">Member to App</td><td>You open Home, or ask about India in the chat: rupees with pounds beside them, each price with its date and source</td></tr>
+<tr><td data-background="#E3FCEF"><strong>✎</strong></td><td data-background="#E3FCEF">Note</td><td>A source that answers nothing is skipped and the chain falls through to <code>stale</code>: labelled with its date, as in flow 5. NSE&#x27;s holiday calendar says which days trade, so a holiday is never shown as stale.</td></tr>
 </tbody>
 </table>
 <h3>👀 What the member sees</h3>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="2a3f2e7f-8498-49b3-bd09-7ecc6ed41797" data-collection="contentId-1736765" data-alt="rec-j-flows-india--flow-india-day.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7e8ae3a2-f992-43e1-8d3d-cf7c2904fe69" data-collection="contentId-1736765" data-alt="rec-j-flows-india--flow-india-day.png"></div>
 <figcaption>What the member sees: India in the daily rhythm (Agent Journey)</figcaption></figure>
-<ul><li><strong>The owner&#x27;s brief.</strong> The UK lines in pounds, India&#x27;s previous day in rupees with the total in pounds.</li>
-<li><strong>Labelled, not skipped.</strong> A late Indian price goes out marked stale; a holiday is known from the calendar.</li>
+<ul><li><strong>Asked in the chat.</strong> The UK lines in pounds, India&#x27;s latest prices in rupees with the total in pounds.</li>
+<li><strong>Labelled, not skipped.</strong> A late Indian price is shown marked stale; a holiday is known from the calendar.</li>
 </ul>
 <h3>🛡️ Safeguards on this path</h3>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>One clock</strong></strong></p>
@@ -278,7 +272,7 @@
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Stale is labelled</strong></strong></p>
-<p>Each Indian chain falls through to <code>stale</code>: the previous close, labelled and kept out of scoring.</p>
+<p>Each Indian chain falls through to <code>stale</code>: the previous close, labelled with its date.</p>
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>The exchange&#x27;s own calendar</strong></strong></p>
@@ -291,19 +285,17 @@
 </div>
 </div>
 <div data-type="column"><div data-type="panel-custom" data-icon=":shield:" data-color="#E3FCEF"><p><strong><strong>Numbers from code</strong></strong></p>
-<p>Haiku tags the stories; code matches and scores them. News alone never raises a red alert.</p>
+<p>Every value, rate and total is code&#x27;s; no model is called on this path, and nothing predicts a market.</p>
 </div>
 </div>
 </section>
 <h3>🧩 Built by</h3>
 <table><tbody><tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-151" data-card-appearance="inline"></a></td><td>IN1: Indian mutual funds, shares and ETFs are priced every day from free sources, with ten years of history</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-154" data-card-appearance="inline"></a></td><td>IN4: The engine and the Forecaster read Indian markets through an India basket, Indian news and the RBI&#x27;s calendar</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-44" data-card-appearance="inline"></a></td><td>ECB FX rates and market calendars are loaded daily</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-53" data-card-appearance="inline"></a></td><td>The ingest and engine jobs write signals and shadow stances every weekday by 07:10</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-57" data-card-appearance="inline"></a></td><td>The morning brief and evening wrap arrive as cards, with a Technical section and glossary</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-207" data-card-appearance="inline"></a></td><td>Each holding is priced every day from free sources: yfinance for listed lines and AMFI\&#x27;s NAV file for Indian mutual funds</td></tr>
 <tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-140" data-card-appearance="inline"></a></td><td>Background jobs run from a work queue with retries and a dead-letter queue</td></tr>
-<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian markets and the existing Indian portfolio (phase 19)</td></tr>
+<tr><td><a href="https://duttaarun2015.atlassian.net/browse/MA-147" data-card-appearance="inline"></a></td><td>Epic: Indian holdings and the existing Indian portfolio (phase 14)</td></tr>
 </tbody>
 </table>
-<p>All twenty-four: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
+<p>All twenty-three: <a href="https://duttaarun2015.atlassian.net/wiki/spaces/mypaisaaag/pages/1442102">the Agent Journey</a>.</p>
 <hr><p style="font-size: 14px"><em>Generated by scripts/confluence_record.py (MA-257) from ARCHITECTURE.md and the explainer pages in docs/design/, with the pictures captured from those pages. Change those, not this page: /plan-sync copies an edit made here back to the repo, or the next publish overwrites it.</em></p>

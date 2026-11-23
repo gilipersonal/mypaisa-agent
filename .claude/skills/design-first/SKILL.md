@@ -1,21 +1,24 @@
 ---
 name: design-first
-description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, a React Native shell whose every visible piece is SwiftUI, one spec in the MyPaisa iOS v1 boards in docs/design/ios-v1/, for iPhone, iPad and the foldable), the web app (web/, a SvelteKit 3 PWA with the chat, the dashboard and the Admin center, at desktop and phone width (390), from the browser boards in MyPaisa app v1, docs/design/app-v1/), the chat's cards, buttons, guided flows and in-place corrections, the charts (Swift Charts and the web's LayerChart in one house style), the motion, the design pages (the agent journey, the market agent) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps), drawn in the repo as .dc.html boards on MyPaisa DS v1 (docs/design/), keeping the record in docs/design/reviews/MA-<n>/; review every page for glitches locally in light and dark at every size class, legible at 25% brightness; publish the round as a private Claude Artifact and give Arun its link; and build only the option Arun picks.
+description: Design before code for any MyPaisa UI or UX change. Use whenever Arun asks to change how MyPaisa looks or flows: the iOS app (ios/, a React Native shell whose every visible piece is SwiftUI, one spec in the MyPaisa iOS v1 boards in docs/design/ios-v1/, for iPhone, iPad and the foldable), the web app (web/, a SvelteKit 3 PWA with the chat, the dashboard and the Admin center, at desktop and phone width (390), from the browser boards in MyPaisa app v1, docs/design/app-v1/), the chat's cards, buttons, guided flows and in-place corrections, the charts (Swift Charts and the web's LayerChart in one house style), the motion, the design pages (the agent journey) or the mark and the app icon; a new screen, page or card, a redesign, or a change to layout, flow, visuals, copy, charts or motion. Design 2 or 3 options with impeccable, ui-ux-pro-max and dataviz (Qwen-Image for comps), drawn in the repo as .dc.html boards on MyPaisa DS v1 (docs/design/), keeping the record in docs/design/reviews/MA-<n>/; publish the round as a private Claude Artifact, give Arun its link and let him judge it by eye (no gate measures the boards: plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303)); and build only the option Arun picks.
 ---
 
 # Design first
 
 Every new UI or UX change to MyPaisa is designed before it is built, in four steps. No code under `ios/`, `web/` or
-`src/mypaisa_agent/` that changes what a member sees is written until step 4.
+`backend/src/mypaisa_agent/` that changes what a member sees is written until step 4.
 
 1. **Design 2 or 3 options** with the design tools, **in the repo** (Arun, 30 Oct 2026, MA-260: "for all future
    design use Local folder and then Claude Artifact. Claude Design is going away, so no need to push to claude
    design"; until then the boards were drawn in Claude Design). The design system lives in `docs/design/ds-v1/`
    (MyPaisa DS v1), the screens in `docs/design/ios-v1/` (MyPaisa iOS v1, the app) and `docs/design/app-v1/` (MyPaisa
    app v1, the web app's browser boards); the record stays in `docs/design/reviews/MA-<n>/`.
-2. **Review every page for glitches** before Arun sees it (Arun, MA-101: "Make sure the designs are reviewed properly
-   for any kind of glitches, this app will be adaptive and responsive"): render it locally, look at it in light and
-   dark and at every size class, fix, look again.
+2. **No gates on the boards** (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design. Lets stop
+   that."). Open each board once to see that it loads, in light and dark, then go on; Arun judges the round by eye.
+   plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). The glitch review at every size class (MA-101) and the board gates are retired; the same checks come
+   back as QA on the built code when Arun asks: MA-304 for the web app (Playwright, axe and Argos, with the 25%
+   contrast floors and the 320 to 1920 width sweep; it depends on MA-194), and the iOS app's after MA-165, with no
+   story yet.
 3. **Publish the round as a private Claude Artifact**, give Arun its link and ask for the pick. A round run in
    Google Antigravity, which cannot publish a Claude Artifact, shows its options as a local page instead (MA-297).
 4. **Arun picks one option.** Build only that option, and only after the pick, made in the current request.
@@ -33,18 +36,18 @@ with one obvious fix. When unsure whether something is a design change, treat it
   drawn ahead of the story (`design: "planned"`) are the starting point for the options, not a pick
   (`.claude/rules/plan-sync.md`).
 - Read the context:
-  - `ARCHITECTURE.md`: the four rules (§1), the iOS app (§9: the shell, the size classes and the motion in §9.1, the
-    chat's cards and guided flows, the dashboard screens and the Admin center), the web app (§9.4), identity and the
-    second check (§4.5) and push (§11);
+  - `ARCHITECTURE.md`: the four rules (§1), the iOS app (§8: the shell, the size classes and the motion in §8.1, the
+    chat's cards and guided flows, the dashboard screens and the Admin center), the web app (§8.4), identity and the
+    second check (§4.5) and push (§10);
   - `PLAN.md`, the phase the surface belongs to (phase 1 for sign-in, the chat at both doors, Activity, the motion and
     legibility; the wealth phases 2 to 9 for the dashboard screens, each in the phase of the record it shows; phase 8
-    for Audit, Search and the Admin center; phase 20 for widgets, Siri and the share sheet);
+    for Audit, Search and the Admin center; phase 15 for widgets, Siri and the share sheet);
   - `docs/design/README.md` and the surface's existing design: for the app, the one spec in MyPaisa iOS v1
     (`docs/design/ios-v1/`: `Shell options`, the `iPhone` files, `iPad and foldable`) and the iOS kit in MyPaisa DS v1
     (`docs/design/ds-v1/`); for the web app, the browser boards in MyPaisa app v1 (`docs/design/app-v1/`:
     `Browser · ...`, at desktop and at 390; the whole-wealth boards and the clickable prototype are drawn on MA-193);
     the Mini App and Telegram boards in `app-v1/` and the Nocturne artboards in `docs/design/dashboard/` are the
-    superseded record, read only for a flow Arun already picked; `agent-journey.html` and `market-agent.html`
+    superseded record, read only for a flow Arun already picked; `agent-journey.html`
     for the explainers;
   - earlier reviews for the same surface in `docs/design/reviews/` (`MA-161/decision.md` for the shell, the size
     classes and Liquid Glass).
@@ -57,7 +60,7 @@ with one obvious fix. When unsure whether something is a design change, treat it
     `xcrun simctl io booted screenshot <file>.png`: iPhone 17 Pro and iPad Air 11", in light and dark
     (`xcrun simctl ui booted appearance light`, then `dark`), at the Large text size and at AX5
     (`xcrun simctl ui booted content_size large`, then `accessibility-extra-extra-extra-large`);
-  - once `web/` exists, serve it with the SvelteKit dev server (`npm run dev` in `web/`, on `localhost:5173`, the origin
+  - once `web/` exists, serve it with the SvelteKit dev server (`corepack pnpm@12.16.1 --dir web dev`, on `localhost:5173`, the origin
     dev's api and Google web client allow) or `vite preview` for the built app, and screenshot it with Playwright at
     390 and 1440 wide, in dark and light;
   - for a card, the same: its board, or the card as the app draws it.
@@ -68,11 +71,11 @@ with one obvious fix. When unsure whether something is a design change, treat it
 
 | Surface | Lead | Also |
 | --- | --- | --- |
-| The iOS app, `ios/`: one app, one spec in MyPaisa iOS v1 (`docs/design/ios-v1/`), every size class; a React Native shell whose every visible piece is SwiftUI, hosted through Fabric and fed one JSON model. Boards for **iPhone** (compact) and for **iPad and the foldable** (regular, narrow and wide), each in light and dark, with Dynamic Type up to AX5 and privacy mode wherever they change a screen: the shell, sign-in, the chat, Home and the dashboard's screens (net worth, assets and one asset, debts and one loan, Budget, Projection), a holding, Overlap, Scorecard, Audit and Files, Activity, Search, the Admin center and You | `impeccable`, Operate mode (`shape`, `layout`, `critique`) | `ui-ux-pro-max` for UX rules (`python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "<outcome>" --domain ux`, and `--stack swiftui` for SwiftUI patterns); Apple's Human Interface Guidelines for every control; `redesign-existing-projects` to audit a screen that exists; `qwengen-bf16` for a comp from a screenshot of the current screen |
-| The web app, `web/`: a SvelteKit 3 PWA with the chat, the dashboard and the Admin center in a browser. **Browser** boards in MyPaisa app v1 (`docs/design/app-v1/`) at desktop (laptop, two columns) and at phone width (390, the adaptive shell), and the sign-in page, for the chat, Home and the dashboard's screens, a holding, Overlap, Scorecard, Audit and Files, Activity, Search and the Admin center | `impeccable`, Operate mode (`shape`, `layout`, `critique`) | `ui-ux-pro-max --domain ux`, and `--stack svelte` for Svelte patterns; `redesign-existing-projects` to audit a page that exists; `qwengen-bf16` for a comp from a screenshot of the current page |
-| The chat's cards, buttons and guided flows: SwiftUI views in the app and Svelte components in the web app, both drawn from the card JSON of MA-174 (`src/mypaisa_agent/cards/`, the card types in `web/src/lib/`, the card pieces in `ios/` and `web/`), in `simple` and `technical` | `impeccable` (`clarify`, `distill`) on the card's text and hierarchy | `ui-ux-pro-max --domain ux` for the flow; `design-skills:ux-writing` for button labels and one-line copy |
-| Charts: Swift Charts in the app and shadcn-svelte's charts on LayerChart in the web app (lightweight-charts only for the market side's price charts), one house style (MA-56), in the chat's cards and on the dashboard | `dataviz` | Validate palettes with its script; one palette at both doors, so a holding looks the same everywhere |
-| Design pages (`docs/design/agent-journey.html`, `market-agent.html`; the earlier `architecture.html` and `journeys.html`) | `impeccable` | `high-end-visual-design` and `design-taste-frontend` are allowed here, and only here |
+| The iOS app, `ios/`: one app, one spec in MyPaisa iOS v1 (`docs/design/ios-v1/`), every size class; a React Native shell whose every visible piece is SwiftUI, hosted through Fabric and fed one JSON model. Boards for **iPhone** (compact) and for **iPad and the foldable** (regular, narrow and wide), each in light and dark, with Dynamic Type up to AX5 and privacy mode wherever they change a screen: the shell, sign-in, the chat, Home and the dashboard's screens (net worth, assets and one asset, debts and one loan, Budget, Projection), a holding, Audit and Files, Activity, Search, the Admin center and You | `impeccable`, Operate mode (`shape`, `layout`, `critique`) | `ui-ux-pro-max` for UX rules (`python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "<outcome>" --domain ux`, and `--stack swiftui` for SwiftUI patterns); Apple's Human Interface Guidelines for every control; `redesign-existing-projects` to audit a screen that exists; `qwengen-bf16` for a comp from a screenshot of the current screen |
+| The web app, `web/`: a SvelteKit 3 PWA with the chat, the dashboard and the Admin center in a browser. **Browser** boards in MyPaisa app v1 (`docs/design/app-v1/`) at desktop (laptop, two columns) and at phone width (390, the adaptive shell), and the sign-in page, for the chat, Home and the dashboard's screens, a holding, Audit and Files, Activity, Search and the Admin center | `impeccable`, Operate mode (`shape`, `layout`, `critique`) | `ui-ux-pro-max --domain ux`, and `--stack svelte` for Svelte patterns; `redesign-existing-projects` to audit a page that exists; `qwengen-bf16` for a comp from a screenshot of the current page |
+| The chat's cards, buttons and guided flows: SwiftUI views in the app and Svelte components in the web app, both drawn from the card JSON of MA-174 (`backend/src/mypaisa_agent/cards/`, the card types in `web/src/lib/`, the card pieces in `ios/` and `web/`), in `simple` and `technical` | `impeccable` (`clarify`, `distill`) on the card's text and hierarchy | `ui-ux-pro-max --domain ux` for the flow; `design-skills:ux-writing` for button labels and one-line copy |
+| Charts: Swift Charts in the app and shadcn-svelte's charts on LayerChart in the web app, one house style (MA-56), in the chat's cards and on the dashboard | `dataviz` | Validate palettes with its script; one palette at both doors, so a holding looks the same everywhere |
+| Design pages (`docs/design/agent-journey.html`; the earlier `architecture.html` and `journeys.html`) | `impeccable` | `high-end-visual-design` and `design-taste-frontend` are allowed here, and only here |
 | The mark (`docs/mark.svg` and its PNGs) and the app icon | `impeccable` | `qwengen-bf16` for drafts; the shipped mark stays SVG; the app icon is made from it in Icon Composer (default, dark, clear and tinted; the DEV band on MyPaisa Dev) |
 
 The taste skills are for landing pages and showcases, not dashboards or multi-step product UI. Keep them off the app,
@@ -102,13 +105,15 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
     an amount or an assumption) can be corrected in place on any screen: tap it, type the new value, a before → after
     line appears with Save, and Save writes a `correction` event with its audit row (`via: inline_edit`). Both paths
     run through one write service, checked against the kind spec and audited. Nothing is created in place: no Add
-    button, form or empty row on a dashboard screen. A member corrects their own records' figures and the admin
-    anyone's; plan items and saved projection assumptions are the admin's alone. Show the correction's states (the
+    button, form or empty row on a dashboard screen, and no delete on any screen: deleting happens only in the chat
+    (MA-309). Only admins write (MA-307, MA-308, Arun, 2 Nov 2026: "Only admins can do all these. Others users can
+    view only."): an admin adds, corrects and deletes; every other member sees no Save, no Update and no check-in
+    buttons, and the chat refuses their writes politely. Plan items and saved projection assumptions are admins' too. Show the correction's states (the
     tap, the before → after line with Save, the saved figure) wherever a design puts an editable figure. The Admin
-    center stays the exception: the owner's admin settings and operations, in the app and the web app, each sit
+    center stays the exception: admin settings and operations, in the app and the web app, each sit
     behind the second check (in the app a fresh Sign in with Apple or passkey under Face ID, or Google again for a
     member who signs in only with Google; in a browser a passkey or a fresh sign-in; bound to the action and verified
-    by the server, MA-76) and an audit row (`ARCHITECTURE.md` §9.3, §9.4). Arun's "read only (except for admin)" of
+    by the server, MA-76) and an audit row (`ARCHITECTURE.md` §8.3, §8.4). Arun's "read only (except for admin)" of
     24 Oct 2026 is superseded by the in-place correction; its admin exception stands;
   - **the summary first:** the layman sees the summary, the detail is one tap away (the `Technical` section, `Why?`);
     show both `simple` and `technical` modes where a card has them;
@@ -131,10 +136,11 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
     figure, SF Symbols for icons.
 - **Legible at 25% brightness** (MA-181; Arun, 25 Oct 2026: "the text and component should be clearly visible even in
   25% mobile brightness"), in light and in dark, in the app and the web app:
-  - every colour pair passes `python3 scripts/contrast_check.py`, at full brightness and with the screen dimmed to 25%
-    (primary text and figures 7:1, and 4.5:1 dimmed; secondary and coloured text 4.5:1, and 3:1 dimmed; a chart line,
-    a meter, a switch's ring or focus 3:1, and 1.8:1 dimmed); a new token or a new pairing goes into the gate before
-    a board uses it;
+  - every colour pair meets these, at full brightness and with the screen dimmed to 25% (primary text and figures
+    7:1, and 4.5:1 dimmed; secondary and coloured text 4.5:1, and 3:1 dimmed; a chart line, a meter, a switch's ring
+    or focus 3:1, and 1.8:1 dimmed); they are targets for the design and are measured on the built code when Arun
+    asks for QA (MA-304 for the web app; the iOS app's after MA-165, with no story yet), not by a gate on the boards
+    (MA-303);
   - no tertiary grey (`--mp-ink-3`) for anything a member must read: a figure, a label, a caption that carries
     meaning; it is for decoration and dividers only;
   - glass carries labels only, never body copy, and is measured over its worst backdrop.
@@ -166,7 +172,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   - **a chart:** the real thing, not a drawing of one: Swift Charts on the simulator once `ios/` exists, the
     LayerChart chart in the web app; until then, a board drawn with the kit's chart classes from the shape of
     the engine's series.
-- **Motion** (MA-182; `ARCHITECTURE.md` §9.1): one motion system for every component and chart, at both doors, drawn
+- **Motion** (MA-182; `ARCHITECTURE.md` §8.1): one motion system for every component and chart, at both doors, drawn
   on the iOS kit's `12 · Motion` board. Every board loads `motion.css` and `motion.js` and uses their classes, so it
   moves the way the build will.
   - Content moves, the glass bars stay put. Cards and rows arrive with a soft spring and a 45 ms stagger (at most
@@ -180,7 +186,8 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   - Nothing loops forever.
   - Under Reduce Motion (`prefers-reduced-motion` on a board and in the web app) every movement becomes a short
     cross-fade or lands in its final state at once.
-  - Light and dark follow the system's appearance (`prefers-color-scheme` on a board and in the web app); glass turns
+  - Light and dark follow the system's appearance (`prefers-color-scheme` in the web app and on a board frame that names no theme; a frame with
+    `t-light` or `t-dark` keeps it, MA-329); glass turns
     opaque under Reduce Transparency, and Increase Contrast uses the high-contrast colour assets.
 - **Accessibility.** WCAG 2.2 AA and the HIG: contrast measured on the real background, glass included, and at 25%
   brightness (above); 44 pt targets in the app and 44 px in the web app; a spoken label for every figure and an audio
@@ -215,42 +222,35 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   nearest board there, so it keeps the frames, the kit's classes and the shared files it loads by relative path:
   `./support.js` (the board runtime each folder carries), `tokens.css`, `motion.css`, `motion.js` and,
   for the app, `ios.css`. A design that is not a board set, such as a prototype, gets its own folder under
-  `docs/design/` and loads the shared files from a board folder (`../app-v1/tokens.css`, as `prototype-v5/` does);
-  the board gate must list it among its repo-only boards, or it is never measured.
+  `docs/design/` and loads the shared files from a board folder (`../app-v1/tokens.css`, as `prototype-v5/` does).
+  No check runs on a prototype (MA-303).
 - **No record to write.** Git is the boards' only record (MA-296): there is no record file to update after drawing.
   A file removed on purpose takes every trace row that names its boards with it, in the same change
   (`python3 scripts/plan_sync.py check` refuses a cited board that is gone).
 - **`tokens.css` and the motion files are copied** from `ds-v1/` into `ios-v1/` and `app-v1/`, with `ios.css`, byte
-  for byte, after every change: each board loads the copy beside it. A snapshot of
+  for byte, after every change: each board loads the copy beside it. The web app holds its own copy in
+  `web/src/lib/styles/` (`tokens.css` without its Google Fonts `@import`, which `web/src/app.html` makes, and
+  `motion.css`), equal by `tokens.test.ts` in the web gate: copy it there too (MA-194). A snapshot of
   `tokens.css` goes into `docs/design/reviews/MA-<n>/` at the end of the round, as its record. `docs/design/ds-v1/`
-  is the source; once `ios/` exists, its colour assets are generated from it (MA-165). A token change is measured
-  before it is copied: change `ds-v1/` and run `python3 scripts/contrast_check.py --report`, where every pair
-  must pass and only the copies not yet made may fail; after the copies the whole gate
-  (`--selftest`, then the plain run) passes.
+  is the source; once `ios/` exists, its colour assets are generated from it (MA-165).
 - **Where Arun looks: a private Claude Artifact per round** in Claude Code, **a local page** in Antigravity. Each round
   is published as an Artifact (step 3) and its link goes in the round's `decision.md`; a round run in Antigravity
-  shows the same host page on localhost instead, and `decision.md` names its path (MA-297). There is no whole-set Artifact to republish when a board changes (MA-296 retired
-  the MyPaisa Boards Artifact); a board is otherwise linked by its file in the repo.
+  shows the same host page on localhost instead, and `decision.md` names its path (MA-297). When a board changes, the whole-set MyPaisa Boards Artifact is published
+  again (MA-324): `python3 scripts/boards_page/build.py docs/design <scratchpad>/boards`, then the publish its
+  docstring gives, then `python3 scripts/artifacts_sync.py record "MyPaisa Boards" <version>`; `plan_sync.py check`
+  fails until then. A board is otherwise linked by its file in the repo.
 - **The record** in `docs/design/reviews/MA-<n>/`, committed on the issue's branch: `decision.md` (the request in
-  Arun's words, the round's Artifact link or, for a round run in Antigravity, its local page, the options with rationale and trade-offs, what the build would touch, the
-  glitches found and fixed, the pick and its date), the round's host page (`options.html`, step 3) and `tokens.css`.
+  Arun's words, the round's Artifact link or, for a round run in Antigravity, its local page, the options with rationale and trade-offs, what the build would touch,
+  the pick and its date), the round's host page (`options.html`, step 3) and `tokens.css`.
 
-## 3. Review for glitches, publish the round, then get the pick
+## 3. Publish the round, then get the pick
 
-- **Glitch review, every time,** locally, before anything is published:
-  1. The gates on the round's boards: the board gate, `node scripts/board_fit.js --only <pattern>` (a pattern on the
-     board's path; it measures every frame at every size its class covers, in Chromium and WebKit, and fails closed),
-     the contrast gate (`python3 scripts/contrast_check.py`) and `python3 scripts/plan_sync.py check` (board names,
-     dates, motion roles, tools).
-  2. Then look: serve `docs/design/` on localhost, open each board with Playwright, screenshot it section by section
-     in light and dark and at every size class it claims, settled with `?static=1` and moving without it, click
-     through anything interactive, and read every image: clipped or touching text, icons showing as words,
-     misalignment, overflow, empty halves, light/dark differences, contrast, text a dimmed screen would lose (the
-     contrast gate), glass on glass, text clipped at AX5, targets under 44 pt (44 px on the web), motion that loops or
-     ignores Reduce Motion, charts out of line, numbers that disagree between pages or between the two doors.
-  Fix and look again. When Arun asks for it (as on MA-101), fresh reviewers that did not make the pages do this pass
-  too, the way every review here runs (`.claude/rules/independent-review.md`: gates first, parallel lanes, the delta
-  after round 1, the fixed list), and their blockers are fixed before Arun sees the work.
+- **No gates on the boards** (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design. Lets stop
+  that."). Before publishing, run `python3 scripts/plan_sync.py check`, which keeps the trace, the docs, the recorded
+  Confluence pages and the code in step, and finds every board a story cites on disk; Jira is compared by
+  `/plan-sync`. plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Open each board
+  once to see that it loads, in light and dark. Arun judges the round by eye, and no reviewer lane looks at boards
+  (`.claude/rules/independent-review.md`).
 - **Publish the round** as a private Claude Artifact, the way MA-291 published Prototype v5
   (`docs/design/reviews/MA-291/decision.md`, "Where it lives"):
   1. Write a host page, `docs/design/reviews/MA-<n>/options.html`, that names the request, lists the options (the
@@ -291,13 +291,13 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 - **How.** On the same branch:
   1. Update the spec first when the pick changes it: the boards at every size class in `docs/design/ios-v1/` and the
      browser boards in `docs/design/app-v1/`, or the example
-     cards in `ARCHITECTURE.md` §9.2. Republishing an explainer page's artifact is Arun's call; ask.
+     cards in `ARCHITECTURE.md` §8.2. Republishing an explainer page's artifact is Arun's call; ask.
   2. Build with impeccable, comp-led when the pick includes an approved comp: `ios/` for the app (the React Native
      shell in TypeScript, and every piece a member looks at in SwiftUI, hosted through a Fabric component and fed one
      JSON model), `web/` for the web app (SvelteKit 3, Tailwind CSS 4, shadcn-svelte, TanStack, LayerChart; MA-229), `cards/` and the card pieces at both doors
      (SwiftUI in `ios/`, Svelte components in `web/`, the card types in `web/src/lib/`) for the chat's cards, the house
      chart style for charts, and the shared motion at both doors.
-  3. Run the gates in `.claude/jira-flow.json` (the plan-sync gate with `python3 scripts/contrast_check.py` now;
+  3. Run the gates in `.claude/jira-flow.json` (the plan-sync gate now;
      once `pyproject.toml` lands, `uv run ruff check . && uv run pyright && uv run pytest`; once `ios/` exists, the
      iOS gates of MA-166: eslint and Jest for the shell, swift-format lint, `xcodebuild test` on the iPhone and iPad
      simulators with XCUITest, the snapshot tests and `performAccessibilityAudit()`, and the `PERFORMANCE.md` benches

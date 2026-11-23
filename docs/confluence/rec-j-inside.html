@@ -1,8 +1,8 @@
 <div data-type="panel-custom" data-icon=":house:" data-color="#FFFAE6"><p><strong>🏠 From the first tap to a team of agents keeping the family&#x27;s money.</strong></p>
-<p>MyPaisa is a private money assistant for one household. You talk to it in a chat, on the iPhone, the iPad or in a browser. It keeps everything the family owns and owes in the UK and India, asks when something is due, and explains what moved. This page follows the household&#x27;s admin from the very first screen to the chatbot at work, and shows what happens behind every tap.</p>
+<p>MyPaisa is a private money assistant for one household. You talk to it in a chat, on the iPhone, the iPad or in a browser. It keeps everything the family owns and owes in the UK and India, works out how it has grown (XIRR and CAGR from the dated ledger), forecasts where it is heading from those actual numbers, tracks the family&#x27;s goals, asks when something is due, and explains what moved and why, with one quiet digest for the admins on Mondays. This page follows the household&#x27;s admin from the very first screen to the chatbot at work, and shows what happens behind every tap.</p>
 <p>From <a href="https://github.com/gilipersonal/mypaisa-agent/blob/main/docs/design/inside-mypaisa.html">inside-mypaisa.html</a> (MA-239), the whole architecture in plain words, live at <a href="https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5">Inside MyPaisa</a>.</p>
 </div>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="400003f7-ed12-45fd-b69a-b198523ceecb" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-hero.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="7be637be-e54c-4c71-a8ff-5c7ea5a3369f" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-hero.png"></div>
 <figcaption>Inside MyPaisa: from the first tap to a team of agents</figcaption></figure>
 <div data-type="extension" data-extension-key="toc" data-extension-type="com.atlassian.confluence.macro.core" data-parameters='{&quot;macroParams&quot;: {&quot;maxLevel&quot;: {&quot;value&quot;: &quot;2&quot;}, &quot;minLevel&quot;: {&quot;value&quot;: &quot;2&quot;}}, &quot;macroMetadata&quot;: {&quot;schemaVersion&quot;: {&quot;value&quot;: &quot;1&quot;}, &quot;title&quot;: &quot;Table of Contents&quot;}}'></div>
 <h2>🤝 The promises</h2>
@@ -13,23 +13,23 @@
 <p>Every figure comes from tested code. Claude, the AI, only chooses what to say and how to say it.</p>
 <p>2</p>
 <h4>It cannot trade</h4>
-<p>No broker log-in and no orders. It can suggest; it can never buy, sell or move money.</p>
+<p>No broker log-in and no orders. It records and explains; it never tells you to buy or sell, and it can never move money.</p>
 <p>3</p>
 <h4>Plain first, detail one tap away</h4>
 <p>Every message has a simple top. The technical side opens only when you ask for it.</p>
 <p>4</p>
-<h4>New things only in the chat</h4>
-<p>Anything new is made in the chat with a Confirm tap. An existing figure can be corrected where it shows.</p>
+<h4>Admins write, in the chat</h4>
+<p>Only admins add, correct and delete. Adding and deleting happen only in the chat, with a Confirm tap; an admin may also correct a figure where it shows. Everyone else views.</p>
 <h2>🏢 The cast</h2>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="f8e813e9-408e-44d8-b104-9b1d485c3871" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-cast.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="59ae89f3-caaa-4e5b-9372-876d7dbf7eaf" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-cast.png"></div>
 <figcaption>MyPaisa as a small, well-run office (Inside MyPaisa)</figcaption></figure>
 <p>The cast</p>
 <h3>Think of MyPaisa as a small, well-run office</h3>
 <p>Each part has one job. Here they are in everyday words, with the real name underneath for anyone who builds it. The colours stay the same all the way down the page.</p>
 <p>Your screens Plumbing that carries messages AI (Claude) Plain code, no AI Where things are kept</p>
 <h4>You, the admin</h4>
-<p>owner · the one admin</p>
-<p>Sets up the household, invites the family, approves what the agents ask for.</p>
+<p>owner · always an admin, one of several</p>
+<p>Sets up the household, invites the family, makes others admins in the chat, approves what the agents ask for.</p>
 <h4>The doors</h4>
 <p>iOS app · web app (PWA)</p>
 <p>The iPhone and iPad app, and the same chat and dashboard in any browser.</p>
@@ -41,10 +41,10 @@
 <p>Nothing is handed over directly. It waits in a tray that retries it until it works.</p>
 <h4>The concierge</h4>
 <p>agent Lambda + Claude</p>
-<p>The only one who talks to you. It understands what you mean and calls the right tools.</p>
+<p>The only one who talks to you. It understands what you mean and calls the right tools. When an admin wants to plan a big decision, it brings in Claude&#x27;s deepest model.</p>
 <h4>The calculator</h4>
-<p>engine · wealth maths, tested</p>
-<p>Net worth, loan schedules, deposits, the Projection. Numbers come only from here.</p>
+<p>wealth maths, tested</p>
+<p>Net worth, XIRR and CAGR, loan schedules, deposits, the Projection and the Budget forecast, what a goal needs and what changed and why. Numbers come only from here.</p>
 <h4>The ledger</h4>
 <p>DynamoDB · records, events, audit</p>
 <p>Everything the family owns and owes, with a tamper-evident line for every change.</p>
@@ -53,7 +53,7 @@
 <p>Every file and screenshot you send, kept for good and opened from the audit log.</p>
 <h4>The back office</h4>
 <p>worker · scheduler</p>
-<p>Runs the jobs nobody asked for out loud: prices, reading files, check-ins, overnight sums.</p>
+<p>Runs the jobs nobody asked for out loud: prices, reading files, check-ins, overnight sums, and a nightly look for anything worth telling the admins.</p>
 <h4>The postman</h4>
 <p>sender Lambda</p>
 <p>Delivers every reply to each open screen, or by push when the app is closed.</p>
@@ -62,9 +62,9 @@
 <p>Keeps open screens in step: a tap on the phone moves the laptop at once.</p>
 <h4>Claude</h4>
 <p>Anthropic API · Sonnet, Haiku, Opus</p>
-<p>The language brain the concierge consults. It lives outside AWS and sees only what it needs.</p>
+<p>The language brain the concierge consults, in three sizes: Sonnet talks, Haiku sorts and files, and Opus plans with an admin, only when asked. It lives outside AWS and sees only what it needs.</p>
 <h2>🚶 Nine steps, from the first screen to the chatbot at work</h2>
-<p>Arun is the household&#x27;s owner and its one admin. Follow him through the app. Each step plays once as you reach it; press Replay to watch again.</p>
+<p>Arun is the household&#x27;s owner, and so always an admin. Follow him through the app. Each step plays once as you reach it; press Replay to watch again.</p>
 <section data-type="layout-two-equal"><div data-type="column"><h3>1 · Open the app and sign in</h3>
 <p><span data-type="status" data-color="blue">Phase 1</span> <span data-type="status" data-color="purple">No passwords</span></p>
 <p>The first screen shows two buttons and nothing else: Sign in with Apple and Sign in with Google. Arun taps Apple, looks at the phone, and he is in. There is no password to make, forget or leak.</p>
@@ -76,13 +76,13 @@
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="98538910-1ace-4ebe-90b9-aa5b65388d02" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-1.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="0d007ab7-e771-490e-ae34-ebe09e84df68" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-1.gif"></div>
 <figcaption>Step 1: Open the app and sign in (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><h3>2 · Set up in three questions</h3>
 <p><span data-type="status" data-color="blue">Phase 1</span> <span data-type="status" data-color="purple">The concierge talks</span></p>
-<p>No forms. The chat asks three things, one at a time, each with tap-able answers: which currency totals should be in, what the family holds (send a screenshot, or add things later), and how often to be told things. Whoever opens the app first becomes the household&#x27;s owner, and its only admin.</p>
+<p>No forms. The chat asks three things, one at a time, each with tap-able answers: which currency totals should be in, what the family holds (send a screenshot, or add things later), and how often to be told things. Whoever opens the app first becomes the household&#x27;s owner, and always an admin; the owner can make others admins later, in the chat.</p>
 <h4>Behind the screen</h4>
 <table><tbody><tr><td data-background="#FFEBE6"><strong>The concierge asks, and remembers where it got to.</strong> Each half-finished conversation is kept as an open flow, so a phone call in the middle loses nothing. <code>ask_user</code> · <code>PendingAction</code></td></tr>
 <tr><td data-background="#FFFAE6"><strong>A household is created</strong> with its base currency, and Arun is its owner. Every later item is filed under this household and no other.</td></tr>
@@ -90,13 +90,13 @@
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d25aa77d-8613-4d0f-a12a-27b1fc577414" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-2.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="9870cf7e-178a-4adf-ae7e-e44d993cbbc4" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-2.gif"></div>
 <figcaption>Step 2: Set up in three questions (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><h3>3 · Invite the family</h3>
 <p><span data-type="status" data-color="blue">Phase 1</span> <span data-type="status" data-color="purple">Admin only</span></p>
-<p>In the Admin center, Arun taps Invite and sends the link with the iPhone&#x27;s share sheet. Asha opens it on her own iPhone, sees &quot;Arun invited you to the Dutta household&quot;, and signs in with her own Apple or Google account. She gets her own chat, her own accounts and her own settings, inside the same household.</p>
+<p>In the Admin center, Arun taps Invite and sends the link with the iPhone&#x27;s share sheet. Asha opens it on her own iPhone, sees &quot;Arun invited you to the Dutta household&quot;, and signs in with her own Apple or Google account. She gets her own chat and her own settings, inside the same household, and views the household&#x27;s records. If Arun wants her to write too, he makes her an admin in the chat: a card, Confirm, a second check and an audit line, and he can take the role back the same way.</p>
 <h4>Behind the screen</h4>
 <table><tbody><tr><td data-background="#E3FCEF"><strong>The link works once, for 24 hours,</strong> for this household and this role only. <code>dashboard.mypaisapp.com/join/&lt;token&gt;</code></td></tr>
 <tr><td data-background="#EAE6FF"><strong>Strangers are turned away.</strong> An Apple or Google account linked to nobody is refused unless it arrives with a valid invite.</td></tr>
@@ -104,22 +104,23 @@
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="93268ecd-0a19-41c6-b1d2-fea5e10ea7aa" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-3.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="2aee7f6d-b65c-46e9-a32d-fd69792a5825" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-3.gif"></div>
 <figcaption>Step 3: Invite the family (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><h3>4 · Add something by just saying it</h3>
 <p><span data-type="status" data-color="blue">Phase 2</span> <span data-type="status" data-color="purple">AI understands</span> <span data-type="status" data-color="green">Code checks</span></p>
-<p>Arun types &quot;£5,000 in Monzo savings&quot;. MyPaisa asks only what it can&#x27;t work out (whose is it?), shows a card with exactly what it will save, and waits for Confirm. The same works for a fixed deposit in India, a mortgage, a pension or a car loan: one sentence, a question or two, one tap.</p>
+<p>Arun types &quot;£5,000 in Monzo savings&quot;. MyPaisa asks only what it can&#x27;t work out (whose is it?), shows a card with exactly what it will save, and waits for Confirm. The same works for a fixed deposit in India, a mortgage, a pension or a car loan: one sentence, a question or two, one tap. Only an admin can add, and only in the chat.</p>
 <h4>Behind the screen</h4>
 <table><tbody><tr><td data-background="#FFEBE6"><strong>Claude reads the sentence</strong> and passes each part, in Arun&#x27;s own words, to the drafting tool. <code>draft_record</code></td></tr>
 <tr><td data-background="#E3FCEF"><strong>Code turns words into checked values,</strong> works out anything it can (an EMI, a maturity date), and lists what is missing. A draft writes nothing.</td></tr>
 <tr><td data-background="#FFEBE6"><strong>Only the missing bits are asked,</strong> one at a time with chips. It never asks what it could look up.</td></tr>
 <tr><td data-background="#FFFAE6"><strong>Confirm saves exactly the card you saw,</strong> and the change and its audit line are written together or not at all.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>Deleting is in the chat too, admins only:</strong> a card, Confirm and a second check. The record is marked <code>deleted</code>, hidden from every view and restorable through the chat; its history, audit lines and files are kept for good.</td></tr>
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c266bc89-077d-4a84-af54-8a514e48c0ed" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-4.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="af6a990e-0688-4959-a33c-c43026be5b55" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-4.gif"></div>
 <figcaption>Step 4: Add something by just saying it (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
@@ -134,13 +135,13 @@
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e5b45498-fbc1-4d75-92d8-6c84ab791e5c" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-5.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="a452655c-a016-4004-b0d9-32101333b952" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-5.gif"></div>
 <figcaption>Step 5: Send a file or a screenshot (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><h3>6 · See the whole picture, and fix a figure where it shows</h3>
 <p><span data-type="status" data-color="blue">Phases 2 to 9</span> <span data-type="status" data-color="purple">Code computes</span></p>
-<p>Pull the chat down and Home opens: the household&#x27;s net worth in pounds and rupees, what it owns and owes, each person&#x27;s share, UK against India, then Assets, Debts, Budget and the Projection. On the laptop, the same dashboard sits beside the chat. Arun taps his home&#x27;s value, types the new estimate, sees before and after, and taps Save. The laptop moves at the same moment.</p>
+<p>Pull the chat down and Home opens: the household&#x27;s net worth in pounds and rupees, what it owns and owes, each person&#x27;s share, UK against India, then Assets, Debts, Budget and the Projection. On the laptop, the same dashboard sits beside the chat. Arun, as an admin, taps his home&#x27;s value, types the new estimate, sees before and after, and taps Save. The laptop moves at the same moment. A member who is not an admin sees the household overview, their own detail and what others share, read only.</p>
 <h4>Behind the screen</h4>
 <table><tbody><tr><td data-background="#E3FCEF"><strong>Figures are views, rebuilt from history.</strong> Every record keeps a list of what happened to it; net worth is worked out from those, never typed in.</td></tr>
 <tr><td data-background="#FFFAE6"><strong>A correction is a new line, not an overwrite.</strong> It is saved as a correction with its audit line, and the old value stays in the history. <code>via: inline_edit</code></td></tr>
@@ -149,7 +150,7 @@
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e1b73756-c81b-4df1-bbed-7e846ee2d9ab" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-6.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="d439e85b-e6a8-4796-8c72-c12bab4315fc" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-6.gif"></div>
 <figcaption>Step 6: See the whole picture, and fix a figure where it shows (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
@@ -164,7 +165,7 @@
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e2641fd1-b8ef-4ba7-8f36-28017f7707ce" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-7.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="943409f0-e66e-48fd-aca5-49fa7f190cfe" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-7.gif"></div>
 <figcaption>Step 7: MyPaisa asks you, so you don&#x27;t have to remember (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
@@ -178,23 +179,24 @@
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="e86cefb7-6907-4f7b-8131-efb90b19db31" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-8.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="4c30d622-f108-4c20-885b-ad4e88995276" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-8.gif"></div>
 <figcaption>Step 8: Send a statement; the budget fills itself (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>
 <section data-type="layout-two-equal"><div data-type="column"><h3>9 · Ask anything: the chatbot at work</h3>
 <p><span data-type="status" data-color="blue">Phase 7</span> <span data-type="status" data-color="purple">AI explains</span> <span data-type="status" data-color="green">Code computes</span></p>
 <p>&quot;What if we put £60,000 down on a second flat in June 2028?&quot; MyPaisa answers in plain words with a chart: the household&#x27;s net worth year by year with that deposit, its likely range, and the plan as it stands for comparison. It&#x27;s a what-if, so nothing is saved unless Arun, as admin, chooses to add it to the plan. &quot;Why?&quot; and &quot;Technical&quot; open the reasoning and the assumptions, each with its source.</p>
+<p>The bigger questions work the same way, every figure from the calculator: what a goal needs each month to land on time (&quot;£40,000 for a car deposit by September 2028&quot;), what changed and why (&quot;up £3,100 in October: £1,900 saved, £1,600 from markets, less £450 from the rupee&quot;), and two or three plans side by side in one card. The range on the chart is checked every month against what really happened, so you can see how often it has held. For a big decision, an admin can start <strong>Plan with me</strong>: a slower session on Opus that asks what is missing, compares the options and ends in one plan card. It lays out each option with its figures and leaves the choice to you; each change is saved only on that admin&#x27;s Confirm.</p>
 <p></p>
 <h4>Behind the screen</h4>
 <table><tbody><tr><td data-background="#EAE6FF"><strong>The front desk says &quot;got it&quot; at once</strong> and drops the question in Arun&#x27;s own lane of the in-tray.</td></tr>
 <tr><td data-background="#FFEBE6"><strong>The concierge asks Claude</strong> what&#x27;s needed. Claude picks two tools: read the figures, and run the projection with this change.</td></tr>
-<tr><td data-background="#E3FCEF"><strong>The calculator runs 20 years forward</strong> from the family&#x27;s own history and stated assumptions, with a low, middle and high path. Code makes every number.</td></tr>
+<tr><td data-background="#E3FCEF"><strong>The calculator runs 20 years forward</strong> from the household&#x27;s actual numbers (XIRR and CAGR from the dated ledger, salaries, debts and plans), with a low, middle and high path. Code makes every number.</td></tr>
 <tr><td data-background="#FFEBE6"><strong>Claude writes the answer around those numbers,</strong> and the words appear on screen as they are written.</td></tr>
 </tbody>
 </table>
 </div>
-<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="886ce096-594d-488b-a0b9-c2518d552696" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-9.gif"></div>
+<div data-type="column"><figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="ad1ffae3-2523-4b07-8585-b9e47bd97690" data-collection="contentId-1704057" data-alt="rec-j-inside--inside-step-9.gif"></div>
 <figcaption>Step 9: Ask anything: the chatbot at work (Inside MyPaisa)</figcaption></figure>
 </div>
 </section>

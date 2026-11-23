@@ -199,7 +199,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
 
 <header class="mast">
   <div class="wrap">
-    <div class="eyebrow">MyPaisa · ARCHITECTURE §3, §4.8, §8, §9.4, §10 · TECH_STACK · MA-265 · MA-266</div>
+    <div class="eyebrow">MyPaisa · ARCHITECTURE §3, §4.8, §7, §8.4, §9 · TECH_STACK · MA-265 · MA-266</div>
     <h1>Four layers, one trace from tap to push, £2.50 a month to watch.</h1>
     <p class="lede">How MyPaisa is built and watched end to end: SvelteKit 3 and TanStack on the web, a React Native 0.88 shell with a native SwiftUI core on iOS, FastAPI and a typed single-table DynamoDB repository on Python 3.14 (with no DocumentDB cluster), a thin custom loop on the official Anthropic SDK, and one OpenTelemetry trace across every hop.</p>
     <ul class="rules" aria-label="The architectural choices">
@@ -240,7 +240,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <p>Every response also hands the trace number and request ID back to your device in its headers, so if anything ever goes wrong, one click in the Activity screen opens the entire journey in AWS CloudWatch — while a strict automated test guarantees no personal figure, name or message text is ever written into the logs.</p>
     </div>
     <div class="copy tech">
-      <p>Already planned in <code>ARCHITECTURE.md</code> §10 (MA-29, MA-230 to MA-236, MA-196) and extended with FastAPI in <strong>MA-265</strong> and <strong>MA-266</strong>: both doors generate a W3C <code>traceparent</code> (<code>00-&lt;trace_id&gt;-&lt;span_id&gt;-01</code>) and <code>client_message_id</code> (ULID). <code>handlers/api</code> runs <strong>FastAPI</strong> behind <code>Mangum(app, lifespan="off")</code>; <code>handlers/stream</code> runs <strong>FastAPI</strong> on <strong>Uvicorn</strong> behind the <strong>AWS Lambda Web Adapter 1.1</strong> (<code>AWS_LWA_INVOKE_MODE=response_stream</code>).</p>
+      <p>Already planned in <code>ARCHITECTURE.md</code> §9 (MA-29, MA-230 to MA-236, MA-196) and extended with FastAPI in <strong>MA-265</strong> and <strong>MA-266</strong>: both doors generate a W3C <code>traceparent</code> (<code>00-&lt;trace_id&gt;-&lt;span_id&gt;-01</code>) and <code>client_message_id</code> (ULID). <code>handlers/api</code> runs <strong>FastAPI</strong> behind <code>Mangum(app, lifespan="off")</code>; <code>handlers/stream</code> runs <strong>FastAPI</strong> on <strong>Uvicorn</strong> behind the <strong>AWS Lambda Web Adapter 1.1</strong> (<code>AWS_LWA_INVOKE_MODE=response_stream</code>).</p>
       <p><code>CorrelationMiddleware</code> and <code>opentelemetry-instrumentation-fastapi</code> run on both apps: they extract <code>traceparent</code>, read API Gateway's <code>request_id</code> (<code>aws_request_id</code> / <code>x-request-id</code>), bind <code>{trace_id, span_id, request_id, client_message_id, run_id, household_id, member_id}</code> onto the Powertools Logger and the active span (setting <code>http.route</code> for Application Signals), and echo <code>x-mypaisa-trace-id</code> and <code>x-request-id</code> on every HTTP response and SSE handshake. Across <code>updates.fifo</code>, <code>outbox.fifo</code> and <code>work</code>, the AWS OpenTelemetry distro propagates <code>AWSTraceHeader</code> automatically and handler code copies <code>traceparent</code>, <code>request_id</code> and <code>run_id</code> into SQS message attributes.</p>
     </div>
     <figure class="fig" id="fig-trace">
@@ -373,7 +373,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
 
         <rect class="s-upbg" x="364" y="248" width="564" height="94" rx="12"/>
         <text class="s-upt" x="382" y="272">The 8 CloudWatch Dashboard Panels (observability.tf, MA-231)</text>
-        <text class="s-t" x="382" y="294">1. System health (api, stream, agent, sender, worker) · 2. Queues &amp; DLQs · 3. Stream &amp; push · 4. Data &amp; engine</text>
+        <text class="s-t" x="382" y="294">1. System health (api, stream, agent, sender, worker) · 2. Queues &amp; DLQs · 3. Stream &amp; push · 4. Data &amp; prices</text>
         <text class="s-t" x="382" y="314">5. Claude &amp; spend (tokens, cache hit %, TTFT, ceiling) · 6. Client UX · 7. Cost vs £50 cap · 8. Evals &amp; judges</text>
         <text class="s-m" x="382" y="332">Heavy usage (5× chat + 20 statements/mo) moves prod by only +£0.52/mo to £2.98/mo</text>
       </svg>
@@ -409,12 +409,12 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <p>Its data types are generated automatically from the Python FastAPI server, and the iOS app imports that exact same TypeScript folder so the browser and the iPhone can never drift apart.</p>
     </div>
     <div class="copy tech">
-      <p>Proven in Smart Clearance (`MA-194`, `MA-229`, `MA-265`): a <code>pnpm 12.x</code> workspace on <strong>SvelteKit 3.1.x</strong> (<code>@sveltejs/adapter-static</code>) and <strong>Svelte 5.57.x</strong> runes (<code>$state</code>, <code>$derived</code>, <code>$effect</code>), built with <strong>Vite 8.x</strong> and <strong>TypeScript 6.x</strong>. Styled with <strong>Tailwind CSS 4.3.x</strong> over <code>docs/design/ds-v1/tokens.css</code>, <strong>shadcn-svelte 1.7.x</strong> on <strong>bits-ui 2.20.x</strong>, <strong>LayerChart 2.9.x</strong> + <strong>d3-scale / d3-shape</strong> for wealth charts and <strong>lightweight-charts 5.2.x</strong> for market candlesticks/indicators, and <strong>Motion 14.0.x</strong>.</p>
-      <p>Data and state run on <strong>@tanstack/svelte-query 6.3.x</strong> (updated in place by the SSE stream on <code>records.changed</code>), <strong>@tanstack/table-core 9.3.x</strong>, <strong>@tanstack/svelte-virtual 3.13.x</strong> and <strong>@tanstack/svelte-form 1.33.x</strong> + <strong>zod 4.x</strong>. <code>pnpm generate:api</code> runs <strong>openapi-typescript 7.x</strong> against FastAPI's <code>app.openapi()</code> to emit <code>web/src/lib/api-types.d.ts</code>.</p>
+      <p>Proven in Smart Clearance (`MA-194`, `MA-229`, `MA-265`): a <code>pnpm 12.x</code> workspace on <strong>SvelteKit 3.1.x</strong> (<code>@sveltejs/adapter-static</code>) and <strong>Svelte 5.57.x</strong> runes (<code>$state</code>, <code>$derived</code>, <code>$effect</code>), built with <strong>Vite 8.x</strong> and <strong>TypeScript 6.x</strong>. Styled with <strong>Tailwind CSS 4.3.x</strong> over <code>docs/design/ds-v1/tokens.css</code>, <strong>shadcn-svelte 1.7.x</strong> on <strong>bits-ui 2.20.x</strong>, <strong>LayerChart 2.9.x</strong> + <strong>d3-scale / d3-shape</strong> for wealth charts, and <strong>Motion 14.0.x</strong>.</p>
+      <p>Data and state run on <strong>@tanstack/svelte-query 6.3.x</strong> (updated in place by the SSE stream on <code>records.changed</code>), <strong>@tanstack/table-core 9.3.x</strong>, <strong>@tanstack/svelte-virtual 3.13.x</strong> and <strong>@tanstack/svelte-form 1.33.x</strong> + <strong>zod 4.x</strong>. <code>pnpm --dir web api:types</code> runs <strong>openapi-typescript 7.x</strong> against FastAPI's <code>app.openapi()</code> to emit <code>web/src/lib/api-types.d.ts</code>.</p>
     </div>
     <figure class="fig" id="fig-web">
       <div class="scroll">
-      <svg class="anim d3" viewBox="0 0 960 380" role="img" aria-label="The web front-end architecture in web/: SvelteKit 3.1 and Svelte 5 runes, Tailwind CSS 4.3 and shadcn-svelte on bits-ui, LayerChart and lightweight-charts with Motion 14, TanStack Query, Table, Virtual and Form with live SSE updates, and the shared web/src/lib/ layer generated from FastAPI.">
+      <svg class="anim d3" viewBox="0 0 960 380" role="img" aria-label="The web front-end architecture in web/: SvelteKit 3.1 and Svelte 5 runes, Tailwind CSS 4.3 and shadcn-svelte on bits-ui, LayerChart with Motion 14, TanStack Query, Table, Virtual and Form with live SSE updates, and the shared web/src/lib/ layer generated from FastAPI.">
         <rect class="w1 s-box" x="14" y="24" width="296" height="156" rx="14"/>
         <text class="s-h" x="30" y="50">App Shell &amp; Build (web/)</text>
         <text class="s-blt" x="30" y="72">SvelteKit 3.1 · Svelte 5.57 Runes</text>
@@ -426,9 +426,9 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
         <rect class="w2 s-box" x="332" y="24" width="296" height="156" rx="14"/>
         <text class="s-h" x="348" y="50">UI, Charts &amp; Motion</text>
         <text class="s-vit" x="348" y="72">Tailwind CSS 4.3 · shadcn-svelte 1.7</text>
-        <text class="s-t" x="348" y="94">• bits-ui 2.20 · lucide-svelte · cmdk-sv</text>
+        <text class="s-t" x="348" y="94">• bits-ui 2.20 · @lucide/svelte · cmdk-sv</text>
         <text class="s-t" x="348" y="114">• LayerChart 2.9 (net worth, fan, mix)</text>
-        <text class="s-t" x="348" y="134">• lightweight-charts 5.2 (candles, RSI)</text>
+        <text class="s-t" x="348" y="134">• d3-scale · d3-shape (budget, projection)</text>
         <text class="s-m" x="348" y="156">Motion 14.0 · View Transitions · 25% gate</text>
 
         <rect class="w3 s-box" x="650" y="24" width="296" height="156" rx="14"/>
@@ -455,8 +455,8 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
 
         <rect class="s-ambg" x="640" y="256" width="288" height="84" rx="10"/>
         <text class="s-amt" x="654" y="278">Automated Web Gates (CI)</text>
-        <text class="s-t" x="654" y="298">svelte-check · eslint 10 · vitest 4</text>
-        <text class="s-m" x="654" y="318">Playwright + axe-core + Argos CI (£0)</text>
+        <text class="s-t" x="654" y="298">web_gates.sh: svelte-check · eslint · vitest 5</text>
+        <text class="s-m" x="654" y="318">Playwright + axe + Argos: on request (MA-304)</text>
       </svg>
       </div>
       <figcaption>SvelteKit 3.1, Tailwind CSS 4.3, shadcn-svelte, LayerChart and TanStack Query/Table/Virtual/Form sit over web/src/lib/, whose OpenAPI types come straight from FastAPI.</figcaption>
@@ -516,7 +516,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
         <text class="s-t" x="586" y="248">Warm Ledger + Liquid Glass Controls</text>
         <text class="s-m" x="586" y="268">.glassEffect() on bars/composer · solid content</text>
         <text class="s-s" x="574" y="312">AuthenticationServices · VisionKit · LocalAuth</text>
-        <text class="s-m" x="574" y="332">WidgetKit · AppIntents · ActivityKit (Phase 20)</text>
+        <text class="s-m" x="574" y="332">WidgetKit · AppIntents · ActivityKit (Phase 15)</text>
       </svg>
       </div>
       <figcaption>React Native 0.88 handles state, offline MMKV caching and SSE in TypeScript; every visible screen, card and chart is Swift 6 SwiftUI across the Fabric bridge.</figcaption>
@@ -535,7 +535,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <p>Instead of a heavy ORM like PynamoDB that expects fixed columns, our Python 3.14 backend uses a clean 180-line repository built on <strong>Pydantic v2</strong>, <strong>boto3</strong>'s native serializer and <strong>mypy-boto3-dynamodb</strong> for 100% static type checking in <code>pyright</code>.</p>
     </div>
     <div class="copy tech">
-      <p>See <code>docs/RESEARCH.md</code> §6.2 and <code>ARCHITECTURE.md</code> §4.8: <code>src/mypaisa_agent/api/</code> defines the <strong>FastAPI 0.135+</strong> apps for <code>handlers/api.py</code> (<code>Mangum(app, lifespan="off")</code>) and <code>handlers/stream.py</code> (<code>Uvicorn</code> + Lambda Web Adapter 1.1 <code>StreamingResponse</code>). <code>src/mypaisa_agent/registry/repository.py</code> pairs <strong>Pydantic v2</strong> (<code>model_dump(mode="json")</code>, <code>model_validate()</code>) with <code>boto3.dynamodb.types.TypeSerializer</code> / <code>TypeDeserializer</code>, <strong>boto3-stubs[dynamodb]</strong> (<code>mypy-boto3-dynamodb</code>) and a <code>TransactWriteUnit</code> helper wrapping <code>transact_write_items</code> so every <code>Record</code> + <code>Event</code> + hash-chained <code>AuditEvent</code> + view update commits atomically.</p>
+      <p>See <code>docs/RESEARCH.md</code> §6.2 and <code>ARCHITECTURE.md</code> §4.8: <code>backend/src/mypaisa_agent/api/</code> defines the <strong>FastAPI 0.135+</strong> apps for <code>handlers/api.py</code> (<code>Mangum(app, lifespan="off")</code>) and <code>handlers/stream.py</code> (<code>Uvicorn</code> + Lambda Web Adapter 1.1 <code>StreamingResponse</code>). <code>backend/src/mypaisa_agent/registry/repository.py</code> pairs <strong>Pydantic v2</strong> (<code>model_dump(mode="json")</code>, <code>model_validate()</code>) with <code>boto3.dynamodb.types.TypeSerializer</code> / <code>TypeDeserializer</code>, <strong>boto3-stubs[dynamodb]</strong> (<code>mypy-boto3-dynamodb</code>) and a <code>TransactWriteUnit</code> helper wrapping <code>transact_write_items</code> so every <code>Record</code> + <code>Event</code> + hash-chained <code>AuditEvent</code> + view update commits atomically.</p>
     </div>
     <figure class="fig" id="fig-backend">
       <div class="scroll">
@@ -621,14 +621,14 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
       <p>We compared six ways to build MyPaisa's agents: our own thin loop on the official Anthropic SDK, PydanticAI, AWS Strands Agents, LangGraph, the Claude Agent SDK, and CrewAI/AutoGen. Because MyPaisa pauses and exits its AWS Lambda immediately whenever it asks you a question or shows a Confirm card (so you pay $0 while thinking), and because every tool call and every number must pass our own code fences, a thin 300-line loop on the official Anthropic SDK is cleaner, safer and cheaper than any heavy framework.</p>
     </div>
     <div class="copy tech">
-      <p>Recorded in <code>docs/RESEARCH.md</code> §6.3 and <code>ARCHITECTURE.md</code> §8: <code>src/mypaisa_agent/agent.py</code> uses the official <code>anthropic</code> SDK directly so prompt cache breakpoints (<code>cache_control: {"type": "ephemeral", "ttl": "1h"}</code>), adaptive thinking, server-side <code>web_search</code> / <code>web_fetch</code> with citations, Message Batches, and our five deterministic hooks (<code>PolicyGate</code>, <code>FigureCheck</code>, <code>SpendMeter</code>, <code>GenAISpan</code>, stateless <code>PendingAction</code> pause/resume) sit in plain sight with zero framework abstraction tax. From <strong>PydanticAI</strong> we borrow the typed <code>@tool</code> + <code>RunContext[Deps]</code> registration pattern; in Phase 18, the 9 specialist agents coordinate over <strong>AWS Step Functions</strong> and <strong>EventBridge</strong>.</p>
+      <p>Recorded in <code>docs/RESEARCH.md</code> §6.3 and <code>ARCHITECTURE.md</code> §7: <code>backend/src/mypaisa_agent/agent.py</code> uses the official <code>anthropic</code> SDK directly so prompt cache breakpoints (<code>cache_control: {"type": "ephemeral", "ttl": "1h"}</code>), adaptive thinking, server-side <code>web_search</code> / <code>web_fetch</code> with citations, Message Batches, and our five deterministic hooks (<code>PolicyGate</code>, <code>FigureCheck</code>, <code>SpendMeter</code>, <code>GenAISpan</code>, stateless <code>PendingAction</code> pause/resume) sit in plain sight with zero framework abstraction tax. From <strong>PydanticAI</strong> we borrow the typed <code>@tool</code> + <code>RunContext[Deps]</code> registration pattern; in Phase 13, the 6 specialist agents coordinate over <strong>AWS Step Functions</strong> and <strong>EventBridge</strong>.</p>
     </div>
     <figure class="fig" id="fig-agents">
       <div class="scroll">
       <svg class="anim d6" viewBox="0 0 960 400" role="img" aria-label="The MyPaisa agent loop architecture on the official Anthropic SDK with @tool RunContext, PolicyGate, stateless PendingAction pause and resume, FigureCheck, SpendMeter and GenAISpan, alongside the 6-framework scorecard.">
         <rect class="a1 s-box" x="14" y="24" width="302" height="352" rx="14"/>
         <text class="s-h" x="30" y="52">1 · Thin Anthropic SDK Loop</text>
-        <text class="s-vit" x="30" y="74">src/mypaisa_agent/agent.py (~300 lines)</text>
+        <text class="s-vit" x="30" y="74">backend/src/mypaisa_agent/agent.py (~300 lines)</text>
         <rect class="s-vibg" x="28" y="90" width="274" height="58" rx="10"/>
         <text class="s-vit" x="40" y="112">1-Hour Prompt Cache Prefix</text>
         <text class="s-m" x="40" y="132">system + tools + rubric (ephemeral 1h)</text>
@@ -636,7 +636,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
         <text class="s-t" x="40" y="180">@tool + RunContext[Deps] Pattern</text>
         <text class="s-m" x="40" y="200">Pydantic v2 strict JSON schema</text>
         <rect class="s-box2" x="28" y="226" width="274" height="58" rx="10"/>
-        <text class="s-t" x="40" y="248">Opus 5.5 · Sonnet 5.5 · Haiku 5.5</text>
+        <text class="s-t" x="40" y="248">Sonnet · Haiku · Opus 5.5</text>
         <text class="s-m" x="40" y="268">Adaptive thinking · Batches · Citations</text>
         <text class="s-s" x="30" y="312">Zero LangChain / framework bloat</text>
         <text class="s-m" x="30" y="332">Direct token &amp; cache_read accounting</text>
@@ -656,7 +656,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
         <text class="s-amt" x="370" y="236">FigureCheck + SpendMeter</text>
         <text class="s-m" x="370" y="254">every number grounded · $160 cap</text>
         <rect class="s-box2" x="358" y="276" width="262" height="82" rx="10"/>
-        <text class="s-t" x="370" y="298">Phase 18 · 9-Agent Team</text>
+        <text class="s-t" x="370" y="298">Phase 13 · 6-Agent Team</text>
         <text class="s-s" x="370" y="318">AWS Step Functions + EventBridge</text>
         <text class="s-m" x="370" y="338">Per-agent IAM role &amp; budget share</text>
 
@@ -681,7 +681,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
         <text class="s-s" x="688" y="355">6. CrewAI / AutoGen <tspan class="s-m">(3.3 / 10)</tspan></text>
       </svg>
       </div>
-      <figcaption>The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge in Phase 18.</figcaption>
+      <figcaption>The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge in Phase 13.</figcaption>
     </figure>
     <div class="tbl">
       <table>
@@ -692,7 +692,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
           <tr><td><strong>3. Stateless pause/resume</strong> (<code>PendingAction</code> in DynamoDB, $0 wait) (15%)</td><td><strong>10 / 10</strong></td><td>8 / 10</td><td>7 / 10</td><td>6 / 10</td><td>5 / 10</td><td>2 / 10</td></tr>
           <tr><td><strong>4. OpenTelemetry GenAI v1.40 span fidelity</strong> (15%)</td><td><strong>10 / 10</strong></td><td>8 / 10</td><td>9 / 10</td><td>5 / 10</td><td>6 / 10</td><td>3 / 10</td></tr>
           <tr><td><strong>5. Lambda cold-start &amp; image footprint</strong> (10%)</td><td><strong>10 / 10</strong></td><td>9 / 10</td><td>8 / 10</td><td>4 / 10</td><td>6 / 10</td><td>3 / 10</td></tr>
-          <tr><td><strong>6. Phase 18 9-agent isolation</strong> (IAM role &amp; cap per agent) (10%)</td><td><strong>10 / 10</strong> (SFN+EB)</td><td>6 / 10</td><td>6 / 10</td><td>5 / 10</td><td>6 / 10</td><td>4 / 10</td></tr>
+          <tr><td><strong>6. Phase 13 6-agent isolation</strong> (IAM role &amp; cap per agent) (10%)</td><td><strong>10 / 10</strong> (SFN+EB)</td><td>6 / 10</td><td>6 / 10</td><td>5 / 10</td><td>6 / 10</td><td>4 / 10</td></tr>
           <tr><td><strong>7. Inspect AI T0/T1/T2 offline replay compatibility</strong> (10%)</td><td><strong>10 / 10</strong></td><td>7 / 10</td><td>6 / 10</td><td>6 / 10</td><td>7 / 10</td><td>4 / 10</td></tr>
           <tr><td><strong>Weighted Score</strong></td><td><strong>10.0 / 10</strong></td><td><strong>7.9 / 10</strong></td><td><strong>7.1 / 10</strong></td><td><strong>5.7 / 10</strong></td><td><strong>6.7 / 10</strong></td><td><strong>3.3 / 10</strong></td></tr>
         </tbody>
@@ -716,7 +716,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
           <tr><td class="k">MA-194</td><td>0</td><td>Web app skeleton in SvelteKit 3.1, Tailwind CSS 4, shadcn-svelte, TanStack and <code>openapi-typescript</code></td></tr>
           <tr><td class="k">MA-165</td><td>0</td><td>iOS app skeleton in bare React Native 0.88 (New Architecture, SPM) with a Swift 6 SwiftUI core</td></tr>
           <tr><td class="k">MA-198</td><td>0</td><td>Local laptop stack mounting the FastAPI <code>api</code> and <code>stream</code> apps and moto</td></tr>
-          <tr><td class="k">MA-230</td><td>0</td><td>End-to-end tracing and LLM observability recorded in <code>ARCHITECTURE.md</code> §10</td></tr>
+          <tr><td class="k">MA-230</td><td>0</td><td>End-to-end tracing and LLM observability recorded in <code>ARCHITECTURE.md</code> §9</td></tr>
           <tr><td class="k">MA-231</td><td>0</td><td>CloudWatch watch tower in Terraform (<code>observability.tf</code>): log groups, Transaction Search, Application Signals, 8-panel dashboard, 12 alarms</td></tr>
           <tr><td class="k">MA-266</td><td>1</td><td>FastAPI REST and SSE applications (<code>handlers/api</code> on Mangum, <code>handlers/stream</code> on Uvicorn + LWA 1.1), <code>CorrelationMiddleware</code>, OpenTelemetry route spans and generated OpenAPI TypeScript types</td></tr>
           <tr><td class="k">MA-195</td><td>1</td><td>Streaming spike in dev proving the FastAPI + Uvicorn + Lambda Web Adapter 1.1 SSE path</td></tr>
@@ -738,7 +738,7 @@ footer{color:var(--ink-3);font-size:14px;padding-block:24px 40px;border-top:1px 
 </div>
 </main>
 <footer>
-  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §6, <span class="mono">TECH_STACK.md</span> and <span class="mono">ARCHITECTURE.md</span> §3, §4.8, §8, §9.4, §10 in the MyPaisa repository, 28 Oct 2026 (MA-265, MA-266).</div>
+  <div class="wrap">From <span class="mono">docs/RESEARCH.md</span> §6, <span class="mono">TECH_STACK.md</span> and <span class="mono">ARCHITECTURE.md</span> §3, §4.8, §7, §8.4, §9 in the MyPaisa repository, 28 Oct 2026 (MA-265, MA-266).</div>
 </footer>
 
 <script>

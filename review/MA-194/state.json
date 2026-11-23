@@ -1,0 +1,458 @@
+{
+ "deliverable": "[MA-194] The web app's skeleton: SvelteKit 3, Tailwind 4, shadcn-svelte and TanStack Query, with its gates in CI (PR #92)",
+ "rounds": 1,
+ "reviewed_sha": "0a2ab2c",
+ "history": [
+  {
+   "round": 1,
+   "date": "2026-11-03",
+   "reviewed_sha": "0a2ab2c",
+   "range": "0e0b0f8..0a2ab2c (everything)",
+   "asked": "Arun, 3 Nov 2026: \"Review first, then merge\"",
+   "review_approval": "Arun, 3 Nov 2026: \"Review first, then merge\" (round 1, then merge on a clean round)",
+   "lanes": {
+    "a scripts and checks": 6,
+    "b trace against Jira": 7,
+    "c spec docs": 9,
+    "d rules and skills": 11,
+    "f code": 14
+   },
+   "blocking": 15,
+   "gate_results": [
+    {
+     "command": "scripts/backend_gates.sh",
+     "result": "all passed"
+    },
+    {
+     "command": "scripts/web_gates.sh",
+     "result": "all passed"
+    },
+    {
+     "command": "scripts/security_scan.sh",
+     "result": "all passed"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py selftest",
+     "result": "0 wrong"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py check",
+     "result": "0 drift"
+    },
+    {
+     "command": "python3 scripts/plan_sync.py pr-files",
+     "result": "0 claimed by another story, 0 by none"
+    },
+    {
+     "command": "python3 scripts/confluence_docs.py selftest",
+     "result": "23 of 23"
+    },
+    {
+     "command": "python3 scripts/review_regress.py --every",
+     "result": "190 of 190, 115 retired, 25 manual"
+    }
+   ],
+   "deferred_gates": [],
+   "findings": [
+    {
+     "id": "R1-a1",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "a",
+     "anchor": "scripts/web_gates.sh:30",
+     "evidence": "a copy with script-src 'unsafe-inline' and a copy with no manifest both passed the gate",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a2",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "a,b",
+     "anchor": "docs/trace.json (MA-326 code)",
+     "evidence": "pr-files --key MA-326 on a web lockfile change exited 1, claimed by MA-194",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a3",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "scripts/security_scan.sh:69",
+     "evidence": "semgrep skips .svelte; eslint had no no-eval rules",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a4",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "web/pnpm-workspace.yaml:42",
+     "evidence": "an unbounded minimatch override forced 11 on @redocly/openapi-core, which calls 5's API",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a5",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "ci.yml, security-weekly.yml, openapi.py, jira-flow.json",
+     "evidence": "stale wording and paths",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-a6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "a",
+     "anchor": "web/package.json:6",
+     "evidence": "packageManager had no integrity hash",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b2",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "docs/trace.json (MA-194 notes)",
+     "evidence": "the notes opened with the 30 Oct plan of Playwright and Argos in CI",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b3",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "b",
+     "anchor": "docs/trace.json (MA-267, MA-326 notes)",
+     "evidence": "MA-267 still owned all web SAST and SCA",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b4",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "b,c",
+     "anchor": "ARCHITECTURE.md:3080",
+     "evidence": "§17.4 described a different web gate",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b5",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "MA-304",
+     "evidence": "ARGOS_TOKEN against Tokenless OIDC, predates this PR",
+     "status": "deferred MA-304"
+    },
+    {
+     "id": "R1-b6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json (MA-73)",
+     "evidence": "MA-73 not told of the placeholder association file",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-b7",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "b",
+     "anchor": "docs/trace.json (MA-194)",
+     "evidence": "status lag, blanket web claim, code list, Jira links",
+     "status": "wontfix"
+    },
+    {
+     "id": "R1-c1",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "ARCHITECTURE.md:1904, PLAN.md:268, TECH_STACK.md:89, README.md:128",
+     "evidence": "records said svelte-check, eslint and vitest on PRs touching web/",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c2",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "PLAN.md:189, tech-stack-observability.html:457",
+     "evidence": "web visual gates on PRs; Playwright and Argos in CI; vitest 4",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c3",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "PLAN.md:2179, README.md:391",
+     "evidence": "npm commands that refuse the pnpm lockfile; against api-dev",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c4",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "ARCHITECTURE.md:3080, TECH_STACK.md:100, PLAN.md:199",
+     "evidence": "security scans described without web/",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c5",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "c",
+     "anchor": "web/src/lib/api/client.ts:3",
+     "evidence": "comment said CloudFront routes /v1, against §17.2",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c6",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "PLAN.md:794",
+     "evidence": "pnpm generate:api",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c7",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "TECH_STACK.md:79",
+     "evidence": "Google Fonts against Fontsource; style-src unsafe-inline",
+     "status": "deferred MA-73"
+    },
+    {
+     "id": "R1-c8",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "TECH_STACK.md:79,89",
+     "evidence": "Lucide version, Testing Library, coverage scope",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-c9",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "c",
+     "anchor": "ARCHITECTURE.md:2002",
+     "evidence": "the iOS shell and the query definitions; pnpm or npm for ios/",
+     "status": "deferred MA-165"
+    },
+    {
+     "id": "R1-d1",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "jira-flow.json:72",
+     "evidence": "web gate paths missed the DS v1 tokens",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d2",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "design-first SKILL.md:229",
+     "evidence": "the web copy of the tokens not named",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d3",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "design-first SKILL.md:63",
+     "evidence": "npm run dev",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d5",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "web/src/lib/api/queries.ts:4",
+     "evidence": "imports without their extension; no gate",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d6",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "web/CLAUDE.md:35",
+     "evidence": "which file each check holds",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d7",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "README.md:214",
+     "evidence": "Node 24 and corepack",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d9",
+     "severity": "P2",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "web/CLAUDE.md",
+     "evidence": "the adaptive shell not stated",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d10",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "web/CLAUDE.md:39",
+     "evidence": "the compact float",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-d11",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "d",
+     "anchor": "web/CLAUDE.md:18",
+     "evidence": "what the iOS shell shares",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f1",
+     "severity": "P1",
+     "blocking": true,
+     "lane": "f",
+     "anchor": "web/src/service-worker.ts:9",
+     "evidence": "index.html never cached; offline navigation failed",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f2",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "f",
+     "anchor": "web/src/lib/sw/shell.ts:7",
+     "evidence": "fallback answered non-navigations",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f3",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "f",
+     "anchor": "web/src/service-worker.ts:9",
+     "evidence": "association file cached",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f4",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "f,d",
+     "anchor": "web/src/app.css:9",
+     "evidence": "dark: ignored the system dark mode",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f5",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "f",
+     "anchor": "AppShell.svelte:9",
+     "evidence": "skip link lost its padding on focus",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f6",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "f,d",
+     "anchor": "ApiStatus.svelte:29",
+     "evidence": "button 36 px",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f7",
+     "severity": "P2",
+     "blocking": true,
+     "lane": "f",
+     "anchor": "web/src/lib/formatting/money.ts:58",
+     "evidence": "£1,000k and ₹100 L",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f8",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "f",
+     "anchor": "money.ts:42",
+     "evidence": "-£0.00",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f9",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "f",
+     "anchor": "ApiStatus.svelte:29",
+     "evidence": "disabled while fetching",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f10",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "f",
+     "anchor": "queries.ts:33",
+     "evidence": "any 503 taken as readiness; 408/429 never retried",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f11",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "f",
+     "anchor": "vite.config.ts:15",
+     "evidence": "meta CSP cannot carry frame-ancestors",
+     "status": "deferred MA-73"
+    },
+    {
+     "id": "R1-f12",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "f",
+     "anchor": "app.html, manifest",
+     "evidence": "PWA icons and theme colour",
+     "status": "deferred MA-73"
+    },
+    {
+     "id": "R1-f13",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "f",
+     "anchor": "shell.ts:6",
+     "evidence": "bare /v1 and /.well-known",
+     "status": "fixed"
+    },
+    {
+     "id": "R1-f14",
+     "severity": "P3",
+     "blocking": false,
+     "lane": "f",
+     "anchor": "service-worker.ts:16",
+     "evidence": "skipWaiting with old chunks",
+     "status": "deferred MA-73"
+    }
+   ],
+   "result": "not clean: 15 blocking findings (the web gate's CSP and manifest checks; Dependabot web PRs and pr-files; MA-194, MA-267 and MA-326 trace notes; five records on the web gates, scans, commands and api routing; the service worker offline; dark mode; two targets; compact money), all fixed with 13 ledger checks; 30 non-blocking, 23 fixed, 6 deferred to MA-73, MA-165 and MA-304, 1 left",
+   "next_round": "Round 2 on round 1's fixes only (git diff 0a2ab2c..HEAD) and their joins, on Arun's yes"
+  }
+ ]
+}

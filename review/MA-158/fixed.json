@@ -24,7 +24,8 @@
     "check": {
       "type": "cmd",
       "run": "python3 -c \"import json,sys; r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-99'][0]; sys.exit(0 if not any(q.startswith('EODHD Fundamentals'+chr(39)+' price') for q in r.get('open',[])) and 'Settled: EODHD Fundamentals'+chr(39)+' price' in r['notes'] and '59.99' in r['notes'] else 1)\""
-    }
+    },
+    "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
   },
   {
     "id": "r1-B4",
@@ -32,8 +33,9 @@
     "finding": "the open questions of MA-57, MA-99 and MA-102 are on their Jira stories (rule 6)",
     "check": {
       "type": "manual",
-      "what": "Jira comments: MA-102 (sign-in after a pause, AdminDisableUser), MA-99 (settled at 59.99), MA-57 and MA-59 (stance gate settled by 11, boards annotated)"
-    }
+      "what": "Jira comments: MA-102 (sign-in after a pause, AdminDisableUser)"
+    },
+    "updated": "MA-307, 2 Nov 2026: MA-99 and MA-57 are retired and MA-59's stance gate went with the stances (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"); the verifier now reads MA-102's comment only"
   },
   {
     "id": "r1-B5",
@@ -52,7 +54,8 @@
       "type": "cmd",
       "run": "python3 -c \"import json,sys,pathlib; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; ev={'MA-32': ('docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html', 'CANCEL INVITE · CONFIRM + SECOND CHECK'), 'MA-37': ('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html', 'Leave it out shows the matched value'), 'MA-63': ('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html', 'Cards carrying money (masked in Privacy):'), 'MA-124': ('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html', '(holding value masked)'), 'MA-137': ('docs/design/app-v1/Web v4 · Admin center.dc.html', '3 jobs replayed by you at 08:30: 2 ran, 1 failed again'), 'MA-77': ('docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html', 'Unlinked account refused'), 'MA-69': ('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html', 'No stance line shown before the 8-week practice gate passes'), 'MA-130': ('docs/design/app-v1/Web v4 · Admin center.dc.html', '3 jobs replayed by you at 08:30: 2 ran, 1 failed again'), 'MA-116': ('docs/design/app-v1/Web v4 · Admin center.dc.html', 'Moving past '+chr(36)+'200 credit requires explicit yes')}; old={'MA-32': ('docs/design/ios-v1/iPhone v4 · Sign-in and invite.dc.html', 'Cancel this invite ends it at once'), 'MA-37': ('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html', 'Leave it out saves the rest'), 'MA-77': ('docs/design/app-v1/Web v4 · Login, invite and responsive.dc.html', 'the page refuses before a code exists'), 'MA-63': ('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html', 'the scorecard, the calls and the no clear view card carry none'), 'MA-124': ('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html', 'the scorecard, the calls and the no clear view card carry none'), 'MA-69': ('docs/design/ios-v1/iPhone v4 · Chat and guided flows.dc.html', 'The stance stays PAUSE 58%'), 'MA-130': ('docs/design/app-v1/Web v4 · Admin center.dc.html', '1 job replayed, it ran'), 'MA-137': ('docs/design/app-v1/Web v4 · Admin center.dc.html', '1 job, replayed by you at 08:30; it ran'), 'MA-116': ('docs/design/app-v1/Web v4 · Admin center.dc.html', 'below what is spent')}; fixed=lambda k: pathlib.Path(ev[k][0]).is_file() and (ev[k][1] in open(ev[k][0]).read()) and (old[k][1] not in open(old[k][0]).read()); ok=all(any('MA-160' in u for u in d[k].get('undrawn',[])) or fixed(k) for k in ev); sys.exit(0 if ok else 1)\""
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r1-B7",
@@ -62,7 +65,8 @@
       "type": "cmd",
       "run": "python3 -c \"import json,sys; d=open('docs/design/ios-v1/iPhone v4 · Market, holdings and India.dc.html').read(); r=[i for i in json.load(open('docs/trace.json'))['items'] if i['key']=='MA-57'][0]; sys.exit(0 if 'until it passes, stances stay on each holding' in d and not any(q.startswith('The brief boards') for q in r.get('open',[])) and 'Settled: The brief boards' in r['notes'] else 1)\""
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r2-B1",

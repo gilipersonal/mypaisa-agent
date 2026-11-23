@@ -22,17 +22,28 @@ this repo on any change just before you merge the PR. just for this Repo".
   "Independent review"), in parallel lanes on the delta. Arun, 25 Oct 2026,
   after PR #32's seven one-reviewer rounds: "always use that approach for
   this repo and make it a global rule".
-  1. **Gates first:** `python3 scripts/plan_sync.py selftest`, `check`,
-     `python3 scripts/contrast_check.py --selftest` and `python3 scripts/contrast_check.py`, the story's other gates, and `python3 scripts/review_regress.py MA-<n>` once
-     the story has a ledger. Reviewers spend time only on what no gate measures.
+  1. **Gates first:** the `plan-sync` gate,
+     `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`
+     (locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time, about 9 s), the story's
+     other gates, and `python3 scripts/review_regress.py MA-<n>` once the
+     story has a ledger; `--state MA-<n>` validates its state file, and may
+     run before round 1 (no state file means no rounds yet). No gate
+     measures the boards (Arun, 2 Nov 2026, MA-303: "All the 6 checks
+     currently run on docs/design. Lets stop that."): plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). An exit 3 from the
+     runner (every command passed, `manual` checks left) sends those items
+     to one fresh verifier sub-agent before the lanes start. Reviewers spend
+     time only on what no gate measures.
   2. **Lanes, in parallel:** one fresh sub-agent per lane, every Agent call in
      one message, each blind to the making (the requirements, the rules and
-     the deliverable, never the maker's notes). The lanes here: (a) scripts and
-     checks; (b) the trace against Jira; (c) the spec docs (`ARCHITECTURE.md`,
-     `PLAN.md`, `TECH_STACK.md`, `README.md`, the explainer pages); (d) the
-     rules and skills; (e) the boards and their record, when the PR
-     changes them. Each reports on its part and the joins into it; their
-     findings are merged into one list.
+     the deliverable, never the maker's notes), briefed from
+     `.claude/skills/autoship/review-brief.md`. The lanes here: (a) scripts
+     and checks; (b) the trace against Jira; (c) the spec docs
+     (`ARCHITECTURE.md`, `PLAN.md`, `TECH_STACK.md`, `README.md`, the
+     explainer pages); (d) the rules and skills; (f) the code (`web/`, `ios/`,
+     `backend/`, `infra/`), once the story has code. The boards' lane (e) left the
+     review with MA-303. Each reports on its part and the joins into it; their
+     findings are merged into one list, two lanes' findings at the same
+     `file:line` under one id.
   3. **Round 1 covers everything; later rounds cover the delta**
      (the previous round's fixes only: `git diff <previous round's reviewed_sha>..HEAD` and its joins; Arun, 26 Oct 2026), with the gates on the
      whole. A lane with nothing changed sits the round out.
@@ -56,7 +67,8 @@ this repo on any change just before you merge the PR. just for this Repo".
 - Arun can ask for a reviewer at any other time too; it runs the same way
   (gates first, parallel lanes, the delta after round 1, the fixed list).
 - After each round, update `review/MA-<n>/state.json` (the round, the
-  reviewed sha, its blocking count, and Arun's word for any round past five)
+  reviewed sha, Arun's words that allowed it, the gate results, the findings
+  and the next round; the fields are in `.claude/rules/independent-review.md`)
   and comment the round's result on the issue. The lessons go into
   `.claude/rules/independent-review.md` the same day.
 
@@ -112,7 +124,7 @@ done, take it to the merge question without stopping: commit, push, raise the
 PR, move the issue to In Review, wait for the checks. Then ask exactly once,
 naming the PR and its checks:
 
-> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (jira-key, plan-sync). Review it
+> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (CI, jira-key). Review it
 > first (lanes: scripts, trace, docs, rules; one round, each later round asked first), then merge,
 > or merge it into main now? (MA-7 goes to Done after the merge.)
 

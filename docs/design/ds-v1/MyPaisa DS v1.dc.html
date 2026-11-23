@@ -70,13 +70,15 @@
           .mpm-dot { fill: var(--mp-coral); }
           .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
           .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
+          /* canvas links: a 44 x 44 tap area around the drawn chip, nothing drawn (MA-300) */
+          .dv-idx a, .dv-tid, .dv-oid { position: relative; } .dv-idx a::after, .dv-tid::after, .dv-oid::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
         </style>
       </helmet>
 
       <section class="dv-turn" id="t1" data-screen-label="Turn 1: three directions">
         <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">MyPaisa DS v1: three directions</span></div>
-        <div class="dv-picked"><span class="ms ms-fill" aria-hidden=\"true\">check_circle</span><span><b>Picked: 1a, Warm ledger.</b> Arun chose it on 24 Oct 2026 (MA-101). It is the design system in force: every MyPaisa screen is designed in it from now on. 1b and 1c stay below as the record of what was considered.</span></div>
-        <p class="dv-intro">Arun asked for a new design system after the Monzo app and Apple's Human Interface Guidelines, for the iOS app and the web app (MA-101). Each direction is shown on the Overview at phone width (light, dark) and in the browser (light, dark), and on one in-app chat stance card. Figures, members and holdings are illustrative. Inspired by Monzo, never its name, logo or assets. 1a is worked out in full: Foundations, Components and the iOS kit here, and every screen in MyPaisa iOS v1 and MyPaisa app v1.</p>
+        <div class="dv-picked"><span class="ms ms-fill" aria-hidden="true">check_circle</span><span><b>Picked: 1a, Warm ledger.</b> Arun chose it on 24 Oct 2026 (MA-101). It is the design system in force: every MyPaisa screen is designed in it from now on. 1b and 1c stay below as the record of what was considered.</span></div>
+        <p class="dv-intro">Arun asked for a new design system after the Monzo app and Apple's Human Interface Guidelines, for the iOS app and the web app (MA-101). Each direction is shown on the Overview at phone width (light, dark) and in the browser (light, dark), and on one in-app chat card. Figures, members and holdings are illustrative. Inspired by Monzo, never its name, logo or assets. 1a is worked out in full: Foundations, Components and the iOS kit here, and every screen in MyPaisa iOS v1 and MyPaisa app v1.</p>
         <div class="dv-opts">
 
           <!-- ================= 1a WARM LEDGER ================= -->
@@ -92,13 +94,13 @@
                       <div class="scr">
                         <div class="fx ac gap8">
                           <div class="mp-seg" style="flex: 1" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div>
-                          <button class="iconbtn" aria-label="Privacy mode"><span class="ms" aria-hidden=\"true\">{{ t.eye }}</span></button>
+                          <button class="iconbtn" aria-label="Privacy mode"><span class="ms" aria-hidden="true">{{ t.eye }}</span></button>
                         </div>
                         <div class="mp-hero">
                           <div class="fx jb ac"><span class="mp-over mp-hero-2">Household · Fri close</span><span class="mp-chip upchip chip-s">▲ 2.4% month</span></div>
                           <div class="mp-num-hero" style="margin-top: 8px"><span class="{{ t.maskCls }}">{{ t.total }}</span></div>
                           <div class="mp-sub mp-hero-2" style="margin-top: 2px">{{ t.month }}</div>
-                          <svg width="318" height="72" viewBox="0 0 318 72" style="display: block; margin: 14px 0 12px" role="img" aria-label="Six months of value, rising, with three past stances marked">
+                          <svg width="318" height="72" viewBox="0 0 318 72" style="display: block; margin: 14px 0 12px" role="img" aria-label="Six months of value, rising, with three past events marked">
                             <path d="{{ ch.area }}" fill="var(--mp-hero-area)"></path>
                             <path d="{{ ch.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" pathLength="1" class="mp-draw"></path>
                             <sc-for list="{{ ch.marks }}" as="m" hint-placeholder-count="3"><circle cx="{{ m.cx }}" cy="{{ m.cy }}" r="4.5" class="mk"></circle></sc-for>
@@ -106,9 +108,9 @@
                           <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div>
                         </div>
                         <div class="mp-card fx ac gap12" style="padding: 14px 16px">
-                          <span class="ms ms-fill mp-up ms-l" aria-hidden=\"true\">check_circle</span>
-                          <div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday.</div></div>
-                          <span class="ms mp-ink3" aria-hidden=\"true\">chevron_right</span>
+                          <span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span>
+                          <div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next check-in Sun 1 Nov.</div></div>
+                          <span class="ms mp-ink3" aria-hidden="true">chevron_right</span>
                         </div>
                         <div>
                           <div class="fx jb mp-section"><span class="mp-over mp-ink3">Holdings</span><span class="mp-foot mp-ink3">this week</span></div>
@@ -127,11 +129,11 @@
                         </div>
                       </div>
                       <nav class="mp-tabbar tabs-abs" aria-label="Sections">
-                        <a class="mp-tab on" href="#1a"><span class="ms ms-fill" aria-hidden=\"true\">home</span>Overview</a>
-                        <a class="mp-tab" href="#1a"><span class="ms" aria-hidden=\"true\">donut_small</span>Holdings</a>
-                        <a class="mp-tab" href="#1a"><span class="ms" aria-hidden=\"true\">join_inner</span>Overlap</a>
-                        <a class="mp-tab" href="#1a"><span class="ms" aria-hidden=\"true\">insights</span>Record</a>
-                        <a class="mp-tab" href="#1a"><span class="ms" aria-hidden=\"true\">menu</span>More</a>
+                        <a class="mp-tab on" href="#1a"><span class="ms ms-fill" aria-hidden="true">home</span>Overview</a>
+                        <a class="mp-tab" href="#1a"><span class="ms" aria-hidden="true">donut_small</span>Holdings</a>
+                        <a class="mp-tab" href="#1a"><span class="ms" aria-hidden="true">savings</span>Budget</a>
+                        <a class="mp-tab" href="#1a"><span class="ms" aria-hidden="true">trending_up</span>Projection</a>
+                        <a class="mp-tab" href="#1a"><span class="ms" aria-hidden="true">menu</span>More</a>
                       </nav>
                     </div>
                   </div>
@@ -139,34 +141,28 @@
               </div>
               <div class="dv-row">
                 <div>
-                  <p class="dv-cap">App chat · stance card · dark</p>
+                  <p class="dv-cap">App chat · holding card · dark</p>
                   <div class="chatcard mp t-dark">
                     <div class="fx col gap4" style="padding: 14px 12px">
                       <div class="mp-card" style="padding: 12px">
-                        <div class="chatimg" style="background: #13213A; padding: 14px 14px 10px; color: #fff" role="img" aria-label="Chart image: NASDAQ 100, 90 days, falling 8.4% from its high to just under your 8% alert line, with the PAUSE horizon for the next 2 weeks">
-                          <div class="fx jb ac"><span class="mp-over" style="color: #B7C2D6">NASDAQ 100 · 90 days</span><span class="mp-chip chip-s" style="color: #F6BC4F; background: #33270E">PAUSE 61%</span></div>
+                        <div class="chatimg" style="background: #13213A; padding: 14px 14px 10px; color: #fff" role="img" aria-label="Chart image: NASDAQ 100, 90 days, 8.4% below its September high at Friday's close">
+                          <div class="fx jb ac"><span class="mp-over" style="color: #B7C2D6">NASDAQ 100 · 90 days</span><span class="mp-chip chip-s" style="color: #B7C2D6; background: #1A2944">XIRR 14.2%</span></div>
                           <div class="fx ac gap8" style="margin-top: 4px"><span class="mp-num-l" style="font-family: ui-rounded, 'SF Pro Rounded', 'Nunito', system-ui, sans-serif">£4,210</span><span class="mp-foot" style="color: #B7C2D6">▼ 8.4% from its high</span></div>
                           <svg width="300" height="80" viewBox="0 0 300 80" style="display: block; margin-top: 6px">
-                            <rect x="261" y="1" width="38" height="66" rx="4" fill="rgba(246,188,79,0.12)" stroke="#F6BC4F" stroke-width="1" stroke-dasharray="3 3"></rect>
-                            <text x="280" y="16" fill="#F6BC4F" font-size="10" font-weight="700" text-anchor="middle" font-family="-apple-system, system-ui, sans-serif">PAUSE</text>
-                            <text x="280" y="29" fill="#F6BC4F" font-size="10" font-weight="600" text-anchor="middle" font-family="-apple-system, system-ui, sans-serif">2 wks</text>
-                            <line x1="0" y1="{{ cs.ay }}" x2="260" y2="{{ cs.ay }}" stroke="#B7C2D6" stroke-dasharray="4 4" stroke-width="1"></line>
-                            <text x="2" y="78" fill="#B7C2D6" font-size="10" font-family="-apple-system, system-ui, sans-serif">your 8% alert</text>
                             <path d="{{ cs.line }}" fill="none" stroke="#FF7A5E" stroke-width="2.5" stroke-linejoin="round"></path>
-                            <line x1="{{ cs.lx }}" y1="{{ cs.ly }}" x2="296" y2="{{ cs.ly }}" stroke="#FF7A5E" stroke-width="1.5" stroke-dasharray="2 4"></line>
                             <circle cx="{{ cs.lx }}" cy="{{ cs.ly }}" r="3.5" fill="#FFFFFF" stroke="#FF7A5E" stroke-width="2"></circle>
                           </svg>
                         </div>
-                        <div><b>NASDAQ 100 · PAUSE</b> · confidence 61%</div>
-                        <div style="margin-top: 4px">Keep what you have. Hold this month's top‑up until the trend settles. Not a reason to sell.</div>
-                        <div style="margin-top: 4px"><i>Would change if:</i> a close back above the 20‑day average.</div>
-                        <div class="mp-foot mp-ink2" style="margin-top: 6px; padding: 6px 8px; border-left: 3px solid var(--mp-accent); background: var(--mp-surface-2); border-radius: 6px">Technical ▸ Trend +2 · Momentum −1 · Risk −2 · P(fall &gt; 5%) 14%</div>
+                        <div><b>NASDAQ 100 · £4,210</b> · XIRR 14.2%</div>
+                        <div style="margin-top: 4px">At Friday's close it is 8.4% below its September high. Counting every buy since 2021 on its date, it has returned 14.2% a year.</div>
+                        <div style="margin-top: 4px"><i>Asked at 07:30:</i> how is my NASDAQ fund doing?</div>
+                        <div class="mp-foot mp-ink2" style="margin-top: 6px; padding: 6px 8px; border-left: 3px solid var(--mp-accent); background: var(--mp-surface-2); border-radius: 6px">Technical ▸ 21 dated buys · XIRR 14.2% · CAGR 13.6% · prices Fri 23 Oct close</div>
                         <div class="mp-foot mp-ink3" style="text-align: right; margin-top: 4px">07:31</div>
                       </div>
-                      <div class="fx wrap gap6" style="margin-top: 6px"><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Why?</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">What if?</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Technical ▾</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">I acted</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px" style="grid-column: span 2">Open dashboard</button></div>
+                      <div class="fx wrap gap6" style="margin-top: 6px"><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Show my buys</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Technical ▾</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px" style="grid-column: span 2">Open dashboard</button></div>
                     </div>
                   </div>
-                  <p class="dv-cap" style="margin-top: 10px; max-width: 390px; white-space: normal">In the app's chat, the stance card pairs the chart, the plain-English call and its action chips.</p>
+                  <p class="dv-cap" style="margin-top: 10px; max-width: 390px; white-space: normal">In the app's chat, the holding card pairs the chart, the plain-English answer and its action chips.</p>
                 </div>
                 <div class="dv-why">
                   <p class="dv-cap">Why 1a</p>
@@ -192,19 +188,19 @@
                     <div class="board {{ t.cls }}" data-screen-label="1a Browser Overview {{ t.label }}">
                       <aside class="mp-side" style="background: var(--mp-bg); border-right: 1px solid var(--mp-line)">
                         <div class="fx ac gap10" style="padding: 4px 8px 18px"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                        <a class="mp-side-i on" href="#1a"><span class="ms ms-fill" aria-hidden=\"true\">home</span>Overview</a>
-                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden=\"true\">donut_small</span>Holdings</a>
-                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden=\"true\">join_inner</span>Overlap</a>
-                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden=\"true\">insights</span>Track record</a>
-                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden=\"true\">history</span>Activity</a>
-                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden=\"true\">fact_check</span>Audit</a>
+                        <a class="mp-side-i on" href="#1a"><span class="ms ms-fill" aria-hidden="true">home</span>Overview</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden="true">donut_small</span>Holdings</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden="true">savings</span>Budget</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden="true">trending_up</span>Projection</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden="true">history</span>Activity</a>
+                        <a class="mp-side-i" href="#1a"><span class="ms" aria-hidden="true">fact_check</span>Audit</a>
                         <div style="flex: 1"></div>
                         <div class="mp-foot mp-ink3" style="padding: 0 12px">Signed in with Apple<br />You · owner</div>
                       </aside>
                       <main class="bmain">
                         <div class="fx ac jb">
                           <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink3">Prices to Friday's close · create in the chat, correct in place</div></div>
-                          <div class="fx ac gap8"><div class="mp-seg" style="width: 280px" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div><button class="iconbtn" aria-label="Privacy mode"><span class="ms" aria-hidden=\"true\">visibility</span></button></div>
+                          <div class="fx ac gap8"><div class="mp-seg" style="width: 280px" role="group" aria-label="Whose view"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div><button class="iconbtn" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button></div>
                         </div>
                         <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(300px, 1fr); gap: 20px">
                           <div class="fx col gap16">
@@ -212,7 +208,7 @@
                               <div class="fx jb ac gap12"><span class="mp-over mp-hero-2 nowrap">Household · Fri close</span><div class="mp-seg" style="flex: 0 1 220px; min-width: 0"><button class="mp-seg-i seg-s">1M</button><button class="mp-seg-i seg-s on">6M</button><button class="mp-seg-i seg-s">1Y</button><button class="mp-seg-i seg-s">All</button></div></div>
                               <div class="fx ac gap12" style="margin-top: 6px"><span class="mp-num-hero">£25,800</span><span class="mp-chip upchip">▲ 2.4% month</span></div>
                               <div class="mp-sub mp-hero-2">▲ £612 this month · ▼ 0.6% this week, the pound −0.3% of it</div>
-                              <div class="mp-chartbox" style="height: 150px; margin-top: 14px" role="img" aria-label="Six months of value with three past stances marked">
+                              <div class="mp-chartbox" style="height: 150px; margin-top: 14px" role="img" aria-label="Six months of value with three past events marked">
                                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="height: 150px">
                                   <path d="{{ cb.area }}" fill="var(--mp-hero-area)"></path>
                                   <path d="{{ cb.line }}" fill="none" stroke="var(--mp-coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
@@ -221,7 +217,7 @@
                               </div>
                               <div class="fx jb mp-cap mp-hero-2" style="margin-top: 6px"><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span></div>
                             </div>
-                            <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden=\"true\">check_circle</span><div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next review Saturday. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#1a">Open chat</a></div>
+                            <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><div style="flex: 1"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink3">Next check-in Sun 1 Nov. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#1a">Open chat</a></div>
                           </div>
                           <div class="fx col gap16">
                             <div>
@@ -237,8 +233,8 @@
                               </div>
                             </div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch">
-                              <div class="mp-card"><div class="mp-over mp-ink3">Overlap</div><div class="mp-num-l" style="margin-top: 6px">84%</div><div class="mp-foot mp-ink3">in dollars, looked through</div></div>
-                              <div class="mp-card"><div class="mp-over mp-ink3">Track record</div><div class="mp-num-l" style="margin-top: 6px">20 / 31</div><div class="mp-foot mp-ink3">stances held up, 6 weeks</div></div>
+                              <div class="mp-card"><div class="mp-over mp-ink3">XIRR</div><div class="mp-num-l" style="margin-top: 6px">9.8%</div><div class="mp-foot mp-ink3">all holdings, from the dated ledger</div></div>
+                              <div class="mp-card"><div class="mp-over mp-ink3">Surplus</div><div class="mp-num-l" style="margin-top: 6px">£1,240</div><div class="mp-foot mp-ink3">October, after every plan</div></div>
                             </div>
                           </div>
                         </div>
@@ -270,7 +266,7 @@
                         <div class="mp-group" style="padding: 12px">
                           <svg width="334" height="110" viewBox="0 0 334 110" style="display: block" role="img" aria-label="Six months of value"><path d="{{ cn.area }}" fill="var(--mp-chart-area)"></path><path d="{{ cn.line }}" fill="none" stroke="var(--mp-chart-line)" stroke-width="2" stroke-linejoin="round"></path></svg>
                         </div>
-                        <div class="mp-group"><div class="mp-row"><span class="ms mp-up" aria-hidden=\"true\">check_circle</span><div style="flex: 1" class="mp-body">Nothing to do this week</div><span class="mp-foot mp-ink3">Sat review</span><span class="ms mp-ink3 ms-s" aria-hidden=\"true\">chevron_right</span></div></div>
+                        <div class="mp-group"><div class="mp-row"><span class="ms mp-up" aria-hidden="true">check_circle</span><div style="flex: 1" class="mp-body">Nothing to do this week</div><span class="mp-foot mp-ink3">Check-in Sun</span><span class="ms mp-ink3 ms-s" aria-hidden="true">chevron_right</span></div></div>
                         <div>
                           <div class="mp-section mp-foot mp-ink3 mp-w6">HOLDINGS</div>
                           <div class="mp-group">
@@ -278,18 +274,18 @@
                               <div class="mp-row" style="padding-top: 9px; padding-bottom: 9px">
                                 <div style="flex: 1; min-width: 0"><div class="mp-body clip">{{ h.name }}</div><div class="fx ac gap6 mp-foot mp-ink3"><span class="dot {{ h.dotCls }}"></span><span>{{ h.stText }}</span></div></div>
                                 <div style="text-align: right"><div class="mp-body">{{ h.val }}</div><div class="mp-foot {{ h.chCls }}">{{ h.ch }}</div></div>
-                                <span class="ms mp-ink3 ms-s" aria-hidden=\"true\">chevron_right</span>
+                                <span class="ms mp-ink3 ms-s" aria-hidden="true">chevron_right</span>
                               </div>
                             </sc-for>
                           </div>
                         </div>
                       </div>
                       <nav class="mp-tabbar tabs-abs" aria-label="Sections">
-                        <a class="mp-tab on" href="#1b"><span class="ms ms-fill" aria-hidden=\"true\">home</span>Overview</a>
-                        <a class="mp-tab" href="#1b"><span class="ms" aria-hidden=\"true\">donut_small</span>Holdings</a>
-                        <a class="mp-tab" href="#1b"><span class="ms" aria-hidden=\"true\">join_inner</span>Overlap</a>
-                        <a class="mp-tab" href="#1b"><span class="ms" aria-hidden=\"true\">insights</span>Record</a>
-                        <a class="mp-tab" href="#1b"><span class="ms" aria-hidden=\"true\">menu</span>More</a>
+                        <a class="mp-tab on" href="#1b"><span class="ms ms-fill" aria-hidden="true">home</span>Overview</a>
+                        <a class="mp-tab" href="#1b"><span class="ms" aria-hidden="true">donut_small</span>Holdings</a>
+                        <a class="mp-tab" href="#1b"><span class="ms" aria-hidden="true">savings</span>Budget</a>
+                        <a class="mp-tab" href="#1b"><span class="ms" aria-hidden="true">trending_up</span>Projection</a>
+                        <a class="mp-tab" href="#1b"><span class="ms" aria-hidden="true">menu</span>More</a>
                       </nav>
                     </div>
                   </div>
@@ -302,21 +298,21 @@
                         <div class="mp-card" style="padding: 12px">
                           <div class="chatimg" style="background: #FFFFFF; border: 1px solid #E5E5EA; padding: 14px 14px 10px" role="img" aria-label="Chart image in 1b style">
                             <div class="mp-foot mp-w6" style="color: #636366">NASDAQ 100 · 90 DAYS</div>
-                            <div class="mp-t2" style="color: #000">£4,210 <span class="mp-foot mp-w6" style="color: #8A5300">Pause · 61%</span></div>
+                            <div class="mp-t2" style="color: #000">£4,210 <span class="mp-foot mp-w6" style="color: #636366">XIRR 14.2%</span></div>
                             <svg width="300" height="70" viewBox="0 0 300 70" style="display: block; margin-top: 6px"><path d="{{ cn2.line }}" fill="none" stroke="#0A63D8" stroke-width="2" stroke-linejoin="round"></path></svg>
                           </div>
-                          <div><b>NASDAQ 100 · PAUSE</b> · confidence 61%</div>
-                          <div style="margin-top: 4px">Keep what you have. Hold this month's top‑up until the trend settles. Not a reason to sell.</div>
+                          <div><b>NASDAQ 100 · £4,210</b> · XIRR 14.2%</div>
+                          <div style="margin-top: 4px">At Friday's close it is 8.4% below its September high. Counting every buy since 2021 on its date, it has returned 14.2% a year.</div>
                           <div class="mp-foot mp-ink3" style="text-align: right; margin-top: 4px">07:31</div>
                         </div>
-                        <div class="fx wrap gap6" style="margin-top: 6px"><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Why?</button><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">What if?</button></div>
+                        <div class="fx wrap gap6" style="margin-top: 6px"><button class="mp-btn mp-btn-tinted" style="min-height: 36px; font-size: 13px; padding: 0 12px">Show my buys</button></div>
                       </div>
                     </div>
                   </div>
                   <div class="dv-why">
                     <p class="dv-cap">Why 1b, and why not</p>
                     <span><b>For:</b> the most native, the quickest to build, the calmest. Every colour is Apple's own system colour, darkened only where AA needed it.</span>
-                    <span><b>Against:</b> nothing in it says MyPaisa or Monzo; it reads like a settings screen. Stances become small coloured dots that a layman will miss.</span>
+                    <span><b>Against:</b> nothing in it says MyPaisa or Monzo; it reads like a settings screen. Statuses become small coloured dots that a layman will miss.</span>
                   </div>
                 </div>
               </div>
@@ -326,13 +322,13 @@
                     <p class="dv-cap">Browser · {{ t.label }}</p>
                     <div class="board {{ t.cls }}" data-screen-label="1b Browser Overview {{ t.label }}">
                       <aside class="mp-side" style="background: var(--mp-surface-2)">
-                        <div class="fx ac gap10" style="padding: 4px 8px 18px"><span class="ms ms-fill mp-acc ms-l" aria-hidden=\"true\">account_balance</span><span class="mp-hl">MyPaisa</span></div>
-                        <a class="mp-side-i on" href="#1b"><span class="ms" aria-hidden=\"true\">home</span>Overview</a>
-                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden=\"true\">donut_small</span>Holdings</a>
-                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden=\"true\">join_inner</span>Overlap</a>
-                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden=\"true\">insights</span>Track record</a>
-                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden=\"true\">history</span>Activity</a>
-                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden=\"true\">fact_check</span>Audit</a>
+                        <div class="fx ac gap10" style="padding: 4px 8px 18px"><span class="ms ms-fill mp-acc ms-l" aria-hidden="true">account_balance</span><span class="mp-hl">MyPaisa</span></div>
+                        <a class="mp-side-i on" href="#1b"><span class="ms" aria-hidden="true">home</span>Overview</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden="true">donut_small</span>Holdings</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden="true">savings</span>Budget</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden="true">trending_up</span>Projection</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden="true">history</span>Activity</a>
+                        <a class="mp-side-i" href="#1b"><span class="ms" aria-hidden="true">fact_check</span>Audit</a>
                       </aside>
                       <main class="bmain">
                         <div class="fx ac jb"><div class="mp-large">Overview</div><div class="mp-seg" style="width: 280px"><button class="mp-seg-i on">Household</button><button class="mp-seg-i">Me</button><button class="mp-seg-i">Asha</button></div></div>
@@ -385,11 +381,11 @@
                         </div>
                       </div>
                       <nav class="mp-tabbar tabs-abs" aria-label="Sections">
-                        <a class="mp-tab on" href="#1c"><span class="ms ms-fill" aria-hidden=\"true\">home</span>Overview</a>
-                        <a class="mp-tab" href="#1c"><span class="ms" aria-hidden=\"true\">donut_small</span>Holdings</a>
-                        <a class="mp-tab" href="#1c"><span class="ms" aria-hidden=\"true\">join_inner</span>Overlap</a>
-                        <a class="mp-tab" href="#1c"><span class="ms" aria-hidden=\"true\">insights</span>Record</a>
-                        <a class="mp-tab" href="#1c"><span class="ms" aria-hidden=\"true\">menu</span>More</a>
+                        <a class="mp-tab on" href="#1c"><span class="ms ms-fill" aria-hidden="true">home</span>Overview</a>
+                        <a class="mp-tab" href="#1c"><span class="ms" aria-hidden="true">donut_small</span>Holdings</a>
+                        <a class="mp-tab" href="#1c"><span class="ms" aria-hidden="true">savings</span>Budget</a>
+                        <a class="mp-tab" href="#1c"><span class="ms" aria-hidden="true">trending_up</span>Projection</a>
+                        <a class="mp-tab" href="#1c"><span class="ms" aria-hidden="true">menu</span>More</a>
                       </nav>
                     </div>
                   </div>
@@ -397,7 +393,7 @@
                 <div class="dv-why">
                   <p class="dv-cap">Why 1c, and why not</p>
                   <span><b>For:</b> the most joyful and the most Monzo; a holding is a thing you can see and point at.</span>
-                  <span><b>Against:</b> colour is spent on decoration, so stances and falls compete with it; Overlap, Activity and Audit (dense pages) have nowhere to go; the closest to Monzo's own look, which MyPaisa must not copy.</span>
+                  <span><b>Against:</b> colour is spent on decoration, so statuses and falls compete with it; Budget, Activity and Audit (dense pages) have nowhere to go; the closest to Monzo's own look, which MyPaisa must not copy.</span>
                 </div>
               </div>
               <div class="dv-row">
@@ -407,12 +403,12 @@
                     <div class="board {{ t.cls }}" data-screen-label="1c Browser Overview {{ t.label }}">
                       <aside class="mp-side" style="background: var(--mp-bg); border-right: 1px solid var(--mp-line)">
                         <div class="fx ac gap10" style="padding: 4px 8px 18px"><div class="coin" style="background: var(--blk); color: var(--blk-ink)">£</div><span class="mp-hl">MyPaisa</span></div>
-                        <a class="mp-side-i on" href="#1c"><span class="ms ms-fill" aria-hidden=\"true\">home</span>Overview</a>
-                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden=\"true\">donut_small</span>Holdings</a>
-                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden=\"true\">join_inner</span>Overlap</a>
-                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden=\"true\">insights</span>Track record</a>
-                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden=\"true\">history</span>Activity</a>
-                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden=\"true\">fact_check</span>Audit</a>
+                        <a class="mp-side-i on" href="#1c"><span class="ms ms-fill" aria-hidden="true">home</span>Overview</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden="true">donut_small</span>Holdings</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden="true">savings</span>Budget</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden="true">trending_up</span>Projection</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden="true">history</span>Activity</a>
+                        <a class="mp-side-i" href="#1c"><span class="ms" aria-hidden="true">fact_check</span>Audit</a>
                       </aside>
                       <main class="bmain">
                         <div class="blk" style="margin: -24px -28px 0; border-radius: 0 0 30px 30px; padding: 24px 28px"><div class="mp-over">Household · Fri close</div><div class="fx ac gap16"><span class="mp-num-hero" style="font-size: 56px; line-height: 62px">£25,800</span><span class="mp-hl">▲ £612 this month</span></div></div>
@@ -442,7 +438,7 @@
             const line = 'M' + pts.map((p) => p.join(',')).join(' L');
             return { line: line, area: line + ' L' + w + ',' + h + ' L0,' + h + ' Z', marks: (marks || []).map((i) => ({ cx: pts[i][0], cy: pts[i][1], x: pts[i][0] + '%', y: pts[i][1] + '%' })) };
           };
-          // NASDAQ 100: 14 Friday closes, 31 Jul to 30 Oct; high 4596 on 25 Sep; the 8% alert is 0.92 x high
+          // NASDAQ 100: 14 Friday closes, 31 Jul to 30 Oct; high 4596 on 25 Sep
           const nq = [4280, 4330, 4310, 4380, 4420, 4450, 4493, 4540, 4596, 4530, 4470, 4410, 4345, 4210];
           const nqChart = (w, h, lo, hi, xmax) => {
             const y = (v) => (6 + ((hi - v) / (hi - lo)) * (h - 12)).toFixed(1);
@@ -451,10 +447,10 @@
             return { line: 'M' + pts.map((p) => p.join(',')).join(' L'), ay: y(0.92 * 4596), lx: last[0], ly: last[1] };
           };
           const base = [
-            { lead: 'BA', name: 'Balanced', sub: 'MyMap · ISA', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up', st: 'HOLD', conf: '71%', stCls: 'mp-hold', dotCls: 'dot-hold', stText: 'Hold · 71%', hasSt: true, pot: 'var(--pot-1)' },
-            { lead: 'NQ', name: 'NASDAQ 100', sub: 'iShares · ISA', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq', st: 'PAUSE', conf: '61%', stCls: 'mp-pause', dotCls: 'dot-pause', stText: 'Pause · 61%', hasSt: true, pot: 'var(--pot-2)' },
-            { lead: 'RB', name: 'Automation & Robotics', sub: 'iShares · ISA', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up', st: 'ADD', conf: '58%', stCls: 'mp-add', dotCls: 'dot-add', stText: 'Add · 58%', hasSt: true, pot: 'var(--pot-3)' },
-            { lead: 'AG', name: 'Physical Silver', sub: 'iShares · GIA', val: '£820', ch: '▼ 6.2%', chCls: 'mp-dq', st: 'PAUSE', conf: '58%', stCls: 'mp-pause', dotCls: 'dot-pause', stText: 'Pause · 58%', hasSt: true, pot: 'var(--pot-4)' },
+            { lead: 'BA', name: 'Balanced', sub: 'MyMap · ISA', val: '£18,640', ch: '▲ 0.4%', chCls: 'mp-up', st: 'XIRR', conf: '8.4%', stCls: 'mp-neutral', dotCls: 'dot-none', stText: 'XIRR 8.4%', hasSt: true, pot: 'var(--pot-1)' },
+            { lead: 'NQ', name: 'NASDAQ 100', sub: 'iShares · ISA', val: '£4,210', ch: '▼ 3.1%', chCls: 'mp-dq', st: 'XIRR', conf: '14.2%', stCls: 'mp-neutral', dotCls: 'dot-none', stText: 'XIRR 14.2%', hasSt: true, pot: 'var(--pot-2)' },
+            { lead: 'RB', name: 'Automation & Robotics', sub: 'iShares · ISA', val: '£1,730', ch: '▲ 0.2%', chCls: 'mp-up', st: 'XIRR', conf: '6.1%', stCls: 'mp-neutral', dotCls: 'dot-none', stText: 'XIRR 6.1%', hasSt: true, pot: 'var(--pot-3)' },
+            { lead: 'AG', name: 'Physical Silver', sub: 'iShares · GIA', val: '£820', ch: '▼ 6.2%', chCls: 'mp-dq', st: 'XIRR', conf: '3.2%', stCls: 'mp-neutral', dotCls: 'dot-none', stText: 'XIRR 3.2%', hasSt: true, pot: 'var(--pot-4)' },
             { lead: '£', name: 'Cash pot', sub: 'Easy access', val: '£400', ch: '—', chCls: 'mp-ink3', st: '', conf: '', stCls: '', dotCls: 'dot-none', stText: 'Easy access', hasSt: false, pot: 'var(--pot-5)' }
           ];
           const hold = (priv) => base.map((h) => Object.assign({}, h, { val: priv ? '£0,000' : h.val, vcls: priv ? 'mp-mask' : '' }));
@@ -464,7 +460,7 @@
             cb: mk(series, 100, 100, 8, [3, 7, 10]),
             cn: mk(series, 334, 110, 8),
             cnb: mk(series, 452, 200, 10),
-            cs: nqChart(300, 74, 4150, 4640, 15),
+            cs: nqChart(300, 74, 4150, 4640, 13),
             cn2: nqChart(300, 70, 4150, 4640, 13),
             t1a: [
               { label: 'Light', cls: 'mp t-light', hs: hold(false), total: '£25,800', maskCls: '', month: '▲ £612 this month · ▼ 0.6% this week', eye: 'visibility' },

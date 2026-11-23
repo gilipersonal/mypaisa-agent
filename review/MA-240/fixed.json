@@ -6,7 +6,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --only \"Web v4\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r0-2",
@@ -15,7 +16,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --only \"iPhone v4 · Check-ins\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r0-3",
@@ -25,7 +27,8 @@
    "type": "cmd",
    "run": "python3 scripts/contrast_check.py && node scripts/board_fit.js --only \"iPhone v4 · Audit, activity and files\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r0-4",
@@ -34,7 +37,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --only \"Prototype v4\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r0-5",
@@ -43,7 +47,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest && python3 scripts/contrast_check.py --selftest"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r0-6",
@@ -51,9 +56,10 @@
   "finding": "Every guard leaves every board as drawn: at the drawn sizes the only changes are the ones review/MA-240/drawn-changes.json names, each a fix (round 1 found this false, and made it a command)",
   "check": {
    "type": "cmd",
-   "run": "node scripts/board_fit.js --diff d6e243f --since 8e4b675 --expect review/MA-240/drawn-changes.json"
+   "run": "out=$(node scripts/board_fit.js --diff d6e243f --since 8e4b675 --expect review/MA-240/drawn-changes.json 2>&1); rc=$?; [ $rc -eq 0 ] || { [ $rc -eq 2 ] && printf '%s' \"$out\" | grep -q 'leaves no board to compare' && ! printf '%s' \"$out\" | grep -q '^FAIL'; }"
   },
-  "amended": "MA-282, 29 Oct 2026: the diff against d6e243f failed once MA-261, MA-264 and MA-281 redrew boards on purpose (the Prototype's later steps, both Projection boards); --since 8e4b675 (MA-240's merge) now leaves out, by name, each board whose own file, or a file it alone loads, changed after MA-240, and compares every other board through the shared files where the guards are, against the same d6e243f and the same expectations"
+  "amended": "MA-282, 29 Oct 2026: the diff against d6e243f failed once MA-261, MA-264 and MA-281 redrew boards on purpose (the Prototype's later steps, both Projection boards); --since 8e4b675 (MA-240's merge) now leaves out, by name, each board whose own file, or a file it alone loads, changed after MA-240, and compares every other board through the shared files where the guards are, against the same d6e243f and the same expectations Amended by MA-300 (2 Nov 2026): every board MA-240 drew has since been redrawn by a later story (MA-279, MA-300), so --since 8e4b675 can leave no board to compare (board_fit exits 2 on purpose). That is a pass only with no FAIL line: each redrawn board is answered by its own story's diff, and MA-300's diff against main compares every board through the shared files (review/MA-300/drawn-changes.json, lesson 40).",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-1",
@@ -67,7 +73,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --engine chromium --only \"iPhone v4 · (Home|Assets and debts)|Forecast\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-2",
@@ -82,7 +89,8 @@
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case chip-cut-with-no-ellipsis && node scripts/board_fit.js --engine chromium --only \"Web v4 · Assets and debts|iPhone v4 · Home\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-3",
@@ -95,9 +103,10 @@
   "finding": "Guards moved drawn frames: every phone-door hero shrank to 36, the phone chat drawer narrowed to 300, the kit's toast specimens wrapped, two-column key-value grids fell to one and their pencils were orphaned, a button row's hint dropped under its button, the prototype's date card and a suggestion wrapped",
   "check": {
    "type": "cmd",
-   "run": "node scripts/board_fit.js --diff d6e243f --since 8e4b675 --expect review/MA-240/drawn-changes.json"
+   "run": "out=$(node scripts/board_fit.js --diff d6e243f --since 8e4b675 --expect review/MA-240/drawn-changes.json 2>&1); rc=$?; [ $rc -eq 0 ] || { [ $rc -eq 2 ] && printf '%s' \"$out\" | grep -q 'leaves no board to compare' && ! printf '%s' \"$out\" | grep -q '^FAIL'; }"
   },
-  "amended": "MA-282, 29 Oct 2026: the diff against d6e243f failed once MA-261, MA-264 and MA-281 redrew boards on purpose (the Prototype's later steps, both Projection boards); --since 8e4b675 (MA-240's merge) now leaves out, by name, each board whose own file, or a file it alone loads, changed after MA-240, and compares every other board through the shared files where the guards are, against the same d6e243f and the same expectations"
+  "amended": "MA-282, 29 Oct 2026: the diff against d6e243f failed once MA-261, MA-264 and MA-281 redrew boards on purpose (the Prototype's later steps, both Projection boards); --since 8e4b675 (MA-240's merge) now leaves out, by name, each board whose own file, or a file it alone loads, changed after MA-240, and compares every other board through the shared files where the guards are, against the same d6e243f and the same expectations Amended by MA-300 (2 Nov 2026): every board MA-240 drew has since been redrawn by a later story (MA-279, MA-300), so --since 8e4b675 can leave no board to compare (board_fit exits 2 on purpose). That is a pass only with no FAIL line: each redrawn board is answered by its own story's diff, and MA-300's diff against main compares every board through the shared files (review/MA-300/drawn-changes.json, lesson 40).",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-4",
@@ -111,7 +120,8 @@
    "type": "cmd",
    "run": "node scripts/board_fit.js --only \"iPhone v4 · (Sign-in and invite|Market, holdings and India|Budget|Assets and debts|Audit, activity and files)|Web v4 · (Assets and debts|Check-ins)\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-5",
@@ -125,7 +135,8 @@
    "type": "cmd",
    "run": "node scripts/board_fit.js --only \"iPad v4|Web v4 · (Projection|Budget|Admin center|Audit, activity and files|Forecast)\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-6",
@@ -138,7 +149,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case board-does-not-render && node scripts/board_fit.js --selftest --case value-never-resolved"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-7",
@@ -150,7 +162,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case overlap-in-a-sheet"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-8",
@@ -162,7 +175,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case viewer-side-by-side-at-600 && node -e \"const s=require('./scripts/board_fit.js').sizes; const w=s(1280,800,false).map((x)=>x[0]), t=s(820,1180,true).map((x)=>x.join('x')); if (![600,768,820,900,1024].every((x)=>w.includes(x)) || !t.includes('1024x1366') || !t.includes('600x863')) process.exit(1)\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-9",
@@ -174,7 +188,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case figure-cut-by-ellipsis"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-10",
@@ -199,7 +214,8 @@
    "type": "cmd",
    "run": "python3 -c \"import json; a=[x for x in json.load(open('scripts/board_fit_allow.json'))['allow'] if 'Foldable' in x.get('frames', '')]; assert not a or all('MA-163' in x['why'] and 'MA-242' not in x['why'] for x in a)\" && node scripts/board_fit.js --engine chromium --only \"iPad v4 · Adaptive\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-12",
@@ -213,7 +229,8 @@
    "file": "docs/design/ds-v1/Foundations.dc.html",
    "pattern": "#CDCFD4|#454E5C",
    "present": false
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-13",
@@ -250,7 +267,8 @@
    "type": "cmd",
    "run": "node -e \"const a=require('./scripts/board_fit.js').allowed; if (a({board:'ios-v1/iPhone v4 · Home.dc.html',type:'clip-x',text:'₹1,19,79,306',size:'320x568',label:'iPhone · swiped to India · light',el:'span > span'}) || a({board:'ios-v1/iPhone v4 · You and settings.dc.html',type:'clip-x',text:'MyPaisa',size:'320x568',label:'iPhone · Settings',el:'div.row > span'})) process.exit(1)\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r1-16",
@@ -262,7 +280,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --only \"Kind icons\" && python3 -c \"import re; d=open('docs/design/reviews/MA-241/decision.md').read(); b=open('docs/design/ds-v1/Kind icons.dc.html').read(); assert re.search(r'same colour in its row as in the asset-class mix', d) and 'liquidity bar' in d; assert not re.search(r'thinnest glyph margin', d + b); assert 'fixed 36 pt lead at every size class' in b\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-1",
@@ -277,7 +296,8 @@
    "type": "cmd",
    "run": "node scripts/board_fit.js --only \"iPhone v4 · Sign-in and invite\" && D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#\\Q.mp .sysalert { width: min(300px, calc(100% - 76px)); margin-left: max(-150px, calc(20px - 50%)); }\\E#.mp .sysalert { width: min(300px, calc(100% - 40px)); margin-left: calc(min(300px, calc(100% - 40px)) / -2); }#g or die \"the mutation does not apply\\n\"' \"$D/docs/design/ios-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only 'iPhone v4 · Sign-in and invite' --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(/^(cut-at-edge|clip-x)$/.test(x.type)&&/Wants to Use|Would Like to Send/.test(x.text)&&/^320x/.test(x.size)));if(!r.length){console.log(\"the gate passed round 1'\"'\"'s alert rule at 320\");process.exit(1)}' \"$D/rows.json\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-2",
@@ -291,7 +311,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case alert-past-a-zoomed-screen && node scripts/board_fit.js --selftest --case alert-past-a-zoomed-screen --engine webkit"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-3",
@@ -305,7 +326,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case band-not-the-token && python3 scripts/contrast_check.py --selftest band-hides-line band-vanishes && node scripts/board_fit.js --engine chromium --only \"Projection\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-4",
@@ -319,7 +341,8 @@
    "type": "cmd",
    "run": "node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'ios-v1/iPad v4 · Adaptive shell and foldable.dc.html' . 1180 'const out = []; let n = 0; for (const m of f.querySelectorAll('\"'\"'.meter'\"'\"')) { if (!m.querySelector('\"'\"':scope > .mp-track'\"'\"')) continue; n++; const s = getComputedStyle(m); if (s.backgroundColor !== '\"'\"'rgba(0, 0, 0, 0)'\"'\"' || s.backgroundImage !== '\"'\"'none'\"'\"' || s.boxShadow !== '\"'\"'none'\"'\"') out.push('\"'\"'the meter frame around a track is painted: '\"'\"' + s.backgroundColor + '\"'\"' '\"'\"' + s.boxShadow); } return n ? out : null;'"
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-5",
@@ -331,7 +354,8 @@
   "check": {
    "type": "cmd",
    "run": "node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'ios-v1/iPad v4 · Budget, assets and debts.dc.html' 'An asset' 1180,1366 'const out = []; let n = 0; for (const e of f.querySelectorAll('\"'\"'.kvg .mp-hl:is(.mp-up, .mp-down, .mp-dq)'\"'\"')) { const r = e.getBoundingClientRect(); if (r.width < 1) continue; n++; const cs = getComputedStyle(e); const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3; if (r.height > 1.5 * lh) out.push('\"'\"'the signed figure \"'\"'\"' + e.textContent.trim() + '\"'\"'\" wraps: '\"'\"' + Math.round(r.height) + '\"'\"' px tall, a line is '\"'\"' + Math.round(lh)); } return n ? out : null;'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-6",
@@ -345,7 +369,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case diff-sees-a-hairline-go && node scripts/board_fit.js --selftest --case diff-sees-one-glyph && node scripts/board_fit.js --selftest --case diff-sees-a-2px-move --engine webkit"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-7",
@@ -358,7 +383,8 @@
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case sheet-siblings-overlap && node scripts/board_fit.js --selftest --case strip-figure-on-label && node scripts/board_fit.js --only \"iPhone v4 · Audit, activity and files\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-8",
@@ -370,7 +396,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case page-chips-on-the-legend"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-9",
@@ -382,7 +409,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case frameless-page-throws"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-10",
@@ -394,7 +422,8 @@
   "check": {
    "type": "cmd",
    "run": "D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#(if \\(allowed\\(r\\)\\) \\{ r\\.allowed = true; continue; \\})#$1 if (r.type === \"figure-truncated\") continue;# or die \"the mutation does not apply\\n\"' \"$D/scripts/board_fit.js\" && cd \"$D\" && { node scripts/board_fit.js --selftest --case figure-cut-by-ellipsis > \"$D/out.txt\" 2>&1; test $? -ne 0; } && grep -q \"^ok   selftest baseline\" \"$D/out.txt\" && grep -q \"^FAIL selftest figure-cut-by-ellipsis\" \"$D/out.txt\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-11",
@@ -407,7 +436,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case stage-manager-tabs-at-600"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-12",
@@ -420,7 +450,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --selftest --case crushed-below-the-fold"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-13",
@@ -432,7 +463,8 @@
   "check": {
    "type": "cmd",
    "run": "D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#\\z#\\n\\@container app (min-width: 1101px) and (max-width: 1109px) { .mp .mp-num-hero { display: block; width: 24px; overflow: hidden; white-space: nowrap; } }\\n# or die \"the mutation does not apply\\n\"' \"$D/docs/design/app-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only 'Web v4 · Budget' --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(x.type===\"clip-x\"&&/mp-num-hero/.test(x.el)&&![320,390,440,540,600,768,820,900,1024,1280,1440,1920,375,402,430].includes(parseInt(x.size))));if(!r.length){console.log(\"the gate passed a fault that shows only between two sampled widths\");process.exit(1)}' \"$D/rows.json\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-14",
@@ -444,7 +476,8 @@
   "check": {
    "type": "cmd",
    "run": "node -e 'const s=require(\"./scripts/board_fit.js\").sizes(1280,800,false).map((x)=>x[0]); if (![320,390,440,540].every((w)=>s.includes(w))) process.exit(1)' && python3 -I -c 'import json, re\na = [x for x in json.load(open(\"scripts/board_fit_allow.json\"))[\"allow\"] if x.get(\"below\") == 600]\nt = {i[\"key\"]: i for i in json.load(open(\"docs/trace.json\"))[\"items\"]}\ns = \"The web page at a phone'\"'\"'s width\"\nbad = [k for x in a for k in re.findall(r\"MA-\\d+\", x[\"why\"]) if k not in t or not (any(u.startswith(s) for u in t[k].get(\"undrawn\") or []) or \"Drawn: \" + s in t[k].get(\"notes\", \"\"))]\nassert not bad, \"allowed below 600, but the page at a phone'\"'\"'s width is neither undrawn nor drawn on \" + \", \".join(bad)' && D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#\\z#\\n\\@container app (max-width: 339px) { .mp .mp-shell-main .mp-num-hero { display: block; width: 24px; overflow: hidden; white-space: nowrap; } }\\n# or die \"the mutation does not apply\\n\"' \"$D/docs/design/app-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only 'Web v4 · Budget' --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(x.type===\"clip-x\"&&/mp-num-hero/.test(x.el)&&/^320x/.test(x.size)&&!/phone/i.test(x.label)));if(!r.length){console.log(\"the gate did not measure a desktop frame on its page at 320\");process.exit(1)}' \"$D/rows.json\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-15",
@@ -458,7 +491,8 @@
    "type": "cmd",
    "run": "node -e 'const s=require(\"./scripts/board_fit.js\").sizes(1180,820,true).map((x)=>x.join(\"x\")); if (![\"960x744\",\"1024x1366\",\"1032x1376\",\"1080x810\",\"1100x744\"].every((w)=>s.includes(w))) process.exit(1)' && node scripts/board_fit.js --only \"iPad v4\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-16",
@@ -470,7 +504,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --only \"iPad v4\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-17",
@@ -482,7 +517,8 @@
   "check": {
    "type": "cmd",
    "run": "node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'ios-v1/iPhone v4 · Home.dc.html' . 320 'const out = []; let n = 0; const fw = f.getBoundingClientRect().width; for (const t of f.querySelectorAll('\"'\"'.toast, .mp-toast'\"'\"')) { const cs = getComputedStyle(t), r = t.getBoundingClientRect(); if (r.width < 1 || cs.display === '\"'\"'none'\"'\"' || cs.visibility === '\"'\"'hidden'\"'\"') continue; n++; const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3, inner = r.height - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom); if (inner > 1.6 * lh && r.width < 0.6 * fw) out.push('\"'\"'a toast squeezed to '\"'\"' + Math.round(r.width) + '\"'\"' of '\"'\"' + Math.round(fw) + '\"'\"' over '\"'\"' + Math.round(inner / lh) + '\"'\"' lines: '\"'\"' + t.textContent.trim().slice(0, 40)); } return n ? out : null;'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-18",
@@ -495,7 +531,8 @@
    "type": "cmd",
    "run": "node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'app-v1/Web v4 · Forecast.dc.html' 'Holding · Forecast' 768,820,1024,1100,1180 'const out = []; let n = 0; for (const t of f.querySelectorAll('\"'\"'.evt'\"'\"')) { const tb = t.getBoundingClientRect(); if (tb.width < 1) continue; const L = tb.left + t.clientLeft, R = L + t.clientWidth; for (const row of t.querySelectorAll('\"'\"':scope > .tr'\"'\"')) { const c = row.lastElementChild; if (!c) continue; const r = c.getBoundingClientRect(); if (r.width < 1) continue; n++; if (r.right > R + 1 || r.left < L - 1) out.push('\"'\"'the last column ('\"'\"' + c.textContent.trim().slice(0, 20) + '\"'\"') is '\"'\"' + Math.round(Math.max(r.right - R, L - r.left)) + '\"'\"' px out of view'\"'\"'); } } return n ? out : null;'"
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-19",
@@ -508,7 +545,8 @@
    "type": "cmd",
    "run": "node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'app-v1/Web v4 · Forecast.dc.html' 'Forecaster · Proof' 768,900,1024,1060 'const out = []; let n = 0; for (const s of f.querySelectorAll('\"'\"'.shover > div'\"'\"')) { const nr = s.getBoundingClientRect(); if (nr.width < 1 || getComputedStyle(s).visibility === '\"'\"'hidden'\"'\"') continue; n++; const box = s.closest('\"'\"'.mp-card'\"'\"') || s.parentElement.parentElement; for (const e of box.querySelectorAll('\"'\"'*'\"'\"')) { if (s.contains(e)) continue; const own = [...e.childNodes].filter((x) => x.nodeType === 3).map((x) => x.textContent).join('\"'\"''\"'\"').trim(); if (!/^[−-]?\\d+(\\.\\d+)?%$/.test(own)) continue; const r = e.getBoundingClientRect(); const w = Math.min(r.right, nr.right) - Math.max(r.left, nr.left), h = Math.min(r.bottom, nr.bottom) - Math.max(r.top, nr.top); if (w > 0.5 && h > 0.5) out.push('\"'\"'the note covers the axis label '\"'\"' + own + '\"'\"' by '\"'\"' + w.toFixed(1) + '\"'\"' px'\"'\"'); } } return n ? out : null;'"
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-20",
@@ -520,7 +558,8 @@
   "check": {
    "type": "cmd",
    "run": "node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'app-v1/Web v4 · Projection.dc.html' . 1024,1100,1140 'if (!f.querySelector('\"'\"'.sct'\"'\"')) return null; const out = [], labs = [...f.querySelectorAll('\"'\"'*'\"'\"')].filter((e) => [...e.childNodes].some((x) => x.nodeType === 3 && /retires/.test(x.textContent))); for (const s of f.querySelectorAll('\"'\"'.sct'\"'\"')) { const cs = getComputedStyle(s), sr = s.getBoundingClientRect(); if (cs.display === '\"'\"'none'\"'\"' || cs.visibility === '\"'\"'hidden'\"'\"' || sr.width < 1) continue; for (const e of labs) { if (s.contains(e) || e.contains(s)) continue; const r = e.getBoundingClientRect(); if (r.width < 1) continue; const w = Math.min(r.right, sr.right) - Math.max(r.left, sr.left), h = Math.min(r.bottom, sr.bottom) - Math.max(r.top, sr.top); if (w > 1 && h > 1) out.push('\"'\"'the call-out covers '\"'\"' + e.textContent.trim().slice(0, 30) + '\"'\"' ('\"'\"' + Math.round(w) + '\"'\"'x'\"'\"' + Math.round(h) + '\"'\"')'\"'\"'); } } return out;'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-21",
@@ -532,7 +571,8 @@
   "check": {
    "type": "cmd",
    "run": "node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'app-v1/Web v4 · Assets and debts.dc.html' 'A deposit' 1360,1366,1400,1439,1440 'const out = []; let n = 0; for (const b of f.querySelectorAll('\"'\"'.kvg .edbtn'\"'\"')) { const br = b.getBoundingClientRect(); if (br.width < 1) continue; let c = b; while (c.parentElement && !c.parentElement.classList.contains('\"'\"'kvg'\"'\"')) c = c.parentElement; const cr = c.getBoundingClientRect(); n++; if (br.right > cr.right + 0.5) out.push('\"'\"'the pencil runs '\"'\"' + (br.right - cr.right).toFixed(1) + '\"'\"' px past its cell'\"'\"'); } return n ? out : null;'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-22",
@@ -545,7 +585,8 @@
    "type": "cmd",
    "run": "node scripts/board_fit.js --engine chromium --only \"Web v4 · Audit, activity and files\" && D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#\\Qapp (max-width: 779px) {\\E#app (max-width: 719px) {#g or die \"the mutation does not apply\\n\"' \"$D/docs/design/app-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only 'Web v4 · Audit, activity and files' --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(x.type===\"overlap\"&&/zoom_in/.test(x.text)&&/^7[2-7]\\dx/.test(x.size)));if(!r.length){console.log(\"the gate passed the viewer side by side at 720\");process.exit(1)}' \"$D/rows.json\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-23",
@@ -558,7 +599,8 @@
    "type": "cmd",
    "run": "node scripts/board_fit.js --engine chromium --only \"Forecast\" && D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#\\Q.mp .wks { grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); }\\E#.mp .wks { grid-template-columns: repeat(8, 14px); }#g or die \"the mutation does not apply\\n\"' \"$D/docs/design/app-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only Forecast --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(x.type===\"overlap\"&&/✓ W\\d/.test(x.text)&&/^600x/.test(x.size)));if(!r.length){console.log(\"the gate passed the week chips run together at 600\");process.exit(1)}' \"$D/rows.json\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and the first-generation boards were replaced by the consolidated v4 set; the mutation here now bites on the new Forecast board (the kit's own eight columns already fit, so the week chips are forced to 14 px columns and the gate must see ✓ W1 on ✓ W2 at 600), and the gate still refuses it for the same reason."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and the first-generation boards were replaced by the consolidated v4 set; the mutation here now bites on the new Forecast board (the kit's own eight columns already fit, so the week chips are forced to 14 px columns and the gate must see ✓ W1 on ✓ W2 at 600), and the gate still refuses it for the same reason.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-24",
@@ -570,7 +612,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --engine chromium --only \"Web v4 · Assets and debts\" && node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'app-v1/Web v4 · Assets and debts.dc.html' phone 320,340,359 'const out = []; let n = 0; for (const e of f.querySelectorAll('\"'\"'.tb4 > .td4.r > span'\"'\"')) { const r = e.getBoundingClientRect(); if (r.width < 1 || !/\\d/.test(e.textContent)) continue; n++; const cs = getComputedStyle(e); const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3; if (r.height > 1.5 * lh) out.push('\"'\"'the figure \"'\"'\"' + e.textContent.trim() + '\"'\"'\" breaks from its sign: '\"'\"' + Math.round(r.height) + '\"'\"' px tall'\"'\"'); } return n ? out : null;' && D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#^  \\Q.mp .tb4:has(> .th4:nth-child(4)):not(:has(> .th4:nth-child(5))) { grid-template-columns: minmax(max-content, 1fr) repeat(3, max-content) !important; }\\E\\n##mg or die \"the mutation does not apply\\n\"' \"$D/docs/design/app-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only 'Web v4 · Assets and debts' --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(x.type===\"overlap\"&&/Household/.test(x.text)&&/£246,743/.test(x.text)&&/^320x/.test(x.size)));if(!r.length){console.log(\"the gate passed Household on \\u00a3246,743 at 320\");process.exit(1)}' \"$D/rows.json\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-25",
@@ -583,7 +626,8 @@
   "check": {
    "type": "cmd",
    "run": "node -e 'const [board, lab, ws, pred] = process.argv.slice(-4); const http = require('\"'\"'http'\"'\"'), fs = require('\"'\"'fs'\"'\"'), path = require('\"'\"'path'\"'\"'); const pw = require(path.resolve('\"'\"'scripts/node_modules/playwright-core'\"'\"')); const root = path.resolve('\"'\"'docs/design'\"'\"') + path.sep; const T = { '\"'\"'.html'\"'\"': '\"'\"'text/html'\"'\"', '\"'\"'.css'\"'\"': '\"'\"'text/css'\"'\"', '\"'\"'.js'\"'\"': '\"'\"'text/javascript'\"'\"', '\"'\"'.json'\"'\"': '\"'\"'application/json'\"'\"', '\"'\"'.svg'\"'\"': '\"'\"'image/svg+xml'\"'\"', '\"'\"'.woff2'\"'\"': '\"'\"'font/woff2'\"'\"', '\"'\"'.png'\"'\"': '\"'\"'image/png'\"'\"' }; const srv = http.createServer((q, s) => { const f = path.join(root, decodeURIComponent(q.url.split('\"'\"'?'\"'\"')[0]).replace(/^\\/+/, '\"'\"''\"'\"')); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { s.writeHead(404); return s.end(); } s.writeHead(200, { '\"'\"'content-type'\"'\"': T[path.extname(f)] || '\"'\"'application/octet-stream'\"'\"' }); fs.createReadStream(f).pipe(s); }); srv.listen(0, '\"'\"'127.0.0.1'\"'\"', async () => { let bad = ['\"'\"'the probe did not run'\"'\"']; const b = await pw.chromium.launch(); try { const p = await (await b.newContext({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: 2 })).newPage(); await p.goto(`http://127.0.0.1:${srv.address().port}/` + board.split('\"'\"'/'\"'\"').map(encodeURIComponent).join('\"'\"'/'\"'\"') + '\"'\"'?static=1'\"'\"', { waitUntil: '\"'\"'networkidle'\"'\"', timeout: 60000 }); let last = -1; for (let n = 0; n < 24; n++) { await p.waitForTimeout(500); const h = await p.evaluate(() => /\\{\\{[^}]*\\}\\}/.test(document.body.innerText) ? -2 : document.documentElement.scrollHeight); if (h > 0 && h === last) break; last = h; } await p.evaluate(() => document.fonts.ready); await p.addScriptTag({ path: '\"'\"'scripts/board_fit_page.js'\"'\"' }); await p.addStyleTag({ content: '\"'\"'[data-fit-view=\"page\"] :is(.chat4, .chatcol) { display: none !important; }'\"'\"' }); bad = await p.evaluate(async ([lab, ws, pred]) => { const out = []; const F = window.__fit.frames(true).filter((f) => new RegExp(lab).test(window.__fit.label(f))); if (!F.length) return ['\"'\"'no frame matches '\"'\"' + lab]; const test = new Function('\"'\"'f'\"'\"', '\"'\"'W'\"'\"', pred); let seen = 0; for (const W of ws.split('\"'\"','\"'\"').map(Number)) { for (const f of F) { for (const [k, v] of [['\"'\"'width'\"'\"', W + '\"'\"'px'\"'\"'], ['\"'\"'max-width'\"'\"', '\"'\"'none'\"'\"'], ['\"'\"'min-width'\"'\"', '\"'\"'0'\"'\"']]) f.style.setProperty(k, v, '\"'\"'important'\"'\"'); if (W < 1024 && f.querySelector('\"'\"'.mp-shell:not(.sh-c) .mp-shell-main'\"'\"')) f.setAttribute('\"'\"'data-fit-view'\"'\"', '\"'\"'page'\"'\"'); else f.removeAttribute('\"'\"'data-fit-view'\"'\"'); } await new Promise((r) => setTimeout(r, 400)); for (const f of F) { const r = test(f, W); if (r === null) continue; seen++; for (const x of r) out.push(W + '\"'\"' '\"'\"' + window.__fit.label(f) + '\"'\"': '\"'\"' + x); } } if (!seen) out.push('\"'\"'nothing to measure in '\"'\"' + lab); return out; }, [lab, ws, pred]); } catch (e) { bad = ['\"'\"'the probe failed: '\"'\"' + String(e).split('\"'\"'\\n'\"'\"')[0]]; } finally { await b.close(); srv.close(); } console.log(bad.length ? bad.slice(0, 10).join('\"'\"'\\n'\"'\"') : '\"'\"'probe: ok'\"'\"'); process.exit(bad.length ? 1 : 0); });' 'app-v1/Web v4 · Dashboard.dc.html' editing 320,340,359 'const out = []; let n = 0; for (const ed of f.querySelectorAll('\"'\"'.edit'\"'\"')) { if (ed.getBoundingClientRect().width < 1 || !ed.querySelector('\"'\"'.efield'\"'\"')) continue; n++; for (const e of ed.querySelectorAll('\"'\"'*'\"'\"')) { const own = [...e.childNodes].filter((x) => x.nodeType === 3).map((x) => x.textContent).join('\"'\"''\"'\"').trim(); if (own.length < 12) continue; const cs = getComputedStyle(e); if (cs.display === '\"'\"'inline'\"'\"') continue; const rg = document.createRange(); rg.selectNodeContents(e); const lines = new Set([...rg.getClientRects()].map((r) => Math.round(r.top))).size; if (e.scrollWidth > e.clientWidth + 2 && cs.overflowX === '\"'\"'visible'\"'\"') out.push('\"'\"'\"'\"'\"' + own.slice(0, 30) + '\"'\"'\" runs '\"'\"' + (e.scrollWidth - e.clientWidth) + '\"'\"' px past its '\"'\"' + e.clientWidth + '\"'\"' px'\"'\"'); if (lines >= 4 && own.length / lines < 9) out.push('\"'\"'\"'\"'\"' + own.slice(0, 30) + '\"'\"'\" crushed to '\"'\"' + lines + '\"'\"' lines in '\"'\"' + e.clientWidth + '\"'\"' px'\"'\"'); } } return n ? out : null;'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-26",
@@ -595,7 +639,8 @@
   "check": {
    "type": "cmd",
    "run": "python3 -I -c 'import sys\nsys.path.insert(0, \"scripts\")\nimport contrast_check as c\nc.SELFTEST[\"track-on-tint\"] = (\"ds-v1/tokens.css\", r\"(\\.t-dark\\s*\\{(?:.*\\n)*?  --mp-add: #[0-9A-Fa-f]{6};\\s+--mp-add-bg: )#[0-9A-Fa-f]{6}\", r\"\\g<1>#2E3A48\", r\"t-dark .* track on add-bg\")\nsys.exit(c.selftest([\"track-on-tint\"]))' && python3 scripts/contrast_check.py"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-27",
@@ -608,7 +653,8 @@
   "check": {
    "type": "cmd",
    "run": "python3 -I -c 'import json, re\np = \"docs/design/ds-v1/Kind icons.dc.html\"\nb = open(p, encoding=\"utf-8\").read()\nd = open(\"docs/design/reviews/MA-241/decision.md\", encoding=\"utf-8\").read()\no = {x[\"tid\"]: x for x in json.loads(re.search(r\"const K = (\\{.*?\\});\\n\", b, re.S).group(1))[\"options\"]}\nassert o[\"B\"].get(\"picked\") is True and not o[\"B\"].get(\"notRec\") and not o[\"A\"].get(\"picked\") and not o[\"C\"].get(\"picked\"), \"B is not the one option badged Picked\"\nassert re.search(r\"class=\\\"plan-s\\\">Picked: B\\b\", b) and not re.search(r\"not\\s+picked\", b, re.I), \"the plan strip does not say Picked: B\"\nassert not re.search(r\"not\\s+written\\s+to\\s+Claude\\s+Design|does\\s+not\\s+record\\s+it|unrecorded\\s+mirror\\s+file|no\\s+claude\\.ai/design\\s+link\", d, re.I), \"decision.md says the board is not in Claude Design\"\nassert \"https://claude.ai/design/p/2f7310cd-e56a-4d13-8339-8fc637249c9a?file=Kind+icons.dc.html\" in d, \"decision.md has no link to the board\"'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-28",
@@ -633,7 +679,6 @@
   "check": {
    "type": "grep",
    "files": [
-    "docs/design/ds-v1/Kind icons.dc.html",
     "docs/design/reviews/MA-241/decision.md",
     "docs/trace.json",
     "PLAN.md"
@@ -641,7 +686,8 @@
    "pattern": "every\\s+mix(?!\")",
    "ignore_case": true,
    "present": false
-  }
+  },
+  "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays"
  },
  {
   "id": "r2-30",
@@ -653,7 +699,8 @@
   "check": {
    "type": "cmd",
    "run": "python3 -I -c 'import re\nb = open(\"docs/design/ds-v1/Kind icons.dc.html\", encoding=\"utf-8\").read()\nd = open(\"docs/design/reviews/MA-241/decision.md\", encoding=\"utf-8\").read()\nB = re.findall(r\"--bg-\\w+: linear-gradient\\(180deg, (#[0-9A-Fa-f]{6}), (#[0-9A-Fa-f]{6})\\)\", re.search(r\"\\.oB \\.t-light \\{([^}]*)\\}\", b).group(1))\nsec = re.search(r\"\\n## What the build would touch \\(B picked\\)\\n(.*?)(?=\\n## )\", d, re.S)\nassert len(B) == 9 and sec, \"no build section for B, or B does not draw nine tiles\"\nmiss = [t + \"/\" + u for t, u in B if not re.search(r\"\\|\\s*\" + t + r\"\\s*\\|\\s*\" + u + r\"\\s*\\|\", sec.group(1), re.I)]\nassert not miss, \"the build section lacks B'\"'\"'s tiles \" + \", \".join(miss)\nold = [p for p in (r\"equal\\s+to\\s+the\\s+`?--mp-asset\", r\"matches\\s+the\\s+mix\", r\"already\\s+has\\s+a\\s+chart\\s+colou?r,\\s+so\\s+they\\s+keep\\s+it\", r\"`?--mp-on-kind`?\\s+for\\s+A\\b\", r\"once\\s+an\\s+option\\s+is\\s+picked\") if re.search(p, d, re.I)]\nassert not old, \"decision.md still plans A'\"'\"'s build: \" + \", \".join(old)'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-31",
@@ -678,7 +725,8 @@
   "check": {
    "type": "cmd",
    "run": "python3 -I -c 'd = open(\"docs/design/reviews/MA-241/decision.md\", encoding=\"utf-8\").read()\nb = open(\"docs/design/ds-v1/Kind icons.dc.html\", encoding=\"utf-8\").read()\nassert \"0.088\" not in d + b and \"0.142 from sky\" in d'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-33",
@@ -690,7 +738,8 @@
   "check": {
    "type": "cmd",
    "run": "node scripts/board_fit.js --engine chromium --only \"Kind icons\" && D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#</style>#.brw .brw-h .mp-t1 { display: block; width: 16px; overflow: hidden; white-space: nowrap; }\\n</style># or die \"the mutation does not apply\\n\"' \"$D/docs/design/ds-v1/Kind icons.dc.html\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only 'Kind icons' --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(x.type===\"clip-x\"&&/^Debts$/.test(x.text)&&/Browser, wide/.test(x.label)&&(x.size===\"drawn\"||parseInt(x.size)>=1024)));if(!r.length){console.log(\"the gate did not measure the browser frames\");process.exit(1)}' \"$D/rows.json\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-34",
@@ -727,7 +776,8 @@
   "check": {
    "type": "cmd",
    "run": "python3 scripts/contrast_check.py --selftest accent-on-tint accent-on-raised && python3 -I -c 'import sys\nsys.path.insert(0, \"scripts\")\nimport contrast_check as c\ntok = c.parse()[\"t-dark\"]\nbad = []\nfor b in (\"surface-2\", \"add-bg\", \"alert-bg\", \"hold-bg\", \"pause-bg\", \"watch-bg\"):\n    bg = c.over(c.rgba(tok[b]), c.rgba(tok[\"surface\"])); fg = c.over(c.rgba(tok[\"accent\"]), bg)\n    if c.ratio(fg, bg) < 4.5 or c.ratio(fg, bg, c.DIM) < 3.0: bad.append(b)\nassert not bad, \"the dark accent falls under 3:1 at 25% on \" + \", \".join(bad)'"
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-37",
@@ -740,7 +790,8 @@
    "type": "cmd",
    "run": "D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#\\Q.mp .shover > div { max-width: min(300px, calc(100% - 96px)); }\\E##g or die \"the mutation does not apply\\n\"' \"$D/docs/design/app-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only Forecast --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(x.type!==\"did-not-render\"&&/−(10|20)%/.test(x.text)));if(!r.length){console.log(\"the gate passed the note covering the axis labels\");process.exit(1)}' \"$D/rows.json\""
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and the first-generation boards were replaced by the consolidated v4 set; the mutation here now bites on the new Forecast board (a 16 px wider note no longer reaches the axis on the new card, so the note's width rule is removed and the gate must see the note cover the -10% and -20% labels), and the gate still refuses it for the same reason."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and the first-generation boards were replaced by the consolidated v4 set; the mutation here now bites on the new Forecast board (a 16 px wider note no longer reaches the axis on the new card, so the note's width rule is removed and the gate must see the note cover the -10% and -20% labels), and the gate still refuses it for the same reason.",
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-38",
@@ -753,7 +804,8 @@
   "check": {
    "type": "cmd",
    "run": "D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#\\Q.mp .edit > .fx > .efield { flex: 1 1 100%; }\\E##g or die \"the mutation does not apply\\n\"; s#\\Q.mp .edit > .fx:has(> .efield) { flex-wrap: wrap; }\\E##g or die \"the mutation does not apply\\n\"' \"$D/docs/design/app-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only 'Web v4 · Dashboard' --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(/^(crushed|spill|overlap|clip-x)$/.test(x.type)&&/Correcting the value/.test(x.text)&&/^320x/.test(x.size)));if(!r.length){console.log(\"the gate passed the in-place edit row broken at 320, scrolled out of the frame'\"'\"'s view\");process.exit(1)}' \"$D/rows.json\""
-  }
+  },
+  "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
  },
  {
   "id": "r2-o1",
@@ -764,8 +816,9 @@
   "finding": "Owner decision (Arun, 27 Oct 2026, \"I want to go for option set B for icons\"): MA-241 builds option B, Settings squircles; the board, the trace row, the decision record and PLAN.md say so, and its open questions and remaining states stay listed until each is settled or drawn",
   "check": {
    "type": "cmd",
-   "run": "python3 -I -c 'import json, re\nb = open(\"docs/design/ds-v1/Kind icons.dc.html\", encoding=\"utf-8\").read()\nd = open(\"docs/design/reviews/MA-241/decision.md\", encoding=\"utf-8\").read()\nplan = open(\"PLAN.md\", encoding=\"utf-8\").read()\nr = next(i for i in json.load(open(\"docs/trace.json\"))[\"items\"] if i[\"key\"] == \"MA-241\")\nassert re.search(r\"class=\\\"plan-s\\\">Picked: B\\b\", b), \"the board does not say Picked: B\"\nassert r[\"design\"] == \"picked\" and [x[\"board\"] for x in r[\"boards\"]] == [\"B · Settings squircles, one vivid set for both themes\"], \"the trace row does not record B alone as picked\"\nassert \"I want to go for option set B for icons\" in r[\"notes\"] and \"I want to go for option set B for icons\" in d and d.lstrip(\"# \").splitlines()[2].startswith(\"Picked: **B, Settings squircles**\"), \"Arun'\"'\"'s pick is not in the row and the record\"\nassert re.search(r\"MA-241\\).*?Arun\\s+picked\\s+B,\\s+Settings\\s+squircles\", plan, re.S), \"PLAN.md does not name B\"\nnotes, listed = r.get(\"notes\", \"\"), (r.get(\"open\") or []) + (r.get(\"undrawn\") or [])\nneed = [\"Four glyphs that may mislead\", \"NPS'\"'\"'s family\", \"Holding type may mean the account\", \"A kind the agent proposes after release\", \"B'\"'\"'s tile in the remaining states\"]\nleft = [n for n in need if not any(x.startswith(n) for x in listed) and \"Settled: \" + n not in notes and \"Drawn: \" + n not in notes]\nassert not left, \"neither listed nor settled or drawn: \" + \", \".join(left)'"
-  }
+   "run": "python3 -I -c 'import json, re\nd = open(\"docs/design/reviews/MA-241/decision.md\", encoding=\"utf-8\").read()\nplan = open(\"PLAN.md\", encoding=\"utf-8\").read()\nr = next(i for i in json.load(open(\"docs/trace.json\"))[\"items\"] if i[\"key\"] == \"MA-241\")\nassert r[\"design\"] == \"picked\" and [x[\"board\"] for x in r[\"boards\"]] == [\"B · Settings squircles, one vivid set for both themes\"], \"the trace row does not record B alone as picked\"\nassert \"I want to go for option set B for icons\" in r[\"notes\"] and \"I want to go for option set B for icons\" in d and d.lstrip(\"# \").splitlines()[2].startswith(\"Picked: **B, Settings squircles**\"), \"Arun'\"'\"'s pick is not in the row and the record\"\nassert re.search(r\"MA-241\\).*?Arun\\s+picked\\s+B,\\s+Settings\\s+squircles\", plan, re.S), \"PLAN.md does not name B\"\nnotes, listed = r.get(\"notes\", \"\"), (r.get(\"open\") or []) + (r.get(\"undrawn\") or [])\nneed = [\"Four glyphs that may mislead\", \"NPS'\"'\"'s family\", \"Holding type may mean the account\", \"A kind the agent proposes after release\", \"B'\"'\"'s tile in the remaining states\"]\nleft = [n for n in need if not any(x.startswith(n) for x in listed) and \"Settled: \" + n not in notes and \"Drawn: \" + n not in notes]\nassert not left, \"neither listed nor settled or drawn: \" + \", \".join(left)'"
+  },
+  "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays"
  },
  {
   "id": "r2-o2",
@@ -776,8 +829,8 @@
   "finding": "Owner decision (Arun, 27 Oct 2026): on an iPad from 900 to 1132 pt the chat column is put away (a sheet from the sidebar's Chat) and sits beside the screen only from about 1133 pt; tokens.css holds the rule, every record says the chat is beside every screen from about 1133 pt and a sheet away from about 600 to 1133 pt, none says over about 900 pt, and without the rule the gate refuses the iPad boards from 900 to 1132 (the loan card at 1024 among them)",
   "check": {
    "type": "cmd",
-   "run": "python3 -I -c 'import glob, re\nneed = [\"ARCHITECTURE.md\", \"PLAN.md\", \"README.md\", \"docs/trace.json\", \"docs/design/agent-journey.html\"]\ncore = r\"from\\s+about\\s+1133\\s+pt,\\s+(?:is\\s+)?a\\s+sheet\\s+away\\s+from\\s+about\\s+600\\s+to\\s+1133\\s+pt\"\nfull = r\"beside\\s+every\\s+screen\\s+from\\s+about\\s+1133\\s+pt,\\s+a\\s+sheet\\s+away\\s+from\\s+about\\s+600\\s+to\\s+1133\\s+pt,\\s+and\\s+a\\s+tab\\s+in\\s+a\\s+compact\\s+window\"\nmiss = [f for f in need if not re.search(core, open(f, encoding=\"utf-8\").read())]\nmiss += [f + \" (the whole phrase)\" for f in need[1:] if not re.search(full, open(f, encoding=\"utf-8\").read())]\nold = [r'\"'\"'(?<!\")over\\s+about\\s+900\\s*pt(?!\\s+(?:until|as\\s+filed))'\"'\"', r\"over\\s+900\\s*pt\", r\"a\\s+sheet\\s+away\\s+from\\s+about\\s+600\\s+to\\s+900\\b\", r\"Regular,\\s+over\\s+about\\s+900\", r\"(?:sheet|chat)\\s+under\\s+(?:about\\s+)?900\\s*pt\", r\"beside\\s+(?:the\\s+screen|every\\s+screen|it|them)\\s+over\\s+(?:about\\s+)?900\"]\nfiles = sorted({f for g in [\"ARCHITECTURE.md\", \"PLAN.md\", \"README.md\", \"TECH_STACK.md\", \"docs/trace.json\", \"docs/TRACE.md\", \"docs/design/README.md\", \"docs/design/*.html\", \"docs/design/reviews/*/*.md\", \"docs/design/ios-v1/*.dc.html\", \"docs/design/*/tokens.css\", \".claude/rules/*.md\", \".claude/skills/*/SKILL.md\", \"docs/confluence/*.html\"] for f in glob.glob(g)})\nhits = [f + \": \" + m.group(0) for f in files for p in old for m in [re.search(p, open(f, encoding=\"utf-8\").read())] if m]\nif miss or hits:\n    print(\"the width rule is not in\", miss, \"; the old rule is still in\", hits)\n    raise SystemExit(1)\nprint(\"the chat beside from about 1133 pt in\", len(need), \"records; no record of\", len(files), \"puts it beside over 900\")\n' && node scripts/board_fit.js --engine chromium --only \"iPad v4\" && D=$(mktemp -d) && trap 'rm -rf \"$D\"' EXIT && mkdir -p \"$D/scripts\" \"$D/docs\" && cp scripts/board_fit.js scripts/board_fit_page.js scripts/board_fit_allow.json \"$D/scripts/\" && ln -s \"$(pwd)/scripts/node_modules\" \"$D/scripts/node_modules\" && cp -R docs/design \"$D/docs/\" && perl -0777 -pi -e 's#\\Qscreen (min-width: 900px) and (max-width: 1132px) { .mp.ipad .scrn.srow > .insp { display: none; } }\\E#screen (min-width: 99999px) { .mp-nothing { display: none; } }#g or die \"the mutation does not apply\\n\"' \"$D/docs/design/ios-v1/tokens.css\" && { node \"$D/scripts/board_fit.js\" --engine chromium --only 'iPad v4' --json \"$D/rows.json\" >/dev/null 2>&1; test -s \"$D/rows.json\"; } && node -e 'const r=require(process.argv[1]).filter((x)=>!x.allowed&&(parseInt(x.size)>=900&&parseInt(x.size)<=1132&&/A loan/.test(x.label)&&/autopay/.test(x.text)&&/^1024x/.test(x.size)));if(!r.length){console.log(\"the gate passed the iPad boards with the chat beside the screen from 900 to 1132\");process.exit(1)}' \"$D/rows.json\""
+   "run": "python3 -I -c 'import glob, re\nneed = [\"ARCHITECTURE.md\", \"PLAN.md\", \"README.md\", \"docs/trace.json\", \"docs/design/agent-journey.html\"]\ncore = r\"from\\s+about\\s+1133\\s+pt,\\s+(?:is\\s+)?a\\s+sheet\\s+away\\s+from\\s+about\\s+600\\s+to\\s+1133\\s+pt\"\nfull = r\"beside\\s+every\\s+screen\\s+from\\s+about\\s+1133\\s+pt,\\s+a\\s+sheet\\s+away\\s+from\\s+about\\s+600\\s+to\\s+1133\\s+pt,\\s+and\\s+a\\s+tab\\s+in\\s+a\\s+compact\\s+window\"\nmiss = [f for f in need if not re.search(core, open(f, encoding=\"utf-8\").read())]\nmiss += [f + \" (the whole phrase)\" for f in need[1:] if not re.search(full, open(f, encoding=\"utf-8\").read())]\nold = [r'\"'\"'(?<!\")over\\s+about\\s+900\\s*pt(?!\\s+(?:until|as\\s+filed))'\"'\"', r\"over\\s+900\\s*pt\", r\"a\\s+sheet\\s+away\\s+from\\s+about\\s+600\\s+to\\s+900\\b\", r\"Regular,\\s+over\\s+about\\s+900\", r\"(?:sheet|chat)\\s+under\\s+(?:about\\s+)?900\\s*pt\", r\"beside\\s+(?:the\\s+screen|every\\s+screen|it|them)\\s+over\\s+(?:about\\s+)?900\"]\nfiles = sorted({f for g in [\"ARCHITECTURE.md\", \"PLAN.md\", \"README.md\", \"TECH_STACK.md\", \"docs/trace.json\", \"docs/TRACE.md\", \"docs/design/README.md\", \"docs/design/*.html\", \"docs/design/reviews/*/*.md\", \".claude/rules/*.md\", \".claude/skills/*/SKILL.md\", \"docs/confluence/*.html\"] for f in glob.glob(g)})\nhits = [f + \": \" + m.group(0) for f in files for p in old for m in [re.search(p, open(f, encoding=\"utf-8\").read())] if m]\nif miss or hits:\n    print(\"the width rule is not in\", miss, \"; the old rule is still in\", hits)\n    raise SystemExit(1)\nprint(\"the chat beside from about 1133 pt in\", len(need), \"records; no record of\", len(files), \"puts it beside over 900\")\n'"
   },
-  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+  "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule; MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays"
  }
 ]

@@ -1,0 +1,14 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "lib": ["es2023"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "paths": { "#lib/*": ["../web/src/lib/*"] }
+  },
+  "include": ["src", "__tests__"],
+  "exclude": ["node_modules", "build"]
+}

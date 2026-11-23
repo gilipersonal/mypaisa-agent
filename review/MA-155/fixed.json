@@ -74,9 +74,10 @@
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "Three different things share it",
+      "pattern": "Two things share it: `/pause` is the household's kill switch[\\s\\S]*?the Admin center's Pause of a member",
       "present": true
-    }
+    },
+    "updated": "MA-307, 2 Nov 2026: the PAUSE stance is retired with every stance (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"), so the decision row (§16 then, §15 now) names two things; the check is narrowed to what still holds, /pause kept apart from the Admin center's Pause (lesson 45)"
   },
   {
     "id": "r3-B1",
@@ -84,9 +85,15 @@
     "finding": "MA-39, MA-80 and MA-91 list their undrawn screens until they are drawn",
     "check": {
       "type": "cmd",
-      "run": "python3 -c \"import json,sys; d={i['key']:i for i in json.load(open('docs/trace.json'))['items']}; need={'MA-39': (['updating a valuation', 'changing a setting'], [('iPhone v4 · Chat and guided flows.dc.html', 'iPhone · Guided flows & long-list picker · Light')]), 'MA-80': (['the /web reply'], [('iPhone v4 · Chat and guided flows.dc.html', 'iPhone · Stance cards, alerts & commands · Light')]), 'MA-91': (['the live stance chip', 'the /calls list in the chat'], [('Web v4 · Market, holdings and India.dc.html', 'Browser · Market, Overlap & India · Desktop Light'), ('iPhone v4 · Chat and guided flows.dc.html', 'iPhone · Stance cards, alerts & commands · Light')])}; ok=all(all(x in d[k].get('undrawn',[]) for x in items) or (d[k]['design'] in ('planned','picked') and all(b in {(e['file'],e['board']) for e in d[k]['boards']} for b in boards)) for k,(items,boards) in need.items()); sys.exit(0 if ok else 1)\""
+      "argv": [
+        "python3",
+        "-I",
+        "-c",
+        "import json, sys\nt = {i['key']: i for i in json.load(open('docs/trace.json'))['items']}\nneed = {'MA-39': (['updating a valuation', 'changing a setting'], [('iPhone v4 · Chat and guided flows.dc.html', 'iPhone · Guided flows & long-list picker · Light')]),\n        'MA-80': (['the /web reply'], [('iPhone v4 · Chat and guided flows.dc.html', 'iPhone · Alerts & commands · Light')])}\nbad = [k for k, (items, boards) in need.items() if not (all(x in t[k].get('undrawn', []) for x in items) or (t[k]['design'] in ('planned', 'picked') and all(b in {(e['file'], e['board']) for e in t[k]['boards']} for b in boards)))]\nsys.exit('neither listed nor drawn: ' + ', '.join(bad) if bad else 0)\n"
+      ]
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "updated": "MA-307, 2 Nov 2026: MA-91 (stance chips and /calls) is retired, so its part goes (Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\"); the board 'iPhone · Stance cards, alerts & commands · Light' is now 'iPhone · Alerts & commands · Light'"
   },
   {
     "id": "r3-B2",
@@ -106,7 +113,8 @@
       "key": "MA-124",
       "board": "Browser · Forecaster · Proof & States · Desktop"
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026 (MA-307): \"remove the Holding market forecast and prediction part completely. Including signs of buy/add/sell call.\""
   },
   {
     "id": "r3-B4",
@@ -178,11 +186,12 @@
       "or_drawn": {
         "file": "iPhone v4 · Chat and guided flows.dc.html",
         "boards": [
-          "iPhone · Stance cards, alerts & commands · Light"
+          "iPhone · Alerts & commands · Light"
         ]
       }
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "updated": "MA-307, 2 Nov 2026: the board 'iPhone · Stance cards, alerts & commands · Light' is now 'iPhone · Alerts & commands · Light'"
   },
   {
     "id": "r6-B1",
@@ -200,9 +209,10 @@
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "^### 12\\.1 ",
+      "pattern": "^### 11\\.1 .*\\(MA-104\\)",
       "present": true
-    }
+    },
+    "updated": "MA-307, 2 Nov 2026: ARCHITECTURE's §12 is now §11, so MA-104's own section is §11.1 (the check also names MA-104)"
   },
   {
     "id": "r6-B3",
@@ -225,23 +235,18 @@
   {
     "id": "r6-admin",
     "round": "Arun, 25 Oct 2026",
-    "finding": "one admin (Arun's decision, not a review finding): no spec doc or page allows a second",
+    "finding": "one admin (Arun's decision, 25 Oct 2026, not a review finding): no spec doc or page allows a second; superseded on 2 Nov 2026 by several admins (MA-308), and the check now holds the new decision",
     "check": {
-      "type": "grep",
-      "files": [
-        "ARCHITECTURE.md",
-        "PLAN.md",
-        "TECH_STACK.md",
-        "README.md",
-        "docs/design/market-agent.html",
-        "docs/design/agent-journey.html",
-        "docs/design/app-v1/*.dc.html",
-        "docs/design/ds-v1/*.dc.html"
-      ],
-      "pattern": "\\ban(?:\\s|&nbsp;|<[^>]+>)+admin\\b(?!\\s+desk)|\\badmins\\b|second admin can be added|second person is made an admin",
-      "present": false,
-      "ignore_case": true
-    }
+      "type": "cmd",
+      "argv": [
+        "python3",
+        "-I",
+        "-c",
+        "import re, sys\nS = r'(?:\\s|&nbsp;|<[^>]+>)+'\nold = re.compile(S.join(['household' + \"'\" + 's', 'only', 'admin']) + '|' + S.join(['no', 'role', 'makes', 'a', 'second', 'admin']) + '|' + S.join([r'\\bonly', 'one', r'admin\\b']) + '|' + S.join([r'\\bthe', 'only', r'admin\\b']) + '|' + S.join([r'\\bone', 'admin,', 'the', 'owner']), re.I)\nfiles = ['ARCHITECTURE.md', 'PLAN.md', 'TECH_STACK.md', 'README.md', 'docs/design/agent-journey.html']\ntext = {f: open(f, encoding='utf-8').read() for f in files}\nstale = [f for f, s in text.items() if old.search(s)]\nflat = {f: ' '.join(re.sub(r'<[^>]+>|&nbsp;', ' ', s).split()) for f, s in text.items()}\nneed = {'ARCHITECTURE.md': ['| Admins | Several admins; the owner is always one and alone grants or takes back the role', '| member | View only', 'Only admins write'],\n        'PLAN.md': ['Several admins, everyone else views (MA-308)', 'Only admins write'],\n        'TECH_STACK.md': ['Only admins write'],\n        'README.md': ['only admins write', 'views only (MA-308'],\n        'docs/design/agent-journey.html': ['Only admins write. There can be several; the owner is always one']}\nlack = [f + ': ' + n for f, ns in need.items() for n in ns if n not in flat[f]]\nsys.exit(('still one admin: ' + ', '.join(stale) + '; ' if stale else '') + ('lacking: ' + '; '.join(lack) if lack else '') if stale or lack else 0)\n"
+      ]
+    },
+    "amended": "MA-303 (Arun, 2 Nov 2026): the board half is retired with the design checks; the records half stays",
+    "updated": "MA-307, 2 Nov 2026: Arun changed the decision: several admins replace one admin. Arun, 2 Nov 2026 (MA-307, MA-308): \"Only admins can do all these. Others users can view only.\"; and his answer the same day (docs/design/reviews/MA-307/decision.md): \"Several. The owner grants or takes back the admin role through the chat ... Admins add, correct and delete; every other member views only\". The check is rewritten to hold it: no record still says the household has one admin (across line breaks and tags), and ARCHITECTURE, PLAN, TECH_STACK, README and the Journey page state several admins and that everyone else views only; docs/design/market-agent.html was deleted by MA-307"
   },
   {
     "id": "r7-B1",
@@ -302,21 +307,23 @@
     "check": {
       "type": "grep",
       "file": "docs/design/agent-journey.html",
-      "pattern": "The one exception is the owner's Admin center",
+      "pattern": "The Admin center, in the app or the web app, acts on admin settings and operations, never on a record, each behind the second check and an audit row",
       "present": true
-    }
+    },
+    "updated": "MA-307, 2 Nov 2026: the Admin center is no longer the owner's alone (Arun, 2 Nov 2026 (MA-307, MA-308): \"Only admins can do all these. Others users can view only.\"; and his answer the same day (docs/design/reviews/MA-307/decision.md): \"Several. The owner grants or takes back the admin role through the chat ... Admins add, correct and delete; every other member views only\"); the Rule 4 card now says \"The Admin center, in the app or the web app, acts on admin settings and operations, never on a record\", the same exception"
   },
   {
     "id": "r8-c2",
     "round": 8,
-    "finding": "no 'an admin' across a line break (covered by r6-admin)",
+    "finding": "no 'an admin' across a line break (covered by r6-admin); since MA-307, no one-admin phrase across a line break",
     "check": {
       "type": "grep",
       "file": "PLAN.md",
-      "pattern": "\\ban\\s+admin's\\b",
+      "pattern": "household's\\s+only\\s+admin|no\\s+role\\s+makes\\s+a\\s+second\\s+admin|\\bonly\\s+one\\s+admin\\b|\\bthe\\s+only\\s+admin\\b|\\bone\\s+admin,\\s+the\\s+owner",
       "present": false,
       "ignore_case": true
-    }
+    },
+    "updated": "MA-307, 2 Nov 2026: \"an admin's\" is right again now there are several admins (Arun, 2 Nov 2026 (MA-307, MA-308): \"Only admins can do all these. Others users can view only.\"; and his answer the same day (docs/design/reviews/MA-307/decision.md): \"Several. The owner grants or takes back the admin role through the chat ... Admins add, correct and delete; every other member views only\"); lesson 2's search across line breaks now looks for the superseded one-admin phrases in PLAN.md"
   },
   {
     "id": "r8-c3",
@@ -438,9 +445,10 @@
     "check": {
       "type": "grep",
       "file": "ARCHITECTURE.md",
-      "pattern": "reads prod's records today \\(§18\\.1; the AWS MCP reads only metadata",
+      "pattern": "reads prod's records today \\(§17\\.1; the AWS MCP reads only metadata",
       "present": true
-    }
+    },
+    "updated": "MA-307, 2 Nov 2026: ARCHITECTURE's §12.1 is now §11.1 and §18.1 is now §17.1"
   },
   {
     "id": "r9-b1",
@@ -454,11 +462,12 @@
       "or_drawn": {
         "file": "iPhone v4 · Chat and guided flows.dc.html",
         "boards": [
-          "iPhone · Stance cards, alerts & commands · Light"
+          "iPhone · Alerts & commands · Light"
         ]
       }
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "updated": "MA-307, 2 Nov 2026: the board 'iPhone · Stance cards, alerts & commands · Light' is now 'iPhone · Alerts & commands · Light'"
   },
   {
     "id": "r9-b2",
@@ -473,7 +482,8 @@
       "pattern": "Admins only",
       "present": false
     },
-    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule."
+    "amended": "MA-279, 31 Oct 2026: Arun picked 1a on MA-279 and retired the 16 first-generation board files in favour of the consolidated £444,951 v4 board set; this check now reads the consolidated v4 boards that carry the same screen and rule.",
+    "retired": "Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\" (MA-303)"
   },
   {
     "id": "r8-d1b",

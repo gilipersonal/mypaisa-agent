@@ -1,0 +1,141 @@
+{
+  "about": "Every published MyPaisa artifact and the repo files it is published from (MA-324; Arun, 3 Nov 2026: \"All artifacts and design should be in sync with local\"). A synced artifact is republished whenever its sources change, then recorded with `python3 scripts/artifacts_sync.py record <name> <version>`; `plan_sync.py check` fails while one is behind. A retired artifact and a dated design round kept as a record are listed, never compared.",
+  "artifacts": [
+    {
+      "name": "MyPaisa Architecture v4",
+      "url": "https://claude.ai/artifact/Ns3DLFTCvnLcBxJvRvygBo",
+      "status": "synced",
+      "sources": {
+        "page": "docs/design/architecture-v4.html"
+      },
+      "sources_sha256": "3f14e12c2a5ec8e63b55910f0ee26dcf8f0bde5fff39483e533d0449fd2e8837",
+      "version": "1793707927-9e6d",
+      "published_at": "2026-11-03",
+      "note": "Published again at this url on 3 Nov 2026 (MA-325) after the first one, QputM7CuDn3Zv5s7TGyGL9, was deleted by mistake."
+    },
+    {
+      "name": "Inside MyPaisa",
+      "url": "https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5",
+      "status": "synced",
+      "sources": {
+        "page": "docs/design/inside-mypaisa.html"
+      },
+      "sources_sha256": "15681db457491a4bfee52eb45db263078429f25a85f388a8a85e2dd6d4fbf242",
+      "version": "1793701797-7a12",
+      "published_at": "2026-11-03"
+    },
+    {
+      "name": "MyPaisa Guardrails and Evals",
+      "url": "https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT",
+      "status": "synced",
+      "sources": {
+        "page": "docs/design/guardrails-evals.html"
+      },
+      "sources_sha256": "f9cd3fb08db0355e89f707aca4658fe6149ee58b9a69f50a717d07da827127e9",
+      "version": "1793660586-b5a1",
+      "published_at": "2026-11-03"
+    },
+    {
+      "name": "MyPaisa Prototype v5",
+      "url": "https://claude.ai/artifact/QWqsst7hKcuN5VtYozhucR",
+      "status": "synced",
+      "sources": {
+        "index.html": "docs/design/artifact-hosts/prototype-v5-index.html",
+        "prototype-v5/Prototype v5.dc.html": "docs/design/prototype-v5/Prototype v5.dc.html",
+        "prototype-v5/prototype-v5.css": "docs/design/prototype-v5/prototype-v5.css",
+        "prototype-v5/prototype-v5-data.js": "docs/design/prototype-v5/prototype-v5-data.js",
+        "prototype-v5/prototype-v5-kit.js": "docs/design/prototype-v5/prototype-v5-kit.js",
+        "prototype-v5/prototype-v5.js": "docs/design/prototype-v5/prototype-v5.js",
+        "prototype-v5/prototype-v5-ch-talk.js": "docs/design/prototype-v5/prototype-v5-ch-talk.js",
+        "prototype-v5/prototype-v5-ch-wealth.js": "docs/design/prototype-v5/prototype-v5-ch-wealth.js",
+        "prototype-v5/prototype-v5-ch-team.js": "docs/design/prototype-v5/prototype-v5-ch-team.js",
+        "app-v1/support.js": "docs/design/app-v1/support.js",
+        "app-v1/tokens.css": "docs/design/app-v1/tokens.css",
+        "app-v1/ios.css": "docs/design/app-v1/ios.css",
+        "app-v1/motion.css": "docs/design/app-v1/motion.css",
+        "app-v1/motion.js": "docs/design/app-v1/motion.js"
+      },
+      "sources_sha256": "e9128d22990485f5995148ef6f43c567d0c64be41733204d284fa21ed3f0a794",
+      "version": "1793885587-a953",
+      "published_at": "2026-11-05"
+    },
+    {
+      "name": "MyPaisa Boards",
+      "url": "https://claude.ai/artifact/G6Dzu3QYtNPVkqyH4q9d6g",
+      "status": "synced",
+      "sources": {
+        "ios-v1/": "docs/design/ios-v1/*",
+        "app-v1/": "docs/design/app-v1/*",
+        "ds-v1/": "docs/design/ds-v1/*"
+      },
+      "inputs": [
+        "scripts/boards_page/build.py",
+        "scripts/boards_page/viewer.html"
+      ],
+      "note": "index.html is built by scripts/boards_page/build.py from the three board folders; see its docstring for the publish. Retired by MA-296 on 30 Oct 2026 and kept in sync again since MA-324.",
+      "sources_sha256": "c0160f6f4de52c90abce320e620c0cd34495564adec21fcc7172bc34f9c1815c",
+      "version": "1793880198-c43d",
+      "published_at": "2026-11-05"
+    },
+    {
+      "name": "MyPaisa Agent Journey",
+      "url": "https://claude.ai/artifact/HPcNrDt2TvR2hdMBzjFE9u",
+      "status": "synced",
+      "sources": {
+        "index.html": "docs/design/agent-journey.html"
+      },
+      "note": "Replaces Mg2VPWVEAdbJPfeivYZ5J7, which no longer exists (MA-324).",
+      "sources_sha256": "362b03411d3742e085485215001b1bb3eb5e1e09a0fbae1730121e9e95c066d6",
+      "version": "1793702141-9342",
+      "published_at": "2026-11-03"
+    },
+    {
+      "name": "MyPaisa Market Agent",
+      "url": "https://claude.ai/artifact/M1yBdJaBe1FmE7sv1V6wLb",
+      "status": "retired",
+      "note": "Retired by MA-307 (2 Nov 2026) with the market side; its repo file was deleted. Arun decides whether it is deleted or replaced by a notice."
+    },
+    {
+      "name": "MA-307 board changes",
+      "url": "https://claude.ai/artifact/5i3Z1HT9XivED2qxDhTMj7",
+      "status": "record",
+      "note": "The before-and-after screens of MA-307's board changes, 2 Nov 2026; a dated record, never republished."
+    },
+    {
+      "name": "MA-300 Deep Scan Fixes",
+      "url": "https://claude.ai/artifact/PRrrMbqmp6Kdr2wkgwf8iw",
+      "status": "record",
+      "note": "MA-300's design round, 2 Nov 2026; its record is on the MA-301 branch until it merges."
+    },
+    {
+      "name": "MyPaisa Deep Scan Options",
+      "url": "https://claude.ai/artifact/YCuDtgRHdMHtj6Xewte6g5",
+      "status": "record",
+      "note": "MA-301's options round, 2 Nov 2026; Arun's picks are recorded on the MA-301 branch."
+    },
+    {
+      "name": "MyPaisa app v1",
+      "url": "https://claude.ai/artifact/DAe16AzWpkxWuhXzgJuLmb",
+      "status": "record",
+      "note": "A 28 Oct 2026 view of the web boards from before the boards moved into the repo (MA-260); the boards are the MyPaisa Boards artifact now."
+    },
+    {
+      "name": "MyPaisa iOS v1",
+      "url": "https://claude.ai/artifact/42HPTv7W9p1BFUBiZLsp68",
+      "status": "record",
+      "note": "A 28 Oct 2026 view of the iOS boards from before the boards moved into the repo (MA-260); the boards are the MyPaisa Boards artifact now."
+    },
+    {
+      "name": "MA-156 design review",
+      "url": "https://claude.ai/artifact/GfNnLMaQ1WsyC2vypvCJGe",
+      "status": "record",
+      "note": "MA-156's options round, 25 Oct 2026; its decision is docs/design/reviews/MA-156/."
+    },
+    {
+      "name": "MA-101 design review",
+      "url": "https://claude.ai/artifact/UMuQNsNRQ4GV6M1RcTFCYP",
+      "status": "record",
+      "note": "MA-101's options round, 23 Oct 2026; its decision is docs/design/reviews/MA-101/."
+    }
+  ]
+}
