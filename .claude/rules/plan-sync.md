@@ -102,7 +102,11 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    published by `/plan-sync`. Never edit the content in Confluence: an edit
    made there is copied back into the record it came from, and the next
    publish overwrites the page. Board previews are composed from the
-   boards in the repo and uploaded again when a board changes.
+   boards in the repo and uploaded again when a board changes. A publish
+   runs in parallel lanes, as much as it can: sub-agents upload and send,
+   and the coordinator alone records into `docs/confluence.json` (Arun,
+   23 Nov 2026, MA-301: "confluence publish will be done as much parallel as
+   possible"; the plan-sync skill, "Publish in parallel").
 9. **Dates come from estimates.** Every traced story has an estimate in
    `docs/roadmap.json`; `python3 scripts/roadmap.py write` works out each
    phase's dates and rewrites PLAN.md's Timeline table. Each phase epic in
