@@ -1543,7 +1543,10 @@ def errors(ctx: Ctx | None = None) -> list[str]:
 # were drawn from four live pages read back on 2 Nov 2026: home, phase-14, rec and rec-drawings).
 
 RB_DROP = {"data-local-id", "data-icon-id", "data-icon-text", "data-status-style", "style",
-           "data-width", "data-height", "data-width-type"}
+           "data-width", "data-height", "data-width-type",
+           # a page link whose words are not the target's title gets Confluence's own note of it (rename, version at
+           # save); its href and its words are still compared (MA-301: phase-04 and screens, 23 Nov 2026)
+           "data-confluence-metadata"}
 RB_VOID = {"area", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}
 # Inline marks: Confluence splits and reorders them (a <code> inside a <strong> comes back between two <strong>s), so
 # only their text is compared; a dropped word or a page cut short still differs. A strike-through is not one of them:
@@ -1843,6 +1846,16 @@ def selftest() -> int:
                 r_strike_added = record_readback("p", envelope(live.replace("The news job", "<s>The news job</s>")))
                 r_title_old = record_readback("p", envelope(live, title="P, the old title"))
                 ok_title_old = rec().get("readback_ok")
+                linked = page + '<p><a href="https://x/wiki/pages/7">Shell, chat and sign-in</a></p>'
+                (PAGES / "p.html").write_text(linked)
+                record_page("p", "42", 3, "P", published=True)
+                meta = ' data-confluence-metadata="{&quot;isRenamedTitle&quot;:true,&quot;versionAtSave&quot;:&quot;11&quot;}"'
+                live_link = live + '<p><a' + meta + ' href="https://x/wiki/pages/7">Shell, chat and sign-in</a></p>'
+                r_meta = record_readback("p", envelope(live_link))
+                r_meta_href = record_readback("p", envelope(live_link.replace("pages/7", "pages/8")))
+                r_meta_word = record_readback("p", envelope(live_link.replace("chat and sign-in", "chat")))
+                (PAGES / "p.html").write_text(page)
+                record_page("p", "42", 3, "P", published=True)
             finally:
                 sys.stdout = out
             expect("an identical body (Confluence's own ids, dates, cards and macro ids aside) passes", (r_same, ok_same), (0, True))
@@ -1862,6 +1875,9 @@ def selftest() -> int:
             expect("a strike the source lacks fails", r_strike_added, 1)
             expect("a page whose live title is not the recorded title fails (MA-307: a body-only publish kept six old titles)",
                    (r_title_old, ok_title_old), (1, False))
+            expect("a page link Confluence notes as renamed (data-confluence-metadata) passes (MA-301: phase-04, screens)", r_meta, 0)
+            expect("... but that link pointing elsewhere fails", r_meta_href, 1)
+            expect("... and that link losing a word fails", r_meta_word, 1)
             (PAGES / "p.html").write_text(page + "<p>More.</p>")
             record_page("p", "42", 4, "P", published=True)
             errs, notes = receipt_findings(load(MANIFEST)["pages"], ["p"])
