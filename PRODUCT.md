@@ -21,7 +21,7 @@ A single private household wealth tracker where kinds are dynamic documents rath
 ## Operating Context
 
 - **Doors:** An iOS and iPadOS 26 app (React Native shell with a native SwiftUI core) and a full-featured SvelteKit 3 Progressive Web App at `dashboard.mypaisapp.com` (and `dashboard-dev.mypaisapp.com`), backed by AWS (`us-east-1`) and Anthropic Claude with SSE live delivery.
-- **Responsive chat placement:** The chat sits beside every screen from about 1133 pt, a sheet away from about 600 to 1133 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). An iPhone is always compact in either orientation.
+- **Responsive chat placement:** The chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). An iPhone is always compact in either orientation.
 - **Dual-currency reality:** Every total and holding respects UK (`£`, `en-GB` grouping) and India (`₹`, `en-IN` lakh/crore grouping) figures, FX translation notes, and household member attribution.
 - **Privacy in shared spaces:** One-tap Privacy mode masks every currency balance, chart callout, scrub tooltip, and accessible label (`••••`) without layout shift so a member can open the app in public or beside family.
 

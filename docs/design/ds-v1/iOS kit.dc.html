@@ -194,7 +194,7 @@
 
       <section class="dv-turn" id="top" data-screen-label="iOS kit: intro">
         <div class="dv-thd"><span class="dv-tname">MyPaisa DS v1 · iOS kit</span></div>
-        <p class="dv-intro">The native app for iPhone and iPad (MA-161) in Warm ledger. The content stays solid (the navy hero, cards, lists, charts, messages) and Liquid Glass is only the layer of controls that floats above it, as Apple's HIG for iOS 26 says. Every class here is in <b>tokens.css</b> and <b>ios.css</b>; each board shows light and dark, and the screens built from them are in the MyPaisa iOS v1 project. Illustrative figures and names.</p>
+        <p class="dv-intro">The native app for iPhone and iPad (MA-161) in Warm ledger. The content stays solid (the navy hero, cards, lists, charts, messages) and Liquid Glass is only the layer of controls that floats above it, as Apple's HIG for iOS 26 says. Every class here is in <b>tokens.css</b> and <b>ios.css</b>; each board shows light and dark, and the screens built from them are in the MyPaisa iOS v1 project. Illustrative figures and names. Cards are one surface, their parts split by hairlines under short sentence-case labels (MA-301 d 1a).</p>
         <nav class="dv-idx" aria-label="Boards"><a href="#b1">1 · Liquid Glass layers</a><a href="#b2">2 · Colour in the app</a><a href="#b3">3 · Type and Dynamic Type</a><a href="#b4">4 · Tab bar and sidebar</a><a href="#b5">5 · Toolbars and the composer</a><a href="#b6">6 · Messages and cards</a><a href="#b7">7 · Buttons, chips and controls</a><a href="#b8">8 · Sheets, menus and alerts</a><a href="#b9">9 · Charts</a><a href="#b10">10 · App icon</a><a href="#b11">11 · Accessibility</a><a href="#b12">12 · Motion</a></nav>
       </section>
 
@@ -349,7 +349,7 @@
             <p><b>Dynamic Type, not fixed sizes.</b> The DS's scale is Apple's at the Large setting, so each class is one text style and follows the member's setting from xSmall to AX5.</p>
             <p><b>Hero figures</b> use SF Pro Rounded, heavy, scaled with the large title. Every figure uses tabular numerals, so columns line up and a counting number never jitters.</p>
             <p><b>From AX1, figures stack under their labels</b> instead of being cut; a card grows taller, never narrower, and a figure is never truncated.</p>
-            <p><b>SF Pro on the device.</b> The app uses the system font; the web's Inter and Nunito stand-ins are not shipped. MA-165 builds the styles in MyPaisaUI.</p>
+            <p><b>SF Pro on the device.</b> The app uses the system font: SF Pro, SF Pro Rounded for the figures and SF Symbols for its icons. The web&#8217;s self-hosted Inter, its Nunito figures subset and its Lucide icons are the web&#8217;s own and never ship in the app (MA-301 f 1a, Arun, 2 Nov 2026); on these boards Material Symbols stand in for SF Symbols. MA-165 builds the styles in MyPaisaUI.</p>
           </div>
         </div>
       </section>
@@ -401,6 +401,7 @@
             <p><b>Minimised on scroll.</b> As the conversation scrolls, the bar shrinks to its selected tab and the composer takes the bottom; scrolling back or a tap brings it back.</p>
             <p><b>Search takes the bar</b> when it opens, and finds a holding, a change, a file or a past answer (MA-180).</p>
             <p><b>iPad and an open foldable: the sidebar.</b> The same sections in a glass sidebar (<code>.sidebarAdaptable</code>), with Owner apart. The Admin center's red badge counts only what asks for action; members never see Owner.</p>
+            <p><b>Where the chat sits.</b> The chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). No iPad is that wide (the 13-inch is 1376 pt across), so on every iPad and an open foldable the screen keeps the room beside the sidebar and the sidebar&#8217;s Chat opens the chat as a sheet (MA-301 c 1c, Arun, 2 Nov 2026).</p>
             <p><b>Motion.</b> The selected tab's lens glides to the tapped tab (<code>glassEffectID</code>) and the bar shrinks with <code>.smooth</code> as content scrolls; the sidebar stays put while content moves.</p>
             <p><b>44 pt rows and tabs,</b> labels never truncated at Large. The shell is MA-163; the chat tab is MA-169.</p>
           </div>

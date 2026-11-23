@@ -237,6 +237,22 @@
           .pk-aud .cbtn { flex: none; }
           .pk-done { display: flex; align-items: center; gap: 6px; }
           .pk-tech { display: flex; flex-direction: column; gap: 3px; }
+        
+          /* MA-301 d 1a, flatter cards: one surface per card. Inside a card nothing is boxed again: the technical band and the
+             floor flag are split from the card by hairlines, never filled; labels are short and in sentence case. */
+          .ccard-tech { background: none; border-top: 1px solid var(--mp-line); }
+          .pk-flag { background: none; border-radius: 0; padding: 10px 0; border-top: 1px solid var(--mp-line); border-bottom: 1px solid var(--mp-line); }
+          .pk-div { letter-spacing: 0; text-transform: none; font-size: 13px; line-height: 18px; }
+          /* MA-301 a 1b, the title is the picker: the page title is a menu (Net worth · Plans · Budget forecast); the horizon
+             chips sit under the fan they change; the money (currency and Nominal or today's money) is one corner button.
+             Its chevrons are Lucide (MA-301 f 1a); the rest of these frames keep their symbols until the sweep (MA-340). */
+          .ttlmenu { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; border: 0; background: none; padding: 0; margin: 0; color: var(--mp-ink); cursor: pointer; }
+          .ttlmenu .lc { width: 26px; height: 26px; color: var(--mp-accent); }
+          .hzchips { display: flex; gap: 6px; flex-wrap: wrap; }
+          .hzc { min-height: 44px; min-width: 56px; padding: 0 10px; border: 0; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; cursor: pointer; }
+          .hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
+          .cornerbtn { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; flex: none; cursor: pointer; }
+          .heroP .hrow1 { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
         </style>
       </helmet>
 
@@ -268,15 +284,9 @@
                         <main class="mp-shell-main pmain">
                           <div class="mp-pagepad">
                             <header class="pk-head">
-                              <div><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">Net worth over the next 20 years, in the pounds of each year · run {{ f.p.run }}</div></div>
+                              <div><button type="button" class="mp-large ttlmenu" aria-haspopup="menu" aria-label="Projection: Net worth. Change view">Net worth<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="mp-foot mp-ink2">Projection · 20 years, in the pounds of each year · run {{ f.p.run }}</div></div>
                               <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button>
                             </header>
-                            <div class="pk-tabs" role="tablist" aria-label="Projection"><button type="button" class="pk-tab on" role="tab" aria-selected="true" tabindex="0">Net worth</button><button type="button" class="pk-tab" role="tab" aria-selected="false" tabindex="-1">Plans</button><button type="button" class="pk-tab" role="tab" aria-selected="false" tabindex="-1">Budget forecast</button></div>
-                            <div class="pk-ctl">
-                              <div class="mp-seg pk-hz" role="group" aria-label="Horizon"><button type="button" class="mp-seg-i" aria-pressed="false">5 yrs</button><button type="button" class="mp-seg-i" aria-pressed="false">10 yrs</button><button type="button" class="mp-seg-i on" aria-pressed="true">20 yrs</button><button type="button" class="mp-seg-i" aria-pressed="false">30 yrs</button></div>
-                              <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button type="button" class="mp-seg-i on" aria-pressed="true">£ GBP</button><button type="button" class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
-                              <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch" role="switch" tabindex="0" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
-                            </div>
                             <sc-if value="{{ f.p.cmp }}" hint-placeholder-val="{{ false }}">
                               <div class="mp-card">
                                 <div class="fx col gap4"><span class="mp-over mp-ink2">Cover the gap</span><span class="mp-hl">Three ways, side by side</span><span class="mp-foot mp-ink2">{{ gapTotal }} short, Jan 2029 to Feb 2035; none applied yet. Opened from the chat at 20:43; code worked each one out, and Apply applies it with its audit row and Undo.</span></div>
@@ -292,7 +302,7 @@
                               </div>
                             </sc-if>
                             <div class="mp-hero heroP">
-                              <div class="fx col gap2"><span class="mp-sub mp-hero-2">Middle path in 2046</span><span class="mp-num-hero">{{ f.p.big }}</span></div>
+                              <div class="hrow1"><div class="fx col gap2"><span class="mp-sub mp-hero-2">Middle path in 2046</span><span class="mp-num-hero">{{ f.p.big }}</span></div><button type="button" class="cornerbtn" aria-haspopup="menu" aria-label="Money: pounds, nominal. Change">£ · Nominal<svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button></div>
                               <p class="pp mp-sub mp-hero-2">From £456,747 today. 8 in 10 of the engine's runs end between {{ f.p.lo }} and {{ f.p.hi }}.</p>
                               <div class="fanw onhero">
                                 <div class="mp-chartbox fanbox" role="img" aria-label="{{ f.p.aria }}">
@@ -301,6 +311,7 @@
                                 </div>
                                 <div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">Today</span><span style="left: 45.46%">2036</span><span class="ax1" style="left: 100%">2046</span></div>
                               </div>
+                              <div class="hzchips" role="group" aria-label="Horizon"><button type="button" class="hzc" aria-pressed="false">5 yrs</button><button type="button" class="hzc" aria-pressed="false">10 yrs</button><button type="button" class="hzc on" aria-pressed="true">20 yrs</button><button type="button" class="hzc" aria-pressed="false">30 yrs</button></div>
                             </div>
                             <div class="mp-card cpad">
                               <div class="fx jb ac"><span class="mp-hl">Milestones</span><span class="mp-foot mp-ink2">on the line above</span></div>
@@ -613,7 +624,7 @@
               notes: [{ h: 'The figures:', t: 'conversation, impact and rearrange in future-plans-v4.json; the page shows R5N (Thu 5 Nov 09:13, R0’s figures) until the plan is saved, R1 (20:43) after it, and R2 (20:46) once the pot is applied, each with its own middle path in 2046.' },
                 { h: 'The floor is monthly, the bars yearly,', t: 'so the chart marks a year with a month under £500 (▼, in the alert colour) rather than draw a yearly line that would not match the flag.' },
                 { h: 'One Confirm each,', t: 'in §6.6’s order: the plan first, with its audit row; then the rearrangement, with one row for the plan item it adds and one for this month’s budget, each with Undo (MA-263).' },
-                { h: 'Under about 1133 px', t: 'the chat is a sheet away, and under 600 a tab, as at 390; the 390 frames draw the ways on the phone-web door.' }] },
+                { h: 'Under about 1393 px', t: 'the chat is a drawer over the page, opened from the sidebar’s Chat, and under 600 a tab, as at 390 (MA-301 c 1c: the chat beside every screen from about 1393 px, a sheet away from about 600 to 1393 px, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)); the 390 frames draw the ways on the phone-web door.' }] },
             { anchor: 'o2b', id: '2b', name: 'Browser · Plans in the chat 2b, one card that grows', rec: false, keys: 'MA-222 · MA-263 · MA-223 · MA-264',
               lead: 'One plan card that fills in as Arun answers: each slot ticks from its question to its answer; the impact appears inside it; then Cover the gap, a single choice, and one Confirm that saves the plan and the way together.',
               frames: frames('b', 'Browser · Plans in the chat 2b, one card that grows'),
@@ -632,7 +643,7 @@
             nav: [['home', 'Home'], ['account_balance_wallet', 'Assets'], ['credit_card', 'Debts'], ['event_note', 'Budget'], ['show_chart', 'Projection'], ['history', 'Activity'], ['fact_check', 'Audit'], ['person', 'You']].map((n) => ({ i: n[0], l: n[1], on: n[1] === 'Projection' ? 'on' : '', fill: n[1] === 'Projection' ? 'ms-fill' : '' })),
             ptabs: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Chat' ? 'on' : '', fill: t[1] === 'Chat' ? 'ms-fill' : '' })),
             intro1: 'Arun, an admin of the household, says “£4,000 a month from Jan 2029 for my kid’s schooling” at 20:41 on Thu 5 Nov 2026. MyPaisa asks at most three questions with chips (until when, how it grows, paid from where), shows the engine’s impact with one Confirm, and, because the plan leaves the household short, offers the ways code worked out to rearrange the budget; the admin’s Confirm applies one, this month’s budget included (ARCHITECTURE §6.6, items 6 and 7).',
-            intro2: 'Three options for how the chat carries it, at the laptop (1440, shell 1a: the Projection beside the chat) at every step, and at the phone-web door (390, the Chat tab), in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,747.'
+            intro2: 'Three options for how the chat carries it, at the laptop (1440, shell 1a: the Projection beside the chat, as from about 1393 px) at every step, and at the phone-web door (390, the Chat tab), in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,747. The Projection’s header is MA-301 a 1b: the title is the picker (Net worth ▾), the horizon chips sit under the fan, and £ · Nominal is the corner button; cards are flat (MA-301 d 1a).'
           };
         }
       }

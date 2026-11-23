@@ -66,10 +66,10 @@ folded or open, fit with no special case:
 
 | | Compact | Regular, narrow | Regular, wide | Regular, widest |
 | --- | --- | --- | --- | --- |
-| Width | under about 600 pt, and every iPhone | about 600 to 900 pt | about 900 to 1133 pt | from about 1133 pt |
-| Where | every iPhone, in portrait or landscape; iPad Slide Over and one-third Split View; a foldable, folded | iPad in portrait; two-thirds Split View; a foldable, open; a Stage Manager window | a 13-inch iPad upright; a wide Split View pane or Stage Manager window | iPad in landscape, from the iPad mini up; a large Stage Manager window |
-| Layout | the Liquid Glass tab bar at the bottom; one column; sheets for detail; the chat is a tab | a sidebar that collapses to a tab bar at the top; the chat as a sheet (beside the screen only from about 1133 pt) | the sidebar and the screen; the chat as a sheet, from the sidebar's Chat | the sidebar, the screen, and the chat as a column beside every screen |
-| Boards | the `iPhone` files | `iPad and foldable` | the landscape boards, the chat column put away (`tokens.css`, MA-240) | `iPad and foldable`, `iPad v4` |
+| Width | under about 600 pt, and every iPhone | about 600 to 900 pt | about 900 to 1393 pt | from about 1393 pt |
+| Where | every iPhone, in portrait or landscape; iPad Slide Over and one-third Split View; a foldable, folded | iPad in portrait; two-thirds Split View; a foldable, open; a Stage Manager window | every iPad in landscape, from the iPad mini (1133 pt) to the 13-inch (1376 pt); a 13-inch iPad upright; a wide Split View pane or Stage Manager window | no iPad's own screen: only a Stage Manager window on an external display |
+| Layout | the Liquid Glass tab bar at the bottom; one column; sheets for detail; the chat is a tab | a sidebar that collapses to a tab bar at the top; the chat as a sheet (beside the screen only from about 1393 pt) | the sidebar and the screen; the chat as a sheet, from the sidebar's Chat | the sidebar, the screen, and the chat as a column beside every screen |
+| Boards | the `iPhone` files | `iPad and foldable` | the landscape boards, the chat a sheet (`tokens.css`, MA-240, MA-301) | none drawn: no iPad reaches it (MA-301 c 1c, Arun, 2 Nov 2026) |
 
 **The shell is 1a, Chat first** (Arun's pick, 26 Oct 2026, MA-163).
 `Shell options` draws the three that were offered, each on iPhone and iPad:
@@ -138,6 +138,12 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   answers wrap, a hero figure shrinks to fit, and a list row's figure goes
   under its name. In `motion.js`, a narrow chart's axis labels thin where
   they would touch.
+- **Only the board folders and the design system change** (MA-301): a picked
+  design is carried into `ios-v1/`, `app-v1/` and `ds-v1/` only. Prototype v5
+  is not updated and its artifact is not republished; it stays as Arun last
+  walked it (Arun, 23 Nov 2026: "no need to update Prototype v5, just the
+  ios-v1 and app-v1 and design system updates are all that is needed.. make
+  it a rule").
 - **No checks on the boards' content** (MA-303): Arun, 2 Nov 2026: "All the
   6 checks currently run on docs/design. Lets stop that. I need this checks
   as QA when I ask, but on actual code implemented (probably using

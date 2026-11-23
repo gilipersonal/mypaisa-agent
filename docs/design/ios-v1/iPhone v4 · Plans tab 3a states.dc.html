@@ -41,7 +41,7 @@
           .pg > .largetitle { padding: 0 4px 2px; }
           .navr { display: flex; gap: 8px; flex: none; }
           .navc { position: absolute; left: 70px; right: 120px; text-align: center; font: 600 17px/22px var(--mp-font); pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-          /* the iPad in landscape: the glass sidebar, the screen, the chat beside it (iPad v4 · Budget, assets and debts) */
+          /* the iPad in landscape: the glass sidebar and the screen; the chat a sheet away (MA-301 c 1c) */
           .scrn.srow { flex-direction: row; }
           .sidebar.sb { width: 240px; box-sizing: border-box; }
           .side-h.sh0 { padding-top: 4px; }
@@ -61,7 +61,7 @@
           .cb20 { bottom: 20px; }
           .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
           .chnote { align-self: center; max-width: 240px; text-align: center; }
-          /* the Projection's chrome, the same in every option (MA-264's brief): tabs, then the horizon and the money */
+          /* the Projection's chrome, the same in every option (MA-264's brief): tabs, then the horizon and the money. Since MA-301 1b the title is the picker, and these rules draw nothing. */
           .utabs { display: flex; gap: 4px; border-bottom: 1px solid var(--mp-line); overflow-x: auto; scrollbar-width: none; }
           .utab { min-height: 44px; padding: 0 14px; border: 0; background: transparent; display: inline-flex; align-items: center; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); white-space: nowrap; flex: none; box-shadow: inset 0 -3px 0 transparent; }
           .utab.on { color: var(--mp-ink); box-shadow: inset 0 -3px 0 var(--mp-accent); }
@@ -195,12 +195,41 @@
   -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
   letter-spacing: inherit; word-spacing: inherit; text-align: inherit; text-transform: inherit; text-indent: 0; text-shadow: inherit;
   align-items: normal; box-sizing: content-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+/* MA-301 a 1b (Arun, Mon 2 Nov 2026): the title is the picker (Net worth, Plans, Budget forecast); the horizon is a row of
+   chips under the chart; money (Nominal or Today's money) is one corner button. £ or ₹ follow the app's currency pill
+   (MA-279 1a), so the page has no currency control of its own. From docs/design/reviews/MA-301, a · Projection header. */
+.ttlmenu { -webkit-appearance: none; appearance: none; margin: 0; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; min-height: 44px; padding: 2px 20px 8px; font: 700 2.125rem/2.5625rem var(--mp-font); letter-spacing: -0.02em; color: var(--mp-ink); text-align: left; white-space: nowrap; }
+.ttlmenu .ms { font-size: 26px; color: var(--mp-accent); }
+.ttlmenu.navt { padding: 0 4px; font-size: 28px; line-height: 34px; }
+.ttlmenu[aria-expanded="true"] .ms { transform: rotate(180deg); }
+.ttlmenu:focus-visible, .hzc:focus-visible, .cornerbtn:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+.navc .ms { font-size: 18px; vertical-align: -4px; margin-left: 2px; color: var(--mp-accent); }
+.herot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; margin: -8px -6px -2px 0; }
+.herot > :first-child { min-width: 0; }
+.cornerbtn { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 8px 0 14px; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; white-space: nowrap; }
+.cornerbtn .ms { font-size: 20px; }
+.cornerbtn.oncard { background: var(--mp-surface-2); color: var(--mp-ink); }
+.cornerbtn.oncard .ms { color: var(--mp-accent); }
+.hzchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.hzc { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; min-height: 44px; min-width: 60px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; white-space: nowrap; }
+.hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
+.hzchips.oncard .hzc { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.hzchips.oncard .hzc.on { background: var(--mp-ink); color: var(--mp-surface); }
+.tmenu { left: 16px; top: 158px; width: 252px; }
+.tmenu .menu-i .ms { color: var(--lg-accent); }
+
+.tlh.tlhb { align-items: center; flex-wrap: nowrap; margin-bottom: 8px; }
+.tl .hzchips { margin-top: 12px; }
+.pg > .ttlmenu { padding: 0 4px 2px; }
+.sumctl { flex: 1 1 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--mp-line); }
+.sumctl .hzchips { margin-top: 0; }
 </style>
       </helmet>
 
       <section class="dv-turn" id="intro" data-screen-label="iPhone v4 · Plans tab 3a states: intro">
         <div class="dv-thd"><a class="dv-tid" href="#intro">3a</a><span class="dv-tname">iPhone and iPad · the Plans tab, 3a picked: its remaining states</span></div>
-        <p class="dv-intro">Arun picked 3a, bars on a timeline, on 28 Oct 2026 (MA-264). These are the states it still needed before MA-224 and MA-222 start, on iPhone (pushed from Home in shell 1a, the Liquid Glass tab bar) and on iPad in landscape at 1180 (the glass sidebar, the chat beside it), in light and dark. The evening goes on from 21:05 on Thu 5 Nov: privacy on at 21:06; Replace the car paused at 21:08 and resumed at 21:09; School fees' end corrected in place at 21:11; Replace the car ended at 21:13; and at 21:19 Asha, a member, opens the tab after Arun saved his sister's wedding (21:16) and undid the way he chose to cover it (21:18). Every figure is the figure set's (docs/design/figures/future-plans-v4.json); every change writes a correction event with its audit row, the version before and after, and the engine's run before and after. The browser boards are Web v4 · Plans tab 3a states.</p>
+        <p class="dv-intro">Arun picked 3a, bars on a timeline, on 28 Oct 2026 (MA-264). These are the states it still needed before MA-224 and MA-222 start, on iPhone (pushed from Home in shell 1a, the Liquid Glass tab bar) and on iPad in landscape at 1180 (the glass sidebar; the chat a sheet away, MA-301 c 1c), in light and dark. Since MA-301 (1b, Mon 2 Nov) the title is the picker (Plans ▾), the horizon a row of chips under the lanes and money the card’s corner button; iPhone v4 · Plans tab draws its menu open. The evening goes on from 21:05 on Thu 5 Nov: privacy on at 21:06; Replace the car paused at 21:08 and resumed at 21:09; School fees' end corrected in place at 21:11; Replace the car ended at 21:13; and at 21:19 Asha, a member, opens the tab after Arun saved his sister's wedding (21:16) and undid the way he chose to cover it (21:18). Every figure is the figure set's (docs/design/figures/future-plans-v4.json); every change writes a correction event with its audit row, the version before and after, and the engine's run before and after. The browser boards are Web v4 · Plans tab 3a states.</p>
         <div class="plan"><span class="plan-s">Jira</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-264">MA-264</a><span>the design round</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-224">MA-224</a><span>the Plans tab</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-222">MA-222</a><span>plan items: pause, resume, end, correct</span><a class="plan-k" href="https://duttaarun2015.atlassian.net/browse/MA-263">MA-263</a><span>the wedding's shortfall</span><span>ARCHITECTURE.md §4.10, §6.6, §9.1, §9.3</span><span class="plan-s">Picked: 3a.</span><span>Illustrative figures.</span></div>
       </section>
 
@@ -220,20 +249,14 @@
                     <div class="island"></div>
                     <div class="scrn">
                       <div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-                      <div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.scrolled }}"><span class="navc">Projection</span></sc-if><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms" aria-hidden="true">{{ f.eye }}</span></button><button type="button" class="gbtn lg" aria-label="Ask"><span class="ms" aria-hidden="true">chat_bubble</span></button></span></div>
+                      <div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.scrolled }}"><span class="navc">Plans<span class="ms" aria-hidden="true">expand_more</span></span></sc-if><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms" aria-hidden="true">{{ f.eye }}</span></button><button type="button" class="gbtn lg" aria-label="Ask"><span class="ms" aria-hidden="true">chat_bubble</span></button></span></div>
                       <sc-if value="{{ f.scrolled }}"><div class="edge-top"></div></sc-if>
                       <div class="scroll"><div class="pg" style="margin-top: {{ f.off }}">
-                        <div class="largetitle">Projection</div>
-                        <div class="mp-seg tabseg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-                        <div class="ctlrow cpt">
-                          <div class="mp-seg hzseg" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button class="mp-seg-i {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
-                          <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on" aria-pressed="true">£ GBP</button><button class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
-                          <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></button></span>
-                        </div>
+                        <button type="button" class="ttlmenu" aria-haspopup="menu" aria-expanded="false" aria-label="Projection: Plans. Change view">Plans<span class="ms" aria-hidden="true">expand_more</span></button>
                         <sc-if value="{{ f.banner }}"><div class="okb {{ f.banner.c }}" role="status" data-mo="pop"><span class="ms ms-fill" aria-hidden="true">{{ f.banner.i }}</span><span>{{ f.banner.t }}</span></div><div class="hist aud"><span class="ms" aria-hidden="true">fact_check</span><span>{{ f.banner.audit }}</span></div></sc-if>
                         <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">{{ f.head }}</span><span class="mp-foot mp-ink2"><sc-for list="{{ f.sum }}" as="s" hint-placeholder-count="7"><span class="sg {{ s.c }}" role="{{ s.ar }}" aria-label="{{ s.al }}">{{ s.t }}</span></sc-for></span></div><sc-if value="{{ f.adm }}"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>Add in chat</button></sc-if></div>
                         <div class="mp-card tl">
-                          <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
+                          <div class="tlh tlhb"><div class="rtx fx col gap2"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<span class="ms" aria-hidden="true">expand_more</span></button></div>
                           <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
                           <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
                             <div class="tl-row {{ r.cls }}">
@@ -256,6 +279,7 @@
                               </sc-if>
                             </div>
                           </sc-for>
+                          <div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
                           <div class="lgd2"><span><i class="k-bar k-out"></i>Money out</span><span><i class="k-bar k-in"></i>Money in</span><span><i class="k-bar k-pot"></i>Into a pot</span><span><i class="k-dia"></i>Once</span><sc-if value="{{ f.hasPaused }}"><span><i class="k-hollow"></i>Paused, not counted</span></sc-if><span><i class="k-tk"></i>Each March</span><span><i class="k-step"></i>A change from a date</span><span><i class="k-evt"></i>An event on a record</span><span><i class="k-past"></i>Runs past 2046</span></div>
                           <div class="pp mp-foot mp-ink2 tlfoot"><span class="ms" aria-hidden="true">{{ f.footI }}</span><span>{{ f.foot }}</span></div>
                         </div>
@@ -299,7 +323,7 @@
                   </div>
                 </sc-if>
 
-                <!-- ============ iPad in landscape: the sidebar, the screen, the chat beside it ============ -->
+                <!-- ============ iPad in landscape: the sidebar and the screen; the chat a sheet away (MA-301 c 1c) ============ -->
                 <sc-if value="{{ f.pad }}">
                   <div class="{{ f.root }}" data-screen-label="{{ f.cap }}">
                     <div class="scrn srow">
@@ -311,19 +335,13 @@
                       </div>
                       <div class="main">
                         <div class="sbar"><span>{{ f.clock }} Thu 5 Nov</span><span></span></div>
-                        <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms z1" aria-hidden="true">{{ f.eye }}</span></button></span></div>
+                        <div class="nav"><span class="navl"><button type="button" class="ttlmenu navt" aria-haspopup="menu" aria-expanded="false" aria-label="Projection: Plans. Change view">Plans<span class="ms" aria-hidden="true">expand_more</span></button></span><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode" aria-pressed="{{ f.eyeP }}"><span class="ms z1" aria-hidden="true">{{ f.eye }}</span></button><button type="button" class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button></span></div>
                         <div class="ipane"><sc-if value="{{ f.scrolled }}"><div class="edge-top ietp"></div></sc-if><div class="ipg" style="margin-top: {{ f.off }}">
                           <div class="mp-foot mp-ink2 meta4">{{ f.meta }}</div>
-                          <nav class="utabs" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="utab {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></nav>
-                          <div class="ctlrow">
-                            <div class="mp-seg hzseg" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button class="mp-seg-i {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
-                            <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button class="mp-seg-i on" aria-pressed="true">£ GBP</button><button class="mp-seg-i" aria-pressed="false">₹ INR</button></div>
-                            <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></button></span>
-                          </div>
                           <sc-if value="{{ f.banner }}"><div class="okb {{ f.banner.c }}" role="status" data-mo="pop"><span class="ms ms-fill" aria-hidden="true">{{ f.banner.i }}</span><span>{{ f.banner.t }}</span></div><div class="hist aud"><span class="ms" aria-hidden="true">fact_check</span><span>{{ f.banner.audit }}</span></div></sc-if>
                           <div class="mp-card sumc"><div class="rtx fx col gap2"><span class="mp-hl">{{ f.head }}</span><span class="mp-foot mp-ink2"><sc-for list="{{ f.sum }}" as="s" hint-placeholder-count="7"><span class="sg {{ s.c }}" role="{{ s.ar }}" aria-label="{{ s.al }}">{{ s.t }}</span></sc-for></span></div><sc-if value="{{ f.adm }}"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>Add in chat</button></sc-if></div>
                           <div class="mp-card tl">
-                            <div class="tlh"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div>
+                            <div class="tlh tlhb"><div class="rtx fx col gap2"><span class="mp-hl">Each plan, to 2046</span><span class="mp-foot mp-ink2">from today, Thu 5 Nov</span></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<span class="ms" aria-hidden="true">expand_more</span></button></div>
                             <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
                             <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
                               <div class="tl-row {{ r.cls }}">
@@ -337,6 +355,7 @@
                                 <sc-if value="{{ f.adm }}"><button class="iconbtn tl-m" aria-label="{{ r.menu }}"><span class="ms" aria-hidden="true">more_horiz</span></button></sc-if>
                               </div>
                             </sc-for>
+                            <div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
                             <div class="lgd2"><span><i class="k-bar k-out"></i>Money out</span><span><i class="k-bar k-in"></i>Money in</span><span><i class="k-bar k-pot"></i>Into a pot</span><span><i class="k-dia"></i>Once</span><sc-if value="{{ f.hasPaused }}"><span><i class="k-hollow"></i>Paused, not counted</span></sc-if><span><i class="k-tk"></i>Each March</span><span><i class="k-step"></i>A change from a date</span><span><i class="k-evt"></i>An event on a record</span><span><i class="k-past"></i>Runs past 2046</span></div>
                             <div class="pp mp-foot mp-ink2 tlfoot"><span class="ms" aria-hidden="true">{{ f.footI }}</span><span>{{ f.foot }}</span></div>
                           </div>
@@ -346,24 +365,6 @@
                           <p class="pp mp-foot mp-ink2">Illustrative figures from the future-plans figure set.</p>
                         </div></div>
                         <div class="edge-bot"></div>
-                      </div>
-                      <div class="insp">
-                        <div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-                        <div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New chat"><span class="ms z1" aria-hidden="true">edit_square</span></button></div>
-                        <div class="chfadet"></div>
-                        <div class="ichat"><div class="chat">
-                          <div class="daysep">Today</div>
-                          <sc-if value="{{ f.adm }}">
-                            <div class="me">close my HDFC loan with the SBI FD when it matures</div>
-                            <div class="me-time">20:58</div>
-                            <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Saved. It closes the loan in Mar 2029, when the FD matures.</div>
-                              <div class="ccard"><div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:59 · in the chat</div></div>
-                            </div></div>
-                          </sc-if>
-                          <sc-if value="{{ f.mem }}"><p class="pp mp-foot mp-ink2 chnote">Your own conversation with MyPaisa. Ask about any plan, or try a what-if; plans are the admins’ to change.</p></sc-if>
-                        </div></div>
-                        <div class="edge-bot"></div>
-                        <div class="composer cb20"><div class="chips"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">event</span><span>What’s due</span></button><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">help</span><span>What if…</span></button></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask about the Projection</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
                       </div>
                     </div>
                     <sc-if value="{{ f.sh }}">
@@ -528,11 +529,11 @@
             { anchor: 's1', id: '3a', name: 'iPhone · Plans tab 3a, privacy on', keys: 'MA-224',
               head: { n: '1', t: 'Privacy, then Arun’s changes in place', p: 'Arun on iPhone and on iPad, after 21:05. Each change is made on the tab, in place: a correction event with its audit row and a new version, and the engine runs again; nothing new is created here.' },
               lead: '21:06: the eye hides every amount: the summary’s middle path and range, each plan’s figure, and the engine’s figures where the plans meet. Names, dates and the lanes stay, so the tab still reads.',
-              frames: [fr('iPhone · Plans tab 3a, privacy on', IP, T[0], SC(st.priv, '0px')), fr('iPhone · Plans tab 3a, privacy on', IP, T[1], SC(st.priv, '0px')), fr('iPhone · Plans tab 3a, privacy on', PD, T[0], SC(st.priv, '-755px'))],
+              frames: [fr('iPhone · Plans tab 3a, privacy on', IP, T[0], SC(st.priv, '0px')), fr('iPhone · Plans tab 3a, privacy on', IP, T[1], SC(st.priv, '0px')), fr('iPhone · Plans tab 3a, privacy on', PD, T[0], SC(st.priv, '-485px'))],
               notes: [{ h: 'Masks keep their place,', t: 'so nothing reflows when the eye is tapped again; the app switcher shows only the mark.' }, { h: 'On iPad', t: 'the page is scrolled to where the plans meet, the engine’s figures masked.' }] },
             { anchor: 's2', id: '3a', name: 'iPhone · Plans tab 3a, a plan paused', keys: 'MA-222 · MA-224',
               lead: '21:08: Arun taps ⋯ on Replace the car; the glass menu has Open, Pause, End it and Ask in chat. He taps Pause: the row stays, its mark drawn hollow and a Paused chip on it, and the summary shows the engine’s new run with the audit row above it.',
-              frames: [fr('iPhone · Plans tab 3a, a plan paused', IP, T[0], SC(st.menu, '-652px'), 'the menu'), fr('iPhone · Plans tab 3a, a plan paused', IP, T[0], SC(st.paused, '0px'), 'paused'), fr('iPhone · Plans tab 3a, a plan paused', IP, T[1], SC(st.paused, '-848px'), 'paused, scrolled'), fr('iPhone · Plans tab 3a, a plan paused', PD, T[0], SC(st.paused, '-529px'), 'paused, scrolled')],
+              frames: [fr('iPhone · Plans tab 3a, a plan paused', IP, T[0], SC(st.menu, '-507px'), 'the menu'), fr('iPhone · Plans tab 3a, a plan paused', IP, T[0], SC(st.paused, '0px'), 'paused'), fr('iPhone · Plans tab 3a, a plan paused', IP, T[1], SC(st.paused, '-703px'), 'paused, scrolled'), fr('iPhone · Plans tab 3a, a plan paused', PD, T[0], SC(st.paused, '-317px'), 'paused, scrolled')],
               notes: [{ h: 'Pause, not delete:', t: 'a paused plan keeps its words, figures and place on the timeline, and stops counting until it is resumed: a correction event, status active → paused, version 1 → 2.' }, { h: 'The engine’s figures:', t: 'without the car, 2046’s middle path is £2,977,000 (R5), from £2,923,000.' }, { h: 'Glass is the menu only:', t: 'it floats over solid content and carries labels; End it is in the alert colour, as a destructive item is.' }, { h: 'Two scroll positions:', t: 'the light frame opens at the top, with the line it leaves and its audit row; the dark frame and the iPad are scrolled to the paused row.' }] },
             { anchor: 's3', id: '3a', name: 'iPhone · Plans tab 3a, a plan resumed', keys: 'MA-222 · MA-224',
               lead: '21:09: Resume, from the same menu. The car counts again, the figures go back to 20:59’s, and the audit row says so, version 2 → 3.',
@@ -544,12 +545,12 @@
               notes: [{ h: 'Correct in place:', t: 'tap the figure, pick the month, a before → after line, Save. A correction event, via inline_edit, version 1 → 2; the admin’s words stay the ones he said in the chat.' }, { h: 'The engine’s figures:', t: '£6,491 a month by Jul 2040 and £709,817 in all, against £789,759; 2046’s middle path £2,923,000 → £3,037,000 (R6). The pot still tops up £1,361 in Jan and Feb 2029.' }, { h: 'The sheet is solid', t: 'and scrolled to the figures it changes; the history keeps the creation with his words and its run, the pot, and the correction.' }] },
             { anchor: 's5', id: '3a', name: 'iPhone · Plans tab 3a, a plan ended', keys: 'MA-222 · MA-224',
               lead: '21:13: End it asks first, in an alert with a field for a word for the audit; Arun types “we’re keeping the car” and ends it. The car leaves the timeline for an Ended list, the count drops to 6, and the audit row carries his words.',
-              frames: [fr('iPhone · Plans tab 3a, a plan ended', IP, T[0], SC(st.confirm, '-652px'), 'the confirm'), fr('iPhone · Plans tab 3a, a plan ended', IP, T[0], SC(st.ended, '0px'), 'ended'), fr('iPhone · Plans tab 3a, a plan ended', IP, T[1], SC(st.ended, '-975px'), 'ended, scrolled'), fr('iPhone · Plans tab 3a, a plan ended', PD, T[0], SC(st.ended, '-694px'), 'ended, scrolled')],
+              frames: [fr('iPhone · Plans tab 3a, a plan ended', IP, T[0], SC(st.confirm, '-507px'), 'the confirm'), fr('iPhone · Plans tab 3a, a plan ended', IP, T[0], SC(st.ended, '0px'), 'ended'), fr('iPhone · Plans tab 3a, a plan ended', IP, T[1], SC(st.ended, '-830px'), 'ended, scrolled'), fr('iPhone · Plans tab 3a, a plan ended', PD, T[0], SC(st.ended, '-385px'), 'ended, scrolled')],
               notes: [{ h: 'Ending asks:', t: 'unlike Pause, End takes the plan out of the count for good; it stays in its history and in Audit, and a new one starts in the chat.' }, { h: 'The alert is solid,', t: 'since it carries a sentence and the admin’s words; End it is in the alert colour.' }, { h: 'The engine’s figures:', t: '2046’s middle path £3,091,000 (R7); 8 in 10 runs end between £2,298,000 and £4,296,000.' }, { h: 'Two scroll positions:', t: 'the light frame at the top with the audit row, the dark frame and the iPad scrolled to the Ended list.' }] },
             { anchor: 's6', id: '3a', name: 'iPhone · Plans tab 3a, as Asha sees it', keys: 'MA-224 · MA-222 · MA-263',
               head: { n: '2', t: 'As Asha sees it', p: '21:19: Asha, a member, opens the tab after Arun saved his sister’s wedding at 21:16 and undid, at 21:18, the way he had chosen to cover it. She sees every plan and the engine’s figures, and saves nothing.' },
               lead: 'The plans with the wedding, and the car under Ended; no pencils, no menus, no Add in chat, and a lock line instead of the admin’s hint. The engine’s flag on the wedding and its note: cash £19,871 below zero in Jun 2027, back above zero in Mar 2028. On iPad, no Admin center in her sidebar.',
-              frames: [fr('iPhone · Plans tab 3a, as Asha sees it', IP, T[0], SC(st.asha, '-219px')), fr('iPhone · Plans tab 3a, as Asha sees it', IP, T[1], SC(st.asha, '-1033px'), 'scrolled'), fr('iPhone · Plans tab 3a, as Asha sees it', PD, T[0], SC(st.asha, '-140px'))],
+              frames: [fr('iPhone · Plans tab 3a, as Asha sees it', IP, T[0], SC(st.asha, '-50px')), fr('iPhone · Plans tab 3a, as Asha sees it', IP, T[1], SC(st.asha, '-888px'), 'scrolled'), fr('iPhone · Plans tab 3a, as Asha sees it', PD, T[0], SC(st.asha, '-23px'))],
               notes: [{ h: 'Read, ask, never save:', t: 'figures show plain, without pencils; her chat is her own, where she can ask about a plan, see the ways to cover the wedding, or try a what-if.' }, { h: 'The engine’s figures', t: 'are the run after Arun’s Undo (21:18): 2046’s middle path £3,040,000; 8 in 10 runs end between £2,275,000 and £4,224,000.' }, { h: 'Colour is never alone:', t: 'the wedding’s flag says ▼ and what is short; the Ended chip says Ended.' }, { h: 'Two scroll positions:', t: 'the light frame shows the wedding’s row and its flag; the dark frame is scrolled to the Ended list and the engine’s note.' }] }
           ];
           return {

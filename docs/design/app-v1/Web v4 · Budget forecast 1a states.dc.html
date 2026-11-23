@@ -56,9 +56,9 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .mpm-dot { fill: var(--mp-coral); }
 @container app (min-width: 600px) { .crumb { display: none !important; } }
 .crumb { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -8px 0 -10px; color: var(--mp-accent); font: 600 15px/20px var(--mp-font); text-decoration: none; }
-/* the chat column: beside every screen from about 1133 px, a sheet away from about 600 to 1133 px, a tab below 600 (MA-240, MA-300) */
+/* the chat column: the chat beside every screen from about 1393 px, a sheet away from about 600 to 1393 px (on the web a drawer over the page, opened from the sidebar’s Chat), and a tab in a compact window (MA-301 c 1c) */
 .chatcol { display: none; flex-direction: column; width: 420px; flex: none; border-left: 1px solid var(--mp-line); background: var(--mp-bg); position: relative; }
-@container app (min-width: 1133px) { .chatcol { display: flex; } }
+@container app (min-width: 1393px) { .chatcol { display: flex; } }
 .chead { flex: none; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 16px; border-bottom: 1px solid var(--mp-line); }
 .cscroll { flex: 1; min-height: 0; position: relative; overflow: hidden; }
 .chat { position: absolute; left: 0; right: 0; bottom: 12px; display: flex; flex-direction: column; gap: 14px; padding: 0 16px; }
@@ -84,7 +84,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .wrap { flex-wrap: wrap; }
 .pp { margin: 0; text-wrap: pretty; }
 .cpad { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; }
-/* ---------- the Projection's chrome (MA-264's brief, the same in every option): tabs, horizon, money ---------- */
+/* ---------- the Projection's chrome (MA-264's brief): tabs, horizon, money; since MA-301 1b the title is the picker, and these rules draw nothing ---------- */
 .ptabs-sg { width: 100%; }
 .ptabs-ul { display: none; gap: 4px; border-bottom: 1px solid var(--mp-line); margin-top: -4px; }
 .ptu { min-height: 44px; display: inline-flex; align-items: center; padding: 0 14px; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; text-decoration: none; }
@@ -166,7 +166,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .ltsc::-webkit-scrollbar { display: none; }
 .lt { display: grid; grid-template-columns: 76px repeat(7, minmax(84px, 1fr)); min-width: 664px; }
 .lt > span { padding: 8px 8px; border-top: 1px solid var(--mp-line); font: 400 14px/19px var(--mp-font); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; background: var(--mp-surface); }
-.lt > .lh { font: 600 12px/16px var(--mp-font); letter-spacing: 0.02em; text-transform: uppercase; color: var(--mp-ink-2); border-top: 0; padding-top: 0; white-space: normal; align-self: end; }
+.lt > .lh { font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); border-top: 0; padding-top: 0; white-space: normal; align-self: end; }
 .lt > .ly { text-align: left; position: sticky; left: 0; z-index: 1; font-weight: 600; box-shadow: 1px 0 0 var(--mp-line); }
 .lt .lysub { display: block; font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
 .lt > .sel { background: var(--mp-surface-2); }
@@ -222,6 +222,45 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .tsheet2 .tsc { overflow: hidden; }
 .tsheet2 .trl { padding: 6px 0; }
 .dimx { position: absolute; inset: 0; z-index: 29; background: rgba(5, 8, 14, 0.32); }
+
+/* MA-301 a 1b (Arun, Mon 2 Nov 2026): the title is the picker (Net worth, Plans, Budget forecast); the horizon is a row of
+   chips under the chart; money (Nominal or Today's money) is one corner button. £ or ₹ follow the app's currency pill
+   (MA-279 1a), so the page has no currency control of its own. The title's menu is a popover on paper, never glass.
+   From docs/design/reviews/MA-301, a · Projection header. */
+.ttlmenu { -webkit-appearance: none; appearance: none; margin: 0 0 0 -4px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 4px; border-radius: 10px; font: 700 34px/41px var(--mp-font); letter-spacing: -0.02em; color: var(--mp-ink); text-align: left; white-space: nowrap; }
+.ttlmenu .ms, .ttlmenu .lc { font-size: 26px; width: 26px; height: 26px; color: var(--mp-accent); }
+.ttlmenu:hover { background: var(--mp-surface-2); }
+.ttlmenu[aria-expanded="true"] { background: var(--mp-surface-2); }
+.ttlmenu[aria-expanded="true"] .ms, .ttlmenu[aria-expanded="true"] .lc { transform: rotate(180deg); }
+.ttlmenu:focus-visible, .hzc:focus-visible, .cornerbtn:focus-visible, .tm-i:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+.ttlwrap { position: relative; min-width: 0; }
+.herot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; margin: -8px -6px -2px 0; }
+.herot > :first-child { min-width: 0; }
+.cornerbtn { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 8px 0 14px; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; white-space: nowrap; }
+.cornerbtn .ms { font-size: 20px; }
+.cornerbtn.oncard { background: var(--mp-surface-2); color: var(--mp-ink); }
+.cornerbtn.oncard .ms { color: var(--mp-accent); }
+.hzchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.hzc { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; min-height: 44px; min-width: 60px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; white-space: nowrap; }
+.hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
+.hzchips.oncard .hzc { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.hzchips.oncard .hzc.on { background: var(--mp-ink); color: var(--mp-surface); }
+.tpop { position: absolute; left: -4px; top: calc(100% + 6px); z-index: 30; width: 260px; box-sizing: border-box; padding: 6px; border-radius: 14px; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line), var(--mp-shadow); display: flex; flex-direction: column; }
+.tm-i { -webkit-appearance: none; appearance: none; margin: 0; border: 0; background: none; cursor: pointer; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; border-radius: 8px; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); text-align: left; }
+.tm-i[aria-checked="true"] { font-weight: 600; }
+.tm-i:hover, .tm-i.hov { background: var(--mp-surface-2); }
+.tm-i .ms, .tm-i .lc { font-size: 20px; width: 20px; height: 20px; color: var(--mp-accent); }
+.tm-k { margin-left: auto; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); }
+
+.cornerbtn .lc { width: 18px; height: 18px; }
+.cornerbtn.oncard .lc { color: var(--mp-accent); }
+.tlh.tlhb { align-items: center; flex-wrap: nowrap; margin-bottom: 8px; }
+.tl .hzchips { margin-top: 12px; }
+.bfh { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.bfh > .grow1 { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sumctl { flex: 1 1 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--mp-line); }
+.sumctl .hzchips { margin-top: 0; }
+.ttlwrap { flex: 1 1 0; }
 </style>
 </helmet>
 
@@ -253,14 +292,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <main class="mp-shell-main mainc">
 <div class="mp-pagepad" style="margin-top: {{ f.off }}">
 <a class="crumb mp-only-compact" href="#w0"><span class="ms ms-s" aria-hidden="true">arrow_back_ios_new</span>Home</a>
-<header class="phead"><div class="grow1"><div class="mp-large">Projection</div><div class="mp-foot mp-ink2">{{ f.v.meta }}</div></div><button class="iconbtn" aria-label="{{ f.v.eyeL }}" aria-pressed="{{ f.v.eyeP }}"><span class="ms" aria-hidden="true">{{ f.v.eye }}</span></button></header>
-<nav class="ptabs-ul" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><a class="ptu {{ t.on }}" href="#w0" aria-current="{{ t.cur }}">{{ t.l }}</a></sc-for></nav>
-<div class="mp-seg ptabs-sg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<div class="ctls">
-<div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ f.v.hz }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><sc-for list="{{ f.v.cur }}" as="t" hint-placeholder-count="2"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><span class="mp-switch {{ f.v.tm }}" role="switch" tabindex="0" aria-checked="{{ f.v.tmA }}" aria-label="Today's money"><span class="mp-switch-k"></span></span></span>
-</div>
+<header class="phead"><div class="grow1 ttlwrap"><button type="button" class="ttlmenu" aria-haspopup="menu" aria-expanded="false" aria-label="Projection: Budget forecast. Change view">Budget forecast<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="mp-foot mp-ink2">{{ f.v.meta }}</div></div><button class="iconbtn" aria-label="{{ f.v.eyeL }}" aria-pressed="{{ f.v.eyeP }}"><span class="ms" aria-hidden="true">{{ f.v.eye }}</span></button></header>
 
 <sc-if value="{{ f.v.banner }}" hint-placeholder-val="{{ false }}">
 <div class="banner {{ f.v.banner.c }}" role="status"><span class="ms" aria-hidden="true">{{ f.v.banner.i }}</span><div class="grow1"><span class="mp-sub mp-w6">{{ f.v.banner.t }}</span><span class="mp-foot mp-ink2">{{ f.v.banner.s }}</span><sc-if value="{{ f.v.banner.bar }}" hint-placeholder-val="{{ false }}"><div class="pbar" aria-hidden="true"><span></span></div></sc-if><sc-if value="{{ f.v.banner.btns }}" hint-placeholder-val="{{ false }}"><div class="btnrow"><sc-for list="{{ f.v.banner.btns }}" as="b" hint-placeholder-count="2"><button class="cbtn {{ b.c }}" type="button"><span class="ms" aria-hidden="true">{{ b.i }}</span>{{ b.t }}</button></sc-for></div></sc-if></div></div>
@@ -278,7 +310,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-if value="{{ f.v.full }}" hint-placeholder-val="{{ true }}">
 <div class="stk {{ f.v.dim }}">
 <div class="mp-card cpad">
-<div class="fx jb ac gap8 wrap"><span class="mp-hl">{{ f.v.ch.title }}</span><span class="mp-foot mp-ink2">{{ f.v.ch.sub }}</span></div>
+<div class="bfh"><div class="grow1"><span class="mp-hl">{{ f.v.ch.title }}</span><span class="mp-foot mp-ink2">{{ f.v.ch.sub }}</span></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: {{ f.v.money }}. Change it">{{ f.v.money }}<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div>
 <sc-for list="{{ f.v.ch.chips }}" as="c" hint-placeholder-count="1"><div class="flagl"><span class="mp-chip chip-s {{ c.c }}">{{ c.t }}</span><span class="mp-foot">{{ c.s }}</span></div></sc-for>
 <div class="bch {{ f.v.ch.wide }}" role="img" aria-label="{{ f.v.ch.aria }}" style="--cols: {{ f.v.ch.cols }}">
 <div class="bplot">
@@ -290,6 +322,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ f.v.ch.axis }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
 </div>
 <div class="blgd"><sc-for list="{{ f.v.ch.lgd }}" as="l" hint-placeholder-count="4"><span><i class="lk {{ l.k }}"></i>{{ l.t }}</span></sc-for></div>
+<div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ f.v.hz }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
 <sc-for list="{{ f.v.ch.notes }}" as="n" hint-placeholder-count="1"><p class="pp mp-foot mp-ink2">{{ n }}</p></sc-for>
 </div>
 <div class="mp-cols">
@@ -472,7 +505,7 @@ const potLedger = (mode, priv) => {
   return { rows: rows, sub: mode === 'gbp' ? 'What goes into the pot from the budget, and what it pays back when the fees push a month below your floor.' : 'Each year at its factor, as the lines beside it.',
     tots: [{ k: 'Into the pot', v: M.fmt(into), m: m }, { k: 'Out of it, to ' + D.pot.drawLast, v: M.fmt(out), m: m }, { k: mode === 'gbp' ? 'The difference, its interest at 3%' : 'The difference: its interest, and the factor moving between the years', v: M.fmt(out - into), m: m }] };
 };
-const base = (o) => Object.assign({ pl: false, who: 'Arun · admin', chatWho: 'Arun', admin: true, eye: 'visibility', eyeL: 'Privacy mode: hide amounts', eyeP: 'false', hz: hzL(20), cur: curL(false), tm: '', tmA: 'false', banner: false, empty: false, full: true, dim: '', mo: false, tr: false, chat: potChat }, o);
+const base = (o) => Object.assign({ pl: false, who: 'Arun · admin', chatWho: 'Arun', admin: true, eye: 'visibility', eyeL: 'Privacy mode: hide amounts', eyeP: 'false', hz: hzL(20), cur: curL(false), tm: '', tmA: 'false', money: 'Nominal', banner: false, empty: false, full: true, dim: '', mo: false, tr: false, chat: potChat }, o);
 
 const HID = (s) => String(s).replace(/[0-9£₹$€]/g, '\u2007').replace(/[,.]/g, '\u2008'); // MA-300: a mask keeps the figure's width, never its digits
 // a mask holds no figure: every masked value, the total and the axis labels, emptied to its width
@@ -484,7 +517,7 @@ const V = {
   inr: base({ pl: potLedger('inr', false), meta: 'Each year to 2046, in rupees at each year’s projected rate · the engine’s run, ' + D.R2.run, cur: curL(true),
     ch: chart(R2, { mode: 'inr', years: 20, sel: 2029, aria: potAria, notes: ['In rupees, each year at its average projected rate (£1 = ₹112.50 today, drifting with the inflation gap), so the £500 floor is a dash on each bar: ₹' + Math.round(FLOOR * R2y(2029).fx).toLocaleString('en-IN') + ' in 2029.'] }),
     yr: potCard('inr', false), foot: 'Illustrative figures. Each line is the engine’s pounds at the year’s average projected rate, rounded to the rupee; the surplus is those lines added.' }),
-  today: base({ pl: potLedger('today', false), meta: 'Each year to 2046, in today’s pounds · the engine’s run, ' + D.R2.run, tm: 'on', tmA: 'true',
+  today: base({ pl: potLedger('today', false), meta: 'Each year to 2046, in today’s pounds · the engine’s run, ' + D.R2.run, tm: 'on', tmA: 'true', money: 'Today’s money',
     ch: chart(R2, { mode: 'today', years: 20, sel: 2029, aria: potAria, notes: ['In today’s money: each year’s pounds at UK prices of 2026 (2.5% a year), so your £500 floor shrinks in today’s money as prices rise: a dash on each bar, £' + Math.round(FLOOR * R2y(2029).defl) + ' in 2029 and £' + Math.round(FLOOR * R2y(2046).defl) + ' in 2046.'] }),
     yr: potCard('today', false), foot: 'Illustrative figures. Each line is the engine’s pounds × the year’s deflator, rounded; the surplus is those lines added.' }),
   h5: base({ pl: potLedger('gbp', false), meta: 'Each year to 2031, in pounds of each year · the engine’s run, ' + D.R2.run, hz: hzL(5),
@@ -597,7 +630,7 @@ B({ id: 's9', tag: 'S9', name: 'Browser · Budget forecast 1a, as Asha sees it',
 const index = boards.map((b) => ({ id: b.id, tag: b.tag, name: b.name }));
 return {
   intro1: 'The remaining states of the picked Budget forecast, 1a the surplus first (MA-262), at the desktop with the chat beside it and at 390, in light and dark, through the rest of Thu 5 Nov: after the pot (20:47), in rupees and in today’s money (20:48), at 5, 10 and 30 years (20:49, 20:50), with privacy on (20:51), loading and error after the salary step (20:53), and as Asha sees it (21:19). The empty state is a household before its first budget.',
-  intro2: 'Every figure is future-plans-v4.json’s; rupees and today’s money are derived per year, as each board says. The chrome is the picked board’s: Net worth · Plans · Budget forecast, the horizon, pounds or rupees, today’s money.',
+  intro2: 'Every figure is future-plans-v4.json’s; rupees and today’s money are derived per year, as each board says. The chrome is the picked board’s, as MA-301 1b draws it: the title is the picker (Net worth · Plans · Budget forecast), the horizon a row of chips under the chart, today’s money the chart card’s corner button; pounds or rupees follow the app’s currency pill (MA-279).',
   allKeys: [key('MA-262'), key('MA-224'), key('MA-264')], index: index, boards: boards, nav: nav, tabs: tabs, ptabs: ptabs, trace: trace
 };
 }

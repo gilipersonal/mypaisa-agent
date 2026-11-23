@@ -47,7 +47,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .navm { display: flex; gap: 8px; }
 .navc { position: absolute; left: 70px; right: 120px; text-align: center; font: 600 17px/22px var(--mp-font); pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .etp { top: 86px; height: 60px; }
-/* ---------- the iPad in landscape, as iPad v4 · Budget, assets and debts: the glass sidebar, the screen, the chat beside it ---------- */
+/* ---------- the iPad in landscape: the glass sidebar and the screen; the chat a sheet away (MA-301 c 1c) ---------- */
 .scrn.srow { flex-direction: row; }
 .sidebar.sb { width: 240px; box-sizing: border-box; }
 .side-h.sh0 { padding-top: 4px; }
@@ -67,7 +67,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .cb20 { bottom: 20px; }
 .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
 .c-add { color: var(--mp-add); }
-/* ---------- the Projection's chrome (MA-264's brief): tabs, horizon, money ---------- */
+/* ---------- the Projection's chrome (MA-264's brief): tabs, horizon, money; since MA-301 1b the title is the picker, and these rules draw nothing ---------- */
 .ptabs-ul { display: flex; gap: 4px; border-bottom: 1px solid var(--mp-line); }
 .ptu { min-height: 44px; display: inline-flex; align-items: center; padding: 0 14px; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .ptu.on { color: var(--mp-ink); border-bottom-color: var(--mp-accent); }
@@ -149,7 +149,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .ltsc::-webkit-scrollbar { display: none; }
 .lt { display: grid; grid-template-columns: 76px repeat(7, minmax(84px, 1fr)); min-width: 664px; }
 .lt > span { padding: 8px 8px; border-top: 1px solid var(--mp-line); font: 400 14px/19px var(--mp-font); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; background: var(--mp-surface); }
-.lt > .lh { font: 600 12px/16px var(--mp-font); letter-spacing: 0.02em; text-transform: uppercase; color: var(--mp-ink-2); border-top: 0; padding-top: 0; white-space: normal; align-self: end; }
+.lt > .lh { font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); border-top: 0; padding-top: 0; white-space: normal; align-self: end; }
 .lt > .ly { text-align: left; position: sticky; left: 0; z-index: 1; font-weight: 600; box-shadow: 1px 0 0 var(--mp-line); }
 .lt .lysub { display: block; font: 400 12px/16px var(--mp-font); color: var(--mp-ink-2); }
 .lt > .sel { background: var(--mp-surface-2); }
@@ -179,6 +179,35 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .bc:last-child .bhit { left: auto; right: 0; transform: none; }
 /* glass never sits on glass: the close button inside the glass sheet is a lens, not a second pane (MA-300, P1-2) */
 .sheet.lg .gbtn.sclose { background: var(--lg-lens); color: var(--lg-ink); }
+
+/* MA-301 a 1b (Arun, Mon 2 Nov 2026): the title is the picker (Net worth, Plans, Budget forecast); the horizon is a row of
+   chips under the chart; money (Nominal or Today's money) is one corner button. £ or ₹ follow the app's currency pill
+   (MA-279 1a), so the page has no currency control of its own. From docs/design/reviews/MA-301, a · Projection header. */
+.ttlmenu { -webkit-appearance: none; appearance: none; margin: 0; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; min-height: 44px; padding: 2px 20px 8px; font: 700 2.125rem/2.5625rem var(--mp-font); letter-spacing: -0.02em; color: var(--mp-ink); text-align: left; white-space: nowrap; }
+.ttlmenu .ms { font-size: 26px; color: var(--mp-accent); }
+.ttlmenu.navt { padding: 0 4px; font-size: 28px; line-height: 34px; }
+.ttlmenu[aria-expanded="true"] .ms { transform: rotate(180deg); }
+.ttlmenu:focus-visible, .hzc:focus-visible, .cornerbtn:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
+.navc .ms { font-size: 18px; vertical-align: -4px; margin-left: 2px; color: var(--mp-accent); }
+.herot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; margin: -8px -6px -2px 0; }
+.herot > :first-child { min-width: 0; }
+.cornerbtn { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 8px 0 14px; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; white-space: nowrap; }
+.cornerbtn .ms { font-size: 20px; }
+.cornerbtn.oncard { background: var(--mp-surface-2); color: var(--mp-ink); }
+.cornerbtn.oncard .ms { color: var(--mp-accent); }
+.hzchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.hzc { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; min-height: 44px; min-width: 60px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; white-space: nowrap; }
+.hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
+.hzchips.oncard .hzc { background: var(--mp-surface-2); color: var(--mp-ink-2); }
+.hzchips.oncard .hzc.on { background: var(--mp-ink); color: var(--mp-surface); }
+.tmenu { left: 16px; top: 158px; width: 252px; }
+.tmenu .menu-i .ms { color: var(--lg-accent); }
+
+.pg > .ttlmenu { padding: 0 4px; }
+.bfh { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.bfh > .grow1 { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sumctl { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--mp-line); }
+.sumctl .hzchips { margin-top: 0; }
 </style>
 </helmet>
 
@@ -205,17 +234,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="island"></div>
 <div class="scrn">
 <div class="sbar"><span>20:44</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Projection</span></sc-if><span class="navm"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button><sc-if value="{{ f.top }}" hint-placeholder-val="{{ true }}"><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></sc-if><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><button type="button" class="gbtn lg" aria-label="Ask"><span class="ms" aria-hidden="true">chat_bubble</span></button></sc-if></span></div>
+<div class="nav"><button type="button" class="gbtn lg" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><span class="navc">Budget forecast<span class="ms" aria-hidden="true">expand_more</span></span></sc-if><span class="navm"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button><sc-if value="{{ f.top }}" hint-placeholder-val="{{ true }}"><button type="button" class="gtext lg"><span class="ms" aria-hidden="true">chat_bubble</span><span>Ask</span></button></sc-if><sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><button type="button" class="gbtn lg" aria-label="Ask"><span class="ms" aria-hidden="true">chat_bubble</span></button></sc-if></span></div>
 <sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edge-top"></div></sc-if>
 <div class="scroll"><div class="pg" style="margin-top: {{ f.off }}">
-<div class="largetitle">Projection</div>
-<div class="mp-seg" role="group" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<div class="ctls"><div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true">£ GBP</button><button class="mp-seg-i seg-s" aria-pressed="false">₹ INR</button></div><span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></button></span></div>
+<button type="button" class="ttlmenu" aria-haspopup="menu" aria-expanded="{{ f.texp }}" aria-label="Projection: Budget forecast. Change view">Budget forecast<span class="ms" aria-hidden="true">expand_more</span></button>
 <!-- ============ 1a: the surplus first ============ -->
 <sc-if value="{{ f.o.a }}" hint-placeholder-val="{{ true }}">
 <div class="mp-card cpad">
-<div class="fx jb ac gap8 wrap"><span class="mp-hl">Your leanest month, each year</span><span class="mp-foot mp-ink2">2027 to 2046 · against your floor</span></div>
+<div class="bfh"><div class="grow1"><span class="mp-hl">Your leanest month, each year</span><span class="mp-foot mp-ink2">2027 to 2046 · against your floor</span></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<span class="ms" aria-hidden="true">expand_more</span></button></div>
 <div class="flagl"><span class="mp-chip chip-s mp-alertchip">▼ Below your floor</span><span class="mp-foot">{{ gapLine }}</span></div>
 <div class="bch" role="img" aria-label="{{ chart.aria }}">
 <div class="bplot">
@@ -226,6 +252,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ chart.axis }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
 </div>
 <div class="blgd"><span><i class="k-ok"></i>At or above your floor</span><span><i class="k-lo"></i>▼ Below it</span><span><i class="k-fl"></i>Your floor, £500 a month</span><span><i class="k-sel"></i>2029, below</span></div>
+<div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
 <p class="pp mp-foot mp-ink2">{{ chart.capNote }}</p>
 </div>
 <div class="mp-cols">
@@ -266,6 +293,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-card cpad">
 <div class="fx jb ac gap8 wrap"><span class="mp-hl">The next 20 years, 2027 to 2046</span><span class="mp-chip chip-s mp-alertchip">▼ 50 months below your floor</span></div>
 <div class="sumg"><sc-for list="{{ sums }}" as="t" hint-placeholder-count="4"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}">{{ t.v }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div></sc-for></div>
+<div class="sumctl"><div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<span class="ms" aria-hidden="true">expand_more</span></button></div>
 </div>
 <div class="mp-card cpad">
 <div class="fx jb ac gap8 wrap"><span class="mp-hl">Year by year</span><span class="mp-foot mp-ink2">the surplus, after everything planned</span></div>
@@ -298,6 +326,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-if value="{{ f.o.c }}" hint-placeholder-val="{{ false }}">
 <div class="mp-card cpad">
 <div class="fx jb ac gap8 wrap"><span class="mp-hl">Each year, line by line</span><span class="mp-chip chip-s mp-alertchip">▼ 50 months below your floor</span></div>
+<div class="sumctl"><div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<span class="ms" aria-hidden="true">expand_more</span></button></div>
 <span class="mp-foot mp-ink2 ptab-meta">{{ f.tblHint }}</span>
 <div class="ltw">
 <div class="ltsc" data-sx="{{ f.sx }}"><div class="lt" role="table" aria-label="The budget forecast, each year to 2046">
@@ -336,13 +365,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="btnrow"><button type="button" class="cbtn">Months</button><button type="button" class="cbtn cbtn-primary">Ways to cover it</button></div>
 </div>
 </sc-if>
+<sc-if value="{{ f.tmenu }}" hint-placeholder-val="{{ false }}"><div class="menu lg tmenu" role="menu" aria-label="Projection, the view"><sc-for list="{{ tviews }}" as="v" hint-placeholder-count="3"><button type="button" class="menu-i" role="menuitemradio" aria-checked="{{ v.p }}"><span>{{ v.l }}</span><sc-if value="{{ v.on }}" hint-placeholder-val="{{ false }}"><span class="ms" aria-hidden="true">check</span></sc-if></button></sc-for></div></sc-if>
 <sc-if value="{{ f.dock }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ itabs }}" as="t" hint-placeholder-count="4"><button type="button" class="tab {{ t.on }}"><span class="ms" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div></sc-if>
 <div class="homebar"></div>
 </div>
 </div>
 </sc-if>
 
-<!-- ============ the iPad, landscape, the chat beside it ============ -->
+<!-- ============ the iPad, landscape; the chat a sheet away (MA-301 c 1c) ============ -->
 <sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}">
 <div class="dev dev-ipad-l mp ipad {{ f.cls }}" data-screen-label="{{ f.cap }}">
 <div class="scrn srow">
@@ -355,20 +385,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 </div>
 <div class="main">
 <div class="sbar"><span>20:44 Thu 5 Nov</span><span></span></div>
-<div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></button></span></div>
+<div class="nav"><span class="navl"><button type="button" class="ttlmenu navt" aria-haspopup="menu" aria-expanded="false" aria-label="Projection: Budget forecast. Change view">Budget forecast<span class="ms" aria-hidden="true">expand_more</span></button></span><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></button><button type="button" class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button></span></div>
 <sc-if value="{{ f.scrolled }}" hint-placeholder-val="{{ false }}"><div class="edge-top etp"></div></sc-if>
 <div class="scroll"><div class="ipg" style="margin-top: {{ f.off }}">
 <div class="mp-foot mp-ink2 meta4">{{ meta }}</div>
-<nav class="ptabs-ul" aria-label="Projection"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="3"><span class="ptu {{ t.on }}">{{ t.l }}</span></sc-for></nav>
-<div class="ctls">
-<div class="mp-seg sg-h" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="t" hint-placeholder-count="4"><button class="mp-seg-i seg-s {{ t.on }}" aria-pressed="{{ t.p }}">{{ t.l }}</button></sc-for></div>
-<div class="mp-seg sg-c" role="group" aria-label="Show amounts in"><button class="mp-seg-i seg-s on" aria-pressed="true">£ GBP</button><button class="mp-seg-i seg-s" aria-pressed="false">₹ INR</button></div>
-<span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch" role="switch" aria-checked="false" aria-label="Today's money"><span class="mp-switch-k"></span></button></span>
-</div>
 <!-- ============ 1a: the surplus first ============ -->
 <sc-if value="{{ f.o.a }}" hint-placeholder-val="{{ true }}">
 <div class="mp-card cpad">
-<div class="fx jb ac gap8 wrap"><span class="mp-hl">Your leanest month, each year</span><span class="mp-foot mp-ink2">2027 to 2046 · against your floor</span></div>
+<div class="bfh"><div class="grow1"><span class="mp-hl">Your leanest month, each year</span><span class="mp-foot mp-ink2">2027 to 2046 · against your floor</span></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<span class="ms" aria-hidden="true">expand_more</span></button></div>
 <div class="flagl"><span class="mp-chip chip-s mp-alertchip">▼ Below your floor</span><span class="mp-foot">{{ gapLine }}</span></div>
 <div class="bch" role="img" aria-label="{{ chart.aria }}">
 <div class="bplot">
@@ -379,6 +403,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-chartaxis" aria-hidden="true"><sc-for list="{{ chart.axis }}" as="x" hint-placeholder-count="5"><span style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div>
 </div>
 <div class="blgd"><span><i class="k-ok"></i>At or above your floor</span><span><i class="k-lo"></i>▼ Below it</span><span><i class="k-fl"></i>Your floor, £500 a month</span><span><i class="k-sel"></i>2029, below</span></div>
+<div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
 <p class="pp mp-foot mp-ink2">{{ chart.capNote }}</p>
 </div>
 <div class="mp-cols">
@@ -419,6 +444,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-card cpad">
 <div class="fx jb ac gap8 wrap"><span class="mp-hl">The next 20 years, 2027 to 2046</span><span class="mp-chip chip-s mp-alertchip">▼ 50 months below your floor</span></div>
 <div class="sumg"><sc-for list="{{ sums }}" as="t" hint-placeholder-count="4"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6 {{ t.c }}">{{ t.v }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div></sc-for></div>
+<div class="sumctl"><div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<span class="ms" aria-hidden="true">expand_more</span></button></div>
 </div>
 <div class="mp-card cpad">
 <div class="fx jb ac gap8 wrap"><span class="mp-hl">Year by year</span><span class="mp-foot mp-ink2">the surplus, after everything planned</span></div>
@@ -451,6 +477,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <sc-if value="{{ f.o.c }}" hint-placeholder-val="{{ false }}">
 <div class="mp-card cpad">
 <div class="fx jb ac gap8 wrap"><span class="mp-hl">Each year, line by line</span><span class="mp-chip chip-s mp-alertchip">▼ 50 months below your floor</span></div>
+<div class="sumctl"><div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ horizon }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<span class="ms" aria-hidden="true">expand_more</span></button></div>
 <span class="mp-foot mp-ink2 ptab-meta">{{ f.tblHint }}</span>
 <div class="ltw">
 <div class="ltsc" data-sx="{{ f.sx }}"><div class="lt" role="table" aria-label="The budget forecast, each year to 2046">
@@ -476,23 +503,6 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 
 </div></div>
 <div class="edge-bot"></div>
-</div>
-<div class="insp">
-<div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New chat"><span class="ms z1" aria-hidden="true">edit_square</span></button></div>
-<div class="chfadet"></div>
-<div class="ichat"><div class="chat">
-<div class="daysep">Today</div>
-<div class="me">£4,000 a month from Jan 2029 for my kid's schooling</div>
-<div class="me-time">20:41</div>
-<div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
-<div class="ccard"><div class="ccard-h"><span class="fx ac gap6 mp-over c-add"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, growing 4.5% a year</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div></div>
-<div class="ai-text">It leaves your surplus below your £500 floor in 50 months, Jan 2029 to Feb 2035. Cash stays above zero. The Budget forecast shows where.</div>
-<div class="btnrow"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
-</div></div>
-</div></div>
-<div class="edge-bot"></div>
-<div class="composer cb20"><div class="chips"><sc-for list="{{ cchips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask MyPaisa</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
 </div>
 </div>
 </div>
@@ -593,30 +603,35 @@ const itabs = [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity
 const ptabs = ['Net worth', 'Plans', 'Budget forecast'].map((l) => ({ l: l, on: l === 'Budget forecast' ? 'on' : '', p: l === 'Budget forecast' ? 'true' : 'false' }));
 const horizon = ['5 yrs', '10 yrs', '20 yrs', '30 yrs'].map((l) => ({ l: l, on: l === '20 yrs' ? 'on' : '', p: l === '20 yrs' ? 'true' : 'false' }));
 const TH = { Light: 't-light', Dark: 't-dark' };
-const base = { phone: false, pad: false, months: false, mIcon: 'expand_more', mLabel: 'Show the months', trace: false, sheet: false, dock: true, off: '0px', sx: '0', pop: false, popPos: '', tblHint: '', top: true, scrolled: false };
+const base = { tmenu: false, texp: 'false', phone: false, pad: false, months: false, mIcon: 'expand_more', mLabel: 'Show the months', trace: false, sheet: false, dock: true, off: '0px', sx: '0', pop: false, popPos: '', tblHint: '', top: true, scrolled: false };
 const PH = (name, theme, o) => Object.assign({}, base, { cap: name + ' · ' + theme, cls: TH[theme], phone: true, o: o }, o.x || {});
 const PD = (name, theme, o) => Object.assign({}, base, { cap: name.replace('iPhone · ', 'iPad · ') + ' · landscape · ' + theme, cls: TH[theme], pad: true, o: o, months: true, mIcon: 'expand_less', mLabel: 'Hide the months', trace: true }, o.y || {});
 const four = (name, o) => [PH(name, 'Light', o), PH(name, 'Dark', o), PD(name, 'Light', o), PD(name, 'Dark', o)];
 const boards = [
 { id: 'i1a', tag: '1a', name: 'iPhone · Budget forecast 1a, the surplus first', rec: true, keyline: 'MA-262 · MA-224',
-  intro: 'The shape first: each year’s leanest month as a bar against Arun’s £500 floor, the years below it in crimson with ▼, then 2029 as lines that add up to its surplus. On iPad the months and the flows behind 2029’s spending sit under it, with the chat beside.',
-  frames: four('iPhone · Budget forecast 1a, the surplus first', { a: true, y: { off: '-370px', scrolled: true } }),
-  notes: N2([['Recommended.', 'The Projection’s 1a, the shape first, so the three tabs read alike; where the budget gets tight shows at a glance and the detail is one tap away.'], ['Each bar is the year’s leanest month,', 'so the floor line means what it says; the axis stops at £4,000 a month so the lean years read, and 2042 to 2046 are named under the chart.'], ['The same figures as the web door:', 'R1, 2029’s lines add up to −£1,285.'], ['Glass only on controls:', 'the back button, the eye, Ask and the tab bar; the chart and the cards are solid Warm ledger.']]) },
+  intro: 'The shape first: each year’s leanest month as a bar against Arun’s £500 floor, the years below it in crimson with ▼, then 2029 as lines that add up to its surplus. On iPad the months and the flows behind 2029’s spending sit under it; the chat is a sheet away.',
+  frames: four('iPhone · Budget forecast 1a, the surplus first', { a: true, y: { off: '-273px', scrolled: true } }),
+  notes: N2([['Recommended.', 'The Projection’s 1a, the shape first, so the three views read alike; where the budget gets tight shows at a glance and the detail is one tap away.'], ['Each bar is the year’s leanest month,', 'so the floor line means what it says; the axis stops at £4,000 a month so the lean years read, and 2042 to 2046 are named under the chart.'], ['The same figures as the web door:', 'R1, 2029’s lines add up to −£1,285.'], ['Glass only on controls:', 'the back button, the eye, Ask, the tab bar and the title’s menu; the chart and the cards are solid Warm ledger.'], ['The title is the picker (MA-301 a 1b):', 'Budget forecast ▾ opens Net worth, Plans and Budget forecast; the horizon chips sit under the chart they change, and Nominal or Today’s money is the chart card’s corner button. £ or ₹ follow the app’s currency pill (MA-279). 1b and 1c, with no chart, carry the two under their first card’s hairline.']]) },
 { id: 'i1b', tag: '1b', name: 'iPhone · Budget forecast 1b, year by year', rec: false, keyline: 'MA-262 · MA-224',
   intro: 'A summary of the twenty years, then the years as a list, each with its surplus, savings rate and cash, a ▼ chip on 2029 to 2035. The iPhone opens on the summary; the iPad shows the list with 2029 opened in place, its school fees opened to the flows behind them, and its months.',
-  frames: four('iPhone · Budget forecast 1b, year by year', { b: true, y: { off: '-640px', scrolled: true } }),
+  frames: four('iPhone · Budget forecast 1b, year by year', { b: true, y: { off: '-590px', scrolled: true } }),
   notes: N2([['Words and numbers, no chart to read,', 'and it reflows to AX5.'], ['The cost:', 'the turn in 2041, when the fees end, is a figure among twenty-one, not a shape.']]) },
 { id: 'i1c', tag: '1c', name: 'iPhone · Budget forecast 1c, the ledger table', rec: false, keyline: 'MA-262 · MA-224',
-  intro: 'The years as a table, the year column fixed while it scrolls sideways. On the iPhone Arun has tapped 2029’s surplus: the table is scrolled to that column and the flows open in a partial sheet. The iPad shows the whole table beside the chat.',
-  frames: [PH('iPhone · Budget forecast 1c, the ledger table', 'Light', { c: true, x: { sheet: true, dock: false, off: '-352px', sx: '336', top: false, scrolled: true, tblHint: 'Scroll sideways for every column; tap a figure to see the flows that make it.' } }), PH('iPhone · Budget forecast 1c, the ledger table', 'Dark', { c: true, x: { sheet: true, dock: false, off: '-352px', sx: '336', top: false, scrolled: true, tblHint: 'Scroll sideways for every column; tap a figure to see the flows that make it.' } }), PD('iPhone · Budget forecast 1c, the ledger table', 'Light', { c: true, y: { tblHint: 'Tap a figure to see the flows that make it.' } }), PD('iPhone · Budget forecast 1c, the ledger table', 'Dark', { c: true, y: { tblHint: 'Tap a figure to see the flows that make it.' } })],
-  notes: N2([['A ledger, every figure of twenty years on one surface.', ''], ['The cost, said plainly:', 'on an iPhone three of seven figures show beside the year at once and the rest are a sideways scroll; the detail comes before the summary.'], ['The sheet is partial and glass, as a sheet is on iOS,', 'and its glass carries labels only: its title, Close and the two buttons. The surplus, its flows and the sentence sit on a solid card inside it.']]) }
+  intro: 'The years as a table, the year column fixed while it scrolls sideways. On the iPhone Arun has tapped 2029’s surplus: the table is scrolled to that column and the flows open in a partial sheet. The iPad shows the whole table.',
+  frames: [PH('iPhone · Budget forecast 1c, the ledger table', 'Light', { c: true, x: { sheet: true, dock: false, off: '-302px', sx: '336', top: false, scrolled: true, tblHint: 'Scroll sideways for every column; tap a figure to see the flows that make it.' } }), PH('iPhone · Budget forecast 1c, the ledger table', 'Dark', { c: true, x: { sheet: true, dock: false, off: '-302px', sx: '336', top: false, scrolled: true, tblHint: 'Scroll sideways for every column; tap a figure to see the flows that make it.' } }), PD('iPhone · Budget forecast 1c, the ledger table', 'Light', { c: true, y: { tblHint: 'Tap a figure to see the flows that make it.' } }), PD('iPhone · Budget forecast 1c, the ledger table', 'Dark', { c: true, y: { tblHint: 'Tap a figure to see the flows that make it.' } })],
+  notes: N2([['A ledger, every figure of twenty years on one surface.', ''], ['The cost, said plainly:', 'on an iPhone three of seven figures show beside the year at once and the rest are a sideways scroll; the detail comes before the summary.'], ['The sheet is partial and glass, as a sheet is on iOS,', 'and its glass carries labels only: its title, Close and the two buttons. The surplus, its flows and the sentence sit on a solid card inside it.']]) },
+{ id: 'i1a-menu', tag: 'MA-301', name: 'iPhone · Budget forecast 1a, the title menu open', rec: false, keyline: 'MA-301 · MA-262 · MA-224',
+  intro: 'Thu 5 Nov, 20:44: Arun taps the title, Budget forecast. A glass menu lists the Projection’s three views with Budget forecast ticked; Net worth or Plans opens in place under the same title, keeping the horizon and the money.',
+  frames: [PH('iPhone · Budget forecast 1a, the title menu open', 'Light', { a: true, x: { tmenu: true, texp: 'true' } }), PH('iPhone · Budget forecast 1a, the title menu open', 'Dark', { a: true, x: { tmenu: true, texp: 'true' } })],
+  notes: N2([['The title is the picker', '(MA-301 a 1b, picked Mon 2 Nov 2026): one menu for the three views, in place of the segmented control; glass, since a menu is a control, over the solid chart.'], ['The same menu', 'on every view: iPhone v4 · Projection (P13) and iPhone v4 · Plans tab draw it with their own view ticked.']]) }
 ];
 const index = boards.map((b) => ({ id: b.id, tag: b.tag, name: b.name }));
 return {
   intro1: 'Thu 5 Nov 2026, 20:44. Arun has just saved the school fees, £4,000 a month from Jan 2029, in the chat. The Projection’s new Budget forecast tab (MA-262) shows each year to the horizon, 20 years by default: what comes in and what goes out, every figure traced to the flows that make it, the years below his £500 floor flagged by code.',
-  intro2: 'Three options, each on iPhone (pushed from Home, the glass tab bar) and on iPad in landscape (the glass sidebar, the screen, the chat beside it from about 1133 pt), in light and dark. The same figures as Web v4 · Budget forecast. The chrome is the brief’s: Net worth · Plans · Budget forecast, the horizon (5, 10, 20 or 30 years), pounds or rupees, today’s money.',
+  intro2: 'Three options, each on iPhone (pushed from Home, the glass tab bar) and on iPad in landscape (the glass sidebar and the screen; the chat is beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over), so on the iPad it is a sheet), in light and dark. The same figures as Web v4 · Budget forecast. The chrome is the brief’s, as MA-301 1b draws it: the title is the picker (Net worth · Plans · Budget forecast), the horizon (5, 10, 20 or 30 years) a row of chips under the chart, today’s money the chart card’s corner button; pounds or rupees follow the app’s currency pill.',
   allKeys: [key('MA-262'), key('MA-224'), key('MA-264')], index: index,
   boards: boards, snav: snav, itabs: itabs, ptabs: ptabs, horizon: horizon,
+  tviews: ['Net worth', 'Plans', 'Budget forecast'].map((l) => ({ l: l, on: l === 'Budget forecast', p: l === 'Budget forecast' ? 'true' : 'false' })),
   cchips: [['event', 'What’s due'], ['add_circle', 'Add anything']].map((c) => ({ i: c[0], t: c[1] })),
   meta: 'Each year to 2046, in pounds of each year · the engine’s run, ' + D.run,
   gapLine: gapLine, chart: chart, y29: Y29, months: months, trace: trace, feeTrace: feeTrace,

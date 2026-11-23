@@ -56,6 +56,7 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 .brand { padding: 4px 8px 18px; }
 .side-ft { padding: 0 12px 4px; }
 .mp-side-i { cursor: default; }
+.kbd { margin-left: auto; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-radius: 6px; padding: 2px 6px; flex: none; }   /* Search, ⌘K: the palette (MA-301 g 1a) */
 .wtabs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; }
 .mp-tab:not(.on) { color: var(--mp-ink-2); }
 .wtabs .mp-tab { font-size: 12px; line-height: 14px; }   /* no product text under 12 px (MA-300) */
@@ -69,8 +70,7 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 .hsub { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
 .rate { display: flex; align-items: flex-start; gap: 6px; padding-top: 10px; border-top: 1px solid var(--mp-hero-2); }
 .rate > span:last-child { flex: 1; min-width: 0; }
-.hsplit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.hsplit > div { background: var(--mp-hero-2); border-radius: 14px; padding: 10px 12px; }
+/* own and owe (1b) sit on the hero itself in two hairline-ruled columns, never boxes (MA-301 d 1a, .mp-hairs) */
 .hempty { font: 800 30px/36px var(--mp-font-round); letter-spacing: -0.02em; }
 /* cards and their parts */
 .cpad { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; }
@@ -102,8 +102,7 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 .roax { margin-top: 2px; color: var(--mp-ink-2); }
 .roax .ax0 { transform: none; }
 .roax .ax1 { transform: translateX(-100%); }
-.kvg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.kvg > div { background: var(--mp-surface-2); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+/* a card's own and owe (1b): two hairline-ruled columns inside the card, never tiles (MA-301 d 1a, .mp-hairs) */
 .lnk { align-self: flex-start; margin: -6px 0 -8px -8px; }
 .one { grid-template-columns: minmax(0, 1fr) !important; }
 .onlyn { color: var(--mp-ink-2); }
@@ -117,9 +116,11 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 .aline .mp-foot { color: var(--mp-hold); }
 .toast { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; white-space: nowrap; z-index: 20; }
 @container app (max-width: 1023px) { .toast { bottom: 96px; } }
-/* the chat: beside every screen from about 1133 px, a sheet away from about 600 to 1133 px, its own tab under 600 (MA-240, MA-300) */
+/* the chat: beside every screen from about 1393 px, a sheet away from about 600 to 1393 px, and a tab in a compact window
+   (every iPhone, a folded foldable, Slide Over) (MA-301 c 1c, Arun, 2 Nov 2026; it was 1133, MA-240). On the web the sheet is
+   a drawer over the page from 1024 to 1392 px, opened from the sidebar's Chat (drawn in Web v4 · Shell and chat). */
 .chatcol { display: none; width: 360px; flex: none; flex-direction: column; border-left: 1px solid var(--mp-line); background: var(--mp-bg); position: relative; overflow: hidden; }
-@container app (min-width: 1133px) { .chatcol { display: flex; } }
+@container app (min-width: 1393px) { .chatcol { display: flex; } }
 .chatonly .mp-shell-main { display: none; }
 .chatonly .chatcol { display: flex; flex: 1; width: auto; border-left: 0; padding-bottom: 76px; }
 .chh { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px; padding: 8px 12px 8px 20px; border-bottom: 1px solid var(--mp-line); }
@@ -173,7 +174,7 @@ button.sendb::after { inset: -4px; }
 <!-- ================= INTRO ================= -->
 <section class="dv-turn" id="t0" data-screen-label="Web v4 dashboard: intro">
 <div class="dv-thd"><a class="dv-tid" href="#t0">W4</a><span class="dv-tname">Web v4 · Dashboard: the household's whole wealth across the UK and India</span></div>
-<p class="dv-intro">The Overview of MyPaisa v4 in a browser (MA-186): net worth in pounds or rupees, what we own and owe, each country and each member, liquid and locked, and what is due. One markup on the design system's adaptive shell, drawn at desktop 1440 (sidebar, the page, and the chat beside it) and at 390 (the phone-web door: one column, the chat is a tab). Anything new is made in the chat (a card, Confirm, the audit row); an existing figure is corrected in place. Every figure is the engine's, from the household figure set: today is Mon 26 Oct 2026, prices are at the Fri 23 Oct close, and £1 = ₹112.50 (ECB). Illustrative figures and names.</p>
+<p class="dv-intro">The Overview of MyPaisa v4 in a browser (MA-186): net worth in pounds or rupees, what we own and owe, each country and each member, liquid and locked, and what is due. One markup on the design system's adaptive shell, drawn at desktop 1440 (sidebar, the page, and the chat beside it, as it sits from about 1393 px; below that the chat is a drawer, drawn in Web v4 · Shell and chat) and at 390 (the phone-web door: one column, the chat is a tab). Anything new is made in the chat (a card, Confirm, the audit row); an existing figure is corrected in place. Every figure is the engine's, from the household figure set: today is Mon 26 Oct 2026, prices are at the Fri 23 Oct close, and £1 = ₹112.50 (ECB). Illustrative figures and names.</p>
 <div class="plan"><sc-for list="{{ allKeys }}" as="kk" hint-placeholder-count="3"><span class="plan-k">{{ kk }}</span></sc-for><span>ARCHITECTURE §9.3, §9.4, §12</span><span class="plan-s">Planned.</span><span>Turn 1 is the options; turn 2 draws 1a's states ahead of the pick.</span></div>
 <div class="idx"><sc-for list="{{ index }}" as="ix" hint-placeholder-count="8"><span><a href="#{{ ix.id }}">{{ ix.n }}</a> <span class="nowrap">· {{ ix.k }}</span></span></sc-for></div>
 </section>
@@ -197,7 +198,8 @@ button.sendb::after { inset: -4px; }
 <div class="mp-shell">
 <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><button type="button" class="mp-side-i {{ n.cls }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
+<button type="button" class="mp-side-i" aria-keyshortcuts="Meta+K"><span class="ms" aria-hidden="true">search</span>Search<span class="kbd">⌘K</span></button>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><button type="button" class="mp-side-i {{ n.cls }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
 <div style="flex: 1"></div>
 <div class="mp-foot mp-ink2 side-ft">Arun · admin<br />dashboard.mypaisapp.com</div>
 </aside>
@@ -219,7 +221,7 @@ button.sendb::after { inset: -4px; }
 <sc-if value="{{ f.p.h.hasChip }}" hint-placeholder-val="{{ false }}"><span class="mp-chip {{ f.p.h.chipC }}">{{ f.p.h.chip }}</span></sc-if>
 </div>
 <div class="hsub"><span class="mp-sub mp-w6 hup"><span class="{{ f.p.h.sa.c }}">{{ f.p.h.sa.v }}</span></span><span class="mp-sub mp-hero-2">{{ f.p.h.st }}</span></div>
-<sc-if value="{{ f.p.h.hasSplit }}" hint-placeholder-val="{{ false }}"><div class="hsplit"><sc-for list="{{ f.p.h.split }}" as="s" hint-placeholder-count="2"><div><div class="mp-foot mp-hero-2">{{ s.k }}</div><div class="mp-t3 nowrap"><span class="{{ s.a.c }}">{{ s.a.v }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ f.p.h.hasSplit }}" hint-placeholder-val="{{ false }}"><div class="mp-hairs two"><sc-for list="{{ f.p.h.split }}" as="s" hint-placeholder-count="2"><div><div class="mp-foot mp-hero-2">{{ s.k }}</div><div class="mp-t3 nowrap"><span class="{{ s.a.c }}">{{ s.a.v }}</span></div></div></sc-for></div></sc-if>
 </sc-if>
 <div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>{{ f.p.h.rate }}</span></div>
 </div>
@@ -233,7 +235,7 @@ button.sendb::after { inset: -4px; }
 <div class="ctl"><span class="mp-hl">{{ k.t }}</span><span class="mp-foot mp-ink2"><span class="{{ k.ra.c }}">{{ k.ra.v }}</span> {{ k.r }}</span></div>
 <sc-for list="{{ k.parts }}" as="q" hint-placeholder-count="1">
 <sc-if value="{{ q.isBig }}" hint-placeholder-val="{{ false }}"><div class="fx ac gap8 wrap"><span class="mp-num-l"><span class="{{ q.a.c }}">{{ q.a.v }}</span></span><span class="mp-foot mp-ink2"><span class="{{ q.b.c }}">{{ q.b.v }}</span> {{ q.s }}</span></div></sc-if>
-<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="kvg"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="mp-foot mp-ink2">{{ it.k }}</div><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isKV }}" hint-placeholder-val="{{ false }}"><div class="mp-hairs two"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div><div class="mp-foot mp-ink2">{{ it.k }}</div><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isMeters }}" hint-placeholder-val="{{ false }}"><div class="mrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="2"><div><div class="fx jb ac gap8"><span class="mp-sub mp-w6">{{ it.l }}</span><span class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></span></div><div class="mp-track mbar" role="img" aria-label="{{ it.aria }}"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span></div></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isStack }}" hint-placeholder-val="{{ false }}"><div><div class="stk mp-track" role="img" aria-label="{{ q.aria }}"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><span style="width: {{ it.w }}; background: {{ it.col }}"></span></sc-for></div><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="3"><div class="lrow"><span class="sw" style="background: {{ it.col }}"></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.l }}</div><div class="mp-foot mp-ink2">{{ it.s }} <span class="{{ it.b.c }}">{{ it.b.v }}</span> {{ it.s2 }}</div></div><div class="mp-sub mp-w6 tr nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div></div></sc-for></div></div></sc-if>
 <sc-if value="{{ q.isOver }}" hint-placeholder-val="{{ false }}"><div class="mp-over mp-ink2 dgrp {{ q.c }}">{{ q.t }}</div></sc-if>
@@ -338,7 +340,7 @@ saved: { net: 457951, own: 704694, owe: 246743, uk: 351468, ind: 106483, arun: 2
 };
 // In rupees: each total x 112.50; India is its own rupee sum (₹1,34,92,563 less ₹15,13,257), the UK the rest; owe is own less net; the last part of every split is the rest, so each adds up.
 const INR = { net: 50056988, own: 77815575, owe: 27758587, uk: 38077682, ind: 11979306, arun: 28222650, asha: 21834338, liq: 4229550, fix: 2662875, lock: 70923150 };
-const navItems = [['ov', 'home', 'Overview'], ['as', 'donut_small', 'Assets'], ['db', 'credit_card', 'Debts'], ['bu', 'savings', 'Budget'], ['pr', 'trending_up', 'Projection'], ['ac', 'history', 'Activity'], ['au', 'fact_check', 'Audit']];
+const navItems = [['ch', 'chat_bubble', 'Chat'], ['ov', 'home', 'Overview'], ['as', 'donut_small', 'Assets'], ['db', 'credit_card', 'Debts'], ['bu', 'savings', 'Budget'], ['pr', 'trending_up', 'Projection'], ['ac', 'history', 'Activity'], ['au', 'fact_check', 'Audit']];
 const nav = navItems.map((i) => ({ icon: i[1], label: i[2], cls: i[0] === 'ov' ? 'on' : '', cur: i[0] === 'ov' ? 'page' : 'false', fill: i[0] === 'ov' ? 'ms-fill' : '' }));
 const tabsFor = (on) => [['ch', 'chat_bubble', 'Chat'], ['ov', 'home', 'Overview'], ['as', 'donut_small', 'Assets'], ['db', 'credit_card', 'Debts'], ['mo', 'menu', 'More']].map((i) => ({ icon: i[1], label: i[2], cls: i[0] === on ? 'on' : '', cur: i[0] === on ? 'page' : 'false', fill: i[0] === on ? 'ms-fill' : '' }));
 const page = (S) => {
@@ -349,7 +351,7 @@ const HA = (s) => (priv ? String(s).replace(/[−+-]?[£₹$€]\s?[\d,.]+/g, 'h
 const M = (k) => (inr ? R(INR[k]) : G(F[k]));
 const none = a('');
 // the hero
-const h = { over: 'Household net worth', gOn: inr ? '' : 'on', iOn: inr ? 'on' : '', isEmpty: !!S.empty, isFig: !S.empty, fig: priv ? HID(M('net')) : M('net'), gP: inr ? 'false' : 'true', iP: inr ? 'true' : 'false', plain: !priv && !S.roll, masked: priv, roll: !!S.roll, from: String(FIG.before.net), hasChip: false, chip: '', chipC: '', hasSplit: false, split: [], sa: none, st: '', rate: '£1 = ₹112.50 · ECB reference rate, Fri 23 Oct · prices at the Fri 23 Oct close' };
+const h = { over: 'Net worth · Mon 26 Oct', gOn: inr ? '' : 'on', iOn: inr ? 'on' : '', isEmpty: !!S.empty, isFig: !S.empty, fig: priv ? HID(M('net')) : M('net'), gP: inr ? 'false' : 'true', iP: inr ? 'true' : 'false', plain: !priv && !S.roll, masked: priv, roll: !!S.roll, from: String(FIG.before.net), hasChip: false, chip: '', chipC: '', hasSplit: false, split: [], sa: none, st: '', rate: '£1 = ₹112.50 · ECB reference rate, Fri 23 Oct · prices at the Fri 23 Oct close' };
 if (S.fig === 'before') { h.st = 'Across 20 records in the UK and India'; }
 else if (S.fig === 'saved') { h.sa = a('▲ ' + G(13000)); h.st = 'at 09:52 · Home, Reading corrected in place'; }
 else if (!S.empty) { h.sa = a('▲ ' + (inr ? R(5000 * FX) : G(5000))); h.st = 'at 09:41 · Instant access savings · Monzo, added in the chat' + (inr ? ' · about ₹5.01 crore in all' : ''); }
@@ -492,7 +494,7 @@ const states = [
 { id: 's2', name: 'Browser · Dashboard, net worth first, phone', keys: 'MA-95 · MA-208 · MA-213', isOpt: false,
 why: '1a at 390, the phone-web door, after Arun registered the Monzo savings at 09:41: one column in the order the desktop\'s two columns read, and the chat as the first tab.',
 views: [both(390, { opt: '1a' }, 'as it opens'), both(390, { opt: '1a', end: true }, 'scrolled to the end')],
-notes: [n('One markup:', 'the chat sits beside every screen from about 1133 px, a sheet away from about 600 to 1133 px, and a tab under 600; under 1024 the shell drops the sidebar and shows the tab bar.'), n('Chat is a tab:', 'Chat · Overview · Assets · Debts · More.'), n('Nothing is cut:', 'the cards stack; long names clip with an ellipsis, figures never do.')] },
+notes: [n('One markup:', 'the chat sits beside every screen from about 1393 px, a sheet away from about 600 to 1393 px, and a tab in a compact window (every iPhone, a folded foldable, Slide Over); on the web the sheet is a drawer over the page from 1024 to 1392 px, opened from the sidebar\'s Chat, and under 1024 the shell drops the sidebar and shows the tab bar.'), n('Chat is a tab:', 'Chat · Overview · Assets · Debts · More.'), n('Nothing is cut:', 'the cards stack; long names clip with an ellipsis, figures never do.')] },
 { id: 's3', name: 'Browser · Dashboard, in rupees', keys: 'MA-213 · MA-95', isOpt: false,
 why: 'The switch set to ₹: every total in rupees with lakh and crore grouping, the rate and its date under the hero. Each record keeps its own currency. The choice is the member\'s own, saved with their settings, and changes no record.',
 views: [both(1440, { opt: '1a', ccy: 'inr' }, 'as it opens')],

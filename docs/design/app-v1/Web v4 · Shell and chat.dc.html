@@ -42,6 +42,7 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 /* frames: desktop 1440 and the phone-web door 390 */
 .board { position: relative; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 20px 50px rgba(0,0,0,.14); }
 .sz-d { width: 1440px; height: 900px; border-radius: 12px; }
+.sz-l { width: 1280px; height: 820px; border-radius: 12px; }   /* a 13-inch laptop's window, under 1393 px: the chat is a drawer (MA-301 c 1c) */
 .sz-p { width: 390px; height: 844px; border-radius: 20px; }   /* a phone browser, not an iPhone bezel (MA-300) */
 .sz-p:has(.lock) { border-radius: 48px; }   /* Web Push on the phone's own lock screen: the phone's chrome is the point */
 .chrome { flex: none; height: 40px; display: flex; align-items: center; gap: 16px; padding: 0 16px; background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }
@@ -49,7 +50,9 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 .dots i { width: 12px; height: 12px; border-radius: 50%; background: var(--mp-track); }
 .url { margin: 0 auto; width: 460px; height: 28px; border-radius: 8px; background: var(--mp-surface); display: flex; align-items: center; justify-content: center; gap: 6px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
 .url .ms { font-size: 15px; }
-.chrome-r { width: 60px; }
+.chrome-r { min-width: 60px; display: flex; justify-content: flex-end; }
+.wlbl { font: 600 12px/16px ui-monospace, Menlo, monospace; padding: 3px 8px; border-radius: 6px; background: var(--mp-ink); color: var(--mp-bg); white-space: nowrap; }   /* the window's width, in the browser bar (MA-301 c) */
+.url .lc { width: 15px; height: 15px; }
 .sbar { flex: none; height: 54px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 30px 8px 38px; box-sizing: border-box; font: 600 16px/20px var(--mp-font); }
 .sbar .ms { font-size: 17px; }
 .sbar.wurl { align-items: center; justify-content: center; gap: 6px; padding: 0 16px; font: 500 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-bottom: 1px solid var(--mp-line); }   /* the browser's address bar, not an iPhone status bar (MA-300) */
@@ -64,6 +67,10 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 .main { position: relative; overflow: hidden; background: var(--mp-bg); }
 .tabs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; }
 .tabs .mp-tab:not(.on) { color: var(--mp-ink-2); }
+/* the sidebar: Search (⌘K) and Chat sit in it at every width (MA-301 c 1c, g 1a); Lucide icons in the frames MA-301 drew (f 1a) */
+.kbd { margin-left: auto; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-radius: 6px; padding: 2px 6px; flex: none; }
+.mp-side-i.on .lc { color: var(--mp-accent); }
+.mp-side-i.pr { color: var(--mp-accent); font-weight: 600; }   /* Chat while its drawer is open: pressed, the page stays current */
 .mp-tab { font-size: 12px; line-height: 14px; }   /* no product text under 12 px (MA-300) */
 /* the mark, 1c Watcher (MA-103), as the other browser boards draw it */
 .mpm { display: block; flex: none; }
@@ -75,7 +82,10 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 .mpm-dot { fill: var(--mp-coral); }
 .mpm-hero .mpm-ring { stroke: var(--mp-hero-ink-2); }
 .mpm-hero .mpm-coin { fill: var(--mp-hero-2); }
-/* the chat: a column beside every screen from about 1133 px (1a), the page itself (1b), a drawer (1c), a tab under 1024 */
+/* the chat: beside every screen from about 1393 px, a sheet away from about 600 to 1393 px, and a tab in a compact window
+   (every iPhone, a folded foldable, Slide Over) (MA-301 c 1c, Arun, 2 Nov 2026). On the web the sheet is a drawer over the
+   page from 1024 to 1392 px, opened from the sidebar's Chat; under 1024 the tab bar's rules stand. 1b makes the chat the
+   page itself; 1c's ask bar grows into its own drawer. */
 .chatcol { display: none; flex-direction: column; min-height: 0; background: var(--mp-bg); position: relative; }
 .grab { display: none; flex: none; width: 36px; height: 5px; border-radius: 3px; background: var(--mp-track); margin: 8px auto 0; }
 .chd { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 12px 10px 20px; border-bottom: 1px solid var(--mp-line); }
@@ -150,9 +160,7 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 .hero .mp-num-hero, .cc-fig > span { align-self: flex-start; }
 .fxl { display: flex; flex-wrap: wrap; gap: 0 6px; }
 .nwr { white-space: nowrap; }
-.hchips { display: flex; flex-wrap: wrap; gap: 8px; }
-.hchip { color: var(--mp-hero-ink); background: var(--mp-hero-2); gap: 6px; }
-.hchip .k { color: var(--mp-hero-ink-2); font-weight: 500; }
+/* own, owe and liquid: three hairline-ruled columns on the hero itself, never boxes (MA-301 d 1a, .mp-hairs) */
 .hlive { display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid var(--mp-hero-2); font: 400 14px/19px var(--mp-font); color: var(--mp-hero-ink-2); }
 .hlive .ms { color: var(--mp-coral); }
 .ttl { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
@@ -233,10 +241,27 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 .tagline { font-size: 44px; line-height: 50px; }
 .lform { align-items: center; }
 }
-@container app (min-width: 1133px) {   /* 1a: the chat beside every screen from about 1133 px (MA-240, MA-300) */
+@container app (min-width: 1393px) {   /* 1a: the chat beside every screen from about 1393 px (MA-301 c 1c; it was 1133, MA-240) */
 .sh-a .chatcol { display: flex; flex: none; width: clamp(340px, 28%, 420px); border-left: 1px solid var(--mp-line); }
 .sh-a.nochat .chatcol { display: none; }
 }
+@container app (min-width: 1024px) and (max-width: 1392px) {   /* from 1024 to 1392 px the page has the room; Chat in the sidebar opens the chat as a drawer from the right */
+.mp .mp-shell.sh-a.c-drawer .chatcol { display: flex; position: absolute; z-index: 6; top: 0; right: 0; bottom: 0; width: 380px; border-left: 1px solid var(--mp-line); box-shadow: var(--mp-shadow); }
+}
+/* ⌘K: one palette over any page, to go, find or ask (MA-301 g 1a); nothing is created in it */
+.palw { position: absolute; inset: 0; z-index: 20; display: flex; justify-content: center; align-items: flex-start; padding-top: 112px; }
+.pal { position: relative; width: 640px; max-width: calc(100% - 48px); background: var(--mp-surface); border-radius: 16px; box-shadow: 0 0 0 1px var(--mp-line), var(--mp-shadow); overflow: hidden; display: flex; flex-direction: column; }
+.pfield { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 16px; border-bottom: 1px solid var(--mp-line); font: 400 17px/22px var(--mp-font); }
+.pfield .pq { flex: 1; color: var(--mp-ink-2); }
+.pfield .pq.typed { color: var(--mp-ink); }
+.pfield > .lc { color: var(--mp-ink-2); }
+.pcaret { display: inline-block; width: 2px; height: 20px; margin-left: 1px; vertical-align: -4px; border-radius: 1px; background: var(--mp-accent); }
+.plist { padding: 6px; display: flex; flex-direction: column; }
+.pgh { font: 600 13px/18px var(--mp-font); color: var(--mp-ink-2); padding: 10px 10px 4px; }
+.prow { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 10px; border-radius: 10px; box-sizing: border-box; }
+.prow > .lc { color: var(--mp-accent); }
+.prow.on { background: var(--mp-surface-2); }
+.pfoot { display: flex; gap: 16px; padding: 10px 16px; border-top: 1px solid var(--mp-line); font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
 @container app (min-width: 1024px) {
 .sh-b .main { display: none; }
 .sh-b .chatcol { display: flex; flex: 1; min-width: 0; }
@@ -262,9 +287,10 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 
 <section class="dv-turn" id="t0" data-screen-label="Web v4 shell and chat: intro">
 <div class="dv-thd"><a class="dv-tid" href="#t0">W</a><span class="dv-tname">Web v4: the shell with the chat, its states, and Activity</span></div>
-<p class="dv-intro">MA-193's browser boards for the web app at dashboard.mypaisapp.com, now a full door with the chat (MA-186): the shell (MA-199, MA-208), the chat's states (MA-199), Web Push (MA-200), sign-in (MA-185) and Activity (MA-196), in MyPaisa DS v1, Warm ledger, at desktop (1440) and the phone-web door (390), light and dark. Anything new is made only in the chat, as a card, a Confirm and an audit row; Claude never produces a figure: they come from the engine or the registry. Every figure is the v4 figure set's: today is Mon 26 Oct, prices are at the Fri 23 Oct close, £1 = ₹112.50 (ECB). One family, Arun (admin) and Asha. Each frame plays its motion as it scrolls into view; add ?static=1 for still captures. Planned: Arun picks the shell in MA-193's round.</p>
+<p class="dv-intro">MA-193's browser boards for the web app at dashboard.mypaisapp.com, now a full door with the chat (MA-186): the shell (MA-199, MA-208), the chat's states (MA-199), Web Push (MA-200), sign-in (MA-185) and Activity (MA-196), in MyPaisa DS v1, Warm ledger, at desktop (1440, and 1a at 1280, where the chat is a drawer) and the phone-web door (390), light and dark. Anything new is made only in the chat, as a card, a Confirm and an audit row; Claude never produces a figure: they come from the engine or the registry. Every figure is the v4 figure set's: today is Mon 26 Oct, prices are at the Fri 23 Oct close, £1 = ₹112.50 (ECB). One family, Arun (admin) and Asha. Each frame plays its motion as it scrolls into view; add ?static=1 for still captures. Planned: Arun picks the shell in MA-193's round.</p>
 <nav class="dv-idx" aria-label="Boards">
 <a href="#1a">Browser · Shell 1a, Chat beside</a><a href="#1a">Browser · Shell 1a, Chat beside, phone</a>
+<a href="#1a">Browser · Shell 1a at 1280, the page alone</a><a href="#1a">Browser · Shell 1a at 1280, Chat as a drawer</a>
 <a href="#1b">Browser · Shell 1b, Chat first</a><a href="#1b">Browser · Shell 1b, Chat first, phone</a>
 <a href="#1c">Browser · Shell 1c, Ask bar</a><a href="#1c">Browser · Shell 1c, Ask bar, phone</a>
 <a href="#2a">Browser · Chat, a reply streaming</a><a href="#2a">Browser · Chat, a reply streaming, phone</a>
@@ -274,6 +300,7 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 <a href="#2e">Browser · Home moves live</a><a href="#2e">Browser · Home moves live, phone</a>
 <a href="#2f">Browser · Web Push notification</a><a href="#2f">Browser · Web Push notification, phone</a>
 <a href="#2g">Browser · Sign in</a><a href="#2g">Browser · Sign in, phone</a>
+<a href="#2h">Browser · ⌘K palette, nothing typed</a><a href="#2h">Browser · ⌘K palette, typing “hdfc”</a>
 <a href="#3a">Browser · Activity</a><a href="#3a">Browser · Activity, phone</a>
 <a href="#3b">Browser · A run</a><a href="#3b">Browser · A run, phone</a>
 </nav>
@@ -296,14 +323,15 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 <p class="dv-cap">{{ f.cap }}</p>
 <div class="board mp mp-app {{ f.tcls }} {{ f.sz }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
 <sc-if value="{{ f.app }}" hint-placeholder-val="{{ true }}">
-<sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url"><span class="ms" aria-hidden="true">lock</span>dashboard.mypaisapp.com</span><span class="chrome-r"></span></div></sc-if>
+<sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ I.lock }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms" aria-hidden="true">lock</span></sc-if>dashboard.mypaisapp.com</span><span class="chrome-r"><sc-if value="{{ f.hasW }}" hint-placeholder-val="{{ false }}"><span class="wlbl">{{ f.w }}</span></sc-if></span></div></sc-if>
 <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="sbar wurl" aria-hidden="true"><span class="ms" aria-hidden="true">lock</span>dashboard.mypaisapp.com</div></sc-if>
 <div class="mp-shell shl {{ f.shl }}">
 <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.cls }}" href="#{{ b.anchor }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</a></sc-for>
+<sc-if value="{{ f.search }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i" href="#2h" aria-keyshortcuts="Meta+K"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ I.search }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms" aria-hidden="true">search</span></sc-if>Search<span class="kbd">⌘K</span></a></sc-if>
+<sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.cls }}" href="#{{ b.anchor }}"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ n.lc }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span></sc-if>{{ n.label }}</a></sc-for>
 <div class="side-sep"></div>
-<a class="mp-side-i" href="#{{ b.anchor }}"><span class="ms" aria-hidden="true">admin_panel_settings</span>Admin center</a>
+<a class="mp-side-i" href="#{{ b.anchor }}"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ I.shield }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms" aria-hidden="true">admin_panel_settings</span></sc-if>Admin center</a>
 <div class="f1"></div>
 <div class="mp-foot mp-ink2 side-ft">Arun · admin<br />Signed in with Apple</div>
 </aside>
@@ -315,19 +343,18 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 <div class="hctl">
 <div class="mp-seg whose" role="group" aria-label="Whose view"><button type="button" class="mp-seg-i on" aria-pressed="true">Household</button><button type="button" class="mp-seg-i" aria-pressed="false">Arun</button><button type="button" class="mp-seg-i" aria-pressed="false">Asha</button></div>
 <div class="mp-seg ccy" role="group" aria-label="Currency"><button type="button" class="mp-seg-i on" aria-pressed="true" aria-label="Pounds">£</button><button type="button" class="mp-seg-i" aria-pressed="false" aria-label="Rupees">₹</button></div>
-<button type="button" class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ f.h.pr }}"><span class="ms" aria-hidden="true">{{ f.h.eye }}</span></button>
+<button type="button" class="iconbtn" aria-label="Privacy mode" aria-pressed="{{ f.h.pr }}"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ f.h.eyeLc }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms" aria-hidden="true">{{ f.h.eye }}</span></sc-if></button>
 <sc-if value="{{ f.showChatBtn }}" hint-placeholder-val="{{ false }}"><button class="mp-btn mp-btn-tinted mp-btn-small"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</button></sc-if>
 </div>
 </header>
 <div class="mp-hero hero">
-<span class="mp-over mp-hero-2">Net worth · household</span>
-<span class="mp-num-hero {{ f.h.m }}">{{ f.h.nw }}</span>
+<span class="mp-over mp-hero-2">{{ f.h.over }}</span>
+<div class="fx ac gap12 wrap"><span class="mp-num-hero {{ f.h.m }}">{{ f.h.nw }}</span><sc-if value="{{ f.h.live }}" hint-placeholder-val="{{ false }}"><span class="mp-chip upchip">▲ £5,000 at 09:41</span></sc-if></div>
 <span class="mp-sub mp-hero-2 fxl"><span class="{{ f.h.m }}">{{ f.h.inr }}</span><span class="nwr">{{ f.h.fx }}</span></span>
-<div class="hchips">
-<span class="mp-chip hchip"><span class="k">Own</span><span class="{{ f.h.m }}">{{ f.h.own }}</span></span>
-<span class="mp-chip hchip"><span class="k">Owe</span><span class="{{ f.h.m }}">{{ f.h.owe }}</span></span>
-<span class="mp-chip hchip"><span class="k">Liquid</span><span class="{{ f.h.m }}">{{ f.h.liq }}</span></span>
-<sc-if value="{{ f.h.live }}" hint-placeholder-val="{{ false }}"><span class="mp-chip upchip">▲ £5,000 at 09:41</span></sc-if>
+<div class="mp-hairs">
+<div><span class="mp-foot mp-hero-2">Own</span><span class="mp-hl nwr"><span class="{{ f.h.m }}">{{ f.h.own }}</span></span></div>
+<div><span class="mp-foot mp-hero-2">Owe</span><span class="mp-hl nwr"><span class="{{ f.h.m }}">{{ f.h.owe }}</span></span></div>
+<div><span class="mp-foot mp-hero-2">Liquid</span><span class="mp-hl nwr"><span class="{{ f.h.m }}">{{ f.h.liq }}</span></span></div>
 </div>
 <sc-if value="{{ f.h.live }}" hint-placeholder-val="{{ false }}"><div class="hlive"><span class="ms ms-s" aria-hidden="true">bolt</span><span>{{ f.h.liveT }}</span></div></sc-if>
 </div>
@@ -349,7 +376,7 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 <div class="mp-col">
 <div class="mp-card">
 <div class="ttl"><span class="mp-hl">What's due</span><span class="mp-foot mp-ink2">the check-ins ahead</span></div>
-<sc-for list="{{ f.h.due }}" as="d" hint-placeholder-count="4"><div class="drow"><span class="mp-icontile dtile"><span class="ms ms-s" aria-hidden="true">{{ d.icon }}</span></span><span class="fx col f1"><span class="mp-sub mp-w6">{{ d.t }}</span><span class="mp-foot mp-ink2">{{ d.s }}</span></span><span class="mp-sub mp-w6 {{ d.ac }}">{{ d.a }}</span></div></sc-for>
+<sc-for list="{{ f.h.due }}" as="d" hint-placeholder-count="4"><div class="drow"><span class="mp-icontile dtile"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ d.lc }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms ms-s" aria-hidden="true">{{ d.icon }}</span></sc-if></span><span class="fx col f1"><span class="mp-sub mp-w6">{{ d.t }}</span><span class="mp-foot mp-ink2">{{ d.s }}</span></span><span class="mp-sub mp-w6 {{ d.ac }}">{{ d.a }}</span></div></sc-for>
 <div class="mp-foot mp-ink2 hnote">Each is asked in the chat on its day, with the answer one tap away.</div>
 </div>
 </div>
@@ -399,7 +426,7 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 <div class="askbar" role="group" aria-label="Ask MyPaisa"><button type="button" class="cplus" aria-label="Attach a file"><span class="ms" aria-hidden="true">add</span></button><span class="ph" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask MyPaisa, or tell it something new</span><button type="button" class="send" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
 </main>
 <section class="chatcol" aria-label="Chat">
-<div class="chd"><div class="fx col"><span class="mp-hl">Chat</span><span class="mp-foot mp-ink2">One conversation at every door</span></div><button class="iconbtn" aria-label="{{ f.chdLbl }}"><span class="ms" aria-hidden="true">{{ f.chdIcon }}</span></button></div>
+<div class="chd"><div class="fx col"><span class="mp-hl">Chat</span><span class="mp-foot mp-ink2">One conversation at every door</span></div><button class="iconbtn" aria-label="{{ f.chdLbl }}"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc " viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ f.chdLc }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms" aria-hidden="true">{{ f.chdIcon }}</span></sc-if></button></div>
 <div class="strip">
 <div class="fx col f1"><span class="mp-foot mp-ink2">{{ f.stripLbl }}</span><span class="fx ac gap8"><span class="strip-n {{ f.h.m }}">{{ f.h.nw }}</span><span class="mp-foot mp-ink2 {{ f.h.m }}">{{ f.h.inr }}</span></span></div>
 <div class="sfig"><span class="fx col"><span class="mp-foot mp-ink2">Own</span><span class="mp-hl {{ f.h.m }}">{{ f.h.own }}</span></span><span class="fx col"><span class="mp-foot mp-ink2">Owe</span><span class="mp-hl {{ f.h.m }}">{{ f.h.owe }}</span></span><span class="fx col"><span class="mp-foot mp-ink2">Liquid</span><span class="mp-hl {{ f.h.m }}">{{ f.h.liq }}</span></span></div>
@@ -417,22 +444,23 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 <sc-if value="{{ m.air }}" hint-placeholder-val="{{ false }}"><div class="ai"><svg class="mpm aim" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="aib"><div class="reading"><span class="typing"><i></i><i></i><i></i></span><span>{{ m.t }}</span></div><span class="aimeta">{{ m.s }}</span></div></div></sc-if>
 <sc-if value="{{ m.ask }}" hint-placeholder-val="{{ false }}"><div class="ai"><svg class="mpm aim" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="aib"><div class="ait">{{ m.t }}</div><div class="chips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="chipb {{ c.cls }}" aria-pressed="{{ c.pr }}">{{ c.l }}</button></sc-for></div></div></div></sc-if>
 <sc-if value="{{ m.card }}" hint-placeholder-val="{{ false }}"><div class="ai"><svg class="mpm aim" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><div class="aib"><div class="cc">
-<div class="cc-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="fx ac gap8"><sc-if value="{{ m.saved }}" hint-placeholder-val="{{ false }}"><span class="ms ms-fill okk" aria-hidden="true" data-mo="saved">check_circle</span></sc-if><span class="mp-hl">{{ m.title }}</span></span></div>
+<div class="cc-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="fx ac gap8"><sc-if value="{{ m.saved }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc okk" data-mo="saved" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ I.circleCheck }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms ms-fill okk" aria-hidden="true" data-mo="saved">check_circle</span></sc-if></sc-if><span class="mp-hl">{{ m.title }}</span></span></div>
 <div class="cc-b"><sc-for list="{{ m.rows }}" as="kv" hint-placeholder-count="3"><div class="kvr"><span>{{ kv.k }}</span><span>{{ kv.v }}</span></div></sc-for><sc-if value="{{ m.hasHint }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink2 cc-hint">{{ m.hint }}</span></sc-if></div>
 <sc-if value="{{ m.acts }}" hint-placeholder-val="{{ false }}"><div class="cc-a"><button class="mp-btn mp-btn-primary mp-btn-small">Confirm</button><button class="mp-btn mp-btn-tinted mp-btn-small">Edit</button><button class="mp-btn mp-btn-plain">Cancel</button></div></sc-if>
-<sc-if value="{{ m.saved }}" hint-placeholder-val="{{ false }}"><div class="cc-f"><span class="fx ac gap8"><span class="ms" aria-hidden="true">history</span>Saved · in the audit log</span><span>{{ m.at }}</span></div></sc-if>
+<sc-if value="{{ m.saved }}" hint-placeholder-val="{{ false }}"><div class="cc-f"><span class="fx ac gap8"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ I.history }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms" aria-hidden="true">history</span></sc-if>Saved · in the audit log</span><span>{{ m.at }}</span></div></sc-if>
 </div></div></div></sc-if>
 <sc-if value="{{ m.fig }}" hint-placeholder-val="{{ false }}"><div class="ai"><span class="aim"></span><div class="aib"><div class="cc cc-fig"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="mp-num-l {{ m.mcls }}">{{ m.v }}</span><span class="mp-foot mp-ink2 {{ m.mcls }}">{{ m.s }}</span></div><span class="aimeta">{{ m.meta }}</span></div></div></sc-if>
 </sc-for>
 </div>
-<sc-if value="{{ f.c.sugg }}" hint-placeholder-val="{{ true }}"><div class="sugg"><sc-for list="{{ sugg }}" as="s" hint-placeholder-count="4"><button type="button" class="sg"><span class="ms" aria-hidden="true">{{ s.icon }}</span>{{ s.l }}</button></sc-for></div></sc-if>
+<sc-if value="{{ f.c.sugg }}" hint-placeholder-val="{{ true }}"><div class="sugg"><sc-for list="{{ sugg }}" as="s" hint-placeholder-count="4"><button type="button" class="sg"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ s.lc }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms" aria-hidden="true">{{ s.icon }}</span></sc-if>{{ s.l }}</button></sc-for></div></sc-if>
 <div class="comp">
-<button type="button" class="cplus" aria-label="Attach a file"><span class="ms" aria-hidden="true">add</span></button>
+<button type="button" class="cplus" aria-label="Attach a file"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc " viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ I.plus }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms" aria-hidden="true">add</span></sc-if></button>
 <sc-if value="{{ f.c.isFile }}" hint-placeholder-val="{{ false }}"><div class="cfield att"><div class="file"><span class="ftile"><span class="ms" aria-hidden="true">picture_as_pdf</span></span><span class="fx col f1"><span class="fname">{{ f.c.fname }}</span><span class="fmeta">{{ f.c.fmeta }}</span></span><button type="button" class="xbtn" aria-label="Remove the file"><span class="ms" aria-hidden="true">close</span></button></div><div class="attline"><span class="ph typed" role="textbox" tabindex="0" aria-label="Message MyPaisa">{{ f.c.text }}</span><button type="button" class="send on" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div></div></sc-if>
-<sc-if value="{{ f.c.notFile }}" hint-placeholder-val="{{ true }}"><div class="cfield"><span class="ph" role="textbox" tabindex="0" aria-label="Message MyPaisa">{{ f.c.ph }}</span><button type="button" class="{{ f.c.sendCls }}" aria-label="{{ f.c.sendLbl }}"><span class="ms ms-fill" aria-hidden="true">{{ f.c.sendIcon }}</span></button></div></sc-if>
+<sc-if value="{{ f.c.notFile }}" hint-placeholder-val="{{ true }}"><div class="cfield"><span class="ph" role="textbox" tabindex="0" aria-label="Message MyPaisa">{{ f.c.ph }}</span><button type="button" class="{{ f.c.sendCls }}" aria-label="{{ f.c.sendLbl }}"><sc-if value="{{ f.lc }}" hint-placeholder-val="{{ false }}"><svg class="lc " viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ f.c.sendLc }}"></path></svg></sc-if><sc-if value="{{ f.ms }}" hint-placeholder-val="{{ true }}"><span class="ms ms-fill" aria-hidden="true">{{ f.c.sendIcon }}</span></sc-if></button></div></sc-if>
 </div>
 </section>
 <nav class="mp-tabbar mp-shell-tabs tabs" aria-label="Sections"><sc-for list="{{ f.tabs }}" as="n" hint-placeholder-count="4"><a class="mp-tab {{ n.cls }}" href="#{{ b.anchor }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</a></sc-for></nav>
+<sc-if value="{{ f.pal }}" hint-placeholder-val="{{ false }}"><div class="palw"><div class="mp-scrim"></div><div class="pal" role="dialog" aria-modal="true" aria-label="Go to, find or ask"><div class="pfield"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ I.search }}"></path></svg><span class="pq {{ f.pq.cls }}" role="combobox" aria-expanded="true" aria-label="Search, go to, or ask MyPaisa">{{ f.pq.t }}<sc-if value="{{ f.pq.typed }}" hint-placeholder-val="{{ false }}"><span class="pcaret"></span></sc-if></span><span class="kbd">esc</span></div><div class="plist" role="listbox" aria-label="Results"><sc-for list="{{ f.pgroups }}" as="g" hint-placeholder-count="3"><div class="pgh" role="presentation">{{ g.h }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2"><div class="prow {{ r.on }}" role="option" aria-selected="{{ r.sel }}"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ r.lc }}"></path></svg><span class="fx col f1"><span class="mp-sub">{{ r.t }}</span><sc-if value="{{ r.hasS }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-ink2">{{ r.s }}</span></sc-if></span><sc-if value="{{ r.hasK }}" hint-placeholder-val="{{ false }}"><span class="kbd">{{ r.k }}</span></sc-if></div></sc-for></sc-for></div><div class="pfoot"><span>↑↓ to move</span><span>↵ to open</span><span>⌘K anywhere</span></div></div></div></sc-if>
 </div>
 </sc-if>
 <sc-if value="{{ f.push }}" hint-placeholder-val="{{ false }}">
@@ -461,7 +489,7 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 <div class="fx ac gap12"><svg class="mpm mpm-hero" width="44" height="44" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div>
 <div class="fx col gap16">
 <h1 class="tagline" data-mo="rise">Everything your household owns and owes, in one calm place.</h1>
-<p class="mp-callout mp-hero-2" style="margin: 0; max-width: 440px">The UK and India together, kept up to date by talking to MyPaisa. The chat is here too, beside every page.</p>
+<p class="mp-callout mp-hero-2" style="margin: 0; max-width: 440px">The UK and India together, kept up to date by talking to MyPaisa. The chat is here too, on every page.</p>
 </div>
 <div class="mp-foot mp-hero-2">Illustrative</div>
 </div>
@@ -494,9 +522,47 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 class Component extends DCLogic {
 renderVals() {
 const T = [{ label: 'Light', cls: 't-light' }, { label: 'Dark', cls: 't-dark' }];
-const NAV = [['home', 'home', 'Home'], ['as', 'savings', 'Assets'], ['de', 'credit_card', 'Debts'], ['bu', 'account_balance_wallet', 'Budget'], ['pr', 'timeline', 'Projection'], ['ac', 'insights', 'Activity'], ['au', 'fact_check', 'Audit'], ['you', 'account_circle', 'You']];
-const item = (on) => (i) => ({ icon: i[1], label: i[2], cls: i[0] === on ? 'on' : '', fill: i[0] === on ? 'ms-fill' : '' });
-const nav = (on, chatFirst) => (chatFirst ? [['chat', 'chat_bubble', 'Chat']].concat(NAV) : NAV).map(item(on));
+const LC = { // Lucide v1.8.0 (ISC licence), each icon's shapes joined into one path for the template (MA-301 f 1a)
+'lock': 'M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-7a2 2 0 0 1 2 -2ZM7 11V7a5 5 0 0 1 10 0v4',
+'search': 'M21 21l-4.34-4.34M3 11a8 8 0 1 0 16 0a8 8 0 1 0 -16 0',
+'shield': 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z',
+'house': 'M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z',
+'wallet': 'M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4',
+'landmark': 'M10 18v-7M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949zM14 18v-7M18 18v-7M3 22h18M6 18v-7',
+'chart-pie': 'M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1zM21.21 15.89A10 10 0 1 1 8 2.83',
+'trending-up': 'M16 7h6v6M22 7l-8.5 8.5-5-5L2 17',
+'activity': 'M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2',
+'clipboard-check': 'M9 2h6a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1ZM16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 14l2 2 4-4',
+'circle-user': 'M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0M9 10a3 3 0 1 0 6 0a3 3 0 1 0 -6 0M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662',
+'message-circle': 'M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719',
+'eye': 'M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0',
+'eye-off': 'M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49M14.084 14.158a3 3 0 0 1-4.242-4.242M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143M2 2l20 20',
+'plus': 'M5 12h14M12 5v14',
+'arrow-up': 'M5 12l7-7 7 7M12 19V5',
+'receipt': 'M12 17V7M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z',
+'piggy-bank': 'M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zM16 10h.01M2 8v1a2 2 0 0 0 2 2h1',
+'calendar': 'M8 2v4M16 2v4M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2ZM3 10h18',
+'banknote': 'M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2v-8a2 2 0 0 1 2 -2ZM10 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0M6 12h.01M18 12h.01',
+'circle-plus': 'M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0M8 12h8M12 8v8',
+'file-up': 'M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2zM14 2v5a1 1 0 0 0 1 1h5M12 12v6M15 15l-3-3-3 3',
+'panel-right-close': 'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2ZM15 3v18M8 9l3 3-3 3',
+'x': 'M18 6 6 18M6 6l12 12',
+'circle-check': 'M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0M9 12l2 2 4-4',
+'history': 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8M3 3v5h5M12 7v5l4 2',
+'moon': 'M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401',
+'credit-card': 'M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2ZM2 10L22 10',
+'repeat': 'M17 2l4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3'
+};
+// the static icons a Lucide frame draws (the browser's lock, Search, Admin center, a saved card, the composer's +)
+const I = { lock: LC['lock'], search: LC['search'], shield: LC['shield'], circleCheck: LC['circle-check'], history: LC['history'], plus: LC['plus'] };
+// a Material Symbols name (the older frames) and its Lucide twin (the frames MA-301 drew)
+const MS2LC = { home: 'house', savings: 'piggy-bank', home_work: 'house', receipt_long: 'receipt', account_balance: 'landmark', credit_card: 'credit-card', pie_chart: 'chart-pie', event: 'calendar', add_circle: 'circle-plus', upload_file: 'file-up', visibility: 'eye', visibility_off: 'eye-off', arrow_upward: 'arrow-up', right_panel_close: 'panel-right-close', close: 'x' };
+const lcOf = (ms) => LC[MS2LC[ms]] || '';
+const NAV = [['home', 'home', 'Home', 'house'], ['as', 'savings', 'Assets', 'wallet'], ['de', 'credit_card', 'Debts', 'landmark'], ['bu', 'account_balance_wallet', 'Budget', 'chart-pie'], ['pr', 'timeline', 'Projection', 'trending-up'], ['ac', 'insights', 'Activity', 'activity'], ['au', 'fact_check', 'Audit', 'clipboard-check'], ['you', 'account_circle', 'You', 'circle-user']];
+const CHAT = ['chat', 'chat_bubble', 'Chat', 'message-circle'];
+const item = (on, pressed) => (i) => ({ icon: i[1], label: i[2], lc: LC[i[3]] || '', cls: i[0] === on ? 'on' : (i[0] === pressed ? 'pr' : ''), fill: i[0] === on ? 'ms-fill' : '' });
+// Chat sits first in the sidebar at every width (as on iPad): from 1393 px it shows or hides the column, below it opens the drawer
+const nav = (on, chatFirst, pressed) => (chatFirst ? [CHAT].concat(NAV) : NAV).map(item(on, pressed));
 const TABS = [['chat', 'chat_bubble', 'Chat'], ['home', 'home', 'Home'], ['ac', 'insights', 'Activity'], ['you', 'account_circle', 'You']];
 const tabs = (on, noChat) => TABS.filter((i) => !(noChat && i[0] === 'chat')).map(item(on));
 
@@ -514,13 +580,14 @@ const home = (which, o) => {
 const n = FIG[which].n, priv = !!o.priv;
 const f = priv ? Object.fromEntries(Object.entries(FIG[which]).map(([k, v]) => [k, typeof v === 'string' ? HID(v) : v])) : FIG[which];
 return Object.assign({}, f, {
-m: priv ? 'mp-mask' : '', pr: priv ? 'true' : 'false', eye: priv ? 'visibility_off' : 'visibility', live: !!o.live, sub: o.sub,
+m: priv ? 'mp-mask' : '', pr: priv ? 'true' : 'false', eye: priv ? 'visibility_off' : 'visibility', eyeLc: lcOf(priv ? 'visibility_off' : 'visibility'), live: !!o.live, sub: o.sub,
+over: 'Net worth · ' + (o.day || 'Mon 26 Oct'),
 fx: priv ? 'at the ECB rate of Fri 30 Oct' : 'at £1 = ₹112.50 · ECB, Fri 23 Oct',
 ukF: n[1], inF: n[2], arF: n[3], asF: n[4],
 ukP: pc(n[1], n[0]), inP: pc(n[2], n[0]), arP: pc(n[3], n[0]), asP: pc(n[4], n[0]),
 dUK: o.live ? '+£5,000' : '', dAr: o.live ? '+£5,000' : '',
 liveT: 'Updated live at 09:41: the change came over the stream, no reload. It was £439,951.',
-due: (o.due || DUE_MON).map((d) => ({ icon: d[0], t: d[1], s: d[2], a: priv && d[3] ? HID(d[3]) : d[3] || '', ac: priv && d[3] ? 'mp-mask' : '' }))
+due: (o.due || DUE_MON).map((d) => ({ icon: d[0], lc: lcOf(d[0]), t: d[1], s: d[2], a: priv && d[3] ? HID(d[3]) : d[3] || '', ac: priv && d[3] ? 'mp-mask' : '' }))
 });
 };
 const SUB = 'Mon 26 Oct · prices at the Fri 23 Oct close · illustrative figures';
@@ -529,7 +596,7 @@ before: home('before', { sub: SUB }),
 after: home('after', { sub: SUB }),
 live: home('after', { sub: SUB, live: true }),
 off: home('after', { sub: 'Offline · the figures as last loaded at 18:17' }),
-priv: home('after', { priv: true, sub: 'Sun 1 Nov · prices at the Fri 30 Oct close · privacy mode', due: DUE_SUN })
+priv: home('after', { priv: true, day: 'Sun 1 Nov', sub: 'Sun 1 Nov · prices at the Fri 30 Oct close · privacy mode', due: DUE_SUN })
 };
 
 // One conversation, Arun's, at every door.
@@ -556,7 +623,7 @@ const DUE_T = "Two things this week: the valuation of Home, Reading is due on Fr
 const convF1 = tailD.concat([sep('Today 18:20'), me("What's due this week?", "Waiting · sends when you're back online", 'schedule')]);
 const convF2 = tailD.concat([sep('Today 18:20'), me("What's due this week?", 'Sent at 18:24, when the connection came back', 'done_all'), ai(DUE_T, 'From the registry: what is due')]);
 
-const comp = (o) => Object.assign({ notFile: true, isFile: false, ph: 'Ask MyPaisa, or tell it something new', sendCls: 'send', sendIcon: 'arrow_upward', sendLbl: 'Send', sugg: true, text: '', fname: '', fmeta: '' }, o);
+const comp = (o) => Object.assign({ notFile: true, isFile: false, ph: 'Ask MyPaisa, or tell it something new', sendCls: 'send', sendIcon: 'arrow_upward', sendLc: LC['arrow-up'], sendLbl: 'Send', sugg: true, text: '', fname: '', fmeta: '' }, o);
 const C = {
 norm: comp({}),
 home: comp({ ph: 'Ask about Home, or tell MyPaisa something new' }),
@@ -570,25 +637,47 @@ off: comp({ ph: 'Offline · what you type waits here', sugg: false })
 const BAN_OFF = { has: true, cls: 'ban-off', icon: 'cloud_off', t: "You're offline. What you type waits here and sends by itself when you're back." };
 const BAN_BACK = { has: true, cls: 'ban-back', icon: 'cloud_done', t: 'Back online at 18:24 · 1 message sent' };
 
-const BASE = { app: true, push: false, signin: false, desk: false, phone: false, sz: '', shl: '', nav: [], tabs: [], pHome: false, pAct: false, pRun: false, h: H.after, chdIcon: 'right_panel_close', chdLbl: 'Hide the chat', stripLbl: 'Household · Mon 26 Oct', ban: { has: false }, msgs: [], c: C.norm, showChatBtn: false, time: '09:42' };
+const BASE = { app: true, push: false, signin: false, desk: false, phone: false, sz: '', shl: '', nav: [], tabs: [], pHome: false, pAct: false, pRun: false, h: H.after, chdIcon: 'right_panel_close', chdLc: LC['panel-right-close'], chdLbl: 'Hide the chat', stripLbl: 'Household · Mon 26 Oct', ban: { has: false }, msgs: [], c: C.norm, showChatBtn: false, time: '09:42',
+search: true, lc: false, ms: true, hasW: false, w: '', pal: false, pq: { t: '', cls: '', typed: false }, pgroups: [] };
 const two = (o, cap) => T.map((t) => Object.assign({}, BASE, o, { tcls: t.cls, cap: cap + ' · ' + t.label }));
 const D = (o, cap) => two(Object.assign({ desk: true, sz: 'sz-d' }, o), cap);
 const P = (o, cap) => two(Object.assign({ phone: true, sz: 'sz-p' }, o), cap);
 const row = (lbl, frames) => ({ lbl, frames });
-const A1 = { shl: 'sh-a', nav: nav('home'), pHome: true, c: C.home };
+const A1 = { shl: 'sh-a', nav: nav('home', true), pHome: true, c: C.home };
 const PC = { shl: 'sh-a v-chat', tabs: tabs('chat') };
 const PH = { shl: 'sh-a v-home', tabs: tabs('home'), pHome: true };
-const ACT = { shl: 'sh-a', nav: nav('ac'), msgs: convD };
+const ACT = { shl: 'sh-a', nav: nav('ac', true), msgs: convD };
+// MA-301: the frames it drew carry Lucide icons (f 1a): 1a at 1280, where the chat is a drawer (c 1c), and the ⌘K palette (g 1a)
+const LCF = { lc: true, ms: false };
+const DL = (o, cap) => two(Object.assign({ desk: true, sz: 'sz-l', hasW: true, w: '1280 px' }, LCF, o), cap);
+const DK = (o, cap) => D(Object.assign({}, LCF, o), cap);
+const DRAWER = { shl: 'sh-a c-drawer', nav: nav('home', true, 'chat'), chdIcon: 'close', chdLc: LC['x'], chdLbl: 'Close the chat' };
+const prow = (lc, t, s, k, on) => ({ lc: LC[lc], t, s: s || '', hasS: !!s, k: k || '', hasK: !!k, on: on ? 'on' : '', sel: on ? 'true' : 'false' });
+const PAL_EMPTY = [
+{ h: 'Go to', rows: [prow('house', 'Home', '', '⌘1', true), prow('wallet', 'Assets', '', '⌘2'), prow('trending-up', 'Projection', '', '⌘3'), prow('chart-pie', 'Budget', '', '⌘4')] },
+{ h: 'Do it in the chat', rows: [prow('receipt', 'Send a statement', 'Starts the guided flow in the chat'), prow('banknote', 'Log money', 'Starts the guided flow in the chat')] },
+{ h: 'Settings', rows: [prow('eye-off', 'Privacy mode', '', '⇧⌘H'), prow('moon', 'Appearance', 'System')] }
+];
+const PAL_HDFC = [
+{ h: 'Ask', rows: [prow('message-circle', 'Ask MyPaisa: “hdfc”', 'Return sends it to the chat as a question', '↵', true)] },
+{ h: 'Records', rows: [prow('landmark', 'HDFC home loan', 'Debt · ₹15,13,257 · EMI ₹39,390 · paid off Jul 2030'), prow('calendar', 'HDFC home loan EMI', 'Check-in · Thu 5 Nov · ₹39,390')] },
+{ h: 'Do it in the chat', rows: [prow('banknote', 'Record an HDFC payment', 'Starts the guided flow in the chat')] }
+];
+const PAL = (q) => Object.assign({}, A1, { msgs: convA, pal: true, pq: q ? { t: q, cls: 'typed', typed: true } : { t: 'Search, go to, or ask MyPaisa', cls: '', typed: false }, pgroups: q ? PAL_HDFC : PAL_EMPTY });
 
 const b1a = { anchor: '1a', tag: '1a', keys: 'Jira: MA-199 · MA-208', name: 'Browser · Shell 1a, Chat beside', cap: 'Browser · Shell 1a, Chat beside, phone', rec: true,
-desc: "The sidebar, the page, and the chat as a column beside every screen from about 1133 px, as the iPad's 1a draws it; a sheet away from about 600 to 1133 px. Under 600 the chat is a tab, as on the iPhone.",
+desc: "The sidebar, the page, and the chat: beside every screen from about 1393 px, a sheet away from about 600 to 1393 px, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). On the web the sheet is a drawer over the page from 1024 to 1392 px, opened from the sidebar's Chat; under 1024 the tab bar carries Chat, a sheet away, and under 600 it is a tab, as on the iPhone.",
 rows: [
 row('Browser · Shell 1a, Chat beside', D(Object.assign({ msgs: convA }, A1), 'Browser · Shell 1a, Chat beside')),
+row('Browser · Shell 1a at 1280: the page alone', DL(Object.assign({}, A1, { msgs: convA }), 'Browser · Shell 1a at 1280, the page alone')),
+row('Browser · Shell 1a at 1280: Chat as a drawer', DL(Object.assign({}, A1, DRAWER, { msgs: convA }), 'Browser · Shell 1a at 1280, Chat as a drawer')),
 row('Browser · Shell 1a, Chat beside, phone', P(PH, 'Browser · Shell 1a, Chat beside, phone · Home tab').concat(P(Object.assign({ msgs: convA }, PC), 'Browser · Shell 1a, Chat beside, phone · Chat tab')))
 ],
 notes: [
-{ b: 'Recommended.', t: "It is the iPad's 1a at the laptop, so the two doors feel the same: the page and the conversation side by side, and a Confirm in the column moves the page beside it at once. At 390 it is the iPhone's tab bar, Chat · Home · Activity · You." },
-{ b: 'From about 1133 px:', t: 'the sidebar, the page and the chat column beside every screen. The composer names the page ("Ask about Home"), and the column can be hidden for a wider page (Browser · Home moves live).' },
+{ b: 'Recommended.', t: "On a wide window the page and the conversation sit side by side, and a Confirm in the column moves the page beside it at once. From 1024 to 1393 px the page keeps its room beside the sidebar and the chat comes over it as a drawer (under 1024 px, where the tab bar stays, it is the Chat tab), as the iPad's comes up as a sheet, so the two doors behave alike. At 390 it is the iPhone's tab bar, Chat · Home · Activity · You." },
+{ b: 'From about 1393 px:', t: 'the sidebar, the page and the chat column beside every screen. The composer names the page ("Ask about Home"), and the column can be hidden for a wider page (Browser · Home moves live).' },
+{ b: 'From 1024 to 1392 px:', t: "the page alone, in two columns at 1280 (1,032 px of page beside the 248 px sidebar). Chat, first in the sidebar, opens the chat as a 380 px drawer from the right, over the page, and closes it; the page stays Home (MA-301 c 1c, Arun, 2 Nov 2026)." },
+{ b: 'Search, ⌘K:', t: 'tops the sidebar at every width and opens the palette (Browser · ⌘K palette).' },
 { b: 'Under 1024:', t: 'the tab bar, with the chat a sheet away, and under 600 a tab; a visit opens Home, a push or a link opens Chat at its card. The household strip tops the chat, as on the iPhone.' },
 { b: 'Figures:', t: 'net worth £444,951 after the first record (own £691,694 less owe £246,743), ₹5,00,56,988 at £1 = ₹112.50. UK £338,468 and India £106,483, Arun £250,868 and Asha £194,083, each pair summing to it.' }
 ] };
@@ -667,7 +756,7 @@ rows: [row('Browser · Home moves live', D(Object.assign({}, A1, { shl: 'sh-a no
 notes: [
 { b: 'What moved:', t: 'the hero £439,951 → £444,951, own £686,694 → £691,694, liquid £32,596 → £37,596, the UK row and Arun\'s row each +£5,000; India and Asha stand still.' },
 { b: 'One line says why:', t: 'updated live at 09:41 over the stream (records.changed), no reload, with the figure it was.' },
-{ b: 'The chat column hidden:', t: '1a lets a member close it for a wider page; Chat brings it back. The phone\'s Home tab moves the same way.' }
+{ b: 'The chat column hidden:', t: 'from about 1393 px 1a lets a member close it for a wider page; Chat brings it back. The phone\'s Home tab moves the same way.' }
 ] };
 const b2f = { anchor: '2f', tag: '2f', keys: 'Jira: MA-200', name: 'Browser · Web Push notification', cap: 'Browser · Web Push notification, phone',
 desc: "Web Push reaches the installed web app while it is closed. Mon 26 Oct 09:00: the daily check-in job's valuation question.",
@@ -685,6 +774,16 @@ notes: [
 { b: 'No data, no name, no password:', t: "Apple's and Google's own buttons, and a passkey after the first sign-in (MA-185)." }
 ] };
 
+const b2h = { anchor: '2h', tag: '2h', keys: 'Jira: MA-301 · MA-229', name: 'Browser · ⌘K palette', cap: 'Browser · ⌘K palette',
+desc: '⌘K, or Search at the top of the sidebar, opens one palette over any page: go to a page, find a record, or ask. Over Home at 1440, Mon 26 Oct, with the chat beside it.',
+rows: [row('Browser · ⌘K palette · nothing typed', DK(PAL(''), 'Browser · ⌘K palette, nothing typed')), row('Browser · ⌘K palette · typing “hdfc”', DK(PAL('hdfc'), 'Browser · ⌘K palette, typing “hdfc”'))],
+notes: [
+{ b: 'Nothing typed:', t: 'the pages with ⌘1 to ⌘4, the two guided flows that start in the chat, and two settings: Privacy mode (⇧⌘H) and Appearance.' },
+{ b: 'Typed:', t: 'the first row is always "Ask MyPaisa: …", and Return sends it to the chat as a question; then the records and the flows that match. "hdfc" finds the HDFC home loan (₹15,13,257, EMI ₹39,390, paid off in Jul 2030) and its EMI check-in on Thu 5 Nov.' },
+{ b: 'Nothing is created here:', t: 'a flow row opens its guided flow in the chat, where the card, Confirm and the audit row are made; the palette never shows a form.' },
+{ b: 'iPad too:', t: '⌘K opens the same palette on iPad, its first row sending the question to the chat (Arun, 23 Nov 2026), so the key means one thing at both doors; drawn in iPad v4 · Adaptive shell and foldable.' },
+{ b: 'Build:', t: "shadcn-svelte's Command in a Dialog (TECH_STACK); Escape closes it and focus returns where it was; 44 px rows, read by a screen reader as a listbox; Lucide icons (MA-301 f 1a)." }
+] };
 const b3a = { anchor: '3a', tag: '3a', keys: 'Jira: MA-196', name: 'Browser · Activity', cap: 'Browser · Activity, phone',
 desc: "Today's runs, Mon 26 Oct to 09:45, in 1a's shell with the chat beside.",
 rows: [row('Browser · Activity', D(Object.assign({}, ACT, { pAct: true, c: C.act }), 'Browser · Activity')), row('Browser · Activity, phone', P({ shl: 'sh-a v-home', tabs: tabs('ac'), pAct: true, time: '09:45' }, 'Browser · Activity, phone'))],
@@ -704,11 +803,12 @@ notes: [
 
 return {
 turns: [
-{ anchor: 't1', tag: '1', label: 'Turn 1: the web shell with the chat', name: 'The web shell with the chat: three options', intro: "Each option at desktop (1440) and at the phone-web door (390), light and dark, showing Home with the household's net worth after the first record (£444,951) and the conversation that made it. One markup per option, reflowed by the adaptive shell in tokens.css: the sidebar from 1024, the tab bar below it.", boards: [b1a, b1b, b1c] },
-{ anchor: 't2', tag: '2', label: "Turn 2: 1a's states", name: "1a's states", intro: "The recommended option's states, desktop and phone, light and dark: the reply streaming, the Confirm card, a statement, offline, Home moving live, the push and the sign-in page. Mon 26 Oct unless a board says otherwise.", boards: [b2a, b2b, b2c, b2d, b2e, b2f, b2g] },
+{ anchor: 't1', tag: '1', label: 'Turn 1: the web shell with the chat', name: 'The web shell with the chat: three options', intro: "Each option at desktop (1440) and at the phone-web door (390), light and dark (1a also at 1280, where the chat is a drawer), showing Home with the household's net worth after the first record (£444,951) and the conversation that made it. One markup per option, reflowed by the adaptive shell in tokens.css: the sidebar from 1024, the tab bar below it.", boards: [b1a, b1b, b1c] },
+{ anchor: 't2', tag: '2', label: "Turn 2: 1a's states", name: "1a's states", intro: "The recommended option's states, desktop and phone, light and dark: the reply streaming, the Confirm card, a statement, offline, Home moving live, the push, the sign-in page and the ⌘K palette. Mon 26 Oct unless a board says otherwise.", boards: [b2a, b2b, b2c, b2d, b2e, b2f, b2g, b2h] },
 { anchor: 't3', tag: '3', label: 'Turn 3: Activity', name: 'Activity and a run', intro: "Activity in 1a's shell, matched to iPhone · Activity and iPhone · A run (iPhone audit and activity) in figures and style. Costs are illustrative, worked from the token counts at the same rates.", boards: [b3a, b3b] }
 ],
-sugg: [['pie_chart', 'Net worth'], ['event', "What's due"], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']].map((s) => ({ icon: s[0], l: s[1] })),
+sugg: [['pie_chart', 'Net worth'], ['event', "What's due"], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']].map((s) => ({ icon: s[0], lc: lcOf(s[0]), l: s[1] })),
+I: I,
 push: { title: 'A check-in is waiting', body: 'Home, Reading: is its value still about right?' },
 runs: [
 { time: '01:00', name: 'Nightly views', sub: 'Net worth, the budget month and what is due, rebuilt from the events', line: 'No model · 21 s', model: 'No model', tok: '0', cost: '$0.00', tools: '', hasTools: false, icon: 'check_circle', out: 'Done' },

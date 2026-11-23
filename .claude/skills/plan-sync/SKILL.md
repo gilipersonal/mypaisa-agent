@@ -190,6 +190,36 @@ made in Confluence.
      gone.
 3. `python3 scripts/confluence_docs.py check` is clean.
 
+### Publish in parallel, as much as possible
+
+Arun, 23 Nov 2026 (MA-301): "save this as a rule / skill that confluence publish will be done as much parallel as
+possible". A publish is split into lanes that run at the same time; only the recording is serial, because
+`docs/confluence.json` is one file and two writers would lose each other's entries.
+
+- **Lanes do the sending, the coordinator does the recording.** A sub-agent uploads or publishes and returns what it
+  got (a preview's `fileId`, a page's new version and the path of its saved read-back). The coordinator alone runs
+  `set-image`, `set-page`, `set-readback` and `set-database`, one after another. No lane runs `confluence_docs.py`
+  or edits a repo file.
+- **Capture once, compose once.** One `capture_boards.js` run for every stale preview (its want-list built from
+  `pending`'s images and `wanted_images`), then one `images` run. If the pinned playwright-core's Chromium is not on
+  the machine, point `PLAYWRIGHT_CORE` at a local playwright-core whose Chromium is (MA-301 used 1.63.0 with
+  `chromium_headless_shell-1243`), rather than downloading a browser.
+- **Uploads in parallel lanes,** about 25 to 30 previews each, split by page so one page's previews stay in one lane.
+  Each lane: `createConfluenceAttachment` per file, run its `uploadCommand` as returned (the token in that one command
+  and nowhere else), and return `{name, page_id, fileId}`. Record each lane's ids as it lands, then `write`.
+- **Pages publish as soon as their content is final.** A page whose previews are all recorded (or that shows none)
+  does not wait for the other lanes' uploads: after `write`, start its publish lane at once.
+- **Publish lanes balanced by bytes,** about 200 KB of page per lane, the biggest pages first, six lanes for a
+  full-site publish. Each lane, per page: read the live version (`detail: summary`) and stop if it is above the one
+  recorded (an edit made in Confluence, carried back by hand); send `docs/confluence/<slug>.html` exactly, with its
+  title and a `versionMessage` naming the story; read it back (`detail: full`, html) and save the whole reply,
+  copying the harness's saved output file when the reply was too big to show. Each lane gets `reference/publish-lane-brief.md` (in this skill) and its list.
+- **The coordinator works while the lanes run:** the story explorer database (`databases`), the gates that do not
+  read Confluence (`pr-files`, the story's own gates), the artifacts, the commit. Then it records each lane's
+  results as they land, and runs `pending` and `check` once all have.
+- **A lane that fails one page** reports it and goes on; the coordinator re-runs that page alone. Never resend a
+  whole lane for one page.
+
 Never delete a page or an attachment. A page the generator no longer makes
 is reported and archived by Arun.
 

@@ -60,7 +60,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 :where(button.send4) { appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; text-transform: none; box-sizing: content-box; cursor: pointer; }
 .audit4 a.mp-link { position: relative; } .audit4 a.mp-link::after { content: ""; position: absolute; inset: -13px 0; }   /* 18 drawn, 44 to tap (MA-300) */
 .edfield:focus-visible, .comp4 .ph:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
-/* the chat beside every screen from about 1133 px (MA-240, MA-300) */
+/* the chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over); on the web the unit is px, and from 1024 to 1393 px the chat is a drawer over the page, opened from the sidebar’s Chat, and under 1024 px it is the Chat tab (MA-301 c 1c, after MA-240 and MA-300) */
 .chat4 { width: 380px; flex: none; display: flex; flex-direction: column; border-left: 1px solid var(--mp-line); background: var(--mp-surface); }
 .chat4-h { display: flex; align-items: center; gap: 10px; padding: 18px 20px 14px; border-bottom: 1px solid var(--mp-line); }
 .aim { width: 28px; height: 28px; border-radius: 50%; background: var(--mp-hero); display: grid; place-items: center; flex: none; }
@@ -95,7 +95,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .fb4.on .mp-ink2 { color: var(--mp-hold); }
 .fclr { grid-column: 1 / -1; justify-self: start; }
 @container app (min-width: 600px) { .filt4 { grid-template-columns: repeat(4, minmax(0, 1fr)) auto; } .fclr { grid-column: auto; align-self: center; } }
-.hsplit { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+.hsplit { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 21px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--mp-hero-2); overflow: hidden; }   /* MA-301 d 1a: three hairline-ruled columns on the hero */
+.hsplit > div { margin-left: -11px; padding-left: 10px; border-left: 1px solid var(--mp-hero-2); }
 .hsplit .mp-hl { white-space: nowrap; }
 .cpad { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
 .chead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
@@ -114,13 +115,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .edbtn-s { width: 32px; height: 32px; margin: -6px 0 -6px -2px; }
 .edfield { display: flex; align-items: center; gap: 2px; min-height: 56px; padding: 0 14px; box-sizing: border-box; border-radius: 14px; background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-focus); font: 800 28px/32px var(--mp-font-round); color: var(--mp-ink); }
 .edfield .cur { width: 2px; height: 30px; background: var(--mp-accent); margin-left: 2px; }
-.ba4 { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 15px/20px var(--mp-font); }
+.ba4 { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; font: 15px/20px var(--mp-font); }   /* MA-301 d 1a: a line under the field, never a box */
 .ba4 s { color: var(--mp-ink-2); }
 .audit4 { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-add-bg); }
 .audit4 .ms { color: var(--mp-add); }
 .audit4 .mp-foot { color: var(--mp-ink); }
-.kvg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--mp-line); border-radius: 12px; overflow: hidden; border: 1px solid var(--mp-line); }
+.kvg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--mp-line); }   /* MA-301 d 1a: the figures split by hairlines (the 1 px gaps), never boxed again */
 .kvg > div { background: var(--mp-surface); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kvg > div:nth-child(odd) { padding-left: 0; } .kvg > div:nth-child(-n+2) { padding-top: 0; } .kvg > div:nth-last-child(-n+2) { padding-bottom: 0; }
 .kvg .mp-hl { display: flex; align-items: center; gap: 2px; white-space: nowrap; }
 .li4 { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 0; box-sizing: border-box; }
 .li4 + .li4 { border-top: 1px solid var(--mp-line); }
@@ -161,16 +163,17 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .colb.cplan > span { opacity: 0.5; }
 .colw.now .mp-cap { color: var(--mp-ink); font-weight: 700; }
 .colw .mp-cap { color: var(--mp-ink-2); white-space: nowrap; font-size: 12px; }   /* 12 px floor (MA-300) */
-.filerow { display: flex; align-items: center; gap: 10px; padding: 0 0 0 10px; border-radius: 12px; background: var(--mp-surface-2); min-height: 56px; }
-.filerow .mp-icontile { background: var(--mp-surface); color: var(--mp-ink-2); }
+.filerow { display: flex; align-items: center; gap: 10px; min-height: 56px; }   /* MA-301 d 1a: a file is a row, split from the next by a hairline */
+.filerow + .filerow { border-top: 1px solid var(--mp-line); }
+.filerow .mp-icontile { background: var(--mp-surface-2); color: var(--mp-ink-2); }
 .tb4 { display: grid; align-items: stretch; }
-.tb4 > .th4 { white-space: nowrap; font: 600 12px/16px var(--mp-font); letter-spacing: 0.02em; text-transform: uppercase; color: var(--mp-ink-2); padding: 0 0 8px; border-bottom: 1px solid var(--mp-line); }
+.tb4 > .th4 { white-space: nowrap; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); padding: 0 0 8px; border-bottom: 1px solid var(--mp-line); }
 .tb4 > .td4 { font: 14px/19px var(--mp-font); color: var(--mp-ink); padding: 9px 0; border-bottom: 1px solid var(--mp-line); min-width: 0; display: flex; align-items: center; }
 .tb4 > .td4.r { justify-content: flex-end; }
 .tb4 > .r { text-align: right; padding-left: 8px; }
 .tb4 > .s { color: var(--mp-ink-2); }
 .tb4 > .w6 { font-weight: 600; }
-.code4 { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); font: 13px/19px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink); white-space: pre-wrap; }
+.code4 { display: flex; flex-direction: column; gap: 2px; font: 13px/19px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink); white-space: pre-wrap; }
 .ask4 { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 14px; background: var(--mp-pause-bg); }
 .ask4 .mp-icontile { background: var(--mp-surface); color: var(--mp-pause); }
 .ask4 .mp-hl { color: var(--mp-pause); }
@@ -818,7 +821,7 @@ B({ id: 'w-as', name: 'Browser · Assets', arch: A1, intro: 'Everything the hous
 ['Each record in its own currency;', 'a rupee record shows pounds beside it at £1 = ₹112.50 (ECB, Fri 23 Oct).'],
 ['Liquid, notice or locked on every row,', 'in words with an icon, never colour alone. The household has no notice account, so Notice reads £0.'],
 ['The Monzo savings registered in the chat at 09:41', 'is in the list and in the totals: £691,694 owned, £37,596 of it liquid. The six group totals add to £691,694.'],
-['The chat sits beside every screen from about 1133 px,', 'in whichever shell option is picked; it knows which page is open, and its composer carries the four shortcuts: Net worth, What’s due, Add anything, Send a statement.'],
+['The chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over);', 'on the web the unit is px, and from 1024 to 1393 px the chat is a drawer over the page, opened from the sidebar’s Chat, and under 1024 px it is the Chat tab (MA-301). It knows which page is open, and its composer carries the four shortcuts: Net worth, What’s due, Add anything, Send a statement.'],
 ['The Member filter’s choices are Arun, Asha and Joint,', 'the same owner chips the chat uses, with Everyone for the household.']]),
 B({ id: 'w-as-p', name: 'Browser · Assets, phone', arch: A1, intro: 'The same page at the phone-web door (390): one column, the chat a tab, Assets pushed from Home. As it opens, then the filter sheet with India and 1 to 5 years chosen.', keys: ['MA-217'] },
 [].concat(both(phone, 'Browser · Assets, phone', () => PG.assets({}), { nav: 'as', big: true, crumb: 'Home' }), both(phone, 'Browser · Assets, phone · filter sheet', () => PG.assets({}), { nav: 'as', big: true, crumb: 'Home', sheet: true })),
@@ -832,7 +835,7 @@ both(desk, 'Browser · An asset', () => PG.asset({ wide: true }), { nav: 'as', c
 ['The file’s name is illustrative;', 'the figure set lists no files.']]),
 B({ id: 'w-asset-p', name: 'Browser · An asset, phone', arch: 'ARCHITECTURE.md §9.3, §6.6', intro: 'The fund at 390: as it opens (value, chart, returns), scrolled to the XIRR working, then to the end: the SIP’s events and the file.', keys: ['MA-217', 'MA-212'] },
 [].concat(both(phone, 'Browser · An asset, phone', () => PG.asset({ phase: 'top' }), { nav: 'as', crumb: 'Assets' }), both(phone, 'Browser · An asset, phone · the working', () => PG.asset({ phase: 'work' }), { nav: 'as', crumb: 'Assets' }), both(phone, 'Browser · An asset, phone · scrolled to the end', () => PG.asset({ phase: 'end' }), { nav: 'as', crumb: 'Assets' })),
-[['The working fits the phone:', 'the flows table keeps three columns, and the solve wraps inside its box.']]),
+[['The working fits the phone:', 'the flows table keeps three columns, and the solve wraps under it, never cut.']]),
 B({ id: 'w-nohist', name: 'Browser · An asset, no history', arch: 'ARCHITECTURE.md §9.3, §6.6, §8', intro: 'Infosys, which has no buy history. First the no-history state, with the chat beside it asking for past buys or an estimate; then, after Arun chose an estimate in the chat, the return labelled as his estimate and correctable in place.', keys: ['MA-217', 'MA-215'] },
 [].concat(both(desk, 'Browser · An asset, no history', () => PG.nohist({}), { nav: 'as', crumb: 'Assets', chat: 'ask', ctx: 'Looking at Infosys' }), both(desk, 'Browser · An asset, no history · your estimate', () => PG.nohist({ est: true }), { nav: 'as', crumb: 'Assets', chat: 'est', ctx: 'Looking at Infosys' })),
 [['XIRR is unknown,', 'said in words; the engine returns nothing with its reason, and the page asks for past buys or an estimate. Both buttons open the chat: adding an estimate is something new, so it is a card and a Confirm.'],

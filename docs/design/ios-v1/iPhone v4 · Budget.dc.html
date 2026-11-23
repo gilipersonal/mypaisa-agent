@@ -125,6 +125,37 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .strip.solid { position: relative; background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line), 0 2px 10px rgba(0, 0, 0, 0.08); }
 .strip.solid .mp-up { color: var(--mp-up); }
 .strip.solid .mp-mask { background: var(--mp-mask); }
+
+/* MA-301 d 1a, flatter cards: one surface per card. Inside a card nothing is boxed again; what sits inside is split by
+   hairlines, and labels are short and in sentence case. */
+.hsplit { row-gap: 10px; column-gap: 0; }
+.hsplit > div { min-width: 0; padding: 0 12px; }
+.hsplit > div:nth-child(odd) { padding-left: 0; }
+.hsplit > div:nth-child(even) { border-left: 1px solid var(--mp-hero-2); }
+.hsplit > div:nth-child(n+3) { border-top: 1px solid var(--mp-hero-2); padding-top: 10px; }
+.cth { letter-spacing: 0; text-transform: none; font-size: 13px; line-height: 18px; }
+.mp-card .banner { background: none; border-radius: 0; padding: 12px 0 0; border-top: 1px solid var(--mp-line); }
+.cnote { background: none; border-radius: 0; padding: 10px 0 0; border-top: 1px solid var(--mp-line); color: var(--mp-ink); }
+.cfiles { gap: 0; }
+.cfile { background: none; border-radius: 0; padding: 0; border-top: 1px solid var(--mp-line); }
+.ctile { background: none; border-radius: 0; padding: 8px 0; border-top: 1px solid var(--mp-line); }
+
+/* MA-301 b 1a, the statement: questions first, then a short Confirm (copied from reviews/MA-301, b · Statement Confirm, 1a).
+   One question card per uncertain merchant, the guess as the first chip; a short Confirm with By category and Not
+   spending folded; one Confirm writes all; the saved card has Undo; a saved line is corrected in place. */
+.qbody { display: flex; flex-direction: column; gap: 10px; }
+.qchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.qchip { min-height: 44px; padding: 0 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; font: 600 15px/20px var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink); box-sizing: border-box; }
+.qchip.on { background: var(--mp-accent); color: var(--mp-on-accent); }
+.ans { display: flex; align-items: center; gap: 8px; font: 400 15px/20px var(--mp-font); color: var(--mp-ink-2); }
+.ans .ms { color: var(--mp-up); }
+.dlink { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 44px; box-sizing: border-box; text-align: left; font: 600 15px/20px var(--mp-font); color: var(--mp-accent); border-top: 1px solid var(--mp-line); }
+.lines { display: flex; flex-direction: column; margin-top: -10px; }
+.crow2 { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; min-height: 36px; padding: 8px 0; border-top: 1px solid var(--mp-line); box-sizing: border-box; }
+.crow2.tap { min-height: 44px; align-items: center; }
+.edinl { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); box-shadow: inset 0 0 0 1.5px var(--mp-accent); }   /* an editor, as the page's plan editor (.edrow) is: the one filled thing in a card, while it is open */
+.edwas { font: 400 15px/20px var(--mp-font); }
+.edwas s { color: var(--mp-ink-2); }
 </style>
 </helmet>
 
@@ -231,6 +262,10 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <sc-if value="{{ q.is_tab }}" hint-placeholder-val="{{ false }}"><div class="mtab" role="table" aria-label="October, plan against actual by category"><span class="mth">Category</span><span class="mth tr">Actual</span><span class="mth tr">Plan</span><sc-for list="{{ q.rows }}" as="x" hint-placeholder-count="12"><span class="mt">{{ x.name }}</span><span class="mt tr mp-w6 nowrap"><span>{{ x.mk }}</span><span class="{{ x.a.c }}" role="{{ x.a.r }}" aria-label="{{ x.a.l }}">{{ x.a.v }}</span></span><span class="mt tr mp-ink2 nowrap"><span class="{{ x.p.c }}" role="{{ x.p.r }}" aria-label="{{ x.p.l }}">{{ x.p.v }}</span></span></sc-for></div></sc-if>
 <sc-if value="{{ q.is_files }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><span class="mp-over mp-ink2">{{ q.cap }}</span><sc-for list="{{ q.items }}" as="x" hint-placeholder-count="2"><div class="cfile"><span class="ms ms-s mp-ink2" aria-hidden="true">description</span><span class="mp-foot mp-w6 grow1">{{ x.n }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.is_note }}" hint-placeholder-val="{{ false }}"><div class="cnote"><span class="ms ms-s mp-ink2" aria-hidden="true">{{ q.i }}</span><span class="mp-foot"><sc-for list="{{ q.t }}" as="s" hint-placeholder-count="1"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div></sc-if>
+<sc-if value="{{ q.is_q }}" hint-placeholder-val="{{ false }}"><div class="qbody"><span class="mp-foot mp-ink2">{{ q.sub }}</span><sc-if value="{{ q.asked }}" hint-placeholder-val="{{ true }}"><div class="mp-sub"><sc-for list="{{ q.t }}" as="s" hint-placeholder-count="3"><span class="{{ s.c }}">{{ s.v }}</span></sc-for></div><div class="qchips" role="group" aria-label="{{ q.aria }}"><sc-for list="{{ q.chips }}" as="x" hint-placeholder-count="3"><button type="button" class="qchip {{ x.on }}" aria-pressed="{{ x.p }}">{{ x.t }}</button></sc-for></div></sc-if><sc-if value="{{ q.done }}" hint-placeholder-val="{{ false }}"><div class="ans"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span><span>{{ q.ans }}</span></div></sc-if></div></sc-if>
+<sc-if value="{{ q.is_disc }}" hint-placeholder-val="{{ false }}"><button type="button" class="dlink" aria-expanded="{{ q.open }}"><span>{{ q.t }}</span><span class="ms" aria-hidden="true">{{ q.i }}</span></button></sc-if>
+<sc-if value="{{ q.is_lines }}" hint-placeholder-val="{{ false }}"><div class="lines"><sc-for list="{{ q.items }}" as="x" hint-placeholder-count="3"><div class="crow2 {{ x.cls }}"><span class="mp-sub">{{ x.k }}</span><span class="mp-sub mp-w6 nowrap"><sc-for list="{{ x.v }}" as="s" hint-placeholder-count="2"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.is_ed }}" hint-placeholder-val="{{ false }}"><div class="edinl"><span class="mp-foot mp-ink2"><sc-for list="{{ q.sub }}" as="s" hint-placeholder-count="2"><span class="{{ s.c }}" role="{{ s.r }}" aria-label="{{ s.l }}">{{ s.v }}</span></sc-for></span><span class="edwas">Was <s>{{ q.was }}</s> → <b>{{ q.now }}</b></span><div class="fx gap8 wrap"><button class="cbtn cbtn-primary" type="button">Save</button><button class="cbtn cbtn-ghost" type="button">Cancel</button></div><span class="mp-foot mp-ink2">{{ q.note }}</span></div></sc-if>
 </sc-for>
 </div>
 <sc-if value="{{ m.card.hasActs }}" hint-placeholder-val="{{ true }}"><div class="ccard-acts"><sc-for list="{{ m.card.acts }}" as="b" hint-placeholder-count="3"><button class="cbtn {{ b.c }}" type="button">{{ b.t }}</button></sc-for></div></sc-if>
@@ -346,7 +381,7 @@ const MSG = (o) => Object.assign({ isDay: false, isMe: false, isFiles: false, is
 const DAY = (t) => MSG({ isDay: true, t: t });
 const FILES = () => MSG({ isFiles: true, t: 'October’s statements', files: [{ n: 'barclaycard-2026-11-01.pdf', s: 'PDF · Barclaycard' }, { n: 'monzo-2026-10.csv', s: 'CSV · Monzo' }] });
 const AI = (t, card, meta) => MSG({ isAi: true, hasText: !!t, t: t || '', hasCard: !!card, card: card || null, hasMeta: !!meta, meta: meta || '' });
-const PT = ['kv', 'p', 'sec', 'row', 'amb', 'meter', 'files', 'note', 'tiles', 'tab'];
+const PT = ['kv', 'p', 'sec', 'row', 'amb', 'meter', 'files', 'note', 'tiles', 'tab', 'q', 'disc', 'lines', 'ed'];
 const part = (type, o) => { const b = {}; PT.forEach((x) => { b['is_' + x] = x === type; }); return Object.assign(b, o); };
 const card = (o) => Object.assign({ hasOverI: false, overI: '', overIC: '', over: '', hasChip: false, chip: '', chipC: '', title: [], parts: [], hasActs: false, acts: [], hasFold: false, fold: { i: '', t: '', r: '' } }, o);
 const row = (o) => part('row', Object.assign({ hasI: false, i: '', name: '', sub: '', a: T(''), hasChip: false, chip: '' }, o));
@@ -355,26 +390,44 @@ const para = (t, c) => part('p', { t: typeof t === 'string' ? rt(t) : t, c: c ||
 const sec = (t, r) => part('sec', { t: t, r: typeof r === 'string' ? rt(r) : r });
 const FILESP = part('files', { cap: 'Both files, kept for good', items: [{ n: 'barclaycard-2026-11-01.pdf' }, { n: 'monzo-2026-10.csv' }] });
 
-const reviewCard = (pv) => {
+/* MA-301 b 1a: one question card per uncertain merchant, the guess as the first chip (AMZN Mktp first, then PAYPAL *EBAY) */
+const UNSURE = LINES.filter((l) => !l[4]).reverse();
+const AMZN = UNSURE[0], EBAY = UNSURE[1];
+const QWHY = { 'AMZN Mktp': ['Amazon Marketplace sells most things.', ['Health', 'Something else…']], 'PAYPAL *EBAY': ['A PayPal payment to eBay.', ['Shopping', 'Something else…']] };
+const qCard = (l, n, answered, pv) => {
+  const why = QWHY[l[1]];
+  return card({ over: 'Statement · one to check', title: rt(l[1] + ' · ', V(gbp(l[2]), pv)),
+    parts: [part('q', { sub: 'Barclaycard · ' + oct(l[0]) + ' · question ' + n + ' of 2', asked: !answered, done: !!answered,
+      t: [T(why[0] + ' Is it '), { v: l[3], c: 'mp-w6' }, T('?')], aria: 'Category for ' + l[1],
+      chips: [l[3]].concat(why[1]).map((t, i) => ({ t: t, on: i === 0 ? 'on' : '', p: i === 0 ? 'true' : 'false' })),
+      ans: l[3] + '. MyPaisa will remember it.' })] });
+};
+const disc = (t, open) => part('disc', { t: t, open: open ? 'true' : 'false', i: open ? 'expand_less' : 'expand_more' });
+const lines = (items) => part('lines', { items: items });
+/* the short Confirm: the total, the two sources, and By category and Not spending folded; one Confirm writes all */
+const confirmCard = (pv, open) => {
   const L = (g, dp) => V(gbp(g, dp), pv);
-  const unsure = LINES.filter((l) => !l[4]);
-  const q = { 'AMZN Mktp': 'Amazon Marketplace sells most things.', 'PAYPAL *EBAY': 'A PayPal payment to eBay.' };
+  const cats = CATS.filter((c) => catOf(c[0]).length).map((c) => [c[0], sum(catOf(c[0]).map((l) => l[2]))]).sort((a, b) => b[1] - a[1]);
   return card({ over: 'October’s statements · check them', title: rt('Spending ', L(actG), ' in 22 lines'),
-    parts: [row({ hasI: true, i: 'credit_card', name: 'Barclaycard', sub: 'statement of Sun 1 Nov · 16 lines', a: L(CARD_BAL) }), row({ hasI: true, i: 'account_balance', name: 'Monzo current account', sub: 'October · 11 lines: 6 spending, 5 not', a: T('') }),
-      sec('Two to check', ''),
-    ].concat(unsure.slice().reverse().map((l) => part('amb', { name: l[1], sub: 'Barclaycard · ' + oct(l[0]), a: L(l[2]), guess: l[3], q: q[l[1]] + ' ' + l[3] + ', unless you change it.' })),
-    [sec('By category', rt(L(actG)))],
-    [part('tiles', { items: CATS.filter((c) => catOf(c[0]).length).map((c) => { const ls = catOf(c[0]); return { name: c[0], n: ls.length + (ls.length === 1 ? ' line' : ' lines'), a: L(sum(ls.map((l) => l[2]))), hasChip: ls.some((l) => !l[4]) }; }) })],
-    [sec('Recognised, not spending', '5 lines')],
-    RECOG.map((r) => row({ hasI: true, i: r[4], name: r[1], sub: oct(r[0]) + ' · ' + r[3], a: L(r[2], 2) })),
-    [para('Both files are kept for good. Nothing is saved until you tap Confirm.', 'mp-ink2')]),
+    parts: [row({ hasI: true, i: 'credit_card', name: 'Barclaycard', sub: 'Sun 1 Nov · 16 lines', a: L(CARD_BAL) }), row({ hasI: true, i: 'account_balance', name: 'Monzo current account', sub: 'October · 6 spending lines', a: L(actG - CARD_BAL) }),
+      disc('By category · 11', open === 'cats')]
+      .concat(open === 'cats' ? [lines(cats.map((c) => ({ k: c[0], v: [L(c[1])], cls: '' })))] : [])
+      .concat([disc('Not spending, recognised · 5', open === 'recog')])
+      .concat(open === 'recog' ? RECOG.map((r) => row({ hasI: true, i: r[4], name: r[1], sub: oct(r[0]) + ' · ' + r[3], a: L(r[2], 2) })) : [])
+      .concat([para('Both files are kept for good. Nothing is saved until you tap Confirm.', 'mp-ink2')]),
     hasActs: true, acts: [{ t: 'Confirm', c: 'cbtn-primary' }, { t: 'Edit', c: '' }, { t: 'Cancel', c: 'cbtn-ghost' }] });
 };
-const savedCard = (pv) => {
+/* the saved card: Undo; a saved line is corrected in place (Was Other → Shopping, then Save) */
+const savedCard = (pv, fix) => {
   const L = (g) => V(gbp(g), pv);
+  const fixParts = !fix ? [] : [disc('The 22 lines', true),
+    part('ed', { sub: rt('PAYPAL *EBAY · ', L(EBAY[2]), ' · ' + oct(EBAY[0])), was: 'Other', now: 'Shopping', note: 'Save writes a correction with its audit row, and MyPaisa remembers eBay as Shopping.' }),
+    lines([[27, 'Waitrose'], [27, 'AMZN Mktp']].map((w) => { const l = LINES.find((x) => x[0] === w[0] && x[1] === w[1]); return { k: l[1] + ' · ' + oct(l[0]), v: [L(l[2]), T(' · ' + l[3])], cls: 'tap' }; }))];
   return card({ hasOverI: true, overI: 'check_circle', overIC: 'c-add', over: 'October’s statements · saved', title: rt('22 lines in October’s budget'),
-    parts: [kv('Spending', rt(L(actG), ' · 11 categories')), kv('Not counted', '5 lines, recognised'), kv('Remembered', 'AMZN Mktp is Shopping, PAYPAL *EBAY is Other'),
-      part('note', { i: 'task_alt', t: rt('It also confirmed two autopay EMIs the weekly digest had assumed paid: the car loan’s on Tue 20 Oct and the mortgage’s on Thu 1 Oct.') }), FILESP],
+    parts: [kv('Spending', rt(L(actG), ' · 11 categories')), kv('Not counted', '5 lines, recognised'), kv('Remembered', 'AMZN Mktp is Shopping, PAYPAL *EBAY is Other')]
+      .concat([part('note', { i: 'task_alt', t: rt('It also confirmed two autopay EMIs the weekly digest had assumed paid: the car loan’s on Tue 20 Oct and the mortgage’s on Thu 1 Oct.') }), FILESP])
+      .concat(fixParts),
+    hasActs: true, acts: [{ t: 'Undo', c: 'cbtn-ghost' }],
     hasFold: true, fold: { i: 'history', t: 'Saved · in the audit log', r: '08:44' } });
 };
 const confirmedCard = (pv) => {
@@ -403,14 +456,21 @@ const closedCard = (pv) => {
     hasActs: true, acts: [{ t: 'Undo', c: 'cbtn-ghost' }],
     hasFold: true, fold: { i: 'history', t: 'Closed · in the audit log', r: '09:02' } });
 };
-const T_READ = 'Both are read. Here is October from them, by category; the two lines I am not sure of are in amber.';
+const T_READ = 'Read: 22 lines of spending, 5 that are not spending. Two merchants I am not sure of, so one question each first.';
+const T_THEN = 'Then this is everything, in one card.';
 const T_NOV = 'November is open, on the same plan. I’ll ask again on Tue 1 Dec.';
+/* MA-301 b 1a: the questions first, each answered in place, then the short Confirm, which becomes the saved card */
 const chatAt = (when, pv) => {
-  if (when === 'review') return [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ, reviewCard(pv))];
-  if (when === 'answered') return [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ, savedCard(pv)), AI('', confirmedCard(pv))];
-  if (when === 'checkin') return [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ, savedCard(pv)), DAY('09:00'), AI('', checkinCard(pv))];
-  return [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ, savedCard(pv)), DAY('09:00'), AI('', closedCard(pv)), AI(T_NOV)];
+  const head = [DAY('Sun 1 Nov 08:40'), FILES(), AI(T_READ)];
+  const asked = head.concat([AI('', qCard(AMZN, 1, true, pv)), AI('', qCard(EBAY, 2, true, pv))]);
+  if (when === 'q1') return head.concat([AI('', qCard(AMZN, 1, false, pv))]);
+  if (when === 'q2') return head.concat([AI('', qCard(AMZN, 1, true, pv)), AI('', qCard(EBAY, 2, false, pv))]);
+  if (when === 'confirm' || when === 'cats' || when === 'recog') return asked.concat([AI(T_THEN, confirmCard(pv, when))]);
+  if (when === 'answered' || when === 'fix') return asked.concat([AI(T_THEN, savedCard(pv, when === 'fix')), AI('', confirmedCard(pv))]);
+  if (when === 'checkin') return asked.concat([AI(T_THEN, savedCard(pv)), DAY('09:00'), AI('', checkinCard(pv))]);
+  return asked.concat([AI(T_THEN, savedCard(pv)), DAY('09:00'), AI('', closedCard(pv)), AI(T_NOV)]);
 };
+const BEFORE = ['q1', 'q2', 'confirm', 'cats', 'recog'];
 
 /* ======================= the iPhone: shell 1a, Chat first ======================= */
 const tabDefs = [['chat', 'chat_bubble', 'Chat'], ['home', 'home', 'Home'], ['act', 'insights', 'Activity'], ['you', 'account_circle', 'You']];
@@ -420,19 +480,19 @@ const TH = { Light: 't-light', Dark: 't-dark' };
 /* a frame: a page (state, privacy, rupees, edit, scroll) or the chat (when, scroll) */
 const FR = (cap, theme, o) => ({ cap: cap, cls: TH[theme], clock: o.clock || '09:05', isPage: !o.chat, isChat: !!o.chat, scrolled: !!o.off,
   pg: page(Object.assign({}, o, { off: (o.off ? -o.off : 0) + 'px' })), eyeT: o.priv ? 'lg-tint' : '', eyeF: o.priv ? 'ms-fill' : '',
-  nw: V(o.when === 'review' ? '£457,951' : '£456,493', !!o.priv), msgs: chatAt(o.when || 'closed', !!o.priv), cpos: o.top != null ? 'top: ' + o.top + 'px' : 'bottom: 208px',
+  nw: V(BEFORE.indexOf(o.when) >= 0 ? '£457,951' : '£456,493', !!o.priv), msgs: chatAt(o.when || 'closed', !!o.priv), cpos: o.top != null ? 'top: ' + o.top + 'px' : 'bottom: 208px',
   hasTabs: !o.kbd, hasKbd: !!o.kbd, tabs: tabs(o.chat ? 'chat' : 'home') });
 const both = (name, parts) => ['Light', 'Dark'].reduce((a, th) => a.concat(parts.map((p) => FR(name + ' · ' + th + ' · ' + p[0], th, p[1]))), []);
-const BUD_2 = 650, BUD_3 = 1277, BUD_4 = 1930, REV_2 = 500, REV_3 = 1000, CI_TOP = 747, I3_TOP = 250, ED_OFF = 500, SV_OFF = 500;
+const BUD_2 = 650, BUD_3 = 1277, BUD_4 = 1930, CI_TOP = 1054, I3_TOP = 512, FIX_TOP = 900, ED_OFF = 500, SV_OFF = 500;
 
 const boards = [
 { id: 'i1', tag: 'I1', name: 'iPhone · Budget', keyline: 'MA-96', arch: 'ARCHITECTURE.md §12 (Budget), §4.10, §9', intro: 'Budget on iPhone, pushed from Home in shell 1a, after October closed at 09:02 on Sun 1 Nov: the surplus and savings rate on the hero, plan against actual for each category, income by member with the Pune rent in rupees and pounds, the EMIs and the SIP, and each member’s salary history with its measured growth. Drawn as Arun scrolls, in light and dark, then the ₹ INR view and privacy on.', keys: [key('MA-96')],
   frames: both('iPhone · Budget', [['as it opens', { state: 'closed' }], ['scrolled to plan against actual', { state: 'closed', off: BUD_2 }], ['scrolled to income', { state: 'closed', off: BUD_3 }], ['scrolled to the end', { state: 'closed', off: BUD_4 }]]).concat([FR('iPhone · Budget · Light · in rupees', 'Light', { state: 'closed', inr: true }), FR('iPhone · Budget · Dark · privacy on', 'Dark', { state: 'closed', priv: true })]),
   notes: N2([['Jira: MA-96.', 'Budget at the iOS door; the web door is Web v4 · Budget in MyPaisa app v1, with the same figures and blocks.'], ['Superseded:', 'the old Budget board said “MyPaisa does not read your bank”. An admin now sends statements in the chat; MyPaisa still never connects to the bank.'], ['Every figure is budget_oct’s:', 'plan £2,682, actual £2,246, income £7,560, EMIs £2,153, SIP £89, surplus £2,636 planned and £3,072 actual, savings rate 40.6%. Derived: £436 over plan (£3,072 − £2,636), the plan’s savings rate 34.9% (£2,636 ÷ £7,560), and each category’s over or under (actual − plan).'], ['Lines keep their own currency, totals follow £/₹:', 'the Pune rent ₹18,000 is £160, HDFC’s ₹39,389.58 EMI £350 (shown ₹39,390), the SIP’s ₹10,000 £89, at £1 = ₹112.50. In rupees: income ₹8,50,500, EMIs ₹2,42,228, spending ₹2,52,675 of ₹3,01,725, surplus ₹3,45,597.'], ['Salary history', 'is each member’s yearly net pay, from 0, with the engine’s measured growth: Arun 4.8% a year since 2022, Asha 3.5% a year since 2023.'], ['Correct in place, create in the chat:', 'an admin taps a plan, income or salary figure and corrects it (iPhone · Budget, correct a plan amount); a new category is made only in the chat, as the note under the list says.'], ['Glass is the controls only:', 'the back button, the eye, Ask and the tab bar float; the hero, the cards and the bars are solid Warm ledger. Privacy on tints the eye and masks every amount.'], ['Moves:', 'the surplus rolls up once, the meters grow from the left and the salary bars rise; under Reduce Motion they land at once.']]) },
-{ id: 'i2', tag: 'I2', name: 'iPhone · Statement review', keyline: 'MA-218', arch: 'ARCHITECTURE.md §4.9 (Statements), §4.6', intro: 'Sun 1 Nov, 08:41. Arun sends the Barclaycard statement of Sun 1 Nov and Monzo’s for October from the Chat tab. One review card follows: grouped by category, the two uncertain lines in amber, the five lines that are not spending recognised, and one Confirm. Drawn as he scrolls through it, in light and dark.', keys: [key('MA-218')],
-  frames: both('iPhone · Statement review', [['1, sent', { chat: true, when: 'review', clock: '08:41', top: 8 }], ['2, the amber lines', { chat: true, when: 'review', clock: '08:41', top: -REV_2 }], ['3, by category', { chat: true, when: 'review', clock: '08:41', top: -REV_3 }], ['4, recognised and Confirm', { chat: true, when: 'review', clock: '08:42' }]]),
-  notes: N2([['Jira: MA-218.', 'The statement review card at the iOS door; the web door is Browser · Statement review.'], ['statements_oct:', 'Barclaycard’s 16 lines come to its £1,458 balance; Monzo has 6 spending lines and 5 that are not spending. The 22 lines by category equal budget_oct’s actuals to the pound: £2,246.'], ['Amber, never red:', 'AMZN Mktp £165 (Shopping?) and PAYPAL *EBAY £42 (Other?). Confirm keeps the guess; Change sets another category first; the merchant memory learns either way.'], ['Recognised, so nothing counts twice:', 'the Barclaycard payment £1,240, the mortgage £1,456.46 and the car loan £346.55 (EMIs matched to their commitments), the move of £5,000 to savings, and Arun’s salary £4,350.'], ['One Confirm, no second check:', 'a statement is routine (§4.5). Both files are kept for good before anything reads them. Line counts (22, 11 categories, 11 Monzo lines) are derived; file names are illustrative.'], ['The household strip', 'shows £457,951 here, before Confirm: the set’s net worth after Mon 26 Oct (totals_after_correction: the £5,000 savings record at 09:41 and the Home correction from £415,000 to £428,000 at 09:52), prices still at the Fri 23 Oct close. From Confirm at 08:44 it shows £456,493: the Barclaycard statement’s £1,458 is owed, due Fri 20 Nov (totals_after_statement_sun_1_nov).'], ['Context only:', 'the composer’s shortcut chips (Budget, Send a statement, Log money) stand in for whatever the chat’s own boards settle.']]) },
-{ id: 'i3', tag: 'I3', name: 'iPhone · Statement answers a check-in', keyline: 'MA-218', arch: 'ARCHITECTURE.md §4.9 (a statement answers its check-in)', intro: 'Sun 1 Nov, 08:44, after Confirm. The car loan’s October EMI, £346.55 on Tue 20 Oct, is an autopay commitment the weekly digest listed as assumed paid. The Monzo statement shows the payment, so its check-in moves by itself to confirmed by the statement: the saved card notes it, and the car loan’s card says so.', keys: [key('MA-218')],
+{ id: 'i2', tag: 'I2', name: 'iPhone · Statement review', keyline: 'MA-218 · MA-301 b 1a', arch: 'ARCHITECTURE.md §4.9 (Statements), §4.6, §9.1 (guided flows)', intro: 'Sun 1 Nov, 08:41. Arun sends the Barclaycard statement of Sun 1 Nov and Monzo’s for October from the Chat tab. Questions first (MA-301 b 1a, Arun’s pick of Mon 2 Nov): one question card for each merchant MyPaisa is unsure of, its guess as the first chip, each answered in place. Then one short Confirm: the total, the two sources, and By category and Not spending folded. One Confirm writes everything; the saved card has Undo, and a saved line is corrected in place. Drawn step by step, in light and dark.', keys: [key('MA-218'), key('MA-301')],
+  frames: both('iPhone · Statement review', [['1, sent', { chat: true, when: 'q1', clock: '08:41' }], ['2, the amber lines', { chat: true, when: 'q2', clock: '08:41' }], ['the short Confirm', { chat: true, when: 'confirm', clock: '08:42' }], ['3, by category', { chat: true, when: 'cats', clock: '08:42' }], ['4, recognised and Confirm', { chat: true, when: 'recog', clock: '08:43' }], ['5, saved, a line corrected in place', { chat: true, when: 'fix', clock: '08:46', top: -FIX_TOP }]]),
+  notes: N2([['Jira: MA-218; the pick is MA-301 b 1a.', 'The statement review at the iOS door; the web door is Browser · Statement review. Until Mon 2 Nov this was one review card four screens tall, with the two uncertain lines in amber inside it.'], ['1 and 2, the questions:', 'AMZN Mktp £165 on Tue 27 Oct (Shopping, Health, Something else…) and PAYPAL *EBAY £42 on Sun 25 Oct (Other, Shopping, Something else…), one card each, the guess first. A tap answers it in place (“Shopping. MyPaisa will remember it.”); the next question follows. The guided-flow pattern of §9.1: one question per card.'], ['The short Confirm:', 'Spending £2,246 in 22 lines; Barclaycard £1,458 (16 lines) and Monzo £788 (6 spending lines); By category · 11 and Not spending, recognised · 5 folded until tapped (3 and 4). It fits one screen; nothing is saved until Confirm.'], ['statements_oct:', 'Barclaycard’s 16 lines come to its £1,458 balance; Monzo has 6 spending lines and 5 that are not spending. The 22 lines by category equal budget_oct’s actuals to the pound: £2,246.'], ['Recognised, so nothing counts twice:', 'the Barclaycard payment £1,240, the mortgage £1,456.46 and the car loan £346.55 (EMIs matched to their commitments), the move of £5,000 to savings, and Arun’s salary £4,350.'], ['One Confirm writes all (rule 4):', 'the 22 lines, the merchant memory and the audit rows, at 08:44; the card becomes the saved card, with Undo. A statement is routine (§4.5): no second check. Both files are kept for good before anything reads them. Line counts (22, 11 categories, 6 + 5 Monzo lines) are derived; file names are illustrative.'], ['5, corrected in place:', 'at 08:46 Arun opens The 22 lines on the saved card and taps PAYPAL *EBAY: Was Other → Shopping, then Save writes a correction event with its audit row (via inline_edit), and the merchant memory learns eBay as Shopping.'], ['The household strip', 'shows £457,951 here, before Confirm: the set’s net worth after Mon 26 Oct (totals_after_correction: the £5,000 savings record at 09:41 and the Home correction from £415,000 to £428,000 at 09:52), prices still at the Fri 23 Oct close. From Confirm at 08:44 it shows £456,493: the Barclaycard statement’s £1,458 is owed, due Fri 20 Nov (totals_after_statement_sun_1_nov).'], ['Context only:', 'the composer’s shortcut chips (Budget, Send a statement, Log money) stand in for whatever the chat’s own boards settle.']]) },
+{ id: 'i3', tag: 'I3', name: 'iPhone · Statement answers a check-in', keyline: 'MA-218', arch: 'ARCHITECTURE.md §4.9 (a statement answers its check-in)', intro: 'Sun 1 Nov, 08:44, after Confirm. The car loan’s October EMI, £346.55 on Tue 20 Oct, is an autopay commitment the weekly digest listed as assumed paid. The Monzo statement shows the payment, so its check-in moves by itself to confirmed by the statement: the saved card notes it (with Undo, MA-301 b 1a), and the car loan’s card says so.', keys: [key('MA-218')],
   frames: both('iPhone · Statement answers a check-in', [['the note', { chat: true, when: 'answered', clock: '08:44', top: -I3_TOP }], ['the check-in it confirmed', { chat: true, when: 'answered', clock: '08:44' }]]),
   notes: N2([['Jira: MA-218', '(a statement’s payment answers its check-in, §4.9).'], ['The check-in it settles:', 'the car loan’s EMI due Tue 20 Oct, £346.55 by autopay, listed with the mortgage’s of Thu 1 Oct as assumed paid in the weekly digest for the week of Mon 19 Oct (autopay_digest_week). The statement’s matched line confirms it; the balance after it is the set’s £8,938.81.'], ['Nothing for Arun to do:', 'the confirmation, its event and its audit row are written in the statement’s Confirm. The Barclaycard bill is not this check-in: Arun answered it “paid in full” with a tap on Tue 20 Oct.'], ['The household strip', 'shows £456,493 from 08:44: the Barclaycard statement’s £1,458, due Fri 20 Nov, is now owed (totals_after_statement_sun_1_nov).']]) },
 { id: 'i4', tag: 'I4', name: 'iPhone · Month-end check-in', keyline: 'MA-220', arch: 'ARCHITECTURE.md §4.9 (The month closes on the 1st)', intro: 'Sun 1 Nov, 09:00, the check-in on the 1st: October’s plan against actual, by category, then “Anything not on a statement? Cash, or another bank?” and one tap that closes the month. Then closed, at 09:02.', keys: [key('MA-220')],
@@ -444,9 +504,9 @@ const boards = [
 ];
 const index = boards.map((b) => ({ id: b.id, name: b.name, keys: b.keyline }));
 return {
-  intro1: 'Phase 6 (Budget: statements and monthly check-ins), drawn on MA-193 for the iPhone in shell 1a (Chat first, the Liquid Glass tab bar Chat · Home · Activity · You), in MyPaisa DS v1 “Warm ledger” and the iOS kit. Budget (MA-96), the statement review card (MA-218), a statement answering a check-in (MA-218) and the month-end check-in (MA-220), each in light and dark, with the ₹ INR view and privacy on for Budget. The web door is Web v4 · Budget in MyPaisa app v1, drawn from the same blocks and figures.',
-  intro2: 'Superseded: the old Budget board’s “MyPaisa does not read your bank”. An admin now sends statements in the chat; MyPaisa still never connects to the bank. The boards run from the figure set’s clock (Mon 26 Oct) to Sun 1 Nov: 08:40 statements sent, 08:44 confirmed, 09:00 the check-in, 09:02 October closed, 09:06 a plan corrected. Every figure is the set’s (budget_oct, statements_oct, members) or derived from it, as each board’s notes say; Arun (admin) and Asha (member) are illustrative.',
-  allKeys: ['MA-96', 'MA-218', 'MA-220'].map(key), index: index, boards: boards, kpad: kpad
+  intro1: 'Phase 6 (Budget: statements and monthly check-ins), drawn on MA-193 for the iPhone in shell 1a (Chat first, the Liquid Glass tab bar Chat · Home · Activity · You), in MyPaisa DS v1 “Warm ledger” and the iOS kit. Budget (MA-96), the statement review, questions first and then a short Confirm (MA-218, as Arun picked in MA-301 b 1a), a statement answering a check-in (MA-218) and the month-end check-in (MA-220), each in light and dark, with the ₹ INR view and privacy on for Budget. The web door is Web v4 · Budget in MyPaisa app v1, drawn from the same blocks and figures.',
+  intro2: 'Superseded: the old Budget board’s “MyPaisa does not read your bank”. An admin now sends statements in the chat; MyPaisa still never connects to the bank. The boards run from the figure set’s clock (Mon 26 Oct) to Sun 1 Nov: 08:40 statements sent, 08:41 the two questions, 08:44 confirmed, 08:46 a saved line corrected, 09:00 the check-in, 09:02 October closed, 09:06 a plan corrected. Cards are flat (MA-301 d 1a): one surface per card, what sits inside it split by hairlines. Every figure is the set’s (budget_oct, statements_oct, members) or derived from it, as each board’s notes say; Arun (admin) and Asha (member) are illustrative.',
+  allKeys: ['MA-96', 'MA-218', 'MA-220', 'MA-301'].map(key), index: index, boards: boards, kpad: kpad
 };
 
 }

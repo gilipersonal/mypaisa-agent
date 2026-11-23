@@ -77,7 +77,7 @@
           .hit { outline: 1.5px dashed var(--mp-focus); outline-offset: 0; }
           /* layout and size classes */
           .sztable { max-width: 1344px; border-radius: 14px; overflow: hidden; background: #F9F8F6; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); margin: 0 0 24px; }
-          .szr { display: grid; grid-template-columns: 150px 1.3fr 1fr 1fr 1.2fr 1.1fr; }
+          .szr { display: grid; grid-template-columns: 140px 1.2fr 0.9fr 1fr 1.1fr 1fr 1.3fr; }
           .szr + .szr { border-top: 1px solid rgba(0, 0, 0, 0.07); }
           .szr > span { padding: 10px 14px; font: 14px/20px -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif; color: #3D424D; text-wrap: pretty; }
           .szr > span > b { display: block; color: #14171F; }
@@ -109,6 +109,15 @@
           .icons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
           .ic { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--mp-surface); border-radius: 12px; min-height: 58px; box-sizing: border-box; }
           .ic .ms { color: var(--mp-ink); flex: none; width: 26px; }
+          .ic .lc { color: var(--mp-ink); }
+          .icn-sf { color: var(--mp-ink-2); overflow-wrap: anywhere; }
+          /* MA-301 d 1a: a flat card; c 1c: the chat beside the page from 1393 */
+          .flatspec { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; align-items: end; }
+          .fchat { width: 340px; flex: none; display: flex; flex-direction: column; border-left: 1px solid var(--mp-line); background: var(--mp-bg); }
+          .fchat-h { min-height: 56px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--mp-line); }
+          .fchat-l { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 16px 20px; }
+          .fchat-me { align-self: flex-end; max-width: 80%; background: var(--mp-hero); color: var(--mp-hero-ink); border-radius: 18px 18px 6px 18px; padding: 10px 14px; }
+          .fchat-c { margin: 0 16px 16px; min-height: 48px; border-radius: 24px; background: var(--mp-surface); box-shadow: 0 0 0 1px var(--mp-line); display: flex; align-items: center; padding: 0 18px; color: var(--mp-ink-2); }
           .icn { display: block; font: 500 12px/16px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink); letter-spacing: 0; }
           .isizes { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; }
           .isz { display: flex; flex-direction: column; align-items: center; gap: 6px; }
@@ -136,7 +145,7 @@
       <!-- ================= HEAD ================= -->
       <section class="dv-turn" id="top" data-screen-label="Foundations: index">
         <h1 class="dv-title">MyPaisa DS v1 · Foundations</h1>
-        <p class="dv-intro">Direction 1a, "Warm ledger": Monzo's warmth on the bones of Apple's Human Interface Guidelines. Every value on this page comes from <b>tokens.css</b>; every specimen is drawn twice from one markup, light (<code>.t-light</code>) and dark (<code>.t-dark</code>), the way the app follows the device's colour scheme. Contrast ratios are measured with the WCAG 2.2 formula: text needs 4.5:1, graphics and focus rings 3:1. Illustrative figures throughout; members are "You" and "Asha".</p>
+        <p class="dv-intro">Direction 1a, "Warm ledger": Monzo's warmth on the bones of Apple's Human Interface Guidelines. Every value on this page comes from <b>tokens.css</b>; every specimen is drawn twice from one markup, light (<code>.t-light</code>) and dark (<code>.t-dark</code>), the way the app follows the device's colour scheme. Contrast ratios are measured with the WCAG 2.2 formula: text needs 4.5:1, graphics and focus rings 3:1. Illustrative figures throughout; members are "You" and "Asha". Updated for MA-301 (Arun, 2 Nov 2026): a card is one surface, its rows and figures split by hairlines, under short sentence-case labels (d 1a); each door uses its platform&#8217;s own type and icons, Lucide on the web (f 1a); and the chat sits beside the page only from 1393 (c 1c).</p>
         <nav class="dv-idx" aria-label="Foundations">
           <a href="#colour">1 · Colour</a><a href="#type">2 · Type</a><a href="#space">3 · Space, shape, elevation</a><a href="#layout">4 · Layout and size classes</a><a href="#motion">5 · Motion</a><a href="#icons">6 · Iconography</a><a href="#voice">7 · Voice</a>
         </nav>
@@ -179,11 +188,14 @@
       <!-- ================= 2 TYPE ================= -->
       <section class="dv-turn" id="type" data-screen-label="Foundations 2: Type">
         <div class="dv-thd"><a class="dv-tid" href="#type">2</a><span class="dv-tname">Type</span></div>
-        <p class="dv-intro">Apple's Dynamic Type sizes at the default "Large" setting, in the system font, so the app and phone web read like part of the phone. Figures that carry the story (the household total, a headline stat) are set rounded and heavy. One size per job; hierarchy comes from size and weight, never from colour alone.</p>
+        <p class="dv-intro">Apple's Dynamic Type sizes at the default "Large" setting, in the system font, so the app and phone web read like part of the phone. Figures that carry the story (the household total, a headline stat) are set rounded and heavy. One size per job; hierarchy comes from size and weight, never from colour alone. Each door uses its platform&#8217;s own type and icons (MA-301 f 1a, Arun, 2 Nov 2026): nothing is loaded from Google Fonts and there is no icon font in the build.</p>
         <div class="rules">
-          <div class="rule"><b>Text: SF Pro, Inter elsewhere</b><code>-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif</code></div>
-          <div class="rule"><b>Figures: SF Pro Rounded, Nunito elsewhere</b><code>ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui</code>. Only <code>.mp-num-hero</code> and <code>.mp-num-l</code>.</div>
+          <div class="rule"><b>Text: SF Pro in the app; on the web the system font, then Inter</b><code>-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif</code>. On the web Inter is self-hosted, one variable WOFF2 (Latin), preloaded; a Mac, an iPhone or an iPad draws SF Pro first.</div>
+          <div class="rule"><b>Figures: SF Pro Rounded; on the web a Nunito figures subset</b><code>ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui</code>. On the web Nunito 800 is a small self-hosted subset: the digits, £, ₹ and their separators. Only <code>.mp-num-hero</code> and <code>.mp-num-l</code>.</div>
           <div class="rule"><b>Tabular figures everywhere</b><code>.mp</code> sets <code>font-variant-numeric: tabular-nums</code>, so pounds and percentages line up in columns and do not jitter when they count up.</div>
+          <div class="rule"><b>Labels: short, sentence case</b><code>.mp-over</code> is 13/18 semibold with no tracking, never all capitals: &#8220;Net worth · Mon 26 Oct&#8221;, &#8220;Top holdings&#8221;, &#8220;Coming up&#8221;. It fits one line at 390; a longer one is shortened, not wrapped (MA-301 d 1a).</div>
+          <div class="rule"><b>Icons: SF Symbols in the app, Lucide on the web</b>Inline SVG on the web (<code>.lc</code>), so an icon never shows as a word when a font fails to load. See 6 · Iconography.</div>
+          <div class="rule"><b>On these boards</b>The boards still load Inter, Nunito and Material Symbols from Google Fonts while they draw <code>.ms</code> stand-ins; the web app&#8217;s own <code>tokens.css</code> has no <code>@import</code>, and the boards&#8217; goes with the last <code>.ms</code> (MA-340).</div>
         </div>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
@@ -201,11 +213,11 @@
                 <div><div class="lbl">Tabular · default · edges line up</div><div class="figcol mp-hl"><span>£4,596</span><span>£4,228</span><span>£4,210</span><span>£1,730</span></div></div>
                 <div><div class="lbl">Proportional · avoid · edges wander</div><div class="figcol mp-hl prop"><span>£4,596</span><span>£4,228</span><span>£4,210</span><span>£1,730</span></div></div>
                 <div>
-                  <div class="lbl">Off Apple devices</div>
+                  <div class="lbl">Off Apple devices · the web, self-hosted</div>
                   <div class="stack">
                     <div class="f-inter mp-hl">Inter 600 · Balanced</div>
                     <div class="f-inter mp-body">Inter · From your dated buys.</div>
-                    <div class="fx ac gap8"><span class="f-nunito mp-num-l">£25,800</span><span class="lbl">Nunito 800</span></div>
+                    <div class="fx ac gap8"><span class="f-nunito mp-num-l">£25,800</span><span class="lbl">Nunito 800 · figures subset</span></div>
                   </div>
                 </div>
               </div>
@@ -217,7 +229,7 @@
       <!-- ================= 3 SPACE, SHAPE, ELEVATION ================= -->
       <section class="dv-turn" id="space" data-screen-label="Foundations 3: Space, shape, elevation">
         <div class="dv-thd"><a class="dv-tid" href="#space">3</a><span class="dv-tname">Space, shape, elevation</span></div>
-        <p class="dv-intro">A 4 pt grid, six radii that grow with the size of the thing, and three heights of surface. Grouped lists sit flat on the background like iOS Settings; cards lift a little; only sheets cast a real shadow. Every tappable thing is at least 44 × 44 pt, even when the glyph inside is 22.</p>
+        <p class="dv-intro">A 4 pt grid, six radii that grow with the size of the thing, and three heights of surface. Grouped lists sit flat on the background like iOS Settings; cards lift a little; only sheets cast a real shadow. A card is one surface: inside it nothing is boxed again, and its rows and figures are split by hairlines (<code>.mp-rows</code>, <code>.mp-hairs</code>; MA-301 d 1a). Every tappable thing is at least 44 × 44 pt, even when the glyph inside is 22.</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Space and shape {{ t.label }}">
@@ -257,6 +269,19 @@
                   <div><div class="mp-foot mp-w6">Overlay · sheet</div><div class="mp-cap mp-ink3">0 −8 40, 18% black, above everything</div></div>
                 </div>
               </div>
+              <div class="sub-h"><span class="mp-hl">Inside a card</span><span class="lbl">one surface · .mp-hairs · .mp-rows</span></div>
+              <div class="flatspec">
+                <div class="mp-card fx col gap12">
+                  <div class="fx ac jb gap8"><span class="mp-hl">Holdings</span><span class="mp-foot mp-ink2">Fri close</span></div>
+                  <div class="mp-hairs"><div><span class="mp-foot mp-ink2">XIRR</span><span class="mp-sub mp-w6">9.8%</span></div><div><span class="mp-foot mp-ink2">Surplus</span><span class="mp-sub mp-w6">£1,240</span></div><div><span class="mp-foot mp-ink2">AI cost</span><span class="mp-sub mp-w6">£6.40</span></div></div>
+                  <div class="mp-rows" style="border-top: 1px solid var(--mp-line); padding-top: 10px">
+                    <div class="fx ac jb gap8"><span class="mp-body">Balanced</span><span class="mp-sub mp-w6">£18,640</span></div>
+                    <div class="fx ac jb gap8"><span class="mp-body">NASDAQ 100</span><span class="mp-sub mp-w6">£4,210</span></div>
+                    <div class="fx ac jb gap8"><span class="mp-body">Physical Silver</span><span class="mp-sub mp-w6">£820</span></div>
+                  </div>
+                </div>
+                <div class="fx col gap4"><div class="mp-foot mp-w6">Flat inside · one surface</div><div class="mp-cap mp-ink3">figures in hairline-ruled columns, rows split by hairlines, in --mp-line (on the hero, --mp-hero-2); no tile, no second radius, no tint inside a card</div></div>
+              </div>
               <div class="sub-h"><span class="mp-hl">44 pt targets</span><span class="lbl">dashed = the tappable area</span></div>
               <div class="targets">
                 <div class="fx col gap8"><button class="iconbtn hit" aria-label="Privacy mode"><span class="ms" aria-hidden="true">visibility</span></button><span class="mp-cap mp-ink3">Icon button · 44 × 44</span></div>
@@ -272,17 +297,18 @@
       <!-- ================= 4 LAYOUT AND SIZE CLASSES ================= -->
       <section class="dv-turn" id="layout" data-screen-label="Foundations 4: Layout and size classes">
         <div class="dv-thd"><a class="dv-tid" href="#layout">4</a><span class="dv-tname">Layout and size classes</span></div>
-        <p class="dv-intro">One markup, three size classes. The app's root, <code>.mp-app</code>, is a size container, so the frame decides, not the device: the same page is one column on a phone, two columns in an iPad or narrow browser window, and a sidebar layout in a laptop browser. The widths are Apple's size classes in web pixels. Light and dark are stacked here so the wide frames have room.</p>
+        <p class="dv-intro">One markup, three size classes. The app's root, <code>.mp-app</code>, is a size container, so the frame decides, not the device: the same page is one column on a phone, two columns in an iPad or narrow browser window, and a sidebar layout in a laptop browser. The widths are Apple's size classes in web pixels. The chat joins the page as a column only from 1393; below that it is a drawer on the web from 1024 (the Chat tab under 1024, where the tab bar stays) and a sheet on the iPad. Light and dark are stacked here so the wide frames have room.</p>
         <div class="sztable" role="table" aria-label="Size classes">
-          <div class="szr szh" role="row"><span role="columnheader">Size class</span><span role="columnheader">Who sees it</span><span role="columnheader">Navigation</span><span role="columnheader">Columns</span><span role="columnheader">Gutters and gaps</span><span role="columnheader">Page header</span></div>
+          <div class="szr szh" role="row"><span role="columnheader">Size class</span><span role="columnheader">Who sees it</span><span role="columnheader">Navigation</span><span role="columnheader">Columns</span><span role="columnheader">Gutters and gaps</span><span role="columnheader">Page header</span><span role="columnheader">The chat</span></div>
           <sc-for list="{{ sizeClasses }}" as="s" hint-placeholder-count="3">
-            <div class="szr" role="row"><span role="cell"><b>{{ s.name }}</b><code>{{ s.range }}</code></span><span role="cell">{{ s.who }}</span><span role="cell">{{ s.nav }}</span><span role="cell">{{ s.cols }}</span><span role="cell">{{ s.gut }}</span><span role="cell">{{ s.head }}</span></div>
+            <div class="szr" role="row"><span role="cell"><b>{{ s.name }}</b><code>{{ s.range }}</code></span><span role="cell">{{ s.who }}</span><span role="cell">{{ s.nav }}</span><span role="cell">{{ s.cols }}</span><span role="cell">{{ s.gut }}</span><span role="cell">{{ s.head }}</span><span role="cell">{{ s.chat }}</span></div>
           </sc-for>
         </div>
         <div class="rules">
           <div class="rule"><b>The frame decides, not the device</b><code>.mp-app</code> is <code>container: app / inline-size</code>. A narrow laptop browser, an iPad in Split View and a tablet browser switch class at the same widths as a browser, and again when they are resized.</div>
           <div class="rule"><b>One markup, no device builds</b><code>.mp-shell</code> holds <code>.mp-shell-side</code> (wide only) and <code>.mp-shell-tabs</code> (compact and regular). <code>.mp-only-compact</code> and <code>.mp-only-wide</code> show or hide the odd piece.</div>
           <div class="rule"><b>Content never stretches</b>Regular stays one column until 760, then splits into two equal columns. On wide the columns are <code>minmax(0, 1.3fr) minmax(300px, 1fr)</code>, so the list never gets narrower than 300, and <code>.mp-pagepad</code> caps the content at 1180, centred past 1360. The stats are 2 × 2 at every size.</div>
+          <div class="rule"><b>Where the chat sits</b>The chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over). On the web the unit is px: from 1393 px a column beside the page; from 1024 to 1393 px a drawer over the page, opened from the sidebar&#8217;s Chat (the iPad&#8217;s sheet, on the web); under 1024 px, where the tab bar stays, the Chat tab. No iPad is 1393 pt wide (the 13-inch is 1376 pt across), so on every iPad the chat is a sheet (MA-301 c 1c, Arun, 2 Nov 2026).</div>
         </div>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
@@ -333,6 +359,16 @@
                               </div>
                             </div>
                           </div>
+                          <sc-if value="{{ z.chat }}" hint-placeholder-val="{{ false }}">
+                            <aside class="fchat" aria-label="Chat">
+                              <div class="fchat-h"><span class="mp-hl">Chat</span></div>
+                              <div class="fchat-l">
+                                <div class="fchat-me mp-body">How are we doing this month?</div>
+                                <div class="mp-body">£25,800 at Friday&#8217;s close: ▲ £612 this month, ▼ 0.6% this week.</div>
+                              </div>
+                              <div class="fchat-c mp-body">Ask MyPaisa</div>
+                            </aside>
+                          </sc-if>
                         </div>
                         <div class="mp-shell-tabs tabs-abs">
                           <nav class="mp-tabbar" style="flex: 1" aria-label="Sections">
@@ -430,25 +466,26 @@
       <!-- ================= 6 ICONOGRAPHY ================= -->
       <section class="dv-turn" id="icons" data-screen-label="Foundations 6: Iconography">
         <div class="dv-thd"><a class="dv-tid" href="#icons">6</a><span class="dv-tname">Iconography</span></div>
-        <p class="dv-intro">Material Symbols Rounded stands in for SF Symbols on the web: weight 500, optical size 24, outlined by default and filled for the selected tab and for status ticks. Use the ligature name, <code>&lt;span class="ms"&gt;home&lt;/span&gt;</code>. Nineteen icons cover the product; an icon always sits beside a word or carries an <code>aria-label</code>. No emoji anywhere; ▲ and ▼ are text glyphs for change, not icons.</p>
+        <p class="dv-intro">Each door draws its platform&#8217;s own icons (MA-301 f 1a, Arun, 2 Nov 2026). In the app, SF Symbols, weighted to the text beside them, filled for the selected tab and for status ticks. On the web, Lucide as inline SVG on a 24 grid, <code>&lt;svg class="lc"&gt;</code>: a 2 px stroke with round caps and joins in <code>currentColor</code>, tree-shaken from <code>@lucide/svelte</code> (ISC licence), so an icon can never show as a word when a font fails to load. Each icon below is drawn in Lucide, its SF Symbol named under it. Nineteen icons cover the product; an icon always sits beside a word or carries an <code>aria-label</code>. No emoji anywhere; ▲ and ▼ are text glyphs for change, not icons. Boards not yet redrawn keep Material Symbols (<code>.ms</code>) as stand-ins.</p>
         <div class="dv-row">
           <sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
             <div class="pane {{ t.cls }}" data-screen-label="Iconography {{ t.label }}">
               <div class="phead"><span class="mp-over mp-ink3">{{ t.label }}</span><span class="lbl">{{ t.sel }}</span></div>
               <div class="icons">
                 <sc-for list="{{ icons }}" as="i" hint-placeholder-count="18">
-                  <div class="ic"><span class="ms ms-l" aria-hidden="true">{{ i.n }}</span><div style="min-width: 0"><span class="icn">{{ i.n }}</span><span class="mp-cap mp-ink3">{{ i.use }}</span></div></div>
+                  <div class="ic"><svg class="lc lc-l" viewBox="0 0 24 24" aria-hidden="true"><sc-for list="{{ i.d }}" as="p" hint-placeholder-count="2"><path sc-camel-d="{{ p.d }}"></path></sc-for></svg><div style="min-width: 0"><span class="icn">{{ i.n }}</span><span class="icn icn-sf">{{ i.sf }}</span><span class="mp-cap mp-ink3">{{ i.use }}</span></div></div>
                 </sc-for>
               </div>
-              <div class="sub-h"><span class="mp-hl">Sizes and fill</span><span class="lbl">.ms-s · .ms · .ms-l · .ms-fill</span></div>
+              <div class="sub-h"><span class="mp-hl">Sizes and colour</span><span class="lbl">.lc-s · .lc · .lc-l · the web</span></div>
               <div class="isizes">
-                <div class="isz"><span class="ms ms-s" aria-hidden="true">chevron_right</span><span class="lbl">18 · rows</span></div>
-                <div class="isz"><span class="ms" aria-hidden="true">home</span><span class="lbl">22 · default</span></div>
-                <div class="isz"><span class="ms ms-l" aria-hidden="true">check_circle</span><span class="lbl">26 · cards</span></div>
-                <div class="isz"><span class="ms ms-fill mp-acc" aria-hidden="true">home</span><span class="lbl">filled · tab</span></div>
-                <div class="isz"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><span class="lbl">filled · status</span></div>
-                <div class="isz"><span class="ms mp-ink3" aria-hidden="true">menu</span><span class="lbl">ink-3 · idle</span></div>
+                <div class="isz"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg><span class="lbl">18 · rows</span></div>
+                <div class="isz"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg><span class="lbl">22 · default</span></div>
+                <div class="isz"><svg class="lc lc-l" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"></path><path d="m16 9-5.5 5.5L8 12"></path></svg><span class="lbl">26 · cards</span></div>
+                <div class="isz"><svg class="lc mp-acc" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg><span class="lbl">accent · tab</span></div>
+                <div class="isz"><svg class="lc lc-l mp-up" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"></path><path d="m16 9-5.5 5.5L8 12"></path></svg><span class="lbl">up · status</span></div>
+                <div class="isz"><svg class="lc mp-ink3" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg><span class="lbl">ink-3 · idle</span></div>
               </div>
+              <div class="mp-foot mp-ink2">Lucide has no filled forms: on the web the selected tab is the accent, not a fill. In the app SF Symbols&#8217; <code>.fill</code> variants mark the selected tab and status ticks.</div>
             </div>
           </sc-for>
         </div>
@@ -489,9 +526,9 @@
               { name: 'Ground and surfaces', hint: 'Where everything sits', tokens: [
                 T('--mp-bg', 'Grouped background: the page behind cards and lists', txt('ink', 'bg'), ['#F6F4F1', '16.3:1', 'ink on it'], ['#0A0F18', '17.6:1', 'ink on it']),
                 T('--mp-surface', 'Cards, grouped rows, sheets', txt('ink', 'surface'), ['#FFFFFF', '17.9:1', 'ink on it'], ['#151C27', '15.7:1', 'ink on it']),
-                T('--mp-surface-2', 'Fills: segmented track, neutral chips, pressed rows, skeletons', txt('ink-3', 'surface-2'), ['#F0EDE8', '4.6:1', 'ink-3 on it, the lowest text pair'], ['#1E2633', '7.4:1', 'ink-3 on it, the lowest text pair']),
+                T('--mp-surface-2', 'Fills: segmented track, neutral chips, pressed rows, skeletons; never a tile inside a card', txt('ink-3', 'surface-2'), ['#F0EDE8', '4.6:1', 'ink-3 on it, the lowest text pair'], ['#1E2633', '7.4:1', 'ink-3 on it, the lowest text pair']),
                 T('--mp-seg-on', 'The selected segment, lifted above its track', txt('ink', 'seg-on'), ['#FFFFFF', '17.9:1', 'ink on it'], ['#3A4456', '9.0:1', 'ink on it']),
-                T('--mp-line', 'Hairlines between rows; never text', bar('line', '1px'), ['#E4E0DA', '1.3:1', 'vs surface, decorative'], ['#283141', '1.3:1', 'vs surface, decorative']),
+                T('--mp-line', 'Hairlines between rows and between a card’s columns (.mp-rows, .mp-hairs); never text', bar('line', '1px'), ['#E4E0DA', '1.3:1', 'vs surface, decorative'], ['#283141', '1.3:1', 'vs surface, decorative']),
                 T('--mp-material', 'Tab bar and sticky headers, over a 20 px blur', txt('ink-3', 'material'), ['#FFFFFF at 78%', '5.3:1', 'tab label (ink-3) on it'], ['#151C27 at 78%', '8.6:1', 'tab label (ink-3) on it'])
               ] },
               { name: 'Text', hint: 'Three inks, AA on every surface', tokens: [
@@ -501,7 +538,7 @@
               ] },
               { name: 'Hero', hint: 'The navy card: one number, one line, one chart', tokens: [
                 T('--mp-hero', 'Hero card ground on the app and web Overview', txt('hero-ink', 'hero'), ['#13213A', '16.1:1', 'hero-ink on it'], ['#1A2944', '14.5:1', 'hero-ink on it']),
-                T('--mp-hero-2', 'Fills inside the hero: segmented track, masks', txt('hero-ink-2', 'hero-2'), ['#1C2E4D', '7.6:1', 'hero-ink-2 on it'], ['#233558', '6.8:1', 'hero-ink-2 on it']),
+                T('--mp-hero-2', 'Inside the hero: the segmented track, masks and the hairlines between its figures; never a box round a figure', txt('hero-ink-2', 'hero-2'), ['#1C2E4D', '7.6:1', 'hero-ink-2 on it'], ['#233558', '6.8:1', 'hero-ink-2 on it']),
                 T('--mp-hero-ink', 'The hero figure and its labels', txt('hero-ink', 'hero'), ['#FFFFFF', '16.1:1', 'on hero'], ['#FFFFFF', '14.5:1', 'on hero']),
                 T('--mp-hero-ink-2', 'Hero secondary text and overline', txt('hero-ink-2', 'hero'), ['#B7C2D6', '9.0:1', 'on hero'], ['#B7C2D6', '8.1:1', 'on hero']),
                 T('--mp-hero-up', 'A gain on the hero: the day\'s ▲ and the month; never on a light surface', txt('hero-up', 'hero'), ['#8BE8AC', '10.9:1', 'on hero; 9.2:1 on hero-2'], ['#A6F0C2', '11.0:1', 'on hero; 9.2:1 on hero-2'])
@@ -583,16 +620,17 @@
           const tabs = sections.filter((n) => n.tab).concat([{ icon: 'menu', tab: 'More', on: '', fill: '' }]);
           return {
             sizeClasses: [
-              { name: 'Compact', range: 'under 600', who: 'Phone browser under 600 px', nav: 'Bottom tab bar, five tabs', cols: 'One column; stats 2 × 2', gut: '16 at the sides, 16 between', head: 'Large title on its own row, controls under it' },
-              { name: 'Regular', range: '600 to 1023', who: 'iPad browser, tablet split view, a narrow laptop window', nav: 'The tab bar stays', cols: 'One column until 760, then two equal columns; stats 2 × 2', gut: '24 at the sides, 20 between', head: 'Title left, controls right, one row' },
-              { name: 'Wide', range: '1024 and over', who: 'A laptop or desktop browser; wide tablet landscape', nav: 'Sidebar, 248 wide, replaces the tab bar', cols: 'Two columns, 1.3fr : minmax(300px, 1fr); stats 2 × 2', gut: '32 at the sides, 24 between; content capped at 1180, centred past 1360', head: 'Title left, controls right, one row' }
+              { name: 'Compact', range: 'under 600', who: 'Phone browser under 600 px', nav: 'Bottom tab bar, five tabs', cols: 'One column; stats 2 × 2', gut: '16 at the sides, 16 between', head: 'Large title on its own row, controls under it', chat: 'A tab of its own' },
+              { name: 'Regular', range: '600 to 1023', who: 'iPad browser, tablet split view, a narrow laptop window', nav: 'The tab bar stays', cols: 'One column until 760, then two equal columns; stats 2 × 2', gut: '24 at the sides, 20 between', head: 'Title left, controls right, one row', chat: 'The Chat tab, in the tab bar' },
+              { name: 'Wide', range: '1024 and over', who: 'A laptop or desktop browser; wide tablet landscape', nav: 'Sidebar, 248 wide, replaces the tab bar', cols: 'Two columns, 1.3fr : minmax(300px, 1fr); stats 2 × 2', gut: '32 at the sides, 24 between; content capped at 1180, centred past 1360', head: 'Title left, controls right, one row', chat: 'A column beside the page from 1393; from 1024 to 1392 a drawer over the page, opened from the sidebar’s Chat' }
             ],
             frames: [
-              { name: 'Compact', dim: '390 · phone', w: '390px', h: '760px', sw: '195px', sh: '380px' },
-              { name: 'Regular', dim: '680 · one column', w: '680px', h: '760px', sw: '340px', sh: '380px' },
-              { name: 'Regular', dim: '900 · iPad, narrow browser: two columns', w: '900px', h: '760px', sw: '450px', sh: '380px' },
-              { name: 'Wide', dim: '1180 · laptop browser', w: '1180px', h: '700px', sw: '590px', sh: '350px' },
-              { name: 'Wide, centred', dim: '1600 · content capped at 1180, centred past 1360', w: '1600px', h: '700px', sw: '800px', sh: '350px' }
+              { name: 'Compact', dim: '390 · phone', w: '390px', h: '760px', sw: '195px', sh: '380px', chat: false },
+              { name: 'Regular', dim: '680 · one column', w: '680px', h: '760px', sw: '340px', sh: '380px', chat: false },
+              { name: 'Regular', dim: '900 · iPad, narrow browser: two columns', w: '900px', h: '760px', sw: '450px', sh: '380px', chat: false },
+              { name: 'Wide', dim: '1180 · laptop browser · the chat a drawer', w: '1180px', h: '700px', sw: '590px', sh: '350px', chat: false },
+              { name: 'Wide, chat beside', dim: '1440 · the chat beside the page from 1393', w: '1440px', h: '700px', sw: '720px', sh: '350px', chat: true },
+              { name: 'Wide, centred', dim: '1600 · drawn without the chat, to show the cap: content capped at 1180, centred past 1360', w: '1600px', h: '700px', sw: '800px', sh: '350px', chat: false }
             ],
             nav: sections,
             tabs: tabs,
@@ -617,7 +655,7 @@
               { name: 'Subhead', cls: 'mp-sub', spec: '15/20 · Regular', sample: '▲ £612 this month · ▼ 0.6% this week' },
               { name: 'Footnote', cls: 'mp-foot', spec: '13/18 · Regular', sample: 'Next check-in Sun 1 Nov. Prices to Friday’s close.' },
               { name: 'Caption', cls: 'mp-cap', spec: '12/16 · Regular', sample: 'Illustrative figures · BlackRock MyMap · ISA' },
-              { name: 'Overline', cls: 'mp-over', spec: '12/16 · Semibold · caps · +6%', sample: 'Household · Fri close' },
+              { name: 'Overline', cls: 'mp-over', spec: '13/18 · Semibold · sentence case', sample: 'Household · Fri close' },
               { name: 'Hero figure', cls: 'mp-num-hero', spec: '44/48 · Heavy · rounded', sample: '£25,800' },
               { name: 'Large figure', cls: 'mp-num-l', spec: '28/32 · Heavy · rounded', sample: '3 of 4' }
             ],
@@ -661,26 +699,26 @@
               { k: 'EUR', v: '3%', w: '3%', d: 'd3', c: 'var(--mp-ccy-eur)' },
               { k: 'Other', v: '1%', w: '1%', d: 'd4', c: 'var(--mp-ccy-other)' }
             ],
-            icons: [
-              { n: 'home', use: 'Overview tab' },
-              { n: 'donut_small', use: 'Holdings tab' },
-              { n: 'savings', use: 'Budget tab' },
-              { n: 'trending_up', use: 'Projection tab' },
-              { n: 'menu', use: 'More tab' },
-              { n: 'more_horiz', use: 'Overflow menu action' },
-              { n: 'history', use: 'Activity' },
-              { n: 'fact_check', use: 'Audit' },
-              { n: 'visibility', use: 'Privacy mode off' },
-              { n: 'visibility_off', use: 'Privacy mode on' },
-              { n: 'chevron_right', use: 'Row opens a page' },
-              { n: 'arrow_back_ios_new', use: 'Back, in a pushed sub-page header' },
-              { n: 'check_circle', use: 'All clear, verified' },
-              { n: 'info', use: 'Stale prices, a note' },
-              { n: 'warning', use: 'Worth a look, needs you' },
-              { n: 'notifications', use: 'Alerts setting' },
-              { n: 'lock', use: 'Audited, signed in' },
-              { n: 'chat', use: 'Open chat, Ask in the chat' },
-              { n: 'open_in_new', use: 'Leaves MyPaisa' }
+            icons: [   // Lucide (ISC licence), from @lucide/svelte, the web's icons; SF Symbols, the app's (MA-301 f 1a)
+              { n: 'house', sf: 'house', use: 'Overview tab', d: [{"d":"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"},{"d":"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"}] },
+              { n: 'wallet', sf: 'wallet.bifold', use: 'Holdings tab', d: [{"d":"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"},{"d":"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"}] },
+              { n: 'chart-pie', sf: 'chart.pie', use: 'Budget tab', d: [{"d":"M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"},{"d":"M21.21 15.89A10 10 0 1 1 8 2.83"}] },
+              { n: 'trending-up', sf: 'chart.line.uptrend.xyaxis', use: 'Projection tab', d: [{"d":"M16 7h6v6"},{"d":"m22 7-8.5 8.5-5-5L2 17"}] },
+              { n: 'menu', sf: 'line.3.horizontal', use: 'More tab', d: [{"d":"M4 5h16"},{"d":"M4 12h16"},{"d":"M4 19h16"}] },
+              { n: 'ellipsis', sf: 'ellipsis', use: 'Overflow menu action', d: [{"d":"M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"},{"d":"M18 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"},{"d":"M4 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"}] },
+              { n: 'history', sf: 'clock.arrow.circlepath', use: 'Activity', d: [{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"},{"d":"M3 3v5h5"},{"d":"M12 7v5l4 2"}] },
+              { n: 'clipboard-check', sf: 'list.bullet.clipboard', use: 'Audit', d: [{"d":"M9 2h6a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1Z"},{"d":"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"},{"d":"m9 14 2 2 4-4"}] },
+              { n: 'eye', sf: 'eye', use: 'Privacy mode off', d: [{"d":"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"},{"d":"M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"}] },
+              { n: 'eye-off', sf: 'eye.slash', use: 'Privacy mode on', d: [{"d":"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"},{"d":"M14.084 14.158a3 3 0 0 1-4.242-4.242"},{"d":"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"},{"d":"m2 2 20 20"}] },
+              { n: 'chevron-right', sf: 'chevron.right', use: 'Row opens a page', d: [{"d":"m9 18 6-6-6-6"}] },
+              { n: 'chevron-left', sf: 'chevron.backward', use: 'Back, in a pushed sub-page header', d: [{"d":"m15 18-6-6 6-6"}] },
+              { n: 'circle-check', sf: 'checkmark.circle.fill', use: 'All clear, verified', d: [{"d":"M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"},{"d":"m16 9-5.5 5.5L8 12"}] },
+              { n: 'info', sf: 'info.circle', use: 'Stale prices, a note', d: [{"d":"M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0"},{"d":"M12 16v-4"},{"d":"M12 8h.01"}] },
+              { n: 'triangle-alert', sf: 'exclamationmark.triangle', use: 'Worth a look, needs you', d: [{"d":"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"},{"d":"M12 9v4"},{"d":"M12 17h.01"}] },
+              { n: 'bell', sf: 'bell', use: 'Alerts setting', d: [{"d":"M10.268 21a2 2 0 0 0 3.464 0"},{"d":"M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"}] },
+              { n: 'lock', sf: 'lock', use: 'Audited, signed in', d: [{"d":"M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-7a2 2 0 0 1 2 -2Z"},{"d":"M7 11V7a5 5 0 0 1 10 0v4"}] },
+              { n: 'message-circle', sf: 'bubble.left', use: 'Open chat, Ask in the chat', d: [{"d":"M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"}] },
+              { n: 'external-link', sf: 'arrow.up.right.square', use: 'Leaves MyPaisa', d: [{"d":"M15 3h6v6"},{"d":"M10 14 21 3"},{"d":"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}] }
             ],
             voice: [
               { yes: 'Nothing to do this week.', no: 'No actionable signals detected.', why: 'Say what it means for you, in the words you would use.' },

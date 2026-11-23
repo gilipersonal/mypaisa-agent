@@ -65,7 +65,7 @@
           .ichat.top .chfadet { display: none; }
           .cb20 { bottom: 20px; }
           .daysep, .ai-meta { font-size: 13px; line-height: 18px; color: var(--mp-ink-2); }
-          /* the Projection beside the chat on iPad: its tabs, its controls, the fan */
+          /* the Projection under the chat's sheet on iPad (until MA-301: beside the chat): its tabs, its controls, the fan */
           .pk-tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--mp-line); padding: 0 4px; overflow-x: auto; scrollbar-width: none; }
           .pk-tab { min-height: 44px; display: inline-flex; align-items: center; font: 600 15px/20px var(--mp-font); color: var(--mp-ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; white-space: nowrap; flex: none; box-sizing: border-box; }
           .pk-tab.on { color: var(--mp-ink); border-bottom-color: var(--mp-accent); }
@@ -212,7 +212,31 @@
 /* the tabs and the ways are reached from the keyboard; a short tab's hit area is at least 44 pt wide (MA-300) */
 .pk-tab { position: relative; }
 .pk-tab::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: max(100%, 44px); transform: translateX(-50%); }
-</style>
+
+          /* MA-301 d 1a, flatter cards: one surface per card. Inside a card nothing is boxed again: the technical band and the
+             floor flag are split from the card by hairlines, never filled; labels are short and in sentence case. */
+          .ccard-tech { background: none; border-top: 1px solid var(--mp-line); }
+          .pk-flag { background: none; border-radius: 0; padding: 10px 0; border-top: 1px solid var(--mp-line); border-bottom: 1px solid var(--mp-line); }
+          .pk-div { letter-spacing: 0; text-transform: none; font-size: 13px; line-height: 18px; }
+          /* MA-301 a 1b, the title is the picker: the page title is a menu (Net worth · Plans · Budget forecast); the horizon
+             chips sit under the fan they change; the money (currency and Nominal or today's money) is one corner button */
+          .ttlmenu { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; border: 0; background: none; padding: 0 4px; margin: 0; color: var(--mp-ink); cursor: pointer; }
+          .ttlmenu .ms { font-size: 26px; color: var(--mp-accent); }
+          .hzchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+          .hzc { min-height: 44px; min-width: 56px; padding: 0 10px; border: 0; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; cursor: pointer; }
+          .hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
+          .cornerbtn { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; flex: none; cursor: pointer; }
+          .heroI .hrow1 { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+          /* MA-301 c 1c: the chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in
+             a compact window (every iPhone, a folded foldable, Slide Over). No iPad is 1393 pt wide, so on the iPad the Projection
+             takes the screen and the chat is a sheet over it, opened from the sidebar's Chat; lowered to half height when the
+             screen behind it is the point (2c's comparison). */
+          .padsheet { position: absolute; top: 56px; bottom: 20px; left: 0; right: 0; margin: 0 auto; width: 600px; z-index: 50; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; padding-top: 8px; border-radius: 28px; background: var(--mp-bg); box-shadow: var(--mp-shadow), 0 0 0 1px var(--mp-line); }
+          .padsheet.half { top: 46%; }
+          .padsheet > .sheet-grab { flex: none; }
+          .padsheet > .psh { flex: none; min-height: 52px; padding: 2px 12px 2px 20px; }
+          .padsheet .ichat { padding-bottom: 136px; }
+        </style>
       </helmet>
 
       <section class="dv-turn" id="intro" data-screen-label="iPhone v4 · Plans in the chat: intro">
@@ -234,7 +258,7 @@
                   <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="island"></div></sc-if>
                   <div class="scrn {{ f.scrc }}">
 
-                    <!-- ===== iPad: the glass sidebar and the Projection beside the chat ===== -->
+                    <!-- ===== iPad: the glass sidebar and the Projection, the chat a sheet over it (MA-301 c 1c) ===== -->
                     <sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}">
                       <div class="sidebar sb lg">
                         <div class="side-h sh0">MyPaisa</div>
@@ -244,15 +268,9 @@
                         <button type="button" class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</button>
                       </div>
                       <div class="main">
-                        <div class="sbar"><span>{{ f.clock }} Thu 5 Nov</span><span></span></div>
-                        <div class="nav"><span class="navl"><span class="largetitle navt">Projection</span></span><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></button></span></div>
+                        <div class="sbar"><span>{{ f.clock }} Thu 5 Nov</span><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+                        <div class="nav"><span class="navl"><button type="button" class="largetitle navt ttlmenu" aria-haspopup="menu" aria-label="Projection: Net worth. Change view">Net worth<span class="ms" aria-hidden="true">expand_more</span></button></span><span class="navr"><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></button></span></div>
                         <div class="ipg">
-                          <div class="pk-tabs" role="tablist" aria-label="Projection"><span class="pk-tab on" role="tab" aria-selected="true" tabindex="0">Net worth</span><span class="pk-tab" role="tab" aria-selected="false" tabindex="0">Plans</span><span class="pk-tab" role="tab" aria-selected="false" tabindex="0">Budget forecast</span></div>
-                          <div class="pk-ctl">
-                            <div class="mp-seg pk-hz" role="group" aria-label="Horizon"><button type="button" class="mp-seg-i segc" aria-pressed="false">5 yrs</button><button type="button" class="mp-seg-i segc" aria-pressed="false">10 yrs</button><button type="button" class="mp-seg-i segc on" aria-pressed="true">20 yrs</button><button type="button" class="mp-seg-i segc" aria-pressed="false">30 yrs</button></div>
-                            <div class="mp-seg ccyseg" role="group" aria-label="Currency"><button type="button" class="mp-seg-i segc on" aria-pressed="true">£ GBP</button><button type="button" class="mp-seg-i segc" aria-pressed="false">₹ INR</button></div>
-                            <span class="tmw"><span class="mp-sub mp-w6">Today's money</span><button type="button" class="mp-switch" role="switch" aria-label="Today's money"><span class="mp-switch-k"></span></button></span>
-                          </div>
                           <sc-if value="{{ f.p.cmp }}" hint-placeholder-val="{{ false }}">
                             <div class="mp-card">
                               <div class="fx col gap4"><span class="mp-over mp-ink2">Cover the gap</span><span class="mp-hl">Three ways, side by side</span><span class="mp-foot mp-ink2">{{ gapTotal }} short, Jan 2029 to Feb 2035; none applied yet. Opened from the chat at 20:43; code worked each one out, and Apply applies it with its audit row and Undo.</span></div>
@@ -268,7 +286,7 @@
                             </div>
                           </sc-if>
                           <div class="mp-hero heroI">
-                            <span class="mp-foot mp-hero-2">Middle path in 2046 · run {{ f.p.run }}</span>
+                            <div class="hrow1"><span class="mp-foot mp-hero-2">Middle path in 2046 · run {{ f.p.run }}</span><button type="button" class="cornerbtn" aria-haspopup="menu" aria-label="Money: pounds, nominal. Change">£ · Nominal<span class="ms ms-s" aria-hidden="true">expand_more</span></button></div>
                             <span class="mp-num-hero">{{ f.p.big }}</span>
                             <span class="mp-foot mp-hero-2">From £456,747 today. 8 in 10 runs end between {{ f.p.lo }} and {{ f.p.hi }}.</span>
                             <div class="fanw onhero">
@@ -278,6 +296,7 @@
                               </div>
                               <div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">Today</span><span style="left: 45.46%">2036</span><span class="ax1" style="left: 100%">2046</span></div>
                             </div>
+                            <div class="hzchips" role="group" aria-label="Horizon"><button type="button" class="hzc" aria-pressed="false">5 yrs</button><button type="button" class="hzc" aria-pressed="false">10 yrs</button><button type="button" class="hzc on" aria-pressed="true">20 yrs</button><button type="button" class="hzc" aria-pressed="false">30 yrs</button></div>
                           </div>
                           <div class="sech"><span class="mp-over mp-ink2">Milestones</span><span class="mp-foot mp-ink2">on the line above</span></div>
                           <div class="mp-group"><sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="mp-row rowc"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ m.i }}</span></span><span class="grow"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span><span>{{ m.d }}</span></span></span><span class="rowv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></span></div></sc-for></div>
@@ -286,15 +305,16 @@
                       </div>
                     </sc-if>
 
-                    <!-- ===== the chat: the iPhone's Chat tab, or the column beside the iPad's screen ===== -->
+                    <!-- ===== the chat: the iPhone's Chat tab, or a sheet over the iPad's screen (MA-301 c 1c) ===== -->
+                    <sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}"><div class="dim"></div></sc-if>
                     <div class="{{ f.chatc }}">
                       <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}">
                         <div class="sbar"><span>{{ f.clock }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
                         <div class="strip solid" role="button" tabindex="0" aria-expanded="false"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">Household, net worth</span><span class="strip-n">£456,747</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
                       </sc-if>
                       <sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}">
-                        <div class="sbar sbar-r"><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-                        <div class="nav"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="New chat"><span class="ms z1" aria-hidden="true">edit_square</span></button></div>
+                        <div class="sheet-grab"></div>
+                        <div class="sheet-h psh"><span class="mp-hl">Chat</span><button type="button" class="gbtn lg" aria-label="Close the chat"><span class="ms z1" aria-hidden="true">close</span></button></div>
                       </sc-if>
                       <div class="{{ f.scrollc }}"><sc-if value="{{ f.phone }}" hint-placeholder-val="{{ true }}"><div class="fadet"></div></sc-if><sc-if value="{{ f.pad }}" hint-placeholder-val="{{ false }}"><div class="chfadet"></div></sc-if><div class="chat {{ f.chatpos }}" style="top: {{ f.top }}; margin-top: {{ f.mt }}">
                         <sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
@@ -399,7 +419,7 @@
                               <div class="pk-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
                             </div></sc-if>
 
-                            <!-- 2c: the ways in brief beside the iPad's page, which compares them -->
+                            <!-- 2c: the ways in brief in the iPad's chat sheet, lowered over the page, which compares them -->
                             <sc-if value="{{ m.c.kMini }}" hint-placeholder-val="{{ false }}"><div class="ccard">
                               <div class="ccard-h"><span class="mp-over mp-ink2">Cover the gap</span><span class="mp-hl">Three ways, compared on the screen</span><span class="mp-sub mp-ink2">{{ gapTotal }} short, Jan 2029 to Feb 2035</span></div>
                               <div class="ccard-b"><div class="pk-mini"><sc-for list="{{ mini }}" as="r" hint-placeholder-count="3"><div class="pk-mr"><span class="pk-rk {{ r.rk }}">{{ r.n }}</span><div><span class="mp-sub mp-w6">{{ r.t }}</span><span class="mp-foot mp-ink2 tnum">{{ r.v }}</span></div></div></sc-for></div></div>
@@ -457,7 +477,7 @@
               big: gbp(end[2]), lo: gbp(end[1]), hi: gbp(end[3]),
               aria: 'Net worth to 2046: the middle path from £456,747 today to ' + gbp(end[2]) + ', with 8 in 10 runs between ' + gbp(end[1]) + ' and ' + gbp(end[3]) + '; the milestones are listed below.' };
           };
-          // the milestones, on the Projection beside the chat (household-v4.json's milestones, and the new plans)
+          // the milestones, on the Projection (household-v4.json's milestones, and the new plans)
           const MS = (run) => [].concat(
             run === 'R2' ? [['savings', 'School fees pot starts', 'Nov 2026 · plan item', '£690 a month', 'mk-sq', 'added 20:46']] : [],
             [['savings', 'Asha’s fixed-rate saver matures', '14 Dec 2026', '£10,460', 'mk-tk'],
@@ -561,7 +581,7 @@
             cB: [ai('Until when?'), { isMe: true, t: 'Jul 2041' }, ai('How do the fees grow? The UK school-fees prior is 4.5% a year.'), { isMe: true, t: '4.5% a year, UK school fees' }, ai('Paid from where?'), { isMe: true, t: 'The monthly budget' }, { isTime: true, t: '20:42' },
               ai('', { kImp: true })],
             cC: [ai('', { kSaved: true }), ai(savedTxt + ' Swipe to compare them.', { kPager: true })],
-            cCpad: [ai('', { kSaved: true }), ai(savedTxt + ' They’re side by side on the screen beside this chat.', { kMini: true })],
+            cCpad: [ai('', { kSaved: true }), ai(savedTxt + ' They’re side by side on the screen above this chat.', { kMini: true })],
             cD: [ai(doneTxt, done('Applied · way 1 of 3', 'Start a school fees pot this month', AUD))]
           };
 
@@ -569,15 +589,15 @@
           const CHIPS = [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']].map((c) => ({ i: c[0], l: c[1] }));
           const REPLY = [['event', 'Jul 2041'], ['date_range', 'For 10 years'], ['all_inclusive', 'No end date']].map((c) => ({ i: c[0], l: c[1] }));
           const PADCHIPS = [['event', 'What’s due'], ['add_circle', 'Add anything']].map((c) => ({ i: c[0], l: c[1] }));
-          // a frame: the iPhone's Chat tab, or the iPad in landscape with the Projection beside the chat
+          // a frame: the iPhone's Chat tab, or the iPad in landscape: the Projection, the chat a sheet over it (MA-301 c 1c)
           const iphone = (cap, th, clock, list, o) => ({ cap: cap + ' · ' + th[0], cls: th[1], devc: 'dev-iphone', scrc: '', phone: true, pad: false, chatc: 'cwrap', scrollc: 'scroll',
             chatpos: 'cb' + (o.top !== undefined ? ' top' : ''), top: o.top !== undefined ? o.top + 'px' : 'auto', mt: '0px', compc: 'cmp', chips: o.reply ? REPLY : CHIPS, ph: o.reply ? 'Or type the date' : 'Ask MyPaisa', clock, msgs: list, p: {} });
-          const ipad = (cap, th, clock, list, run, o) => ({ cap: cap + ' · ' + th[0], cls: th[1], devc: 'dev-ipad-l ipad', scrc: 'srow', phone: false, pad: true, chatc: 'insp', scrollc: 'ichat top',
+          const ipad = (cap, th, clock, list, run, o) => ({ cap: cap + ' · ' + th[0], cls: th[1], devc: 'dev-ipad-l ipad', scrc: 'srow', phone: false, pad: true, chatc: 'padsheet' + (o.cmp ? ' half' : ''), scrollc: 'ichat top',
             chatpos: '', top: 'auto', mt: (o.top || 0) + 'px', compc: 'cb20', chips: PADCHIPS, ph: 'Message MyPaisa', clock, msgs: list, p: page(run, o.cmp) });
           const N = (name) => ({
             A: name + ' · 20:41, the questions', B: name + ' · 20:42, the impact', C: name + ' · 20:43, the ways to cover it', C2: name + ' · 20:43, the ways to cover it, scrolled', D: name + ' · 20:46, applied, technical' });
           // where each frame is scrolled to: the top of the chat, in points (0 keeps it at the top; none keeps it at the bottom)
-          const OFF = { a: [null, -382, -40, -700, -90, -10, -340], b: [null, -230, -130, -490, -90, -60, -740], c: [null, -350, -40, -200, -90, -10, -210] };
+          const OFF = { a: [null, -382, -40, -700, -90, -10, -462], b: [null, -230, -130, -490, -90, -60, -260], c: [null, -350, -40, -200, -90, -10, -358] };   // iPad (5, 6): the chat in its sheet (MA-301 c 1c)
           const frames = (k, name) => {
             const n = N(name), pn = N(name.replace('iPhone · ', 'iPad · ')), o = OFF[k], at = (i) => (o[i] === null ? {} : { top: o[i] });
             return [
@@ -598,7 +618,7 @@
                 { h: 'The floor is monthly, the bars yearly,', t: 'so the chart marks a year with a month under £500 (▼, in the alert colour) rather than draw a yearly line that would not match the flag.' },
                 { h: 'Plain lines', t: '(push and VoiceOver): “Three questions about School fees.” “School fees: the middle path in 2046 falls from £3,897,000 to £2,580,000; the surplus is under £500 in 50 months.” “Three ways to cover £19,058, best first: start a school fees pot this month.”' },
                 { h: 'One Confirm each,', t: 'in §6.6’s order: the plan first, with its audit row; then the rearrangement, with one row for the plan item it adds and one for this month’s budget, each with Undo (MA-263).' },
-                { h: 'The iPad’s Projection', t: 'beside the chat shows R1, the run at 20:43, with the fees on the line; Glass is the sidebar, the toolbar buttons and the composer only.' }] },
+                { h: 'The iPad’s Projection', t: 'under the chat’s sheet shows R1, the run at 20:43, with the fees on the line. The chat sits beside every screen from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over); no iPad is 1393 pt wide, so on iPad it is a sheet, opened from the sidebar’s Chat (MA-301 c 1c). Its header is MA-301 a 1b: the title is the picker (Net worth ▾), the horizon chips sit under the fan, and £ · Nominal is the corner button. Glass is the sidebar, the toolbar buttons, the sheet’s controls and the composer only.' }] },
             { anchor: 'o2b', id: '2b', name: 'iPhone · Plans in the chat 2b, one card that grows', rec: false, keys: 'MA-222 · MA-263 · MA-223 · MA-264',
               lead: 'One plan card that fills in as Arun answers: each slot ticks from its question to its answer; the impact appears inside it; then Cover the gap, a single choice, and one Confirm that saves the plan and the way together.',
               frames: frames('b', 'iPhone · Plans in the chat 2b, one card that grows'),
@@ -607,10 +627,10 @@
                 { h: 'The cost:', t: 'a long card; on a phone the impact scrolls away before the choice, so the choice shows the 2046 figure again.' },
                 { h: 'Plain line:', t: '“School fees, with a school fees pot: confirm both?”' }] },
             { anchor: 'o2c', id: '2c', name: 'iPhone · Plans in the chat 2c, compare side by side', rec: false, keys: 'MA-222 · MA-263 · MA-223 · MA-264',
-              lead: 'The questions one at a time, answered from reply chips on the composer; the impact card; then the ways to compare: a pager of three cards on the phone, and on iPad a short list in the chat with the full comparison on the screen beside it, an Apply under each way.',
+              lead: 'The questions one at a time, answered from reply chips on the composer; the impact card; then the ways to compare: a pager of three cards on the phone, and on iPad a short list in the chat’s sheet, lowered to half height, with the full comparison on the screen above it, an Apply under each way.',
               frames: frames('c', 'iPhone · Plans in the chat 2c, compare side by side'),
               notes: [{ h: 'Reply chips are glass,', t: 'as the composer’s chips are; the questions are plain messages, so the conversation reads as a conversation.' },
-                { h: 'The chat column is too narrow for three columns', t: '(250 pt on iPad, 332 pt on iPhone): the phone pages through the ways; iPad compares them on the screen, which the chat opens beside itself.' },
+                { h: 'The chat is too narrow for three columns', t: '(its sheet on iPad, 332 pt on iPhone): the phone pages through the ways; iPad compares them on the screen, and the chat’s sheet lowers to half height so the comparison shows above it.' },
                 { h: 'The rows compared:', t: 'what changes, this month’s budget, the surplus in 2029, months under £500, the 2046 middle path and the change against the plan saved, from rearrange.options[].effect. The lowest month is not in the figure set, so it is not compared.' },
                 { h: 'The cost:', t: 'the pager hides two of the three ways behind a swipe on the phone.' }] }
           ];
@@ -620,7 +640,7 @@
             padnav: navFor('Projection'),
             tabsChat: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Chat' ? 'on' : '' })),
             intro1: 'Arun, an admin, says “£4,000 a month from Jan 2029 for my kid’s schooling” at 20:41 on Thu 5 Nov 2026. MyPaisa asks at most three questions with chips (until when, how it grows, paid from where), shows the engine’s impact with one Confirm, and, because the plan leaves the household short, offers the ways code worked out to rearrange the budget; the admin’s Confirm applies one, this month’s budget included (ARCHITECTURE §6.6, items 6 and 7).',
-            intro2: 'Three options for how the chat carries it, each on iPhone (the Chat tab) at every step and on iPad in landscape with the Projection beside the chat, in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,747.'
+            intro2: 'Three options for how the chat carries it, each on iPhone (the Chat tab) at every step and on iPad in landscape, the Projection with the chat as a sheet over it (MA-301 c 1c: no iPad is 1393 pt wide), in light and dark. Cards are flat and the Projection’s header is the title picker (MA-301 d 1a, a 1b). Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,747.'
           };
         }
       }

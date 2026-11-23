@@ -24,7 +24,7 @@ check says so before any story starts and before any PR.
 | --- | --- | --- |
 | The plan | `PLAN.md` (phases), `ARCHITECTURE.md` (how), `TECH_STACK.md` (with what), `docs/roadmap.json` (each story's estimate, each phase's dates) | What is built, in which phase, to which design, and when |
 | Jira | project MA: a phase epic per PLAN phase, a story or task per deliverable; each phase epic's due date is its target end | Who does what, its status, and when |
-| The designs | The repo, three board folders: `docs/design/ios-v1/` (MyPaisa iOS v1, the app's screens, from MA-161), `docs/design/ds-v1/` (MyPaisa DS v1, the system and its iOS kit) and `docs/design/app-v1/` (MyPaisa app v1, the web app's browser boards, its spec; its Mini App and Telegram boards are the superseded record), git their only record; a record that is not a board set in its own folder (`docs/design/prototype-v5/`). Arun sees each design round's options as a private Claude Artifact, or as a local page for a round run in Antigravity | What a member sees |
+| The designs | The repo, three board folders: `docs/design/ios-v1/` (MyPaisa iOS v1, the app's screens, from MA-161), `docs/design/ds-v1/` (MyPaisa DS v1, the system and its iOS kit) and `docs/design/app-v1/` (MyPaisa app v1, the web app's browser boards, its spec; its Mini App and Telegram boards are the superseded record), git their only record; a record that is not a board set in its own folder (`docs/design/prototype-v5/`, not updated for a design change: rule 5). Arun sees each design round's options as a private Claude Artifact, or as a local page for a round run in Antigravity | What a member sees |
 | The trace | `docs/trace.json`, rendered to `docs/TRACE.md` | Which story follows which ARCHITECTURE section and which boards, and which code builds it |
 | Confluence | Space mypaisaa-agent: the hub, the roadmap, a page per phase, a page per screen area, the design decisions, the explainers. Rendered by `scripts/confluence_docs.py` into `docs/confluence/`; page ids, versions and previews in `docs/confluence.json` | The plan as one readable tree, phase by phase and screen by screen |
 | The code | `backend/`, `web/`, `ios/`, `infra/` (Arun, 3 Nov 2026, MA-24), named per story in the trace's `code` paths | What was built, traced to its story |
@@ -50,6 +50,12 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    the board in its folder, the
    trace row, the ARCHITECTURE section and the Jira story together. A change to
    scope updates PLAN, ARCHITECTURE, the trace and Jira together.
+   **A design change goes to `ios-v1/`, `app-v1/` and `ds-v1/` only.** Prototype
+   v5 is not updated: it stays as Arun last walked it, a record (Arun, 23 Nov
+   2026, MA-301: "no need to update Prototype v5, just the ios-v1 and app-v1
+   and design system updates are all that is needed.. make it a rule"). Its
+   artifact is a record in `docs/design/artifacts.json`, never republished for
+   a change to the board folders it loads its styles from.
 6. **A disagreement is an open question, not a guess.** When a board, a doc
    and Jira say different things and the plan does not settle it, record it
    in the row's `open` list and as a comment on the story. `start` refuses
@@ -96,7 +102,11 @@ The schema is `.claude/skills/plan-sync/reference/trace-schema.md`.
    published by `/plan-sync`. Never edit the content in Confluence: an edit
    made there is copied back into the record it came from, and the next
    publish overwrites the page. Board previews are composed from the
-   boards in the repo and uploaded again when a board changes.
+   boards in the repo and uploaded again when a board changes. A publish
+   runs in parallel lanes, as much as it can: sub-agents upload and send,
+   and the coordinator alone records into `docs/confluence.json` (Arun,
+   23 Nov 2026, MA-301: "confluence publish will be done as much parallel as
+   possible"; the plan-sync skill, "Publish in parallel").
 9. **Dates come from estimates.** Every traced story has an estimate in
    `docs/roadmap.json`; `python3 scripts/roadmap.py write` works out each
    phase's dates and rewrites PLAN.md's Timeline table. Each phase epic in
