@@ -290,7 +290,7 @@
 <p><code>logs</code>14 days<code>spans</code>30 days, aws/spans<code>RunRecord</code>90 days<code>metrics</code>15 months<code>audit</code>never deleted<code>files</code>for good</p>
 <h2>🚀 Terraform only, one image, prod after a person says yes</h2>
 <p>One AWS account, every component twice, kept apart by IAM: each Lambda&#x27;s role names only its own environment, and the developer role is denied anything tagged <code>env=prod</code>. CI reaches AWS through GitHub OIDC with no stored keys; the AWS MCP only reads.</p>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="6c316ba8-0473-4a2c-9785-3bc9cfd5e000" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-delivery.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c2d9222b-346d-4d30-a3a7-8077f21a79a1" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-delivery.png"></div>
 <figcaption>Terraform only, one image, prod after a person says yes (Architecture v4)</figcaption></figure>
 <ol><li>Gates ruff, pyright, semgrep, pytest on moto, the evals&#x27; T0 replays, tflint, trivy, gitleaks, jira-key, the leak test every PR</li>
 <li>Plan <code>terraform plan</code> for dev and prod, posted on the PR; T1 live evals when a prompt, tool or guard changes PRs touching infra/ or the agent</li>

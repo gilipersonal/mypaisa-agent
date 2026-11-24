@@ -54,7 +54,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-230 | The architecture records one trace from the door to the model, OpenTelemetry on every Lambda, and what each reader of the agent's work sees | Done | §9, §12, §15 | none |  |
 | MA-231 | Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic | In Progress | §9.3, §9.5, §9.6, §9.7, §9.9, §17.4 | none |  |
 | MA-236 | The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives | Done | §3, §9 | none |  |
-| MA-237 | Container images are built on GitHub's free arm64 runner and stored in ECR by digest, the same digest in dev and prod | To Do | §14, §17.4 | none |  |
+| MA-237 | Container images are built on GitHub's free arm64 runner and stored in ECR by digest, the same digest in dev and prod | In Progress | §14, §17.4 | none |  |
 | MA-238 | Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds | To Do | §17.4 | none |  |
 | MA-239 | An animated plain-words page, Inside MyPaisa, walks the admin from the first screen to the chatbot and the agent team | Done | §3, §7, §18, §19 | none |  |
 | MA-240 | Every board stays whole at every supported screen size and legible at 25% brightness | Done | §8.1, §8.4 | none |  |
