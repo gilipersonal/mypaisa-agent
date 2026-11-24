@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Web v4 · Plans in the chat 2a states</title>
     <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
   </head>
   <body>
     <x-dc>
@@ -114,14 +115,14 @@
           .cbtn { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 15px/20px var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink); box-sizing: border-box; }
           .cbtn-primary { background: var(--mp-accent); color: var(--mp-on-accent); }
           .cbtn-ghost { background: transparent; color: var(--mp-accent); padding: 0 8px; }
-          .cbtn .ms { font-size: 18px; }
+          .cbtn .lc { width: 18px; height: 18px; }
           .wcomp { padding: 12px 16px 18px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--mp-line); flex: none; background: var(--mp-bg); }
           .wchips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); }
           .wchips::-webkit-scrollbar { display: none; }
           .wchips .cbtn { flex: none; white-space: nowrap; }
           .wfield { min-height: 48px; border-radius: 24px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; align-items: center; gap: 8px; padding: 0 6px 0 18px; }
           .wsend { width: 36px; height: 36px; border-radius: 50%; background: var(--mp-accent); color: var(--mp-on-accent); display: grid; place-items: center; flex: none; }
-          .wsend .ms { font-size: 20px; }
+          .wsend .lc { width: 20px; height: 20px; }
           .pframe { width: 390px; height: 844px; border-radius: 20px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 0 1px rgba(0,0,0,.14), 0 24px 52px rgba(0,0,0,.18); }   /* a phone browser, not an iPhone bezel (MA-300) */
           .pframe > .pcol { flex: 1; min-height: 0; display: flex; flex-direction: column; }
           .pchat { flex: 1; min-height: 0; display: flex; flex-direction: column; }
@@ -145,14 +146,14 @@
           .pk-chips { display: flex; flex-wrap: wrap; gap: 8px; }
           .pk-chip { min-height: 44px; padding: 10px 14px; border-radius: 22px; display: inline-flex; align-items: center; gap: 6px; font: 600 15px/20px var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink); box-sizing: border-box; max-width: 100%; }
           .pk-chip.on { background: var(--mp-surface); box-shadow: inset 0 0 0 2px var(--mp-accent); }
-          .pk-chip .ms { font-size: 18px; color: var(--mp-accent); }
+          .pk-chip .lc { width: 18px; height: 18px; color: var(--mp-accent); }
           .pk-chip.off { color: var(--mp-ink-2); }
           .pk-chips.row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-right: -16px; padding-right: 16px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 20px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 20px), transparent); }
           .pk-chips.row::-webkit-scrollbar { display: none; }
           .pk-chips.row > .pk-chip { flex: none; white-space: nowrap; }
           .pk-tags { display: flex; flex-wrap: wrap; gap: 6px; }
           .pk-tags .mp-chip { white-space: normal; }
-          .pk-tags .ms { font-size: 14px; }
+          .pk-tags .lc { width: 14px; height: 14px; }
           .pk-mp3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px 10px; }
           .pk-mp3 > div { display: flex; flex-direction: column; min-width: 0; }
           .pk-v3 { font: 600 16px/21px var(--mp-font); font-variant-numeric: tabular-nums; color: var(--mp-ink); white-space: nowrap; }
@@ -179,9 +180,9 @@
           .sw-dash { width: 16px; height: 0; border-top: 2px dashed var(--mp-ink-2); }
           .sw-flag { color: var(--mp-alert); font: 700 12px/12px var(--mp-font); }
           .pk-flag { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: var(--mp-alert-bg); color: var(--mp-alert); font: 600 15px/20px var(--mp-font); }
-          .pk-flag .ms { font-size: 18px; margin-top: 1px; flex: none; }
+          .pk-flag .lc { width: 18px; height: 18px; margin-top: 1px; flex: none; }
           .pk-ok { display: flex; gap: 8px; align-items: flex-start; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); }
-          .pk-ok .ms { font-size: 18px; color: var(--mp-up); margin-top: 1px; flex: none; }
+          .pk-ok .lc { width: 18px; height: 18px; color: var(--mp-up); margin-top: 1px; flex: none; }
           .pk-ms { display: flex; gap: 10px; align-items: flex-start; }
           .pk-ms .mp-icontile { margin-top: 1px; }
           .pk-ways .ccard-b { padding-bottom: 6px; }
@@ -198,9 +199,9 @@
           .pk-more { display: flex; flex-direction: column; gap: 6px; padding: 12px 16px; border-top: 1px solid var(--mp-line); }
           .pk-slot { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 4px 10px; align-items: start; padding: 9px 0; border-top: 1px solid var(--mp-line); }
           .pk-slot:first-child { border-top: 0; padding-top: 2px; }
-          .pk-slot > .ms { font-size: 20px; margin-top: 1px; }
-          .pk-slot > .ms.ok { color: var(--mp-up); }
-          .pk-slot > .ms.ask { color: var(--mp-accent); }
+          .pk-slot > .lc { width: 20px; height: 20px; margin-top: 1px; }
+          .pk-slot > .lc.ok { color: var(--mp-up); }
+          .pk-slot > .lc.ask { color: var(--mp-accent); }
           .pk-slot > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
           .pk-div { display: flex; align-items: center; gap: 8px; font: 600 12px/16px var(--mp-font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mp-ink-2); padding-top: 4px; border-top: 1px solid var(--mp-line); padding-top: 12px; }
           .pk-opts { display: flex; flex-direction: column; margin: 0 -8px; }
@@ -240,7 +241,7 @@
         
           /* round 2 (lane B): the generic card's extra blocks, the cash chart, the page beside, November's budget */
           .pk-lock { display: flex; gap: 8px; align-items: flex-start; font: 400 15px/20px var(--mp-font); color: var(--mp-ink-2); }
-          .pk-lock .ms { font-size: 18px; flex: none; margin-top: 1px; }
+          .pk-lock .lc { width: 18px; height: 18px; flex: none; margin-top: 1px; }
           .pk-fm.dn { transform: translate(-50%, 4px); margin-top: 0; }
           .pk-cash { height: 92px; }
           .pk-cash .gy { left: auto; right: 0; transform: translateY(-50%); padding-bottom: 0; }
@@ -319,7 +320,7 @@
                       <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}">
                         <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                           <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path fill="var(--mp-hero)" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle fill="var(--mp-coral)" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                          <sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.i }}</span>{{ n.l }}</a></sc-for>
+                          <sc-for list="{{ f.nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><svg class="lc {{ n.fill }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[n.i] }}"></path></svg>{{ n.l }}</a></sc-for>
                           <div class="grow1"></div>
                           <div class="mp-foot mp-ink2 side-ft">{{ f.who }}</div>
                         </aside>
@@ -327,7 +328,7 @@
                           <sc-if value="{{ f.p.isBud }}" hint-placeholder-val="{{ false }}"><div class="mp-pagepad">
                             <header class="pk-head">
                               <div><div class="mp-large">Budget</div><div class="mp-foot mp-ink2">November 2026 · open · the plan, take-home</div></div>
-                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button>
+                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></button>
                             </header>
                             <div class="pk-ctl"><div class="mp-seg wbseg" role="group" aria-label="Month"><button type="button" class="mp-seg-i" aria-pressed="false">October</button><button type="button" class="mp-seg-i on" aria-pressed="true">November</button></div><div class="mp-seg ccyseg" role="group" aria-label="Currency"><button type="button" class="mp-seg-i on" aria-pressed="true">£ GBP</button><button type="button" class="mp-seg-i" aria-pressed="false">₹ INR</button></div></div>
                             <div class="wbcols">
@@ -340,16 +341,16 @@
                                 </div>
                                 <div class="mp-card cpad">
                                   <div class="fx jb ac"><span class="mp-hl">Income · November</span><span class="mp-hl tnum">£7,560</span></div>
-                                  <sc-for list="{{ bud.inc }}" as="r" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
+                                  <sc-for list="{{ bud.inc }}" as="r" hint-placeholder-count="3"><div class="lrow"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[r.i] }}"></path></svg></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
                                 </div>
                               </div>
                               <div>
                                 <div class="mp-card cpad">
                                   <div class="fx jb ac"><span class="mp-hl">November’s plan</span><span class="mp-foot mp-ink2">plan, a month</span></div>
-                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">savings</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">School fees pot</span><span class="mp-foot mp-ink2">{{ bud.potSub }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£690</span><span class="mp-chip newchip">added 20:46</span></div></div>
+                                  <div class="lrow"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.savings }}"></path></svg></span><div class="rtx fx col"><span class="mp-sub mp-w6">School fees pot</span><span class="mp-foot mp-ink2">{{ bud.potSub }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£690</span><span class="mp-chip newchip">added 20:46</span></div></div>
                                   <div class="pk-aud"><span>{{ bud.aud }}</span><button type="button" class="cbtn cbtn-ghost">Undo</button></div>
-                                  <sc-for list="{{ bud.cats }}" as="r" hint-placeholder-count="12"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ r.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
-                                  <div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">functions</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">Spending plan</span><span class="mp-foot mp-ink2">12 categories, the pot apart</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£2,682</span></div></div>
+                                  <sc-for list="{{ bud.cats }}" as="r" hint-placeholder-count="12"><div class="lrow"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[r.i] }}"></path></svg></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ r.n }}</span><span class="mp-foot mp-ink2">{{ r.s }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ r.v }}</span></div></div></sc-for>
+                                  <div class="lrow"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.functions }}"></path></svg></span><div class="rtx fx col"><span class="mp-sub mp-w6">Spending plan</span><span class="mp-foot mp-ink2">12 categories, the pot apart</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">£2,682</span></div></div>
                                 </div>
                               </div>
                             </div>
@@ -357,7 +358,7 @@
                           <sc-if value="{{ f.p.isProj }}" hint-placeholder-val="{{ true }}"><div class="mp-pagepad">
                             <header class="pk-head">
                               <div><button type="button" class="mp-large ttlmenu" aria-haspopup="menu" aria-label="Projection: Net worth. Change view">Net worth<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="mp-foot mp-ink2">Projection · 20 years, in the pounds of each year · run {{ f.p.run }}</div></div>
-                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button>
+                              <button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></button>
                             </header>
                             <sc-if value="{{ f.p.isFan }}" hint-placeholder-val="{{ true }}">
                               <div class="mp-hero heroP">
@@ -376,15 +377,15 @@
                             <div class="mp-card cpad">
                               <sc-if value="{{ f.p.isList }}" hint-placeholder-val="{{ false }}"><div class="pk-sum"><span class="mp-sub mp-w6">Middle path in 2046 <span class="tnum">{{ f.p.mid }}</span></span><span class="mp-foot mp-ink2">run {{ f.p.run }} · the fan is above</span></div></sc-if>
                               <div class="fx jb ac"><span class="mp-hl">Milestones</span><span class="mp-foot mp-ink2">on the line</span></div>
-                              <sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="lrow {{ m.alc }}"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ m.i }}</span></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></div></div></sc-for>
+                              <sc-for list="{{ f.p.ms }}" as="m" hint-placeholder-count="6"><div class="lrow {{ m.alc }}"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[m.i] }}"></path></svg></span><div class="rtx fx col"><span class="mp-sub mp-w6">{{ m.w }}</span><span class="lsub mp-foot mp-ink2"><span class="mk"><i class="{{ m.k }}"></i></span>{{ m.d }}</span></div><div class="lrv"><span class="mp-sub mp-w6 tnum">{{ m.a }}</span><sc-if value="{{ m.isNew }}" hint-placeholder-val="{{ false }}"><span class="mp-chip newchip">{{ m.nw }}</span></sc-if></div></div></sc-for>
                             </div>
                           </div></sc-if>
                         </main>
                       </sc-if>
 
                       <aside class="chside {{ f.chatc }}" aria-label="Chat">
-                        <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chhd"><span class="mp-t3">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div></sc-if>
-                        <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="psb" aria-hidden="true"><span class="ms ms-s" aria-hidden="true">lock</span><span>dashboard.mypaisapp.com</span></div><div class="phd"><span class="mp-t1">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div></sc-if>
+                        <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chhd"><span class="mp-t3">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.edit_square }}"></path></svg></button></div></sc-if>
+                        <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="psb" aria-hidden="true"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.lock }}"></path></svg><span>dashboard.mypaisapp.com</span></div><div class="phd"><span class="mp-t1">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.edit_square }}"></path></svg></button></div></sc-if>
                         <div class="chv {{ f.viewc }}"><div class="chat" style="margin-top: {{ f.mt }}">
 
                         <sc-for list="{{ f.msgs }}" as="m" hint-placeholder-count="4">
@@ -396,7 +397,7 @@
                             <sc-if value="{{ m.hasMeta }}" hint-placeholder-val="{{ false }}"><div class="ai-meta">{{ m.meta }}</div></sc-if>
                             <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ true }}"><div class="ccard">
                               <div class="ccard-h">
-                                <sc-if value="{{ m.c.ok }}" hint-placeholder-val="{{ false }}"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.c.over }}</span></sc-if>
+                                <sc-if value="{{ m.c.ok }}" hint-placeholder-val="{{ false }}"><span class="mp-over c-add fx ac gap4"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>{{ m.c.over }}</span></sc-if>
                                 <sc-if value="{{ m.c.plain }}" hint-placeholder-val="{{ true }}"><span class="mp-over mp-ink2">{{ m.c.over }}</span></sc-if>
                                 <span class="mp-hl">{{ m.c.title }}</span>
                                 <sc-if value="{{ m.c.hasSub }}" hint-placeholder-val="{{ true }}"><span class="mp-sub mp-ink2">{{ m.c.sub }}</span></sc-if>
@@ -414,8 +415,8 @@
                                 </div><div class="mp-chartaxis" aria-hidden="true"><span class="ax0" style="left: 0%">{{ k.a0 }}</span><span style="left: {{ k.amx }}">{{ k.a1 }}</span><span class="ax1" style="left: {{ k.a2l }}">{{ k.a2 }}</span></div></div>
                                 <div class="lgd"><span><i class="sw-bar"></i>Cash at each month’s end</span><span><span class="sw-flag">▼</span>Below zero</span></div></sc-if>
                                 <sc-if value="{{ k.isFlag }}" hint-placeholder-val="{{ false }}"><div class="pk-flag" role="note"><span>{{ k.ft }}</span></div></sc-if>
-                                <sc-if value="{{ k.isOk }}" hint-placeholder-val="{{ false }}"><div class="pk-ok"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span><span>{{ k.ot }}</span></div></sc-if>
-                                <sc-if value="{{ k.isLock }}" hint-placeholder-val="{{ false }}"><div class="pk-lock"><span class="ms ms-s" aria-hidden="true">lock</span><span>{{ k.lt }}</span></div></sc-if>
+                                <sc-if value="{{ k.isOk }}" hint-placeholder-val="{{ false }}"><div class="pk-ok"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg><span>{{ k.ot }}</span></div></sc-if>
+                                <sc-if value="{{ k.isLock }}" hint-placeholder-val="{{ false }}"><div class="pk-lock"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.lock }}"></path></svg><span>{{ k.lt }}</span></div></sc-if>
                                 <sc-if value="{{ k.isFoot }}" hint-placeholder-val="{{ false }}"><p class="pp mp-foot mp-ink2">{{ k.pt }}</p></sc-if>
                                 <sc-if value="{{ k.isChg }}" hint-placeholder-val="{{ false }}"><ul class="pk-chg"><sc-for list="{{ k.items }}" as="x" hint-placeholder-count="2"><li><i></i><span>{{ x }}</span></li></sc-for></ul></sc-if>
                                 <sc-if value="{{ k.isAud }}" hint-placeholder-val="{{ false }}"><div class="pk-aud"><span>{{ k.at }}</span><sc-if value="{{ k.undo }}" hint-placeholder-val="{{ true }}"><button type="button" class="cbtn cbtn-ghost">Undo</button></sc-if></div></sc-if>
@@ -428,18 +429,18 @@
                                 <sc-if value="{{ w.canApply }}" hint-placeholder-val="{{ true }}"><div class="fx ac gap8 wrapx"><button type="button" class="cbtn {{ w.bc }}">Confirm this way</button><sc-if value="{{ w.shut }}" hint-placeholder-val="{{ false }}"><button type="button" class="cbtn cbtn-ghost">What changes</button></sc-if></div></sc-if>
                               </div></sc-for></sc-if>
                               <sc-if value="{{ m.c.hasActs }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.c.acts }}" as="a" hint-placeholder-count="2"><button type="button" class="cbtn {{ a.c }}">{{ a.t }}</button></sc-for></div></sc-if>
-                              <sc-if value="{{ m.c.hasMore }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold"><span>{{ m.c.foldMore }}</span><span class="ms" aria-hidden="true">expand_less</span></div><div class="pk-more"><sc-for list="{{ m.c.more }}" as="x" hint-placeholder-count="2"><div class="pk-mw"><span class="mp-sub mp-w6">{{ x.t }}</span><span class="mp-foot mp-ink2">{{ x.n }}</span><sc-if value="{{ x.hasBtn }}" hint-placeholder-val="{{ false }}"><button type="button" class="cbtn">{{ x.btn }}</button></sc-if></div></sc-for></div></sc-if>
-                              <sc-for list="{{ m.c.folds }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms" aria-hidden="true">{{ fo.i }}</span></div></sc-for>
+                              <sc-if value="{{ m.c.hasMore }}" hint-placeholder-val="{{ false }}"><div class="ccard-fold"><span>{{ m.c.foldMore }}</span><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.expand_less }}"></path></svg></div><div class="pk-more"><sc-for list="{{ m.c.more }}" as="x" hint-placeholder-count="2"><div class="pk-mw"><span class="mp-sub mp-w6">{{ x.t }}</span><span class="mp-foot mp-ink2">{{ x.n }}</span><sc-if value="{{ x.hasBtn }}" hint-placeholder-val="{{ false }}"><button type="button" class="cbtn">{{ x.btn }}</button></sc-if></div></sc-for></div></sc-if>
+                              <sc-for list="{{ m.c.folds }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[fo.i] }}"></path></svg></div></sc-for>
                               <sc-if value="{{ m.c.hasTech }}" hint-placeholder-val="{{ false }}"><div class="ccard-tech pk-tech"><sc-for list="{{ m.c.tech }}" as="t" hint-placeholder-count="5"><span>{{ t }}</span></sc-for></div></sc-if>
-                              <sc-for list="{{ m.c.foldsB }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><span class="ms" aria-hidden="true">{{ fo.i }}</span></div></sc-for>
+                              <sc-for list="{{ m.c.foldsB }}" as="fo" hint-placeholder-count="1"><div class="ccard-fold"><span>{{ fo.t }}</span><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[fo.i] }}"></path></svg></div></sc-for>
                             </div></sc-if>
                           </div></div></sc-if>
                         </sc-for>
                         </div></div>
-                        <div class="wcomp"><div class="wchips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">{{ c.i }}</span>{{ c.l }}</button></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx" role="textbox" tabindex="0" aria-label="Message MyPaisa">{{ f.ph }}</span><button type="button" class="wsend" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div></div>
+                        <div class="wcomp"><div class="wchips"><sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="4"><button type="button" class="cbtn"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[c.i] }}"></path></svg>{{ c.l }}</button></sc-for></div><div class="wfield"><span class="mp-body mp-ink2 rtx" role="textbox" tabindex="0" aria-label="Message MyPaisa">{{ f.ph }}</span><button type="button" class="wsend" aria-label="Send"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.arrow_upward }}"></path></svg></button></div></div>
                       </aside>
                     </div>
-                    <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav></sc-if>
+                    <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><nav class="mp-tabbar ptabs" aria-label="Sections"><sc-for list="{{ ptabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><svg class="lc {{ t.fill }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[t.i] }}"></path></svg>{{ t.l }}</a></sc-for></nav></sc-if>
                   </div>
                 </div>
               </sc-for>
@@ -650,7 +651,7 @@
           const at = (cap, top) => (OFFS[cap] !== undefined ? OFFS[cap] : top);
           const T = [['Light', 't-light'], ['Dark', 't-dark']];
           const CHIPS = [['account_balance_wallet', 'Net worth'], ['event', 'What’s due'], ['add_circle', 'Add anything'], ['upload_file', 'Send a statement']].map((c) => ({ i: c[0], l: c[1] }));
-          const NAV = (on) => [['home', 'Home'], ['account_balance_wallet', 'Assets'], ['credit_card', 'Debts'], ['event_note', 'Budget'], ['show_chart', 'Projection'], ['history', 'Activity'], ['fact_check', 'Audit'], ['person', 'You']].map((n) => ({ i: n[0], l: n[1], on: n[1] === on ? 'on' : '', fill: n[1] === on ? 'ms-fill' : '' }));
+          const NAV = (on) => [['house', 'Home'], ['wallet', 'Assets'], ['landmark', 'Debts'], ['chart-pie', 'Budget'], ['trending-up', 'Projection'], ['activity', 'Activity'], ['fact_check', 'Audit'], ['person', 'You']].map((n) => ({ i: n[0], l: n[1], on: n[1] === on ? 'on' : '', fill: n[1] === on ? '' : '' }));
           const withProj = (p) => Object.assign({ isProj: !p.isBud }, p, p.ms ? { ms: p.ms.map((m) => Object.assign({}, m, { alc: m.alert ? 'pk-alrow' : '' })) } : {});
           // the laptop at 1440, the page beside the chat; `top` scrolls the chat to a point, none keeps its end in view
           const desk = (cap, th, clock, list, pg, top0, o, top = at(cap + ' · ' + th[0], top0)) => ({ cap: cap + ' · ' + th[0], cls: th[1], rootc: 'board', shellc: 'mp-shell', desk: true, phone: false, chatc: 'chatcol',
@@ -731,13 +732,17 @@
           ];
           return {
             boards, bud,
-            ptabs: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Chat' ? 'on' : '', fill: t[1] === 'Chat' ? 'ms-fill' : '' })),
+            ptabs: [['message-circle', 'Chat'], ['house', 'Home'], ['activity', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Chat' ? 'on' : '', fill: t[1] === 'Chat' ? '' : '' })),
             intro1: 'The picked 2a, a card per step (Arun, 28 Oct 2026), in the states MA-263 and MA-222 still had to draw. The evening of Thu 5 Nov 2026 goes on from round 1’s 20:46: the two more ways (20:44), the pot in November’s budget (20:47), Arun’s salary step (20:52) and the HDFC closure (20:58); after the Plans tab’s changes (21:08 to 21:13), the wedding that leaves cash short, a way applied and undone (21:15 to 21:18); Asha’s questions (21:20); and two plans MyPaisa cannot set up as said (21:22).',
             intro2: 'The laptop (1440, shell 1a: the page beside the chat, as from about 1393 px) at every state, and the phone-web door (390, the Chat tab) for the wedding and for Asha, in light and dark. Every figure is the engine’s, from docs/design/figures/future-plans-v4.json; Arun’s words are his, verbatim. Net worth today is £456,747 all evening. The Projection’s header is MA-301 a 1b: the title is the picker (Net worth ▾), the horizon chips sit under the fan, and £ · Nominal is the corner button; cards are flat (MA-301 d 1a).'
           };
 
         }
       }
-    </script>
+    
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
+</script>
   </body>
 </html>

@@ -40,8 +40,10 @@ The web app's browser boards live in MyPaisa app v1 (`docs/design/app-v1/`); the
    `.mp-side`, `.mp-sheet`, `.mp-mask`, `.mp-track`. Text-only meaning colours: `.mp-up`, `.mp-dq`, `.c-add` … `.c-alert`.
 5. Charts: the SVG draws lines and areas only; dots, labels and axis ticks are HTML over it (`.mp-chartbox`,
    `.mp-chartdot`, `.mp-chartlbl`, `.mp-chartaxis`). Never a template value inside SVG `<text>`.
-6. Icons: Material Symbols Rounded ligatures (`<span class="ms">home</span>`) on the web, SF Symbols in any
-   native port. No emoji.
+6. Icons: Lucide as inline SVG on the web and on every board (`<svg class="lc" viewBox="0 0 24 24" aria-hidden="true">`
+   `<path sc-camel-d="{{ LUC.house }}"></path></svg>`, the paths from `lucide.js`, which `scripts/board_icons.py` writes),
+   SF Symbols in the app, which the iOS boards name and draw with a Lucide stand-in (MA-340). No emoji, and no icon
+   font. Type comes from `fonts.css` (the web app's own files, `scripts/fonts.py`), never Google Fonts.
 7. Motion: link `motion.css` and load `motion.js` after the other two; board 12 of the iOS kit gives what each
    moment ships as in SwiftUI and on the web.
 

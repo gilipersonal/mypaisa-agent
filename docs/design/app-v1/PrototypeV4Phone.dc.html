@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
 </head>
 <body>
 <x-dc>
@@ -25,7 +26,7 @@
 .pi .chips { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 10px), transparent); }
 .pi .gchip { border: 0; cursor: pointer; color: var(--mp-ink); }
 .pi .gchip.sug { background: var(--mp-hero); color: var(--mp-hero-ink); box-shadow: var(--lg-lift); }
-.pi .gchip.sug .ms { color: var(--mp-coral); }
+.pi .gchip.sug .lc { color: var(--mp-coral); }
 .pi .gchip.sug::before { display: none; }
 .pi .cplus, .pi .csend, .pi .gbtn, .pi .gtext { border: 0; cursor: pointer; color: var(--mp-ink); }
 .pi .cfield { padding-right: 6px; }
@@ -35,7 +36,7 @@
 .pi .csend.on { background: var(--mp-accent); color: var(--mp-on-accent); }
 .pi .cfiles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 6px 0; position: relative; z-index: 1; }
 .pi .cfile { display: flex; align-items: center; gap: 8px; font: 600 14px/18px var(--mp-font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pi .cfile .ms { font-size: 18px; color: var(--mp-accent); }
+.pi .cfile .lc { width: 18px; height: 18px; color: var(--mp-accent); }
 .pi .tabw { display: contents; }
 .pi .tab { border: 0; background: none; cursor: pointer; }
 .pi .tab.on { background: var(--lg-lens); }
@@ -47,7 +48,7 @@
 .pi .kpad { position: absolute; left: 0; right: 0; bottom: 0; z-index: 60; padding: 8px 6px 34px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; background: var(--mp-surface-2); box-shadow: 0 -1px 0 var(--mp-line); }
 .pi .kk { min-height: 46px; border-radius: 8px; border: 0; background: var(--mp-surface); color: var(--mp-ink); font: 400 25px/1 var(--mp-font); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25); cursor: pointer; }
 .pi .kk.fn { background: transparent; box-shadow: none; }
-.pi .kk .ms { font-size: 24px; }
+.pi .kk .lc { width: 24px; height: 24px; }
 /* the Welcome screen (S1), re-worded as Browser · Sign in now reads */
 .pi .wel { flex: 1; display: flex; flex-direction: column; padding: 0 24px 46px; }
 .pi .wel-mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; }
@@ -64,7 +65,7 @@
 </helmet>
 <div class="pi mp {{ themeCls }} {{ privCls }}">
 <div class="island"></div>
-<div class="sbar"><span>{{ time }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="sbar"><span>{{ time }}</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.signal_cellular_alt }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
 <sc-if value="{{ isSignin }}" hint-placeholder-val="{{ false }}">
 <div class="wel">
 <div class="wel-mid">
@@ -80,34 +81,34 @@
 </div>
 </sc-if>
 <sc-if value="{{ isChat }}" hint-placeholder-val="{{ true }}">
-<button class="strip lg" type="button" onclick="{{ strip.go }}"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">{{ strip.lbl }}</span><sc-if value="{{ strip.hasN }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><span class="strip-n mny">{{ strip.n }}</span><sc-if value="{{ strip.hasUp }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-up mp-w6 mny">{{ strip.up }}</span></sc-if><sc-if value="{{ strip.noUp }}" hint-placeholder-val="{{ true }}"><span class="mp-foot mp-ink2">net worth</span></sc-if></span></sc-if><sc-if value="{{ strip.hasSub }}" hint-placeholder-val="{{ false }}"><span class="strip-n">{{ strip.sub }}</span></sc-if></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></button>
+<button class="strip lg" type="button" onclick="{{ strip.go }}"><div class="ai-mark z1"><i></i></div><div class="fx col f1 z1"><span class="mp-foot mp-ink2">{{ strip.lbl }}</span><sc-if value="{{ strip.hasN }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><span class="strip-n mny">{{ strip.n }}</span><sc-if value="{{ strip.hasUp }}" hint-placeholder-val="{{ false }}"><span class="mp-foot mp-up mp-w6 mny">{{ strip.up }}</span></sc-if><sc-if value="{{ strip.noUp }}" hint-placeholder-val="{{ true }}"><span class="mp-foot mp-ink2">net worth</span></sc-if></span></sc-if><sc-if value="{{ strip.hasSub }}" hint-placeholder-val="{{ false }}"><span class="strip-n">{{ strip.sub }}</span></sc-if></div><svg class="lc z1 mp-ink2" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.keyboard_arrow_down }}"></path></svg></button>
 <div class="body"><div class="fadet"></div><div class="pscroll" data-scroll="chat"><div class="chatpad"><dc-import name="PrototypeV4Chat" dc-props="{{ chatp }}" hint-size="100%,600px"></dc-import></div></div></div>
 <div class="edge-bot"></div>
 <div class="composer">
 <div class="chips">
-<sc-if value="{{ composer.hasSug }}" hint-placeholder-val="{{ false }}"><button class="gchip sug {{ composer.sugCls }}" type="button" onclick="{{ composer.sugGo }}"><span class="ms" aria-hidden="true">north_east</span><span>{{ composer.sug }}</span></button></sc-if>
-<sc-for list="{{ composer.chips }}" as="c" hint-placeholder-count="4"><button class="gchip lg" type="button" onclick="{{ c.go }}"><span class="ms" aria-hidden="true">{{ c.icon }}</span><span>{{ c.t }}</span></button></sc-for>
+<sc-if value="{{ composer.hasSug }}" hint-placeholder-val="{{ false }}"><button class="gchip sug {{ composer.sugCls }}" type="button" onclick="{{ composer.sugGo }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.north_east }}"></path></svg><span>{{ composer.sug }}</span></button></sc-if>
+<sc-for list="{{ composer.chips }}" as="c" hint-placeholder-count="4"><button class="gchip lg" type="button" onclick="{{ c.go }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[c.icon] }}"></path></svg><span>{{ c.t }}</span></button></sc-for>
 </div>
 <div class="cbar">
-<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}"><button class="cplus lg {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><span class="ms" aria-hidden="true">add</span></button></sc-if>
+<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}"><button class="cplus lg {{ composer.plusCls }}" type="button" aria-label="Attach a file" onclick="{{ composer.plusGo }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.add }}"></path></svg></button></sc-if>
 <div class="cfield lg">
-<sc-if value="{{ composer.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><sc-for list="{{ composer.files }}" as="f" hint-placeholder-count="2"><span class="cfile"><span class="ms" aria-hidden="true">picture_as_pdf</span>{{ f.name }}</span></sc-for></div></sc-if>
+<sc-if value="{{ composer.hasFiles }}" hint-placeholder-val="{{ false }}"><div class="cfiles"><sc-for list="{{ composer.files }}" as="f" hint-placeholder-count="2"><span class="cfile"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.picture_as_pdf }}"></path></svg>{{ f.name }}</span></sc-for></div></sc-if>
 <sc-if value="{{ composer.notFiles }}" hint-placeholder-val="{{ true }}"><input class="cin" type="text" autocomplete="off" aria-label="Message" placeholder="{{ composer.ph }}" value="{{ composer.typed }}" onchange="{{ composer.onType }}" onkeydown="{{ composer.onKey }}" /></sc-if>
-<button class="csend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><span class="ms" aria-hidden="true">{{ composer.sendIcon }}</span></button>
+<button class="csend {{ composer.sendCls }}" type="button" aria-label="Send" onclick="{{ composer.sendGo }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[composer.sendIcon] }}"></path></svg></button>
 </div>
 </div>
 </div>
 </sc-if>
 <sc-if value="{{ isPage }}" hint-placeholder-val="{{ false }}">
-<div class="nav"><sc-if value="{{ hasBack }}" hint-placeholder-val="{{ false }}"><button class="gbtn lg" type="button" aria-label="Back" onclick="{{ backGo }}"><span class="ms z1" aria-hidden="true">chevron_left</span></button></sc-if><span class="navsp"></span>
-<sc-if value="{{ isRoot }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><button class="gbtn lg" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><span class="ms z1" aria-hidden="true">{{ eyeIcon }}</span></button><button class="gtext lg" type="button" onclick="{{ askGo }}"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button></span></sc-if>
-<sc-if value="{{ notRoot }}" hint-placeholder-val="{{ false }}"><span class="ggroup lg"><button class="gbtn" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><span class="ms z1" aria-hidden="true">{{ eyeIcon }}</span></button><button class="gbtn" type="button" aria-label="Ask" onclick="{{ askGo }}"><span class="ms z1" aria-hidden="true">chat_bubble</span></button></span></sc-if>
+<div class="nav"><sc-if value="{{ hasBack }}" hint-placeholder-val="{{ false }}"><button class="gbtn lg" type="button" aria-label="Back" onclick="{{ backGo }}"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_left }}"></path></svg></button></sc-if><span class="navsp"></span>
+<sc-if value="{{ isRoot }}" hint-placeholder-val="{{ true }}"><span class="fx ac gap8"><button class="gbtn lg" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[eyeIcon] }}"></path></svg></button><button class="gtext lg" type="button" onclick="{{ askGo }}"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></button></span></sc-if>
+<sc-if value="{{ notRoot }}" hint-placeholder-val="{{ false }}"><span class="ggroup lg"><button class="gbtn" type="button" aria-label="Privacy mode" onclick="{{ privGo }}"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[eyeIcon] }}"></path></svg></button><button class="gbtn" type="button" aria-label="Ask" onclick="{{ askGo }}"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg></button></span></sc-if>
 </div>
 <div class="body"><div class="pscroll" data-scroll="page"><div class="pagepad"><dc-import name="PrototypeV4Pages" dc-props="{{ pagep }}" hint-size="100%,900px"></dc-import></div></div></div>
 <div class="edge-bot"></div>
 </sc-if>
-<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="n" hint-placeholder-count="4"><span class="tabw"><button class="tab {{ n.cls }}" type="button" onclick="{{ n.go }}"><span class="ms" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></span></sc-for></div><button class="tabsearch lg" type="button" aria-label="Search" onclick="{{ nopeGo }}"><span class="ms z1" aria-hidden="true">search</span></button></div></sc-if>
-<sc-if value="{{ kp.has }}" hint-placeholder-val="{{ false }}"><div class="kpad" aria-label="Number pad"><sc-for list="{{ kp.keys }}" as="k" hint-placeholder-count="12"><button class="kk {{ k.cls }}" type="button" onclick="{{ k.go }}"><sc-if value="{{ k.isDel }}" hint-placeholder-val="{{ false }}"><span class="ms" aria-hidden="true">backspace</span></sc-if>{{ k.t }}</button></sc-for></div></sc-if>
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}"><div class="tabdock"><div class="tabs lg"><sc-for list="{{ tabs }}" as="n" hint-placeholder-count="4"><span class="tabw"><button class="tab {{ n.cls }}" type="button" onclick="{{ n.go }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[n.icon] }}"></path></svg>{{ n.label }}</button></span></sc-for></div><button class="tabsearch lg" type="button" aria-label="Search" onclick="{{ nopeGo }}"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg></button></div></sc-if>
+<sc-if value="{{ kp.has }}" hint-placeholder-val="{{ false }}"><div class="kpad" aria-label="Number pad"><sc-for list="{{ kp.keys }}" as="k" hint-placeholder-count="12"><button class="kk {{ k.cls }}" type="button" onclick="{{ k.go }}"><sc-if value="{{ k.isDel }}" hint-placeholder-val="{{ false }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.backspace }}"></path></svg></sc-if>{{ k.t }}</button></sc-for></div></sc-if>
 <div class="homebar"></div>
 </div>
 </x-dc>
@@ -115,6 +116,9 @@
 class Component extends DCLogic {
   renderVals() { return this.props || {}; }
 }
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
 </script>
 </body>
 </html>

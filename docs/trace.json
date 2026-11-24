@@ -5891,7 +5891,7 @@
           "board": "B \u00b7 Settings squircles, one vivid set for both themes"
         }
       ],
-      "notes": "Arun, 27 Oct 2026: \"For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that\". Three options drawn in MyPaisa DS v1, Kind icons, and reviewed; Arun picked B on 27 Oct 2026: \"I want to go for option set B for icons\" (A was recommended). The record is docs/design/reviews/MA-241/decision.md; its open questions (four glyphs, NPS's family, accounts, a kind proposed after release, the remaining states) are settled before the build, which puts B's nine pairs into tokens.css with their contrast pairs and the tile on every record row at both doors. Also in its scope (MA-240's review round 2, Arun 27 Oct 2026): two colour pairs left at the limit. The dark track on the success tint is 1.256:1 at 25% against 1.25: the dark success tint darkens a little, since a lighter track would take silver on it under 3:1. The light accent on the alert tint is 4.49:1, and 2.97:1 at 25%, under 4.5 and 3.0: the pair was to join scripts/contrast_check.py, then the tint moves or no board draws a link on it. Stopped by MA-303 (Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\"); QA on the built web app, on request, is MA-304.",
+      "notes": "Arun, 27 Oct 2026: \"For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that\". Three options drawn in MyPaisa DS v1, Kind icons, and reviewed; Arun picked B on 27 Oct 2026: \"I want to go for option set B for icons\" (A was recommended). The record is docs/design/reviews/MA-241/decision.md; its open questions (four glyphs, NPS's family, accounts, a kind proposed after release, the remaining states) are settled before the build, which puts B's nine pairs into tokens.css with their contrast pairs and the tile on every record row at both doors. Also in its scope (MA-240's review round 2, Arun 27 Oct 2026): two colour pairs left at the limit. The dark track on the success tint is 1.256:1 at 25% against 1.25: the dark success tint darkens a little, since a lighter track would take silver on it under 3:1. The light accent on the alert tint is 4.49:1, and 2.97:1 at 25%, under 4.5 and 3.0: the pair was to join scripts/contrast_check.py, then the tint moves or no board draws a link on it. Stopped by MA-303 (Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\"); QA on the built web app, on request, is MA-304. MA-340 (24 Nov 2026): the boards draw each kind's Lucide glyph from the Kind icons board (personal loan file-text, shares trending-up, PPF badge-check, gold and silver diamond, NPS sunrise); the open question on the four glyphs still stands, now about those Lucide glyphs.",
       "open": [
         "Four glyphs that may mislead: personal loan's request_quote draws a $, shares' show_chart always trends up and is the Projection's icon, PPF's verified reads as a status, gold and silver is a diamond (the proposed swaps are in docs/design/reviews/MA-241/decision.md); NPS's wb_twilight and the two umbrellas too",
         "NPS's family: deposits and schemes (teal) as drawn, its asset class, or every family derived from grouping.class through one fixed map",
@@ -7444,7 +7444,22 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-301 (23 Nov 2026): Arun's f 1a pick of 2 Nov 2026 (platform type, Lucide on the web). web/src/app.html still links Google Fonts and Material Symbols, and the boards still draw .ms through the @import in ds-v1/tokens.css; this story moves both. The design is MA-301's pick, so no options round (as MA-194)."
+      "notes": "Filed from MA-301 (23 Nov 2026): Arun's f 1a pick of 2 Nov 2026 (platform type, Lucide on the web). web/src/app.html still links Google Fonts and Material Symbols, and the boards still draw .ms through the @import in ds-v1/tokens.css; this story moves both. The design is MA-301's pick, so no options round (as MA-194). Built 24 Nov 2026: the web app serves Inter (Latin and Latin Extended) and a Nunito 800 figures subset (digits, \u00a3 $ \u20ac \u20b9 and their marks) from /fonts/, preloaded, with font-src 'self' (scripts/fonts.py); every board draws Lucide from ds-v1/lucide.js (scripts/board_icons.py) and loads the same fonts through ds-v1/fonts.css; the nav icons follow MA-301's Shell and chat board and the kinds' glyphs its Kind icons board. Prototype v5, a record never updated (rule 5), still names Material Symbols, so its local copy shows icon names as words; its published artifact is unchanged.",
+      "code": [
+        "web/src/app.html",
+        "web/src/app.css",
+        "web/vite.config.ts",
+        "web/package.json",
+        "web/pnpm-workspace.yaml",
+        "web/pnpm-lock.yaml",
+        "web/.prettierignore",
+        "web/CLAUDE.md",
+        "web/src/lib/styles/",
+        "web/static/fonts/",
+        "scripts/fonts.py",
+        "scripts/board_icons.py",
+        "scripts/web_gates.sh"
+      ]
     },
     {
       "key": "MA-341",

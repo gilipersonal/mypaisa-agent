@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MyPaisa DS v1: Chart options</title>
     <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
   </head>
   <body>
     <x-dc>
@@ -226,12 +227,12 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 .chcomp{display:flex;flex-direction:column;gap:8px;padding:10px 16px 14px;border-top:1px solid var(--mp-line)}
 .wchips{display:flex;gap:8px;flex-wrap:wrap}
 .wchip{position:relative;min-height:34px;padding:0 11px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;font:600 13px/18px var(--mp-font);background:var(--mp-surface);color:var(--mp-ink);box-shadow:inset 0 0 0 1px var(--mp-line)}
-.wchip .ms{font-size:17px;color:var(--mp-accent)}
+.wchip .lc {width: 17px; height: 17px; color: var(--mp-accent);}
 .wchip::after{content:"";position:absolute;inset:-5px 0}
 .cfld{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 6px 0 14px;border-radius:22px;background:var(--mp-surface);box-shadow:inset 0 0 0 1.5px var(--mp-ink-2)}
 .cfld .ph{flex:1;font:400 14px/19px var(--mp-font);color:var(--mp-ink-2)}
 .sendb{position:relative;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--mp-accent);color:var(--mp-on-accent);flex:none}
-.sendb .ms{font-size:19px}
+.sendb .lc {width: 19px; height: 19px;}
 .sendb::after{content:"";position:absolute;inset:-5px}
 .mpm{display:block;flex:none}
 .mpm-coin{fill:var(--mp-hero)}
@@ -264,7 +265,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 </div>
 <div><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
@@ -368,7 +369,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 
 </div>
 </div>
-<div class="scrub-demo"><span class="ms ms-s mp-acc" aria-hidden="true">touch_app</span><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
+<div class="scrub-demo"><svg class="lc lc-s mp-acc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.touch_app }}"></path></svg><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
 <div class="mp-cap mp-ink2">1a · Coral beacon + floating pill · hidden at rest, revealed on drag or hover, masked in Privacy mode.</div>
 </div>
 <span class="scrub-sample">Mon 26 Oct · £444,951 · +£5,000 Monzo</span></div>
@@ -387,7 +388,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 </div>
 <div><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
@@ -491,15 +492,15 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 
 </div>
 </div>
-<div class="scrub-demo"><span class="ms ms-s mp-acc" aria-hidden="true">touch_app</span><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
+<div class="scrub-demo"><svg class="lc lc-s mp-acc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.touch_app }}"></path></svg><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
 <div class="mp-cap mp-ink2">1a · Coral beacon + floating pill · hidden at rest, revealed on drag or hover, masked in Privacy mode.</div>
 </div>
 <span class="scrub-sample">Mon 26 Oct · £444,951 · +£5,000 Monzo</span></div>
 </div>
           <div class="dv-col" data-screen-label="iPhone · DS Chart kit · 1a Monzo Pulse · Light"><div class="bd-theme">iPhone · DS Chart kit · 1a Monzo Pulse · Light</div>
 <div class="dev dev-iphone mp t-light"><div class="island"></div>
-<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button" tabindex="0"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.signal_cellular_alt }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
+<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></span><span class="gtext lg" role="button" tabindex="0"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></span></span></div>
 <div class="largetitle">Home</div>
 <div class="scroll"><div class="pg"><div class="mp-hero hero"><div class="mp-seg" role="group" aria-label="Whose view"><span class="mp-seg-i segc on" role="button" tabindex="0" aria-pressed="true">Household</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Me</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Asha</span></div>
 <div class="fx jb ac gap8 wrapr"><span class="mp-over mp-hero-2">Net worth · Mon 26 Oct</span><span class="mp-chip chip-s prc-h">£ GBP · ₹112.50</span></div>
@@ -515,7 +516,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 <div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
 <p class="pp mp-foot mp-ink2">£2,246 spent of £2,682 planned across 12 categories · monthly surplus £3,072 (40.6% savings rate).</p><div class="cstats"><div class="cstat"><span class="mp-cap mp-ink2">Spent</span><span class="mp-sub mp-w6 cstat-v">£2,246</span></div>
@@ -547,16 +548,16 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <span class="mp-foot mp-ink2" style="text-align:center">Illustrative figures from the engine (household-v4.json).</span></div>
 </div>
 <div class="edge-bot"></div>
-<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
-<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div>
+<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.home }}"></path></svg>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.insights }}"></path></svg>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.account_circle }}"></path></svg>You</span></div>
+<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg></span></div>
 <div class="homebar"></div>
 </div>
 </div>
 </div>
           <div class="dv-col" data-screen-label="iPhone · DS Chart kit · 1a Monzo Pulse · Dark"><div class="bd-theme">iPhone · DS Chart kit · 1a Monzo Pulse · Dark</div>
 <div class="dev dev-iphone mp t-dark"><div class="island"></div>
-<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button" tabindex="0"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.signal_cellular_alt }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
+<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></span><span class="gtext lg" role="button" tabindex="0"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></span></span></div>
 <div class="largetitle">Home</div>
 <div class="scroll"><div class="pg"><div class="mp-hero hero"><div class="mp-seg" role="group" aria-label="Whose view"><span class="mp-seg-i segc on" role="button" tabindex="0" aria-pressed="true">Household</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Me</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Asha</span></div>
 <div class="fx jb ac gap8 wrapr"><span class="mp-over mp-hero-2">Net worth · Mon 26 Oct</span><span class="mp-chip chip-s prc-h">£ GBP · ₹112.50</span></div>
@@ -572,7 +573,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 <div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
 <p class="pp mp-foot mp-ink2">£2,246 spent of £2,682 planned across 12 categories · monthly surplus £3,072 (40.6% savings rate).</p><div class="cstats"><div class="cstat"><span class="mp-cap mp-ink2">Spent</span><span class="mp-sub mp-w6 cstat-v">£2,246</span></div>
@@ -604,8 +605,8 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <span class="mp-foot mp-ink2" style="text-align:center">Illustrative figures from the engine (household-v4.json).</span></div>
 </div>
 <div class="edge-bot"></div>
-<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
-<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div>
+<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.home }}"></path></svg>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.insights }}"></path></svg>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.account_circle }}"></path></svg>You</span></div>
+<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg></span></div>
 <div class="homebar"></div>
 </div>
 </div>
@@ -632,7 +633,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 </div>
 <div><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
@@ -740,7 +741,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 
 </div>
 </div>
-<div class="scrub-demo"><span class="ms ms-s mp-acc" aria-hidden="true">touch_app</span><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
+<div class="scrub-demo"><svg class="lc lc-s mp-acc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.touch_app }}"></path></svg><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
 <div class="mp-cap mp-ink2">1b · Hairline rule + tabular readout · hidden at rest, revealed on drag or hover, masked in Privacy mode.</div>
 </div>
 <span class="scrub-sample">Mon 26 Oct · £444,951 · +£5,000 Monzo</span></div>
@@ -760,7 +761,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 </div>
 <div><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
@@ -868,15 +869,15 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 
 </div>
 </div>
-<div class="scrub-demo"><span class="ms ms-s mp-acc" aria-hidden="true">touch_app</span><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
+<div class="scrub-demo"><svg class="lc lc-s mp-acc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.touch_app }}"></path></svg><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
 <div class="mp-cap mp-ink2">1b · Hairline rule + tabular readout · hidden at rest, revealed on drag or hover, masked in Privacy mode.</div>
 </div>
 <span class="scrub-sample">Mon 26 Oct · £444,951 · +£5,000 Monzo</span></div>
 </div>
           <div class="dv-col" data-screen-label="iPhone · DS Chart kit · 1b Apple Health Editorial · Light"><div class="bd-theme">iPhone · DS Chart kit · 1b Apple Health Editorial · Light</div>
 <div class="dev dev-iphone mp t-light"><div class="island"></div>
-<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button" tabindex="0"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.signal_cellular_alt }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
+<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></span><span class="gtext lg" role="button" tabindex="0"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></span></span></div>
 <div class="largetitle">Home</div>
 <div class="scroll"><div class="pg"><div class="mp-hero hero"><div class="mp-seg" role="group" aria-label="Whose view"><span class="mp-seg-i segc on" role="button" tabindex="0" aria-pressed="true">Household</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Me</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Asha</span></div>
 <div class="fx jb ac gap8 wrapr"><span class="mp-over mp-hero-2">Net worth · Mon 26 Oct</span><span class="mp-chip chip-s prc-h">£ GBP · ₹112.50</span></div>
@@ -893,7 +894,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 <div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
 <p class="pp mp-foot mp-ink2">£2,246 spent of £2,682 planned across 12 categories · monthly surplus £3,072 (40.6% savings rate).</p><div class="cstats"><div class="cstat"><span class="mp-cap mp-ink2">Spent</span><span class="mp-sub mp-w6 cstat-v">£2,246</span></div>
@@ -925,16 +926,16 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <span class="mp-foot mp-ink2" style="text-align:center">Illustrative figures from the engine (household-v4.json).</span></div>
 </div>
 <div class="edge-bot"></div>
-<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
-<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div>
+<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.home }}"></path></svg>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.insights }}"></path></svg>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.account_circle }}"></path></svg>You</span></div>
+<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg></span></div>
 <div class="homebar"></div>
 </div>
 </div>
 </div>
           <div class="dv-col" data-screen-label="iPhone · DS Chart kit · 1b Apple Health Editorial · Dark"><div class="bd-theme">iPhone · DS Chart kit · 1b Apple Health Editorial · Dark</div>
 <div class="dev dev-iphone mp t-dark"><div class="island"></div>
-<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button" tabindex="0"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.signal_cellular_alt }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
+<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></span><span class="gtext lg" role="button" tabindex="0"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></span></span></div>
 <div class="largetitle">Home</div>
 <div class="scroll"><div class="pg"><div class="mp-hero hero"><div class="mp-seg" role="group" aria-label="Whose view"><span class="mp-seg-i segc on" role="button" tabindex="0" aria-pressed="true">Household</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Me</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Asha</span></div>
 <div class="fx jb ac gap8 wrapr"><span class="mp-over mp-hero-2">Net worth · Mon 26 Oct</span><span class="mp-chip chip-s prc-h">£ GBP · ₹112.50</span></div>
@@ -951,7 +952,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 <div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
 <p class="pp mp-foot mp-ink2">£2,246 spent of £2,682 planned across 12 categories · monthly surplus £3,072 (40.6% savings rate).</p><div class="cstats"><div class="cstat"><span class="mp-cap mp-ink2">Spent</span><span class="mp-sub mp-w6 cstat-v">£2,246</span></div>
@@ -983,8 +984,8 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <span class="mp-foot mp-ink2" style="text-align:center">Illustrative figures from the engine (household-v4.json).</span></div>
 </div>
 <div class="edge-bot"></div>
-<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
-<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div>
+<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.home }}"></path></svg>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.insights }}"></path></svg>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.account_circle }}"></path></svg>You</span></div>
+<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg></span></div>
 <div class="homebar"></div>
 </div>
 </div>
@@ -1007,7 +1008,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 </div>
 <div><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
@@ -1124,7 +1125,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 
 </div>
 </div>
-<div class="scrub-demo"><span class="ms ms-s mp-acc" aria-hidden="true">touch_app</span><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
+<div class="scrub-demo"><svg class="lc lc-s mp-acc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.touch_app }}"></path></svg><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
 <div class="mp-cap mp-ink2">1c · Bento pill + active bar highlight · hidden at rest, revealed on drag or hover, masked in Privacy mode.</div>
 </div>
 <span class="scrub-sample">Mon 26 Oct · £444,951 · +£5,000 Monzo</span></div>
@@ -1140,7 +1141,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 </div>
 <div><div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
@@ -1257,15 +1258,15 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 
 </div>
 </div>
-<div class="scrub-demo"><span class="ms ms-s mp-acc" aria-hidden="true">touch_app</span><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
+<div class="scrub-demo"><svg class="lc lc-s mp-acc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.touch_app }}"></path></svg><div class="rtx"><div class="mp-foot mp-w6">Interactive scrub readout (44pt touch target, progressive disclosure)</div>
 <div class="mp-cap mp-ink2">1c · Bento pill + active bar highlight · hidden at rest, revealed on drag or hover, masked in Privacy mode.</div>
 </div>
 <span class="scrub-sample">Mon 26 Oct · £444,951 · +£5,000 Monzo</span></div>
 </div>
           <div class="dv-col" data-screen-label="iPhone · DS Chart kit · 1c Monzo Modular Bento · Light"><div class="bd-theme">iPhone · DS Chart kit · 1c Monzo Modular Bento · Light</div>
 <div class="dev dev-iphone mp t-light"><div class="island"></div>
-<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button" tabindex="0"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.signal_cellular_alt }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
+<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></span><span class="gtext lg" role="button" tabindex="0"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></span></span></div>
 <div class="largetitle">Home</div>
 <div class="scroll"><div class="pg"><div class="mp-hero hero"><div class="mp-seg" role="group" aria-label="Whose view"><span class="mp-seg-i segc on" role="button" tabindex="0" aria-pressed="true">Household</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Me</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Asha</span></div>
 <div class="fx jb ac gap8 wrapr"><span class="mp-over mp-hero-2">Net worth · Mon 26 Oct</span><span class="mp-chip chip-s prc-h">£ GBP · ₹112.50</span></div>
@@ -1278,7 +1279,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 <div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
 <p class="pp mp-foot mp-ink2">£2,246 spent of £2,682 planned across 12 categories · monthly surplus £3,072 (40.6% savings rate).</p><div class="cstats"><div class="cstat"><span class="mp-cap mp-ink2">Spent</span><span class="mp-sub mp-w6 cstat-v">£2,246</span></div>
@@ -1310,16 +1311,16 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <span class="mp-foot mp-ink2" style="text-align:center">Illustrative figures from the engine (household-v4.json).</span></div>
 </div>
 <div class="edge-bot"></div>
-<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
-<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div>
+<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.home }}"></path></svg>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.insights }}"></path></svg>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.account_circle }}"></path></svg>You</span></div>
+<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg></span></div>
 <div class="homebar"></div>
 </div>
 </div>
 </div>
           <div class="dv-col" data-screen-label="iPhone · DS Chart kit · 1c Monzo Modular Bento · Dark"><div class="bd-theme">iPhone · DS Chart kit · 1c Monzo Modular Bento · Dark</div>
 <div class="dev dev-iphone mp t-dark"><div class="island"></div>
-<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><span class="ms z1" aria-hidden="true">visibility</span></span><span class="gtext lg" role="button" tabindex="0"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></span></span></div>
+<div class="scrn"><div class="sbar"><span>9:41</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.signal_cellular_alt }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
+<div class="nav"><span></span><span class="fx gap8"><span class="gbtn lg" role="button" tabindex="0" aria-label="Privacy mode" aria-pressed="false"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></span><span class="gtext lg" role="button" tabindex="0"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></span></span></div>
 <div class="largetitle">Home</div>
 <div class="scroll"><div class="pg"><div class="mp-hero hero"><div class="mp-seg" role="group" aria-label="Whose view"><span class="mp-seg-i segc on" role="button" tabindex="0" aria-pressed="true">Household</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Me</span><span class="mp-seg-i segc" role="button" tabindex="0" aria-pressed="false">Asha</span></div>
 <div class="fx jb ac gap8 wrapr"><span class="mp-over mp-hero-2">Net worth · Mon 26 Oct</span><span class="mp-chip chip-s prc-h">£ GBP · ₹112.50</span></div>
@@ -1332,7 +1333,7 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <div><span class="mp-cap mp-hero-2">Owe · 36%</span><span class="mp-sub mp-w6 nowrap">£246,743</span></div>
 <div><span class="mp-cap mp-hero-2">Liquid cash</span><span class="mp-sub mp-w6 nowrap">£37,596</span></div>
 </div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>Fri 23 Oct close · £1 = ₹112.50 (ECB) · drag any chart to inspect</span></div>
 </div>
 <div class="mp-card cpad"><div class="ctl"><span class="mp-hl">October spending pace</span><span class="mp-foot mp-up mp-w6">▼ £436 under plan</span></div>
 <p class="pp mp-foot mp-ink2">£2,246 spent of £2,682 planned across 12 categories · monthly surplus £3,072 (40.6% savings rate).</p><div class="cstats"><div class="cstat"><span class="mp-cap mp-ink2">Spent</span><span class="mp-sub mp-w6 cstat-v">£2,246</span></div>
@@ -1364,8 +1365,8 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
 <span class="mp-foot mp-ink2" style="text-align:center">Illustrative figures from the engine (household-v4.json).</span></div>
 </div>
 <div class="edge-bot"></div>
-<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">chat_bubble</span>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><span class="ms" aria-hidden="true">home</span>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">insights</span>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><span class="ms" aria-hidden="true">account_circle</span>You</span></div>
-<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></span></div>
+<div class="tabdock" role="navigation" aria-label="Tabs"><div class="tabs lg" role="tablist"><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Chat</span><span class="tab on" role="tab" aria-selected="true" tabindex="0"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.home }}"></path></svg>Home</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.insights }}"></path></svg>Activity</span><span class="tab" role="tab" aria-selected="false" tabindex="-1"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.account_circle }}"></path></svg>You</span></div>
+<span class="tabsearch lg" role="button" tabindex="0" aria-label="Search"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg></span></div>
 <div class="homebar"></div>
 </div>
 </div>
@@ -1498,6 +1499,10 @@ a.dv-tid:hover,a.plan-k:hover{color:#FFFFFF}
         }
         renderVals() { return {}; }
       }
-    </script>
+    
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
+</script>
   </body>
 </html>

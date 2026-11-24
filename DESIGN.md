@@ -262,7 +262,7 @@ Warm stone-paper neutrals contrasted against a single deep navy hero card, terra
 
 ## Typography
 
-**Platform type (MA-301 f 1a, Arun, 2 Nov 2026):** SF Pro, SF Pro Rounded and SF Symbols in the app; on the web the system font, then self-hosted `Inter` (variable WOFF2) and a small self-hosted `Nunito` figures subset, with Lucide icons as inline SVG (`.lc`), and no Google Fonts (the boards still load Material Symbols for their `.ms` icons until MA-340 redraws them).
+**Platform type (MA-301 f 1a, Arun, 2 Nov 2026):** SF Pro, SF Pro Rounded and SF Symbols in the app; on the web the system font, then self-hosted `Inter` (variable WOFF2) and a small self-hosted `Nunito` figures subset, with Lucide icons as inline SVG (`.lc`), and no Google Fonts. The boards load the same files (`ds-v1/fonts.css`) and draw Lucide from `ds-v1/lucide.js` (MA-340); `scripts/fonts.py` and `scripts/board_icons.py` write them.
 **Display / Rounded Figure Font:** `SF Pro Rounded` on Apple platforms, `Nunito` fallback (`ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif`)
 **UI & Body Font:** `SF Pro Text` on Apple platforms, `Inter` fallback (`-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif`)
 **Technical / Audit Mono Font:** `SF Mono` (`ui-monospace, "SF Mono", Menlo, monospace`) for expandable technical working (`.ccard-tech`) and audit hashes
@@ -337,7 +337,7 @@ Charts draw SVG strokes with `preserveAspectRatio="none"` and `vector-effect: no
 
 ### Do:
 - **Do** route every displayed currency value, chart `aria-label`, and scrub tooltip through Privacy Mode masking (`privacy-mask` / `••••` / `aria-label="Hidden"`) when Privacy is active.
-- **Do** put `aria-hidden="true"` on every decorative icon (a Lucide `.lc` SVG on the web, a board's `.ms` stand-in until MA-340) and provide explicit `aria-label` attributes on icon-only controls.
+- **Do** put `aria-hidden="true"` on every decorative icon (a Lucide `.lc` SVG on the web and on every board, MA-340) and provide explicit `aria-label` attributes on icon-only controls.
 - **Do** keep all colour tokens inside the top-level `:root, .t-light` and `.t-dark` blocks (mirrored identically in `@media (prefers-color-scheme: dark)` for unforced roots) and sync `ds-v1/{tokens.css,ios.css,motion.css,motion.js}` byte-for-byte to `ios-v1/` and `app-v1/` by hand (no gate measures the copies since MA-303).
 - **Do** support keyboard `:focus-visible`, `Escape` dismissal on modals/sheets, and `pointerup` / `ArrowLeft` / `ArrowRight` on interactive `[data-scrub]` charts.
 

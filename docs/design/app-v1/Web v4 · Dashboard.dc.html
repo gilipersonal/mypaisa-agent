@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Web v4 · Dashboard</title>
 <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
 </head>
 <body>
 <x-dc>
@@ -150,11 +151,11 @@ a { color: #C2381F; } a:where(:not([class])):hover { color: #8F2915; }   /* MA-3
 .chcomp { display: flex; flex-direction: column; gap: 10px; padding: 10px 16px 16px; border-top: 1px solid var(--mp-line); }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .wchip { min-height: 36px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; font: 600 14px/18px var(--mp-font); background: var(--mp-surface); color: var(--mp-ink); box-shadow: inset 0 0 0 1px var(--mp-line); white-space: nowrap; }
-.wchip .ms { font-size: 18px; color: var(--mp-accent); }
+.wchip .lc { width: 18px; height: 18px; color: var(--mp-accent); }
 .cfld { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 6px 0 16px; border-radius: 24px; background: var(--mp-surface); box-shadow: inset 0 0 0 1.5px var(--mp-ink-2); }
 .cfld .ph { flex: 1; font: 400 15px/20px var(--mp-font); color: var(--mp-ink-2); }
 .sendb { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--mp-accent); color: var(--mp-on-accent); flex: none; }
-.sendb .ms { font-size: 20px; }
+.sendb .lc { width: 20px; height: 20px; }
 /* MA-300: an acting control is a button; this reset (no specificity) keeps it drawn exactly as the span was */
 :where(button.mp-side-i, button.mp-tab, button.wchip, button.sendb, button.iconbtn, button.lnk) { appearance: none; -webkit-appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; text-transform: none; box-sizing: content-box; cursor: pointer; }
 button.wchip, button.sendb { position: relative; }
@@ -194,12 +195,12 @@ button.sendb::after { inset: -4px; }
 <div class="fcol">
 <p class="bd-theme">{{ f.lab }}</p>
 <div class="bf mp mp-app {{ f.cls }}" data-mo-frame-root="1" data-screen-label="{{ o.name }} · {{ f.lab }}">
-<div class="pstat" aria-hidden="true"><span class="ms ms-s" aria-hidden="true">lock</span><span>dashboard.mypaisapp.com</span></div>
+<div class="pstat" aria-hidden="true"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.lock }}"></path></svg><span>dashboard.mypaisapp.com</span></div>
 <div class="mp-shell">
 <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<button type="button" class="mp-side-i" aria-keyshortcuts="Meta+K"><span class="ms" aria-hidden="true">search</span>Search<span class="kbd">⌘K</span></button>
-<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><button type="button" class="mp-side-i {{ n.cls }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
+<button type="button" class="mp-side-i" aria-keyshortcuts="Meta+K"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg>Search<span class="kbd">⌘K</span></button>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><button type="button" class="mp-side-i {{ n.cls }}" aria-current="{{ n.cur }}"><svg class="lc {{ n.fill }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[n.icon] }}"></path></svg>{{ n.label }}</button></sc-for>
 <div style="flex: 1"></div>
 <div class="mp-foot mp-ink2 side-ft">Arun · admin<br />dashboard.mypaisapp.com</div>
 </aside>
@@ -207,7 +208,7 @@ button.sendb::after { inset: -4px; }
 <div class="mp-pagepad">
 <header class="mp-pagehead">
 <div><div class="mp-large">Overview</div><div class="mp-foot mp-ink2">{{ f.p.head }}</div></div>
-<div class="fx ac gap8"><div class="mp-seg whose" role="group" aria-label="Whose view"><button type="button" class="mp-seg-i on" aria-pressed="true">Household</button><button type="button" class="mp-seg-i" aria-pressed="false">Me</button><button type="button" class="mp-seg-i" aria-pressed="false">Asha</button></div><button type="button" class="iconbtn {{ f.p.eyeOn }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.p.priv }}"><span class="ms" aria-hidden="true">{{ f.p.eye }}</span></button></div>
+<div class="fx ac gap8"><div class="mp-seg whose" role="group" aria-label="Whose view"><button type="button" class="mp-seg-i on" aria-pressed="true">Household</button><button type="button" class="mp-seg-i" aria-pressed="false">Me</button><button type="button" class="mp-seg-i" aria-pressed="false">Asha</button></div><button type="button" class="iconbtn {{ f.p.eyeOn }}" aria-label="Privacy mode: hide amounts" aria-pressed="{{ f.p.priv }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[f.p.eye] }}"></path></svg></button></div>
 </header>
 <!-- the hero: net worth in pounds or rupees, with the rate and its date -->
 <div class="mp-hero hero">
@@ -223,7 +224,7 @@ button.sendb::after { inset: -4px; }
 <div class="hsub"><span class="mp-sub mp-w6 hup"><span class="{{ f.p.h.sa.c }}">{{ f.p.h.sa.v }}</span></span><span class="mp-sub mp-hero-2">{{ f.p.h.st }}</span></div>
 <sc-if value="{{ f.p.h.hasSplit }}" hint-placeholder-val="{{ false }}"><div class="mp-hairs two"><sc-for list="{{ f.p.h.split }}" as="s" hint-placeholder-count="2"><div><div class="mp-foot mp-hero-2">{{ s.k }}</div><div class="mp-t3 nowrap"><span class="{{ s.a.c }}">{{ s.a.v }}</span></div></div></sc-for></div></sc-if>
 </sc-if>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>{{ f.p.h.rate }}</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>{{ f.p.h.rate }}</span></div>
 </div>
 <!-- the cards, in columns that stack under 760 -->
 <sc-for list="{{ f.p.rows }}" as="rw" hint-placeholder-count="2">
@@ -244,11 +245,11 @@ button.sendb::after { inset: -4px; }
 <sc-if value="{{ q.isRows }}" hint-placeholder-val="{{ false }}"><div class="rows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4">
 <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}"><div class="rrow"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="fx ac gap6 wrap mt2"><span class="mp-chip chip-s mp-neutral">{{ it.cc }}</span><sc-if value="{{ it.jt }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-hold">{{ it.sh }}</span></sc-if><span class="mp-foot mp-ink2">{{ it.s }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}">{{ it.b.v }}</span></div></div></div></sc-if>
 <sc-if value="{{ it.isEdit }}" hint-placeholder-val="{{ false }}"><div class="edit"><div class="fx ac gap12"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="mp-foot mp-ink2">Correcting the value · your estimate</div></div><span class="efield" role="textbox" tabindex="0" aria-label="New value"><span class="mp-sub mp-w6">{{ it.typed }}</span><span class="ecaret"></span></span></div><div class="mp-foot"><span class="mp-ink2">Before → after:</span> <span class="was">{{ it.before }}</span> → <b>{{ it.after }}</b><span class="mp-ink2"> · net worth {{ it.netB }} → {{ it.netA }}, from the engine</span></div><div class="eacts"><button class="mp-btn mp-btn-tinted mp-btn-small">Cancel</button><button class="mp-btn mp-btn-primary mp-btn-small">Save</button></div></div></sc-if>
-<sc-if value="{{ it.isAudit }}" hint-placeholder-val="{{ false }}"><div class="aline"><span class="ms ms-s" aria-hidden="true">history</span><span class="mp-foot mp-w6">{{ it.t }}</span><span class="mp-foot">{{ it.s }}</span></div></sc-if>
+<sc-if value="{{ it.isAudit }}" hint-placeholder-val="{{ false }}"><div class="aline"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.history }}"></path></svg><span class="mp-foot mp-w6">{{ it.t }}</span><span class="mp-foot">{{ it.s }}</span></div></sc-if>
 </sc-for></div></sc-if>
-<sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }}</div></div><span class="mp-foot mp-acc nowrap">{{ it.e }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="lrow"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[it.i] }}"></path></svg></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }}</div></div><span class="mp-foot mp-acc nowrap">{{ it.e }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink2 pp">{{ q.t }} <span class="{{ q.a.c }}">{{ q.a.v }}</span> {{ q.t2 }}</p></sc-if>
-<sc-if value="{{ q.isLink }}" hint-placeholder-val="{{ false }}"><button type="button" class="mp-btn mp-btn-plain mp-btn-small lnk">{{ q.t }}<span class="ms ms-s" aria-hidden="true">chevron_right</span></button></sc-if>
+<sc-if value="{{ q.isLink }}" hint-placeholder-val="{{ false }}"><button type="button" class="mp-btn mp-btn-plain mp-btn-small lnk">{{ q.t }}<svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg></button></sc-if>
 </sc-for>
 </div>
 </sc-for>
@@ -258,11 +259,11 @@ button.sendb::after { inset: -4px; }
 </sc-for>
 <span class="mp-foot mp-ink2">Illustrative figures. Figures from the engine and the price registry; nothing here can trade.</span>
 </div>
-<sc-if value="{{ f.p.hasToast }}" hint-placeholder-val="{{ false }}"><div class="mp-toast toast" data-mo="pop"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ f.p.toast }}</div></sc-if>
+<sc-if value="{{ f.p.hasToast }}" hint-placeholder-val="{{ false }}"><div class="mp-toast toast" data-mo="pop"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>{{ f.p.toast }}</div></sc-if>
 </main>
 <!-- the chat beside the page (a tab under 600) -->
 <aside class="chatcol" aria-label="Chat">
-<div class="chh"><span class="mp-hl">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div>
+<div class="chh"><span class="mp-hl">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.edit_square }}"></path></svg></button></div>
 <div class="chwrap"><div class="chfade"></div><div class="chl">
 <sc-for list="{{ f.p.chat }}" as="m" hint-placeholder-count="4">
 <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
@@ -274,19 +275,19 @@ button.sendb::after { inset: -4px; }
 <sc-if value="{{ m.hasQ }}" hint-placeholder-val="{{ false }}"><span class="mp-sub">{{ m.q }}<span class="{{ m.qa.c }}">{{ m.qa.v }}</span>{{ m.q2 }}</span></sc-if>
 <sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kvl"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for>
 <sc-if value="{{ m.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="cacts"><sc-for list="{{ m.btns }}" as="b" hint-placeholder-count="2"><button type="button" class="mp-btn mp-btn-small {{ b.c }}">{{ b.t }}</button></sc-for></div></sc-if>
-<sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="okline"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if>
+<sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="okline"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if>
 </div></sc-if>
 <sc-if value="{{ m.hasChips }}" hint-placeholder-val="{{ false }}"><div class="chips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="wchip">{{ c }}</button></sc-for></div></sc-if>
 </div></div></sc-if>
 </sc-for>
 </div></div>
 <div class="chcomp">
-<div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="wchip"><span class="ms" aria-hidden="true">{{ c.i }}</span>{{ c.t }}</button></sc-for></div>
-<div class="cfld"><span class="ph">{{ f.p.ph }}</span><button type="button" class="sendb" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
+<div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="wchip"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[c.i] }}"></path></svg>{{ c.t }}</button></sc-for></div>
+<div class="cfld"><span class="ph">{{ f.p.ph }}</span><button type="button" class="sendb" aria-label="Send"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.arrow_upward }}"></path></svg></button></div>
 </div>
 </aside>
 </div>
-<nav class="mp-tabbar mp-shell-tabs wtabs" aria-label="Sections"><sc-for list="{{ f.p.tabs }}" as="n" hint-placeholder-count="5"><button type="button" class="mp-tab {{ n.cls }}" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for></nav>
+<nav class="mp-tabbar mp-shell-tabs wtabs" aria-label="Sections"><sc-for list="{{ f.p.tabs }}" as="n" hint-placeholder-count="5"><button type="button" class="mp-tab {{ n.cls }}" aria-current="{{ n.cur }}"><svg class="lc {{ n.fill }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[n.icon] }}"></path></svg>{{ n.label }}</button></sc-for></nav>
 </div>
 </div>
 </sc-for>
@@ -340,9 +341,9 @@ saved: { net: 457951, own: 704694, owe: 246743, uk: 351468, ind: 106483, arun: 2
 };
 // In rupees: each total x 112.50; India is its own rupee sum (₹1,34,92,563 less ₹15,13,257), the UK the rest; owe is own less net; the last part of every split is the rest, so each adds up.
 const INR = { net: 50056988, own: 77815575, owe: 27758587, uk: 38077682, ind: 11979306, arun: 28222650, asha: 21834338, liq: 4229550, fix: 2662875, lock: 70923150 };
-const navItems = [['ch', 'chat_bubble', 'Chat'], ['ov', 'home', 'Overview'], ['as', 'donut_small', 'Assets'], ['db', 'credit_card', 'Debts'], ['bu', 'savings', 'Budget'], ['pr', 'trending_up', 'Projection'], ['ac', 'history', 'Activity'], ['au', 'fact_check', 'Audit']];
-const nav = navItems.map((i) => ({ icon: i[1], label: i[2], cls: i[0] === 'ov' ? 'on' : '', cur: i[0] === 'ov' ? 'page' : 'false', fill: i[0] === 'ov' ? 'ms-fill' : '' }));
-const tabsFor = (on) => [['ch', 'chat_bubble', 'Chat'], ['ov', 'home', 'Overview'], ['as', 'donut_small', 'Assets'], ['db', 'credit_card', 'Debts'], ['mo', 'menu', 'More']].map((i) => ({ icon: i[1], label: i[2], cls: i[0] === on ? 'on' : '', cur: i[0] === on ? 'page' : 'false', fill: i[0] === on ? 'ms-fill' : '' }));
+const navItems = [['ch', 'message-circle', 'Chat'], ['ov', 'home', 'Overview'], ['as', 'wallet', 'Assets'], ['db', 'landmark', 'Debts'], ['bu', 'chart-pie', 'Budget'], ['pr', 'trending-up', 'Projection'], ['ac', 'activity', 'Activity'], ['au', 'fact_check', 'Audit']];
+const nav = navItems.map((i) => ({ icon: i[1], label: i[2], cls: i[0] === 'ov' ? 'on' : '', cur: i[0] === 'ov' ? 'page' : 'false', fill: i[0] === 'ov' ? '' : '' }));
+const tabsFor = (on) => [['ch', 'message-circle', 'Chat'], ['ov', 'home', 'Overview'], ['as', 'wallet', 'Assets'], ['db', 'landmark', 'Debts'], ['mo', 'menu', 'More']].map((i) => ({ icon: i[1], label: i[2], cls: i[0] === on ? 'on' : '', cur: i[0] === on ? 'page' : 'false', fill: i[0] === on ? '' : '' }));
 const page = (S) => {
 const F = FIG[S.fig || 'after'], inr = S.ccy === 'inr', priv = !!S.priv;
 const HID = (s) => String(s).replace(/[0-9£₹$€]/g, '\u2007').replace(/[,.]/g, '\u2008'); // MA-300: a mask keeps the figure's width, never its digits
@@ -543,6 +544,9 @@ turns: [
 };
 }
 }
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
 </script>
 </body>
 </html>

@@ -12,7 +12,7 @@ web/
   pnpm-workspace.yaml   one catalog of versions, the release-age guard, the security overrides
   src/
     app.css             Tailwind, the DS v1 tokens and motion, shadcn-svelte's names mapped onto the tokens
-    app.html            the document: fonts, the manifest, the icons
+    app.html            the document: the fonts' preloads, the manifest, the icons
     service-worker.ts   caches the shell only; /v1 and /.well-known always go to the network
     routes/             pages: thin, each reads through a query and renders components
     lib/                imported as #lib/...; api/, query/, cards/, formatting/, privacy/ and test-ids.ts are what
@@ -26,7 +26,8 @@ web/
       formatting/       money in GBP, INR (lakh and crore), USD and EUR, from decimal strings
       privacy/          privacy mode's masking
       cards/            the chat cards' envelope (MA-174 owns the schema)
-      styles/           DS v1's tokens.css and motion.css, held equal to docs/design/ds-v1/ by a test
+      styles/           DS v1's tokens.css and motion.css, held equal to docs/design/ds-v1/ by a test; fonts.css,
+                        the @font-face rules for static/fonts/ (scripts/fonts.py, MA-340: nothing from Google)
 ```
 
 ## The rules

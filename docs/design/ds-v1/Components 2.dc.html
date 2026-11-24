@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MyPaisa DS v1: Components 2</title>
     <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
   </head>
   <body>
     <x-dc>
@@ -386,7 +387,7 @@
             { icon: 'history', lc: [{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"},{"d":"M3 3v5h5"},{"d":"M12 7v5l4 2"}], side: 'Activity', tab: '' },
             { icon: 'clipboard-check', lc: [{"d":"M9 2h6a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1Z"},{"d":"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"},{"d":"m9 14 2 2 4-4"}], side: 'Audit', tab: '' }
           ];   // Lucide (ISC licence), from @lucide/svelte: the web's icons (MA-301 f 1a)
-          const sel = (list, k, focusAt) => list.map((n, i) => Object.assign({}, n, { on: (i === k ? 'on' : '') + (i === focusAt ? ' is-focus' : ''), fill: i === k ? 'ms-fill' : '', cur: i === k ? 'page' : 'false' }));
+          const sel = (list, k, focusAt) => list.map((n, i) => Object.assign({}, n, { on: (i === k ? 'on' : '') + (i === focusAt ? ' is-focus' : ''), fill: i === k ? '' : '', cur: i === k ? 'page' : 'false' }));
           const tabs = sections.filter((n) => n.tab).concat([{ icon: 'menu', lc: [{"d":"M4 5h16"},{"d":"M4 12h16"},{"d":"M4 19h16"}], tab: 'More' }]);
           // chart a: six months on a 0..100 box; dots and labels are HTML placed by %
           const s6 = [24100, 24350, 24020, 24600, 24900, 24700, 25100, 25350, 25200, 25600, 25500, 25800];
@@ -440,6 +441,10 @@
           };
         }
       }
-    </script>
+    
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
+</script>
   </body>
 </html>

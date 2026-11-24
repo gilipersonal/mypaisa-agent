@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
 </head>
 <body>
 <x-dc>
@@ -32,7 +33,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .pseg button { min-height: 32px; border: 0; background: transparent; border-radius: 7px; padding: 0 12px; font: 600 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; color: #4E5462; cursor: pointer; position: relative; }
 .pseg button.on { background: #FFFFFF; color: #14171F; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .pbtn { min-height: 34px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border-radius: 9px; border: 0; background: #E6E2DC; color: #14171F; font: 600 13px/18px -apple-system, "SF Pro Text", system-ui, sans-serif; cursor: pointer; position: relative; }
-.pbtn .ms { font-size: 18px; }
+.pbtn .lc { width: 18px; height: 18px; }
 .pbtn.on { background: #13213A; color: #FFFFFF; }
 .pbtn.go { background: #C2381F; color: #FFFFFF; }
 .pf1 { flex: 1; }
@@ -54,7 +55,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .fr-pweb { border-radius: 44px; box-shadow: 0 0 0 10px #1B1D22, 0 0 0 11.5px #3A3D44, 0 30px 60px rgba(0, 0, 0, 0.22); }
 .fr-ios { border-radius: 56px; box-shadow: 0 0 0 11px #1B1D22, 0 0 0 12.5px #3A3D44, 0 30px 70px rgba(0, 0, 0, 0.25); }
 .pdate { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); z-index: 90; display: flex; align-items: center; gap: 10px; padding: 16px 24px; border-radius: 22px; background: var(--mp-hero); color: var(--mp-hero-ink); font: 800 26px/32px var(--mp-font-round); letter-spacing: -0.02em; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); pointer-events: none; white-space: nowrap; }
-.pdate .ms { color: var(--mp-coral); font-size: 28px; }
+.pdate .lc { color: var(--mp-coral); width: 28px; height: 28px; }
 .ptoast { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); z-index: 95; max-width: 340px; width: max-content; text-align: center; pointer-events: none; }
 .fr-desk .ptoast { bottom: 36px; max-width: 520px; }
 /* shared: the masks, the arrivals, the guide's ring, small utilities */
@@ -81,18 +82,18 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <span class="pname"><span class="pkey">MA-193</span>MyPaisa · Prototype v4</span>
 <span class="pgrp"><span class="plbl">Door</span><span class="pseg" role="group" aria-label="Door"><sc-for list="{{ doors }}" as="d" hint-placeholder-count="3"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
 <span class="pgrp"><span class="plbl">Theme</span><span class="pseg" role="group" aria-label="Theme"><sc-for list="{{ themes }}" as="d" hint-placeholder-count="2"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
-<button class="pbtn {{ privCls }}" type="button" aria-pressed="{{ privP }}" onclick="{{ privGo }}"><span class="ms" aria-hidden="true">{{ privIcon }}</span>Privacy</button>
+<button class="pbtn {{ privCls }}" type="button" aria-pressed="{{ privP }}" onclick="{{ privGo }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[privIcon] }}"></path></svg>Privacy</button>
 <span class="pgrp"><span class="plbl">Viewer</span><span class="pseg" role="group" aria-label="Viewer"><sc-for list="{{ viewers }}" as="d" hint-placeholder-count="2"><span class="segw"><button class="{{ d.cls }}" type="button" aria-pressed="{{ d.p }}" onclick="{{ d.go }}">{{ d.t }}</button></span></sc-for></span></span>
 <span class="pf1"></span>
-<button class="pbtn" type="button" onclick="{{ restartGo }}"><span class="ms" aria-hidden="true">restart_alt</span>Restart</button>
+<button class="pbtn" type="button" onclick="{{ restartGo }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.restart_alt }}"></path></svg>Restart</button>
 </div>
 <nav class="psteps" aria-label="The journey"><sc-for list="{{ steps }}" as="s" hint-placeholder-count="10"><button class="pst {{ s.cls }}" type="button" aria-current="{{ s.cur }}" onclick="{{ s.go }}"><b>{{ s.n }}</b>{{ s.t }}</button></sc-for></nav>
 <div class="pguide" aria-live="polite">
 <span class="pgt">{{ guideT }}</span>
 <span class="pgh">{{ guideH }}</span>
-<sc-if value="{{ hasFill }}" hint-placeholder-val="{{ false }}"><button class="pbtn" type="button" onclick="{{ fillGo }}"><span class="ms" aria-hidden="true">keyboard</span>Type it for me</button></sc-if>
-<sc-if value="{{ hasBranch }}" hint-placeholder-val="{{ false }}"><button class="pbtn {{ branchCls }}" type="button" onclick="{{ branchGo }}"><span class="ms" aria-hidden="true">{{ branchIcon }}</span>{{ branchT }}</button></sc-if>
-<sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}"><button class="pbtn go {{ nextCls }}" type="button" onclick="{{ nextGo }}">{{ nextT }}<span class="ms" aria-hidden="true">arrow_forward</span></button></sc-if>
+<sc-if value="{{ hasFill }}" hint-placeholder-val="{{ false }}"><button class="pbtn" type="button" onclick="{{ fillGo }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.keyboard }}"></path></svg>Type it for me</button></sc-if>
+<sc-if value="{{ hasBranch }}" hint-placeholder-val="{{ false }}"><button class="pbtn {{ branchCls }}" type="button" onclick="{{ branchGo }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[branchIcon] }}"></path></svg>{{ branchT }}</button></sc-if>
+<sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}"><button class="pbtn go {{ nextCls }}" type="button" onclick="{{ nextGo }}">{{ nextT }}<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.arrow_forward }}"></path></svg></button></sc-if>
 </div>
 </header>
 <main class="pstage">
@@ -101,7 +102,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <div class="pframe mp {{ frameCls }} {{ themeCls }}" style="left: {{ frL }}; top: {{ frL }}; width: {{ frW }}; height: {{ frH }}; transform: scale({{ sc }})" data-screen-label="{{ frameLabel }}">
 <sc-if value="{{ isWeb }}" hint-placeholder-val="{{ true }}"><dc-import name="PrototypeV4Web" dc-props="{{ webp }}" hint-size="100%,100%"></dc-import></sc-if>
 <sc-if value="{{ isIos }}" hint-placeholder-val="{{ false }}"><dc-import name="PrototypeV4Phone" dc-props="{{ iosp }}" hint-size="100%,100%"></dc-import></sc-if>
-<sc-if value="{{ hasDate }}" hint-placeholder-val="{{ false }}"><div class="pdate"><span class="ms" aria-hidden="true">calendar_month</span>{{ dateT }}</div></sc-if>
+<sc-if value="{{ hasDate }}" hint-placeholder-val="{{ false }}"><div class="pdate"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.calendar_month }}"></path></svg>{{ dateT }}</div></sc-if>
 <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}"><div class="ptoast mp-toast">{{ toastT }}</div></sc-if>
 </div>
 </div>
@@ -230,10 +231,10 @@ class Component extends DCLogic {
     /* the shells */
     const page = st.v.page, signin = page === 'signin';
     const sec = { homeval: 'assets', hdfc: 'debts', run: 'act' }[page] || page;
-    const NAV = [['home', 'home', 'Home'], ['assets', 'savings', 'Assets'], ['debts', 'credit_card', 'Debts'], ['budget', 'account_balance_wallet', 'Budget'], ['proj', 'timeline', 'Projection'], ['act', 'insights', 'Activity'], ['audit', 'fact_check', 'Audit'], ['you', 'account_circle', 'You']];
-    const nav = NAV.map((n) => ({ icon: n[1], label: n[2], cls: (n[0] === sec ? 'on' : '') + T('nav:' + n[0]), fill: n[0] === sec ? 'ms-fill' : '', go: f('nav:' + n[0]) }));
+    const NAV = [['home', 'house', 'Home'], ['assets', 'wallet', 'Assets'], ['debts', 'landmark', 'Debts'], ['budget', 'chart-pie', 'Budget'], ['proj', 'trending-up', 'Projection'], ['act', 'activity', 'Activity'], ['audit', 'fact_check', 'Audit'], ['you', 'account_circle', 'You']];
+    const nav = NAV.map((n) => ({ icon: n[1], label: n[2], cls: (n[0] === sec ? 'on' : '') + T('nav:' + n[0]), fill: n[0] === sec ? '' : '', go: f('nav:' + n[0]) }));
     const tsec = st.v.chat ? 'chat' : (sec === 'act' ? 'act' : sec === 'you' ? 'you' : 'home');
-    const tabs = [['chat', 'chat_bubble', 'Chat'], ['home', 'home', 'Home'], ['act', 'insights', 'Activity'], ['you', 'account_circle', 'You']].map((n) => ({ icon: n[1], label: n[2], cls: (n[0] === tsec ? 'on' : '') + T('tab:' + n[0]), fill: n[0] === tsec ? 'ms-fill' : '', go: f('tab:' + n[0]) }));
+    const tabs = [['chat', 'message-circle', 'Chat'], ['home', 'house', 'Home'], ['act', 'activity', 'Activity'], ['you', 'account_circle', 'You']].map((n) => ({ icon: n[1], label: n[2], cls: (n[0] === tsec ? 'on' : '') + T('tab:' + n[0]), fill: n[0] === tsec ? '' : '', go: f('tab:' + n[0]) }));
     const common = { isAdmin: !st.asha, themeCls: st.dark ? 't-dark' : 't-light', privCls: st.priv ? 'privon' : '', time: V.time, isSignin: signin, isApp: !signin, signinGo: f('signin'), signinCls: T('signin'), nopeGo: f('x'),
       chatp: { list: V.chat, isWeb: door !== 'ios' }, pagep: { pg: V.page, isWeb: door !== 'ios' }, composer: Object.assign({}, V.composer, { sendIcon: (V.composer.typed || V.composer.hasFiles) ? 'arrow_upward' : 'mic' }), strip: Object.assign({}, V.strip, { noUp: !V.strip.hasUp }), tabs: tabs };
     const webp = Object.assign({}, common, { isDesk: door === 'desk', isPweb: door === 'pweb', nav: nav, user: st.asha ? 'Asha · member' : 'Arun · admin', chdSub: st.asha ? 'Asha\'s own conversation' : 'One conversation at every door', shlCls: st.v.chat ? 'v-chat' : 'v-page' });
@@ -267,6 +268,9 @@ class Component extends DCLogic {
     };
   }
 }
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
 </script>
 </body>
 </html>

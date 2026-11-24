@@ -17,8 +17,9 @@ export default defineConfig({
 				directives: {
 					'default-src': ['self'],
 					'script-src': ['self'],
-					'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
-					'font-src': ['self', 'https://fonts.gstatic.com'],
+					// The fonts are served from the app's own origin (MA-340): no font or stylesheet host but self.
+					'style-src': ['self', 'unsafe-inline'],
+					'font-src': ['self'],
 					'img-src': ['self', 'data:', 'blob:'],
 					'connect-src': ['self'],
 					'manifest-src': ['self'],
