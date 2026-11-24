@@ -613,6 +613,10 @@ Claude's:
   changed on every function, and the release's digest check would refuse
   each prod release that ships a Lambda; fixed before MA-347 by letting
   ci-plan decrypt through Lambda only (Arun's pick, option 1).
+- **Dependabot keeps the images on Python 3.14 and uv 0.12 (MA-350, bug):**
+  its first docker run moved the Lambda base to Python 3.15 and uv to 0.13;
+  the images now take only new digests and patch releases of the lines the
+  backend is tested on, and a new line moves with its own story.
 - **The research pages show the counted cost of watching (MA-348):** the
   observability and VPC research pages, the Architecture v4 explainer's
   CloudWatch card, their Confluence pages, previews and GIF
