@@ -5883,7 +5883,7 @@
       "type": "Story",
       "epic": "MA-9",
       "phase": 0,
-      "summary": "Container images are built on AWS CodeBuild's arm64 runner from GitHub Actions and stored in ECR by digest, inside the free tier",
+      "summary": "Container images are built on GitHub's free arm64 runner and stored in ECR by digest, the same digest in dev and prod",
       "status": "To Do",
       "labels": [],
       "arch": [
@@ -5893,7 +5893,18 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 26 Oct 2026: \"Can we do docker builds on AWS infra directly and store on ECR for free? If yes then that would be preferred.\" CodeBuild's free tier is 100 build minutes a month on arm1.small, never expiring; ECR's 500 MB is free only in a new account's first year, then $0.10 per GB a month. The build moved here from MA-107 and MA-25, whose estimates fell by the same days, so no date moved. Past the free 100 minutes builds go on at about $0.0034 to $0.004 a minute (under a cent a build); Arun, 26 Oct 2026: \"lets keep AWS stack\", so there is no fallback to GitHub's runners. MA-107 (24 Nov 2026): the release takes the digests in MA-347, when the first Lambda ships."
+      "notes": "Arun, 24 Nov 2026: \"MA-237, can we do the builds on Github ? We are public now\". The repository is public, so GitHub's hosted ubuntu-24.04-arm runner is free and unlimited for it (GA 7 Aug 2025): the images build there natively, and nothing builds on AWS. This replaces the plan of 26 Oct 2026 (Arun: \"Can we do docker builds on AWS infra directly and store on ECR for free? If yes then that would be preferred.\" and \"lets keep AWS stack\"), which built on CodeBuild's arm1.small inside its free 100 minutes a month; the CodeBuild project, its CodeConnections connection, its usage budget and MA-238 went with it. Built 24 Nov 2026: the Dockerfile's lambda and stream targets (the Lambda Python 3.14 base, uv 0.12.9 and the Lambda Web Adapter 1.1.0, each pinned by digest and moved by Dependabot; the dependencies' layer kept apart from the code's, so a code-only build adds a layer of a few hundred KB), CI's Images job (a matrix over the two targets on ubuntu-24.04-arm with the GitHub Actions layer cache: on a push to main each is pushed as <target>-<sha> through mypaisa-ci-image, as a single-platform manifest with no attestations, its digest in the run's summary and the image-digest-<target> artifact; a pull request that changes the Dockerfile, .dockerignore or the backend's lock builds without pushing and assumes no role), and in infra/bootstrap the mypaisa ECR repository (immutable tags, scan on push, the last five of each target kept, untagged after a day, a repository policy letting Lambda pull for mypaisa-* functions), the mypaisa-ci-image role (main only, push to that repository only) and a guard deny keeping dev's principals from pushing to, deleting from or re-keeping it (66 of 66 simulator cases on the bootstrap plan). The release takes the digests in MA-347, when the first Lambda ships; trivy image joins the Images job in MA-267. Bootstrap must be applied by Arun before this story's PR merges, or main's Images job fails.",
+      "code": [
+        "Dockerfile",
+        ".dockerignore",
+        ".github/workflows/ci.yml",
+        ".github/dependabot.yml",
+        "infra/bootstrap/ecr.tf",
+        "infra/bootstrap/outputs.tf",
+        "infra/bootstrap/prod_guard.tf",
+        "infra/README.md",
+        "scripts/infra_guard_check.py"
+      ]
     },
     {
       "key": "MA-238",
@@ -5903,7 +5914,8 @@
       "summary": "Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds",
       "status": "To Do",
       "labels": [
-        "manual"
+        "manual",
+        "retired"
       ],
       "arch": [
         "17.4"
@@ -5911,7 +5923,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Installing the AWS Connector for GitHub app grants an app access, which only Arun does."
+      "notes": "Retired by MA-237 (Arun, 24 Nov 2026: \"MA-237, can we do the builds on Github ? We are public now\"): the images build on GitHub's free arm64 runner, so CodeBuild needs no connection to GitHub and nothing is left for Arun to authorise. Closed without being done when MA-237 merges. Was: installing the AWS Connector for GitHub app grants an app access, which only Arun does."
     },
     {
       "key": "MA-239",
@@ -6947,7 +6959,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-272 (28 Oct 2026): unifies gitleaks, ruff Bandit S rules, semgrep across Python/TypeScript/Swift, pip-audit, pnpm audit, trivy fs on ios/Package.resolved, trivy config on infra/, trivy image + ECR Basic Scan on push inside AWS CodeBuild arm1.small for both lambda and stream targets, and a weekly Monday 04:00 UTC CVE sweep with grouped Dependabot updates. Build time is covered by MA-25, MA-166, MA-194 and MA-237. Narrowed 3 Nov 2026: MA-326 brings the scans for what exists now (gitleaks, semgrep on Python and the workflows, osv-scanner, zizmor, pip-audit --strict, the weekly sweep, Dependabot); MA-267 keeps the web and iOS SAST and SCA, Terraform (tflint, trivy config) and the image gate (trivy image, ECR scan on push), added as their code arrives. Narrowed again 3 Nov 2026 (MA-194): web/ already has semgrep p/typescript and p/javascript, pnpm audit, osv-scanner on web/pnpm-lock.yaml and Dependabot; MA-267 keeps eslint-plugin-security for web/, iOS, Terraform and the images."
+      "notes": "Filed from MA-272 (28 Oct 2026): unifies gitleaks, ruff Bandit S rules, semgrep across Python/TypeScript/Swift, pip-audit, pnpm audit, trivy fs on ios/Package.resolved, trivy config on infra/, trivy image + ECR Basic Scan on push for both lambda and stream targets (in CI's Images job on GitHub's ubuntu-24.04-arm runner since MA-237, 24 Nov 2026; planned on AWS CodeBuild arm1.small until then), and a weekly Monday 04:00 UTC CVE sweep with grouped Dependabot updates. Build time is covered by MA-25, MA-166, MA-194 and MA-237. Narrowed 3 Nov 2026: MA-326 brings the scans for what exists now (gitleaks, semgrep on Python and the workflows, osv-scanner, zizmor, pip-audit --strict, the weekly sweep, Dependabot); MA-267 keeps the web and iOS SAST and SCA, Terraform (tflint, trivy config) and the image gate (trivy image, ECR scan on push), added as their code arrives. Narrowed again 3 Nov 2026 (MA-194): web/ already has semgrep p/typescript and p/javascript, pnpm audit, osv-scanner on web/pnpm-lock.yaml and Dependabot; MA-267 keeps eslint-plugin-security for web/, iOS, Terraform and the images."
     },
     {
       "key": "MA-268",
@@ -6984,7 +6996,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-272 (28 Oct 2026); updated 30 Oct 2026: scripts/regression.py across Layers 1 to 5 and the Option D path-filtered GitHub Actions (ubuntu-24.04-arm 1x + path-gated macos-15 / self-hosted Mac) and AWS CodeBuild arm1.small runner layout so monthly CI stays inside the 2,000 GitHub and 100 CodeBuild free minute tiers (\u00a30/month); Layer 1 includes python3 scripts/maestro_local.py check-syntax and TestIDs.swift <-> web/src/lib/test-ids.ts selector parity on Linux (1x), while Layer 4 pairs path-gated iOS XCUITest/Snapshot/AX5 with local Apple Silicon scripts/maestro_local.py (MA-273) and runs SvelteKit 3 (web/) visual regression, YAML ariaSnapshot accessibility tree diffing and fail-closed @axe-core/playwright WCAG 2.2 AA through one auditAndCapture() fixture + Argos CI Tokenless OIDC (~3,600 snapshots/month inside the 5,000/month \u00a30 Free Hobby tier, docs/RESEARCH.md 10, docs/design/argos-visual-a11y.html). Build time is covered by MA-24, MA-25, MA-166, MA-194, MA-198 and MA-246."
+      "notes": "Filed from MA-272 (28 Oct 2026); updated 30 Oct 2026: scripts/regression.py across Layers 1 to 5 and the Option D path-filtered GitHub Actions (ubuntu-24.04-arm 1x + path-gated macos-15 / self-hosted Mac) runner layout so monthly CI stays at \u00a30/month (the CodeBuild arm1.small image build and its 100 free minutes are superseded: since MA-237, 24 Nov 2026, the repository is public and the images build on GitHub's free ubuntu-24.04-arm runner, whose minutes are unlimited for a public repository); Layer 1 includes python3 scripts/maestro_local.py check-syntax and TestIDs.swift <-> web/src/lib/test-ids.ts selector parity on Linux (1x), while Layer 4 pairs path-gated iOS XCUITest/Snapshot/AX5 with local Apple Silicon scripts/maestro_local.py (MA-273) and runs SvelteKit 3 (web/) visual regression, YAML ariaSnapshot accessibility tree diffing and fail-closed @axe-core/playwright WCAG 2.2 AA through one auditAndCapture() fixture + Argos CI Tokenless OIDC (~3,600 snapshots/month inside the 5,000/month \u00a30 Free Hobby tier, docs/RESEARCH.md 10, docs/design/argos-visual-a11y.html). Build time is covered by MA-24, MA-25, MA-166, MA-194, MA-198 and MA-246."
     },
     {
       "key": "MA-270",
@@ -7217,7 +7229,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-284 (29 Oct 2026): optional end-of-roadmap go/no-go decision taken last, after Phase 20 (enable_vpc_lockdown = false by default; serverless IAM/tag isolation at GBP 3.50/month stands unless Arun opts in). Covers all seven enterprise VPC lockdown layers in us-east-1 across dev and prod, comparing Option 1 Bank-Grade Hub-and-Spoke (GBP 729.91/month), Option 2A/2B AWS-Managed Serverless NAT Gateway VPC (GBP 149.01/month and GBP 70.39/month), and Preferred Option 3B Lean Zero-Trust VPC (+GBP 24.86/month, bringing total AWS spend to ~GBP 28.36/month inside the GBP 50/month AWS cap; Option 3A without CloudFront Pro bundled WAF is +GBP 13.32/month): dual-stack non-overlapping VPCs with VPC Block Public Access and zero-egress Isolated subnets, CloudFront OAC + Pro WAF + API Gateway mTLS origin lock, free S3 and DynamoDB Gateway Endpoints with three-way aws:SourceVpce Data Perimeter Deny policies, IPv6 EIGW + auto-healing Graviton t4g.nano fck-nat / Envoy TLS-SNI egress proxy + Route 53 DNS Firewall default-deny allowlist, private arm64 CodeBuild runners, and S3 v5 VPC Flow Logs + GuardDuty + five-step zero-lockout rollout."
+      "notes": "Filed from MA-284 (29 Oct 2026): optional end-of-roadmap go/no-go decision taken last, after Phase 20 (enable_vpc_lockdown = false by default; serverless IAM/tag isolation at GBP 3.50/month stands unless Arun opts in). Covers all seven enterprise VPC lockdown layers in us-east-1 across dev and prod, comparing Option 1 Bank-Grade Hub-and-Spoke (GBP 729.91/month), Option 2A/2B AWS-Managed Serverless NAT Gateway VPC (GBP 149.01/month and GBP 70.39/month), and Preferred Option 3B Lean Zero-Trust VPC (+GBP 24.86/month, bringing total AWS spend to ~GBP 28.36/month inside the GBP 50/month AWS cap; Option 3A without CloudFront Pro bundled WAF is +GBP 13.32/month): dual-stack non-overlapping VPCs with VPC Block Public Access and zero-egress Isolated subnets, CloudFront OAC + Pro WAF + API Gateway mTLS origin lock, free S3 and DynamoDB Gateway Endpoints with three-way aws:SourceVpce Data Perimeter Deny policies, IPv6 EIGW + auto-healing Graviton t4g.nano fck-nat / Envoy TLS-SNI egress proxy + Route 53 DNS Firewall default-deny allowlist, private arm64 CodeBuild runners for the jobs that must originate inside the VPC (Terraform applies and smoke tests; the image build stays on GitHub's arm64 runner since MA-237, 24 Nov 2026), and S3 v5 VPC Flow Logs + GuardDuty + five-step zero-lockout rollout."
     },
     {
       "key": "MA-284",

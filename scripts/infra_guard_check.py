@@ -94,6 +94,15 @@ def cases(acct: str) -> list[tuple[str, str, str, dict[str, tuple[str, str]], st
             allowed,
         ),
         ("developer", "iam:CreateAccessKey", f"arn:aws:iam::{acct}:user/anyone", {}, denied),
+        # The image repository prod runs from (MA-237): dev's principals pull, and never remove, replace or re-keep.
+        ("developer", "ecr:BatchDeleteImage", f"arn:aws:ecr:us-east-1:{acct}:repository/mypaisa", {}, denied),
+        ("developer", "ecr:SetRepositoryPolicy", f"arn:aws:ecr:us-east-1:{acct}:repository/mypaisa", {}, denied),
+        ("developer", "ecr:PutLifecyclePolicy", f"arn:aws:ecr:us-east-1:{acct}:repository/mypaisa", {}, denied),
+        ("developer", "ecr:BatchGetImage", f"arn:aws:ecr:us-east-1:{acct}:repository/mypaisa", {}, allowed),
+        ("ci-dev-deploy", "ecr:PutImage", f"arn:aws:ecr:us-east-1:{acct}:repository/mypaisa", {}, denied),
+        ("ci-dev-deploy", "ecr:DeleteRepository", f"arn:aws:ecr:us-east-1:{acct}:repository/mypaisa", {}, denied),
+        ("ci-dev-deploy", "ecr:BatchGetImage", f"arn:aws:ecr:us-east-1:{acct}:repository/mypaisa", {}, allowed),
+        ("ci-dev-deploy", "ecr:GetDownloadUrlForLayer", f"arn:aws:ecr:us-east-1:{acct}:repository/mypaisa", {}, allowed),
         # ci-dev-deploy has no exception.
         ("ci-dev-deploy", "ssm:PutParameter", prod_param, {**prod_tag, "ssm:Overwrite": ("boolean", "true")}, denied),
         ("ci-dev-deploy", "ssm:GetParameter", prod_param, prod_tag, denied),

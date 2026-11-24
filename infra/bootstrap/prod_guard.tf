@@ -152,6 +152,24 @@ data "aws_iam_policy_document" "guard_common" {
     resources = local.guard_holders
   }
 
+  # The image repository is shared with prod, which runs a digest from it (MA-237): dev's principals may pull from it,
+  # but never take an image out of it or change what keeps them. Only ci-image pushes; bootstrap's apply sets the rest.
+  statement {
+    sid    = "DenyRemovingTheSharedImages"
+    effect = "Deny"
+    actions = [
+      "ecr:BatchDeleteImage",
+      "ecr:DeleteRepository",
+      "ecr:DeleteRepositoryPolicy",
+      "ecr:SetRepositoryPolicy",
+      "ecr:PutLifecyclePolicy",
+      "ecr:DeleteLifecyclePolicy",
+      "ecr:PutImageTagMutability",
+      "ecr:PutImage",
+    ]
+    resources = ["arn:aws:ecr:*:${local.account_id}:repository/mypaisa"]
+  }
+
   # A role a guarded principal makes or grants to carries the dev boundary, so the guard cannot be stepped around
   # by a new role, or by widening another role in the account.
   statement {

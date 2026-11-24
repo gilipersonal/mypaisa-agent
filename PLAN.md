@@ -101,10 +101,6 @@ Yours:
   your yes first) and register two app ids, `com.mypaisapp.agent.dev`
   (MyPaisa Dev) and `com.mypaisapp.agent` (MyPaisa), each with Sign in with
   Apple, push and associated domains.
-- **GitHub connected to AWS CodeBuild (MA-238).** Once, after the bootstrap
-  apply: in the AWS console's Connections, update the pending connection and
-  install the AWS Connector for GitHub app on this repository only, so
-  CodeBuild's runner can take the image builds.
 - **Apple's keys and records (MA-164, MA-167).** An APNs key and a Sign in with Apple
   key per environment, put by hand into `/mypaisa-agent/<env>/apple/apns_key`
   and `.../apple/siwa_key` after the apply that made their parameters (the
@@ -260,14 +256,17 @@ Claude's:
   hand; no secret ever in state (`ARCHITECTURE.md` §13). So every "into SSM"
   item in this phase waits for the apply that makes its parameter (MA-26's,
   and for prod the first release): a value put first makes that apply fail.
-- **The images, built on AWS (MA-237):** the workflow's image job runs on
-  AWS CodeBuild's arm64 runner (arm1.small, inside its free 100 build
-  minutes a month), builds the `lambda` and `stream` targets natively and
-  pushes them to the one ECR repository by the commit's sha; a pull request
-  that changes the Dockerfile or the lock builds them without pushing. ECR
-  keeps the last five tagged images, and a usage budget warns at 80 minutes.
+- **The images, built on GitHub's arm64 runner (MA-237):** CI's `Images` job
+  builds the Dockerfile's `lambda` and `stream` targets natively on GitHub's
+  `ubuntu-24.04-arm` runner, free and unlimited now the repository is public
+  (Arun, 24 Nov 2026: "MA-237, can we do the builds on Github ? We are public
+  now"), and on a push to `main` pushes them to the one ECR repository as
+  `lambda-<sha>` and `stream-<sha>` through `mypaisa-ci-image`, with their
+  digests in the run's summary; a pull request that changes the Dockerfile or
+  the lock builds them without pushing. ECR keeps the last five images of each
+  target. No CodeBuild, so MA-238 (connecting GitHub to CodeBuild) is retired.
 - **The release pipeline and phase-progressive smoke runner (MA-107, MA-167,
-  MA-268):** a merge to `main` builds the Lambdas once on AWS CodeBuild's
+  MA-268):** a merge to `main` builds the Lambdas once on GitHub's
   arm64 runner and scans both targets with `trivy image --exit-code 1
   --severity HIGH,CRITICAL --ignore-unfixed` (MA-237, MA-267), deploys dev and
   runs `python3 scripts/smoke.py --env dev --up-to-phase <N>` (health, deep
@@ -601,9 +600,12 @@ Claude's:
   £0 Free Hobby cap, `docs/RESEARCH.md` §10, `docs/design/argos-visual-a11y.html`,
   MA-194, MA-269); and the 2026
   GitHub Actions versus AWS CodeBuild runner cost model showing how Option D
-  (CodeBuild `arm1.small` for Docker builds, GitHub `ubuntu-24.04-arm` for
-  Linux gates, Playwright + Argos CI only when Arun asks (MA-303, MA-304), and split iOS testing to avoid the
-  10x macOS multiplier trap) stays at £0.00 a month inside both free tiers
+  (GitHub `ubuntu-24.04-arm` for the Linux gates, Playwright + Argos CI only
+  when Arun asks (MA-303, MA-304), and split iOS testing to avoid the 10x
+  macOS multiplier trap) stays at £0.00 a month; its CodeBuild `arm1.small`
+  for the Docker builds is superseded: since the repository went public the
+  images build on GitHub's free `ubuntu-24.04-arm` runner too (MA-237, Arun,
+  24 Nov 2026)
   (`docs/design/cicd-security-regression.html`, `docs/design/argos-visual-a11y.html`
   and their Confluence pages, MA-272).
 - **A plan made by ci-plan sees every Lambda's environment (MA-349, bug):**
@@ -2248,7 +2250,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 56.25 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
+| 0 Foundations at every door | 56.25 (and 3 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
 | 1 Talk: sign in and chat with the agent at every door | 110 (and 0.5 of yours) | 88 | Wed 13 Jan 2027 | Wed 19 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Thu 20 May 2027 | Fri 16 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Mon 19 Jul 2027 | Fri 6 Aug 2027 |

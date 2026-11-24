@@ -69,10 +69,10 @@ STACK_GIFS = [  # (gif in docs/design/tech-stack-observability, tab title, capti
     ("06-agent-framework-architecture.gif", "6 · Agent loop & frameworks", "The thin custom loop on the official Anthropic SDK scores 10/10 across MyPaisa's seven criteria, borrowing PydanticAI's @tool RunContext pattern and using Step Functions + EventBridge for the six-agent team in Phase 13."),
 ]
 CICD_GIFS = [  # (gif in docs/design/cicd-security-regression, tab title, caption): the CI/CD, security, smoke & regression block diagrams, animated (MA-272)
-    ("01-cicd-pipeline-dev-prod.gif", "1 · CI/CD pipeline (dev & prod)", "One arm64 container build on AWS CodeBuild is scanned with trivy image, pushed to ECR, auto-deployed to dev with smoke and X-Ray trace checks, and promoted by exact sha256 digest to prod after Arun approves."),
+    ("01-cicd-pipeline-dev-prod.gif", "1 · CI/CD pipeline (dev & prod)", "One arm64 container build is pushed to ECR, auto-deployed to dev with smoke and X-Ray trace checks, and promoted by exact sha256 digest to prod after Arun approves. The GIF shows the build on AWS CodeBuild; since 24 Nov 2026 (MA-237) it runs on GitHub's free ubuntu-24.04-arm runner, and trivy image joins it there with MA-267."),
     ("02-vulnerability-7-gates.gif", "2 · 7-layer security gate", "Seven open-source and free-tier security gates (gitleaks, ruff Bandit S + semgrep, pip-audit + pnpm audit + trivy fs, tflint + trivy config, trivy image + ECR scan, T0 taint/PII check, live 401/CSP + Monday sweep) block High/Critical CVEs at £0/month."),
     ("03-smoke-and-rollback.gif", "3 · Smoke & <5s rollback", "scripts/smoke.py runs a full synthetic chat and X-Ray trace check in dev and a strictly read-only health/auth/alarm probe in prod (zero writes to prod tables), rewinding Lambda :live aliases in under five seconds on any fault."),
-    ("04-regression-pyramid-and-costs.gif", "4 · 5-layer regression & £0/mo cost", "The five-layer regression pyramid across Phases 0 to 15 (web and iOS UI checks on request, 646 golden maths fixtures) and the Option D hybrid runner strategy keep both GitHub Actions (<2,000 free mins) and AWS CodeBuild (<100 free arm64 mins) at £0.00/month."),
+    ("04-regression-pyramid-and-costs.gif", "4 · 5-layer regression & £0/mo cost", "The five-layer regression pyramid across Phases 0 to 15 (web and iOS UI checks on request, 646 golden maths fixtures) and the Option D hybrid runner strategy keep GitHub Actions (<2,000 free mins) at £0.00/month. The GIF also counts AWS CodeBuild (<100 free arm64 mins) for the image build; since 24 Nov 2026 (MA-237) that build runs on GitHub's free ubuntu-24.04-arm runner and CodeBuild is no longer used."),
 ]
 MAESTRO_GIFS = [  # (gif in docs/design/maestro-ios-ipados-testing, tab title, caption): the local Maestro & private 90-day TestFlight block diagrams, animated (MA-274)
     ("01-local-maestro-pool-mcp-cli.gif", "1 · Cloned pool & MCP isolation", "One Maestro owner per simulator prevents XCTest driver teardowns: interactive MCP sessions stay on standard Xcode simulators while scripts/maestro_local.py drives five cloned flock-locked simulators against stub (£0) or dev-live AWS."),
@@ -84,7 +84,7 @@ MAESTRO_GIFS = [  # (gif in docs/design/maestro-ios-ipados-testing, tab title, c
 VPC_GIFS = [  # (gif in docs/design/aws-vpc-enterprise-lockdown, tab title, caption): the optional AWS VPC enterprise lockdown & costing block diagrams, animated (MA-283, MA-284)
     ("01-vpc-topology-ingress.gif", "1 · Dual-stack VPC & ingress", "Non-overlapping dual-stack dev and prod VPCs with VPC Block Public Access, zero-egress Isolated subnets for deterministic and quarantined functions, S3 OAC static web doors, and CloudFront Pro WAF + API Gateway mTLS origin lock ($0 ALB) vs CloudFront VPC Origin + Internal ALB."),
     ("02-three-way-data-perimeter.gif", "2 · 3-way Data Perimeter", "Free S3 and DynamoDB Gateway Endpoints enforce PrincipalAccount, ResourceAccount and SourceVpce IAM perimeters at £0.00/month so stolen credentials fail outside the VPC and rogue code cannot exfiltrate to foreign S3, while bounded presigned/OAC carve-outs preserve 5-minute Audit previews and MA-111 .xlsx uploads."),
-    ("03-egress-dns-sni-ci.gif", "3 · DNS + TLS-SNI egress & CI", "Route 53 Resolver DNS Firewall default-deny allowlists + Graviton t4g.nano fck-nat/Envoy TLS-SNI filtering (£5.66/month/env) stop unlisted FQDNs and raw-IP bypasses while private arm64 CodeBuild runners, S3 v5 Flow Logs, GuardDuty and VPC Reachability Analyzer handle all four serverless VPC gotchas."),
+    ("03-egress-dns-sni-ci.gif", "3 · DNS + TLS-SNI egress & CI", "Route 53 Resolver DNS Firewall default-deny allowlists + Graviton t4g.nano fck-nat/Envoy TLS-SNI filtering (£5.66/month/env) stop unlisted FQDNs and raw-IP bypasses while S3 v5 Flow Logs, GuardDuty and VPC Reachability Analyzer handle all four serverless VPC gotchas. The GIF shows a private arm64 CodeBuild runner inside the VPC; since 24 Nov 2026 (MA-237) image builds stay on GitHub's runner, and a private CodeBuild runner comes back only if the lockdown needs CI inside the VPC (MA-283)."),
     ("04-five-option-cost-rollout.gif", "4 · 5-option costing & rollout", "Side-by-side us-east-1 costing across Option 1 (£729.91/mo), Option 2A (£149.01/mo), Option 2B (£70.39/mo), Option 3A (+£13.32/mo lowest cost) and Preferred Option 3B (+£24.86/mo with prod CloudFront Pro WAF, keeping total AWS spend ~£28.36/mo inside the £50/mo cap), decided last after Phase 15 in a five-step zero-lockout rollout."),
 ]
 ARGOS_GIFS = [  # (gif in docs/design/argos-visual-a11y, tab title, caption): the SvelteKit 3 visual regression, ARIA snapshot & WCAG 2.2 AA pipeline, animated (MA-194, MA-269)
@@ -879,7 +879,7 @@ def render_hub(ctx: Ctx) -> str:
                "The four-layer implementation stack (SvelteKit 3, TanStack and shadcn-svelte; React Native 0.88 and SwiftUI; Python 3.14, FastAPI and "
                "single-table DynamoDB versus DocumentDB; the agent framework comparison) and end-to-end tracing and LLM observability with monthly costing (MA-265, MA-266).</p>"),
         cpanel("#FFFAE6", ":rocket:", f"<h3>{ctx.link('cicd', 'CI/CD, vulnerability scanning, smoke and regression architecture')}</h3><p>"
-               "The GitHub Actions + AWS CodeBuild arm64 + ECR delivery pipeline for dev and prod, the seven-layer vulnerability scanning gate, the "
+               "The GitHub Actions arm64 + ECR delivery pipeline for dev and prod, the seven-layer vulnerability scanning gate, the "
                "phase-progressive smoke runner with &lt;5s auto-rollback, the five-layer regression pyramid across Phases 0 to 15, and the £0/month Option D runner cost model (MA-267 to MA-272).</p>"),
         cpanel("#EAE6FF", ":iphone:", f"<h3>{ctx.link('maestro', 'Local iOS and iPadOS Maestro testing and private TestFlight beta plan')}</h3><p>"
                "The local Apple Silicon Maestro architecture (cloned simulator pool with flock isolation from interactive MCP), the React Native 0.88 + SwiftUI "
@@ -1297,6 +1297,9 @@ def render_cicd(ctx: Ctx) -> str:
                "(<code>scripts/smoke.py</code>) with prod read-only safety and under-five-second Lambda <code>:live</code> alias rollback, the five-layer "
                "regression pyramid (<code>scripts/regression.py</code>) across Phases 0 to 15, and the GitHub Actions versus AWS CodeBuild runner cost "
                "analysis showing how Option D stays at £0.00 a month inside both free tiers. "
+               "Superseded in part, 24 Nov 2026 (MA-237): the repository is public, so the image build moved to GitHub's free "
+               "<code>ubuntu-24.04-arm</code> runner and AWS CodeBuild is no longer used; the GIFs below were captured before and still show CodeBuild, "
+               "and the rest of this record stands. "
                f'The sources are <a href="{gh("docs/RESEARCH.md")}">docs/RESEARCH.md</a> §7 and '
                f'{cite_links("cicd", ctx.sections)} of <a href="{gh("ARCHITECTURE.md")}">ARCHITECTURE.md</a>; the interactive explainer page is '
                f'<a href="{gh("docs/design/cicd-security-regression.html")}">docs/design/cicd-security-regression.html</a>.</p>'),
@@ -1305,7 +1308,7 @@ def render_cicd(ctx: Ctx) -> str:
         f'<p>Four animated block diagrams captured from <a href="{gh("docs/design/cicd-security-regression.html")}">docs/design/cicd-security-regression.html</a> '
         "(MA-272): browse them in the tabs below, or beside each section further down.</p>",
         tabs([(title, image(ctx, f"cicd-{gif}", caption, 100)) for gif, title, caption in CICD_GIFS]),
-        "<h2>🚀 1. End-to-end CI/CD delivery pipeline (GitHub Actions, AWS CodeBuild arm64, ECR, dev &amp; prod)</h2>",
+        "<h2>🚀 1. End-to-end CI/CD delivery pipeline (GitHub Actions arm64, ECR, dev &amp; prod)</h2>",
         image(ctx, "cicd-01-cicd-pipeline-dev-prod.gif", CICD_GIFS[0][2], 100),
         "<h2>🛡️ 2. Seven-layer vulnerability scanning gate (MA-267)</h2>",
         image(ctx, "cicd-02-vulnerability-7-gates.gif", CICD_GIFS[1][2], 100),
@@ -1390,7 +1393,7 @@ def render_vpc(ctx: Ctx) -> str:
         image(ctx, "vpc-01-vpc-topology-ingress.gif", VPC_GIFS[0][2], 100),
         "<h2>🔐 2. Free S3 &amp; DynamoDB Gateway Endpoints, three-way Data Perimeter &amp; presigned S3 carve-out (Layer 3)</h2>",
         image(ctx, "vpc-02-three-way-data-perimeter.gif", VPC_GIFS[1][2], 100),
-        "<h2>🛰️ 3. Walled-garden DNS + Graviton TLS-SNI egress proxy, private CodeBuild CI &amp; four serverless VPC gotchas (Layers 4–7)</h2>",
+        "<h2>🛰️ 3. Walled-garden DNS + Graviton TLS-SNI egress proxy, optional private CI runner &amp; four serverless VPC gotchas (Layers 4–7)</h2>",
         image(ctx, "vpc-03-egress-dns-sni-ci.gif", VPC_GIFS[2][2], 100),
         "<h2>💷 4. Five-option us-east-1 costing comparison (Preferred Option 3) &amp; five-step zero-lockout rollout</h2>",
         image(ctx, "vpc-04-five-option-cost-rollout.gif", VPC_GIFS[3][2], 100),

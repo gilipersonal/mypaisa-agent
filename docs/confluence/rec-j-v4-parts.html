@@ -294,7 +294,7 @@
 <figcaption>Terraform only, one image, prod after a person says yes (Architecture v4)</figcaption></figure>
 <ol><li>Gates ruff, pyright, semgrep, pytest on moto, the evals&#x27; T0 replays, tflint, trivy, gitleaks, jira-key, the leak test every PR</li>
 <li>Plan <code>terraform plan</code> for dev and prod, posted on the PR; T1 live evals when a prompt, tool or guard changes PRs touching infra/ or the agent</li>
-<li>Build CodeBuild&#x27;s arm64 runner builds once, scans with trivy, pushes to ECR by the commit&#x27;s sha merge to main</li>
+<li>Build GitHub&#x27;s free arm64 runner builds both images once and pushes them to ECR by the commit&#x27;s sha; trivy&#x27;s image scan joins it with MA-267 merge to main</li>
 <li>Dev apply, deploy, smoke tests that assert one trace from api to sender after the build</li>
 <li>Dev apps web app to dev&#x27;s bucket; MyPaisa Dev to TestFlight after dev passes</li>
 <li>Approval Arun approves in the GitHub <code>prod</code> environment, once T2 is green for the model ids it ships a person, every time</li>
