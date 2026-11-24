@@ -1,0 +1,4 @@
+# groups: functions
+filter Refusals > 0 or TemplateFallbacks > 0
+| fields @timestamp, run_id, trace_id, feature, model, Refusals, TemplateFallbacks
+| sort @timestamp desc

@@ -1,0 +1,4 @@
+# groups: functions
+filter ispresent(ModelCostUSD)
+| stats sum(ModelCostUSD) as usd, sum(Tokens) as tokens by bin(1d) as day, feature, model
+| sort day desc, usd desc

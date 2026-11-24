@@ -1,0 +1,4 @@
+# groups: api
+filter ClientCrashes > 0
+| stats sum(ClientCrashes) as crashes by door, version
+| sort crashes desc

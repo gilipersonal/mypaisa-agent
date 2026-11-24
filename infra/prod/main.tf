@@ -32,11 +32,21 @@ provider "aws" {
   }
 }
 
+variable "alert_email" {
+  description = "The admin's address for mypaisa-prod-admin-alerts; never written in the repository (MA-231)."
+  type        = string
+  sensitive   = true
+}
+
 module "mypaisa" {
   source = "../modules/mypaisa"
 
   env          = "prod"
   protect_data = true
+
+  # The watch tower (MA-231). The admin's address never sits in this public repository: TF_VAR_alert_email on the
+  # laptop, the MYPAISA_ALERT_EMAIL secret in CI.
+  alert_email = var.alert_email
 }
 
 output "table_name" {
@@ -45,4 +55,12 @@ output "table_name" {
 
 output "bucket_names" {
   value = module.mypaisa.bucket_names
+}
+
+output "dashboard_name" {
+  value = module.mypaisa.dashboard_name
+}
+
+output "alerts_topic_arn" {
+  value = module.mypaisa.alerts_topic_arn
 }

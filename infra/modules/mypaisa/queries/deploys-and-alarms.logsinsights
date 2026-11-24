@@ -1,0 +1,4 @@
+# groups: functions
+filter trigger in ["deploy", "alarm"]
+| fields @timestamp, trigger, run_id, message
+| sort @timestamp asc

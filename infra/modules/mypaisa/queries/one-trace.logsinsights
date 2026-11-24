@@ -1,0 +1,4 @@
+# groups: functions,access
+fields @timestamp, @log, level, message, run_id
+| filter trace_id = "TRACE_ID"
+| sort @timestamp asc

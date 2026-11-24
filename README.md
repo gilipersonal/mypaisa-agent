@@ -526,7 +526,7 @@ lives in SSM Parameter Store only, put by hand (the App Store Connect `.p8` API 
 | SSM Parameter Store | `/mypaisa-agent/dev/...` and `/mypaisa-agent/prod/...`, SecureString, standard tier |
 | Claude | the Anthropic API from the `agent`, `docs` and `worker` Lambdas; Sonnet 5.5 and Haiku 5.5, and Opus 5.5 only for an admin's plan with me; key in SSM |
 | IAM | one execution role per function and environment, scoped to its own table, bucket and parameters; three OIDC roles for CI; a developer role with an explicit deny on `env=prod` |
-| Monitoring and tracing | OpenTelemetry on every Lambda (the AWS Lambda Layer for OpenTelemetry in the image) to X-Ray with Transaction Search and Application Signals: one trace per message from the door to the model and back, with no prompt, figure or name in it; CloudWatch Logs (14 days), fifteen metrics, one dashboard per environment, and the alarms of `ARCHITECTURE.md` §9.6 (errors, the queues, the 07:45 dead man's switch, the Claude ladder, freshness, the audit chain), delivered to the admin's email and to the owner in the app and by push (MA-29, MA-61); about £2.50 a month in prod (§9.9) |
+| Monitoring and tracing | OpenTelemetry on every Lambda (the AWS Lambda Layer for OpenTelemetry in the image) to X-Ray with Transaction Search and Application Signals: one trace per message from the door to the model and back, with no prompt, figure or name in it; CloudWatch Logs (14 days), sixteen metrics, one dashboard per environment, and the alarms of `ARCHITECTURE.md` §9.6 (errors, the queues, the 07:45 dead man's switch, the Claude ladder, freshness, the audit chain), delivered to the admin's email and to the owner in the app and by push (MA-29, MA-61); about £2.50 a month in prod (§9.9) |
 | Budget | Claude for the agents: the Max 20x plan's $200 credit, $160 prod and $40 dev. AWS and others: £50 across both environments, metered daily from Cost Explorer, with AWS Budgets at £75 as the Terraform backstop. Every cap, step, action and alert route is set in the Admin center (`ARCHITECTURE.md` §14.2) |
 | Alerts | The Admin center's Alerts page, in the app and the web app; push; and email through the SNS topic `mypaisa-<env>-admin-alerts` (address in SSM, confirmed once) |
 
@@ -603,8 +603,8 @@ how much you chat and how often an admin plans with Opus (the chat and cards £7
 changed £1 to £3; the insight job and tax-year dates under £1; plan with me up to £6.15, its 5% cap), web search under
 £1, and EODHD £20 only if a free source fails and you approve it. Two members are expected to spend about $30 a month
 of Claude on the standard setup and $48 on the full one (`ARCHITECTURE.md` §14.1). Totals for one member, with the
-Apple Developer Program's $99 a year (about £76, £6.35 a month, MA-162) included: about £18 lean, £49 standard, £62
-full; two members on the standard setup, about £52 (`ARCHITECTURE.md` §14). The agents' Claude allowance is the Max
+Apple Developer Program's $99 a year (about £76, £6.35 a month, MA-162) included: about £20 lean, £51 standard, £64
+full; two members on the standard setup, about £54 (`ARCHITECTURE.md` §14). The agents' Claude allowance is the Max
 20x plan's $200 credit ($160 prod, $40 dev) and AWS and others have £50; you set every cap and threshold in the Admin
 center, and alerts reach the app, the web app, push and email. Outside the monthly figures: the macOS minutes CI uses
 for the app, which count ten to one against GitHub's free minutes (measured in the first month, MA-166).

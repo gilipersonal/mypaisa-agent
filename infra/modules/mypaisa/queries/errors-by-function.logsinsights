@@ -1,0 +1,5 @@
+# groups: functions
+fields @timestamp, @log, level, message, run_id, trace_id
+| filter level = "ERROR" or @message like /(?i)(task timed out|runtime\.|traceback)/
+| stats count(*) as errors by @log
+| sort errors desc

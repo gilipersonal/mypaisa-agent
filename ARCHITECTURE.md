@@ -2206,7 +2206,7 @@ row: the API's `usage`, the meter and the spans must agree to the token.
 
 Metrics are few on purpose. CloudWatch's first ten custom metrics and ten
 alarms are free and each further metric is $0.30 a month, so the fixed set
-below is the whole of it, fifteen names with no dimensions; everything finer
+below is the whole of it, sixteen names with no dimensions; everything finer
 (the model, the feature, the tool, the door, the schedule) is a field of the
 metric line itself, which is also a log line, and lives in the log lines and
 the span attributes, which cost nothing more to keep and are queried in Logs
@@ -2284,6 +2284,17 @@ api's 5xx) is what pages the owner when something large breaks, one message
 rather than ten; the money and data alarms page on their own. Every alarm has
 an OK action, so the chat also says when it is over.
 
+**What phase 0 builds (MA-231).** The alarms above that need no code: errors
+and throttles for each function, each queue's age and dead-letter depth, the
+api's 5xx and latency, the composite and the `aws/spans` ingestion alarm, in
+`infra/modules/mypaisa/observability.tf`, keyed on the fixed names of §9.3 and
+§19.2 so they stand before the things they watch (an alarm on a metric with
+no data waits, treated as fine). The api's two appear when the story that
+makes the API passes its id to the module (MA-30). The AWS Budgets backstop
+still emails the admin from `infra/bootstrap`; its route through the topic
+joins with the cap's steps, which act on it (MA-137). The rest need code and
+come with their stories.
+
 ### 9.7 The rest of AWS
 
 Each component is watched through what AWS already publishes free, with the
@@ -2334,8 +2345,8 @@ prod refuses (§9.4). The leak test holds the line in CI (§9.3).
 keeps them, 15 months at no charge; `RunRecord` rows 90 days; the release's
 record for good in GitHub.
 
-**Cost, prod, a month** (dev is pennies while it sleeps; custom metrics are
-prorated by the hour they receive data):
+**Cost, prod, a month** (custom metrics are prorated by the hour they receive
+data, so dev's are pennies while it sleeps; its alarms are not, below):
 
 | Line | About | Notes |
 | --- | ---: | --- |
@@ -2343,16 +2354,40 @@ prorated by the hour they receive data):
 | Spans, about 6,000 runs of about 25 spans, 150 MB | £0.05 | $0.35 per GB in Transaction Search; indexing beyond the free 1% stays off |
 | Application Signals, about 100,000 signals | £0.15 | $1.50 per million after the three-month free allowance |
 | X-Ray traces | £0 | inside the free 100,000 a month |
-| Custom metrics, fifteen, ten free | £1.20 | $0.30 each |
-| Alarms, about twenty and one composite, ten free | £1 | $0.10 standard, $0.50 composite |
+| Custom metrics, sixteen, ten free | £1.40 | $0.30 each |
+| Alarms, about eighteen and one composite, the account's free ten | £1 | $0.10 standard, $0.50 composite |
 | Dashboards (three free), saved queries, Logs Insights on the dashboard | £0 | the queries scan a few hundred MB |
-| **Total** | **about £2.50** | inside the £50 AWS cap (§14.2); the AWS line of §14 |
+| **Total** | **about £2.70** | inside the £50 AWS cap (§14.2); the AWS line of §14 |
 
-**Rules.** Dev first: Transaction Search and Application Signals are switched
-on in dev, their first month is measured, and the figure is put to Arun before
-prod's apply (`.claude/rules/aws-changes.md`). An ingestion alarm on
-`aws/spans` (§9.6). Observability that costs more than the thing it watches
-has failed: about £2.50 of watching against £9 to £32 of Claude.
+**Dev's alarms** bill whether or not dev runs: about twenty and its composite,
+about £1.80 a month (MA-231, counted when they were made). Dev and prod
+together watch for about £4.50 a month.
+
+**One account, one owner.** Transaction Search (the X-Ray destination, its
+indexing rule, the logs policy for `aws/spans`) and Application Signals'
+discovery are one setting per account and region, and dev and prod share the
+account, so switching them on in dev switched them on for prod: dev's root
+owns them, with the `aws/spans` log group and its ingestion alarm, and prod's
+spans ride on them (Arun, 24 Nov 2026, MA-231). Prod sends no span until its
+first Lambda. `aws/spans` is one log group for both environments, so dev's
+roles can read prod's spans in it: they hold ids, hashes, durations and the
+attributes of §9.4, never a prompt, a reply, a figure or a name.
+
+**Rules.** Dev first: Transaction Search and Application Signals were switched
+on from dev on 24 Nov 2026 (MA-231), their first month of dev is measured, and
+the figure is put to Arun before the first release that ships a Lambda to prod
+(MA-347; `.claude/rules/aws-changes.md`). An ingestion alarm on `aws/spans`
+(§9.6). Observability that costs more than the thing it watches has failed:
+about £4.50 of watching, both environments, against £9 to £32 of Claude.
+
+**The probe.** Until the real images land (MA-237), dev runs one throwaway
+Lambda, `mypaisa-dev-probe`, a zip with the same OpenTelemetry layer (version
+35 of the Application Signals build), the same environment and the same role
+policies the module hands every function, and a `live` alias the release
+moves. It proved the tower on 24 Nov 2026: its calls in Application Signals
+and as spans in `aws/spans` within five minutes, and a forced error through
+its alarm and the composite to the topic. It goes when the first real
+function ships (MA-347) (Arun, 24 Nov 2026, MA-231).
 
 ### 9.10 The stories
 
@@ -2696,7 +2731,7 @@ and that device are now the key to the app.
 
 | Line | Lean | Standard | Full |
 | --- | ---: | ---: | ---: |
-| AWS, both environments, including API Gateway, the stream (below), the web app's site, Cognito (free under 10,000 monthly users), and the watching of §9.9 (the spans, Application Signals, the metrics and alarms past the free ten: about £2.50 in prod); Apple push and Web Push are free | £3 | £3.50 | £4 |
+| AWS, both environments, including API Gateway, the stream (below), the web app's site, Cognito (free under 10,000 monthly users), and the watching of §9.9 (the spans, Application Signals, the metrics and alarms past the free ten: about £2.70 in prod, and dev's alarms about £1.80); Apple push and Web Push are free | £5 | £5.50 | £6 |
 | Apple Developer Program ($99 a year, for Sign in with Apple, push and TestFlight; MA-162) | £6.35 | £6.35 | £6.35 |
 | Claude: chat, cards, statements, alert wording, the tuner's monthly note | £7 | £12 | £21 |
 | Claude: goals, scenarios and what changed (Sonnet's words over the solver, the workspace and the attribution, §6.1 to §6.3) | £1 | £2.70 | £3 |
@@ -2705,7 +2740,7 @@ and that device are now the key to the app.
 | Claude: document extraction (a few PDFs and screenshots a month) | £0.20 | £0.20 | £0.20 |
 | Claude: web search (under 10 a month, only when a holding is added, at $10 per 1,000, with the results read as input) | £0.20 | £0.25 | £0.50 |
 | Price data to value holdings (EODHD Historian, £19.99 a month, only if a free source fails and an admin approves) | £0 | £20 | £20 |
-| **Total, one member** | **£18** | **£49** | **£62** |
+| **Total, one member** | **£20** | **£51** | **£64** |
 | Each further member (their chat) | +£2 | +£3 | +£5 |
 
 Not in the table: the live evals in their own Console workspace (§21.7), up
@@ -2719,9 +2754,12 @@ lockdown (`MA-283`, `MA-284`, decided last after phase 15; `docs/RESEARCH.md`
 £50/month AWS cap (versus £70.39/month for Option 2B Managed NAT Gateways,
 £149.01/month for Option 2A with 9 PrivateLink AZ-endpoints, and £729.91/month
 for Option 1 Bank-Grade Hub-and-Spoke with AWS Network Firewall and Transit
-Gateway).
+Gateway). Those totals start from the AWS line's earlier £3.50; MA-231 counted
+the watching (sixteen metrics, and dev's alarms, which bill whether or not dev
+runs) and the standard line is now £5.50, so each total is £2 higher and
+Option 3 stays inside the cap; MA-348 carries the research pages' figures.
 
-Two members on the standard setup: about £52, of which about £6 is Apple's developer membership and about £2.50 the watching of §9.9. The Claude lines are paid by
+Two members on the standard setup: about £54, of which about £6 is Apple's developer membership and about £4.50 the watching of §9.9, both environments. The Claude lines are paid by
 the monthly API credit that comes with the Max 20x plan ($200 a month,
 about £154), spent through a Console organisation linked to the plan;
 at these figures dev and prod together stay inside it, so the model's cash
@@ -2929,7 +2967,7 @@ a daily digest instead.
 | Data feeds | One `PriceSource` contract, a plugin per feed, the chain per kind a setting, prices only to value holdings; yfinance and Twelve Data's free tier first, free websites where their terms allow, EODHD only as a last resort on an admin's approval | Local development is free and keyless; a paid feed is a configuration change, not a code change; two configured feeds can be compared before one is trusted |
 | Conversation | Guided flows with buttons, one question per message, `ask_user` and a `PendingAction` row per open flow, keyed by flow id, with a day's expiry; Confirm before every write; a plan with one Confirm for multi-record changes | A layman answers taps, not forms; nothing is saved by surprise |
 | Audit | An append-only, hash-chained `AuditEvent` in the same transaction as every record change; an Audit page and `get_audit` | A change without an audit row cannot happen; the chain shows tampering |
-| Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; one OpenTelemetry trace from the door through the queues and the agent to the model and back, continued by every hop and never sampled; the AWS Lambda Layer for OpenTelemetry in the image, Transaction Search and Application Signals; model and tool spans in the open GenAI conventions, with no prompt, reply, figure or name in CloudWatch; Powertools for logs and metrics, not its Tracer; fifteen metrics, one dashboard per environment; alarms to the chat; an Activity page (§9; MA-230, 26 Oct 2026) | What the agent did and spent is visible without opening the AWS console, a message can be followed from the tap to the push, and the watching costs about £2.50 a month |
+| Observability | A `RunRecord` per run of every Lambda, with tokens and cost from the API's own counts; one OpenTelemetry trace from the door through the queues and the agent to the model and back, continued by every hop and never sampled; the AWS Lambda Layer for OpenTelemetry in the image, Transaction Search and Application Signals; model and tool spans in the open GenAI conventions, with no prompt, reply, figure or name in CloudWatch; Powertools for logs and metrics, not its Tracer; sixteen metrics, one dashboard per environment; alarms to the chat; an Activity page (§9; MA-230, 26 Oct 2026) | What the agent did and spent is visible without opening the AWS console, a message can be followed from the tap to the push, and the watching costs about £2.50 a month |
 | App sessions | In the web app, v2's `HttpOnly`, `SameSite=Strict` session cookie on the api's host. In the iOS app, Cognito tokens in the Keychain, this device only; five-minute access tokens, rotating refresh tokens; a `Device` row per signed-in device; the api's authorizer checks token, status and epoch on every call and when a stream opens, and the stream again every 60 seconds; the second check a fresh, server-verified assertion | Sign-out and pause take effect on the next request; nothing a lost phone holds outlives a sign-out |
 | Apple and Google sign-in | Native Sign in with Apple and Google's iOS SDK, one Google iOS client per environment; a second sign-in added from You while signed in | One identity per member across Apple, Google and passkeys; Apple's own button first, as its guidelines ask of an app that offers Google |
 | Environments | One AWS account, every component twice (`mypaisa-dev-*`, `mypaisa-prod-*`), isolated by IAM and tags by default (with an optional seven-layer VPC and three-way `aws:SourceVpce` Data Perimeter decided last after phase 15, MA-283, MA-284; `docs/RESEARCH.md` §9); separate app builds (MyPaisa Dev, MyPaisa), Claude keys and SSM paths; dev holds synthetic data, prod starts empty (§17) | Arun's choice (24 Oct 2026): one account to run, two environments that cannot touch each other |

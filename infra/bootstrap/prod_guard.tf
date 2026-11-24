@@ -30,6 +30,10 @@ locals {
     "arn:aws:events:*:${local.account_id}:event-bus/mypaisa-prod-*",
     "arn:aws:scheduler:*:${local.account_id}:schedule/mypaisa-prod-*/*",
     "arn:aws:states:*:${local.account_id}:stateMachine:mypaisa-prod-*",
+    # The watch tower (MA-231): prod's alarms and its dashboard. Its log groups and topic match the patterns above;
+    # a saved query's ARN carries no name and holds no data, so it has no pattern.
+    "arn:aws:cloudwatch:*:${local.account_id}:alarm:mypaisa-prod-*",
+    "arn:aws:cloudwatch::${local.account_id}:dashboard/mypaisa-prod",
   ]
   prod_parameters = "arn:aws:ssm:*:${local.account_id}:parameter/mypaisa-agent/prod/*"
   dev_boundary    = "arn:aws:iam::${local.account_id}:policy/mypaisa-dev-boundary"
