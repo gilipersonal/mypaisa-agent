@@ -19,10 +19,10 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-22 | A free Twelve Data key is in SSM for the US lines and the FX fallback | To Do | §5.1 | none |  |
 | MA-23 | Each Monzo fund's factsheet and a valuation screenshot are ready to send in the app | To Do | §4.2 | none |  |
 | MA-24 | The Python project skeleton exists with its gates and the working rules | Done | §12, §12.1, §15 | none |  |
-| MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | In Progress | §17.4, §21.3 | none |  |
+| MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | Done | §17.4, §21.3 | none |  |
 | MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | Done | §17.1, §17.4 | none |  |
 | MA-106 | The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery | Done | §4.5, §8.3, §11, §12, §13, §14, §15 | none |  |
-| MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | In Progress | §17.4, §18.4, §21.3 | none |  |
+| MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | Done | §17.4, §18.4, §21.3 | none |  |
 | MA-108 | A nightly check reports any prod change made outside Terraform | To Do | §17.4, §18.4 | none |  |
 | MA-110 | Dev and the laptop are seeded and hydrated with one illustrative household of every kind, from the design figure set | To Do | §17.1 | none |  |
 | MA-112 | The architecture records the $100 Claude budget for prod, its ceiling ladder and the chat-memory rules | Done | §4.5, §7, §8.3, §9, §11, §14, §15, §16, §17 | none |  |
@@ -52,10 +52,10 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-228 | The build plan in Confluence, phase by phase and screen by screen, with the roadmap, and a check that Confluence, Jira, the designs and the code agree | Done | §15 | none |  |
 | MA-229 | The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled | Done | §8.4, §8.5, §15, §19.5 | none |  |
 | MA-230 | The architecture records one trace from the door to the model, OpenTelemetry on every Lambda, and what each reader of the agent's work sees | Done | §9, §12, §15 | none |  |
-| MA-231 | Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic | In Progress | §9.3, §9.5, §9.6, §9.7, §9.9, §17.4 | none |  |
+| MA-231 | Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic | Done | §9.3, §9.5, §9.6, §9.7, §9.9, §17.4 | none |  |
 | MA-236 | The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives | Done | §3, §9 | none |  |
-| MA-237 | Container images are built on GitHub's free arm64 runner and stored in ECR by digest, the same digest in dev and prod | In Progress | §14, §17.4 | none |  |
-| MA-238 | Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds | To Do | §17.4 | none |  |
+| MA-237 | Container images are built on GitHub's free arm64 runner and stored in ECR by digest, the same digest in dev and prod | Done | §14, §17.4 | none |  |
+| MA-238 | Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds | Done | §17.4 | none |  |
 | MA-239 | An animated plain-words page, Inside MyPaisa, walks the admin from the first screen to the chatbot and the agent team | Done | §3, §7, §18, §19 | none |  |
 | MA-240 | Every board stays whole at every supported screen size and legible at 25% brightness | Done | §8.1, §8.4 | none |  |
 | MA-241 | Every holding, asset and debt shows a colourful icon for its kind, chosen from the kind's data | To Do | §4.8, §8.1, §8.4 | picked | Kind icons.dc.html: B · Settings squircles, one vivid set for both themes |
@@ -123,8 +123,9 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-345 | Two of MA-194's fixed-finding checks run in web/ at the same time and race, so Review tooling fails at random | Done | §17.4 | none |  |
 | MA-346 | CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it | Done | §17.4 | none |  |
 | MA-348 | The research pages show the watching's counted cost: sixteen metrics, dev's alarms, and the VPC options' totals £2 higher | To Do | §9.9, §14 | none |  |
-| MA-349 | A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read | In Progress | §17.4 | none |  |
-| MA-350 | Dependabot moves the Lambda images' Python and uv to new minor versions, away from the 3.14 and 0.12 the backend is tested on | In Progress | §17.4 | none |  |
+| MA-349 | A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read | Done | §17.4 | none |  |
+| MA-350 | Dependabot moves the Lambda images' Python and uv to new minor versions, away from the 3.14 and 0.12 the backend is tested on | Done | §17.4 | none |  |
+| MA-351 | CodeQL scans Swift only when a pull request changes ios/, from a cached build, so other pull requests no longer wait about 28 minutes | To Do | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

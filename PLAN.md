@@ -617,6 +617,10 @@ Claude's:
   its first docker run moved the Lambda base to Python 3.15 and uv to 0.13;
   the images now take only new digests and patch releases of the lines the
   backend is tested on, and a new line moves with its own story.
+- **CodeQL scans Swift only when Swift changes (MA-351):** the Swift scan
+  spends about 18 minutes building the app from cold and 10 waiting for a
+  macOS runner on every pull request; an advanced-setup workflow runs it
+  only when `ios/` changes (and on `main` and weekly), from a cached build.
 - **The research pages show the counted cost of watching (MA-348):** the
   observability and VPC research pages, the Architecture v4 explainer's
   CloudWatch card, their Confluence pages, previews and GIF
