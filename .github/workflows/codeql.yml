@@ -8,7 +8,8 @@ name: CodeQL
 #
 # - actions, javascript-typescript and python: every pull request, every push to main and weekly, on Linux, with no
 #   build (build-mode none), as before.
-# - swift: on a pull request only when it changes ios/ or this workflow; on every push to main and weekly. Otherwise
+# - swift: on a pull request only when it changes ios/ (Arun, 24 Nov 2026: not for a change to this workflow alone);
+#   on every push to main and weekly, so a change here is first scanned on main. Otherwise
 #   its job is skipped by its condition, and a skipped job reports success, so "Analyze (swift)" never holds a merge it
 #   has nothing to say about. It builds the MyPaisaUI package (which builds MyPaisaCore with it) by hand: the Swift the
 #   default setup's fallback compiled, without its failed attempts. The app target's Swift is not built here, as it was
@@ -76,7 +77,7 @@ jobs:
         run: |
           if [ "$EVENT" != "pull_request" ]; then
             echo "scan=true" >> "$GITHUB_OUTPUT"
-          elif git diff --quiet HEAD^1 HEAD -- ios/ .github/workflows/codeql.yml; then
+          elif git diff --quiet HEAD^1 HEAD -- ios/; then
             echo "scan=false" >> "$GITHUB_OUTPUT"
             echo "Nothing under ios/ changed: no Swift scan, and Analyze (swift) is skipped." >> "$GITHUB_STEP_SUMMARY"
           else
