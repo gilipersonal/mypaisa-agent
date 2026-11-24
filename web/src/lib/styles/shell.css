@@ -94,8 +94,10 @@
 	fill: var(--mp-coral);
 }
 
-/* the chat column */
+/* the chat column. The board's CSS is content-box, so its width leaves the 1 px border outside it (404.2 px at 1440);
+   Tailwind's reset makes everything border-box, which drew the column and all it holds 1 px narrow (MA-354). */
 .chatcol {
+	box-sizing: content-box;
 	display: none;
 	flex-direction: column;
 	min-height: 0;

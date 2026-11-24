@@ -999,6 +999,11 @@ arrives from phase 2.
   record or ask, its first row sending the question to the chat; nothing is
   created in it (MA-301 g 1a). Found while building MA-199, which leaves the
   sidebar's Search row to it.
+- **The page and the chat are the widths Shell 1a draws (MA-354, bug):**
+  Home's holding cards fill the page column as the board's content does,
+  and the chat column keeps its 1 px border outside its width, as the
+  board's content-box CSS draws it; measured against the board at 1440,
+  1280 and 390.
 - **Activity at every door (MA-196, `ARCHITECTURE.md` §9):** a list of runs
   and one run's detail: its trigger, its steps, each tool call with its time,
   what it proposed, its tokens and its cost, every figure from the
@@ -2269,7 +2274,7 @@ How the dates are worked out:
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
 | 0 Foundations at every door | 56.25 (and 3 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 112 (and 0.5 of yours) | 90 | Wed 13 Jan 2027 | Fri 21 May 2027 |
+| 1 Talk: sign in and chat with the agent at every door | 112.25 (and 0.5 of yours) | 90 | Wed 13 Jan 2027 | Fri 21 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Mon 24 May 2027 | Tue 20 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Wed 21 Jul 2027 | Tue 10 Aug 2027 |
 | 4 Debts and check-ins | 19 | 16 | Wed 11 Aug 2027 | Thu 2 Sep 2027 |
