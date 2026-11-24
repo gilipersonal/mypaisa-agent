@@ -3936,7 +3936,7 @@
       "epic": "MA-10",
       "phase": 1,
       "summary": "Command-K, or Search in the sidebar, opens one palette over any page to go to a page, find a record, or ask the chat",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "design"
       ],
@@ -3957,7 +3957,12 @@
           "board": "Browser \u00b7 \u2318K palette, typing \u201chdfc\u201d"
         }
       ],
-      "notes": "Found while building MA-199 (24 Nov 2026): Shell 1a draws Search in the sidebar and MA-301 picked the palette (g 1a; Arun, 23 Nov 2026), but no story built it. Depends on MA-199; finding a record waits for phase 2's records."
+      "notes": "Found while building MA-199 (24 Nov 2026): Shell 1a draws Search in the sidebar and MA-301 picked the palette (g 1a; Arun, 23 Nov 2026), but no story built it. Depends on MA-199; finding a record waits for phase 2's records. Built (24 Nov 2026) as board 2h draws it, except: the Records group waits for phase 2's records, and the Privacy mode row for MA-171's switch; Appearance (System, Light, Dark) is built here, since no other story owns it. Browsers keep Command-1 to Command-9 for switching tabs, so the palette's Command-1 to Command-4 act only where the browser passes them (the installed web app's own window); the rows themselves always work.",
+      "code": [
+        "web/src/lib/components/shell/**",
+        "web/src/lib/components/chat/ChatPanel.svelte",
+        "web/src/lib/styles/shell.css"
+      ]
     },
     {
       "key": "MA-196",
