@@ -14,8 +14,9 @@ deployed only by GitHub CI. The rules are in `.claude/rules/aws-changes.md`; the
 The parameters live apart from the stack (Arun, 24 Nov 2026, MA-25): the provider reads a SecureString with
 decryption on every refresh, so whatever plans a root that holds one can read it. CI plans `dev/` and `prod/` on
 every pull request with `mypaisa-ci-plan`, and never the secrets roots. `ci-plan` reads configuration, never contents:
-explicit denies refuse it every parameter value in the account, `kms:Decrypt`, every S3 object but those two states
-and the lock files, DynamoDB items, Cognito users, log lines and secret values (`bootstrap/roles.tf`).
+explicit denies refuse it every parameter value in the account, every `kms:Decrypt` but Lambda's own (so a refresh
+reads each function's environment, which holds no secret; MA-349), every S3 object but those two states and the lock
+files, DynamoDB items, Cognito users, log lines and secret values (`bootstrap/roles.tf`).
 
 The state bucket is the account's `wealth-tracker-tfstate`, with S3's own lock files. The `mypaisapp.com` zone
 and certificate belong to the wealth tracker's `dns/` root and are looked up by name when the first record is

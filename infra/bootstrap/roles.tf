@@ -151,14 +151,31 @@ data "aws_iam_policy_document" "ci_plan_no_contents" {
   }
 
   statement {
-    sid    = "DenySecretValuesAndDecrypt"
+    sid    = "DenySecretValues"
     effect = "Deny"
     actions = [
-      "kms:Decrypt",
       "secretsmanager:GetSecretValue",
       "secretsmanager:BatchGetSecretValue",
     ]
     resources = ["*"]
+  }
+
+  # Every decrypt but Lambda's own, for a function's environment variables (Arun, 24 Nov 2026, MA-349, option 1).
+  # Lambda returns a function's environment only to a caller that may decrypt it through Lambda; without this, every
+  # plan by ci-plan showed each function's environment as added, and the release's digest check would refuse the plan
+  # Arun read. Environment variables hold no secret (§17.4: secrets live in SSM, denied above), so this reads only
+  # configuration. A call made directly to KMS carries no kms:ViaService, so it is still refused.
+  statement {
+    sid       = "DenyDecryptButLambdaEnvironments"
+    effect    = "Deny"
+    actions   = ["kms:Decrypt"]
+    resources = ["*"]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "kms:ViaService"
+      values   = ["lambda.us-east-1.amazonaws.com"]
+    }
   }
 
   # Every object in the account but the two states the plan job reads and the lock files: the household's documents
