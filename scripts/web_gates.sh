@@ -35,6 +35,18 @@ script_src=$(printf '%s' "$csp" | grep -o "script-src [^;\"]*" || true)
 [[ -n "$script_src" ]] || { echo "the built page has no CSP script-src" >&2; exit 1; }
 [[ "$script_src" == *"'sha256-"* ]] || { echo "the CSP's script-src carries no SvelteKit hash: $script_src" >&2; exit 1; }
 [[ "$script_src" != *"unsafe-inline"* ]] || { echo "the CSP's script-src allows unsafe-inline: $script_src" >&2; exit 1; }
+step "fonts: from the app's own origin, preloaded, never from Google (MA-340)"
+font_src=$(printf '%s' "$csp" | grep -o "font-src [^;\"]*" || true)
+[[ "$font_src" == "font-src 'self'" ]] || { echo "the CSP's font-src is not 'self' alone: ${font_src:-none}" >&2; exit 1; }
+style_src=$(printf '%s' "$csp" | grep -o "style-src [^;\"]*" || true)
+[[ -n "$style_src" && "$style_src" != *"http"* ]] || { echo "the CSP's style-src names another host: ${style_src:-none}" >&2; exit 1; }
+google=$( (grep -rlE 'fonts\.(googleapis|gstatic)\.com' build || true) | wc -l | tr -d ' ')
+[[ "$google" == 0 ]] || { echo "the build names Google Fonts in $google file(s)" >&2; exit 1; }
+preloads=$( (grep -o 'as="font"' build/index.html || true) | wc -l | tr -d ' ')
+[[ "$preloads" == 2 ]] || { echo "the built page preloads $preloads fonts, not the two" >&2; exit 1; }
+for f in inter-latin-wght-normal.woff2 inter-latin-ext-wght-normal.woff2 nunito-figures-latin-800.woff2 nunito-figures-rupee-800.woff2; do
+  test -s "build/fonts/$f" || { echo "the build has no fonts/$f" >&2; exit 1; }
+done
 step "the local stack's sign-in stub is not in the build (MA-198)"
 ! grep -rl 'auth/local' build >/dev/null || { echo "the build carries the local sign-in stub" >&2; exit 1; }
 if [[ "${1:-}" != "--offline" ]]; then

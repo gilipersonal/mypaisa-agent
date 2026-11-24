@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>iPhone v4 · Home</title>
 <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
 </head>
 <body>
 <x-dc>
@@ -106,7 +107,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 /* each summary card ends in the screens it opens: a 44 pt row per pushed screen, named by that screen's title (MA-300, P0-5) */
 .navrows { display: flex; flex-direction: column; margin: -2px -16px -16px; }
 .navrow { width: 100%; min-height: 44px; padding: 10px 16px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--mp-line); font: 600 15px/20px var(--mp-font); color: var(--mp-accent); text-align: left; }
-.navrow .ms { color: var(--mp-ink-2); flex: none; }
+.navrow .lc { color: var(--mp-ink-2); flex: none; }
 .navrow:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: -3px; border-radius: 12px; }
 .qchip { position: relative; }
 .qchip::after { content: ""; position: absolute; inset: -4px 0; }   /* 36 drawn, 44 to tap */
@@ -179,10 +180,10 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 .ax5 .pg .ccy { flex-direction: row; align-self: flex-start; }
 .ax5 .pg .ccy .mp-seg-i { min-width: 88px; }
 .ax5 .hero > .fx, .ax5 .ctl, .ax5 .mrows .fx { flex-direction: column; align-items: flex-start; gap: 6px; }
-.ax5 .rate .ms { font-size: 40px; }
+.ax5 .rate .lc { width: 40px; height: 40px; }
 .ax5 .mbar { height: 16px; }
 .ax5 .navrow { font-size: 53px; line-height: 60px; }
-.ax5 .navrow .ms { font-size: 44px; }
+.ax5 .navrow .lc { width: 44px; height: 44px; }
 </style>
 </helmet>
 <section class="dv-turn" id="t0" data-screen-label="iPhone v4 Home: intro">
@@ -208,10 +209,10 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <div class="dev dev-iphone mp {{ f.cls }}" data-screen-label="{{ o.name }} · {{ f.lab }}">
 <div class="island"></div>
 <div class="scrn">
-<div class="sbar"><span>{{ f.p.time }}</span><span class="sbar-ic"><span class="ms" aria-hidden="true">signal_cellular_alt</span><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
+<div class="sbar"><span>{{ f.p.time }}</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.signal_cellular_alt }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
 <!-- the Home tab -->
 <sc-if value="{{ f.p.isHome }}" hint-placeholder-val="{{ true }}">
-<div class="nav"><span class="navc">Home</span><span></span><span class="fx gap8"><button type="button" class="gbtn lg {{ f.p.eyeOn }}" aria-label="Privacy mode" aria-pressed="{{ f.p.priv }}"><span class="ms z1" aria-hidden="true">{{ f.p.eye }}</span></button><button type="button" class="gtext lg"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button></span></div>
+<div class="nav"><span class="navc">Home</span><span></span><span class="fx gap8"><button type="button" class="gbtn lg {{ f.p.eyeOn }}" aria-label="Privacy mode" aria-pressed="{{ f.p.priv }}"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[f.p.eye] }}"></path></svg></button><button type="button" class="gtext lg"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></button></span></div>
 <div class="largetitle">Home</div>
 <div class="scroll"><div class="pg">
 <div class="mp-hero hero">
@@ -228,7 +229,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <div class="hsub"><span class="mp-sub mp-w6 hup"><span class="{{ f.p.h.sa.c }}" role="{{ f.p.h.sa.r }}" aria-label="{{ f.p.h.sa.l }}">{{ f.p.h.sa.v }}</span></span><span class="mp-foot mp-hero-2">{{ f.p.h.st }}</span></div>
 <sc-if value="{{ f.p.h.hasSplit }}" hint-placeholder-val="{{ false }}"><div class="mp-hairs two"><sc-for list="{{ f.p.h.split }}" as="s" hint-placeholder-count="2"><div><div class="mp-foot mp-hero-2">{{ s.k }}</div><div class="mp-hl nowrap"><span class="{{ s.a.c }}" role="{{ s.a.r }}" aria-label="{{ s.a.l }}">{{ s.a.v }}</span></div></div></sc-for></div></sc-if>
 </sc-if>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>{{ f.p.h.rate }}</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>{{ f.p.h.rate }}</span></div>
 </div>
 <!-- the cards: one column on iPhone, a pager for 1b, two columns on iPad -->
 <sc-for list="{{ f.p.rows }}" as="rw" hint-placeholder-count="2">
@@ -249,11 +250,11 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <sc-if value="{{ q.isRows }}" hint-placeholder-val="{{ false }}"><div class="rows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4">
 <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}"><div class="rrow"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="fx ac gap6 wrap mt2"><span class="mp-chip chip-s mp-neutral">{{ it.cc }}</span><sc-if value="{{ it.jt }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-hold">{{ it.sh }}</span></sc-if><span class="mp-foot mp-ink2">{{ it.s }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></div></sc-if>
 <sc-if value="{{ it.isEdit }}" hint-placeholder-val="{{ false }}"><div class="edit"><div class="fx ac gap12"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="mp-foot mp-ink2">Correcting the value · your estimate</div></div><span class="efield" role="textbox" aria-label="New value"><span class="mp-sub mp-w6">{{ it.typed }}</span><span class="ecaret"></span></span></div><div class="mp-foot"><span class="mp-ink2">Before → after:</span> <span class="was">{{ it.before }}</span> → <b>{{ it.after }}</b><span class="mp-ink2"> · net worth {{ it.netB }} → {{ it.netA }}, from the engine</span></div><div class="eacts"><button class="mp-btn mp-btn-tinted mp-btn-small">Cancel</button><button class="mp-btn mp-btn-primary mp-btn-small">Save</button></div></div></sc-if>
-<sc-if value="{{ it.isAudit }}" hint-placeholder-val="{{ false }}"><div class="aline"><span class="ms ms-s" aria-hidden="true">history</span><span class="mp-foot mp-w6">{{ it.t }}</span><span class="mp-foot">{{ it.s }}</span></div></sc-if>
+<sc-if value="{{ it.isAudit }}" hint-placeholder-val="{{ false }}"><div class="aline"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.history }}"></path></svg><span class="mp-foot mp-w6">{{ it.t }}</span><span class="mp-foot">{{ it.s }}</span></div></sc-if>
 </sc-for></div></sc-if>
-<sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }}</div></div><span class="mp-foot mp-acc nowrap">{{ it.e }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="lrow"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[it.i] }}"></path></svg></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }}</div></div><span class="mp-foot mp-acc nowrap">{{ it.e }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink2 pp">{{ q.t }} <span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span> {{ q.t2 }}</p></sc-if>
-<sc-if value="{{ q.isNav }}" hint-placeholder-val="{{ false }}"><div class="navrows"><sc-for list="{{ q.items }}" as="nv" hint-placeholder-count="1"><button type="button" class="navrow"><span>{{ nv.t }}</span><span class="ms ms-s" aria-hidden="true">chevron_right</span></button></sc-for></div></sc-if>
+<sc-if value="{{ q.isNav }}" hint-placeholder-val="{{ false }}"><div class="navrows"><sc-for list="{{ q.items }}" as="nv" hint-placeholder-count="1"><button type="button" class="navrow"><span>{{ nv.t }}</span><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg></button></sc-for></div></sc-if>
 </sc-for>
 </div>
 </sc-for>
@@ -266,7 +267,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 </div></div>
 <div class="edge-top"></div>
 <div class="edge-bot"></div>
-<sc-if value="{{ f.p.hasToast }}" hint-placeholder-val="{{ false }}"><div class="mp-toast toast" data-mo="pop"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ f.p.toast }}</div></sc-if>
+<sc-if value="{{ f.p.hasToast }}" hint-placeholder-val="{{ false }}"><div class="mp-toast toast" data-mo="pop"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>{{ f.p.toast }}</div></sc-if>
 <sc-if value="{{ f.p.kb }}" hint-placeholder-val="{{ false }}"><div class="kpad" aria-hidden="true"><sc-for list="{{ keypad }}" as="kk" hint-placeholder-count="12"><span class="{{ kk.c }}">{{ kk.t }}</span></sc-for></div></sc-if>
 </sc-if>
 <!-- the Chat tab -->
@@ -275,7 +276,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <sc-if value="{{ f.p.strip.plain }}" hint-placeholder-val="{{ true }}"><span class="strip-n">{{ f.p.strip.fig }}</span></sc-if>
 <sc-if value="{{ f.p.strip.roll }}" hint-placeholder-val="{{ false }}"><span class="strip-n"><span data-roll-from="{{ f.p.strip.from }}">{{ f.p.strip.fig }}</span></span><span class="mp-foot mp-up mp-w6">{{ f.p.strip.ch }}</span></sc-if>
 <sc-if value="{{ f.p.strip.none }}" hint-placeholder-val="{{ false }}"><span class="mp-hl">No records yet</span></sc-if>
-</span></div><span class="ms z1 mp-ink2" aria-hidden="true">keyboard_arrow_down</span></div>
+</span></div><svg class="lc z1 mp-ink2" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.keyboard_arrow_down }}"></path></svg></div>
 <div class="chfadet"></div>
 <div class="scroll chatscr"><div class="chat">
 <sc-for list="{{ f.p.chat }}" as="m" hint-placeholder-count="4">
@@ -285,7 +286,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <sc-if value="{{ m.hasText }}" hint-placeholder-val="{{ true }}"><div class="ai-text">{{ m.t }}</div></sc-if>
 <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ false }}"><div class="ccard">
 <div class="ccard-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="mp-hl">{{ m.title }}</span><sc-if value="{{ m.hasQ }}" hint-placeholder-val="{{ false }}"><span class="mp-sub">{{ m.q }}<span class="{{ m.qa.c }}" role="{{ m.qa.r }}" aria-label="{{ m.qa.l }}">{{ m.qa.v }}</span>{{ m.q2 }}</span></sc-if></div>
-<div class="ccard-b"><sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if></div>
+<div class="ccard-b"><sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if></div>
 <sc-if value="{{ m.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.btns }}" as="b" hint-placeholder-count="2"><button type="button" class="cbtn {{ b.c }}">{{ b.t }}</button></sc-for></div></sc-if>
 </div></sc-if>
 <sc-if value="{{ m.hasChips }}" hint-placeholder-val="{{ false }}"><div class="qchips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="qchip">{{ c }}</button></sc-for></div></sc-if>
@@ -293,9 +294,9 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 </sc-for>
 </div></div>
 <div class="edge-bot"></div>
-<div class="composer cmp"><div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">{{ f.p.ph }}</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div></div>
+<div class="composer cmp"><div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="gchip lg"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[c.i] }}"></path></svg><span>{{ c.t }}</span></button></sc-for></div><div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.add }}"></path></svg></button><span class="cfield lg"><span class="ph">{{ f.p.ph }}</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.mic }}"></path></svg></button></span></div></div>
 </sc-if>
-<div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.p.tabs }}" as="b" hint-placeholder-count="4"><button type="button" class="tab {{ b.on }}"><span class="ms" aria-hidden="true">{{ b.icon }}</span>{{ b.label }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><span class="ms z1" aria-hidden="true">search</span></button></div>
+<div class="tabdock"><div class="tabs lg"><sc-for list="{{ f.p.tabs }}" as="b" hint-placeholder-count="4"><button type="button" class="tab {{ b.on }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[b.icon] }}"></path></svg>{{ b.label }}</button></sc-for></div><button type="button" class="tabsearch lg" aria-label="Search"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.search }}"></path></svg></button></div>
 <div class="homebar"></div>
 </div>
 </div>
@@ -306,19 +307,19 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <div class="scrn srow">
 <div class="sidebar sb lg">
 <div class="side-h sh0">MyPaisa</div>
-<sc-for list="{{ padNav }}" as="n" hint-placeholder-count="8"><button type="button" class="side-i {{ n.cls }}" aria-haspopup="{{ n.pop }}"><span class="ms" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</button></sc-for>
+<sc-for list="{{ padNav }}" as="n" hint-placeholder-count="8"><button type="button" class="side-i {{ n.cls }}" aria-haspopup="{{ n.pop }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[n.icon] }}"></path></svg>{{ n.label }}</button></sc-for>
 <div class="side-h">Admin</div>
-<button type="button" class="side-i"><span class="ms" aria-hidden="true">shield_person</span>Admin center</button>
-<button type="button" class="side-i"><span class="ms" aria-hidden="true">account_circle</span>You</button>
+<button type="button" class="side-i"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.shield_person }}"></path></svg>Admin center</button>
+<button type="button" class="side-i"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.account_circle }}"></path></svg>You</button>
 </div>
 <div class="main">
-<div class="sbar"><span>{{ f.p.time }} Mon 26 Oct</span><span class="sbar-ic"><span class="ms" aria-hidden="true">wifi</span><span class="ms" aria-hidden="true">battery_horiz_075</span></span></div>
-<div class="nav"><span class="largetitle navt">Home</span><span class="fx gap8"><button type="button" class="gtext lg askw" aria-label="Ask about this screen"><span class="ms z1" aria-hidden="true">chat_bubble</span><span class="z1">Ask</span></button><button type="button" class="gbtn lg" aria-label="Privacy mode"><span class="ms z1" aria-hidden="true">visibility</span></button></span></div>
+<div class="sbar"><span>{{ f.p.time }} Mon 26 Oct</span><span class="sbar-ic"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.wifi }}"></path></svg><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.battery_horiz_075 }}"></path></svg></span></div>
+<div class="nav"><span class="largetitle navt">Home</span><span class="fx gap8"><button type="button" class="gtext lg askw" aria-label="Ask about this screen"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg><span class="z1">Ask</span></button><button type="button" class="gbtn lg" aria-label="Privacy mode"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></button></span></div>
 <div class="ipg">
 <div class="mp-hero hero">
 <div class="fx jb ac gap12"><span class="mp-over mp-hero-2">{{ f.p.h.over }}</span><span class="mp-seg ccy"><button type="button" class="mp-seg-i segc seg-s on">£</button><button type="button" class="mp-seg-i segc seg-s">₹</button></span></div>
 <div class="fx ac gap12 wrap"><span class="mp-num-hero nowrap">{{ f.p.h.fig }}</span><span class="mp-sub mp-w6 hup">{{ f.p.h.sa.v }}</span></div>
-<div class="rate mp-foot mp-hero-2"><span class="ms ms-s" aria-hidden="true">currency_exchange</span><span>{{ f.p.h.rate }}</span></div>
+<div class="rate mp-foot mp-hero-2"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.currency_exchange }}"></path></svg><span>{{ f.p.h.rate }}</span></div>
 </div>
 <!-- the cards: one column on iPhone, a pager for 1b, two columns on iPad -->
 <sc-for list="{{ f.p.rows }}" as="rw" hint-placeholder-count="2">
@@ -339,11 +340,11 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <sc-if value="{{ q.isRows }}" hint-placeholder-val="{{ false }}"><div class="rows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4">
 <sc-if value="{{ it.isRow }}" hint-placeholder-val="{{ true }}"><div class="rrow"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="fx ac gap6 wrap mt2"><span class="mp-chip chip-s mp-neutral">{{ it.cc }}</span><sc-if value="{{ it.jt }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-hold">{{ it.sh }}</span></sc-if><span class="mp-foot mp-ink2">{{ it.s }}</span></div></div><div class="tr"><div class="mp-sub mp-w6 nowrap"><span class="{{ it.a.c }}" role="{{ it.a.r }}" aria-label="{{ it.a.l }}">{{ it.a.v }}</span></div><div class="mp-foot mp-ink2 nowrap"><span class="{{ it.b.c }}" role="{{ it.b.r }}" aria-label="{{ it.b.l }}">{{ it.b.v }}</span></div></div></div></sc-if>
 <sc-if value="{{ it.isEdit }}" hint-placeholder-val="{{ false }}"><div class="edit"><div class="fx ac gap12"><span class="mp-row-lead mp-neutral">{{ it.lead }}</span><div class="rtx"><div class="mp-sub mp-w6 clip">{{ it.n }}</div><div class="mp-foot mp-ink2">Correcting the value · your estimate</div></div><span class="efield" role="textbox" aria-label="New value"><span class="mp-sub mp-w6">{{ it.typed }}</span><span class="ecaret"></span></span></div><div class="mp-foot"><span class="mp-ink2">Before → after:</span> <span class="was">{{ it.before }}</span> → <b>{{ it.after }}</b><span class="mp-ink2"> · net worth {{ it.netB }} → {{ it.netA }}, from the engine</span></div><div class="eacts"><button class="mp-btn mp-btn-tinted mp-btn-small">Cancel</button><button class="mp-btn mp-btn-primary mp-btn-small">Save</button></div></div></sc-if>
-<sc-if value="{{ it.isAudit }}" hint-placeholder-val="{{ false }}"><div class="aline"><span class="ms ms-s" aria-hidden="true">history</span><span class="mp-foot mp-w6">{{ it.t }}</span><span class="mp-foot">{{ it.s }}</span></div></sc-if>
+<sc-if value="{{ it.isAudit }}" hint-placeholder-val="{{ false }}"><div class="aline"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.history }}"></path></svg><span class="mp-foot mp-w6">{{ it.t }}</span><span class="mp-foot">{{ it.s }}</span></div></sc-if>
 </sc-for></div></sc-if>
-<sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="lrow"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ it.i }}</span></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }}</div></div><span class="mp-foot mp-acc nowrap">{{ it.e }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ q.isList }}" hint-placeholder-val="{{ false }}"><div class="lrows"><sc-for list="{{ q.items }}" as="it" hint-placeholder-count="4"><div class="lrow"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[it.i] }}"></path></svg></span><div class="rtx"><div class="mp-sub mp-w6">{{ it.t }}</div><div class="mp-foot mp-ink2">{{ it.s }}</div></div><span class="mp-foot mp-acc nowrap">{{ it.e }}</span></div></sc-for></div></sc-if>
 <sc-if value="{{ q.isText }}" hint-placeholder-val="{{ false }}"><p class="mp-foot mp-ink2 pp">{{ q.t }} <span class="{{ q.a.c }}" role="{{ q.a.r }}" aria-label="{{ q.a.l }}">{{ q.a.v }}</span> {{ q.t2 }}</p></sc-if>
-<sc-if value="{{ q.isNav }}" hint-placeholder-val="{{ false }}"><div class="navrows"><sc-for list="{{ q.items }}" as="nv" hint-placeholder-count="1"><button type="button" class="navrow"><span>{{ nv.t }}</span><span class="ms ms-s" aria-hidden="true">chevron_right</span></button></sc-for></div></sc-if>
+<sc-if value="{{ q.isNav }}" hint-placeholder-val="{{ false }}"><div class="navrows"><sc-for list="{{ q.items }}" as="nv" hint-placeholder-count="1"><button type="button" class="navrow"><span>{{ nv.t }}</span><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg></button></sc-for></div></sc-if>
 </sc-for>
 </div>
 </sc-for>
@@ -359,7 +360,7 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <div class="dim"></div>
 <div class="sheet chatsheet" role="dialog" aria-modal="true" aria-label="Chat">
 <span class="sheet-grab" aria-hidden="true"></span>
-<div class="sheet-h"><span class="mp-hl">Chat</span><button type="button" class="xbtn" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>
+<div class="sheet-h"><span class="mp-hl">Chat</span><button type="button" class="xbtn" aria-label="Close"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.close }}"></path></svg></button></div>
 <div class="chat askchat">
 <sc-for list="{{ f.p.chat }}" as="m" hint-placeholder-count="4">
 <sc-if value="{{ m.isDay }}" hint-placeholder-val="{{ false }}"><div class="daysep">{{ m.t }}</div></sc-if>
@@ -368,15 +369,15 @@ a { color: #C2381F; } a:not([class]):hover { color: #8F2915; }
 <sc-if value="{{ m.hasText }}" hint-placeholder-val="{{ true }}"><div class="ai-text">{{ m.t }}</div></sc-if>
 <sc-if value="{{ m.hasCard }}" hint-placeholder-val="{{ false }}"><div class="ccard">
 <div class="ccard-h"><span class="mp-over mp-ink2">{{ m.over }}</span><span class="mp-hl">{{ m.title }}</span><sc-if value="{{ m.hasQ }}" hint-placeholder-val="{{ false }}"><span class="mp-sub">{{ m.q }}<span class="{{ m.qa.c }}" role="{{ m.qa.r }}" aria-label="{{ m.qa.l }}">{{ m.qa.v }}</span>{{ m.q2 }}</span></sc-if></div>
-<div class="ccard-b"><sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if></div>
+<div class="ccard-b"><sc-for list="{{ m.kv }}" as="r" hint-placeholder-count="0"><div class="kv"><span>{{ r.k }}</span><span><span class="{{ r.a.c }}" role="{{ r.a.r }}" aria-label="{{ r.a.l }}">{{ r.a.v }}</span>{{ r.v }}</span></div></sc-for><sc-if value="{{ m.hasDone }}" hint-placeholder-val="{{ false }}"><div class="done"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>{{ m.done }}</div><div class="audl">{{ m.audit }}</div></sc-if></div>
 <sc-if value="{{ m.hasBtns }}" hint-placeholder-val="{{ false }}"><div class="ccard-acts"><sc-for list="{{ m.btns }}" as="b" hint-placeholder-count="2"><button type="button" class="cbtn {{ b.c }}">{{ b.t }}</button></sc-for></div></sc-if>
 </div></sc-if>
 <sc-if value="{{ m.hasChips }}" hint-placeholder-val="{{ false }}"><div class="qchips"><sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3"><button type="button" class="qchip">{{ c }}</button></sc-for></div></sc-if>
 </div></div></sc-if>
 </sc-for>
 </div>
-<div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><span class="ms" aria-hidden="true">{{ c.i }}</span><span>{{ c.t }}</span></button></sc-for></div>
-<div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><span class="ms z1" aria-hidden="true">add</span></button><span class="cfield lg"><span class="ph">Ask about Home</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><span class="ms" aria-hidden="true">mic</span></button></span></div>
+<div class="chips"><sc-for list="{{ f.p.chips }}" as="c" hint-placeholder-count="2"><button type="button" class="gchip lg"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[c.i] }}"></path></svg><span>{{ c.t }}</span></button></sc-for></div>
+<div class="cbar"><button type="button" class="cplus lg" aria-label="Add a file or photo"><svg class="lc z1" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.add }}"></path></svg></button><span class="cfield lg"><span class="ph">Ask about Home</span><button type="button" class="csend mp-ink2 z1" aria-label="Dictate"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.mic }}"></path></svg></button></span></div>
 </div>
 </sc-if>
 </div>
@@ -434,8 +435,8 @@ saved: { net: 457951, own: 704694, owe: 246743, uk: 351468, ind: 106483, arun: 2
 };
 // In rupees: each total x 112.50; India is its own rupee sum (₹1,34,92,563 less ₹15,13,257), the UK the rest; owe is own less net; the last part of every split is the rest, so each adds up.
 const INR = { net: 50056988, own: 77815575, owe: 27758587, uk: 38077682, ind: 11979306, arun: 28222650, asha: 21834338, liq: 4229550, fix: 2662875, lock: 70923150 };
-const padNav = [['chat_bubble', 'Chat'], ['home', 'Home'], ['donut_small', 'Assets'], ['credit_card', 'Debts'], ['savings', 'Budget'], ['trending_up', 'Projection'], ['insights', 'Activity'], ['history', 'Audit']].map((i) => ({ icon: i[0], label: i[1], cls: i[1] === 'Home' ? 'on' : '', pop: i[1] === 'Chat' ? 'dialog' : 'false' }));   // Chat opens the chat as a sheet on every iPad (MA-301 c 1c)
-const tabsFor = (on) => [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((d) => ({ icon: d[0], label: d[1], on: d[1] === on ? 'on' : '' }));
+const padNav = [['message-circle', 'Chat'], ['house', 'Home'], ['wallet', 'Assets'], ['landmark', 'Debts'], ['chart-pie', 'Budget'], ['trending-up', 'Projection'], ['activity', 'Activity'], ['history', 'Audit']].map((i) => ({ icon: i[0], label: i[1], cls: i[1] === 'Home' ? 'on' : '', pop: i[1] === 'Chat' ? 'dialog' : 'false' }));   // Chat opens the chat as a sheet on every iPad (MA-301 c 1c)
+const tabsFor = (on) => [['message-circle', 'Chat'], ['house', 'Home'], ['activity', 'Activity'], ['account_circle', 'You']].map((d) => ({ icon: d[0], label: d[1], on: d[1] === on ? 'on' : '' }));
 const page = (S) => {
 const F = FIG[S.fig || 'after'], inr = S.ccy === 'inr', priv = !!S.priv;
 // under privacy a mask never carries the figure: its digits drawn as 0 (same width, tabular figures), read as Hidden (MA-300, P0-2)
@@ -643,6 +644,9 @@ turns: [
 };
 }
 }
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
 </script>
 </body>
 </html>

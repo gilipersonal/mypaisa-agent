@@ -3740,7 +3740,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "A local stack runs the whole app on the laptop, with a scripted agent that replays recorded conversations",
-      "status": "In Review",
+      "status": "Done",
       "labels": [],
       "arch": [
         "12",
@@ -5891,7 +5891,7 @@
           "board": "B \u00b7 Settings squircles, one vivid set for both themes"
         }
       ],
-      "notes": "Arun, 27 Oct 2026: \"For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that\". Three options drawn in MyPaisa DS v1, Kind icons, and reviewed; Arun picked B on 27 Oct 2026: \"I want to go for option set B for icons\" (A was recommended). The record is docs/design/reviews/MA-241/decision.md; its open questions (four glyphs, NPS's family, accounts, a kind proposed after release, the remaining states) are settled before the build, which puts B's nine pairs into tokens.css with their contrast pairs and the tile on every record row at both doors. Also in its scope (MA-240's review round 2, Arun 27 Oct 2026): two colour pairs left at the limit. The dark track on the success tint is 1.256:1 at 25% against 1.25: the dark success tint darkens a little, since a lighter track would take silver on it under 3:1. The light accent on the alert tint is 4.49:1, and 2.97:1 at 25%, under 4.5 and 3.0: the pair was to join scripts/contrast_check.py, then the tint moves or no board draws a link on it. Stopped by MA-303 (Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\"); QA on the built web app, on request, is MA-304.",
+      "notes": "Arun, 27 Oct 2026: \"For different Holding type, asset type and debt type, can we dynamically have some colourful icons? Monzo app is so beautiful like that\". Three options drawn in MyPaisa DS v1, Kind icons, and reviewed; Arun picked B on 27 Oct 2026: \"I want to go for option set B for icons\" (A was recommended). The record is docs/design/reviews/MA-241/decision.md; its open questions (four glyphs, NPS's family, accounts, a kind proposed after release, the remaining states) are settled before the build, which puts B's nine pairs into tokens.css with their contrast pairs and the tile on every record row at both doors. Also in its scope (MA-240's review round 2, Arun 27 Oct 2026): two colour pairs left at the limit. The dark track on the success tint is 1.256:1 at 25% against 1.25: the dark success tint darkens a little, since a lighter track would take silver on it under 3:1. The light accent on the alert tint is 4.49:1, and 2.97:1 at 25%, under 4.5 and 3.0: the pair was to join scripts/contrast_check.py, then the tint moves or no board draws a link on it. Stopped by MA-303 (Arun, 2 Nov 2026: \"All the 6 checks currently run on docs/design. Lets stop that.\"); QA on the built web app, on request, is MA-304. MA-340 (24 Nov 2026): the boards draw each kind's Lucide glyph from the Kind icons board (personal loan file-text, shares trending-up, PPF badge-check, gold and silver diamond, NPS sunrise); the open question on the four glyphs still stands, now about those Lucide glyphs.",
       "open": [
         "Four glyphs that may mislead: personal loan's request_quote draws a $, shares' show_chart always trends up and is the Projection's icon, PPF's verified reads as a status, gold and silver is a diamond (the proposed swaps are in docs/design/reviews/MA-241/decision.md); NPS's wb_twilight and the two umbrellas too",
         "NPS's family: deposits and schemes (teal) as drawn, its asset class, or every family derived from grouping.class through one fixed map",
@@ -7346,7 +7346,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Design options for the deep scan's redesign items: calmer Projection and statement Confirm, nested cards, a web-only join, the type and icon stack and the Cmd+K palette",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "design"
       ],
@@ -7436,7 +7436,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The web app and the boards load no Google Fonts: self-hosted Inter and a Nunito figures subset, and Lucide icons",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "8.4"
@@ -7444,7 +7444,22 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-301 (23 Nov 2026): Arun's f 1a pick of 2 Nov 2026 (platform type, Lucide on the web). web/src/app.html still links Google Fonts and Material Symbols, and the boards still draw .ms through the @import in ds-v1/tokens.css; this story moves both. The design is MA-301's pick, so no options round (as MA-194)."
+      "notes": "Filed from MA-301 (23 Nov 2026): Arun's f 1a pick of 2 Nov 2026 (platform type, Lucide on the web). web/src/app.html still links Google Fonts and Material Symbols, and the boards still draw .ms through the @import in ds-v1/tokens.css; this story moves both. The design is MA-301's pick, so no options round (as MA-194). Built 24 Nov 2026: the web app serves Inter (Latin and Latin Extended) and a Nunito 800 figures subset (digits, \u00a3 $ \u20ac \u20b9 and their marks) from /fonts/, preloaded, with font-src 'self' (scripts/fonts.py); every board draws Lucide from ds-v1/lucide.js (scripts/board_icons.py) and loads the same fonts through ds-v1/fonts.css; the nav icons follow MA-301's Shell and chat board and the kinds' glyphs its Kind icons board. Prototype v5, a record never updated (rule 5), still names Material Symbols, so its local copy shows icon names as words; its published artifact is unchanged.",
+      "code": [
+        "web/src/app.html",
+        "web/src/app.css",
+        "web/vite.config.ts",
+        "web/package.json",
+        "web/pnpm-workspace.yaml",
+        "web/pnpm-lock.yaml",
+        "web/.prettierignore",
+        "web/CLAUDE.md",
+        "web/src/lib/styles/",
+        "web/static/fonts/",
+        "scripts/fonts.py",
+        "scripts/board_icons.py",
+        "scripts/web_gates.sh"
+      ]
     },
     {
       "key": "MA-341",
@@ -7957,7 +7972,7 @@
       "type": "Task",
       "epic": "MA-9",
       "phase": 0,
-      "summary": "Every published artifact is in step with the repo: a manifest of each artifact's sources, a check that fails while one is behind, and Prototype v5, the Boards and the Agent Journey published again",
+      "summary": "Every published MyPaisa artifact is in sync with the repo: each one's source is recorded, and the check reports one that is stale",
       "status": "Done",
       "labels": [],
       "arch": [
@@ -7973,7 +7988,7 @@
       "type": "Task",
       "epic": "MA-9",
       "phase": 0,
-      "summary": "Architecture v4 is published again at a new link after its artifact was deleted by mistake, and every link points to it",
+      "summary": "Architecture v4 is rebuilt from the latest architecture, more engaging, published again at a new link, and in step everywhere",
       "status": "Done",
       "labels": [],
       "arch": [
@@ -8039,7 +8054,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "A new fast-xml-parser advisory turns every PR's security scan red: React Native's CLI pins 5.11.2",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -8061,7 +8076,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Prettier 3.10 rejects how the web shell's skip link is wrapped, so Dependabot's web group fails the web gate",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -8082,7 +8097,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Dependabot bumps hermes-compiler apart from React Native, so the iOS gate refuses the web group",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -8104,7 +8119,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Two of MA-194's fixed-finding checks run in web/ at the same time and race, so Review tooling fails at random",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -8248,7 +8263,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Prototype v5's Home scope selector works: Household, me and the other member each change the figures",
-      "status": "In Review",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -8271,7 +8286,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Prototype v5 reaches Assets and Debts from Home's first summary, as the Home board already draws",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -8454,7 +8469,7 @@
     {
       "key": "MA-11",
       "type": "Epic",
-      "summary": "Prices and the engine",
+      "summary": "Phase 10: daily prices and the ported engine produce signals and shadow stances",
       "status": "Done",
       "labels": [
         "retired"
@@ -8464,7 +8479,7 @@
     {
       "key": "MA-15",
       "type": "Epic",
-      "summary": "Track record and calibration",
+      "summary": "Phase 13: a track record shows whether the stances and their confidence hold up",
       "status": "Done",
       "labels": [
         "retired"
@@ -8474,7 +8489,7 @@
     {
       "key": "MA-16",
       "type": "Epic",
-      "summary": "News, events, sentiment (shadow)",
+      "summary": "Phase 14: news, events and sentiment are scored in shadow",
       "status": "Done",
       "labels": [
         "retired"
@@ -8484,7 +8499,7 @@
     {
       "key": "MA-17",
       "type": "Epic",
-      "summary": "Stances go live",
+      "summary": "Phase 15: stances go live once they have beaten the baseline for 8 weeks",
       "status": "Done",
       "labels": [
         "retired"
@@ -8494,7 +8509,7 @@
     {
       "key": "MA-117",
       "type": "Epic",
-      "summary": "The Forecaster: a second engine beside the rules engine",
+      "summary": "Phase 17: the Forecaster, a second engine, forecasts risk and direction beside the rules engine",
       "status": "Done",
       "labels": [
         "retired"

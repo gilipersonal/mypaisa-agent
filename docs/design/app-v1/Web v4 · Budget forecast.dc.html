@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Web v4 · Budget forecast</title>
 <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
 </head>
 <body>
 <x-dc>
@@ -75,7 +76,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .ccard-tech { background: var(--mp-surface-2); padding: 12px 16px; font: 400 13px/19px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); }
 .cbtn { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 15px/20px var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink); cursor: pointer; }
 .cbtn-primary { background: var(--mp-accent); color: var(--mp-on-accent); }
-.cbtn .ms { font-size: 18px; }
+.cbtn .lc { width: 18px; height: 18px; }
 .cmpw { flex: none; display: flex; gap: 8px; align-items: center; padding: 10px 12px 14px; border-top: 1px solid var(--mp-line); background: var(--mp-bg); }
 .cfw { flex: 1; min-width: 0; min-height: 44px; border-radius: 22px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; align-items: center; padding: 0 16px; font: 400 16px/21px var(--mp-font); color: var(--mp-ink-2); }
 .grow1 { flex: 1; min-width: 0; }
@@ -132,7 +133,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .yl.tap .fig { text-decoration: underline dotted var(--mp-ink-2); text-underline-offset: 4px; }
 .yl.tot { border-top: 2px solid var(--mp-ink); padding-top: 12px; }
 .yl.tot .fig { font: 800 20px/24px var(--mp-font-round); }
-.yl.pl .ms { font-size: 16px; color: var(--mp-ink-2); }
+.yl.pl .lc { width: 16px; height: 16px; color: var(--mp-ink-2); }
 .ytrace { display: flex; flex-direction: column; gap: 4px; margin: 4px 0 0; padding: 0; }
 /* the year's figures and the summary sit on their card's own surface: rows and plain figures, never tiles in a card */
 .kvs { display: flex; flex-direction: column; }
@@ -149,7 +150,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .trl > .grow1 { display: flex; flex-direction: column; gap: 1px; }
 .trl .fig { font: 600 15px/20px var(--mp-font); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .srcchip { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-radius: 999px; padding: 2px 8px 2px 6px; }
-.srcchip .ms { font-size: 14px; }
+.srcchip .lc { width: 14px; height: 14px; }
 /* ---------- year by year (1b) ---------- */
 .yr { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--mp-line); min-height: 44px; box-sizing: border-box; flex-wrap: wrap; }
 .yr > .grow1 { display: flex; flex-direction: column; gap: 2px; min-width: min(100%, 9em); }
@@ -187,18 +188,18 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
    (MA-279 1a), so the page has no currency control of its own. The title's menu is a popover on paper, never glass.
    From docs/design/reviews/MA-301, a · Projection header. */
 .ttlmenu { -webkit-appearance: none; appearance: none; margin: 0 0 0 -4px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 4px; border-radius: 10px; font: 700 34px/41px var(--mp-font); letter-spacing: -0.02em; color: var(--mp-ink); text-align: left; white-space: nowrap; }
-.ttlmenu .ms, .ttlmenu .lc { font-size: 26px; width: 26px; height: 26px; color: var(--mp-accent); }
+.ttlmenu .lc, .ttlmenu .lc { width: 26px; height: 26px; color: var(--mp-accent); }
 .ttlmenu:hover { background: var(--mp-surface-2); }
 .ttlmenu[aria-expanded="true"] { background: var(--mp-surface-2); }
-.ttlmenu[aria-expanded="true"] .ms, .ttlmenu[aria-expanded="true"] .lc { transform: rotate(180deg); }
+.ttlmenu[aria-expanded="true"] .lc, .ttlmenu[aria-expanded="true"] .lc { transform: rotate(180deg); }
 .ttlmenu:focus-visible, .hzc:focus-visible, .cornerbtn:focus-visible, .tm-i:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
 .ttlwrap { position: relative; min-width: 0; }
 .herot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; margin: -8px -6px -2px 0; }
 .herot > :first-child { min-width: 0; }
 .cornerbtn { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 8px 0 14px; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; white-space: nowrap; }
-.cornerbtn .ms { font-size: 20px; }
+.cornerbtn .lc { width: 20px; height: 20px; }
 .cornerbtn.oncard { background: var(--mp-surface-2); color: var(--mp-ink); }
-.cornerbtn.oncard .ms { color: var(--mp-accent); }
+.cornerbtn.oncard .lc { color: var(--mp-accent); }
 .hzchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
 .hzc { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; min-height: 44px; min-width: 60px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; white-space: nowrap; }
 .hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
@@ -208,7 +209,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .tm-i { -webkit-appearance: none; appearance: none; margin: 0; border: 0; background: none; cursor: pointer; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; border-radius: 8px; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); text-align: left; }
 .tm-i[aria-checked="true"] { font-weight: 600; }
 .tm-i:hover, .tm-i.hov { background: var(--mp-surface-2); }
-.tm-i .ms, .tm-i .lc { font-size: 20px; width: 20px; height: 20px; color: var(--mp-accent); }
+.tm-i .lc, .tm-i .lc { width: 20px; height: 20px; color: var(--mp-accent); }
 .tm-k { margin-left: auto; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); }
 
 .cornerbtn .lc { width: 18px; height: 18px; }
@@ -244,14 +245,14 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mp-shell shell">
 <aside class="mp-shell-side mp-side side" aria-label="MyPaisa">
 <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-coin" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g class="mpm-pound" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle class="mpm-dot" cx="38.6" cy="9.4" r="4.2"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#w0" aria-current="{{ n.cur }}"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.icon }}</span>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><sc-if value="{{ n.isI }}" hint-placeholder-val="{{ true }}"><a class="mp-side-i {{ n.cls }}" href="#w0" aria-current="{{ n.cur }}"><svg class="lc {{ n.fill }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[n.icon] }}"></path></svg>{{ n.label }}</a></sc-if><sc-if value="{{ n.isL }}" hint-placeholder-val="{{ false }}"><div class="navlbl mp-over mp-ink2">{{ n.label }}</div></sc-if></sc-for>
 <div class="grow1"></div>
 <div class="mp-foot mp-ink2 side-ft">Arun · admin</div>
 </aside>
 <main class="mp-shell-main mainc">
 <div class="mp-pagepad" style="margin-top: {{ f.off }}">
-<a class="crumb mp-only-compact" href="#w0"><span class="ms ms-s" aria-hidden="true">arrow_back_ios_new</span>Home</a>
-<header class="phead"><div class="grow1 ttlwrap"><button type="button" class="ttlmenu" aria-haspopup="menu" aria-expanded="{{ f.texp }}" aria-label="Projection: Budget forecast. Change view">Budget forecast<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="mp-foot mp-ink2">{{ meta }}</div><sc-if value="{{ f.tmenu }}" hint-placeholder-val="{{ false }}"><div class="tpop" role="menu" aria-label="Projection, the view"><sc-for list="{{ tviews }}" as="v" hint-placeholder-count="3"><button type="button" class="tm-i" role="menuitemradio" aria-checked="{{ v.p }}"><span>{{ v.l }}</span><sc-if value="{{ v.on }}" hint-placeholder-val="{{ false }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></sc-if></button></sc-for></div></sc-if></div><button class="iconbtn" aria-label="Privacy mode: hide amounts" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button></header>
+<a class="crumb mp-only-compact" href="#w0"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.arrow_back_ios_new }}"></path></svg>Home</a>
+<header class="phead"><div class="grow1 ttlwrap"><button type="button" class="ttlmenu" aria-haspopup="menu" aria-expanded="{{ f.texp }}" aria-label="Projection: Budget forecast. Change view">Budget forecast<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="mp-foot mp-ink2">{{ meta }}</div><sc-if value="{{ f.tmenu }}" hint-placeholder-val="{{ false }}"><div class="tpop" role="menu" aria-label="Projection, the view"><sc-for list="{{ tviews }}" as="v" hint-placeholder-count="3"><button type="button" class="tm-i" role="menuitemradio" aria-checked="{{ v.p }}"><span>{{ v.l }}</span><sc-if value="{{ v.on }}" hint-placeholder-val="{{ false }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></sc-if></button></sc-for></div></sc-if></div><button class="iconbtn" aria-label="Privacy mode: hide amounts" aria-pressed="false"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></button></header>
 
 <!-- ============ 1a: the surplus first ============ -->
 <sc-if value="{{ f.o.a }}" hint-placeholder-val="{{ true }}">
@@ -280,7 +281,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="yl tot"><div class="grow1"><span class="mp-hl">Surplus</span><span class="mp-foot mp-ink2">the lines above, added</span></div><span class="fig c-alert">{{ y29.sur }}</span></div>
 </div>
 <div class="kvs"><sc-for list="{{ y29.kts }}" as="t" hint-placeholder-count="3"><div class="kt"><span class="mp-foot mp-ink2">{{ t.k }}</span><span class="mp-sub mp-w6">{{ t.v }}</span></div></sc-for></div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">{{ f.mIcon }}</span>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[f.mIcon] }}"></path></svg>{{ f.mLabel }}</button><button class="cbtn cbtn-primary" type="button"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Ways to cover it</button></div>
 </div>
 <sc-if value="{{ f.months }}" hint-placeholder-val="{{ true }}">
 <div class="mp-card cpad">
@@ -295,7 +296,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <span class="mp-foot mp-ink2">Each category's plan from October, grown by its inflation key each January. Added up, they make the figure you tapped.</span>
 <div><sc-for list="{{ trace }}" as="t" hint-placeholder-count="12"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span><span class="mp-foot mp-ink2">{{ t.s }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for>
 <div class="trl" style="border-top: 2px solid var(--mp-ink)"><div class="grow1"><span class="mp-sub mp-w6">Spending in 2029</span></div><span class="fig">−£34,722</span></div></div>
-<span class="srcchip"><span class="ms" aria-hidden="true">function</span>The engine's trace, run Thu 5 Nov 20:43</span>
+<span class="srcchip"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.function }}"></path></svg>The engine's trace, run Thu 5 Nov 20:43</span>
 </div>
 </div>
 </div>
@@ -312,7 +313,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="fx jb ac gap8 wrap"><span class="mp-hl">Year by year</span><span class="mp-foot mp-ink2">the surplus, after everything planned</span></div>
 <div>
 <sc-for list="{{ years }}" as="y" hint-placeholder-count="21">
-<div class="yr {{ y.open }}" role="button" tabindex="0" aria-expanded="{{ y.ex }}"><div class="grow1"><span class="fx ac gap8 wrap"><span class="mp-sub mp-w6">{{ y.l }}</span><sc-if value="{{ y.flag }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-alertchip">{{ y.flag }}</span></sc-if></span><span class="mp-foot mp-ink2">{{ y.s }}</span><sc-if value="{{ y.note }}" hint-placeholder-val="{{ false }}"><span class="mp-foot">{{ y.note }}</span></sc-if></div><span class="fig {{ y.c }}">{{ y.v }}</span><span class="ms chev" aria-hidden="true">{{ y.chev }}</span></div>
+<div class="yr {{ y.open }}" role="button" tabindex="0" aria-expanded="{{ y.ex }}"><div class="grow1"><span class="fx ac gap8 wrap"><span class="mp-sub mp-w6">{{ y.l }}</span><sc-if value="{{ y.flag }}" hint-placeholder-val="{{ false }}"><span class="mp-chip chip-s mp-alertchip">{{ y.flag }}</span></sc-if></span><span class="mp-foot mp-ink2">{{ y.s }}</span><sc-if value="{{ y.note }}" hint-placeholder-val="{{ false }}"><span class="mp-foot">{{ y.note }}</span></sc-if></div><span class="fig {{ y.c }}">{{ y.v }}</span><svg class="lc chev" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[y.chev] }}"></path></svg></div>
 <sc-if value="{{ y.isOpen }}" hint-placeholder-val="{{ false }}">
 <div class="yopen">
 <div class="yo2">
@@ -327,7 +328,7 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="mtab"><sc-for list="{{ months }}" as="m" hint-placeholder-count="12"><span class="mt mp-w6">{{ m.l }}</span><span class="mt note">{{ m.n }}</span><span class="mt fig {{ m.c }}">{{ m.v }}</span></sc-for></div>
 </div>
 </div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">expand_less</span>Hide the months</button><button class="cbtn cbtn-primary" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.expand_less }}"></path></svg>Hide the months</button><button class="cbtn cbtn-primary" type="button"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Ways to cover it</button></div>
 </div>
 </sc-if>
 </sc-for>
@@ -372,25 +373,25 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 <div class="me">£4,000 a month from Jan 2029 for my kid's schooling</div>
 <div class="me-time">20:41</div>
 <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body">
-<div class="ccard"><div class="ccard-h"><span class="fx ac gap6 mp-over c-add"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, growing 4.5% a year</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div></div>
+<div class="ccard"><div class="ccard-h"><span class="fx ac gap6 mp-over c-add"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, growing 4.5% a year</span></div><div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div></div>
 <div class="ai-text">It leaves your surplus below your £500 floor in 50 months, Jan 2029 to Feb 2035. Cash stays above zero. The Budget forecast beside this shows where.</div>
-<div class="btnrow"><button class="cbtn" type="button"><span class="ms" aria-hidden="true">chat_bubble</span>Ways to cover it</button></div>
+<div class="btnrow"><button class="cbtn" type="button"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Ways to cover it</button></div>
 </div></div>
 </div>
 </div>
-<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><span class="ms" aria-hidden="true">add</span></button><span class="cfw" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
+<div class="cmpw"><button class="iconbtn" type="button" aria-label="Attach a file"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.add }}"></path></svg></button><span class="cfw" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask MyPaisa</span><button class="iconbtn" type="button" aria-label="Send"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.arrow_upward }}"></path></svg></button></div>
 </aside>
 </div>
 <sc-if value="{{ f.sheet }}" hint-placeholder-val="{{ false }}">
 <div class="pscrim"></div>
 <div class="psheet" role="dialog" aria-modal="true" aria-label="2029's surplus, line by line">
-<div class="fx jb ac gap8"><div class="fx col gap2"><span class="mp-over mp-ink2">2029 · the flows behind it</span><span class="mp-hl">Surplus <span class="c-alert">−£1,285</span></span></div><button class="iconbtn" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>
+<div class="fx jb ac gap8"><div class="fx col gap2"><span class="mp-over mp-ink2">2029 · the flows behind it</span><span class="mp-hl">Surplus <span class="c-alert">−£1,285</span></span></div><button class="iconbtn" aria-label="Close"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.close }}"></path></svg></button></div>
 <div><sc-for list="{{ popLines }}" as="t" hint-placeholder-count="5"><div class="trl"><div class="grow1"><span class="mp-sub mp-w6">{{ t.n }}</span></div><span class="fig">{{ t.v }}</span></div></sc-for></div>
 <span class="mp-foot mp-ink2">Below your floor in 11 months: every month but March, when Asha's bonus lands.</span>
 <div class="btnrow"><button class="cbtn" type="button">Months</button><button class="cbtn cbtn-primary" type="button">Ways to cover it</button></div>
 </div>
 </sc-if>
-<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#w0" aria-current="{{ tb.cur }}"><span class="ms {{ tb.fill }}" aria-hidden="true">{{ tb.icon }}</span>{{ tb.label }}</a></sc-for></nav>
+<nav class="mp-shell-tabs mp-tabbar tabs-abs" aria-label="Sections"><sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4"><a class="mp-tab {{ tb.on }}" href="#w0" aria-current="{{ tb.cur }}"><svg class="lc {{ tb.fill }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[tb.icon] }}"></path></svg>{{ tb.label }}</a></sc-for></nav>
 </div>
 </div>
 </sc-for>
@@ -482,9 +483,9 @@ Y.forEach((r) => {
 const popLines = [['Income', gbp(sum(y29.income))], ['Spending', gbp(-sum(y29.spend))], ['EMIs and SIP', gbp(-(sum(em) + y29.sip + y29.premium))], ['School fees', gbp(sum(y29.plans))]].map((p) => ({ n: p[0], v: p[1] }));
 
 /* the shell */
-const navDefs = [['ho', 'home', 'Home'], ['as', 'account_balance_wallet', 'Assets'], ['db', 'credit_card', 'Debts'], ['bu', 'event_note', 'Budget'], ['pj', 'show_chart', 'Projection'], ['L', '', 'Records'], ['ac', 'history', 'Activity'], ['au', 'fact_check', 'Audit'], ['fi', 'folder', 'Files']];
-const nav = navDefs.map((d) => ({ isI: d[0] !== 'L', isL: d[0] === 'L', icon: d[1], label: d[2], cls: d[0] === 'pj' ? 'on' : '', fill: d[0] === 'pj' ? 'ms-fill' : '', cur: d[0] === 'pj' ? 'page' : null }));
-const tabs = [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ icon: t[0], label: t[1], on: t[1] === 'Home' ? 'on' : '', fill: t[1] === 'Home' ? 'ms-fill' : '', cur: t[1] === 'Home' ? 'page' : null }));
+const navDefs = [['ho', 'house', 'Home'], ['as', 'wallet', 'Assets'], ['db', 'landmark', 'Debts'], ['bu', 'chart-pie', 'Budget'], ['pj', 'trending-up', 'Projection'], ['L', '', 'Records'], ['ac', 'activity', 'Activity'], ['au', 'fact_check', 'Audit'], ['fi', 'folder', 'Files']];
+const nav = navDefs.map((d) => ({ isI: d[0] !== 'L', isL: d[0] === 'L', icon: d[1], label: d[2], cls: d[0] === 'pj' ? 'on' : '', fill: d[0] === 'pj' ? '' : '', cur: d[0] === 'pj' ? 'page' : null }));
+const tabs = [['message-circle', 'Chat'], ['house', 'Home'], ['activity', 'Activity'], ['account_circle', 'You']].map((t) => ({ icon: t[0], label: t[1], on: t[1] === 'Home' ? 'on' : '', fill: t[1] === 'Home' ? '' : '', cur: t[1] === 'Home' ? 'page' : null }));
 const ptabs = ['Net worth', 'Plans', 'Budget forecast'].map((l) => ({ l: l, on: l === 'Budget forecast' ? 'on' : '', p: l === 'Budget forecast' ? 'true' : 'false', cur: l === 'Budget forecast' ? 'page' : null }));
 const horizon = ['5 yrs', '10 yrs', '20 yrs', '30 yrs'].map((l) => ({ l: l, on: l === '20 yrs' ? 'on' : '', p: l === '20 yrs' ? 'true' : 'false' }));
 const TH = { Light: 't-light', Dark: 't-dark' };
@@ -522,6 +523,9 @@ return {
 };
 }
 }
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
 </script>
 </body>
 </html>

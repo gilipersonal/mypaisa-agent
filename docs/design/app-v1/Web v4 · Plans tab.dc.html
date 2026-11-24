@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Web v4 · Plans tab</title>
     <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
   </head>
   <body>
     <x-dc>
@@ -151,7 +152,7 @@
           .fwords { margin: 0; font: italic 400 15px/21px var(--mp-font); color: var(--mp-ink); text-wrap: pretty; }
           .fpills { display: flex; flex-wrap: wrap; gap: 8px; }
           .fnote { margin: 4px 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--mp-surface-2); display: flex; gap: 8px; align-items: flex-start; }
-          .fnote .ms { font-size: 18px; color: var(--mp-ink-2); margin-top: 1px; }
+          .fnote .lc { width: 18px; height: 18px; color: var(--mp-ink-2); margin-top: 1px; }
           .fdin { display: none; }
           @container fd (max-width: 459px) {
             .mp .fitem, .mp .fyear { grid-template-columns: 22px minmax(0, 1fr); column-gap: 10px; }
@@ -162,9 +163,9 @@
           .fig { font: 600 15px/20px var(--mp-font); font-variant-numeric: tabular-nums; white-space: nowrap; }
           .krow .fig { white-space: normal; }
           .fig.ed { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px 0 12px; border-radius: 10px; background: var(--mp-surface-2); color: var(--mp-ink); box-sizing: border-box; max-width: 100%; white-space: normal; }
-          .fig.ed .ms { font-size: 16px; color: var(--mp-accent); }
+          .fig.ed .lc { width: 16px; height: 16px; color: var(--mp-accent); }
           .src { display: inline-flex; align-items: center; gap: 4px; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); background: var(--mp-surface-2); border-radius: 999px; padding: 2px 8px 2px 6px; }
-          .src .ms { font-size: 14px; }
+          .src .lc { width: 14px; height: 14px; }
           /* a plan opened: the dialog at the laptop, the sheet on a phone */
           .scrim { position: absolute; inset: 0; z-index: 40; background: rgba(5, 8, 14, 0.42); }
           .dlg { position: absolute; z-index: 41; left: 0; right: 0; margin: 0 auto; top: 72px; width: min(520px, calc(100% - 32px)); max-height: calc(100% - 104px); overflow: hidden; border-radius: 20px; background: var(--mp-surface); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; }
@@ -181,7 +182,7 @@
           .eng { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--mp-line); }
           .acts { display: flex; flex-wrap: wrap; gap: 8px; }
           .hist { display: flex; gap: 8px; align-items: flex-start; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
-          .hist .ms { font-size: 16px; margin-top: 1px; }
+          .hist .lc { width: 16px; height: 16px; margin-top: 1px; }
           /* the chat beside the page */
           .chatcol { width: 392px; flex: none; box-sizing: border-box; background: var(--mp-bg); border-left: 1px solid var(--mp-line); display: flex; flex-direction: column; }
           .chhd { display: flex; align-items: center; justify-content: space-between; padding: 22px 20px 10px; }
@@ -199,12 +200,12 @@
           .ccard-acts { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 16px 16px; }
           .ccard-tech { background: var(--mp-surface-2); padding: 12px 16px; font: 400 13px/19px ui-monospace, "SF Mono", Menlo, monospace; color: var(--mp-ink-2); }
           .cbtn { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 15px/20px var(--mp-font); background: var(--mp-surface-2); color: var(--mp-ink); }
-          .cbtn .ms { font-size: 18px; }
+          .cbtn .lc { width: 18px; height: 18px; }
           .chips { display: flex; flex-wrap: wrap; gap: 8px; }
           .wcomp { padding: 12px 16px 18px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--mp-line); }
           .wfield { min-height: 48px; border-radius: 24px; background: var(--mp-surface); box-shadow: inset 0 0 0 1px var(--mp-line); display: flex; align-items: center; gap: 8px; padding: 0 6px 0 18px; }
           .wsend { width: 36px; height: 36px; border-radius: 50%; background: var(--mp-accent); color: var(--mp-on-accent); display: grid; place-items: center; flex: none; }
-          .wsend .ms { font-size: 20px; }
+          .wsend .lc { width: 20px; height: 20px; }
           /* the chat beside every screen from about 1393 px, a sheet away from about 600 to 1393 px (on the web a drawer over the page, opened from the sidebar’s Chat), and a tab in a compact window (MA-301 c 1c); under 600, the compact chrome */
           @container app (max-width: 1392px) { .mp .chatcol { display: none; } }
           @container app (max-width: 599px) {
@@ -229,18 +230,18 @@
    (MA-279 1a), so the page has no currency control of its own. The title's menu is a popover on paper, never glass.
    From docs/design/reviews/MA-301, a · Projection header. */
 .ttlmenu { -webkit-appearance: none; appearance: none; margin: 0 0 0 -4px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 4px; border-radius: 10px; font: 700 34px/41px var(--mp-font); letter-spacing: -0.02em; color: var(--mp-ink); text-align: left; white-space: nowrap; }
-.ttlmenu .ms, .ttlmenu .lc { font-size: 26px; width: 26px; height: 26px; color: var(--mp-accent); }
+.ttlmenu .lc, .ttlmenu .lc { width: 26px; height: 26px; color: var(--mp-accent); }
 .ttlmenu:hover { background: var(--mp-surface-2); }
 .ttlmenu[aria-expanded="true"] { background: var(--mp-surface-2); }
-.ttlmenu[aria-expanded="true"] .ms, .ttlmenu[aria-expanded="true"] .lc { transform: rotate(180deg); }
+.ttlmenu[aria-expanded="true"] .lc, .ttlmenu[aria-expanded="true"] .lc { transform: rotate(180deg); }
 .ttlmenu:focus-visible, .hzc:focus-visible, .cornerbtn:focus-visible, .tm-i:focus-visible { outline: 3px solid var(--mp-focus); outline-offset: 2px; }
 .ttlwrap { position: relative; min-width: 0; }
 .herot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; margin: -8px -6px -2px 0; }
 .herot > :first-child { min-width: 0; }
 .cornerbtn { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 8px 0 14px; border-radius: 999px; background: var(--mp-hero-2); color: var(--mp-hero-ink); font: 600 15px/20px var(--mp-font); box-sizing: border-box; white-space: nowrap; }
-.cornerbtn .ms { font-size: 20px; }
+.cornerbtn .lc { width: 20px; height: 20px; }
 .cornerbtn.oncard { background: var(--mp-surface-2); color: var(--mp-ink); }
-.cornerbtn.oncard .ms { color: var(--mp-accent); }
+.cornerbtn.oncard .lc { color: var(--mp-accent); }
 .hzchips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
 .hzc { -webkit-appearance: none; appearance: none; margin: 0; border: 0; cursor: pointer; min-height: 44px; min-width: 60px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font: 600 15px/20px var(--mp-font); color: var(--mp-hero-ink-2); background: var(--mp-hero-2); box-sizing: border-box; white-space: nowrap; }
 .hzc.on { background: var(--mp-hero-ink); color: var(--mp-hero); }
@@ -250,7 +251,7 @@
 .tm-i { -webkit-appearance: none; appearance: none; margin: 0; border: 0; background: none; cursor: pointer; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; border-radius: 8px; font: 400 15px/20px var(--mp-font); color: var(--mp-ink); text-align: left; }
 .tm-i[aria-checked="true"] { font-weight: 600; }
 .tm-i:hover, .tm-i.hov { background: var(--mp-surface-2); }
-.tm-i .ms, .tm-i .lc { font-size: 20px; width: 20px; height: 20px; color: var(--mp-accent); }
+.tm-i .lc, .tm-i .lc { width: 20px; height: 20px; color: var(--mp-accent); }
 .tm-k { margin-left: auto; font: 600 12px/16px var(--mp-font); color: var(--mp-ink-2); }
 
 .cornerbtn .lc { width: 18px; height: 18px; }
@@ -282,25 +283,25 @@
                 <div class="dv-col">
                   <p class="dv-cap">{{ f.cap }}</p>
                   <div class="{{ f.root }}" data-mo-frame-root="1" data-screen-label="{{ f.cap }}">
-                    <sc-if value="{{ f.phone }}"><div class="psb" aria-hidden="true"><span class="ms ms-s" aria-hidden="true">lock</span><span>dashboard.mypaisapp.com</span></div></sc-if>
+                    <sc-if value="{{ f.phone }}"><div class="psb" aria-hidden="true"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.lock }}"></path></svg><span>dashboard.mypaisapp.com</span></div></sc-if>
                     <div class="mp-shell">
                       <aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
                         <div class="fx ac gap12 brand"><svg class="mpm" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path fill="var(--mp-hero)" d="M40.65 16.71 A19.5 19.5 0 1 1 31.29 7.35 A6.8 6.8 0 0 0 40.65 16.71 Z"></path><g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.84"><path d="M27.96 20.65 C27.65 18.1 25.98 16.55 23.74 16.55 C21.2 16.55 19.53 18.35 19.53 20.89 L19.53 28.83 C19.53 30.75 18.85 31.99 17.3 33.05"></path><path d="M17.3 33.05 L29.2 33.05"></path><path d="M16.8 25.73 L24.86 25.73"></path></g><circle fill="var(--mp-coral)" cx="37.07" cy="10.93" r="5.4"></circle></svg><span class="mp-hl">MyPaisa</span></div>
-                        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><span class="ms {{ n.fill }}" aria-hidden="true">{{ n.i }}</span>{{ n.l }}</a></sc-for>
+                        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="8"><a class="mp-side-i {{ n.on }}" href="#t1"><svg class="lc {{ n.fill }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[n.i] }}"></path></svg>{{ n.l }}</a></sc-for>
                         <div class="grow1"></div>
                         <div class="mp-foot mp-ink2 side-ft">Signed in with Apple · Arun, admin</div>
                       </aside>
                       <main class="mp-shell-main pmain">
                         <div class="mp-pagepad">
-                          <div class="ptop"><button class="iconbtn" aria-label="Back to Home"><span class="ms" aria-hidden="true">chevron_left</span></button><button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button></div>
+                          <div class="ptop"><button class="iconbtn" aria-label="Back to Home"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_left }}"></path></svg></button><button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></button></div>
                           <header class="mp-pagehead">
                             <div class="ttlwrap"><button type="button" class="ttlmenu" aria-haspopup="menu" aria-expanded="{{ f.texp }}" aria-label="Projection: Plans. Change view">Plans<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="mp-foot mp-ink2">{{ meta }}</div><sc-if value="{{ f.tmenu }}"><div class="tpop" role="menu" aria-label="Projection, the view"><sc-for list="{{ tviews }}" as="v" hint-placeholder-count="3"><button type="button" class="tm-i" role="menuitemradio" aria-checked="{{ v.p }}"><span>{{ v.l }}</span><sc-if value="{{ v.on }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></sc-if></button></sc-for></div></sc-if></div>
-                            <div class="hctl eyeh"><button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><span class="ms" aria-hidden="true">visibility</span></button></div>
+                            <div class="hctl eyeh"><button class="iconbtn" aria-label="Privacy mode" aria-pressed="false"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></button></div>
                           </header>
 
                           <div class="mp-card sumc">
                             <div class="rtx fx col gap2"><span class="mp-hl">7 plans · yours to change, as an admin</span><span class="mp-foot mp-ink2">{{ sumline }}</span></div>
-                            <button class="mp-btn mp-btn-tinted mp-btn-small addc"><span class="ms ms-s" aria-hidden="true">chat_bubble</span>Add in chat</button>
+                            <button class="mp-btn mp-btn-tinted mp-btn-small addc"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Add in chat</button>
                             <sc-if value="{{ f.b }}"><div class="sumctl"><div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div><button type="button" class="cornerbtn oncard" aria-haspopup="menu" aria-label="Money: Nominal. Change it">Nominal<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></div></sc-if>
                           </div>
 
@@ -311,14 +312,14 @@
                               <div class="tl-axis" aria-hidden="true"><span class="tl-sp"></span><div class="mp-chartaxis tl-ax"><sc-for list="{{ axis }}" as="x" hint-placeholder-count="5"><span class="{{ x.c }}" style="left: {{ x.left }}">{{ x.l }}</span></sc-for></div><span class="tl-sp"></span></div>
                               <sc-for list="{{ f.rows }}" as="r" hint-placeholder-count="7">
                                 <div class="tl-row {{ r.sel }}">
-                                  <div class="tl-n"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ r.i }}</span></span><span class="tl-t"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span></div>
+                                  <div class="tl-n"><span class="mp-icontile"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[r.i] }}"></path></svg></span><span class="tl-t"><span class="mp-sub mp-w6">{{ r.name }}</span><span class="mp-foot mp-ink2">{{ r.sub }}</span></span></div>
                                   <div class="tl-l" role="img" aria-label="{{ r.aria }}">
                                     <sc-for list="{{ grid }}" as="g" hint-placeholder-count="3"><span class="tl-g" style="left: {{ g }}"></span></sc-for>
                                     <sc-for list="{{ r.bars }}" as="m" hint-placeholder-count="1"><span class="tb {{ m.c }}" style="left: {{ m.l }}; width: {{ m.w }}" data-mo="barx"></span></sc-for>
                                     <sc-for list="{{ r.marks }}" as="m" hint-placeholder-count="1"><span class="tm {{ m.c }}" style="left: {{ m.l }}" data-mo="fade"></span></sc-for>
                                     <sc-if value="{{ r.past }}"><span class="tm past" aria-hidden="true" data-mo="fade"></span></sc-if>
                                   </div>
-                                  <button class="iconbtn tl-m" aria-label="{{ r.menu }}"><span class="ms" aria-hidden="true">more_horiz</span></button>
+                                  <button class="iconbtn tl-m" aria-label="{{ r.menu }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.more_horiz }}"></path></svg></button>
                                 </div>
                               </sc-for>
                               <div class="hzchips oncard" role="group" aria-label="Horizon"><sc-for list="{{ hz }}" as="h" hint-placeholder-count="4"><button type="button" class="hzc {{ h.on }}" aria-pressed="{{ h.p }}">{{ h.l }}</button></sc-for></div>
@@ -341,9 +342,9 @@
                                     <span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span>
                                     <span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span>
                                     <div class="mp-card fcard">
-                                      <div class="fhead"><span class="mp-icontile"><span class="ms ms-s" aria-hidden="true">{{ e.i }}</span></span><div class="rtx"><span class="mp-over mp-ink2"><span class="fdin">{{ e.date }} · </span>{{ e.over }}</span><span class="mp-hl">{{ e.t }}</span><span class="mp-foot mp-ink2">{{ e.s }}</span></div><sc-if value="{{ e.menu }}"><button class="iconbtn" aria-label="{{ e.menuL }}"><span class="ms" aria-hidden="true">more_horiz</span></button></sc-if></div>
+                                      <div class="fhead"><span class="mp-icontile"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[e.i] }}"></path></svg></span><div class="rtx"><span class="mp-over mp-ink2"><span class="fdin">{{ e.date }} · </span>{{ e.over }}</span><span class="mp-hl">{{ e.t }}</span><span class="mp-foot mp-ink2">{{ e.s }}</span></div><sc-if value="{{ e.menu }}"><button class="iconbtn" aria-label="{{ e.menuL }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.more_horiz }}"></path></svg></button></sc-if></div>
                                       <sc-if value="{{ e.words }}"><p class="fwords">“{{ e.words }}”</p></sc-if>
-                                      <sc-if value="{{ e.hasPills }}"><div class="fpills"><sc-for list="{{ e.pills }}" as="p" hint-placeholder-count="2"><span class="fig ed" role="button" tabindex="0">{{ p }}<span class="ms" aria-hidden="true">edit</span></span></sc-for></div></sc-if>
+                                      <sc-if value="{{ e.hasPills }}"><div class="fpills"><sc-for list="{{ e.pills }}" as="p" hint-placeholder-count="2"><span class="fig ed" role="button" tabindex="0">{{ p }}<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.edit }}"></path></svg></span></sc-for></div></sc-if>
                                       <span class="mp-foot mp-ink2">{{ e.foot }}</span>
                                     </div>
                                   </div>
@@ -352,7 +353,7 @@
                                   <div class="fitem">
                                     <span class="fdate mp-foot mp-w6 mp-ink2">{{ e.date }}</span>
                                     <span class="fsp"><span class="fnode {{ e.node }}" data-mo="fade"></span></span>
-                                    <div class="fnote"><span class="ms" aria-hidden="true">{{ e.i }}</span><span class="mp-foot"><span class="fdin">{{ e.date }} · </span>{{ e.t }}</span></div>
+                                    <div class="fnote"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[e.i] }}"></path></svg><span class="mp-foot"><span class="fdin">{{ e.date }} · </span>{{ e.t }}</span></div>
                                   </div>
                                 </sc-if>
                               </sc-for>
@@ -363,40 +364,40 @@
                       </main>
 
                       <aside class="chatcol" aria-label="Chat">
-                        <div class="chhd"><span class="mp-t3">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><span class="ms" aria-hidden="true">edit_square</span></button></div>
+                        <div class="chhd"><span class="mp-t3">Chat</span><button type="button" class="iconbtn" aria-label="New conversation"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.edit_square }}"></path></svg></button></div>
                         <div class="chat">
                           <div class="daysep">Today</div>
                           <div class="me">close my HDFC loan with the SBI FD when it matures</div>
                           <div class="me-time">20:58</div>
                           <div class="ai"><div class="ai-mark"><i></i></div><div class="ai-body"><div class="ai-text">Saved. It closes the loan in Mar 2029, when the FD matures; the Plans tab shows it.</div>
                             <div class="ccard">
-                              <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><span class="ms ms-s ms-fill" aria-hidden="true">check_circle</span>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div>
+                              <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>Added to the plan</span><span class="mp-hl">Close the HDFC home loan</span><span class="mp-sub mp-ink2">With the SBI FD, Mar 2029</span></div>
                               <div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:59 · in the chat</div>
-                              <div class="ccard-acts"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">view_timeline</span>See the Plans tab</button></div>
+                              <div class="ccard-acts"><button type="button" class="cbtn"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.view_timeline }}"></path></svg>See the Plans tab</button></div>
                             </div>
                           </div></div>
                         </div>
                         <div class="wcomp">
-                          <div class="chips"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">event</span>What's due</button><button type="button" class="cbtn"><span class="ms" aria-hidden="true">add_circle</span>Add anything</button></div>
-                          <div class="wfield"><span class="mp-body mp-ink2 rtx" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask about the Projection</span><button type="button" class="wsend" aria-label="Send"><span class="ms" aria-hidden="true">arrow_upward</span></button></div>
+                          <div class="chips"><button type="button" class="cbtn"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.event }}"></path></svg>What's due</button><button type="button" class="cbtn"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.add_circle }}"></path></svg>Add anything</button></div>
+                          <div class="wfield"><span class="mp-body mp-ink2 rtx" role="textbox" tabindex="0" aria-label="Message MyPaisa">Ask about the Projection</span><button type="button" class="wsend" aria-label="Send"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.arrow_upward }}"></path></svg></button></div>
                         </div>
                       </aside>
                     </div>
-                    <nav class="mp-tabbar mp-shell-tabs ptabs" aria-label="Sections"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><span class="ms {{ t.fill }}" aria-hidden="true">{{ t.i }}</span>{{ t.l }}</a></sc-for></nav>
+                    <nav class="mp-tabbar mp-shell-tabs ptabs" aria-label="Sections"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><a class="mp-tab {{ t.on }}" href="#t1"><svg class="lc {{ t.fill }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[t.i] }}"></path></svg>{{ t.l }}</a></sc-for></nav>
 
                     <!-- a plan opened: a dialog at the laptop, a sheet on a phone -->
                     <sc-if value="{{ f.sh }}">
                       <div class="scrim" data-mo="dim"></div>
                       <div class="{{ f.shc }}" role="dialog" aria-modal="true" aria-label="{{ f.sh.title }}" data-mo="sheet">
-                                                <div class="shd"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">{{ f.sh.i }}</span></span><div class="rtx"><span class="mp-t3">{{ f.sh.title }}</span><span class="mp-foot mp-ink2">{{ f.sh.eff }}</span></div><span class="mp-chip mp-neutral">Active</span><button class="iconbtn" aria-label="Close"><span class="ms" aria-hidden="true">close</span></button></div>
+                                                <div class="shd"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[f.sh.i] }}"></path></svg></span><div class="rtx"><span class="mp-t3">{{ f.sh.title }}</span><span class="mp-foot mp-ink2">{{ f.sh.eff }}</span></div><span class="mp-chip mp-neutral">Active</span><button class="iconbtn" aria-label="Close"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.close }}"></path></svg></button></div>
                         <div class="shb">
                           <div class="qbox"><span class="mp-over mp-ink2">Your words</span><span class="fwords">“{{ f.sh.words }}”</span><span class="mp-foot mp-ink2">{{ f.sh.wmeta }}</span></div>
                           <div class="fx col"><span class="mp-over mp-ink2">Tap a figure to correct it</span>
-                            <sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="4"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><sc-if value="{{ r.ed }}"><span class="fig ed" role="button" tabindex="0">{{ r.v }}<span class="ms" aria-hidden="true">edit</span></span></sc-if><sc-if value="{{ r.ro }}"><span class="fig">{{ r.v }}</span></sc-if><sc-if value="{{ r.src }}"><span class="src"><span class="ms" aria-hidden="true">{{ r.si }}</span>{{ r.src }}</span></sc-if></span></div></sc-for>
+                            <sc-for list="{{ f.sh.rows }}" as="r" hint-placeholder-count="4"><div class="krow"><span class="mp-sub mp-ink2">{{ r.k }}</span><span><sc-if value="{{ r.ed }}"><span class="fig ed" role="button" tabindex="0">{{ r.v }}<svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.edit }}"></path></svg></span></sc-if><sc-if value="{{ r.ro }}"><span class="fig">{{ r.v }}</span></sc-if><sc-if value="{{ r.src }}"><span class="src"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[r.si] }}"></path></svg>{{ r.src }}</span></sc-if></span></div></sc-for>
                           </div>
                           <div class="eng"><span class="mp-over mp-ink2">From the engine · run of 20:59</span><sc-for list="{{ f.sh.eng }}" as="x" hint-placeholder-count="2"><span class="mp-sub">{{ x }}</span></sc-for></div>
-                          <div class="acts"><button type="button" class="cbtn"><span class="ms" aria-hidden="true">pause</span>Pause</button><button type="button" class="cbtn"><span class="ms" aria-hidden="true">event_busy</span>End it</button><button type="button" class="cbtn"><span class="ms" aria-hidden="true">chat_bubble</span>Ask in chat</button></div>
-                          <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><span class="ms" aria-hidden="true">fact_check</span><span>{{ h }}</span></div></sc-for></div>
+                          <div class="acts"><button type="button" class="cbtn"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.pause }}"></path></svg>Pause</button><button type="button" class="cbtn"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.event_busy }}"></path></svg>End it</button><button type="button" class="cbtn"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat_bubble }}"></path></svg>Ask in chat</button></div>
+                          <div class="fx col gap4"><span class="mp-over mp-ink2">History</span><sc-for list="{{ f.sh.hist }}" as="h" hint-placeholder-count="2"><div class="hist"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.fact_check }}"></path></svg><span>{{ h }}</span></div></sc-for></div>
                         </div>
                       </div>
                     </sc-if>
@@ -522,11 +523,15 @@
             sumline: 'On them, the middle path reaches £2,923,000 in 2046; 8 in 10 runs end between £2,188,000 and £4,058,000.',
             ptabs: ['Net worth', 'Plans', 'Budget forecast'].map((l) => ({ l, on: l === 'Plans' ? 'on' : '', p: l === 'Plans' ? 'true' : 'false' })),
             hz: ['5 yrs', '10 yrs', '20 yrs', '30 yrs'].map((l) => ({ l, on: l === '20 yrs' ? 'on' : '', p: l === '20 yrs' ? 'true' : 'false' })),
-            nav: [['home', 'Home'], ['account_balance_wallet', 'Assets'], ['credit_card', 'Debts'], ['event_note', 'Budget'], ['show_chart', 'Projection'], ['history', 'Activity'], ['fact_check', 'Audit'], ['person', 'You']].map((n) => ({ i: n[0], l: n[1], on: n[1] === 'Projection' ? 'on' : '', fill: n[1] === 'Projection' ? 'ms-fill' : '' })),
-            tabs: [['chat_bubble', 'Chat'], ['home', 'Home'], ['insights', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Home' ? 'on' : '', fill: t[1] === 'Home' ? 'ms-fill' : '' }))
+            nav: [['house', 'Home'], ['wallet', 'Assets'], ['landmark', 'Debts'], ['chart-pie', 'Budget'], ['trending-up', 'Projection'], ['activity', 'Activity'], ['fact_check', 'Audit'], ['person', 'You']].map((n) => ({ i: n[0], l: n[1], on: n[1] === 'Projection' ? 'on' : '', fill: n[1] === 'Projection' ? '' : '' })),
+            tabs: [['message-circle', 'Chat'], ['house', 'Home'], ['activity', 'Activity'], ['account_circle', 'You']].map((t) => ({ i: t[0], l: t[1], on: t[1] === 'Home' ? 'on' : '', fill: t[1] === 'Home' ? '' : '' }))
           };
         }
       }
-    </script>
+    
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
+</script>
   </body>
 </html>

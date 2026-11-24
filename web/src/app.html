@@ -9,11 +9,20 @@
 		<link rel="icon" href="%sveltekit.assets%/icons/icon.svg" type="image/svg+xml" />
 		<link rel="apple-touch-icon" href="%sveltekit.assets%/icons/icon.svg" />
 		<link rel="manifest" href="%sveltekit.assets%/manifest.webmanifest" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+		<!-- The fonts are the app's own (MA-340): Inter's Latin file and the Nunito figures, preloaded; nothing from Google. -->
 		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400..600,0..1,0&display=swap"
+			rel="preload"
+			href="%sveltekit.assets%/fonts/inter-latin-wght-normal.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="preload"
+			href="%sveltekit.assets%/fonts/nunito-figures-latin-800.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin="anonymous"
 		/>
 		<title>MyPaisa</title>
 		%sveltekit.head%

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MyPaisa DS v1: Components</title>
     <script src="./support.js"></script>
+<script src="../ds-v1/lucide.js"></script>
   </head>
   <body>
     <x-dc>
@@ -91,9 +92,9 @@
                 <div class="spec w420">
                   <span class="lbl">With an icon · icon 22, gap 8, icon first</span>
                   <div class="fx ac gap12 wrap">
-                    <a class="mp-btn mp-btn-primary" href="#buttons"><span class="ms" aria-hidden="true">chat</span>Ask in the chat</a>
-                    <a class="mp-btn mp-btn-tinted" href="#buttons"><span class="ms" aria-hidden="true">open_in_new</span>Open report</a>
-                    <a class="mp-btn mp-btn-tinted mp-btn-small" href="#buttons"><span class="ms ms-s" aria-hidden="true">chat</span>Open chat</a>
+                    <a class="mp-btn mp-btn-primary" href="#buttons"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat }}"></path></svg>Ask in the chat</a>
+                    <a class="mp-btn mp-btn-tinted" href="#buttons"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.open_in_new }}"></path></svg>Open report</a>
+                    <a class="mp-btn mp-btn-tinted mp-btn-small" href="#buttons"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chat }}"></path></svg>Open chat</a>
                   </div>
                   <span class="lbl">Full width, in a card · phone width 358</span>
                   <div class="mp-card fx col gap12 w358" style="box-sizing: border-box">
@@ -140,8 +141,8 @@
                   </div>
                   <span class="lbl">Neutral and alert · .mp-neutral · .mp-alertchip</span>
                   <div class="fx ac gap8 wrap">
-                    <span class="mp-chip mp-neutral">ISA</span><span class="mp-chip mp-neutral">GIA</span><span class="mp-chip mp-neutral">Thu close</span><span class="mp-chip mp-neutral"><span class="ms ms-s" aria-hidden="true">lock</span>Audited</span>
-                    <span class="mp-chip mp-alertchip"><span class="ms ms-s" aria-hidden="true">warning</span>Past your Groceries alert</span>
+                    <span class="mp-chip mp-neutral">ISA</span><span class="mp-chip mp-neutral">GIA</span><span class="mp-chip mp-neutral">Thu close</span><span class="mp-chip mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.lock }}"></path></svg>Audited</span>
+                    <span class="mp-chip mp-alertchip"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.warning }}"></path></svg>Past your Groceries alert</span>
                   </div>
                   <span class="lbl">On the hero · .upchip 7.9:1 / 7.1:1 · .dnchip 7.6:1 / 6.8:1</span>
                   <div class="mp-hero herostrip fx ac jb">
@@ -191,8 +192,8 @@
                   </div>
                   <span class="lbl">In a row · the row is the 44 pt target</span>
                   <div class="mp-group">
-                    <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">visibility_off</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink2">Hides pounds, keeps percentages</div></div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
-                    <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">visibility</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink2">Off: pounds are shown</div></div><button class="mp-switch swbtn" role="switch" aria-checked="false" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                    <div class="mp-row"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility_off }}"></path></svg></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink2">Hides pounds, keeps percentages</div></div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                    <div class="mp-row"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility }}"></path></svg></span><div style="flex: 1; min-width: 0"><div class="mp-body">Privacy mode</div><div class="mp-foot mp-ink2">Off: pounds are shown</div></div><button class="mp-switch swbtn" role="switch" aria-checked="false" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
                   </div>
                 </div>
               </div>
@@ -242,9 +243,9 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">Settings</span></div>
                     <div class="mp-group">
-                      <div class="mp-row"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">visibility_off</span></span><div class="mp-body" style="flex: 1">Privacy mode</div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
-                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">notifications</span></span><div style="flex: 1; min-width: 0"><div class="mp-body">Alert floor</div><div class="mp-foot mp-ink2">Change it in the chat</div></div><span class="mp-body mp-ink2">2%</span><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
-                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><span class="ms ms-s" aria-hidden="true">lock</span></span><div class="mp-body" style="flex: 1">Members</div><span class="mp-body mp-ink2">You, Asha</span><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
+                      <div class="mp-row"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.visibility_off }}"></path></svg></span><div class="mp-body" style="flex: 1">Privacy mode</div><button class="mp-switch on swbtn" role="switch" aria-checked="true" aria-label="Privacy mode"><span class="mp-switch-k"></span></button></div>
+                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.notifications }}"></path></svg></span><div style="flex: 1; min-width: 0"><div class="mp-body">Alert floor</div><div class="mp-foot mp-ink2">Change it in the chat</div></div><span class="mp-body mp-ink2">2%</span><svg class="lc lc-s mp-ink3" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg></a>
+                      <a class="mp-row rowlink" href="#rows"><span class="mp-icontile mp-neutral"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.lock }}"></path></svg></span><div class="mp-body" style="flex: 1">Members</div><span class="mp-body mp-ink2">You, Asha</span><svg class="lc lc-s mp-ink3" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg></a>
                     </div>
                   </div>
                 </div>
@@ -253,9 +254,9 @@
                   <div>
                     <div class="mp-section"><span class="mp-over mp-ink3">NASDAQ 100</span></div>
                     <div class="mp-group">
-                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Returns from the dated ledger</div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
-                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Every dated buy</div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
-                      <a class="mp-row rowlink" href="#rows"><div style="flex: 1; min-width: 0"><div class="mp-body">Audit history</div><div class="mp-foot mp-ink2">21 rows, the last Fri 23 Oct</div></div><span class="ms ms-s mp-ink3" aria-hidden="true">chevron_right</span></a>
+                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Returns from the dated ledger</div><svg class="lc lc-s mp-ink3" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg></a>
+                      <a class="mp-row rowlink" href="#rows"><div class="mp-body" style="flex: 1">Every dated buy</div><svg class="lc lc-s mp-ink3" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg></a>
+                      <a class="mp-row rowlink" href="#rows"><div style="flex: 1; min-width: 0"><div class="mp-body">Audit history</div><div class="mp-foot mp-ink2">21 rows, the last Fri 23 Oct</div></div><svg class="lc lc-s mp-ink3" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg></a>
                     </div>
                   </div>
                 </div>
@@ -298,7 +299,7 @@
                       </div>
                       <div class="mp-seg" role="group" aria-label="Period"><button class="mp-seg-i" aria-pressed="false">1M</button><button class="mp-seg-i on" aria-pressed="true">6M</button><button class="mp-seg-i" aria-pressed="false">1Y</button><button class="mp-seg-i" aria-pressed="false">All</button></div>
                     </div>
-                    <div class="fx ac gap8"><button class="iconbtn" aria-label="Privacy mode"><span class="ms" aria-hidden="true">{{ h.eye }}</span></button><span class="mp-foot mp-ink2">{{ h.eyeNote }}</span></div>
+                    <div class="fx ac gap8"><button class="iconbtn" aria-label="Privacy mode"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[h.eye] }}"></path></svg></button><span class="mp-foot mp-ink2">{{ h.eyeNote }}</span></div>
                   </div>
                 </sc-for>
                 <div class="spec w358">
@@ -339,9 +340,9 @@
                     <div class="fx col gap6">
                       <span class="lbl">{{ w.tone }}</span>
                       <a class="mp-card fx ac gap12 rowlink" href="#cards" style="padding: 14px 16px">
-                        <span class="ms ms-fill ms-l {{ w.icls }}" aria-hidden="true">{{ w.icon }}</span>
+                        <svg class="lc lc-l {{ w.icls }}" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[w.icon] }}"></path></svg>
                         <div style="flex: 1; min-width: 0"><div class="mp-hl">{{ w.title }}</div><div class="mp-foot mp-ink2">{{ w.body }}</div></div>
-                        <span class="ms mp-ink3" aria-hidden="true">chevron_right</span>
+                        <svg class="lc mp-ink3" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.chevron_right }}"></path></svg>
                       </a>
                     </div>
                   </sc-for>
@@ -368,7 +369,7 @@
                 </div>
                 <div class="spec w420">
                   <span class="lbl">On the browser · a way on instead of a chevron</span>
-                  <div class="mp-card fx ac gap12"><span class="ms ms-fill mp-up ms-l" aria-hidden="true">check_circle</span><div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink2">Next check-in Sun 1 Nov. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#cards">Open chat</a></div>
+                  <div class="mp-card fx ac gap12"><svg class="lc mp-up lc-l" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg><div style="flex: 1; min-width: 0"><div class="mp-hl">Nothing to do this week</div><div class="mp-foot mp-ink2">Next check-in Sun 1 Nov. Ask anything in the chat.</div></div><a class="mp-btn mp-btn-tinted mp-btn-small" href="#cards">Open chat</a></div>
                 </div>
               </div>
             </div>
@@ -396,7 +397,7 @@
               <div class="specs">
                 <sc-for list="{{ privacy }}" as="p" hint-placeholder-count="2">
                   <div class="spec w358">
-                    <div class="fx ac jb"><span class="lbl">{{ p.label }}</span><button class="iconbtn" aria-label="{{ p.btn }}"><span class="ms" aria-hidden="true">{{ p.eye }}</span></button></div>
+                    <div class="fx ac jb"><span class="lbl">{{ p.label }}</span><button class="iconbtn" aria-label="{{ p.btn }}"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC[p.eye] }}"></path></svg></button></div>
                     <div class="mp-group">
                       <sc-for list="{{ p.rows }}" as="h" hint-placeholder-count="3">
                         <div class="mp-row" style="padding-top: 10px; padding-bottom: 10px">
@@ -496,6 +497,10 @@
           };
         }
       }
-    </script>
+    
+
+/* MA-340: the icons are Lucide, drawn from the one map in ../ds-v1/lucide.js (scripts/board_icons.py). */
+Component.prototype.renderVals = (function (own) { return function () { return Object.assign({}, own.call(this), { LUC: window.MP_LUC }); }; })(Component.prototype.renderVals);
+</script>
   </body>
 </html>

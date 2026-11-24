@@ -25,7 +25,8 @@ copy() {
   mkdir -p "$dir/scripts" "$dir/backend"
   cp scripts/web_gates.sh "$dir/scripts/"
   cp backend/openapi.json "$dir/backend/"
-  mkdir -p "$dir/docs/design/ds-v1" && cp docs/design/ds-v1/tokens.css docs/design/ds-v1/motion.css "$dir/docs/design/ds-v1/"
+  # the whole of DS v1: the web tests read its tokens, motion, ios.css, fonts.css and font files (MA-340)
+  mkdir -p "$dir/docs/design" && cp -R docs/design/ds-v1 "$dir/docs/design/"
   locked cp -c -R web "$dir/web" 2>/dev/null || locked cp -R web "$dir/web"
   rm -rf "$dir/web/build" "$dir/web/.svelte-kit"
   echo "$dir"

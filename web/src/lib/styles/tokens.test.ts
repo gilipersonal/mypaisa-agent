@@ -4,10 +4,11 @@ import { describe, expect, it } from 'vitest';
 
 const here = (p: string) => readFileSync(fileURLToPath(new URL(p, import.meta.url)), 'utf8');
 const ds = (p: string) => here(`../../../../docs/design/ds-v1/${p}`);
-const FONTS = /^@import url\("https:\/\/fonts\.googleapis\.com[^\n]*\n/m;
+const FONTS = /^@import url\("\.\.\/ds-v1\/fonts\.css"\);\n/m;
 
 describe('the web app uses DS v1 as drawn', () => {
-	it('tokens.css is DS v1 tokens.css, but for the font import app.html makes', () => {
+	it('tokens.css is DS v1 tokens.css, but for the boards’ font import (the app loads fonts.css itself)', () => {
+		expect(ds('tokens.css')).toMatch(FONTS);
 		expect(here('./tokens.css')).toBe(ds('tokens.css').replace(FONTS, ''));
 	});
 
