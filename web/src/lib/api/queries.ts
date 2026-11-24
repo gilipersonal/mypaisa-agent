@@ -1,6 +1,7 @@
 /** The TanStack Query definitions over the api client, shared by both doors (MA-165): one place for each query's key and
  * its fetch. Plain option objects with no framework import, so Svelte Query and React Query take the same definitions. */
 import type { components } from '../api-types.d.ts';
+import { emptyTimeline, type Timeline } from '../chat/timeline.ts';
 import { toApiError, type ApiClient } from './client.ts';
 
 export type Liveness = components['schemas']['LivenessOut'];
@@ -10,6 +11,18 @@ export const keys = {
 	health: ['health'] as const,
 	ready: ['health', 'ready'] as const
 };
+
+/** The chat's conversation (MA-199): filled by the stream's frames, never fetched, so it never goes stale. */
+export const chatKeys = { timeline: ['chat', 'timeline'] as const };
+
+export function chatTimelineQuery() {
+	return {
+		queryKey: chatKeys.timeline,
+		queryFn: (): Promise<Timeline> => Promise.resolve(emptyTimeline()),
+		staleTime: Number.POSITIVE_INFINITY,
+		gcTime: Number.POSITIVE_INFINITY
+	};
+}
 
 /** A 503 is an answer only when its body is the api's readiness report, not a CDN's error page. */
 function isReadiness(body: unknown): body is Readiness {
