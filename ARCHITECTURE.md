@@ -3013,8 +3013,14 @@ shared between the two except the account, the DNS zone and the certificate.
 
 **Kept apart by IAM, not by trust.** Each Lambda's role names only its own
 environment's resources. The developer's role works in dev; an explicit deny
-keeps it out of anything tagged `env=prod`, so a slip on a laptop cannot touch
-the household's data. Tokens from one pool are refused by the other
+keeps it out of anything tagged `env=prod`, so a slip on a laptop cannot read
+or change the household's data. The developer role's one exception to its
+`env=prod` deny is `ssm:PutParameter` on `/mypaisa-agent/prod/*`, for Arun to
+put prod's secret values by hand; it never reads, decrypts, deletes or tags a
+prod parameter, and Claude never runs it (Arun, 24 Nov 2026, MA-26). The
+exception is cut out of the deny itself, since an explicit deny beats any
+allow; what it leaves open is that a wrong put could overwrite a prod secret
+(never read one), which CloudTrail records and Arun puts right by hand. Tokens from one pool are refused by the other
 environment's api. By default across phases 0 to 15 both environments run
 without custom VPCs (`enable_vpc_lockdown = false`, £3.50/month); an optional
 seven-layer VPC enterprise lockdown (`mypaisa-dev-vpc` `10.10.0.0/16` and

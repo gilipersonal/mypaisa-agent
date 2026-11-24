@@ -326,8 +326,9 @@ read -r ID && aws ssm put-parameter --overwrite --name /mypaisa-agent/dev/google
 
 Do the same for prod under `/mypaisa-agent/prod/...`, with prod's own keys, Services ID and Google clients and the
 bundle id `com.mypaisapp.agent`, once prod's first release has made those parameters (MA-142). The developer role
-is denied anything tagged `env=prod`, so the identity that puts prod's values is still to be named (open on MA-21,
-MA-26, MA-142 and MA-143). Each environment has its own app, keys, Services ID and Google clients, so nothing done
+is denied anything tagged `env=prod` but one thing: the developer role's one exception to its `env=prod` deny is
+`ssm:PutParameter` on `/mypaisa-agent/prod/*`, for Arun to put prod's secret values by hand; it never reads,
+decrypts, deletes or tags a prod parameter, and Claude never runs it (Arun, 24 Nov 2026, MA-26). Each environment has its own app, keys, Services ID and Google clients, so nothing done
 in dev reaches the household.
 
 ### 6. The Anthropic API key

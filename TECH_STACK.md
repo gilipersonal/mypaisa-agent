@@ -126,7 +126,7 @@ plumbing, and every piece a member looks at is SwiftUI.
 | AWS Budgets | The backstop, in Terraform: one cost budget at the hard limit (£75 by default, in dollars) alerting on actual and forecast spend, with an action that stops dev's schedules; monitoring and the first two action-enabled budgets are free. The working cap (£50) and its steps are app settings (`ARCHITECTURE.md` §14.2) |
 | Cost Explorer | Read once a day: month-to-date cost by service and `env` tag, and the forecast, for the app's AWS meter; about $0.01 a request |
 | SNS | `mypaisa-<env>-admin-alerts`: the admin's email subscribed (address in SSM, subscription by Terraform); the first 1,000 email notifications a month are free |
-| IAM | One execution role per function and environment (only its own table, bucket and SSM path); three OIDC roles for CI pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy` on `main`, `ci-prod-deploy` on `main` and the `prod` environment); a developer role for dev with an explicit deny on anything tagged `env=prod`; all in Terraform, nothing by hand |
+| IAM | One execution role per function and environment (only its own table, bucket and SSM path); three OIDC roles for CI pinned to this repository's numeric id (`ci-plan`, `ci-dev-deploy` on `main`, `ci-prod-deploy` on `main` and the `prod` environment); a developer role for dev with an explicit deny on anything tagged `env=prod`, whose one exception is `ssm:PutParameter` on `/mypaisa-agent/prod/*` for Arun to put prod's secret values by hand (MA-26); all in Terraform, nothing by hand |
 
 ## 6. Infrastructure and tooling
 
