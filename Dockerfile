@@ -14,11 +14,11 @@
 #
 # Every base is pinned by digest; Dependabot moves them (.github/dependabot.yml).
 
-FROM ghcr.io/astral-sh/uv:0.12.9@sha256:8b940d3a9d65bed080436972241af2e21c84b5e8c9193f7014ed71479ee795ff AS uv
+FROM ghcr.io/astral-sh/uv:0.13.9@sha256:d3b601f0c7b118bc1753febf7c41cc80981df678445e0254284eecf84db79a7d AS uv
 FROM public.ecr.aws/awsguru/aws-lambda-adapter:1.1.0@sha256:17cfd08eff1dfea3f6a9a1e9c65fdac80aa4919b6085e746615530f43f57d2f1 AS adapter
 
 # --- build: the locked runtime dependencies into /opt/deps, the package into /opt/pkg ---------------------------------
-FROM public.ecr.aws/lambda/python:3.14@sha256:ada43e932bb0126f892fd935622eaab1199129865d7164ae66a06bcbbd975be0 AS build
+FROM public.ecr.aws/lambda/python:3.15@sha256:ff118eaa5fb0e4a322ae28c5b8a7337f5396eaca5f34d613b904b444f8a32dc0 AS build
 COPY --from=uv /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -44,12 +44,12 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 RUN PYTHONPATH=/opt/pkg:/opt/deps /var/lang/bin/python3 -c "import mypaisa_agent.api.app"
 
 # --- lambda ----------------------------------------------------------------------------------------------------------
-FROM public.ecr.aws/lambda/python:3.14@sha256:ada43e932bb0126f892fd935622eaab1199129865d7164ae66a06bcbbd975be0 AS lambda
+FROM public.ecr.aws/lambda/python:3.15@sha256:ff118eaa5fb0e4a322ae28c5b8a7337f5396eaca5f34d613b904b444f8a32dc0 AS lambda
 COPY --from=build /opt/deps ${LAMBDA_TASK_ROOT}
 COPY --from=build /opt/pkg ${LAMBDA_TASK_ROOT}
 
 # --- stream ----------------------------------------------------------------------------------------------------------
-FROM public.ecr.aws/lambda/python:3.14@sha256:ada43e932bb0126f892fd935622eaab1199129865d7164ae66a06bcbbd975be0 AS stream
+FROM public.ecr.aws/lambda/python:3.15@sha256:ff118eaa5fb0e4a322ae28c5b8a7337f5396eaca5f34d613b904b444f8a32dc0 AS stream
 COPY --from=adapter /lambda-adapter /opt/extensions/lambda-adapter
 COPY --from=build /opt/deps ${LAMBDA_TASK_ROOT}
 COPY --from=build /opt/pkg ${LAMBDA_TASK_ROOT}
