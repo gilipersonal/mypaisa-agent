@@ -1,4 +1,5 @@
-# The whole stack, once (ARCHITECTURE §17.4). infra/dev and infra/prod call it with their own settings.
+# The whole stack, once, but its SSM parameters (ARCHITECTURE §17.4). infra/dev and infra/prod call it with their own
+# settings; the parameters are infra/modules/secrets' (MA-25).
 #
 # 1.11 and the AWS provider 5.87 are the floors for write-only arguments (value_wo), so no secret reaches state
 # (MA-159).

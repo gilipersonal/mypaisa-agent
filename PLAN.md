@@ -241,7 +241,9 @@ Claude's:
   `dev` and `prod` GitHub environments, prod needing your approval; the
   developer role with its explicit deny on `env=prod`, its one exception
   `ssm:PutParameter` on `/mypaisa-agent/prod/*` for you to put prod's
-  secret values by hand (MA-26); the zone and the
+  secret values by hand (MA-26); the SSM parameters in roots of their own,
+  `infra/dev-secrets` and `infra/prod-secrets`, so `ci-plan` never plans one
+  and is denied every parameter value and every record (MA-25); the zone and the
   certificate looked up by name (`ARCHITECTURE.md` §17.2); AWS Budgets at £75
   as the backstop behind the app's £50 cap (`ARCHITECTURE.md` §14.2, MA-137).
 - **The watch tower (MA-231, `ARCHITECTURE.md` §9):** each environment's

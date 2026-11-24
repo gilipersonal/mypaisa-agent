@@ -1,6 +1,5 @@
 locals {
   prefix    = "mypaisa-${var.env}"
-  ssm_path  = "/mypaisa-agent/${var.env}"
   protected = var.protect_data
 }
 

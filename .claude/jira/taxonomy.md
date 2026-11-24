@@ -57,7 +57,7 @@ and the SwiftUI pieces, each hosted through a Fabric component, in
 | Path | Epic |
 | --- | --- |
 | `pyproject.toml`, `.github/**`, `infra/bootstrap/`, `CLAUDE.md` | MA-9 |
-| `infra/modules/mypaisa/`, `infra/dev/`, `infra/prod/` | MA-9, then the story that adds the resource |
+| `infra/modules/mypaisa/`, `infra/dev/`, `infra/prod/`, `infra/modules/secrets/`, `infra/dev-secrets/`, `infra/prod-secrets/` | MA-9, then the story that adds the resource |
 | `ios/`: the app's skeleton and configurations, the shell's skeleton in `ios/src/`, the first SwiftUI piece and its Fabric host, `PERFORMANCE.md` and its benches (MA-165), the tests and lint config, the iOS CI and the TestFlight lanes in `.github/workflows/` | MA-9 |
 | `web/`: the SvelteKit skeleton and its CI, and the shared TypeScript in `web/src/lib/` | MA-9 |
 | `scripts/local/` (the local stack and its scripted agent), `scripts/seed.sh` and the seed from the design figure set (MA-110) | MA-9 |

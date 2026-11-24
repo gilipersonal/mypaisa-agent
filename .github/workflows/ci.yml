@@ -222,6 +222,115 @@ jobs:
       - name: Secrets, SAST, dependencies and workflows
         run: scripts/security_scan.sh
 
+  infra:
+    name: Infra
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: "1.16.0"
+          terraform_wrapper: false
+      # No AWS credentials: every root formatted and valid, tflint, trivy's HIGH and CRITICAL misconfigurations, and
+      # tf.sh's refusals; tflint and trivy pinned and checksum-checked (MA-25).
+      - name: Format, validate, tflint, trivy and tf.sh's refusals
+        run: scripts/infra_gates.sh
+
+  # The plan for infra/dev and infra/prod on every pull request from this repository that touches infra/ (MA-25,
+  # ARCHITECTURE §17.4). It alone holds id-token, to assume mypaisa-ci-plan, which reads configuration and never a
+  # parameter's value or a record: the SSM parameters live in infra/dev-secrets and infra/prod-secrets, which no PR
+  # plans (Arun, 24 Nov 2026). A fork's PR gets no OIDC token, so it is not planned here. Nothing under infra/ changed:
+  # nothing to plan, and the job passes having said so. Until infra/bootstrap is applied ci-plan does not exist and a
+  # PR that touches infra/ fails here.
+  plan:
+    name: Terraform plan
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      planned: ${{ steps.changes.outputs.infra }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # The merge commit and its first parent, the base, so the PR's own change can be read.
+          fetch-depth: 2
+      - name: Does the PR change infra/?
+        id: changes
+        run: |
+          if git diff --quiet HEAD^1 HEAD -- infra/; then
+            echo "infra=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing under infra/ changed: no plan." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "infra=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.changes.outputs.infra == 'true'
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: "1.16.0"
+          terraform_wrapper: false
+      - if: steps.changes.outputs.infra == 'true'
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::545595341442:role/mypaisa-ci-plan
+          role-session-name: mypaisa-ci-plan-${{ github.run_id }}
+          aws-region: us-east-1
+      - name: Plan dev and prod
+        if: steps.changes.outputs.infra == 'true'
+        run: |
+          for root in dev prod; do
+            infra/scripts/tf.sh "$root" plan -input=false -lock-timeout=120s -no-color -out="$RUNNER_TEMP/$root.tfplan"
+            infra/scripts/tf.sh "$root" show -no-color "$RUNNER_TEMP/$root.tfplan" > "$RUNNER_TEMP/plan-$root.txt"
+          done
+      - name: Write the plan comment
+        if: steps.changes.outputs.infra == 'true'
+        env:
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 scripts/plan_comment.py "$SHA" "$RUNNER_TEMP/plan-dev.txt" "$RUNNER_TEMP/plan-prod.txt" > "$RUNNER_TEMP/plan-comment.md"
+      - if: steps.changes.outputs.infra == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: plan-comment
+          path: ${{ runner.temp }}/plan-comment.md
+          retention-days: 7
+
+  # Posts the plan on the PR, in one comment it updates on every push. It holds pull-requests: write and no AWS role,
+  # so the job that can write to the PR never holds a token for AWS, and the one with id-token cannot write to it.
+  plan-comment:
+    name: Terraform plan comment
+    needs: plan
+    if: needs.plan.outputs.planned == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: plan-comment
+          path: ${{ runner.temp }}/plan
+      - name: Post or update the plan comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          body="$RUNNER_TEMP/plan/plan-comment.md"
+          id=$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- mypaisa-terraform-plan -->"))) | .id' | head -n 1)
+          if [ -n "$id" ]; then
+            gh api --method PATCH "repos/$REPO/issues/comments/$id" -F "body=@$body" > /dev/null
+          else
+            gh api --method POST "repos/$REPO/issues/$PR/comments" -F "body=@$body" > /dev/null
+          fi
+
   workflow-lint:
     name: Workflow lint
     runs-on: ubuntu-latest
