@@ -226,7 +226,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "17.4",
@@ -1929,7 +1929,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "17.4",
@@ -5715,7 +5715,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "9.3",
@@ -5770,7 +5770,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -5884,7 +5884,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Container images are built on GitHub's free arm64 runner and stored in ECR by digest, the same digest in dev and prod",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "14",
@@ -5912,7 +5912,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds",
-      "status": "To Do",
+      "status": "Done",
       "labels": [
         "manual",
         "retired"
@@ -8482,7 +8482,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Dependabot moves the Lambda images' Python and uv to new minor versions, away from the 3.14 and 0.12 the backend is tested on",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "bug"
       ],
@@ -8497,6 +8497,24 @@
       "code": [
         ".github/dependabot.yml"
       ]
+    },
+    {
+      "key": "MA-351",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "CodeQL scans Swift only when a pull request changes ios/, from a cached build, so other pull requests no longer wait about 28 minutes",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Filed 24 Nov 2026 (Arun: \"why is Analyze Swift takes so much time ?\" ... \"Yes, file it\"). Measured on PR #129: 10 min queued for a macos-latest runner, 17 min 41 s of CodeQL autobuild tracing a cold Xcode build of ios/MyPaisa.xcodeproj, 1 min 20 s of analysis; PR #128's took 17 min, and main's at 17:00 was cancelled at exactly 15 min. CodeQL's default setup (MA-346) scans every language on every pull request and cannot be path-filtered. The story moves CodeQL to an advanced-setup workflow: Swift on a pull request only when ios/ changes (a skipped run reports success), on every push to main and weekly; a manual build of only the Swift CodeQL needs, from the SPM and DerivedData caches; an explicit timeout; the same query suite and the Analyze (<language>) check names the merge rule reads. Estimate 0 for now (Arun, 24 Nov 2026: \"0 for now\"): about half a day of work, estimated when the story starts, so no phase date moves while it waits.",
+      "open": [],
+      "code": []
     }
   ],
   "others": [
