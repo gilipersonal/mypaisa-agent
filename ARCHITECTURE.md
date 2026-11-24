@@ -3165,7 +3165,10 @@ resource (`.claude/rules/aws-changes.md`).
 CI reaches AWS through the account's GitHub OIDC provider with four roles:
 `ci-plan` (read only, any branch, and it reads configuration, never
 contents: an explicit deny refuses it every parameter value in the account,
-`kms:Decrypt`, every S3 object but the two plan states and the lock files,
+every `kms:Decrypt` but Lambda's own (`kms:ViaService`
+`lambda.us-east-1.amazonaws.com`, so a refresh reads each function's
+environment, which holds no secret; Arun, 24 Nov 2026, MA-349), every S3
+object but the two plan states and the lock files,
 DynamoDB items, Cognito users, log lines and secret values, since any job in
 this repository that holds `id-token` could assume it; Arun, 24 Nov 2026,
 MA-25), `ci-evals` (the evals job on any pull

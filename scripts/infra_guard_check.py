@@ -108,6 +108,14 @@ def cases(acct: str) -> list[tuple[str, str, str, dict[str, tuple[str, str]], st
         ("ci-plan", "ssm:GetParameter", f"arn:aws:ssm:us-east-1:{acct}:parameter/wealth-tracker/anything", {}, denied),
         ("ci-plan", "ssm:DescribeParameters", "*", {}, allowed),
         ("ci-plan", "kms:Decrypt", f"arn:aws:kms:us-east-1:{acct}:key/any", {}, denied),
+        # Only Lambda may decrypt for it, so a refresh reads each function's environment (MA-349); every other
+        # service, and a direct call, is still refused.
+        ("ci-plan", "kms:Decrypt", f"arn:aws:kms:us-east-1:{acct}:key/any", {"kms:ViaService": ("string", "lambda.us-east-1.amazonaws.com")}, allowed),
+        ("ci-plan", "kms:Decrypt", f"arn:aws:kms:us-east-1:{acct}:key/any", {"kms:ViaService": ("string", "ssm.us-east-1.amazonaws.com")}, denied),
+        ("ci-plan", "kms:Decrypt", f"arn:aws:kms:us-east-1:{acct}:key/any", {"kms:ViaService": ("string", "s3.us-east-1.amazonaws.com")}, denied),
+        ("ci-plan", "kms:Decrypt", f"arn:aws:kms:us-east-1:{acct}:key/any", {"kms:ViaService": ("string", "secretsmanager.us-east-1.amazonaws.com")}, denied),
+        ("ci-plan", "kms:Decrypt", f"arn:aws:kms:us-east-1:{acct}:key/any", {"kms:ViaService": ("string", "lambda.eu-west-2.amazonaws.com")}, denied),
+        ("ci-plan", "secretsmanager:BatchGetSecretValue", "*", {}, denied),
         ("ci-plan", "secretsmanager:GetSecretValue", f"arn:aws:secretsmanager:us-east-1:{acct}:secret:any", {}, denied),
         ("ci-plan", "s3:GetObject", f"{state}/mypaisa-agent/dev/infra.tfstate", {}, allowed),
         ("ci-plan", "s3:GetObject", f"{state}/mypaisa-agent/prod/infra.tfstate", {}, allowed),

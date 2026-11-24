@@ -607,9 +607,10 @@ Claude's:
   (`docs/design/cicd-security-regression.html`, `docs/design/argos-visual-a11y.html`
   and their Confluence pages, MA-272).
 - **A plan made by ci-plan sees every Lambda's environment (MA-349, bug):**
-  ci-plan cannot decrypt a function's environment, so its plans show it
+  ci-plan could not decrypt a function's environment, so its plans showed it
   changed on every function, and the release's digest check would refuse
-  each prod release that ships a Lambda; fixed before MA-347.
+  each prod release that ships a Lambda; fixed before MA-347 by letting
+  ci-plan decrypt through Lambda only (Arun's pick, option 1).
 - **The research pages show the counted cost of watching (MA-348):** the
   observability and VPC research pages, the Architecture v4 explainer's
   CloudWatch card, their Confluence pages, previews and GIF

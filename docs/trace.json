@@ -235,7 +235,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "CI also runs the evals: T0 on every pull request, T1 when a prompt, tool, guard, model route or kind changes, T2 on a model change (MA-246, MA-250, MA-251; ARCHITECTURE 21.3). Settled: How ci-plan refreshes secrets without being able to read them (Arun, 24 Nov 2026): a separate secrets root. Every SSM parameter, secret or id, lives in infra/modules/secrets, called by infra/dev-secrets and infra/prod-secrets with their own state (mypaisa-agent/<env>/secrets.tfstate); infra/dev and infra/prod hold none, so ci-plan never plans one. ci-plan reads configuration, never contents: explicit denies on every parameter value in the account (ssm:GetParameter*), kms:Decrypt, every S3 object but the two plan states and the lock files, DynamoDB items, Cognito users, log lines and secret values (ARCHITECTURE 17.4). The laptop plans and applies dev-secrets through tf.sh; prod-secrets is planned and applied only by the release (MA-107).",
+      "notes": "CI also runs the evals: T0 on every pull request, T1 when a prompt, tool, guard, model route or kind changes, T2 on a model change (MA-246, MA-250, MA-251; ARCHITECTURE 21.3). Settled: How ci-plan refreshes secrets without being able to read them (Arun, 24 Nov 2026): a separate secrets root. Every SSM parameter, secret or id, lives in infra/modules/secrets, called by infra/dev-secrets and infra/prod-secrets with their own state (mypaisa-agent/<env>/secrets.tfstate); infra/dev and infra/prod hold none, so ci-plan never plans one. ci-plan reads configuration, never contents: explicit denies on every parameter value in the account (ssm:GetParameter*), every kms:Decrypt but Lambda's own (MA-349), every S3 object but the two plan states and the lock files, DynamoDB items, Cognito users, log lines and secret values (ARCHITECTURE 17.4). The laptop plans and applies dev-secrets through tf.sh; prod-secrets is planned and applied only by the release (MA-107).",
       "open": [],
       "code": [
         "infra/bootstrap/roles.tf",
@@ -5770,7 +5770,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "bug"
       ],
@@ -5780,7 +5780,11 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Found in MA-231 (24 Nov 2026) on PR #127: ci-plan is denied kms:Decrypt (MA-25), so Lambda hides every function's environment from it and its plans show the environment added on every function; ci-prod-deploy's plan does not, so the release's digest check would refuse every prod release that ships a Lambda. Blocks MA-347. Three options for Arun in the issue (decrypt through Lambda only, the digest ignoring the blind block, a key per function)."
+      "notes": "Found in MA-231 (24 Nov 2026) on PR #127: ci-plan is denied kms:Decrypt (MA-25), so Lambda hides every function's environment from it and its plans show the environment added on every function; ci-prod-deploy's plan does not, so the release's digest check would refuse every prod release that ships a Lambda. Blocks MA-347. Three options for Arun in the issue (decrypt through Lambda only, the digest ignoring the blind block, a key per function). Settled: Three options for Arun in the issue (Arun, 24 Nov 2026): option 1, decrypt through Lambda only. ci-plan's DenySecretValuesAndDecrypt is split: secret values stay denied, and kms:Decrypt is denied unless kms:ViaService is lambda.us-east-1.amazonaws.com; the aws/lambda key policy already grants that path to principals in the account. scripts/infra_guard_check.py holds six new cases (58 of 58 on the bootstrap plan). The bootstrap apply is Arun's; it also lands MA-231's prod dashboard and alarm in the guard, on main but not yet applied.",
+      "code": [
+        "infra/bootstrap/roles.tf",
+        "infra/README.md"
+      ]
     },
     {
       "key": "MA-232",
