@@ -55,10 +55,12 @@ Uncommitted files that belong to another story are left alone and named.
    visible in the command.
 6. **Trace it**: comment "PR raised: <url> from `<branch>` at `<sha>`." on
    the issue, then `transitionJiraIssue` id 31 (In Review).
-7. **Checks**: `gh run list --branch <branch>` for the run on this HEAD, then
-   `gh run watch <id> --exit-status`. If none has started after a minute,
-   look once more; give up after 20 minutes and say so. A failed check stops
-   here: report it with the failing step.
+7. **Checks**: `gh run list --commit <HEAD sha>` for every run on this HEAD:
+   CI, jira-key, and CodeQL's (GitHub's default setup, event `dynamic`, which
+   `--branch` does not list; MA-346), then `gh run watch <id> --exit-status`
+   for each. If none has started after a minute, look once more; give up after
+   30 minutes (CodeQL's Swift analysis takes about 15) and say so. A failed
+   check stops here: report it with the failing step.
 
 ## 3. The one question
 
@@ -116,7 +118,10 @@ says, in parallel lanes.
 Arun's "merge it" covers every step below, branch deletion included
 (`ship-autopilot.md`, "Merge it" is the whole yes). Ask nothing more.
 
-1. `gh pr merge <n> --merge --delete-branch`. The permission prompt that
+1. `gh pr checks <n>` lists every check passed and none pending, CodeQL's
+   `Analyze (<language>)` included (MA-346; auto-merge once merged #114 with a
+   check still running), then `gh pr merge <n> --merge --delete-branch
+   --subject "MA-<n>: Merge PR #<n>: <title>"`. The permission prompt that
    follows is the backstop; it is expected.
 2. Comment "Merged as <PR url> (<short sha>)." on the issue, then
    `transitionJiraIssue` id 41 (Done).

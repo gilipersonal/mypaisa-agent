@@ -20,6 +20,13 @@ name: CI
 #
 # jira-key.yml stays its own workflow: it must rerun when a PR's title is
 # edited, and nothing here needs to.
+#
+# CodeQL is part of CI but not a job here (MA-346; Arun, 24 Nov 2026: "make
+# codeQL check part of this ci process"): GitHub's default setup, a repository
+# setting, analyses the workflows, JavaScript and TypeScript, Python and Swift on
+# every PR, every push to main and weekly, as the checks "Analyze (<language>)",
+# and a merge waits for them like every check here. A CodeQL job in this file
+# would clash with the default setup, so none is added.
 
 on:
   pull_request:

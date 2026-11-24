@@ -202,10 +202,16 @@ Claude's:
   over `backend/`, `web/`, `scripts/` and the workflows, osv-scanner over every
   lockfile, zizmor over the workflows, each tool pinned and checksum-checked;
   `pip-audit --strict` in the backend's gates; grouped weekly Dependabot
-  updates. The repo is private, so GitHub's paid Advanced Security scanners
-  are not used. MA-194 added web's TypeScript
+  updates. MA-194 added web's TypeScript
   rules, its lockfile and pnpm audit; MA-267 keeps eslint-plugin-security for
   web, iOS, Terraform and the images.
+- **CodeQL is part of CI (MA-346, `ARCHITECTURE.md` §17.4):** you asked, 24 Nov
+  2026, "make codeQL check part of this ci process", and kept GitHub's default
+  setup. The repo is public, so it is free: CodeQL analyses the workflows,
+  JavaScript and TypeScript, Python and Swift on every PR, every push to `main`
+  and weekly, and secret scanning with push protection is on. A merge waits for
+  CodeQL's checks like every other; no CodeQL job is added to `ci.yml`, where it
+  would clash with the default setup.
 - **CI bundles the iOS app (MA-327, `ARCHITECTURE.md` §17.4):** the iOS shell
   job builds the app's JavaScript with Metro on Linux, since Jest and tsc pass on
   a toolchain Metro refuses, as Dependabot's Babel 8 showed (PR #96). Dependabot
@@ -2206,7 +2212,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 55.75 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
+| 0 Foundations at every door | 56 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
 | 1 Talk: sign in and chat with the agent at every door | 109 (and 0.5 of yours) | 88 | Wed 13 Jan 2027 | Wed 19 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Thu 20 May 2027 | Fri 16 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Mon 19 Jul 2027 | Fri 6 Aug 2027 |

@@ -115,12 +115,13 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-337 | Primary actions and consequential instructions on the boards use the agreed control and body type | To Do | §8.1, §8.3, §8.4 | none |  |
 | MA-338 | A current-spec map names each screen's one composition, and the design notes agree with later rules | To Do | §8.1, §8.3, §8.4 | none |  |
 | MA-339 | Every foldable example names its OS, door and posture, and follows that door's material | To Do | §8.1, §8.4 | none |  |
-| MA-340 | The web app and the boards load no Google Fonts: self-hosted Inter and a Nunito figures subset, and Lucide icons | In Progress | §8.4 | none |  |
+| MA-340 | The web app and the boards load no Google Fonts: self-hosted Inter and a Nunito figures subset, and Lucide icons | Done | §8.4 | none |  |
 | MA-341 | The Maestro iPad testing plan follows the 1393 pt chat rule: three iPad bands, the beside band at the debug width, its GIF redrawn | To Do | §8.1, §8.5, §17.4 | none |  |
 | MA-342 | A new fast-xml-parser advisory turns every PR's security scan red: React Native's CLI pins 5.11.2 | Done | §17.4 | none |  |
 | MA-343 | Prettier 3.10 rejects how the web shell's skip link is wrapped, so Dependabot's web group fails the web gate | Done | §17.4 | none |  |
 | MA-344 | Dependabot bumps hermes-compiler apart from React Native, so the iOS gate refuses the web group | Done | §17.4 | none |  |
 | MA-345 | Two of MA-194's fixed-finding checks run in web/ at the same time and race, so Review tooling fails at random | Done | §17.4 | none |  |
+| MA-346 | CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it | In Progress | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

@@ -7436,7 +7436,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The web app and the boards load no Google Fonts: self-hosted Inter and a Nunito figures subset, and Lucide icons",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "8.4"
@@ -8133,6 +8133,28 @@
         "review/MA-194/check.sh"
       ],
       "notes": "Found on 23 Nov 2026 on Dependabot's web group, PR #113 (MA-326): Review tooling failed MA-194 r1-f1 with 'No such file or directory (os error 2)' while r1-f7 passed. review_regress.py --every --jobs 4 ran check.sh's service-worker and money-compact at once in a checkout with no web/node_modules; pnpm 12 installs before an exec when node_modules is missing, and both did so in the same folder. Reproduced on main locally, where the second try failed with ENOTEMPTY on Vite's optimizer cache under web/node_modules/.vite, which both vitest runs write. Main had passed by timing. check.sh now takes one flock per checkout around every command that runs in web/ or copies it; the lock goes when its holder dies, so a check killed by its timeout never leaves it held. A harness makes no failure of its own (lesson 16)."
+    },
+    {
+      "key": "MA-346",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 24 Nov 2026: \"Also make codeQL check part of this ci process\"; he kept GitHub's default setup over a CodeQL job in ci.yml (no repository setting changed). The repo is public, so CodeQL is free: the default setup analyses actions, JavaScript and TypeScript, Python and Swift on every PR, push to main and weekly; secret scanning with push protection is on. The records that said the repo was private and these scanners unused are corrected, and /autoship and the ship rule merge only when gh pr checks shows every check passed, CodeQL's included. MA-340 (PR #120) was the first PR held for CodeQL's Swift analysis.",
+      "code": [
+        ".github/workflows/ci.yml",
+        "scripts/security_scan.sh",
+        ".claude/rules/ship-autopilot.md",
+        ".claude/skills/autoship/SKILL.md"
+      ]
     },
     {
       "key": "MA-329",
