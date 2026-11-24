@@ -20,7 +20,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-23 | Each Monzo fund's factsheet and a valuation screenshot are ready to send in the app | To Do | §4.2 | none |  |
 | MA-24 | The Python project skeleton exists with its gates and the working rules | Done | §12, §12.1, §15 | none |  |
 | MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | To Do | §17.4, §21.3 | none |  |
-| MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | To Do | §17.1, §17.4 | none |  |
+| MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | In Progress | §17.1, §17.4 | none |  |
 | MA-106 | The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery | Done | §4.5, §8.3, §11, §12, §13, §14, §15 | none |  |
 | MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | To Do | §17.4, §18.4, §21.3 | none |  |
 | MA-108 | A nightly check reports any prod change made outside Terraform | To Do | §17.4, §18.4 | none |  |

@@ -243,7 +243,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "17.1",
@@ -253,7 +253,15 @@
       "design": "none",
       "boards": [],
       "notes": "Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it. Build note for infra/bootstrap: an explicit deny beats any allow, so the exception is cut out of the deny itself (the env=prod deny names every action but ssm:PutParameter, and a second deny refuses ssm:PutParameter on anything tagged env=prod outside /mypaisa-agent/prod/*), never added as an allow beside it; the overwrite needs no ssm:AddTagsToResource, which stays denied.",
-      "open": []
+      "open": [],
+      "code": [
+        "infra/bootstrap/**",
+        "infra/modules/mypaisa/**",
+        "infra/dev/**",
+        "infra/prod/**",
+        "infra/scripts/tf.sh",
+        "infra/README.md"
+      ]
     },
     {
       "key": "MA-27",

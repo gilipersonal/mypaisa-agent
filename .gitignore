@@ -15,3 +15,10 @@ review/.cache/
 .coverage
 coverage.xml
 htmlcov/
+
+# Terraform (MA-26): provider caches, saved plans and local state never enter git; the lock files do.
+.terraform/
+*.tfplan
+*.tfstate
+*.tfstate.*
+crash.log
