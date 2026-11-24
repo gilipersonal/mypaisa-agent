@@ -70,6 +70,10 @@ mkdir -p "$trivy_dir" && tar -xzf "$archive" -C "$trivy_dir" trivy
 # The plan comment CI posts refuses an output with no summary and fits GitHub's limit (MA-25).
 python3 scripts/plan_comment.py --selftest >/dev/null
 
+# The release's checks and its smoke refuse what they must, each against canned answers (MA-107).
+python3 scripts/release.py selftest
+python3 scripts/smoke.py selftest
+
 # tf.sh refuses, before it touches terraform or AWS: a prod apply outside CI, an apply without a plan file, destroy.
 tf=infra/scripts/tf.sh
 expect_refused() {

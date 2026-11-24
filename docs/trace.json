@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-11-23",
+  "updated": "2026-11-24",
   "claude_design": {
     "app": {
       "id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7",
@@ -328,6 +328,23 @@
       "design": "none",
       "boards": [],
       "notes": "Updated 26 Oct 2026 (MA-230): OpenTelemetry in place of Powertools Tracer; the RunRecord carries its trace id and build; the whole trace is MA-232 and the model spans MA-233."
+    },
+    {
+      "key": "MA-347",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The first release that ships a Lambda proves its Lambda stages: one image digest in dev and prod, aliases rolled back on a failed smoke, and prod refused while a value is a placeholder",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "17.4",
+        "9.1"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Filed from MA-107 (24 Nov 2026): the part MA-107 leaves behind, because phase 0 has no Lambda, image or api host. MA-107's alias snapshot, publish and rollback and its version-1 refusal are proved by scripts/release.py selftest against canned answers; this story proves them on the first Lambda (MA-29) with MA-237's image, passes one digest from dev to prod, tells the owner in the app and by push (MA-170), and writes the deploy's RunRecord."
     },
     {
       "key": "MA-30",
@@ -1912,7 +1929,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "17.4",
@@ -1922,8 +1939,14 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Review round 1 of MA-245 (28 Oct 2026): the release to prod waits for a green T2 on the model ids it ships (ARCHITECTURE 17.4, 21.3; MA-251). MA-25 (24 Nov 2026): the secret parameters live in their own roots, infra/dev-secrets and infra/prod-secrets, which ci-plan never plans; the release plans and applies prod-secrets with ci-prod-deploy, beside prod, and dev-secrets with ci-dev-deploy. Settled: Which phase holds the first prod release (Arun, 24 Nov 2026): phase 0. MA-107 builds the release pipeline in phase 0, and its first run applies prod's empty stack (infra/prod and infra/prod-secrets) after Arun approves; Arun then puts prod's secret values, so MA-142 and the prod halves of MA-21 and MA-143 finish in phase 0, and MA-108's nightly drift check watches prod from then on. The first Lambdas reach prod in phase 1 through the same pipeline. The smoke tests: a release that ships no Lambda runs its read-only smoke against the placeholders; a release that ships a Lambda refuses prod while any /mypaisa-agent/prod/* parameter is still at version 1, the placeholder Terraform wrote, read with DescribeParameters, which shows the version and never a value.",
-      "open": []
+      "notes": "Review round 1 of MA-245 (28 Oct 2026): the release to prod waits for a green T2 on the model ids it ships (ARCHITECTURE 17.4, 21.3; MA-251). MA-25 (24 Nov 2026): the secret parameters live in their own roots, infra/dev-secrets and infra/prod-secrets, which ci-plan never plans; the release plans and applies prod-secrets with ci-prod-deploy, beside prod, and dev-secrets with ci-dev-deploy. Settled: Which phase holds the first prod release (Arun, 24 Nov 2026): phase 0. MA-107 builds the release pipeline in phase 0, and its first run applies prod's empty stack (infra/prod and infra/prod-secrets) after Arun approves; Arun then puts prod's secret values, so MA-142 and the prod halves of MA-21 and MA-143 finish in phase 0, and MA-108's nightly drift check watches prod from then on. The first Lambdas reach prod in phase 1 through the same pipeline. The smoke tests: a release that ships no Lambda runs its read-only smoke against the placeholders; a release that ships a Lambda refuses prod while any /mypaisa-agent/prod/* parameter is still at version 1, the placeholder Terraform wrote, read with DescribeParameters, which shows the version and never a value. Built 24 Nov 2026: release.yml starts when CI passes on a push to main (workflow_run) and ships only when the commit changes something a release ships since the commit prod last ran (GitHub's prod deployments). Dev applies dev-secrets and dev with ci-dev-deploy; ci-plan plans infra/prod before any approval and writes it to the run's summary with its digest; after Arun approves, the prod job plans again and refuses a plan whose digest is not the one he read, refuses a secrets plan that does anything but create a parameter or change its tags (any other change to an existing parameter sends an empty value or the placeholder over the value put by hand), refuses a release that ships a Lambda while a prod parameter is at version 1, applies, publishes and moves the live aliases, and runs the read-only smoke (scripts/smoke.py: the table, the buckets and the parameters, by describe, get and list calls only); a failed smoke moves every alias back. Left to other issues: the image digest from dev to prod, the live proofs of the alias rollback and the version-1 refusal on a real Lambda, the owner told in the app and by push, and the deploy's RunRecord (MA-347); the T2 wait (MA-251); the web app and TestFlight (MA-167); the api's smoke (MA-268).",
+      "open": [],
+      "code": [
+        ".github/workflows/release.yml",
+        "scripts/release.py",
+        "scripts/smoke.py",
+        "infra/README.md"
+      ]
     },
     {
       "key": "MA-108",
@@ -5814,7 +5837,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 26 Oct 2026: \"Can we do docker builds on AWS infra directly and store on ECR for free? If yes then that would be preferred.\" CodeBuild's free tier is 100 build minutes a month on arm1.small, never expiring; ECR's 500 MB is free only in a new account's first year, then $0.10 per GB a month. The build moved here from MA-107 and MA-25, whose estimates fell by the same days, so no date moved. Past the free 100 minutes builds go on at about $0.0034 to $0.004 a minute (under a cent a build); Arun, 26 Oct 2026: \"lets keep AWS stack\", so there is no fallback to GitHub's runners."
+      "notes": "Arun, 26 Oct 2026: \"Can we do docker builds on AWS infra directly and store on ECR for free? If yes then that would be preferred.\" CodeBuild's free tier is 100 build minutes a month on arm1.small, never expiring; ECR's 500 MB is free only in a new account's first year, then $0.10 per GB a month. The build moved here from MA-107 and MA-25, whose estimates fell by the same days, so no date moved. Past the free 100 minutes builds go on at about $0.0034 to $0.004 a minute (under a cent a build); Arun, 26 Oct 2026: \"lets keep AWS stack\", so there is no fallback to GitHub's runners. MA-107 (24 Nov 2026): the release takes the digests in MA-347, when the first Lambda ships."
     },
     {
       "key": "MA-238",
@@ -6095,7 +6118,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": ""
+      "notes": "MA-107 (24 Nov 2026): the release workflow it waits in exists (.github/workflows/release.yml); this story adds its T2 step to the prod job, before the apply."
     },
     {
       "key": "MA-252",
@@ -6886,7 +6909,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-272 (28 Oct 2026): scripts/smoke.py --env dev|prod --up-to-phase N runs full synthetic round-trip and X-Ray trace assertions in dev and strictly read-only health, auth-perimeter and CloudWatch alarm checks in prod (never writing synthetic rows to prod tables, .claude/rules/aws-changes.md), triggering <5s Lambda live alias and CloudFront rollback on failure. Build time is covered by MA-107 and MA-232."
+      "notes": "Filed from MA-272 (28 Oct 2026): scripts/smoke.py --env dev|prod --up-to-phase N runs full synthetic round-trip and X-Ray trace assertions in dev and strictly read-only health, auth-perimeter and CloudWatch alarm checks in prod (never writing synthetic rows to prod tables, .claude/rules/aws-changes.md), triggering <5s Lambda live alias and CloudFront rollback on failure. Build time is covered by MA-107 and MA-232. MA-107 (24 Nov 2026) built scripts/smoke.py's base: the stack's read-only checks (the table, the buckets and the parameters, by describe, get and list calls only, refusing any other), --force-fail for the test runs, and the alias rollback in scripts/release.py. This story adds --up-to-phase and the api's checks: health, the 401 perimeter, the stream, the chat turn and the X-Ray trace."
     },
     {
       "key": "MA-269",
