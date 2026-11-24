@@ -12,9 +12,11 @@
    below it, four sections with animated SVG block diagrams and deterministic us-east-1 costing tables covering:
    (1) Dual-stack VPC topology, zero-egress Isolated subnets, VPC Block Public Access & front-door ingress lockdown,
    (2) Free S3/DynamoDB Gateway Endpoints, three-way AWS Data Perimeter & presigned S3 upload/Audit carve-outs,
-   (3) Walled-garden Route 53 DNS Firewall + Graviton t4g.nano TLS-SNI egress proxy, private CodeBuild CI & 4 VPC gotchas,
+   (3) Walled-garden Route 53 DNS Firewall + Graviton t4g.nano TLS-SNI egress proxy, optional private CI runner & 4 VPC gotchas,
    and (4) Five-option us-east-1 costing (£13.32–£729.91/mo, Preferred Option 3B +£24.86/mo) & 5-step zero-lockout rollout.
-   MyPaisa DS v1, "Warm ledger" (MA-283, MA-284). */
+   MyPaisa DS v1, "Warm ledger" (MA-283, MA-284).
+   24 Nov 2026 (MA-237): image builds moved from AWS CodeBuild to GitHub's free ubuntu-24.04-arm runner; a private
+   CodeBuild runner returns only if this lockdown needs CI inside the VPC, as part of MA-283. */
 :root{
   --bg:#F6F4F1; --surface:#FFFFFF; --surface-2:#F0EDE8; --line:#E4E0DA;
   --ink:#14171F; --ink-2:#4E5462; --ink-3:#646A78;
@@ -68,6 +70,7 @@ code,.mono{font-family:var(--f-mono);font-size:.88em;overflow-wrap:anywhere}
 .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--hero-ink-2);font-weight:600}
 .mast h1{font-size:clamp(30px,5vw,48px);font-weight:900;line-height:1.06;margin-top:10px;max-width:26ch}
 .mast .lede{color:var(--hero-ink-2);font-size:17px;max-width:72ch;margin-top:16px}
+.mast .note{color:var(--hero-ink);background:var(--hero-2);border-left:3px solid var(--coral);border-radius:8px;font-size:14px;max-width:80ch;margin-top:16px;padding:8px 12px}
 .rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
 .rules li{background:var(--hero-2);color:var(--hero-ink);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
 .rules li b{color:var(--hero-num);margin-right:6px;font-family:var(--f-mono);font-weight:500}
@@ -139,6 +142,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     <div class="eyebrow">Optional End-of-Roadmap AWS Network Perimeter · MA-283, MA-284</div>
     <h1>Optional AWS VPC Enterprise Lockdown, Data Perimeter &amp; Costing</h1>
     <p class="lede">Across Phases 0 to 15 MyPaisa runs serverless IAM/tag isolation at <strong>£3.50/month</strong> (<code>enable_vpc_lockdown = false</code>). This record captures the complete seven-layer enterprise VPC blueprint and deterministic <code>us-east-1</code> costing across five options—with <strong>Option 3 (Lean Zero-Trust VPC: +£13.32/mo in 3A, or +£24.86/mo in Preferred 3B with CloudFront Pro bundled WAF on prod)</strong> preferred inside the <strong>£50/month</strong> AWS cap—to be <strong>decided last, after Phase 15</strong>.</p>
+    <p class="note">Updated 24 Nov 2026 (MA-237): the repository is public, so the Lambda images are built on GitHub's free <code>ubuntu-24.04-arm</code> runner and pushed to ECR, and AWS CodeBuild is no longer used. This lockdown therefore has no CodeBuild runner by default: image builds stay on GitHub's runner. Only if turning it on needs Terraform applies and smoke tests to originate inside the VPC does a private CodeBuild runner come back, as part of MA-283. The diagrams' words on this page say so, but the animated GIFs on the Confluence page were captured before and still show CodeBuild inside the VPC.</p>
     <ul class="rules">
       <li><b>01</b>Decided last after Phase 15 (enable_vpc_lockdown = false by default)</li>
       <li><b>02</b>Dual-stack dev/prod VPCs + VPC Block Public Access + zero-egress Isolated subnets (£0)</li>
@@ -180,7 +184,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     <div class="copy tech">
       <ul>
         <li><strong>Non-overlapping dual-stack VPCs + VPC Block Public Access ($0/mo):</strong> <code>mypaisa-dev-vpc</code> (<code>10.10.0.0/16</code>, 1–2 AZs) and <code>mypaisa-prod-vpc</code> (<code>10.20.0.0/16</code>, 2 AZs, <code>us-east-1a/b</code>) + AWS IPv6 <code>/56</code>, zero VPC peering, default VPCs deleted region-wide, and declarative <strong>VPC Block Public Access (BPA)</strong> preventing accidental public ingress routes.</li>
-        <li><strong>Three subnet classes per AZ:</strong> <code>Isolated</code> (zero <code>0.0.0.0/0</code> or <code>::/0</code> route: XIRR and CAGR maths, projection, DB workers, quarantined PDF/file extractor), <code>Private Egress</code> (<code>api</code>, <code>stream</code>, <code>agent</code>, <code>auth</code>, <code>ingester</code>, <code>notifier</code>, private <code>arm64</code> CodeBuild), and <code>Perimeter</code> (NAT / TLS-SNI proxy only; zero app compute).</li>
+        <li><strong>Three subnet classes per AZ:</strong> <code>Isolated</code> (zero <code>0.0.0.0/0</code> or <code>::/0</code> route: XIRR and CAGR maths, projection, DB workers, quarantined PDF/file extractor), <code>Private Egress</code> (<code>api</code>, <code>stream</code>, <code>agent</code>, <code>auth</code>, <code>ingester</code>, <code>notifier</code>, and a private <code>arm64</code> CodeBuild runner only if the lockdown brings one back for Terraform applies and smoke tests), and <code>Perimeter</code> (NAT / TLS-SNI proxy only; zero app compute).</li>
         <li><strong>Front-door API &amp; SSE rule:</strong> CloudFront VPC Origins ($0 extra fee) targets Internal ALB/NLB/EC2—not Private API Gateway (<code>execute-api</code> VPCE). Option 1 uses <strong>Pattern A</strong> (<code>CloudFront -&gt; VPC Origin -&gt; Internal ALB -&gt; Lambda</code>, $35.19/mo for 2 ALBs); Preferred Option 3 uses <strong>Pattern B</strong> (<code>CloudFront Pro WAF -&gt; Regional API Gateway REST API</code> with <code>disable_execute_api_endpoint = true</code> and mTLS/origin-secret lock at <strong>$0/mo ALB cost</strong>).</li>
       </ul>
     </div>
@@ -219,7 +223,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-vit" x="344" y="172">2 · Private Egress Subnets (Outbound 443 Only)</text>
         <text class="s-s" x="344" y="190">Zero inbound internet · Hyperplane shared ENI</text>
         <text class="s-m" x="344" y="208">api · stream · agent · auth · jobs · sender</text>
-        <text class="s-m" x="344" y="224">+ private arm64 CodeBuild (sg-codebuild)</text>
+        <text class="s-m" x="344" y="224">+ CodeBuild only if MA-283 brings it back</text>
         <rect class="s-box" x="332" y="244" width="360" height="76" rx="8"/>
         <text class="s-t" x="344" y="266">3 · Perimeter Subnets (Zero App Compute)</text>
         <text class="s-m" x="344" y="284">IPv6 EIGW ($0) + t4g.nano fck-nat / Envoy SNI</text>
@@ -277,7 +281,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <rect class="s-box2" x="16" y="16" width="300" height="308" rx="12"/>
         <text class="s-h" x="30" y="42">1 · Callers (Trusted vs Untrusted)</text>
         <rect class="s-upbg" x="30" y="58" width="272" height="74" rx="8"/>
-        <text class="s-upt" x="42" y="80">VPC Lambdas &amp; CodeBuild</text>
+        <text class="s-upt" x="42" y="80">VPC Lambdas (+ any CI runner)</text>
         <text class="s-m" x="42" y="98">PrincipalAccount = 545595341442</text>
         <text class="s-m" x="42" y="116">Routes via vpce-s3 / vpce-ddb</text>
         <rect class="s-blbg" x="30" y="144" width="272" height="78" rx="8"/>
@@ -347,13 +351,13 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     <div class="copy tech">
       <ul>
         <li><strong>Route 53 Resolver DNS Firewall (~$0.20/mo) + Graviton <code>t4g.nano</code> TLS-SNI Proxy ($7.36/mo/env):</strong> Security Group <code>sg-lambda-egress</code> permits outbound <strong>TCP 443 only</strong> (dropping port 53/853 DNS bypass). DNS Firewall allows the exact runtime &amp; CI domain lists and blocks <code>*</code> (<code>NXDOMAIN</code> + CloudWatch/SNS canary alarm). In Preferred Option 3, free IPv6 <code>EIGW</code> + an auto-healing Graviton <code>t4g.nano</code> (<code>fck-nat</code> + Envoy transparent TLS ClientHello <code>SNI</code> filter, $3.07 EC2 + $3.65 EIP + $0.64 gp3 = <strong>£5.66/mo/env</strong>) stops raw-IP bypasses without paying $584/mo for AWS Network Firewall (trading instant AZ NAT failover for ~60–90s ASG self-heal while SQS FIFO holds messages).</li>
-        <li><strong>Private CI/CD, zero bastions &amp; telemetry:</strong> Existing <code>arm64</code> CodeBuild (<code>MA-237</code>) attaches to <code>Private Egress</code> subnets; zero SSH port 22 anywhere (SSM Session Manager only); v5 VPC Flow Logs + DNS Block Logs stream directly to KMS-encrypted S3 ($0.25/GB) alongside GuardDuty (~$2.41/mo) and CI <strong>VPC Reachability Analyzer</strong> ($0.10/check on <code>infra/</code> network diffs).</li>
+        <li><strong>Private CI/CD, zero bastions &amp; telemetry:</strong> Image builds stay on GitHub's free <code>ubuntu-24.04-arm</code> runner and push to ECR (<code>MA-237</code>, since 24 Nov 2026; there is no CodeBuild project to attach any more). Only if the lockdown needs <code>terraform apply</code> and <code>smoke.py</code> to originate inside the VPC does a private <code>arm64</code> CodeBuild runner come back, as part of <code>MA-283</code>, on <code>Private Egress</code> subnets; zero SSH port 22 anywhere (SSM Session Manager only); v5 VPC Flow Logs + DNS Block Logs stream directly to KMS-encrypted S3 ($0.25/GB) alongside GuardDuty (~$2.41/mo) and CI <strong>VPC Reachability Analyzer</strong> ($0.10/check on <code>infra/</code> network diffs).</li>
         <li><strong>Four serverless VPC gotchas solved:</strong> (1) <em>Hyperplane ENIs</em> shared across 2 tier SGs (2–4 ENIs/VPC); (2) <em>In-image ADOT collector</em> needs <code>xray.us-east-1.amazonaws.com:443</code> egress unlike free Lambda <code>stdout</code> logs; (3) <em>Cognito <code>cognito-idp</code></em> PrivateLink covers SDK/custom-auth while triggers cache Apple/Google OIDC JWKS over allowlisted 443; (4) <em>Presigned S3 links</em> use OAC / bounded <code>presigner</code> carve-out (§2).</li>
       </ul>
     </div>
     <figure class="fig" id="fig-3">
       <div class="scroll">
-      <svg id="svg-3" viewBox="0 0 1000 350" role="img" aria-label="Walled-garden Route 53 DNS Firewall, Graviton t4g.nano Envoy TLS-SNI egress proxy, private CodeBuild CI, and four serverless VPC gotchas">
+      <svg id="svg-3" viewBox="0 0 1000 350" role="img" aria-label="Walled-garden Route 53 DNS Firewall, Graviton t4g.nano Envoy TLS-SNI egress proxy, an optional private CI runner, and four serverless VPC gotchas">
         <rect class="s-box2" x="16" y="16" width="304" height="318" rx="12"/>
         <text class="s-h" x="30" y="42">1 · Private Egress Workloads</text>
         <rect class="s-vibg" x="30" y="56" width="276" height="90" rx="8"/>
@@ -362,9 +366,9 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="42" y="114">Hyperplane shared ENIs (2–4/VPC)</text>
         <text class="s-m" x="42" y="132">TCP 443 only (UDP/TCP 53, 853, 22 ✗)</text>
         <rect class="s-blbg" x="30" y="158" width="276" height="74" rx="8"/>
-        <text class="s-blt" x="42" y="180">Private CI Runner (sg-codebuild)</text>
-        <text class="s-m" x="42" y="198">arm64 CodeBuild inside VPC</text>
-        <text class="s-m" x="42" y="216">trivy · terraform apply · smoke.py</text>
+        <text class="s-blt" x="42" y="180">Private CI Runner (only if added)</text>
+        <text class="s-m" x="42" y="198">CodeBuild back with MA-283 only</text>
+        <text class="s-m" x="42" y="216">terraform apply · smoke.py</text>
         <rect class="s-ambg" x="30" y="244" width="276" height="76" rx="8"/>
         <text class="s-amt" x="42" y="266">4 Serverless Gotchas Handled</text>
         <text class="s-m" x="42" y="284">• ADOT→xray:443 • Hyperplane SG</text>
@@ -432,7 +436,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     <div class="copy tech">
       <ul>
         <li><strong>Why Option 3 is Preferred:</strong> Option 1 (£729.91/mo) and Option 2A/2B (£149.01 / £70.39/mo) breach §14.2's £50/month AWS cap due to fixed hourly charges ($288.35/AZ Network Firewall, $36.50/mo Managed NAT GW incl. $3.65 EIP, $7.30/AZ-mo Interface VPCEs). <strong>Option 3A (+£13.32/mo = +$17.32/mo)</strong> and <strong>Preferred Option 3B (+£24.86/mo = +$32.32/mo, adding CloudFront Pro's bundled AWS WAF + Bot + DDoS on <code>prod</code> with zero overages)</strong> keep total MyPaisa AWS spend at <strong>£16.82/mo</strong> or <strong>£28.36/mo</strong>.</li>
-        <li><strong>Safe five-step zero-lockout rollout (when opted into after Phase 15):</strong> Step 1 applies VPCs, BPA, free S3/DDB Gateway Endpoints and DNS Firewall in <code>ALERT</code> mode; Step 2 brings up EIGW + <code>t4g.nano</code> SNI proxy and moves CodeBuild inside the VPC; Step 3 attaches Lambdas by tier and verifies <code>smoke.py --env dev</code> + ADOT X-Ray traces; Step 4 locks API Gateway mTLS + CloudFront Pro WAF and flips DNS Firewall <code>*</code> to <code>BLOCK</code>; Step 5 enforces <code>aws:SourceVpce</code> <code>Deny</code> policies and CI VPC Reachability Analyzer checks.</li>
+        <li><strong>Safe five-step zero-lockout rollout (when opted into after Phase 15):</strong> Step 1 applies VPCs, BPA, free S3/DDB Gateway Endpoints and DNS Firewall in <code>ALERT</code> mode; Step 2 brings up EIGW + <code>t4g.nano</code> SNI proxy and, only if Terraform applies and smoke tests must originate inside the VPC, brings back a private CodeBuild runner there (image builds stay on GitHub's runner, <code>MA-237</code>); Step 3 attaches Lambdas by tier and verifies <code>smoke.py --env dev</code> + ADOT X-Ray traces; Step 4 locks API Gateway mTLS + CloudFront Pro WAF and flips DNS Firewall <code>*</code> to <code>BLOCK</code>; Step 5 enforces <code>aws:SourceVpce</code> <code>Deny</code> policies and CI VPC Reachability Analyzer checks.</li>
       </ul>
     </div>
     <figure class="fig" id="fig-4">
@@ -470,8 +474,8 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="612" y="95">Log-only DNS + S3 v5 Flow Logs; 0 Denies yet</text>
 
         <rect class="s-box" x="600" y="112" width="370" height="46" rx="8"/>
-        <text class="s-t" x="612" y="131">Step 2 · EIGW + t4g.nano SNI + CodeBuild in VPC</text>
-        <text class="s-m" x="612" y="149">CI runs inside VPC before resource locks start</text>
+        <text class="s-t" x="612" y="131">Step 2 · EIGW + t4g.nano SNI (+ CI runner)</text>
+        <text class="s-m" x="612" y="149">Any in-VPC CI runner starts before the locks</text>
 
         <rect class="s-box" x="600" y="166" width="370" height="46" rx="8"/>
         <text class="s-t" x="612" y="185">Step 3 · Attach Lambdas (Isolated vs Egress)</text>

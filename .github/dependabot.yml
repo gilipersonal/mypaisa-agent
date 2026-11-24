@@ -54,6 +54,19 @@ updates:
       - dependency-name: "hermes-compiler"
     commit-message:
       prefix: "MA-326:"
+  # The Dockerfile's bases, pinned by digest (MA-237): the Lambda Python base, uv and the Lambda Web Adapter.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:00"
+      timezone: Europe/London
+    groups:
+      images:
+        patterns: ["*"]
+    commit-message:
+      prefix: "MA-326:"
   - package-ecosystem: github-actions
     directory: /
     schedule:

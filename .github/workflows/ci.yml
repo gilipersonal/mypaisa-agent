@@ -335,6 +335,111 @@ jobs:
             gh api --method POST "repos/$REPO/issues/$PR/comments" -F "body=@$body" > /dev/null
           fi
 
+  # The Lambda images (MA-237, ARCHITECTURE §17.4): each target of the Dockerfile, built natively for linux/arm64 on
+  # GitHub's ubuntu-24.04-arm runner, free and unlimited for a public repository (Arun, 24 Nov 2026: "MA-237, can we
+  # do the builds on Github ? We are public now"). On a push to main each is pushed to ECR as <target>-<sha> by
+  # mypaisa-ci-image, the one role that may push, as a plain single-platform manifest (no attestations: Lambda takes a
+  # manifest, not an index), and its digest goes to the run's summary and the image-digest-<target> artifact, which
+  # the release takes when the first Lambda ships (MA-347). A pull request that changes what the images are built
+  # from builds both without pushing and assumes no role; any other pull request builds nothing. A rerun of a pushed
+  # commit reads the digest it pushed (the tags are immutable). Until infra/bootstrap is applied mypaisa-ci-image does
+  # not exist, and a push to main fails here.
+  images:
+    name: Images (${{ matrix.target }})
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [lambda, stream]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # A pull request's merge commit and its first parent, the base, so its own change can be read.
+          fetch-depth: 2
+      - name: Build, push or neither
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+        run: |
+          if [ "$EVENT" != "pull_request" ] && [ "$REF" = "refs/heads/main" ]; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            echo "push=true" >> "$GITHUB_OUTPUT"
+          elif [ "$EVENT" = "pull_request" ] && \
+               ! git diff --quiet HEAD^1 HEAD -- Dockerfile .dockerignore backend/pyproject.toml backend/uv.lock; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            echo "push=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=false" >> "$GITHUB_OUTPUT"
+            echo "push=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing the images are built from changed: no build." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - if: steps.plan.outputs.push == 'true'
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::545595341442:role/mypaisa-ci-image
+          role-session-name: mypaisa-ci-image-${{ github.run_id }}
+          aws-region: us-east-1
+      - if: steps.plan.outputs.push == 'true'
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@7290e214a610b32bc0eef81748948b6d466a8783 # v2.2.0
+      - name: Pushed already (a rerun of this commit)?
+        if: steps.plan.outputs.push == 'true'
+        id: existing
+        env:
+          IMAGE: ${{ steps.ecr.outputs.registry }}/mypaisa:${{ matrix.target }}-${{ github.sha }}
+        run: |
+          if found=$(docker buildx imagetools inspect "$IMAGE" --format '{{json .Manifest}}' 2>/dev/null); then
+            echo "digest=$(jq -r .digest <<< "$found")" >> "$GITHUB_OUTPUT"
+          else
+            echo "digest=" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.plan.outputs.build == 'true' && steps.existing.outputs.digest == ''
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Build ${{ matrix.target }} for linux/arm64
+        if: steps.plan.outputs.build == 'true' && steps.existing.outputs.digest == ''
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          platforms: linux/arm64
+          target: ${{ matrix.target }}
+          push: ${{ steps.plan.outputs.push == 'true' }}
+          tags: ${{ steps.plan.outputs.push == 'true' && format('{0}/mypaisa:{1}-{2}', steps.ecr.outputs.registry, matrix.target, github.sha) || '' }}
+          provenance: false
+          sbom: false
+          # main writes the layer cache; a pull request reads main's and writes none.
+          cache-from: type=gha,scope=image-${{ matrix.target }}
+          cache-to: ${{ steps.plan.outputs.push == 'true' && format('type=gha,mode=max,scope=image-{0}', matrix.target) || '' }}
+      - name: Record the digest
+        if: steps.plan.outputs.push == 'true'
+        env:
+          TARGET: ${{ matrix.target }}
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          PUSHED: ${{ steps.build.outputs.digest }}
+          EXISTING: ${{ steps.existing.outputs.digest }}
+        run: |
+          digest="${PUSHED:-$EXISTING}"
+          if ! [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            echo "::error::no digest for $TARGET-$GITHUB_SHA (got '$digest')"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/digest"
+          echo "$REGISTRY/mypaisa@$digest" > "$RUNNER_TEMP/digest/$TARGET.txt"
+          echo "$TARGET-$GITHUB_SHA: \`$REGISTRY/mypaisa@$digest\`" >> "$GITHUB_STEP_SUMMARY"
+      - if: steps.plan.outputs.push == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: image-digest-${{ matrix.target }}
+          path: ${{ runner.temp }}/digest/${{ matrix.target }}.txt
+          if-no-files-found: error
+          retention-days: 90
+
   workflow-lint:
     name: Workflow lint
     runs-on: ubuntu-latest

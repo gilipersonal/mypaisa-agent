@@ -290,11 +290,11 @@
 <p><code>logs</code>14 days<code>spans</code>30 days, aws/spans<code>RunRecord</code>90 days<code>metrics</code>15 months<code>audit</code>never deleted<code>files</code>for good</p>
 <h2>🚀 Terraform only, one image, prod after a person says yes</h2>
 <p>One AWS account, every component twice, kept apart by IAM: each Lambda&#x27;s role names only its own environment, and the developer role is denied anything tagged <code>env=prod</code>. CI reaches AWS through GitHub OIDC with no stored keys; the AWS MCP only reads.</p>
-<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="6c316ba8-0473-4a2c-9785-3bc9cfd5e000" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-delivery.png"></div>
+<figure data-type="media-single" data-layout="center" data-width="100" data-width-type="percentage"><div data-type="media" data-media-type="file" data-id="c2d9222b-346d-4d30-a3a7-8077f21a79a1" data-collection="contentId-1147085" data-alt="rec-j-v4-parts--v4-delivery.png"></div>
 <figcaption>Terraform only, one image, prod after a person says yes (Architecture v4)</figcaption></figure>
 <ol><li>Gates ruff, pyright, semgrep, pytest on moto, the evals&#x27; T0 replays, tflint, trivy, gitleaks, jira-key, the leak test every PR</li>
 <li>Plan <code>terraform plan</code> for dev and prod, posted on the PR; T1 live evals when a prompt, tool or guard changes PRs touching infra/ or the agent</li>
-<li>Build CodeBuild&#x27;s arm64 runner builds once, scans with trivy, pushes to ECR by the commit&#x27;s sha merge to main</li>
+<li>Build GitHub&#x27;s free arm64 runner builds both images once and pushes them to ECR by the commit&#x27;s sha; trivy&#x27;s image scan joins it with MA-267 merge to main</li>
 <li>Dev apply, deploy, smoke tests that assert one trace from api to sender after the build</li>
 <li>Dev apps web app to dev&#x27;s bucket; MyPaisa Dev to TestFlight after dev passes</li>
 <li>Approval Arun approves in the GitHub <code>prod</code> environment, once T2 is green for the model ids it ships a person, every time</li>

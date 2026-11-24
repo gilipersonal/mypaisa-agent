@@ -5,7 +5,7 @@ deployed only by GitHub CI. The rules are in `.claude/rules/aws-changes.md`; the
 
 | Root | What it holds | Applied by | State key |
 | --- | --- | --- | --- |
-| `bootstrap/` | The developer role and its prod guard, the CI roles (`mypaisa-ci-plan`, `-dev-deploy`, `-prod-deploy`), dev's permissions boundary, the GitHub `dev` and `prod` environments, the account's budget backstop | Arun, from the laptop, once and then only when he asks | `mypaisa-agent/bootstrap/infra.tfstate` |
+| `bootstrap/` | The developer role and its prod guard, the CI roles (`mypaisa-ci-plan`, `-dev-deploy`, `-prod-deploy`, `-image`), dev's permissions boundary, the GitHub `dev` and `prod` environments, the account's budget backstop, the `mypaisa` ECR repository the Lambda images live in (MA-237) | Arun, from the laptop, once and then only when he asks | `mypaisa-agent/bootstrap/infra.tfstate` |
 | `dev/` | `modules/mypaisa` with dev's settings | the laptop (developer role) or CI's `mypaisa-ci-dev-deploy` | `mypaisa-agent/dev/infra.tfstate` |
 | `prod/` | `modules/mypaisa` with prod's settings | CI only, in the `prod` environment after Arun approves (MA-107) | `mypaisa-agent/prod/infra.tfstate` |
 | `dev-secrets/` | `modules/secrets` with dev's settings: every SSM parameter, secret or id | the laptop (developer role) or CI's `mypaisa-ci-dev-deploy` | `mypaisa-agent/dev/secrets.tfstate` |
@@ -51,7 +51,6 @@ Each of these comes with the story that needs it:
 
 - the Lambdas, the API, the schedules and the `api` and `dashboard` records: MA-29, MA-30 and MA-107;
 - the Cognito pool: MA-109;
-- ECR and CodeBuild: MA-237;
 - `ci-evals`: MA-250.
 
 CI's Plan job (MA-25) plans `dev/` and `prod/` on every pull request from this repository that touches `infra/`, and
@@ -67,6 +66,21 @@ The repository is public, so the admin's address is never written in it. `dev/` 
 variable `alert_email`, so a plan shows it as `(sensitive value)`: on the laptop `export TF_VAR_alert_email=...`
 before `tf.sh dev plan`; in CI, from the repository secret `MYPAISA_ALERT_EMAIL`, which every plan step reads
 (`ci.yml`, `release.yml`). A plan without it fails, by design. AWS emails a link to confirm the subscription once.
+
+### Bootstrap after MA-237
+
+`bootstrap/ecr.tf` adds the one ECR repository the Lambda images live in, `mypaisa` (immutable tags, scan on push, the
+last five images of each target kept, a repository policy that lets Lambda pull for `mypaisa-*` functions only), and
+`mypaisa-ci-image`, the role CI's `Images` job assumes on a push to `main` to push there and do nothing else; the
+guard gains a deny that keeps dev's principals from pushing to, deleting from or re-keeping that repository. The
+images are built on GitHub's free `ubuntu-24.04-arm` runner (the repository is public), so there is no CodeBuild
+project, no connection to GitHub to authorise and no build-minute budget (MA-238 is retired).
+
+**Apply it before MA-237's pull request merges.** Until `mypaisa-ci-image` exists, the `Images` job fails on every
+push to `main`, and a release waits for a green CI. The apply adds five resources and changes the three guard
+policies and nothing else (the budget shows a change only if the alert address differs). ECR storage costs about a
+few cents a month ($0.10 per GB; the base layers are stored once and a code-only build adds a layer of a few hundred
+KB). Prove the guard against the same plan as below: 66 cases, eight of them on the repository.
 
 ### Bootstrap after MA-231
 

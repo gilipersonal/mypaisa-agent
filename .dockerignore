@@ -1,0 +1,9 @@
+# The image is built from the backend's lock and source only (Dockerfile, MA-237): nothing else is sent to the
+# builder, so no doc, design, key or local environment can reach an image.
+*
+!backend/pyproject.toml
+!backend/uv.lock
+!backend/README.md
+!backend/src/
+**/__pycache__
+**/*.pyc
