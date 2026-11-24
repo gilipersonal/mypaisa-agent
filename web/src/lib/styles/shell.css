@@ -1,0 +1,611 @@
+/* The shell and the chat (MA-199), ported from the picked board's own rules (docs/design/app-v1/Web v4 · Shell and
+   chat.dc.html, Shell 1a and the chat's states) so the build draws what the board draws. Every colour is a DS v1 token;
+   the adaptive shell, the sidebar and the tab bar are tokens.css's. The board's frame is .mp-app, a size container: the
+   window decides, never the device. The chat sits beside every page from about 1393 px, is a drawer over the page from
+   1024 to 1392 px (from the sidebar's Chat), and is the Chat tab under 1024 px (MA-301 c 1c). */
+
+.mp-root {
+	height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	background: var(--mp-bg);
+	color: var(--mp-ink);
+}
+
+/* the shell */
+.shl {
+	flex: 1;
+	min-height: 0;
+	position: relative;
+	overflow: hidden;
+}
+.side {
+	background: var(--mp-bg);
+	border-right: 1px solid var(--mp-line);
+	overflow-y: auto;
+}
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 4px 8px 18px;
+}
+.side-sep {
+	height: 1px;
+	background: var(--mp-line);
+	margin: 8px 12px;
+}
+.main {
+	position: relative;
+	overflow-y: auto;
+	background: var(--mp-bg);
+}
+.tabs {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 3;
+}
+.tabs .mp-tab:not(.on) {
+	color: var(--mp-ink-2);
+}
+.mp-side-i.pr {
+	color: var(--mp-accent);
+	font-weight: 600;
+} /* Chat while its drawer is open: pressed, the page stays current */
+.mp-tab {
+	font-size: 12px;
+	line-height: 14px;
+} /* no product text under 12 px (MA-300) */
+:where(button.mp-side-i) {
+	appearance: none;
+	border: 0;
+	background: none;
+	text-align: inherit;
+	cursor: pointer;
+	width: 100%;
+}
+
+/* the mark, 1c Watcher (MA-103) */
+.mpm {
+	display: block;
+	flex: none;
+}
+.mpm-coin {
+	fill: var(--mp-hero);
+}
+.t-dark .mpm-coin {
+	fill: var(--mp-hero-2);
+}
+@media (prefers-color-scheme: dark) {
+	:root:not(.t-light) .mpm-coin {
+		fill: var(--mp-hero-2);
+	}
+}
+.mpm-pound {
+	fill: none;
+	stroke: var(--mp-hero-ink);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.mpm-dot {
+	fill: var(--mp-coral);
+}
+
+/* the chat column */
+.chatcol {
+	display: none;
+	flex-direction: column;
+	min-height: 0;
+	background: var(--mp-bg);
+	position: relative;
+}
+.chd {
+	flex: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 12px 12px 10px 20px;
+	border-bottom: 1px solid var(--mp-line);
+}
+.ban {
+	flex: none;
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	margin: 10px 12px 0;
+	padding: 10px 14px;
+	border-radius: 14px;
+	font: 500 14px/19px var(--mp-font);
+}
+.ban-off {
+	background: var(--mp-pause-bg);
+	color: var(--mp-pause);
+}
+.ban-back {
+	background: var(--mp-hold-bg);
+	color: var(--mp-hold);
+}
+.msgs {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	-webkit-mask-image: linear-gradient(180deg, transparent 0, #000 36px);
+	mask-image: linear-gradient(180deg, transparent 0, #000 36px);
+}
+.msgs-in {
+	position: relative;
+	width: 100%;
+}
+.msgs-row {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	padding: 6px 16px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+}
+.daysep {
+	align-self: center;
+	font: 500 12px/16px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.me {
+	align-self: flex-end;
+	max-width: 84%;
+	box-sizing: border-box;
+	background: var(--mp-hero);
+	color: var(--mp-hero-ink);
+	border-radius: 20px 20px 6px 20px;
+	padding: 10px 14px;
+	font: 400 15px/20px var(--mp-font);
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+.mest {
+	align-self: flex-end;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-top: 6px;
+	font: 400 12px/16px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.mest .lc {
+	width: 15px;
+	height: 15px;
+}
+.me.mf {
+	padding: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.mft {
+	padding: 0 8px 4px;
+}
+.file {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px;
+	border-radius: 14px;
+	background: var(--mp-surface-2);
+	color: var(--mp-ink);
+	min-width: 0;
+}
+.me .file {
+	background: var(--mp-hero-2);
+	color: var(--mp-hero-ink);
+	padding-right: 12px;
+}
+.ftile {
+	width: 36px;
+	height: 40px;
+	border-radius: 8px;
+	display: grid;
+	place-items: center;
+	flex: none;
+	background: var(--mp-surface);
+	color: var(--mp-accent);
+}
+.me .ftile {
+	background: var(--mp-hero);
+	color: var(--mp-coral);
+}
+.fname {
+	font: 600 14px/19px var(--mp-font);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.fmeta {
+	font: 400 12px/16px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.me .fmeta {
+	color: var(--mp-hero-ink-2);
+}
+.ai {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+}
+.aim {
+	width: 26px;
+	height: 26px;
+	flex: none;
+}
+.aib {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.ait {
+	font: 400 15px/21px var(--mp-font);
+	text-wrap: pretty;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+.aimeta {
+	font: 400 12px/16px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.caret {
+	display: inline-block;
+	width: 2px;
+	height: 17px;
+	margin-left: 2px;
+	vertical-align: -3px;
+	border-radius: 1px;
+	background: var(--mp-accent);
+	animation: mp-caret 1s steps(2, start) infinite;
+}
+@keyframes mp-caret {
+	to {
+		visibility: hidden;
+	}
+}
+.reading {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font: 600 15px/20px var(--mp-font);
+}
+.typing {
+	display: inline-flex;
+	gap: 4px;
+	align-items: center;
+}
+.typing i {
+	display: block;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: var(--mp-ink-2);
+	animation: mp-pulse 0.9s ease-in-out infinite alternate;
+}
+.typing i:nth-child(2) {
+	animation-delay: 0.15s;
+}
+.typing i:nth-child(3) {
+	animation-delay: 0.3s;
+}
+@media (prefers-reduced-motion: reduce) {
+	.caret,
+	.typing i {
+		animation: none;
+	}
+}
+.chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.chipb {
+	min-height: 44px;
+	padding: 0 16px;
+	border-radius: 999px;
+	display: inline-flex;
+	align-items: center;
+	box-sizing: border-box;
+	font: 600 15px/20px var(--mp-font);
+	background: var(--mp-surface);
+	color: var(--mp-ink-2);
+	box-shadow: inset 0 0 0 1px var(--mp-line);
+}
+.chipb.sel {
+	color: var(--mp-accent);
+	box-shadow: inset 0 0 0 2px var(--mp-accent);
+}
+.chipb[aria-disabled='true']:not(.sel) {
+	cursor: default;
+}
+.cc {
+	background: var(--mp-surface);
+	border-radius: 20px;
+	box-shadow: var(--mp-shadow);
+	overflow: hidden;
+}
+.cc-h {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 14px 16px 8px;
+}
+.cc-b {
+	display: flex;
+	flex-direction: column;
+	padding: 0 16px 12px;
+}
+.kvr {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 12px;
+	padding: 7px 0;
+	border-top: 1px solid var(--mp-line);
+	font: 400 14px/19px var(--mp-font);
+}
+.kvr > :first-child {
+	color: var(--mp-ink-2);
+	flex: none;
+}
+.kvr > :last-child {
+	font-weight: 600;
+	text-align: right;
+	min-width: 0;
+}
+.cc-hint {
+	padding-top: 6px;
+}
+.cc-a {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	padding: 0 16px 14px;
+}
+.cc-f {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	min-height: 44px;
+	padding: 0 16px;
+	border-top: 1px solid var(--mp-line);
+	font: 400 14px/19px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.cc-f .lc {
+	width: 18px;
+	height: 18px;
+	color: var(--mp-accent);
+}
+.okk {
+	font-size: 20px;
+	color: var(--mp-accent);
+}
+.cc-fig {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 14px 16px;
+}
+.cc-fig > span {
+	align-self: flex-start;
+}
+.sugg {
+	flex: none;
+	display: flex;
+	gap: 8px;
+	padding: 0 12px 8px;
+	overflow-x: auto;
+	scrollbar-width: none;
+	-webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent);
+	mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent);
+}
+.sugg::-webkit-scrollbar {
+	display: none;
+}
+.sg {
+	flex: none;
+	min-height: 44px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 0 14px;
+	border-radius: 999px;
+	box-sizing: border-box;
+	background: var(--mp-surface);
+	box-shadow: inset 0 0 0 1px var(--mp-line);
+	font: 600 14px/18px var(--mp-font);
+	color: var(--mp-ink);
+	white-space: nowrap;
+}
+.sg .lc {
+	width: 18px;
+	height: 18px;
+	color: var(--mp-accent);
+}
+.comp {
+	flex: none;
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
+	padding: 2px 12px 14px;
+}
+.cplus {
+	width: 44px;
+	height: 44px;
+	margin-bottom: 4px;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	flex: none;
+	background: var(--mp-surface);
+	box-shadow: inset 0 0 0 1px var(--mp-line);
+	color: var(--mp-ink);
+}
+.cfield {
+	flex: 1;
+	min-width: 0;
+	min-height: 52px;
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
+	padding: 4px 4px 4px 16px;
+	border-radius: 26px;
+	box-sizing: border-box;
+	background: var(--mp-surface);
+	box-shadow: inset 0 0 0 1px var(--mp-line);
+}
+.cfield:focus-within {
+	box-shadow: inset 0 0 0 2px var(--mp-focus);
+}
+.cfield .ph:focus-visible {
+	outline: none;
+} /* the field's own ring shows focus, once */
+.cfield.att {
+	flex-direction: column;
+	align-items: stretch;
+	gap: 2px;
+	padding: 6px;
+}
+.attline {
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
+	padding-left: 10px;
+}
+.ph {
+	flex: 1;
+	min-width: 0;
+	align-self: center;
+	resize: none;
+	border: 0;
+	outline: 0;
+	background: transparent;
+	padding: 10px 0;
+	max-height: 160px;
+	font: 400 15px/20px var(--mp-font);
+	color: var(--mp-ink);
+}
+.ph::placeholder {
+	color: var(--mp-ink-2);
+	opacity: 1;
+}
+.ph:placeholder-shown {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+} /* the prompt stays one line, cut, as drawn */
+.send {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	flex: none;
+	background: var(--mp-surface-2);
+	color: var(--mp-ink-2);
+}
+.send.on {
+	background: var(--mp-accent);
+	color: var(--mp-on-accent);
+}
+.xbtn {
+	width: 44px;
+	height: 44px;
+	display: grid;
+	place-items: center;
+	flex: none;
+	color: var(--mp-ink-2);
+}
+:where(button.chipb, button.sg, button.cplus, button.send, button.xbtn) {
+	appearance: none;
+	-webkit-appearance: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	letter-spacing: inherit;
+	text-align: inherit;
+	text-transform: none;
+	box-sizing: content-box;
+	cursor: pointer;
+}
+:is(.chipb, .sg, .cplus, .send, .xbtn):focus-visible {
+	outline: 3px solid var(--mp-focus);
+	outline-offset: 2px;
+}
+.sr-file {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+/* 1a: the chat beside every page from about 1393 px; the member may hide it for a wider page (board 2e) */
+@container app (min-width: 1393px) {
+	.sh-a .chatcol {
+		display: flex;
+		flex: none;
+		width: clamp(340px, 28%, 420px);
+		border-left: 1px solid var(--mp-line);
+	}
+	.sh-a.nochat .chatcol {
+		display: none;
+	}
+}
+/* from 1024 to 1392 px the page has the room; Chat in the sidebar opens the chat as a drawer from the right */
+@container app (min-width: 1024px) and (max-width: 1392px) {
+	.mp .mp-shell.sh-a.c-drawer .chatcol {
+		display: flex;
+		position: absolute;
+		z-index: 6;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 380px;
+		border-left: 1px solid var(--mp-line);
+		box-shadow: var(--mp-shadow);
+	}
+}
+/* under 1024 px the Chat tab is the page */
+@container app (max-width: 1023px) {
+	.v-chat .main {
+		display: none;
+	}
+	.v-chat .chatcol {
+		display: flex;
+		flex: 1;
+		min-width: 0;
+		padding-bottom: 76px;
+	}
+	.v-chat .chd {
+		display: none;
+	}
+}
+/* the sidebar's Chat item and the header's button act only where they mean something */
+@container app (min-width: 1393px) {
+	.only-drawer {
+		display: none;
+	}
+}
+@container app (max-width: 1392px) {
+	.only-beside {
+		display: none;
+	}
+}
