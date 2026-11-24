@@ -125,7 +125,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-348 | The research pages show the watching's counted cost: sixteen metrics, dev's alarms, and the VPC options' totals £2 higher | To Do | §9.9, §14 | none |  |
 | MA-349 | A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read | Done | §17.4 | none |  |
 | MA-350 | Dependabot moves the Lambda images' Python and uv to new minor versions, away from the 3.14 and 0.12 the backend is tested on | Done | §17.4 | none |  |
-| MA-351 | CodeQL scans Swift only when a pull request changes ios/, from a cached build, so other pull requests no longer wait about 28 minutes | To Do | §17.4 | none |  |
+| MA-351 | CodeQL scans Swift only when a pull request changes ios/, from a cached build, so other pull requests no longer wait about 28 minutes | In Progress | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
