@@ -179,6 +179,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-347 | The first release that ships a Lambda proves its Lambda stages: one image digest in dev and prod, aliases rolled back on a failed smoke, and prod refused while a value is a placeholder | To Do | §17.4, §9.1 | none |  |
 | MA-352 | The web chat talks to the real chat API and SSE stream, uploads files through presigned links, and is verified on dev | To Do | §8.4, §19.5 | none |  |
 | MA-353 | Command-K, or Search in the sidebar, opens one palette over any page to go to a page, find a record, or ask the chat | In Progress | §8.4 | picked | Web v4 · Shell and chat.dc.html: Browser · ⌘K palette, nothing typed; Web v4 · Shell and chat.dc.html: Browser · ⌘K palette, typing “hdfc” |
+| MA-354 | The web app's page content fills the page column, and the chat column is the width Shell 1a draws | In Progress | §8.4 | picked | Web v4 · Shell and chat.dc.html: Browser · Shell 1a, Chat beside; Web v4 · Shell and chat.dc.html: Browser · Shell 1a, Chat beside, phone |
 
 ## Phase 2: The first record: one dynamic structure, one write path (MA-187)
 

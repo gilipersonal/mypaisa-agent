@@ -11,16 +11,13 @@
 			<p class="mp-foot mp-ink2">The household's wealth arrives here with the first dashboard (phase 2).</p>
 		</div>
 	</div>
-	<div class="max-w-xl">
-		<ApiStatus />
-	</div>
+	<!-- Each card fills the page's column, as Shell 1a's hero and cards do (MA-354): the page sets the width. -->
+	<ApiStatus />
 	<!-- Development only: the scripted journey on the local stack (MA-198). The production build has none of it, and
 	     scripts/web_gates.sh checks that. -->
 	{#if import.meta.env.DEV}
-		<div class="max-w-xl">
-			{#await import('./LocalJourney.svelte') then journey}
-				<journey.default />
-			{/await}
-		</div>
+		{#await import('./LocalJourney.svelte') then journey}
+			<journey.default />
+		{/await}
 	{/if}
 </div>
