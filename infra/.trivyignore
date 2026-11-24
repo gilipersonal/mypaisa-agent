@@ -1,0 +1,7 @@
+# Accepted trivy findings for infra/ (MA-25): one ID per line, each with its reason above it.
+
+# AWS-0132 (HIGH), the buckets use S3's own encryption (SSE-S3), not a customer-managed KMS key. MA-26 chose the free
+# keys, as the table uses the AWS-owned key: a KMS key costs $1 a month and request charges, and anything that costs
+# money is asked first (.claude/rules/aws-changes.md). Every bucket is private, owner-enforced and TLS only. A CMK
+# comes only with Arun's word.
+AWS-0132

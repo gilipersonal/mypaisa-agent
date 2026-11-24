@@ -6,21 +6,29 @@
 #   infra/scripts/tf.sh dev apply dev.tfplan       # only a saved plan file is applied
 #   infra/scripts/tf.sh prod plan -out=prod.tfplan
 #   infra/scripts/tf.sh bootstrap plan -out=bootstrap.tfplan
+#   infra/scripts/tf.sh dev-secrets plan -out=dev-secrets.tfplan   # the SSM parameters, apart (MA-25)
 #
 # Each root names its own state key in its backend block, so the state and the configuration cannot disagree the
 # way a shared root with -backend-config and -var-file can (the wealth tracker's tf.sh guards that case). This
 # script guards the rest:
 #   - after init, the state key the backend holds must be the one the root names, or it stops;
 #   - apply takes only a saved plan file: "plan to a file, read all of it, then apply that file";
-#   - prod is applied only by CI, from the GitHub prod environment (MA-107): a local apply of prod is refused;
+#   - prod and prod-secrets are applied only by CI, from the GitHub prod environment (MA-107): a local apply of
+#     either is refused;
 #   - destroy is refused everywhere: the data stores carry prevent_destroy, and nothing here is torn down by hand.
 set -euo pipefail
 
 ROOT=${1:-}
-[[ $ROOT == dev || $ROOT == prod || $ROOT == bootstrap ]] || {
-  echo "usage: $0 <dev|prod|bootstrap> <terraform args...>" >&2
-  exit 2
-}
+# Each root's state key. The secrets roots keep theirs beside their environment's, under mypaisa-agent/<env>/, so the
+# prod guard's deny on prod's state covers prod-secrets too (MA-25).
+case "$ROOT" in
+  dev | prod | bootstrap) want="mypaisa-agent/$ROOT/infra.tfstate" ;;
+  dev-secrets | prod-secrets) want="mypaisa-agent/${ROOT%-secrets}/secrets.tfstate" ;;
+  *)
+    echo "usage: $0 <dev|prod|bootstrap|dev-secrets|prod-secrets> <terraform args...>" >&2
+    exit 2
+    ;;
+esac
 shift
 CMD=${1:-}
 [[ -n $CMD ]] || { echo "usage: $0 $ROOT <terraform args...>" >&2; exit 2; }
@@ -34,8 +42,8 @@ case "$CMD" in
     exit 1
     ;;
   apply)
-    if [[ $ROOT == prod && ${GITHUB_ACTIONS:-} != true ]]; then
-      echo "tf.sh: prod is applied only by CI, from the GitHub prod environment after Arun approves (MA-107)" >&2
+    if [[ ($ROOT == prod || $ROOT == prod-secrets) && ${GITHUB_ACTIONS:-} != true ]]; then
+      echo "tf.sh: $ROOT is applied only by CI, from the GitHub prod environment after Arun approves (MA-107)" >&2
       exit 1
     fi
     # The last argument must be a saved plan file, and no -auto-approve without one.
@@ -55,7 +63,6 @@ fi
 terraform init -input=false >/dev/null
 
 # The backend the working directory is initialised with must be this root's own key.
-want="mypaisa-agent/$ROOT/infra.tfstate"
 have=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["backend"]["config"]["key"])' .terraform/terraform.tfstate)
 if [[ $have != "$want" ]]; then
   echo "tf.sh: $ROOT is initialised against $have, not $want; run 'terraform init -reconfigure' in $DIR" >&2

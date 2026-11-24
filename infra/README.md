@@ -8,18 +8,27 @@ deployed only by GitHub CI. The rules are in `.claude/rules/aws-changes.md`; the
 | `bootstrap/` | The developer role and its prod guard, the CI roles (`mypaisa-ci-plan`, `-dev-deploy`, `-prod-deploy`), dev's permissions boundary, the GitHub `dev` and `prod` environments, the account's budget backstop | Arun, from the laptop, once and then only when he asks | `mypaisa-agent/bootstrap/infra.tfstate` |
 | `dev/` | `modules/mypaisa` with dev's settings | the laptop (developer role) or CI's `mypaisa-ci-dev-deploy` | `mypaisa-agent/dev/infra.tfstate` |
 | `prod/` | `modules/mypaisa` with prod's settings | CI only, in the `prod` environment after Arun approves (MA-107) | `mypaisa-agent/prod/infra.tfstate` |
+| `dev-secrets/` | `modules/secrets` with dev's settings: every SSM parameter, secret or id | the laptop (developer role) or CI's `mypaisa-ci-dev-deploy` | `mypaisa-agent/dev/secrets.tfstate` |
+| `prod-secrets/` | `modules/secrets` with prod's settings | CI only, in the `prod` environment after Arun approves (MA-107) | `mypaisa-agent/prod/secrets.tfstate` |
+
+The parameters live apart from the stack (Arun, 24 Nov 2026, MA-25): the provider reads a SecureString with
+decryption on every refresh, so whatever plans a root that holds one can read it. CI plans `dev/` and `prod/` on
+every pull request with `mypaisa-ci-plan`, and never the secrets roots. `ci-plan` reads configuration, never contents:
+explicit denies refuse it every parameter value in the account, `kms:Decrypt`, every S3 object but those two states
+and the lock files, DynamoDB items, Cognito users, log lines and secret values (`bootstrap/roles.tf`).
 
 The state bucket is the account's `wealth-tracker-tfstate`, with S3's own lock files. The `mypaisapp.com` zone
 and certificate belong to the wealth tracker's `dns/` root and are looked up by name when the first record is
 made (MA-107).
 
-## What the module makes today (MA-26)
+## What the modules make today (MA-26, MA-25)
 
 - `mypaisa-<env>-core`: the single DynamoDB table (pk, sk; on demand). Prod has deletion protection and
   point-in-time recovery.
 - `mypaisa-<env>-documents`, `-exports`, `-imports`, `-site`: private S3 buckets, owner-enforced, S3-encrypted
   and TLS only. Prod's are versioned.
-- The SSM parameters under `/mypaisa-agent/<env>/`, each made with a write-only placeholder (see below).
+- In `modules/secrets`, called by `dev-secrets/` and `prod-secrets/`: the SSM parameters under
+  `/mypaisa-agent/<env>/`, each made with a write-only placeholder (see below).
 - Every resource is tagged `env`, `app` and `owner`. The table and the buckets carry `prevent_destroy` in both
   environments.
 
@@ -29,8 +38,11 @@ Each of these comes with the story that needs it:
 - the Cognito pool: MA-109;
 - the log groups and alarms: MA-231;
 - ECR and CodeBuild: MA-237;
-- `ci-evals`: MA-250;
-- the CI plan job: MA-25.
+- `ci-evals`: MA-250.
+
+CI's Plan job (MA-25) plans `dev/` and `prod/` on every pull request from this repository that touches `infra/`, and
+posts the plan on the PR from a second job that holds no AWS role. Until bootstrap is applied `ci-plan` does not
+exist, so that job fails.
 
 Every role dev's stack makes must carry the `mypaisa-dev-boundary` permissions boundary. The guard refuses one
 without it.
@@ -46,8 +58,9 @@ infra/scripts/tf.sh dev show dev.tfplan
 infra/scripts/tf.sh dev apply dev.tfplan
 ```
 
-`scripts/infra_gates.sh` is the offline gate. It checks `fmt` and `validate` on all three roots, with no
-credentials, and that `tf.sh` refuses what it must.
+`scripts/infra_gates.sh` is the offline gate, and CI's Infra job. With no credentials, it checks `fmt` and
+`validate` on all five roots, tflint (`.tflint.hcl`) and trivy's HIGH and CRITICAL misconfigurations (accepted ones in
+`.trivyignore`, each with its reason), and that `tf.sh` refuses what it must.
 
 ### The first time (Arun)
 
@@ -65,7 +78,7 @@ credentials, and that `tf.sh` refuses what it must.
    ```
 
 3. **Prove the guard** against the same plan, before or after the apply. It runs IAM's policy simulator over the
-   guard as planned, and reads nothing in the account:
+   guard and ci-plan's denies as planned, and reads nothing in the account:
 
    ```bash
    (cd infra/bootstrap && terraform show -json bootstrap.tfplan) > /tmp/bootstrap.json
@@ -75,8 +88,8 @@ credentials, and that `tf.sh` refuses what it must.
 4. **Point the `agent-toolkit` profile at the developer role.** In `~/.aws/config`, set `role_arn` to
    bootstrap's `developer_role_arn` output, and `source_profile` to your own identity's profile, with
    `mfa_serial`. From then on the laptop works in dev, and prod refuses it.
-5. **Apply dev** with `tf.sh dev`, after reading its plan. Prod is applied by CI, through MA-107's release
-   workflow.
+5. **Apply dev, then dev-secrets** with `tf.sh dev` and `tf.sh dev-secrets`, after reading each plan. Prod and
+   prod-secrets are applied by CI, through MA-107's release workflow.
 
 ### Putting a value
 

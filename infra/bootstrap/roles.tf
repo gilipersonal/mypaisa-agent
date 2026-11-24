@@ -105,7 +105,8 @@ resource "aws_iam_role" "ci" {
   max_session_duration = 3600
 }
 
-# ci-plan reads everything Terraform refreshes, and takes the state lock for MyPaisa's keys only.
+# ci-plan reads the configuration Terraform refreshes, and takes the state lock for MyPaisa's keys only; the denies
+# below keep every content out of its reach (MA-25).
 resource "aws_iam_role_policy_attachment" "ci_plan_read" {
   role       = aws_iam_role.ci["plan"].name
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
@@ -124,6 +125,82 @@ resource "aws_iam_role_policy" "ci_plan_lock" {
   name   = "mypaisa-bootstrap-ci-plan-lock"
   role   = aws_iam_role.ci["plan"].name
   policy = data.aws_iam_policy_document.ci_plan_lock.json
+}
+
+# ci-plan reads configuration, never contents (Arun, 24 Nov 2026, MA-25: a separate secrets root). ReadOnlyAccess
+# would let it read every secret and record in the account, and any job in this repository that holds id-token can
+# assume it, so explicit denies take the contents back out. Terraform's plan of infra/dev and infra/prod needs none
+# of them: every SSM parameter lives in infra/dev-secrets and infra/prod-secrets, which ci-plan never plans, and the
+# backend reads only its own state and lock files. With the aws/ssm key, ssm:GetParameter alone decrypts a
+# SecureString (the key policy grants the decrypt through SSM), so the deny is on the SSM actions themselves.
+locals {
+  ci_plan_states = [
+    "arn:aws:s3:::${var.state_bucket}/mypaisa-agent/dev/infra.tfstate",
+    "arn:aws:s3:::${var.state_bucket}/mypaisa-agent/prod/infra.tfstate",
+    "arn:aws:s3:::${var.state_bucket}/mypaisa-agent/*.tflock",
+  ]
+}
+
+data "aws_iam_policy_document" "ci_plan_no_contents" {
+  statement {
+    sid    = "DenyParameterValues"
+    effect = "Deny"
+    # GetParameter, GetParameters, GetParametersByPath and GetParameterHistory, which returns old values.
+    actions   = ["ssm:GetParameter*"]
+    resources = ["arn:aws:ssm:*:${local.account_id}:parameter/*"]
+  }
+
+  statement {
+    sid    = "DenySecretValuesAndDecrypt"
+    effect = "Deny"
+    actions = [
+      "kms:Decrypt",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:BatchGetSecretValue",
+    ]
+    resources = ["*"]
+  }
+
+  # Every object in the account but the two states the plan job reads and the lock files: the household's documents
+  # and exports, every other state (prod-secrets', bootstrap's, the wealth tracker's), and anything to come.
+  statement {
+    sid           = "DenyObjectsButThePlanStates"
+    effect        = "Deny"
+    actions       = ["s3:GetObject", "s3:GetObjectVersion", "s3:GetObjectAttributes", "s3:GetObjectTorrent"]
+    not_resources = local.ci_plan_states
+  }
+
+  statement {
+    sid    = "DenyRecords"
+    effect = "Deny"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:BatchGetItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:PartiQLSelect",
+      "dynamodb:GetRecords",
+      "dynamodb:GetShardIterator",
+      "cognito-idp:ListUsers",
+      "cognito-idp:ListUsersInGroup",
+      "cognito-idp:AdminGetUser",
+      "cognito-idp:AdminListDevices",
+      "logs:GetLogEvents",
+      "logs:FilterLogEvents",
+      "logs:GetLogRecord",
+      "logs:StartQuery",
+      "logs:GetQueryResults",
+      "logs:StartLiveTail",
+      "sqs:ReceiveMessage",
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "ci_plan_no_contents" {
+  name   = "mypaisa-bootstrap-ci-plan-no-contents"
+  role   = aws_iam_role.ci["plan"].name
+  policy = data.aws_iam_policy_document.ci_plan_no_contents.json
 }
 
 # ci-dev-deploy applies dev: anything, inside the guard with no exception.

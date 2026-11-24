@@ -1,4 +1,9 @@
-# --- SSM: the environment's keys and ids, under /mypaisa-agent/<env>/ (ARCHITECTURE §13, .claude/rules/aws-changes.md)
+# --- SSM: the environment's keys and ids, under /mypaisa-agent/<env>/ (ARCHITECTURE §13, §17.4, .claude/rules/aws-changes.md)
+#
+# Every parameter, secret or id, lives here and nowhere else, called by infra/dev-secrets and infra/prod-secrets with
+# state of their own, so the plan CI runs on a pull request (infra/dev and infra/prod, with ci-plan) never refreshes
+# one: the provider reads a SecureString with decryption on every refresh, and ci-plan is denied every parameter
+# value (Arun, 24 Nov 2026, MA-25).
 #
 # Every parameter is made with a write-only placeholder (value_wo), so no value is ever in state, and Arun puts the
 # real value by hand after the apply that made it (`read -rs`, then `aws ssm put-parameter --overwrite`). The
@@ -11,6 +16,8 @@
 # value_wo_version in that apply and put the value again by hand straight after.
 
 locals {
+  ssm_path = "/mypaisa-agent/${var.env}"
+
   # Secrets: SecureString, with the account's aws/ssm key.
   secrets = merge(
     {

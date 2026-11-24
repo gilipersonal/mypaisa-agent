@@ -226,7 +226,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "17.4",
@@ -235,9 +235,19 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "CI also runs the evals: T0 on every pull request, T1 when a prompt, tool, guard, model route or kind changes, T2 on a model change (MA-246, MA-250, MA-251; ARCHITECTURE 21.3).",
-      "open": [
-        "How ci-plan refreshes secrets without being able to read them: MA-26 gives mypaisa-ci-plan ReadOnlyAccess, and with the aws/ssm key ssm:GetParameter alone decrypts a SecureString; the AWS provider reads each SecureString with decryption on every refresh, so whatever role plans can read every secret. Fork pull requests get no OIDC token, but any job in this repo that holds id-token and assumes ci-plan could. Choose before the plan job gets id-token: keep the secret parameters in a root ci-plan never plans, with an explicit deny on ssm:GetParameter* under /mypaisa-agent/*; or plan with -refresh=false on pull requests and refresh only in the nightly drift check on main; or accept it."
+      "notes": "CI also runs the evals: T0 on every pull request, T1 when a prompt, tool, guard, model route or kind changes, T2 on a model change (MA-246, MA-250, MA-251; ARCHITECTURE 21.3). Settled: How ci-plan refreshes secrets without being able to read them (Arun, 24 Nov 2026): a separate secrets root. Every SSM parameter, secret or id, lives in infra/modules/secrets, called by infra/dev-secrets and infra/prod-secrets with their own state (mypaisa-agent/<env>/secrets.tfstate); infra/dev and infra/prod hold none, so ci-plan never plans one. ci-plan reads configuration, never contents: explicit denies on every parameter value in the account (ssm:GetParameter*), kms:Decrypt, every S3 object but the two plan states and the lock files, DynamoDB items, Cognito users, log lines and secret values (ARCHITECTURE 17.4). The laptop plans and applies dev-secrets through tf.sh; prod-secrets is planned and applied only by the release (MA-107).",
+      "open": [],
+      "code": [
+        "infra/bootstrap/roles.tf",
+        "infra/modules/**",
+        "infra/dev/**",
+        "infra/prod/**",
+        "infra/dev-secrets/**",
+        "infra/prod-secrets/**",
+        "infra/scripts/tf.sh",
+        "infra/README.md",
+        "infra/.tflint.hcl",
+        "infra/.trivyignore"
       ]
     },
     {
@@ -246,7 +256,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "17.1",
@@ -1912,7 +1922,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Review round 1 of MA-245 (28 Oct 2026): the release to prod waits for a green T2 on the model ids it ships (ARCHITECTURE 17.4, 21.3; MA-251).",
+      "notes": "Review round 1 of MA-245 (28 Oct 2026): the release to prod waits for a green T2 on the model ids it ships (ARCHITECTURE 17.4, 21.3; MA-251). MA-25 (24 Nov 2026): the secret parameters live in their own roots, infra/dev-secrets and infra/prod-secrets, which ci-plan never plans; the release plans and applies prod-secrets with ci-prod-deploy, beside prod, and dev-secrets with ci-dev-deploy.",
       "open": [
         "Which phase holds the first prod release: PLAN.md once listed MA-107 and MA-108 under phase 1; since MA-186 PLAN, Jira and the trace all put them in phase 0 (MA-9), and the phase of the first prod release is still to settle. Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
       ]
@@ -1932,7 +1942,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "",
+      "notes": "MA-25 (24 Nov 2026): ci-plan cannot read a parameter's value, so the nightly check plans infra/dev and infra/prod only; for the secrets roots it compares each parameter's metadata (DescribeParameters: name, type, tier, description, tags) with the code, never its value.",
       "open": [
         "Which phase holds the first prod release: PLAN.md once listed MA-107 and MA-108 under phase 1; since MA-186 PLAN, Jira and the trace all put them in phase 0 (MA-9), and the phase of the first prod release is still to settle. Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
       ]
@@ -8144,7 +8154,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "17.4"

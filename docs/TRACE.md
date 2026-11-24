@@ -19,8 +19,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-22 | A free Twelve Data key is in SSM for the US lines and the FX fallback | To Do | §5.1 | none |  |
 | MA-23 | Each Monzo fund's factsheet and a valuation screenshot are ready to send in the app | To Do | §4.2 | none |  |
 | MA-24 | The Python project skeleton exists with its gates and the working rules | Done | §12, §12.1, §15 | none |  |
-| MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | To Do | §17.4, §21.3 | none |  |
-| MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | In Progress | §17.1, §17.4 | none |  |
+| MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | In Progress | §17.4, §21.3 | none |  |
+| MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | Done | §17.1, §17.4 | none |  |
 | MA-106 | The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery | Done | §4.5, §8.3, §11, §12, §13, §14, §15 | none |  |
 | MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | To Do | §17.4, §18.4, §21.3 | none |  |
 | MA-108 | A nightly check reports any prod change made outside Terraform | To Do | §17.4, §18.4 | none |  |
@@ -121,7 +121,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-343 | Prettier 3.10 rejects how the web shell's skip link is wrapped, so Dependabot's web group fails the web gate | Done | §17.4 | none |  |
 | MA-344 | Dependabot bumps hermes-compiler apart from React Native, so the iOS gate refuses the web group | Done | §17.4 | none |  |
 | MA-345 | Two of MA-194's fixed-finding checks run in web/ at the same time and race, so Review tooling fails at random | Done | §17.4 | none |  |
-| MA-346 | CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it | In Progress | §17.4 | none |  |
+| MA-346 | CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it | Done | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

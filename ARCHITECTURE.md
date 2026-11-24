@@ -3092,9 +3092,14 @@ phase 1, so every later piece starts signed in (MA-109).
 
 ### 17.4 Delivery
 
-**Terraform only.** `infra/modules/mypaisa` holds the whole stack once;
-`infra/dev` and `infra/prod` call it with their own settings and keep separate
-state (`mypaisa-agent/<env>/infra.tfstate` in the existing state bucket). A
+**Terraform only.** `infra/modules/mypaisa` holds the whole stack once but
+its SSM parameters; `infra/dev` and `infra/prod` call it with their own
+settings and keep separate state (`mypaisa-agent/<env>/infra.tfstate` in the
+existing state bucket). Every SSM parameter, secret or id, lives in
+`infra/modules/secrets`, called by `infra/dev-secrets` and
+`infra/prod-secrets` with state of their own
+(`mypaisa-agent/<env>/secrets.tfstate`), so the plan CI runs on a pull
+request never refreshes one (Arun, 24 Nov 2026, MA-25). A
 change is planned to a file, the plan is read, and that file is applied.
 Prod resources that hold data carry `prevent_destroy`. Secret values are put in
 SSM by hand, after the first apply; Terraform creates each parameter with a
@@ -3111,7 +3116,7 @@ resource (`.claude/rules/aws-changes.md`).
 | Web gates (L4) | every PR (CI's Web job, `ubuntu-latest`; MA-194) | `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304). MA-304's QA runs only when Arun asks (Arun, 2 Nov 2026: "I need this checks as QA when I ask, but on actual code implemented"): a manual run of the QA workflow or a `qa` label on the PR starts Playwright 1.64 on `web/` at `390x844` and `1440x900` in both `.t-light` and `.t-dark` (plus privacy mode `£••••` on wealth/home screens) through one `auditAndCapture()` fixture: `prefers-reduced-motion` both ways, fail-closed `@axe-core/playwright` WCAG 2.2 AA before capture, keyboard focus/landmark checks (MA-181), and **Argos CI** (`@argos-ci/playwright`, Tokenless GitHub App OIDC, `uploadToArgos: !!process.env.CI`) uploading visual PNGs in both themes (`threshold: 0.2`) and a light-theme-deduplicated YAML `ariaSnapshot` accessibility tree (at most ~3,600 snapshots/month inside Argos CI's 5,000/month £0 Free Hobby tier, `docs/RESEARCH.md` §7.4, §10), with the 25% brightness floors, the 320 to 1920 width sweep and a pixel parity check against the picked boards. No check runs on the boards in `docs/design/`: MA-303 stopped `board_fit.js` and `contrast_check.py` (Arun, 2 Nov 2026) |
 | iOS native gates (L4) | every PR touching `ios/` native Swift or `cards/`, and on `main` releases | on a macOS runner (`macos-15` or a self-hosted Mac runner, keeping monthly GitHub minutes inside the 2,000 free quota despite the 10x macOS multiplier, `docs/RESEARCH.md` §7.5, MA-269): swift-format, `semgrep` Swift rules, build, XCTest and XCUITest (including `⌘*` keyboard shortcuts) on the simulator, snapshot tests (iPhone and iPad, light and dark, Large and AX5), the accessibility audit (MA-166); locally on Apple Silicon at £0/month (`scripts/maestro_local.py`, MA-273, `docs/RESEARCH.md` §8), the full multi-simulator Maestro E2E matrix across all four width sub-bands, `xcrun simctl` and Local File Provider Face ID / APNs / Universal Links / Photos / Files / offline flows, and `--mode dev-live` X-Ray trace verification; the performance benches of §8.5 on the phone before a release |
 | Evals (L3 & L5) | every PR; live when it changes a prompt, a tool, a guard, the agent loop, the model routing, a kind template or the SDK; the full suite on a model-id change | T0: the recorded conversations replayed through the agent loop and its guards, and the coverage check; T1: the affected cases live in the `evals` workspace, three trials each, within $10 a run and $30 a month, a run stopped by its cap marked incomplete; T2: every case five times on the new model (§21.3; MA-246, MA-250, MA-251) |
-| Plan | every PR touching `infra/` | `terraform plan` for dev and prod, posted on the PR |
+| Plan | every PR from this repository touching `infra/` | `terraform plan` for `infra/dev` and `infra/prod` with `ci-plan`, posted on the PR by a job that holds no AWS role; the secrets roots are planned only by the laptop (dev) and the release (prod; MA-25, MA-107) |
 | Build & image scan | merge to `main` | the Lambda images built once on AWS: the workflow's image job runs on AWS CodeBuild's arm64 runner (`codebuild-mypaisa-ci-image-…`, arm1.small, inside CodeBuild's free 100 minutes a month), builds the `lambda` and `stream` targets natively, runs `trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed` on both images (MA-267), and pushes them to ECR by the commit's sha (with ECR Basic Scanning on push); the same immutable `sha256` digest goes to both environments (MA-237) |
 | Dev & smoke | after the build | apply dev, deploy, run `python3 scripts/smoke.py --env dev --up-to-phase <N>` (MA-268) against `api-dev` and `dashboard-dev`: verifies `/v1/health`, `/v1/health?deep=1`, OpenAPI `401` perimeter, synthetic member sign-in, `/v1/stream` SSE, a scripted chat turn, the `RunRecord`, and one unbroken trace from `api` to `sender` through the X-Ray API (§9.3, MA-232) |
 | Dev app | after dev passes (`environment: dev`, `main` only) | the web app synced to dev's dashboard bucket and its CloudFront cache cleared; when `ios/` changed, MyPaisa Dev archived with `testFlightInternalTestingOnly = true` and `ITSAppUsesNonExemptEncryption = false` (permanently locked to App Store Connect Internal Testing, `"Dev Dogfood"` group for Arun only, zero Beta App Review) and uploaded to TestFlight using the App Store Connect `.p8` API key stored in the `main`-only GitHub `dev` and `prod` environments (MA-26, MA-164, MA-167, MA-274) |
@@ -3119,7 +3124,12 @@ resource (`.claude/rules/aws-changes.md`).
 | Drift & weekly CVE sweep | nightly & Monday 04:00 UTC | nightly `terraform plan` for both environments (MA-108); every Monday at 04:00 UTC, full `pip-audit`, `pnpm audit`, `trivy fs` and `trivy image` scan against `main` and the live ECR images so newly disclosed CVEs are caught even when no code changes (MA-267) |
 
 CI reaches AWS through the account's GitHub OIDC provider with four roles:
-`ci-plan` (read only, any branch), `ci-evals` (the evals job on any pull
+`ci-plan` (read only, any branch, and it reads configuration, never
+contents: an explicit deny refuses it every parameter value in the account,
+`kms:Decrypt`, every S3 object but the two plan states and the lock files,
+DynamoDB items, Cognito users, log lines and secret values, since any job in
+this repository that holds `id-token` could assume it; Arun, 24 Nov 2026,
+MA-25), `ci-evals` (the evals job on any pull
 request, reading only the evals workspace's key,
 `/mypaisa-agent/dev/anthropic/evals_key`; §21.3, MA-250), `ci-dev-deploy`
 (`main` only) and `ci-prod-deploy` (`main` and the `prod` environment only). These roles, and

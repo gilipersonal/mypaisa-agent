@@ -36,7 +36,6 @@ module "mypaisa" {
 
   env          = "dev"
   protect_data = false
-  evals_key    = true
 }
 
 output "table_name" {
@@ -45,8 +44,4 @@ output "table_name" {
 
 output "bucket_names" {
   value = module.mypaisa.bucket_names
-}
-
-output "parameter_names" {
-  value = module.mypaisa.parameter_names
 }

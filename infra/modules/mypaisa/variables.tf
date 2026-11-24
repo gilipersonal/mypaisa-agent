@@ -12,9 +12,3 @@ variable "protect_data" {
   description = "Deletion protection, point-in-time recovery and object versioning on the data stores (prod)."
   type        = bool
 }
-
-variable "evals_key" {
-  description = "Whether this environment holds the evals workspace's key (dev only; MA-21, MA-250)."
-  type        = bool
-  default     = false
-}
