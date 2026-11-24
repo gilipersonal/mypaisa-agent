@@ -235,7 +235,10 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "CI also runs the evals: T0 on every pull request, T1 when a prompt, tool, guard, model route or kind changes, T2 on a model change (MA-246, MA-250, MA-251; ARCHITECTURE 21.3)."
+      "notes": "CI also runs the evals: T0 on every pull request, T1 when a prompt, tool, guard, model route or kind changes, T2 on a model change (MA-246, MA-250, MA-251; ARCHITECTURE 21.3).",
+      "open": [
+        "How ci-plan refreshes secrets without being able to read them: MA-26 gives mypaisa-ci-plan ReadOnlyAccess, and with the aws/ssm key ssm:GetParameter alone decrypts a SecureString; the AWS provider reads each SecureString with decryption on every refresh, so whatever role plans can read every secret. Fork pull requests get no OIDC token, but any job in this repo that holds id-token and assumes ci-plan could. Choose before the plan job gets id-token: keep the secret parameters in a root ci-plan never plans, with an explicit deny on ssm:GetParameter* under /mypaisa-agent/*; or plan with -refresh=false on pull requests and refresh only in the nightly drift check on main; or accept it."
+      ]
     },
     {
       "key": "MA-26",
@@ -252,7 +255,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it. Build note for infra/bootstrap: an explicit deny beats any allow, so the exception is cut out of the deny itself (the env=prod deny names every action but ssm:PutParameter, and a second deny refuses ssm:PutParameter on anything tagged env=prod outside /mypaisa-agent/prod/*), never added as an allow beside it; the overwrite needs no ssm:AddTagsToResource, which stays denied.",
+      "notes": "Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it. Build note for infra/bootstrap: an explicit deny beats any allow, so the exception is cut out of the deny itself (the env=prod deny names every action but ssm:PutParameter, and a second deny refuses ssm:PutParameter on anything tagged env=prod outside /mypaisa-agent/prod/*), never added as an allow beside it; the overwrite needs no ssm:AddTagsToResource, which stays denied. Built 24 Nov 2026: plans for bootstrap (18 to add), dev (37) and prod (36) clean; scripts/infra_guard_check.py proves the guard in IAM's simulator (25 cases, 0 wrong; a guard without the exception fails it). ci-plan's ability to decrypt secrets is an open question on MA-25, whose plan job is the first to assume ci-plan.",
       "open": [],
       "code": [
         "infra/bootstrap/**",

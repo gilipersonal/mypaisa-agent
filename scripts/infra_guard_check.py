@@ -16,7 +16,6 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 ALLOW_ALL = {"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": "*", "Resource": "*"}]}
@@ -97,22 +96,23 @@ def cases(acct: str) -> list[tuple[str, str, str, dict[str, tuple[str, str]], st
     ]
 
 
-def simulate(tmp: Path, guard: str, action: str, resource: str, context: dict[str, tuple[str, str]]) -> str:
-    allow = tmp / "allow.json"
-    allow.write_text(json.dumps(ALLOW_ALL))
-    deny = tmp / "guard.json"
-    deny.write_text(guard)
+def simulate(guard: str, action: str, resource: str, context: dict[str, tuple[str, str]]) -> str:
+    # The policies go in as JSON text: the CLI does not expand file:// inside a list argument.
     cmd = [
         "aws", "iam", "simulate-custom-policy",
-        "--policy-input-list", f"file://{allow}", f"file://{deny}",
+        "--policy-input-list", json.dumps(ALLOW_ALL), guard,
         "--action-names", action,
         "--resource-arns", resource,
         "--output", "json",
     ]  # fmt: skip
-    for key, (kind, value) in context.items():
-        cmd += ["--context-entries", f"ContextKeyName={key},ContextKeyValues={value},ContextKeyType={kind}"]
-    out = subprocess.run(cmd, check=True, capture_output=True, text=True, timeout=60).stdout
-    return json.loads(out)["EvaluationResults"][0]["EvalDecision"]
+    if context:
+        # One flag, every entry after it: the CLI takes a list, and a second flag replaces the first.
+        cmd.append("--context-entries")
+        cmd += [f"ContextKeyName={k},ContextKeyValues={v},ContextKeyType={kind}" for k, (kind, v) in context.items()]
+    run = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+    if run.returncode != 0:
+        sys.exit(f"guard check: the simulator refused {action} on {resource}: {run.stderr.strip()}")
+    return json.loads(run.stdout)["EvaluationResults"][0]["EvalDecision"]
 
 
 def main() -> int:
@@ -123,14 +123,13 @@ def main() -> int:
     acct = account_of(guards["developer"])
     wrong = 0
     all_cases = cases(acct)
-    with tempfile.TemporaryDirectory() as d:
-        for role, action, resource, context, want in all_cases:
-            got = simulate(Path(d), guards[role], action, resource, context)
-            ok = got == want
-            wrong += not ok
-            ctx = ", ".join(f"{k}={v}" for k, (_, v) in context.items()) or "no context"
-            short = resource.replace(acct, "<acct>")
-            print(f"{'ok  ' if ok else 'WRONG'} {role:13} {action:27} {short} [{ctx}] -> {got} (want {want})")
+    for role, action, resource, context, want in all_cases:
+        got = simulate(guards[role], action, resource, context)
+        ok = got == want
+        wrong += not ok
+        ctx = ", ".join(f"{k}={v}" for k, (_, v) in context.items()) or "no context"
+        short = resource.replace(acct, "<acct>")
+        print(f"{'ok  ' if ok else 'WRONG'} {role:13} {action:27} {short} [{ctx}] -> {got} (want {want})")
     print(f"guard check: {len(all_cases)} cases, {wrong} wrong")
     return 1 if wrong else 0
 
