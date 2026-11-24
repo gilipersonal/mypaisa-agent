@@ -609,3 +609,114 @@
 		display: none;
 	}
 }
+
+/* ⌘K: one palette over any page, to go, find or ask (MA-353, board 2h; MA-301 g 1a). The board draws it inside the
+   frame; in the app it sits over the window, so the scrim and the dialog are fixed. */
+.kbd {
+	margin-left: auto;
+	font: 600 12px/16px var(--mp-font);
+	color: var(--mp-ink-2);
+	background: var(--mp-surface-2);
+	border-radius: 6px;
+	padding: 2px 6px;
+	flex: none;
+}
+.pal-scrim {
+	position: fixed;
+	z-index: 40;
+}
+.pal {
+	position: fixed;
+	z-index: 41;
+	top: 112px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 640px;
+	max-width: calc(100% - 48px);
+	max-height: calc(100dvh - 160px);
+	background: var(--mp-surface);
+	color: var(--mp-ink);
+	border-radius: 16px;
+	box-shadow:
+		0 0 0 1px var(--mp-line),
+		var(--mp-shadow);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+.pal [data-command-root] {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+.pfield {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-height: 56px;
+	padding: 0 16px;
+	border-bottom: 1px solid var(--mp-line);
+	font: 400 17px/22px var(--mp-font);
+}
+.pfield > .lc {
+	color: var(--mp-ink-2);
+}
+.pq {
+	flex: 1;
+	min-width: 0;
+	border: 0;
+	outline: 0;
+	background: transparent;
+	color: var(--mp-ink);
+	font: inherit;
+	padding: 0;
+}
+.pq::placeholder {
+	color: var(--mp-ink-2);
+	opacity: 1;
+}
+.plist {
+	padding: 6px;
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+	min-height: 0;
+}
+.pgh {
+	font: 600 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+	padding: 10px 10px 4px;
+}
+.prow {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-height: 44px;
+	padding: 6px 10px;
+	border-radius: 10px;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+.prow > .lc {
+	color: var(--mp-accent);
+}
+.prow[data-selected] {
+	background: var(--mp-surface-2);
+}
+.pfoot {
+	display: flex;
+	gap: 16px;
+	padding: 10px 16px;
+	border-top: 1px solid var(--mp-line);
+	font: 400 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+@media (max-width: 599px) {
+	.pal {
+		top: 16px;
+		max-width: calc(100% - 32px);
+	}
+	.pfoot {
+		display: none;
+	}
+}

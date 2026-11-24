@@ -22,7 +22,8 @@
 		mode,
 		context,
 		onClose,
-		field = $bindable()
+		field = $bindable(),
+		picker = $bindable()
 	}: {
 		/** Beside the page (its button hides it) or a drawer (its button closes it). */
 		mode: 'beside' | 'drawer';
@@ -30,6 +31,8 @@
 		context: string | undefined;
 		onClose: () => void;
 		field?: HTMLTextAreaElement | undefined;
+		/** The composer's file input, so the palette's Send a statement can open it. */
+		picker?: HTMLInputElement | undefined;
 	} = $props();
 
 	const chat = useChat();
@@ -38,7 +41,6 @@
 	const streaming = $derived(timeline.data ? activeTurn(timeline.data) !== undefined : false);
 	const busy = $derived(messages.some((m) => m.role === 'agent' && m.phase !== 'done'));
 	let text = $state('');
-	let picker: HTMLInputElement | undefined = $state();
 
 	const placeholder = $derived(
 		!chat.online
