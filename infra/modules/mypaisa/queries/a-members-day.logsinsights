@@ -1,0 +1,4 @@
+# groups: functions,access
+fields @timestamp, @log, level, message, run_id, trace_id
+| filter member = "MEMBER_HASH"
+| sort @timestamp asc

@@ -248,10 +248,12 @@ Claude's:
   as the backstop behind the app's £50 cap (`ARCHITECTURE.md` §14.2, MA-137).
 - **The watch tower (MA-231, `ARCHITECTURE.md` §9):** each environment's
   log groups and their retention, Transaction Search and Application Signals
-  (dev first; their first month measured and put to you before prod), the
+  (one setting for the account, owned by dev's root; dev's first month
+  measured and put to you before the first Lambda reaches prod), the
   dashboard with its eight panels, the saved queries, the alarm topic and the
   alarms that need no code, in `infra/modules/mypaisa/observability.tf`,
-  before the first Lambda runs.
+  before the first Lambda runs; proved live on dev by a throwaway probe
+  Lambda until the real images land.
 - **Secrets out of state (MA-159, done):** every secret's SSM parameter made
   by Terraform with a write-only placeholder (`value_wo`, `value_wo_version`;
   Terraform 1.11 or later, `hashicorp/aws` 5.87 or later), then overwritten by
@@ -421,7 +423,7 @@ Claude's:
 - **Tracing and LLM observability, recorded (MA-230, MA-236):** one trace
   from the door through the api, the queues and the agent to the model and
   back, OpenTelemetry on every Lambda, model and tool spans in the open
-  conventions, fifteen metrics, the alarms and what is never recorded
+  conventions, sixteen metrics, the alarms and what is never recorded
   (`ARCHITECTURE.md` §9); the Lucid page that draws it (MA-236).
 - **The architecture in plain words (MA-239):** Inside MyPaisa, an animated
   page that walks the admin from the sign-in screen to the chatbot and the
@@ -604,6 +606,16 @@ Claude's:
   10x macOS multiplier trap) stays at £0.00 a month inside both free tiers
   (`docs/design/cicd-security-regression.html`, `docs/design/argos-visual-a11y.html`
   and their Confluence pages, MA-272).
+- **A plan made by ci-plan sees every Lambda's environment (MA-349, bug):**
+  ci-plan cannot decrypt a function's environment, so its plans show it
+  changed on every function, and the release's digest check would refuse
+  each prod release that ships a Lambda; fixed before MA-347.
+- **The research pages show the counted cost of watching (MA-348):** the
+  observability and VPC research pages, the Architecture v4 explainer's
+  CloudWatch card, their Confluence pages, previews and GIF
+  captions carry MA-231's counted figures (sixteen metrics; prod about £2.70
+  a month and dev's alarms about £1.80), and each VPC option's total starts
+  from the £5.50 AWS line.
 - **The optional AWS VPC enterprise lockdown, seven-layer data perimeter and
   three-tier costing, recorded (MA-284, MA-283, `docs/RESEARCH.md` §9,
   `ARCHITECTURE.md` §13, §14, §17.1, §17.4):** the complete seven-layer
@@ -1172,9 +1184,10 @@ something, it uses it in your next conversation and not in your wife's, and
 you see it in You and make it forget; the model panel shows every agent's
 cache reads.
 
-**Cost:** about £0.50 (a few Claude calls), and about £2.50 a month of
+**Cost:** about £0.50 (a few Claude calls), and about £2.70 a month of
 CloudWatch in prod for the spans, Application Signals and the metrics and
-alarms past the free ten (`ARCHITECTURE.md` §9.9), measured in dev first; the
+alarms past the free ten, with dev's alarms about £1.80 more
+(`ARCHITECTURE.md` §9.9), dev's first month measured first; the
 stream inside the free tier
 at about three open hours a day for four members (one leader tab, closed
 when hidden; about $0.012 an open hour at 256 MB), priced by the spike and
@@ -2234,7 +2247,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 55.5 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
+| 0 Foundations at every door | 56.25 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
 | 1 Talk: sign in and chat with the agent at every door | 110 (and 0.5 of yours) | 88 | Wed 13 Jan 2027 | Wed 19 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Thu 20 May 2027 | Fri 16 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Mon 19 Jul 2027 | Fri 6 Aug 2027 |
@@ -2333,6 +2346,6 @@ runs read by a person and their failure modes turned into checks or cases
 | A phone lost or stolen | Tokens in the Keychain on that device only; five-minute access tokens; the data routes only read, apart from corrections to the figures a kind marks editable, each an audit row and each only for an admin; status and epoch re-checked on every call and on the stream; the owner signs that device out or pauses the member (MA-102); the optional Face ID lock (MA-171); every admin action needs the second check |
 | A change meant for dev reaches prod | Separate state per environment; the developer role denied on `env=prod`; prod applied only by CI after your approval; the nightly drift check |
 | An import writes bad history into prod | Dry run first; fingerprints stop duplicates; Confirm with the second check; rollback by import id; tested on dev first |
-| Observability that costs more than the app | Fifteen metrics with no dimensions, one dashboard, fourteen-day logs, thirty-day spans at $0.35 per GB with an ingestion alarm, `RunRecord` rows that expire after ninety days; about £2.50 a month in prod, dev measured first (`ARCHITECTURE.md` §9.9) |
+| Observability that costs more than the app | Sixteen metrics with no dimensions, one dashboard, fourteen-day logs, thirty-day spans at $0.35 per GB with an ingestion alarm, `RunRecord` rows that expire after ninety days; about £2.70 a month in prod and £1.80 of dev's alarms, dev measured first (`ARCHITECTURE.md` §9.9) |
 | A prompt or a figure in CloudWatch | Nothing of the conversation leaves DynamoDB: no prompt, reply, figure, name or token on any span, log line or metric; member ids hashed; the leak test in CI (MA-232); dev's capture of the synthetic household behind a setting prod refuses (§9.4) |
 | OIDC trust mismatch on first deploy | Pin this repository's ids; read CloudTrail |

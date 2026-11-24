@@ -137,6 +137,10 @@ jobs:
           role-session-name: mypaisa-release-dev-${{ github.run_id }}
           aws-region: ${{ env.AWS_REGION }}
       - name: Plan dev-secrets and dev
+        env:
+          # The admin's address for the alarms' topic (MA-231): a secret, never in this public repository, and
+          # sensitive in Terraform, so the plan shows it as (sensitive value).
+          TF_VAR_alert_email: ${{ secrets.MYPAISA_ALERT_EMAIL }}
         run: |
           for root in dev-secrets dev; do
             infra/scripts/tf.sh "$root" plan -input=false -lock-timeout=300s -no-color -out="$RUNNER_TEMP/$root.tfplan"
@@ -201,6 +205,10 @@ jobs:
           role-session-name: mypaisa-release-plan-${{ github.run_id }}
           aws-region: ${{ env.AWS_REGION }}
       - name: Plan prod
+        env:
+          # The admin's address for the alarms' topic (MA-231): a secret, never in this public repository, and
+          # sensitive in Terraform, so the plan shows it as (sensitive value).
+          TF_VAR_alert_email: ${{ secrets.MYPAISA_ALERT_EMAIL }}
         run: |
           infra/scripts/tf.sh prod plan -input=false -lock-timeout=300s -no-color -out="$RUNNER_TEMP/prod.tfplan"
           infra/scripts/tf.sh prod show -json "$RUNNER_TEMP/prod.tfplan" > "$RUNNER_TEMP/prod.json"
@@ -243,6 +251,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: Plan prod again; it must be the plan Arun read
         env:
+          TF_VAR_alert_email: ${{ secrets.MYPAISA_ALERT_EMAIL }}  # MA-231: the alarms' topic; sensitive
           REVIEWED: ${{ needs.prod-plan.outputs.digest }}
         run: |
           infra/scripts/tf.sh prod plan -input=false -lock-timeout=300s -no-color -out="$RUNNER_TEMP/prod.tfplan"

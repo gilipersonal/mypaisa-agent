@@ -5,3 +5,10 @@
 # money is asked first (.claude/rules/aws-changes.md). Every bucket is private, owner-enforced and TLS only. A CMK
 # comes only with Arun's word.
 AWS-0132
+
+# AWS-0095 (HIGH), the mypaisa-<env>-admin-alerts topic is not KMS-encrypted (MA-231). CloudWatch alarms cannot publish
+# to a topic under the AWS-managed SNS key (alias/aws/sns): its key policy does not let the CloudWatch service use it.
+# A customer-managed key costs $1 a month and request charges, and anything that costs money is asked first
+# (.claude/rules/aws-changes.md). The topic carries alarm names and states, never a household's content (ARCHITECTURE
+# §9.9). A CMK comes only with Arun's word.
+AWS-0095

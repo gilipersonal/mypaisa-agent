@@ -52,7 +52,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-228 | The build plan in Confluence, phase by phase and screen by screen, with the roadmap, and a check that Confluence, Jira, the designs and the code agree | Done | §15 | none |  |
 | MA-229 | The UI stack is the one Smart Clearance and bong-panjika use, at the latest versions, and the three open build questions are settled | Done | §8.4, §8.5, §15, §19.5 | none |  |
 | MA-230 | The architecture records one trace from the door to the model, OpenTelemetry on every Lambda, and what each reader of the agent's work sees | Done | §9, §12, §15 | none |  |
-| MA-231 | Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic | To Do | §9.3, §9.5, §9.6, §9.7, §9.9, §17.4 | none |  |
+| MA-231 | Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic | In Progress | §9.3, §9.5, §9.6, §9.7, §9.9, §17.4 | none |  |
 | MA-236 | The Lucid architecture gains a page for one trace from the door to the model, and the explainer page says where each signal lives | Done | §3, §9 | none |  |
 | MA-237 | Container images are built on AWS CodeBuild's arm64 runner from GitHub Actions and stored in ECR by digest, inside the free tier | To Do | §14, §17.4 | none |  |
 | MA-238 | Arun connects GitHub to AWS CodeBuild once, so its arm64 runner takes this repository's image builds | To Do | §17.4 | none |  |
@@ -122,6 +122,8 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-344 | Dependabot bumps hermes-compiler apart from React Native, so the iOS gate refuses the web group | Done | §17.4 | none |  |
 | MA-345 | Two of MA-194's fixed-finding checks run in web/ at the same time and race, so Review tooling fails at random | Done | §17.4 | none |  |
 | MA-346 | CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it | Done | §17.4 | none |  |
+| MA-348 | The research pages show the watching's counted cost: sixteen metrics, dev's alarms, and the VPC options' totals £2 higher | To Do | §9.9, §14 | none |  |
+| MA-349 | A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read | To Do | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

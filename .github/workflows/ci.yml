@@ -283,6 +283,10 @@ jobs:
           aws-region: us-east-1
       - name: Plan dev and prod
         if: steps.changes.outputs.infra == 'true'
+        env:
+          # The admin's address for the alarms' topic (MA-231): a secret, never in this public repository, and
+          # sensitive in Terraform, so the plan shows it as (sensitive value).
+          TF_VAR_alert_email: ${{ secrets.MYPAISA_ALERT_EMAIL }}
         run: |
           for root in dev prod; do
             infra/scripts/tf.sh "$root" plan -input=false -lock-timeout=120s -no-color -out="$RUNNER_TEMP/$root.tfplan"

@@ -1,0 +1,4 @@
+# groups: stream
+filter event in ["resume", "resync"]
+| stats count(*) as times by door, event
+| sort times desc

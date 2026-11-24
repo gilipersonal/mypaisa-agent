@@ -1,0 +1,5 @@
+# groups: spans
+filter name like /^tool /
+| stats pct(durationNano, 95) / 1000000 as p95_ms, max(durationNano) / 1000000 as max_ms, count(*) as calls by name
+| sort p95_ms desc
+| limit 20

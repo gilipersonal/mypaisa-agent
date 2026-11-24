@@ -22,3 +22,6 @@ htmlcov/
 *.tfstate
 *.tfstate.*
 crash.log
+
+# The probe Lambda's zip, built by Terraform at plan time (MA-231).
+infra/*/.build/

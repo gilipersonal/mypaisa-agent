@@ -344,7 +344,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-107 (24 Nov 2026): the part MA-107 leaves behind, because phase 0 has no Lambda, image or api host. MA-107's alias snapshot, publish and rollback and its version-1 refusal are proved by scripts/release.py selftest against canned answers; this story proves them on the first Lambda (MA-29) with MA-237's image, passes one digest from dev to prod, tells the owner in the app and by push (MA-170), and writes the deploy's RunRecord."
+      "notes": "Filed from MA-107 (24 Nov 2026): the part MA-107 leaves behind, because phase 0 has no Lambda, image or api host. MA-107's alias snapshot, publish and rollback and its version-1 refusal are proved by scripts/release.py selftest against canned answers; this story proves them on the first Lambda (MA-29) with MA-237's image, passes one digest from dev to prod, tells the owner in the app and by push (MA-170), and writes the deploy's RunRecord. MA-231 (24 Nov 2026): dev's probe Lambda, mypaisa-dev-probe, is removed when the first real function ships (probe = false in infra/dev), and dev's first month of Transaction Search and Application Signals is measured and put to Arun with its price before the first release that ships a Lambda to prod."
     },
     {
       "key": "MA-30",
@@ -361,7 +361,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Plumbing only. The rich message and cards it streams are drawn on iOS (iPhone chat \u00b7 iPhone \u00b7 Chat home, MA-36) and on the web (Web v4 \u00b7 Shell and chat \u00b7 Web \u00b7 Chat beside Overview)."
+      "notes": "Plumbing only. The rich message and cards it streams are drawn on iOS (iPhone chat \u00b7 iPhone \u00b7 Chat home, MA-36) and on the web (Web v4 \u00b7 Shell and chat \u00b7 Web \u00b7 Chat beside Overview). MA-231 (24 Nov 2026): the story that makes the API passes its id to the module (api_id), and the api's 5xx and latency alarms and dashboard widgets appear; its stage writes the access log to mypaisa-<env>-api-access."
     },
     {
       "key": "MA-31",
@@ -2436,7 +2436,7 @@
           "board": "Browser \u00b7 Admin \u00b7 People, Routing & Replay \u00b7 Phone 390 Dark"
         }
       ],
-      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round. Editing the ceiling per environment and the warning past the credit are MA-116's (its Spend boards S.1 and S.2 and its undrawn list), not repeated here. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review. Admin center 3's Spend and Alerts pages add entry buttons and a Queues card that Admin center 2 does not have; reconcile the two in the options round. Each agent's share is MA-136's (phase 13). Admin center 3's Spend page leaves out five things Admin center 2 has (the Each agent's share card, the An agent guard, the paid-feeds line, the line that the meter was checked against the Console, the Every budget setting link); Admin center 2 stays the spec for them until the options round reconciles the two. Its S.8 edits the step percentages; what each step does is set on Change the AWS cap, its steps and actions. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 8.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. MA-274 (29 Oct 2026): the day-60 TestFlight build-age alert (raised via MA-231's SNS watch-tower topic in Phase 0 MA-167) joins ARCHITECTURE 14.2's alert table and this story's Admin center alert router (app, push, email). Drawn: the routing board's holding-alert email cell off by default with an explicit Include holding values in email switch (the board locks it off; fix made, waiting on MA-160). Drawn: Admin center 3 \u00b7 Telegram \u00b7 Daily digest, its h1 replay line agreeing with the replay boards: 3 replayed, 2 ran, 1 failed again (fix made, waiting on MA-160). Drawn: the AWS cap's step alerts, and the alert when the forecast passes the AWS cap. Drawn: the web routing matrix with Push in place of its Telegram column, and quiet hours for push and email (Admin center 2 and 3; MA-161). Drawn: iPhone \u00b7 Alert routing's note that email never carries a holding's value, made to agree with ARCHITECTURE 14.2: off unless the admin turns on Include holding values in email. Drawn: the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161). Drawn: the web Admin center boards (Admin center 2 and 3) redrawn to the iOS boards' spend and cycle, $18 of the $160 ceiling and renewing Tue 3 Nov, where they show $41.20 and 1 Nov (lesson 13; MA-161). Drawn: The web page at a phone's width (below 600, the page alone as the web app shows it): Admin center 2, Admin center 3 draw it at desktop width only, and the frames break there (MA-240's gate allows them until this is drawn). Drawn: its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279).",
+      "notes": "Drawn ahead of the story (MA-155, 24 Oct 2026); put through design-first's options round when it starts. Board details that ARCHITECTURE does not state yet (quiet hours 22:00 to 07:00, a 6-hour cooldown, a 19:00 digest) are the designer's; settle them in the options round. Editing the ceiling per environment and the warning past the credit are MA-116's (its Spend boards S.1 and S.2 and its undrawn list), not repeated here. The screens once in its undrawn list were drawn in MA-158 (25 Oct 2026); what its undrawn list holds now was found in that work's review. Admin center 3's Spend and Alerts pages add entry buttons and a Queues card that Admin center 2 does not have; reconcile the two in the options round. Each agent's share is MA-136's (phase 13). Admin center 3's Spend page leaves out five things Admin center 2 has (the Each agent's share card, the An agent guard, the paid-feeds line, the line that the meter was checked against the Console, the Every budget setting link); Admin center 2 stays the spec for them until the options round reconciles the two. Its S.8 edits the step percentages; what each step does is set on Change the AWS cap, its steps and actions. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 8.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts. MA-161: the web app stays (Arun, 25 Oct 2026), so its browser boards stay this story's web spec beside the iOS boards. MA-274 (29 Oct 2026): the day-60 TestFlight build-age alert (raised via MA-231's SNS watch-tower topic in Phase 0 MA-167) joins ARCHITECTURE 14.2's alert table and this story's Admin center alert router (app, push, email). Drawn: the routing board's holding-alert email cell off by default with an explicit Include holding values in email switch (the board locks it off; fix made, waiting on MA-160). Drawn: Admin center 3 \u00b7 Telegram \u00b7 Daily digest, its h1 replay line agreeing with the replay boards: 3 replayed, 2 ran, 1 failed again (fix made, waiting on MA-160). Drawn: the AWS cap's step alerts, and the alert when the forecast passes the AWS cap. Drawn: the web routing matrix with Push in place of its Telegram column, and quiet hours for push and email (Admin center 2 and 3; MA-161). Drawn: iPhone \u00b7 Alert routing's note that email never carries a holding's value, made to agree with ARCHITECTURE 14.2: off unless the admin turns on Include holding values in email. Drawn: the web Admin center's second check offering Sign in with Apple, a passkey or Google again (Admin center 2 says only \"your passkey on this Mac, or a fresh Google sign-in\"), and its actions' messages going to the app's chat and push, not \"a Telegram message\" (Admin center 2 and 3; MA-161). Drawn: the web Admin center boards (Admin center 2 and 3) redrawn to the iOS boards' spend and cycle, $18 of the $160 ceiling and renewing Tue 3 Nov, where they show $41.20 and 1 Nov (lesson 13; MA-161). Drawn: The web page at a phone's width (below 600, the page alone as the web app shows it): Admin center 2, Admin center 3 draw it at desktop width only, and the frames break there (MA-240's gate allows them until this is drawn). Drawn: its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279). MA-231 (24 Nov 2026): the AWS Budgets backstop still emails the admin from infra/bootstrap; its route through mypaisa-<env>-admin-alerts joins with the cap's steps here.",
       "undrawn": [
         "editing the routing matrix, quiet hours, cooldowns, the digest, the queues' retries and backoff, the ladder's steps and the AWS cap"
       ],
@@ -5715,7 +5715,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "Terraform builds each environment's watch tower before the first Lambda runs: log groups, Transaction Search and Application Signals, the dashboard, the saved queries and the alarm topic",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "9.3",
@@ -5728,7 +5728,59 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Dev first: Transaction Search and Application Signals are switched on in dev, their first month measured and put to Arun before prod (aws-changes)."
+      "notes": "Settled: no Lambda, API or queue existed when the story started (Arun, 24 Nov 2026): the tower is keyed on the fixed names of ARCHITECTURE 9.3 and 19.2, and dev gets a throwaway probe Lambda, mypaisa-dev-probe (a zip with the OpenTelemetry layer, version 35, and a live alias), to prove it live until the real images land (MA-237); it goes when the first real function ships (MA-347). Settled: Transaction Search and Application Signals are one setting per account and region, and dev and prod share the account (Arun, 24 Nov 2026): dev's root owns them, with aws/spans (imported, 30 days) and its ingestion alarm; prod's spans ride on them. So 'dev first' became: switched on from dev on 24 Nov 2026, and dev's first month measured and put to Arun before the first release that ships a Lambda to prod (MA-347). The plan settles one disagreement: ARCHITECTURE 9.5's prose said fifteen metrics while its table names sixteen; the table wins, and every record now says sixteen. Cost, approved by Arun on 24 Nov 2026 before dev's apply: dev's alarms about $1.40 a month after the account's free ten, prod's about $2.10 more at its release; the watching is about GBP 2.70 a month in prod and GBP 1.80 of dev's alarms (ARCHITECTURE 9.9, 14); the research pages' figures are MA-348. The admin's address is never in this public repository: a sensitive variable, TF_VAR_alert_email on the laptop and the MYPAISA_ALERT_EMAIL secret in CI (set 24 Nov 2026). Built and applied to dev 24 Nov 2026: 50 resources, then aws/spans imported; proved live the same day: the probe in Application Signals and its spans in aws/spans within five minutes, a forced error through mypaisa-dev-probe-errors and mypaisa-dev-unhealthy to the topic, every dashboard widget rendering and every saved query's log groups present. Left to other issues: the api's 5xx and latency alarms appear when MA-30 passes the API's id; the Budgets backstop's route through the topic (MA-137); the alarms that need code (their stories); bootstrap's guard patterns for prod's alarms and dashboard take effect at Arun's next bootstrap apply.",
+      "code": [
+        "infra/modules/mypaisa/observability.tf",
+        "infra/modules/mypaisa/dashboard.tf",
+        "infra/modules/mypaisa/probe.tf",
+        "infra/modules/mypaisa/probe/**",
+        "infra/modules/mypaisa/queries/**",
+        "infra/modules/mypaisa/variables.tf",
+        "infra/modules/mypaisa/outputs.tf",
+        "infra/modules/mypaisa/versions.tf",
+        "infra/dev/main.tf",
+        "infra/dev/.terraform.lock.hcl",
+        "infra/prod/main.tf",
+        "infra/prod/.terraform.lock.hcl",
+        "infra/bootstrap/prod_guard.tf",
+        "infra/.trivyignore",
+        "infra/README.md"
+      ]
+    },
+    {
+      "key": "MA-348",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The research pages show the watching's counted cost: sixteen metrics, dev's alarms, and the VPC options' totals \u00a32 higher",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "9.9",
+        "14"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Found in MA-231 (24 Nov 2026): ARCHITECTURE, PLAN, TECH_STACK and README carry the counted figures; docs/RESEARCH.md, the stack and VPC explainer pages, the Architecture v4 explainer's CloudWatch card (about \u00a32.50 a month in prod; its previews and artifact follow it), their Confluence pages and GIF captions, and the VPC totals in ARCHITECTURE 14 and PLAN do not yet."
+    },
+    {
+      "key": "MA-349",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read",
+      "status": "To Do",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Found in MA-231 (24 Nov 2026) on PR #127: ci-plan is denied kms:Decrypt (MA-25), so Lambda hides every function's environment from it and its plans show the environment added on every function; ci-prod-deploy's plan does not, so the release's digest check would refuse every prod release that ships a Lambda. Blocks MA-347. Three options for Arun in the issue (decrypt through Lambda only, the digest ignoring the blind block, a key per function)."
     },
     {
       "key": "MA-232",

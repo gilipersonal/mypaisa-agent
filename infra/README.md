@@ -29,6 +29,20 @@ made (MA-107).
   and TLS only. Prod's are versioned.
 - In `modules/secrets`, called by `dev-secrets/` and `prod-secrets/`: the SSM parameters under
   `/mypaisa-agent/<env>/`, each made with a write-only placeholder (see below).
+- The watch tower (MA-231, ARCHITECTURE §9.3 to §9.9), in `modules/mypaisa/observability.tf` and `dashboard.tf`:
+  a 14-day log group for each function (`/aws/lambda/mypaisa-<env>-<part>`) and for the api's access log
+  (`mypaisa-<env>-api-access`); the topic `mypaisa-<env>-admin-alerts`, emailing the admin; errors and throttles for
+  each function, each queue's age and dead letters, the api's 5xx and latency once `api_id` is passed (MA-30), and
+  the composite `mypaisa-<env>-unhealthy`, each with its OK action; the dashboard `mypaisa-<env>` (eight panels); ten
+  saved Logs Insights queries under `mypaisa-<env>/` (`modules/mypaisa/queries/`). The functions, queues, metric
+  namespace and the sixteen metric names are variables of the module; its outputs hand each function its
+  OpenTelemetry environment and role policies.
+- Dev's root alone (`owns_account_observability`): Transaction Search (the logs policy for `aws/spans`, the X-Ray
+  destination, indexing at the free 1%), Application Signals' service-linked role, `aws/spans` (imported, 30 days)
+  and its 1 GB-a-day ingestion alarm. They are one setting per account; prod's spans ride on them.
+- Dev's probe Lambda `mypaisa-dev-probe` (`probe = true`), a zip with the OpenTelemetry layer and a `live` alias,
+  proving the tower until the real images land (MA-237); it goes when the first real function ships (MA-347).
+  `invoke` it with `{"fail": true}` to see the error alarm and the composite fire.
 - Every resource is tagged `env`, `app` and `owner`. The table and the buckets carry `prevent_destroy` in both
   environments.
 
@@ -36,7 +50,6 @@ Each of these comes with the story that needs it:
 
 - the Lambdas, the API, the schedules and the `api` and `dashboard` records: MA-29, MA-30 and MA-107;
 - the Cognito pool: MA-109;
-- the log groups and alarms: MA-231;
 - ECR and CodeBuild: MA-237;
 - `ci-evals`: MA-250.
 
@@ -46,6 +59,20 @@ exist, so that job fails.
 
 Every role dev's stack makes must carry the `mypaisa-dev-boundary` permissions boundary. The guard refuses one
 without it.
+
+### The alerts' address
+
+The repository is public, so the admin's address is never written in it. `dev/` and `prod/` take it as the sensitive
+variable `alert_email`, so a plan shows it as `(sensitive value)`: on the laptop `export TF_VAR_alert_email=...`
+before `tf.sh dev plan`; in CI, from the repository secret `MYPAISA_ALERT_EMAIL`, which every plan step reads
+(`ci.yml`, `release.yml`). A plan without it fails, by design. AWS emails a link to confirm the subscription once.
+
+### Bootstrap after MA-231
+
+`bootstrap/prod_guard.tf` gained prod's alarms (`alarm:mypaisa-prod-*`) and its dashboard (`dashboard/mypaisa-prod`)
+among the names the guard denies to dev's principals. Bootstrap is applied by Arun, so the guard covers them from his
+next bootstrap apply; until then prod's alarms and dashboard are guarded by their `env=prod` tag (the alarms) or not
+at all (the dashboard, which holds no data).
 
 ## Running it
 
