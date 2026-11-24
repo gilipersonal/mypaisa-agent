@@ -1,7 +1,7 @@
 <title>MyPaisa Boards</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800&display=swap">
+<!-- The same self-hosted fonts as the boards and the web app, never Google Fonts (MA-340). -->
+<link rel="stylesheet" href="ds-v1/fonts.css">
 <style>
 /* Layout: a ledger index beside a light table. The board list runs down the left like an
    account's statement lines; the chosen board fills the rest. On a phone, the list and the
@@ -11,8 +11,8 @@
   --ink: #14171F; --ink-2: #4E5462; --ink-3: #646A78;
   --hero: #13213A; --hero-ink: #FFFFFF; --hero-ink-2: #B7C2D6; --coral: #FF6B4F;
   --accent: #C2381F; --focus: #2453C9; --board-ground: #ECEAE6;
-  --display: "Nunito", ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
-  --body: "Inter", -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --display: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+  --body: -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
