@@ -197,7 +197,7 @@ def changed_attributes(change: dict[str, Any]) -> set[str]:
     return {k for k in keys if before.get(k) != after.get(k) or unknown.get(k)}
 
 
-def secrets_safe(plan: dict[str, Any]) -> list[str]:
+def parameter_changes_allowed(plan: dict[str, Any]) -> list[str]:
     """Each change a secrets root may make: create a parameter, or change an existing one's tags. Anything else
     refuses, with every offending change named."""
     allowed, refused = [], []
@@ -414,7 +414,7 @@ def main(argv: list[str] | None = None) -> int:
                 )
             summary(f"plan digest {digest[:12]}" + (" matches the plan Arun reviewed" if args.expect else ""))
         elif args.cmd == "secrets-safe":
-            allowed = secrets_safe(load_plan(args.plan))
+            allowed = parameter_changes_allowed(load_plan(args.plan))
             summary(f"secrets root: {len(allowed)} change(s), each a create or a retag" + (": " + "; ".join(allowed) if allowed else ""))
         elif args.cmd == "values-ready":
             plan = load_plan(args.plan)
@@ -518,16 +518,16 @@ def selftest() -> int:
     # secrets-safe
     p = "module.secrets.aws_ssm_parameter.this[\"anthropic/api_key\"]"
     old = {"name": "/mypaisa-agent/prod/anthropic/api_key", "value_wo_version": 1, "description": "d", "tags": {}}
-    expect("secrets-safe: a new parameter", lambda: secrets_safe(_plan([(p, ["create"], {}, old)])))
-    expect("secrets-safe: nothing to do", lambda: secrets_safe(_plan([(p, ["no-op"], old, old)])))
-    expect("secrets-safe: a new tag", lambda: secrets_safe(_plan([(p, ["update"], old, {**old, "tags": {"x": "1"}, "tags_all": {"x": "1"}})])))
-    expect("secrets-safe: the placeholder bumped", lambda: secrets_safe(_plan([(p, ["update"], old, {**old, "value_wo_version": 2})])), "value_wo_version")
-    expect("secrets-safe: a description changed", lambda: secrets_safe(_plan([(p, ["update"], old, {**old, "description": "e"})])), "description")
-    expect("secrets-safe: a tag and the description", lambda: secrets_safe(_plan([(p, ["update"], old, {**old, "tags": {"x": "1"}, "description": "e"})])), "description")
-    expect("secrets-safe: replaced", lambda: secrets_safe(_plan([(p, ["delete", "create"], old, old)])), "delete then create")
-    expect("secrets-safe: created before destroyed", lambda: secrets_safe(_plan([(p, ["create", "delete"], old, old)])), "create then delete")
-    expect("secrets-safe: deleted", lambda: secrets_safe(_plan([(p, ["delete"], old, None)])), "would be delete")
-    expect("secrets-safe: an update that names nothing", lambda: secrets_safe(_plan([(p, ["update"], old, old)])), "nothing it names")
+    expect("secrets-safe: a new parameter", lambda: parameter_changes_allowed(_plan([(p, ["create"], {}, old)])))
+    expect("secrets-safe: nothing to do", lambda: parameter_changes_allowed(_plan([(p, ["no-op"], old, old)])))
+    expect("secrets-safe: a new tag", lambda: parameter_changes_allowed(_plan([(p, ["update"], old, {**old, "tags": {"x": "1"}, "tags_all": {"x": "1"}})])))
+    expect("secrets-safe: the placeholder bumped", lambda: parameter_changes_allowed(_plan([(p, ["update"], old, {**old, "value_wo_version": 2})])), "value_wo_version")
+    expect("secrets-safe: a description changed", lambda: parameter_changes_allowed(_plan([(p, ["update"], old, {**old, "description": "e"})])), "description")
+    expect("secrets-safe: a tag and the description", lambda: parameter_changes_allowed(_plan([(p, ["update"], old, {**old, "tags": {"x": "1"}, "description": "e"})])), "description")
+    expect("secrets-safe: replaced", lambda: parameter_changes_allowed(_plan([(p, ["delete", "create"], old, old)])), "delete then create")
+    expect("secrets-safe: created before destroyed", lambda: parameter_changes_allowed(_plan([(p, ["create", "delete"], old, old)])), "create then delete")
+    expect("secrets-safe: deleted", lambda: parameter_changes_allowed(_plan([(p, ["delete"], old, None)])), "would be delete")
+    expect("secrets-safe: an update that names nothing", lambda: parameter_changes_allowed(_plan([(p, ["update"], old, old)])), "nothing it names")
 
     # values-ready
     def params(**versions: int) -> FakeAws:

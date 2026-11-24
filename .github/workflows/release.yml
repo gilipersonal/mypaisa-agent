@@ -83,11 +83,11 @@ jobs:
           [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "not a commit: $sha" >&2; exit 1; }
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
           echo "Releasing \`$sha\`" >> "$GITHUB_STEP_SUMMARY"
+      # The default branch's own scripts run here, never the commit's: this job reads the commit only as history.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ steps.sha.outputs.sha }}
           persist-credentials: false
-          # The whole history, to compare this commit with the one prod last ran.
+          # The whole history of main, which holds the commit, to compare it with the one prod last ran.
           fetch-depth: 0
       # A run CI started carries CI's success; a run by hand asks GitHub for it.
       - name: CI passed on this commit
