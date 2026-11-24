@@ -124,6 +124,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-346 | CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it | Done | §17.4 | none |  |
 | MA-348 | The research pages show the watching's counted cost: sixteen metrics, dev's alarms, and the VPC options' totals £2 higher | To Do | §9.9, §14 | none |  |
 | MA-349 | A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read | In Progress | §17.4 | none |  |
+| MA-350 | Dependabot moves the Lambda images' Python and uv to new minor versions, away from the 3.14 and 0.12 the backend is tested on | In Progress | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

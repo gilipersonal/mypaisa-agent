@@ -8475,6 +8475,28 @@
       "design": "none",
       "boards": [],
       "notes": "Finding F10 of MA-328 (docs/design/reviews/MA-328/handoff.md). Estimate 0, as other board work here, since an estimate counts build days. Settled: Which platform does the Foldable frame stand for: an Apple adaptive frame, part of the iOS app. Android's foldable stays a separate, labelled web example, and no native Android product is implied. Arun, 5 Nov 2026: \"Yes, use all three\"."
+    },
+    {
+      "key": "MA-350",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Dependabot moves the Lambda images' Python and uv to new minor versions, away from the 3.14 and 0.12 the backend is tested on",
+      "status": "In Progress",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Found after MA-237 merged (24 Nov 2026): Dependabot's first docker run opened PR #130, moving the Lambda base from python:3.14 to 3.15 and uv from 0.12.9 to 0.13.9 while backend/pyproject.toml, .python-version, CI and ARCHITECTURE pin 3.14 and uv 0.12.9; its checks were green because the image only proves the app imports. Arun, 24 Nov 2026: \"pin to 3.14\". #130 closed; the docker entry in .github/dependabot.yml now ignores minor and major updates of the Lambda Python base, uv and the Lambda Web Adapter, so new digests and patch releases (security fixes) still come. A move to Python 3.15 is its own story. Estimate 0: a config change of minutes, so no phase date moves.",
+      "open": [],
+      "code": [
+        ".github/dependabot.yml"
+      ]
     }
   ],
   "others": [

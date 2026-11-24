@@ -65,6 +65,17 @@ updates:
     groups:
       images:
         patterns: ["*"]
+    # New digests and patch releases only (MA-350; Arun, 24 Nov 2026: "pin to 3.14"). The backend is tested on
+    # Python 3.14 (backend/pyproject.toml, .python-version) and CI pins uv 0.12.9, the version the lock was made with;
+    # ARCHITECTURE names the Lambda Web Adapter 1.1. A new minor or major line moves with its own story, through
+    # pyproject, CI, the Dockerfile and the records together, never from this update.
+    ignore:
+      - dependency-name: "public.ecr.aws/lambda/python"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "ghcr.io/astral-sh/uv"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "public.ecr.aws/awsguru/aws-lambda-adapter"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
     commit-message:
       prefix: "MA-326:"
   - package-ecosystem: github-actions
