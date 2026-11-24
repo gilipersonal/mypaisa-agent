@@ -15,7 +15,7 @@ name: CodeQL
 #   not under the default setup either; it needs the React Native packages (MA-166 builds them on its macOS runner).
 #
 # The check names stay "Analyze (<language>)", the names the merge rule reads (MA-346). The query suite stays the
-# default one. Default setup is switched off in the repository's settings, since the two cannot run side by side.
+# default one (no `queries` input: naming one would add a pack, and "default" is not a pack). Default setup is switched off in the repository's settings, since the two cannot run side by side.
 
 on:
   pull_request:
@@ -53,7 +53,6 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: none
-          queries: default
       - uses: github/codeql-action/analyze@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
         with:
           category: /language:${{ matrix.language }}
@@ -107,7 +106,6 @@ jobs:
         with:
           languages: swift
           build-mode: manual
-          queries: default
       - name: Build MyPaisaUI and MyPaisaCore for the iOS Simulator
         working-directory: ios/Packages/MyPaisaUI
         env:
