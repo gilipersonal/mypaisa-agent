@@ -3825,7 +3825,7 @@
       "epic": "MA-10",
       "phase": 1,
       "summary": "The web app's chat shows the conversation, renders every card, streams replies and sends text and files, at desktop and phone width",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "design"
       ],
@@ -3898,7 +3898,23 @@
           "board": "Browser \u00b7 Home moves live, phone"
         }
       ],
-      "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts. Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles."
+      "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts. Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. Split on 24 Nov 2026 (Arun: \"Split MA-199\"): this story builds the shell, the timeline, the composer, the cards and the offline queue against a fake local transport; MA-352 wires them to the real SSE stream (MA-30), chat API (MA-31), card JSON (MA-174) and presigned upload (MA-148) and checks them on dev."
+    },
+    {
+      "key": "MA-352",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The web chat talks to the real chat API and SSE stream, uploads files through presigned links, and is verified on dev",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "8.4",
+        "19.5"
+      ],
+      "ui": false,
+      "design": "none",
+      "notes": "Split from MA-199 (Arun, 24 Nov 2026: \"Split MA-199\"). No screens of its own: the screens are MA-199's picked boards. Depends on MA-30, MA-31, MA-148, MA-174 and MA-199."
     },
     {
       "key": "MA-196",

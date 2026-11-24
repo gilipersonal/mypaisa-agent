@@ -990,6 +990,10 @@ arrives from phase 2.
   every card drawn from its JSON, with its chips and Confirm, Edit and
   Cancel; files and photos through a presigned upload, kept for good
   (MA-148); text typed offline sent once the browser is back online.
+  MA-199 builds all of it against a fake local stream; **wiring the web
+  chat to the backend (MA-352)** puts it on the real chat API (MA-31), SSE
+  stream (MA-30), card JSON (MA-174) and presigned upload (MA-148), and
+  checks it on dev (Arun, 24 Nov 2026: "Split MA-199").
 - **Activity at every door (MA-196, `ARCHITECTURE.md` §9):** a list of runs
   and one run's detail: its trigger, its steps, each tool call with its time,
   what it proposed, its tokens and its cost, every figure from the
