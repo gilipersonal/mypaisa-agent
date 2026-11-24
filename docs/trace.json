@@ -160,10 +160,8 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Review round 1 of MA-245 (28 Oct 2026): a third workspace, mypaisa-evals, with a $30 limit on top of the two ceilings, its key in /mypaisa-agent/dev/anthropic/evals_key for the ci-evals role (ARCHITECTURE 21.3, 21.7).",
-      "open": [
-        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
-      ]
+      "notes": "Review round 1 of MA-245 (28 Oct 2026): a third workspace, mypaisa-evals, with a $30 limit on top of the two ceilings, its key in /mypaisa-agent/dev/anthropic/evals_key for the ci-evals role (ARCHITECTURE 21.3, 21.7). Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it.",
+      "open": []
     },
     {
       "key": "MA-22",
@@ -254,10 +252,8 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "",
-      "open": [
-        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
-      ]
+      "notes": "Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it. Build note for infra/bootstrap: an explicit deny beats any allow, so the exception is cut out of the deny itself (the env=prod deny names every action but ssm:PutParameter, and a second deny refuses ssm:PutParameter on anything tagged env=prod outside /mypaisa-agent/prod/*), never added as an allow beside it; the overwrite needs no ssm:AddTagsToResource, which stays denied.",
+      "open": []
     },
     {
       "key": "MA-27",
@@ -2498,9 +2494,8 @@
           "board": "10 \u00b7 App icon"
         }
       ],
-      "notes": "Sets the prod app record's icon from docs/mark-1024.png: the 1c Watcher mark picked on MA-103 (MA-161 replaced the household bot's picture with the app icon). The icon is drawn on the iOS kit's app icon board.",
+      "notes": "Sets the prod app record's icon from docs/mark-1024.png: the 1c Watcher mark picked on MA-103 (MA-161 replaced the household bot's picture with the app icon). The icon is drawn on the iOS kit's app icon board. Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it.",
       "open": [
-        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's.",
         "Which phase holds the first prod release: PLAN.md once listed MA-107 and MA-108 under phase 1; since MA-186 PLAN, Jira and the trace all put them in phase 0 (MA-9), and the phase of the first prod release is still to settle. Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
       ]
     },
@@ -2520,10 +2515,8 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "",
-      "open": [
-        "Who puts prod's secret values: Terraform now makes prod's parameters first, tagged env=prod (MA-159), and the developer role (the agent-toolkit profile) is denied anything tagged env=prod, so it cannot overwrite them. Name the identity: a put-only exception on /mypaisa-agent/prod/* for the developer role (never a read), or another identity of the owner's."
-      ]
+      "notes": "Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it.",
+      "open": []
     },
     {
       "key": "MA-144",
