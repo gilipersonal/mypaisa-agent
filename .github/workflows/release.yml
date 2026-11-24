@@ -1,0 +1,286 @@
+name: Release
+
+# One release from main: dev without a hand on it, then prod after Arun approves (MA-107, ARCHITECTURE §17.4;
+# Arun, 24 Oct 2026: "deployments to prod will be via Github CI like we did in smart-clearance, including all the best
+# practices and checks and balances as needed").
+#
+# 1. Ready: CI passed on a push of this commit to main (the MA-25 gates, before any deploy job), and the commit
+#    changes something a release ships since the commit prod last ran. Nothing to ship: no job touches AWS, and
+#    Arun is asked nothing.
+# 2. Dev (ci-dev-deploy, environment dev): plan dev-secrets and dev to files, refuse a secrets plan that would touch
+#    an existing parameter's value, apply both files, publish each Lambda and move its live alias, then the smoke.
+#    A failed smoke moves dev's aliases back and stops the run before prod.
+# 3. Prod plan (ci-plan, read only, no approval): plan infra/prod and write the whole plan to this run's summary,
+#    with its digest, for Arun to read before he approves.
+# 4. Prod (ci-prod-deploy, environment prod: Arun approves; main only): plan infra/prod again and refuse it unless
+#    its digest is the one Arun read; plan prod-secrets under the same rule as dev's; refuse a release that ships a
+#    Lambda while any prod parameter still holds Terraform's placeholder (version 1, read with DescribeParameters,
+#    never a value); apply both; publish and move the aliases; the read-only smoke. A failed smoke moves every live
+#    alias back to the version it held before, and the run fails, which GitHub reports to Arun.
+#
+# The first run, in phase 0, ships no Lambda: it applies dev's and prod's empty stacks and runs the read-only smoke
+# against the placeholders (Arun, 24 Nov 2026). What later stories add here: the image digests, the same in dev and
+# prod (MA-237, MA-347); the wait for a green T2 on the model ids a release ships (MA-251); the owner told in the app
+# and by push, and the deploy's RunRecord (MA-347); the web app and TestFlight (MA-167); the api's smoke (MA-268).
+#
+# No AWS key exists anywhere: every AWS step assumes a role through GitHub's OIDC token (infra/bootstrap/roles.tf).
+# Actions are pinned to commit SHAs; permissions are contents: read but where a job needs more; a deploy job is never
+# cancelled once it runs (a newer release waits behind it, and replaces any older one still waiting).
+#
+# A test run, by hand from main once CI is green on its commit: force_smoke_failure fails the smoke in dev (the run
+# stops before prod) or in prod (the aliases go back).
+
+on:
+  # Started by CI finishing, never by a pull request: the jobs below run only for a successful CI run on a push to
+  # main in this repository, and check out that run's commit.
+  workflow_run: # zizmor: ignore[dangerous-triggers] only a push to main in this repository releases (see ready)
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force_smoke_failure:
+        description: "A test run: fail the smoke on purpose in this environment"
+        type: choice
+        options: [none, dev, prod]
+        default: none
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  TF_VERSION: "1.16.0"
+
+jobs:
+  ready:
+    name: Ready to release
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      deployments: read
+    outputs:
+      sha: ${{ steps.sha.outputs.sha }}
+      ship: ${{ steps.ship.outputs.ship }}
+    steps:
+      - name: The commit this release ships
+        id: sha
+        env:
+          EVENT: ${{ github.event_name }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+          DISPATCH_SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = workflow_run ]; then sha="$RUN_SHA"; else sha="$DISPATCH_SHA"; fi
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "not a commit: $sha" >&2; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Releasing \`$sha\`" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.sha.outputs.sha }}
+          persist-credentials: false
+          # The whole history, to compare this commit with the one prod last ran.
+          fetch-depth: 0
+      # A run CI started carries CI's success; a run by hand asks GitHub for it.
+      - name: CI passed on this commit
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ steps.sha.outputs.sha }}
+          REPO: ${{ github.repository }}
+        run: python3 scripts/release.py ci-green --sha "$SHA" --repo "$REPO"
+      - name: Does it change anything a release ships?
+        id: ship
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ steps.sha.outputs.sha }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          python3 scripts/release.py should-ship --sha "$SHA" --repo "$REPO"
+          # A test run by hand always ships: it is how the forced failures are shown.
+          if [ "$EVENT" = workflow_dispatch ]; then echo "ship=true" >> "$GITHUB_OUTPUT"; fi
+
+  dev:
+    name: Dev
+    needs: ready
+    if: needs.ready.outputs.ship == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: dev
+    concurrency:
+      group: release-dev
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.ready.outputs.sha }}
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::545595341442:role/mypaisa-ci-dev-deploy
+          role-session-name: mypaisa-release-dev-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Plan dev-secrets and dev
+        run: |
+          for root in dev-secrets dev; do
+            infra/scripts/tf.sh "$root" plan -input=false -lock-timeout=300s -no-color -out="$RUNNER_TEMP/$root.tfplan"
+            infra/scripts/tf.sh "$root" show -json "$RUNNER_TEMP/$root.tfplan" > "$RUNNER_TEMP/$root.json"
+            {
+              echo "<details><summary>Plan: infra/$root</summary>"
+              echo
+              echo '```'
+              infra/scripts/tf.sh "$root" show -no-color "$RUNNER_TEMP/$root.tfplan"
+              echo '```'
+              echo "</details>"
+            } >> "$GITHUB_STEP_SUMMARY"
+          done
+      - name: The secrets plan touches no value put by hand
+        run: python3 scripts/release.py secrets-safe "$RUNNER_TEMP/dev-secrets.json"
+      - name: Apply dev-secrets, then dev
+        run: |
+          infra/scripts/tf.sh dev-secrets apply -input=false -lock-timeout=300s "$RUNNER_TEMP/dev-secrets.tfplan"
+          infra/scripts/tf.sh dev apply -input=false -lock-timeout=300s "$RUNNER_TEMP/dev.tfplan"
+          infra/scripts/tf.sh dev output -json > "$RUNNER_TEMP/dev-outputs.json"
+          infra/scripts/tf.sh dev-secrets output -json > "$RUNNER_TEMP/dev-secrets-outputs.json"
+      - name: Record the live aliases
+        id: snapshot
+        run: python3 scripts/release.py lambdas snapshot --env dev --snapshot "$RUNNER_TEMP/aliases.json"
+      - name: Publish and move the live aliases
+        run: python3 scripts/release.py lambdas publish --env dev
+      - name: Smoke
+        env:
+          FORCE: ${{ github.event.inputs.force_smoke_failure == 'dev' && '--force-fail' || '' }}
+        run: |
+          # shellcheck disable=SC2086
+          python3 scripts/smoke.py --env dev --stack-outputs "$RUNNER_TEMP/dev-outputs.json" \
+            --secrets-outputs "$RUNNER_TEMP/dev-secrets-outputs.json" $FORCE
+      - name: Roll the aliases back
+        if: failure() && steps.snapshot.outcome == 'success'
+        run: python3 scripts/release.py lambdas rollback --env dev --snapshot "$RUNNER_TEMP/aliases.json"
+
+  prod-plan:
+    name: Prod plan, for Arun to read
+    needs: [ready, dev]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      digest: ${{ steps.digest.outputs.digest }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.ready.outputs.sha }}
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+      # ci-plan reads configuration and never a value; the secrets root is planned after approval, under a rule
+      # that lets it only create a parameter or change its tags.
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::545595341442:role/mypaisa-ci-plan
+          role-session-name: mypaisa-release-plan-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Plan prod
+        run: |
+          infra/scripts/tf.sh prod plan -input=false -lock-timeout=300s -no-color -out="$RUNNER_TEMP/prod.tfplan"
+          infra/scripts/tf.sh prod show -json "$RUNNER_TEMP/prod.tfplan" > "$RUNNER_TEMP/prod.json"
+          {
+            echo "## Prod plan: read it before approving"
+            echo
+            echo '```'
+            infra/scripts/tf.sh prod show -no-color "$RUNNER_TEMP/prod.tfplan"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Its digest
+        id: digest
+        run: python3 scripts/release.py plan-digest "$RUNNER_TEMP/prod.json"
+
+  prod:
+    name: Prod
+    needs: [ready, prod-plan]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: prod
+    concurrency:
+      group: release-prod
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.ready.outputs.sha }}
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::545595341442:role/mypaisa-ci-prod-deploy
+          role-session-name: mypaisa-release-prod-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Plan prod again; it must be the plan Arun read
+        env:
+          REVIEWED: ${{ needs.prod-plan.outputs.digest }}
+        run: |
+          infra/scripts/tf.sh prod plan -input=false -lock-timeout=300s -no-color -out="$RUNNER_TEMP/prod.tfplan"
+          infra/scripts/tf.sh prod show -json "$RUNNER_TEMP/prod.tfplan" > "$RUNNER_TEMP/prod.json"
+          python3 scripts/release.py plan-digest "$RUNNER_TEMP/prod.json" --expect "$REVIEWED"
+      - name: Plan prod-secrets; it touches no value put by hand
+        run: |
+          infra/scripts/tf.sh prod-secrets plan -input=false -lock-timeout=300s -no-color -out="$RUNNER_TEMP/prod-secrets.tfplan"
+          infra/scripts/tf.sh prod-secrets show -json "$RUNNER_TEMP/prod-secrets.tfplan" > "$RUNNER_TEMP/prod-secrets.json"
+          {
+            echo "<details><summary>Plan: infra/prod-secrets</summary>"
+            echo
+            echo '```'
+            infra/scripts/tf.sh prod-secrets show -no-color "$RUNNER_TEMP/prod-secrets.tfplan"
+            echo '```'
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/release.py secrets-safe "$RUNNER_TEMP/prod-secrets.json"
+      - name: A release that ships a Lambda waits for prod's values
+        run: python3 scripts/release.py values-ready "$RUNNER_TEMP/prod.json" --env prod
+      - name: Apply prod-secrets, then prod
+        run: |
+          infra/scripts/tf.sh prod-secrets apply -input=false -lock-timeout=300s "$RUNNER_TEMP/prod-secrets.tfplan"
+          infra/scripts/tf.sh prod apply -input=false -lock-timeout=300s "$RUNNER_TEMP/prod.tfplan"
+          infra/scripts/tf.sh prod output -json > "$RUNNER_TEMP/prod-outputs.json"
+          infra/scripts/tf.sh prod-secrets output -json > "$RUNNER_TEMP/prod-secrets-outputs.json"
+      - name: Record the live aliases
+        id: snapshot
+        run: python3 scripts/release.py lambdas snapshot --env prod --snapshot "$RUNNER_TEMP/aliases.json"
+      - name: Publish and move the live aliases
+        run: python3 scripts/release.py lambdas publish --env prod
+      - name: Smoke, read only
+        env:
+          FORCE: ${{ github.event.inputs.force_smoke_failure == 'prod' && '--force-fail' || '' }}
+        run: |
+          # shellcheck disable=SC2086
+          python3 scripts/smoke.py --env prod --stack-outputs "$RUNNER_TEMP/prod-outputs.json" \
+            --secrets-outputs "$RUNNER_TEMP/prod-secrets-outputs.json" $FORCE
+      - name: Roll the aliases back
+        if: failure() && steps.snapshot.outcome == 'success'
+        run: python3 scripts/release.py lambdas rollback --env prod --snapshot "$RUNNER_TEMP/aliases.json"

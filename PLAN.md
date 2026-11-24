@@ -281,6 +281,11 @@ Claude's:
   Lambda (phase 1), it refuses prod while any `/mypaisa-agent/prod/*`
   parameter is still at version 1, the placeholder Terraform wrote, which
   `DescribeParameters` shows without reading a value (Arun, 24 Nov 2026).
+  Built in this phase (MA-107): the release starts when CI passes on `main`
+  and asks nothing when a commit changes nothing it ships; prod's plan is in
+  the run's summary before you approve, and the apply refuses a plan that is
+  not the one you read; a secrets root may only create a parameter or change
+  its tags. Its Lambda stages are proved on the first Lambda (MA-347).
   The nightly drift check and Monday CVE sweep follow (MA-108, MA-267).
 - **The web app's skeleton (MA-194):** `web/` in SvelteKit 3.1 (Svelte 5
   runes, adapter-static, Vite 8, TypeScript 6), a pnpm 12 workspace with one
@@ -971,6 +976,13 @@ arrives from phase 2.
   Layer for OpenTelemetry in the image) wired in the handler base, with the
   correlation keys on every log line and span; the error alarm per function
   to the owner.
+- **The release's Lambda stages, proved on the first Lambda (MA-347):** the
+  release built in phase 0 (MA-107) takes the image digest MA-237's build
+  pushed, deploys it to dev and the same digest to prod; a test run with a
+  forced prod smoke failure moves every `live` alias back; a release that
+  ships a Lambda while a prod parameter is still at version 1 stops before
+  prod; a failed prod smoke reaches the owner in the app and by push; and
+  each deploy writes its `RunRecord`.
 - **One trace from the door to the model and back (MA-232, MA-266):** both doors send
   a `traceparent` with every action; FastAPI's `CorrelationMiddleware` and
   `opentelemetry-instrumentation-fastapi` on `api` and `stream`, the queues,
@@ -2222,8 +2234,8 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 56 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 109 (and 0.5 of yours) | 88 | Wed 13 Jan 2027 | Wed 19 May 2027 |
+| 0 Foundations at every door | 55.5 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
+| 1 Talk: sign in and chat with the agent at every door | 110 (and 0.5 of yours) | 88 | Wed 13 Jan 2027 | Wed 19 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Thu 20 May 2027 | Fri 16 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Mon 19 Jul 2027 | Fri 6 Aug 2027 |
 | 4 Debts and check-ins | 19 | 16 | Mon 9 Aug 2027 | Tue 31 Aug 2027 |

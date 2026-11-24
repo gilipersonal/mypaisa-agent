@@ -22,7 +22,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-25 | CI runs every gate, scan and Terraform plan on every pull request, the way smart-clearance does | In Progress | §17.4, §21.3 | none |  |
 | MA-26 | Terraform builds dev and prod as two isolated environments in one account, applied only from CI through OIDC | Done | §17.1, §17.4 | none |  |
 | MA-106 | The architecture records two environments, the domains, Cognito sign-in and Terraform-only delivery | Done | §4.5, §8.3, §11, §12, §13, §14, §15 | none |  |
-| MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | To Do | §17.4, §18.4, §21.3 | none |  |
+| MA-107 | Releases go from one build to dev, then to prod after Arun approves, with smoke tests and automatic rollback | In Progress | §17.4, §18.4, §21.3 | none |  |
 | MA-108 | A nightly check reports any prod change made outside Terraform | To Do | §17.4, §18.4 | none |  |
 | MA-110 | Dev and the laptop are seeded and hydrated with one illustrative household of every kind, from the design figure set | To Do | §17.1 | none |  |
 | MA-112 | The architecture records the $100 Claude budget for prod, its ceiling ladder and the chat-memory rules | Done | §4.5, §7, §8.3, §9, §11, §14, §15, §16, §17 | none |  |
@@ -172,6 +172,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-286 | Every agent's model calls are cached automatically: a frozen prefix, a lifetime per route, automatic caching for the tail, and an alarm when reads fall | To Do | §22.1, §22.6, §7, §9.4, §14.1, §21.3 | none |  |
 | MA-287 | Every agent keeps memory across runs through Claude's memory tool on MyPaisa's own store, scoped, guarded and audited, and long runs stay lean | To Do | §22.2, §22.3, §22.5, §22.6, §4.1, §7, §14.1, §21.2 | none |  |
 | MA-288 | A member sees what MyPaisa remembers about them and corrects or forgets it, in You, at both doors | To Do | §22.3, §4.10, §8 | todo |  |
+| MA-347 | The first release that ships a Lambda proves its Lambda stages: one image digest in dev and prod, aliases rolled back on a failed smoke, and prod refused while a value is a placeholder | To Do | §17.4, §9.1 | none |  |
 
 ## Phase 2: The first record: one dynamic structure, one write path (MA-187)
 

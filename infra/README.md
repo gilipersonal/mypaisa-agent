@@ -89,7 +89,33 @@ infra/scripts/tf.sh dev apply dev.tfplan
    bootstrap's `developer_role_arn` output, and `source_profile` to your own identity's profile, with
    `mfa_serial`. From then on the laptop works in dev, and prod refuses it.
 5. **Apply dev, then dev-secrets** with `tf.sh dev` and `tf.sh dev-secrets`, after reading each plan. Prod and
-   prod-secrets are applied by CI, through MA-107's release workflow.
+   prod-secrets are applied by CI, through the release workflow (below).
+
+### Releasing (MA-107)
+
+`.github/workflows/release.yml` deploys; nothing else applies prod. It starts when CI passes on a push to `main`,
+and ships only when the commit changes something a release ships (`infra/`, `backend/`, `web/`, the release scripts
+or the workflow) since the commit prod last ran. Otherwise it stops before AWS and asks nothing.
+
+1. **Dev**, with `mypaisa-ci-dev-deploy`: plans `dev-secrets` and `dev` to files and applies those files. It moves
+   each Lambda's `live` alias, then runs `scripts/smoke.py --env dev`. A failed smoke moves the aliases back and
+   stops the run.
+2. **Prod plan**, with `mypaisa-ci-plan` and no approval: the whole plan of `infra/prod` goes in the run's summary,
+   with its digest. Read it there.
+3. **Prod**, in the `prod` environment once you approve:
+   - plans `infra/prod` again and refuses a plan whose digest is not the one you read;
+   - plans `prod-secrets` and refuses anything but a new parameter or a change to a parameter's tags (the same
+     rule holds for `dev-secrets`);
+   - refuses a release that ships a Lambda while any `/mypaisa-agent/prod/*` parameter is still at version 1;
+   - applies both, moves the aliases, then runs the read-only `scripts/smoke.py --env prod`. A failed smoke moves
+     every alias back.
+
+A test run by hand (Actions, Release, Run workflow, from `main` once CI is green on it) takes `force_smoke_failure`:
+`dev` stops the run before prod, `prod` rolls the aliases back. `python3 scripts/release.py selftest` and
+`python3 scripts/smoke.py selftest` hold every refusal, and the infra gate runs both.
+
+The first run applies dev's and prod's empty stacks. Then put prod's values (below). The Lambda stages are proved
+on the first Lambda (MA-347).
 
 ### Putting a value
 
