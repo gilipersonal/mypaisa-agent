@@ -99,6 +99,15 @@
       "paths": [
         "**"
       ]
+    },
+    {
+      "name": "infra",
+      "cwd": ".",
+      "run": "scripts/infra_gates.sh",
+      "paths": [
+        "infra/**",
+        "scripts/infra_gates.sh"
+      ]
     }
   ],
   "work": {
