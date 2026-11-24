@@ -160,7 +160,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Review round 1 of MA-245 (28 Oct 2026): a third workspace, mypaisa-evals, with a $30 limit on top of the two ceilings, its key in /mypaisa-agent/dev/anthropic/evals_key for the ci-evals role (ARCHITECTURE 21.3, 21.7). Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it.",
+      "notes": "Review round 1 of MA-245 (28 Oct 2026): a third workspace, mypaisa-evals, with a $30 limit on top of the two ceilings, its key in /mypaisa-agent/dev/anthropic/evals_key for the ci-evals role (ARCHITECTURE 21.3, 21.7). Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it. MA-107 (Arun, 24 Nov 2026): the first prod release is in phase 0, so this task's prod half finishes in phase 0, after that release's first apply makes prod's parameters.",
       "open": []
     },
     {
@@ -1922,10 +1922,8 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Review round 1 of MA-245 (28 Oct 2026): the release to prod waits for a green T2 on the model ids it ships (ARCHITECTURE 17.4, 21.3; MA-251). MA-25 (24 Nov 2026): the secret parameters live in their own roots, infra/dev-secrets and infra/prod-secrets, which ci-plan never plans; the release plans and applies prod-secrets with ci-prod-deploy, beside prod, and dev-secrets with ci-dev-deploy.",
-      "open": [
-        "Which phase holds the first prod release: PLAN.md once listed MA-107 and MA-108 under phase 1; since MA-186 PLAN, Jira and the trace all put them in phase 0 (MA-9), and the phase of the first prod release is still to settle. Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
-      ]
+      "notes": "Review round 1 of MA-245 (28 Oct 2026): the release to prod waits for a green T2 on the model ids it ships (ARCHITECTURE 17.4, 21.3; MA-251). MA-25 (24 Nov 2026): the secret parameters live in their own roots, infra/dev-secrets and infra/prod-secrets, which ci-plan never plans; the release plans and applies prod-secrets with ci-prod-deploy, beside prod, and dev-secrets with ci-dev-deploy. Settled: Which phase holds the first prod release (Arun, 24 Nov 2026): phase 0. MA-107 builds the release pipeline in phase 0, and its first run applies prod's empty stack (infra/prod and infra/prod-secrets) after Arun approves; Arun then puts prod's secret values, so MA-142 and the prod halves of MA-21 and MA-143 finish in phase 0, and MA-108's nightly drift check watches prod from then on. The first Lambdas reach prod in phase 1 through the same pipeline. The smoke tests: a release that ships no Lambda runs its read-only smoke against the placeholders; a release that ships a Lambda refuses prod while any /mypaisa-agent/prod/* parameter is still at version 1, the placeholder Terraform wrote, read with DescribeParameters, which shows the version and never a value.",
+      "open": []
     },
     {
       "key": "MA-108",
@@ -1942,10 +1940,8 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "MA-25 (24 Nov 2026): ci-plan cannot read a parameter's value, so the nightly check plans infra/dev and infra/prod only; for the secrets roots it compares each parameter's metadata (DescribeParameters: name, type, tier, description, tags) with the code, never its value.",
-      "open": [
-        "Which phase holds the first prod release: PLAN.md once listed MA-107 and MA-108 under phase 1; since MA-186 PLAN, Jira and the trace all put them in phase 0 (MA-9), and the phase of the first prod release is still to settle. Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
-      ]
+      "notes": "MA-25 (24 Nov 2026): ci-plan cannot read a parameter's value, so the nightly check plans infra/dev and infra/prod only; for the secrets roots it compares each parameter's metadata (DescribeParameters: name, type, tier, description, tags) with the code, never its value. Settled: Which phase holds the first prod release (Arun, 24 Nov 2026): phase 0. MA-107 builds the release pipeline in phase 0, and its first run applies prod's empty stack (infra/prod and infra/prod-secrets) after Arun approves; Arun then puts prod's secret values, so MA-142 and the prod halves of MA-21 and MA-143 finish in phase 0, and MA-108's nightly drift check watches prod from then on. The first Lambdas reach prod in phase 1 through the same pipeline. The smoke tests: a release that ships no Lambda runs its read-only smoke against the placeholders; a release that ships a Lambda refuses prod while any /mypaisa-agent/prod/* parameter is still at version 1, the placeholder Terraform wrote, read with DescribeParameters, which shows the version and never a value.",
+      "open": []
     },
     {
       "key": "MA-109",
@@ -2515,10 +2511,8 @@
           "board": "10 \u00b7 App icon"
         }
       ],
-      "notes": "Sets the prod app record's icon from docs/mark-1024.png: the 1c Watcher mark picked on MA-103 (MA-161 replaced the household bot's picture with the app icon). The icon is drawn on the iOS kit's app icon board. Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it.",
-      "open": [
-        "Which phase holds the first prod release: PLAN.md once listed MA-107 and MA-108 under phase 1; since MA-186 PLAN, Jira and the trace all put them in phase 0 (MA-9), and the phase of the first prod release is still to settle. Prod's secret values go in only after that release has made their parameters (MA-159), so MA-142 and the prod halves of MA-21 and MA-143 finish with it; and its smoke tests run while prod's secrets are still placeholders. Settle the phase in PLAN, the trace and Jira together, and say whether the first release's smoke tests wait for the values."
-      ]
+      "notes": "Sets the prod app record's icon from docs/mark-1024.png: the 1c Watcher mark picked on MA-103 (MA-161 replaced the household bot's picture with the app icon). The icon is drawn on the iOS kit's app icon board. Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it. Settled: Which phase holds the first prod release (Arun, 24 Nov 2026): phase 0. MA-107 builds the release pipeline in phase 0, and its first run applies prod's empty stack (infra/prod and infra/prod-secrets) after Arun approves; Arun then puts prod's secret values, so MA-142 and the prod halves of MA-21 and MA-143 finish in phase 0, and MA-108's nightly drift check watches prod from then on. The first Lambdas reach prod in phase 1 through the same pipeline. The smoke tests: a release that ships no Lambda runs its read-only smoke against the placeholders; a release that ships a Lambda refuses prod while any /mypaisa-agent/prod/* parameter is still at version 1, the placeholder Terraform wrote, read with DescribeParameters, which shows the version and never a value.",
+      "open": []
     },
     {
       "key": "MA-143",
@@ -2536,7 +2530,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it.",
+      "notes": "Settled: Who puts prod's secret values (Arun, 24 Nov 2026, MA-26): the developer role's one exception to its env=prod deny is ssm:PutParameter on /mypaisa-agent/prod/*, for Arun to put prod's secret values by hand; it never reads, decrypts, deletes or tags a prod parameter, and Claude never runs it. MA-107 (Arun, 24 Nov 2026): the first prod release is in phase 0, so this task's prod half finishes in phase 0, after that release's first apply makes prod's parameters.",
       "open": []
     },
     {

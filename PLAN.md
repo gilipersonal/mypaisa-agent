@@ -276,8 +276,12 @@ Claude's:
   alias, running `python3 scripts/smoke.py --env prod` (strictly read-only,
   zero synthetic writes to prod tables) and shifting every `live` alias back
   to its previous version in under five seconds on failure, before syncing
-  prod's web app and sending MyPaisa to TestFlight. The nightly drift check
-  and Monday CVE sweep follow (MA-108, MA-267).
+  prod's web app and sending MyPaisa to TestFlight. Its first run, in this
+  phase, applies prod's empty stack; from the first release that ships a
+  Lambda (phase 1), it refuses prod while any `/mypaisa-agent/prod/*`
+  parameter is still at version 1, the placeholder Terraform wrote, which
+  `DescribeParameters` shows without reading a value (Arun, 24 Nov 2026).
+  The nightly drift check and Monday CVE sweep follow (MA-108, MA-267).
 - **The web app's skeleton (MA-194):** `web/` in SvelteKit 3.1 (Svelte 5
   runes, adapter-static, Vite 8, TypeScript 6), a pnpm 12 workspace with one
   catalog of versions, as Smart Clearance's frontend is built; a PWA whose
@@ -831,9 +835,11 @@ phase 1's sign-in checks), the Services ID for the web app, and the APNs key
 and its key id are in SSM, over the placeholders dev's apply made; the empty
 shells answer at `dashboard-dev.mypaisapp.com`, from TestFlight (MyPaisa Dev
 builds in CI and installs from it) and on the laptop, each with the seed
-household loaded. Prod's go in after prod's first apply (the release
-workflow, MA-107; which phase holds it is open on MA-107, MA-108 and MA-142),
-by the identity MA-21, MA-26, MA-142 and MA-143 name. Dev's dashboard, alarms
+household loaded. The release workflow's first run, after your
+approval, applies prod's empty stack, `infra/prod` and `infra/prod-secrets`
+(MA-107, in this phase; Arun, 24 Nov 2026), and prod's values go in after it,
+by the identity MA-21, MA-26, MA-142 and MA-143 name; the nightly drift check
+watches prod from then on (MA-108). Dev's dashboard, alarms
 and saved queries exist, and a test invocation shows as a trace (MA-231).
 
 **Cost:** pennies in AWS (dev's watch tower while it sleeps, `ARCHITECTURE.md`
