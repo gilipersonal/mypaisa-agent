@@ -606,6 +606,10 @@ Claude's:
   10x macOS multiplier trap) stays at £0.00 a month inside both free tiers
   (`docs/design/cicd-security-regression.html`, `docs/design/argos-visual-a11y.html`
   and their Confluence pages, MA-272).
+- **A plan made by ci-plan sees every Lambda's environment (MA-349, bug):**
+  ci-plan cannot decrypt a function's environment, so its plans show it
+  changed on every function, and the release's digest check would refuse
+  each prod release that ships a Lambda; fixed before MA-347.
 - **The research pages show the counted cost of watching (MA-348):** the
   observability and VPC research pages, the Architecture v4 explainer's
   CloudWatch card, their Confluence pages, previews and GIF
@@ -2243,7 +2247,7 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 56 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
+| 0 Foundations at every door | 56.25 (and 3.5 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
 | 1 Talk: sign in and chat with the agent at every door | 110 (and 0.5 of yours) | 88 | Wed 13 Jan 2027 | Wed 19 May 2027 |
 | 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Thu 20 May 2027 | Fri 16 Jul 2027 |
 | 3 Deposits, policies and four currencies | 18 | 15 | Mon 19 Jul 2027 | Fri 6 Aug 2027 |

@@ -5765,6 +5765,24 @@
       "notes": "Found in MA-231 (24 Nov 2026): ARCHITECTURE, PLAN, TECH_STACK and README carry the counted figures; docs/RESEARCH.md, the stack and VPC explainer pages, the Architecture v4 explainer's CloudWatch card (about \u00a32.50 a month in prod; its previews and artifact follow it), their Confluence pages and GIF captions, and the VPC totals in ARCHITECTURE 14 and PLAN do not yet."
     },
     {
+      "key": "MA-349",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read",
+      "status": "To Do",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Found in MA-231 (24 Nov 2026) on PR #127: ci-plan is denied kms:Decrypt (MA-25), so Lambda hides every function's environment from it and its plans show the environment added on every function; ci-prod-deploy's plan does not, so the release's digest check would refuse every prod release that ships a Lambda. Blocks MA-347. Three options for Arun in the issue (decrypt through Lambda only, the digest ignoring the blind block, a key per function)."
+    },
+    {
       "key": "MA-232",
       "type": "Story",
       "epic": "MA-10",

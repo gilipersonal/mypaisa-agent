@@ -123,6 +123,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-345 | Two of MA-194's fixed-finding checks run in web/ at the same time and race, so Review tooling fails at random | Done | §17.4 | none |  |
 | MA-346 | CodeQL is part of CI: GitHub's default setup analyses every pull request, and a merge waits for it | Done | §17.4 | none |  |
 | MA-348 | The research pages show the watching's counted cost: sixteen metrics, dev's alarms, and the VPC options' totals £2 higher | To Do | §9.9, §14 | none |  |
+| MA-349 | A plan made by ci-plan shows every Lambda's environment as changed, so the prod release would refuse the plan Arun read | To Do | §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 
