@@ -80,7 +80,7 @@ this repo on any change just before you merge the PR. just for this Repo".
 | Any Jira transition (To Do, In Progress, In Review, Done, back again) | do it, no asking (Done only after the merge, see below) |
 | Branch, commit, push an `MA-<n>-<slug>` branch | do it, no asking |
 | Raise the pull request (`gh pr create`) | **do it, no asking**, as soon as the story's work is committed and its gates are green |
-| Wait for the PR's checks | do it, no asking |
+| Wait for the PR's checks (every one, CodeQL's `Analyze (<language>)` included, MA-346) | do it, no asking |
 | Merge the PR into `main` (`gh pr merge`, `git merge`, the merge API) | **ask once**, in words, and wait for a yes in the turn that is running |
 | Move the issue to Done | **do it, no asking**, straight after the merge lands (the order is the rule, not a question) |
 | Delete the merged `MA-*` branch, on GitHub and locally, however it has to be done | do it, no asking (covered by the merge's yes, see below) |
@@ -157,7 +157,9 @@ Only the story's own `MA-*` branch is deleted this way; `main` never is.
 
 - Every branch, commit and PR still carries its `MA-<n>` key.
 - A red gate or a failed check stops the run: no PR is raised on a red gate
-  (a draft at most), and nothing is merged on a failed check.
+  (a draft at most), and nothing is merged on a failed check, or while one is
+  pending: `gh pr checks <n>` lists every check passed, CodeQL's included
+  (GitHub's default setup, a repository setting; MA-346).
 - Done still means merged. An issue is never moved to Done for an unmerged
   PR, and issues are never deleted.
 - Pushing to `main` directly, force-pushing, and changing branch protection

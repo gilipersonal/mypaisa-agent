@@ -5,8 +5,8 @@
 #   scripts/security_scan.sh secrets    # one of: secrets sast deps workflows
 #   scripts/security_scan.sh staged     # gitleaks on what is staged (the pre-commit hook)
 #
-# The repo is private, so GitHub's CodeQL, dependency review and secret scanning (Advanced Security, paid) are not
-# used; these free tools stand in. Every tool is pinned. gitleaks and osv-scanner are release binaries checked against
+# The repo is public: GitHub's CodeQL default setup and secret scanning with push protection run beside this script, as
+# repository settings, not here (MA-346); these tools cover what they do not. Every tool is pinned. gitleaks and osv-scanner are release binaries checked against
 # their published SHA-256 before they run; semgrep and zizmor come from PyPI at a fixed version through uvx. A tool that
 # cannot be fetched or does not match its checksum fails the scan: nothing is skipped (fails closed).
 # The backend's own Bandit rules (ruff S) and pip-audit --strict run in scripts/backend_gates.sh.
