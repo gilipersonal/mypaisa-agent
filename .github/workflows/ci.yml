@@ -22,11 +22,10 @@ name: CI
 # edited, and nothing here needs to.
 #
 # CodeQL is part of CI but not a job here (MA-346; Arun, 24 Nov 2026: "make
-# codeQL check part of this ci process"): GitHub's default setup, a repository
-# setting, analyses the workflows, JavaScript and TypeScript, Python and Swift on
-# every PR, every push to main and weekly, as the checks "Analyze (<language>)",
-# and a merge waits for them like every check here. A CodeQL job in this file
-# would clash with the default setup, so none is added.
+# codeQL check part of this ci process"): its own workflow, codeql.yml (MA-351),
+# analyses the workflows, JavaScript and TypeScript and Python on every PR, and
+# Swift when a PR changes ios/, as the checks "Analyze (<language>)", and a merge
+# waits for them like every check here.
 
 on:
   pull_request:

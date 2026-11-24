@@ -206,8 +206,8 @@ Claude's:
   setup. The repo is public, so it is free: CodeQL analyses the workflows,
   JavaScript and TypeScript, Python and Swift on every PR, every push to `main`
   and weekly, and secret scanning with push protection is on. A merge waits for
-  CodeQL's checks like every other; no CodeQL job is added to `ci.yml`, where it
-  would clash with the default setup.
+  CodeQL's checks like every other; no CodeQL job is added to `ci.yml`. The
+  default setup gave way to CodeQL's own workflow in MA-351, below.
 - **CI bundles the iOS app (MA-327, `ARCHITECTURE.md` §17.4):** the iOS shell
   job builds the app's JavaScript with Metro on Linux, since Jest and tsc pass on
   a toolchain Metro refuses, as Dependabot's Babel 8 showed (PR #96). Dependabot
@@ -620,7 +620,8 @@ Claude's:
 - **CodeQL scans Swift only when Swift changes (MA-351):** the Swift scan
   spends about 18 minutes building the app from cold and 10 waiting for a
   macOS runner on every pull request; an advanced-setup workflow runs it
-  only when `ios/` changes (and on `main` and weekly), from a cached build.
+  only when `ios/` changes (and on `main` and weekly), building only the two
+  Swift packages the old scan ended up compiling; other languages as before.
 - **The research pages show the counted cost of watching (MA-348):** the
   observability and VPC research pages, the Architecture v4 explainer's
   CloudWatch card, their Confluence pages, previews and GIF

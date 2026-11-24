@@ -8504,7 +8504,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "CodeQL scans Swift only when a pull request changes ios/, from a cached build, so other pull requests no longer wait about 28 minutes",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [],
       "arch": [
         "17.4"
@@ -8512,9 +8512,14 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed 24 Nov 2026 (Arun: \"why is Analyze Swift takes so much time ?\" ... \"Yes, file it\"). Measured on PR #129: 10 min queued for a macos-latest runner, 17 min 41 s of CodeQL autobuild tracing a cold Xcode build of ios/MyPaisa.xcodeproj, 1 min 20 s of analysis; PR #128's took 17 min, and main's at 17:00 was cancelled at exactly 15 min. CodeQL's default setup (MA-346) scans every language on every pull request and cannot be path-filtered. The story moves CodeQL to an advanced-setup workflow: Swift on a pull request only when ios/ changes (a skipped run reports success), on every push to main and weekly; a manual build of only the Swift CodeQL needs, from the SPM and DerivedData caches; an explicit timeout; the same query suite and the Analyze (<language>) check names the merge rule reads. Estimate 0 for now (Arun, 24 Nov 2026: \"0 for now\"): about half a day of work, estimated when the story starts, so no phase date moves while it waits.",
+      "notes": "Filed 24 Nov 2026 (Arun: \"why is Analyze Swift takes so much time ?\" ... \"Yes, file it\"). Measured on PR #129: 10 min queued for a macos-latest runner, 17 min 41 s of CodeQL autobuild tracing a cold Xcode build of ios/MyPaisa.xcodeproj, 1 min 20 s of analysis; PR #128's took 17 min, and main's at 17:00 was cancelled at exactly 15 min. CodeQL's default setup (MA-346) scans every language on every pull request and cannot be path-filtered. The story moves CodeQL to an advanced-setup workflow: Swift on a pull request only when ios/ changes (a skipped run reports success), on every push to main and weekly; a manual build of only the Swift CodeQL needs; an explicit timeout; the same query suite and the Analyze (<language>) check names the merge rule reads. Estimate 0 for now (Arun, 24 Nov 2026: \"0 for now\"): about half a day of work, estimated when the story starts, so no phase date moves while it waits. Built 24 Nov 2026 (Arun: \"I need Option 1 to be done fast\"): .github/workflows/codeql.yml; the default setup's job log showed its autobuild failing on the app (the React Native packages need pnpm spm first) and falling back until it compiled only MyPaisaCore and MyPaisaUI, so the Swift job builds the MyPaisaUI package by hand (MyPaisaCore with it) on macos-26, the runner and Xcode 26.6 the default setup used, caching only the Swift package checkouts so CodeQL still sees every compile of our own code; default setup switched off in the repository's settings.",
       "open": [],
-      "code": []
+      "code": [
+        ".github/workflows/codeql.yml",
+        ".github/workflows/ci.yml",
+        ".claude/rules/ship-autopilot.md",
+        ".claude/skills/autoship/SKILL.md"
+      ]
     }
   ],
   "others": [

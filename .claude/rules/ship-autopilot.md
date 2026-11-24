@@ -159,7 +159,7 @@ Only the story's own `MA-*` branch is deleted this way; `main` never is.
 - A red gate or a failed check stops the run: no PR is raised on a red gate
   (a draft at most), and nothing is merged on a failed check, or while one is
   pending: `gh pr checks <n>` lists every check passed, CodeQL's included
-  (GitHub's default setup, a repository setting; MA-346).
+  (`.github/workflows/codeql.yml`; MA-346, MA-351).
 - Done still means merged. An issue is never moved to Done for an unmerged
   PR, and issues are never deleted.
 - Pushing to `main` directly, force-pushing, and changing branch protection

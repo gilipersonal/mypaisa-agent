@@ -56,10 +56,10 @@ Uncommitted files that belong to another story are left alone and named.
 6. **Trace it**: comment "PR raised: <url> from `<branch>` at `<sha>`." on
    the issue, then `transitionJiraIssue` id 31 (In Review).
 7. **Checks**: `gh run list --commit <HEAD sha>` for every run on this HEAD:
-   CI, jira-key, and CodeQL's (GitHub's default setup, event `dynamic`, which
-   `--branch` does not list; MA-346), then `gh run watch <id> --exit-status`
-   for each. If none has started after a minute, look once more; give up after
-   30 minutes (CodeQL's Swift analysis takes about 15) and say so. A failed
+   CI, jira-key, and CodeQL (`codeql.yml`; MA-346, MA-351), then
+   `gh run watch <id> --exit-status` for each. If none has started after a
+   minute, look once more; give up after 30 minutes (CodeQL's Swift analysis,
+   run only when `ios/` changes, takes the longest) and say so. A failed
    check stops here: report it with the failing step.
 
 ## 3. The one question
