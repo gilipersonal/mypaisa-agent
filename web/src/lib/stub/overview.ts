@@ -1,5 +1,6 @@
-/** The Overview from the stub household (board Web v4 · Dashboard, 1a Net worth first): the hero, then own and owe, each
- * country, each member, liquid and locked and what is due; below, how the debts run off, what matures next and the
+/** The Overview from the stub household (board Web v4 · Dashboard, 1a Net worth first, with Web v4 · Home charts in place
+ * of its own and owe meters, MA-359): the hero, then what we own and owe as a double ring and invested against owed,
+ * then each country, each member, liquid and locked and what is due; below, how the debts run off, what matures next and the
  * largest assets. The sums are `sums.ts`'s; the words are the board's. The api's overview (MA-208's backend half)
  * replaces this, and the page does not change. */
 import { timeOf } from '#lib/chat/days.ts';
@@ -146,47 +147,30 @@ function hero(h: StubHousehold, view: View, currency: DisplayCurrency, t: Totals
 	};
 }
 
-function ownOwe(h: StubHousehold, view: View, t: Totals, d: ReturnType<typeof inDisplay>, c: DisplayCurrency) {
-	const debts = h.debts.filter((x) => weight(x.owners, view) > 0);
-	const cards = debts.filter((x) => x.kind === 'credit_card').length;
-	const loans = debts.length - cards;
-	const owed = [
-		loans > 0 ? plural(loans, 'loan') : '',
-		cards > 0 ? (cards === 1 ? 'a card' : plural(cards, 'card')) : ''
-	]
-		.filter(Boolean)
-		.join(' and ');
-	const sym = SYMBOL[c];
-	const fmt = (n: number) => `${sym}${String(n)}`;
-	const card: WealthCard = {
-		id: 'own-owe',
-		title: 'What we own and owe',
-		aside: `${percent(t.owe, t.own)} of what we own is owed`,
-		parts: [
-			{
-				kind: 'meters',
-				items: [
+/** Home's two chart cards (MA-359; board Web v4 · Home charts, MA-355 c 1a), in place of the meters card they supersede.
+ * Each names the view and currency it is for and reads its own query, so it loads, fails and empties by itself. */
+function chartCards(view: View, currency: DisplayCurrency): CardRow[] {
+	return [
+		{
+			layout: 'one',
+			columns: [
+				[{ id: 'own-owe', title: 'What we own and owe', aside: '', parts: [{ kind: 'ownowe', view, currency }] }]
+			]
+		},
+		{
+			layout: 'one',
+			columns: [
+				[
 					{
-						label: 'We own',
-						fig: money(d.own, c),
-						share: 1,
-						tone: 'meter',
-						note: `${plural(t.nAssets, 'asset')} in the UK and India`,
-						aria: `We own ${fmt(d.own)}`
-					},
-					{
-						label: 'We owe',
-						fig: money(d.owe, c),
-						share: share(t.owe, t.own),
-						tone: 'owed',
-						note: owed || 'nothing owed',
-						aria: `We owe ${fmt(d.owe)}, ${percent(t.owe, t.own)} of what we own`
+						id: 'invested-owed',
+						title: 'Invested against owed',
+						aside: '',
+						parts: [{ kind: 'investedowed', view, currency }]
 					}
 				]
-			}
-		]
-	};
-	return card;
+			]
+		}
+	];
 }
 
 function byCountry(h: StubHousehold, view: View, t: Totals, d: ReturnType<typeof inDisplay>, c: DisplayCurrency) {
@@ -693,12 +677,13 @@ export function buildOverview(h: StubHousehold, view: View, currency: DisplayCur
 		hero: hero(h, known, currency, t, d.net),
 		foot: FOOT
 	};
-	if (h.empty) return { ...base, rows: emptyRows() };
-	const left = [ownOwe(h, known, t, d, currency), byCountry(h, known, t, d, currency)];
+	if (h.empty) return { ...base, rows: [...chartCards(known, currency), ...emptyRows()] };
+	const left = [byCountry(h, known, t, d, currency)];
 	if (known === HOUSEHOLD) left.push(byMember(t, d, currency));
 	return {
 		...base,
 		rows: [
+			...chartCards(known, currency),
 			{ layout: 'two', columns: [left, [liquidity(h, known, t, d, currency), due(h, known)]] },
 			{ layout: 'two', columns: [[runoff(h, known, d, currency)], [maturing(h, known)]] },
 			{ layout: 'one', columns: [[largest(h, known, currency)]] }

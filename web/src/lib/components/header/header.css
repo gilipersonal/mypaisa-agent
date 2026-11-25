@@ -1,0 +1,337 @@
+/* The header's four pills, their menus and their sheets (MA-358), ported from the picked board's own rules
+   (docs/design/app-v1/Web v4 · Header controls.dc.html, MA-355 b 1a) so the build draws what the board draws. Every
+   colour is a DS v1 token. The states the board does not draw follow the design system: a pointer on a closed pill
+   fills it as a menu row is filled, Increase Contrast steps every hairline up to --mp-ink-3, and nothing here is glass,
+   so Reduce Transparency has nothing to make opaque. */
+
+/* the head: the title and the bar share a line when both fit; when they do not, the bar takes the next, at the left */
+.mp-pagehead:has(> .vbar) {
+	flex-wrap: wrap;
+	row-gap: 12px;
+}
+/* a title that would grow into the bar's room (the Projection's menu and its long line) asks for about 18em first, so
+   at a 1024 window it gives the bar the line below, as the board draws, and from about 1280 they share a line; under
+   600 the head is a column, and the title keeps its own height */
+@container page (min-width: 600px) {
+	.mp-pagehead:has(> .vbar) > .ttlwrap {
+		flex: 1 1 18em;
+	}
+}
+
+.vbar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: none;
+	min-width: 0;
+	max-width: 100%;
+	outline: none;
+}
+.vsep {
+	width: 1px;
+	height: 24px;
+	background: var(--mp-line);
+	margin: 0 4px;
+	flex: none;
+}
+
+/* under 600 px: one row under the title; the name gives way first, the other three never move */
+.vbar.vrow {
+	flex: 1 1 auto;
+	gap: 6px;
+	flex-wrap: nowrap;
+}
+.vgap {
+	flex: 1 1 0;
+	min-width: 0;
+}
+
+/* a labelled pill: 44 px, on paper; a chevron when it opens a menu, none when it is a switch */
+.vpill {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 44px;
+	margin: 0;
+	padding: 0 12px 0 14px;
+	border: 0;
+	border-radius: 999px;
+	background: var(--mp-surface);
+	color: var(--mp-ink);
+	font: 600 15px/20px var(--mp-font);
+	letter-spacing: 0;
+	box-shadow: inset 0 0 0 1px var(--mp-line);
+	white-space: nowrap;
+	box-sizing: border-box;
+	flex: none;
+	cursor: pointer;
+}
+.vpill > .lc {
+	width: 18px;
+	height: 18px;
+	color: var(--mp-accent);
+	flex: none;
+}
+.vpill > .chv {
+	width: 16px;
+	height: 16px;
+	color: var(--mp-ink-2);
+	margin-left: -2px;
+	flex: none;
+}
+.vpill.ccy {
+	padding-left: 9px;
+}
+.vpill.tog {
+	padding-right: 16px;
+}
+.vpill.who {
+	padding-left: 16px;
+	max-width: 220px;
+}
+.who-t {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.vpill.sm {
+	gap: 6px;
+	padding: 0 10px 0 14px;
+}
+.vpill.sm.ccy {
+	padding-left: 9px;
+}
+.vpill.sm.io {
+	padding: 0 8px 0 12px;
+	gap: 2px;
+}
+.vpill.sm.io.tog {
+	width: 44px;
+	padding: 0;
+	justify-content: center;
+}
+.vrow .vpill.who {
+	flex: 0 1 auto;
+	min-width: 0;
+	max-width: none;
+}
+/* not drawn: a pointer on a closed pill fills it, as the pointer's row in a menu is filled */
+@media (hover: hover) {
+	.vpill:hover:not([aria-pressed='true'], [aria-expanded='true']) {
+		background: var(--mp-surface-2);
+	}
+}
+.vpill[aria-expanded='true'] {
+	box-shadow: inset 0 0 0 2px var(--mp-focus);
+}
+.vpill[aria-expanded='true'] > .chv {
+	transform: rotate(180deg);
+}
+/* Hide amounts on: ink reversed, plain in dark too */
+.vpill[aria-pressed='true'] {
+	background: var(--mp-ink);
+	color: var(--mp-bg);
+	box-shadow: none;
+}
+.vpill[aria-pressed='true'] > .lc {
+	color: var(--mp-bg);
+}
+.vpill:focus-visible,
+.vm-i:focus-visible {
+	outline: 3px solid var(--mp-focus);
+	outline-offset: 2px;
+}
+
+.vcoin {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background: var(--mp-hero);
+	color: var(--mp-coral);
+	display: grid;
+	place-items: center;
+	font: 800 14px/1 var(--mp-font-round);
+	flex: none;
+}
+.t-dark .vcoin {
+	background: var(--mp-hero-2);
+}
+@media (prefers-color-scheme: dark) {
+	:root:not(.t-light) .vcoin {
+		background: var(--mp-hero-2);
+	}
+}
+
+/* a menu on the web: a popover on paper, never glass (as the Projection's title menu, MA-301 a 1b) */
+.vpop {
+	z-index: 30;
+	width: 296px;
+	max-width: calc(100vw - 32px);
+	box-sizing: border-box;
+	padding: 6px;
+	border-radius: 14px;
+	background: var(--mp-surface);
+	color: var(--mp-ink);
+	box-shadow:
+		0 0 0 1px var(--mp-line),
+		var(--mp-shadow),
+		var(--mp-shadow);
+	display: flex;
+	flex-direction: column;
+	outline: none;
+	transform-origin: var(--bits-dropdown-menu-content-transform-origin);
+}
+.vpop.narrow {
+	width: 240px;
+}
+
+.vm-h {
+	margin: 0;
+	font: 600 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+	padding: 8px 12px 4px;
+}
+.vm-list {
+	display: flex;
+	flex-direction: column;
+	outline: none;
+}
+.vm-i {
+	min-height: 44px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0;
+	padding: 6px 12px;
+	border: 0;
+	border-radius: 8px;
+	background: none;
+	font: 400 15px/20px var(--mp-font);
+	color: var(--mp-ink);
+	text-align: left;
+	box-sizing: border-box;
+	width: 100%;
+	cursor: pointer;
+	outline: none;
+}
+.vm-i:focus-visible {
+	outline-offset: -3px;
+}
+.vm-i[data-highlighted],
+.vm-i:active:not(:disabled) {
+	background: var(--mp-surface-2);
+}
+@media (hover: hover) {
+	.vm-i:hover:not(:disabled, [data-disabled]) {
+		background: var(--mp-surface-2);
+	}
+}
+/* a currency the records cannot show yet: listed, named as not available, never chosen */
+.vm-i:disabled,
+.vm-i[data-disabled] {
+	cursor: default;
+	opacity: 1; /* its words stay readable: "Not available yet" is the point of the row */
+}
+.vm-i:disabled .vm-t,
+.vm-i[data-disabled] .vm-t {
+	color: var(--mp-ink-2);
+}
+.vm-b {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+.vm-t {
+	overflow-wrap: anywhere;
+}
+.vm-i[aria-checked='true'] .vm-t {
+	font-weight: 600;
+}
+.vm-s {
+	font: 400 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+	text-wrap: pretty;
+}
+.vm-i > .lead {
+	width: 20px;
+	height: 20px;
+	color: var(--mp-ink-2);
+	flex: none;
+}
+.vm-i > .chk {
+	width: 20px;
+	height: 20px;
+	color: var(--mp-accent);
+	flex: none;
+	display: block;
+}
+.vm-code {
+	font: 600 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+	letter-spacing: 0.02em;
+}
+.vm-f {
+	margin: 4px 6px 0;
+	padding: 10px 6px 6px;
+	border-top: 1px solid var(--mp-line);
+	font: 400 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+	text-wrap: pretty;
+}
+
+/* under 600 px a menu is a sheet from the bottom, 52 px rows, in thumb reach */
+.vscrim {
+	position: fixed;
+	z-index: 45;
+}
+.vsheet {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 50;
+	max-height: 85dvh;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	color: var(--mp-ink);
+	outline: none;
+}
+/* a swipe down from the sheet's top closes it; the rows below still scroll */
+.vsheet > .mp-grabber,
+.vsheet > .vm-h {
+	touch-action: none;
+}
+.vsheet .vm-i {
+	min-height: 52px;
+}
+
+/* a menu scales in from its pill, a sheet rises (the shared menu and sheet roles); under Reduce Motion each appears in
+   place */
+@media (prefers-reduced-motion: no-preference) {
+	.vpop[data-state='open'] {
+		animation: mo-menu var(--mo-base) var(--mo-snappy) both;
+	}
+	.vsheet[data-state='open'] {
+		animation: mo-sheet var(--mo-slow) var(--mo-sheet) both;
+	}
+}
+
+/* not drawn: Increase Contrast, every hairline steps up to --mp-ink-3, as the design system's cards and chips do */
+@media (prefers-contrast: more) {
+	.vpill {
+		box-shadow: inset 0 0 0 1px var(--mp-ink-3);
+	}
+	.vsep {
+		background: var(--mp-ink-3);
+	}
+	.vpop {
+		box-shadow:
+			0 0 0 1px var(--mp-ink-3),
+			var(--mp-shadow);
+	}
+	.vm-f {
+		border-top-color: var(--mp-ink-3);
+	}
+}

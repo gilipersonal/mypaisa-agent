@@ -1,6 +1,7 @@
 <script lang="ts">
 	// A wealth card's parts, as board 1a draws each: meters, the stacked bar with its legend, dated rows, run-off bars
-	// on one time axis, record rows, a list that starts a conversation, a line of text and a link. Bars keep their
+	// on one time axis, record rows, a list that starts a conversation, a line of text and a link. Home's chart cards
+	// (MA-359) draw themselves: WealthCardView hands them to their own components. Bars keep their
 	// proportions in privacy mode; only the amounts are masked.
 	import { resolve } from '$app/paths';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
@@ -151,7 +152,7 @@
 			{#if part.fig}<Amount fig={part.fig} />{/if}
 			{part.after ?? ''}
 		</p>
-	{:else}
+	{:else if part.kind === 'link'}
 		<a class="mp-btn mp-btn-plain mp-btn-small lnk" href={resolve(part.href)}>
 			{part.text}<ChevronRight class="lc lc-s" aria-hidden="true" />
 		</a>

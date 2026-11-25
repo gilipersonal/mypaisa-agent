@@ -1,43 +1,43 @@
 <script lang="ts">
-	// Home (MA-208; board Web v4 · Dashboard, 1a Net worth first): the household's whole wealth, for the household or
-	// one member, in pounds or rupees, with the eye that hides every amount. It reads the overview through its query,
-	// which the stream's records.changed refetches, so a change confirmed in the chat moves every card with no reload.
-	// Nothing is created here: an empty household is shown how to begin in the chat.
+	// Home (MA-208; board Web v4 · Dashboard, 1a Net worth first, with MA-358's head, Web v4 · Header controls b 1a): the
+	// household's whole wealth, for the household or one member, in the member's currency, with every amount hidden on
+	// Hide amounts. Whose view, the currency, the appearance and Hide amounts are the head's four pills, held by the shell
+	// so they carry from page to page. It reads the overview through its query, which the stream's records.changed
+	// refetches, so a change confirmed in the chat moves every card with no reload. Nothing is created here: an empty
+	// household is shown how to begin in the chat.
 	import { createQuery, keepPreviousData } from '@tanstack/svelte-query';
-	import Eye from '@lucide/svelte/icons/eye';
-	import EyeOff from '@lucide/svelte/icons/eye-off';
 	import { overviewQuery } from '#lib/api/queries.ts';
+	import { useHeaderChoice } from '#lib/components/header/choice.svelte.ts';
+	import HeaderControls from '#lib/components/header/HeaderControls.svelte';
 	import { useShell } from '#lib/components/shell/actions.ts';
-	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
 	import { useWealth } from '#lib/components/wealth/context.ts';
 	import WealthCardView from '#lib/components/wealth/WealthCardView.svelte';
-	import type { DisplayCurrency } from '#lib/wealth/overview.ts';
-	import { readCurrency, saveCurrency } from '#lib/wealth/prefs.ts';
 	import Hero from './Hero.svelte';
 
 	const source = useWealth();
-	const privacy = usePrivacy();
 	const shell = useShell();
+	const choice = useHeaderChoice();
 
-	function storage(): Storage | undefined {
-		try {
-			return window.localStorage;
-		} catch {
-			return undefined;
-		}
-	}
-
-	let view = $state('household');
-	let currency = $state<DisplayCurrency>(readCurrency(storage()));
 	const overview = createQuery(() => ({
-		...overviewQuery(source, view, currency),
+		...overviewQuery(source, choice.view, choice.currency),
 		placeholderData: keepPreviousData
 	}));
 
-	function setCurrency(next: DisplayCurrency) {
-		currency = next;
-		saveCurrency(storage(), next);
-	}
+	// A view this household does not know (a member kept from another sign-in) is answered for the household: the pill
+	// follows what the page shows.
+	$effect(() => {
+		const read = overview.data;
+		if (read && !overview.isPlaceholderData && read.view !== choice.view) choice.setView(read.view);
+	});
+
+	// The pill names whose view it is, so the line under the title keeps only the day: "Mon 26 Oct · Illustrative
+	// figures", as the board draws it.
+	const sub = $derived.by(() => {
+		const read = overview.data;
+		if (!read) return '\u00a0'; // the line keeps its height while the figures are read
+		const who = read.views.find((v) => v.id === read.view)?.label;
+		return who && read.head.startsWith(`${who} · `) ? read.head.slice(who.length + 3) : read.head;
+	});
 
 	function start(id: string) {
 		if (id === 'statement') shell.attachFile();
@@ -49,41 +49,13 @@
 	<header class="mp-pagehead">
 		<div>
 			<h1 id="page-title" class="mp-large">Home</h1>
-			<p class="mp-foot mp-ink2">{overview.data?.head ?? 'Household'}</p>
+			<p class="mp-foot mp-ink2">{sub}</p>
 		</div>
-		<div class="flex items-center gap-2">
-			{#if overview.data}
-				<div class="mp-seg whose" role="group" aria-label="Whose view">
-					{#each overview.data.views as v (v.id)}
-						<button
-							type="button"
-							class="mp-seg-i"
-							class:on={view === v.id}
-							aria-pressed={view === v.id}
-							onclick={() => (view = v.id)}
-						>
-							{v.label}
-						</button>
-					{/each}
-				</div>
-			{/if}
-			<button
-				type="button"
-				class="iconbtn"
-				class:on={privacy.on}
-				aria-label="Privacy mode: hide amounts"
-				aria-pressed={privacy.on}
-				onclick={() => {
-					privacy.toggle();
-				}}
-			>
-				{#if privacy.on}<EyeOff class="lc" aria-hidden="true" />{:else}<Eye class="lc" aria-hidden="true" />{/if}
-			</button>
-		</div>
+		<HeaderControls views={overview.data?.views} rate={overview.data?.hero.rate} />
 	</header>
 
 	{#if overview.data}
-		<Hero hero={overview.data.hero} {currency} onCurrency={setCurrency} />
+		<Hero hero={overview.data.hero} />
 		{#each overview.data.rows as row, r (r)}
 			<div class="mp-cols" class:one={row.layout === 'one'}>
 				{#each row.columns as column, c (c)}
