@@ -20,6 +20,7 @@ table, the labels and the issue templates. The skills are `/jira-flow:status`,
    a story, run `/plan-sync MA-<n>`, then `python3 scripts/plan_sync.py start
    MA-<n>`: the story must be in `docs/trace.json`, its ARCHITECTURE sections
    must exist, and a story with UI must have its boards (`.claude/rules/plan-sync.md`).
+   Plan-sync and the security scan run only on Arun's yes, asked once at the end of the work (`.claude/rules/ship-autopilot.md`, "Plan-sync and the security scan ask first"). The start's two steps are named in one question before the first edit; on a no the story may still be worked, and the report says it was not checked.
    When editing begins for a story that is `To Do`, transition it to
    `In Progress`. One story in progress per branch.
 

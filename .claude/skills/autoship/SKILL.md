@@ -1,12 +1,13 @@
 ---
 name: autoship
-description: Take an MA story in this repo from finished work to an open PR without asking, then ask once whether to merge into main, offering the independent review first; on a yes, review if asked, merge, move the issue to Done and sync main. Use when a story's work is done, when asked to "ship", "autoship", "raise the PR", or "finish MA-n" in mypaisa-agent.
+description: Take an MA story in this repo from finished work to a pushed branch without asking, then ask once whether to run plan-sync and the security scan, raise the PR and merge into main, offering QA and the independent review first; on a yes, sync, scan, raise the PR, review if asked, merge, move the issue to Done and sync main. Use when a story's work is done, when asked to "ship", "autoship", "raise the PR", or "finish MA-n" in mypaisa-agent.
 ---
 
 # Autoship an MA story
 
 The project rule `.claude/rules/ship-autopilot.md` allows everything here
-without asking except the merge. In this repo this skill replaces
+without asking except plan-sync, the security scan, the PR that waits on them,
+and the merge, which are named together in one question. In this repo this skill replaces
 `/jira-flow:ship` and `/jira-flow:pr`, and `/jira-flow:work`'s last phase
 ends here. Never push to `main` directly; the merge goes through the PR. Read `.claude/jira-flow.json` for the ids:
 `jira.cloudId`, `jira.transitions` (inReview 31, done 41), `git.baseBranch`,
@@ -29,59 +30,81 @@ Uncommitted files that belong to another story are left alone and named.
 
 ## 2. To the door, without asking
 
-1. **Gates.** Run each gate in `gates` whose `paths` the branch touches. A
-   red gate stops here: report it, raise nothing (offer a draft at most).
-   No gates configured: say "no gates configured". The `plan-sync` gate
-   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`;
-   locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time) always applies;
-   its `check` keeps the trace, the docs, the recorded Confluence pages and
-   the code in step, and checks that every board a story cites is on disk;
-   Jira is compared by `/plan-sync`; `pr-files` checks that every product
-   file the branch changes is claimed by its story. No gate measures the
-   boards themselves (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently
-   run on docs/design. Lets stop that."): plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Every time, run
-   `/plan-sync --confluence`, so every page the change re-rendered is
-   published; and if the story changed a board, a phase or a story, run
-   `/plan-sync MA-<n>` too, so the trace, Confluence and
-   Jira agree before the PR.
+Plan-sync and the security scan run only on Arun's yes, asked once at the end of the work (`.claude/rules/ship-autopilot.md`, "Plan-sync and the security scan ask first").
+
+1. **Gates.** Run each gate in `gates` whose `paths` the branch touches,
+   except `plan-sync` and `security`, which wait for the yes (section 3). A
+   red gate stops here: report it, raise nothing. No gates configured: say
+   "no gates configured". The records' generators still run here, since they
+   write files and check nothing: `python3 scripts/roadmap.py write`,
+   `python3 scripts/plan_sync.py render`, `python3 scripts/confluence_docs.py write`.
 2. **No review yet.** The independent review from `~/.claude/CLAUDE.md` is
-   opt-in in this repo and offered at the merge question (step 3,
+   opt-in in this repo and offered in the one question (section 3,
    `ship-autopilot.md`); go straight on unless Arun asked for a reviewer.
 3. **Commit** this story's files, subject `MA-<n>: <what>`, no attribution.
 4. **Push**: `git push -u origin <branch>`.
-5. **Raise the PR** (skip if one is open): title `[MA-<n>] <summary>`, body
+
+## 3. The one question
+
+Ask once, in words, naming everything still waiting on Arun: plan-sync (with
+the Confluence pages `python3 scripts/confluence_docs.py pending` lists, and
+`/plan-sync MA-<n>` too when the story changed a board, a phase or a story),
+the security scan, the PR, a QA pass by `crew:qa` when the story changed
+something a member sees or runs, the review, and the merge:
+
+> MA-<n> is ready on `<branch>` at `<sha>`, gates green (<names>). Run
+> plan-sync (publish <n> pages) and the security scan, raise the PR and wait
+> for its checks, then review it first (lanes: <the lanes the branch
+> touches>; one round, each later round asked first) and merge, or merge it
+> into main straight after the checks? (MA-<n> goes to Done after the merge.)
+
+A bare "yes" means sync, scan, PR, review first; "merge it" or "merge now"
+means sync, scan, PR and merge with no review (`ship-autopilot.md`). A yes
+covers only what the question names.
+
+Use the turn's next-step question (or `AskUserQuestion` when there is none)
+with "Review, then merge" and "Merge now" (and "Not now" where the question
+allows a third answer). Do not sync, scan, raise the PR or merge on anything
+but a yes given in the turn that is running. On a no: the branch stays
+pushed with no PR, the issue stays In Progress, and the report says what was
+not synced or scanned.
+
+## 3a. On the yes: sync, scan, PR, checks
+
+1. **Plan-sync:** `/plan-sync --confluence` publishes every page the change
+   re-rendered (and `/plan-sync MA-<n>` when the question named it), then the
+   `plan-sync` gate
+   (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`;
+   locally the selftest is reused while plan-sync's code and fixtures are
+   unchanged; CI runs it every time). Its `check` keeps the trace, the docs,
+   the recorded Confluence pages and the code in step, and checks that every
+   board a story cites is on disk; Jira is compared by `/plan-sync`;
+   `pr-files` checks that every product file the branch changes is claimed by
+   its story. No gate measures the boards themselves (Arun, 2 Nov 2026,
+   MA-303: "All the 6 checks currently run on docs/design. Lets stop that."):
+   plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303).
+2. **The security scan:** the `security` gate (`scripts/security_scan.sh`).
+3. A red result stops here: report it, raise nothing. Commit and push what
+   the sync changed (`docs/confluence.json`, `docs/jira-sync.json`).
+4. **Raise the PR** (skip if one is open): title `[MA-<n>] <summary>`, body
    from `.github/pull_request_template.md` with the Jira link, acceptance
    criteria ticked, gates, what was verified, follow-ups. Keep `gh pr create`
    visible in the command.
-6. **Trace it**: comment "PR raised: <url> from `<branch>` at `<sha>`." on
+5. **Trace it**: comment "PR raised: <url> from `<branch>` at `<sha>`." on
    the issue, then `transitionJiraIssue` id 31 (In Review).
-7. **Checks**: `gh run list --commit <HEAD sha>` for every run on this HEAD:
+6. **Checks**: `gh run list --commit <HEAD sha>` for every run on this HEAD:
    CI, jira-key, and CodeQL (`codeql.yml`; MA-346, MA-351), then
    `gh run watch <id> --exit-status` for each. If none has started after a
    minute, look once more; give up after 30 minutes (CodeQL's Swift analysis,
    run only when `ios/` changes, takes the longest) and say so. A failed
    check stops here: report it with the failing step.
-
-## 3. The one question
-
-Ask once, in words, naming everything:
-
-> MA-<n> is ready: PR #<n> `[MA-<n>] ...`, checks green (<names>). Review it
-> first (lanes: <the lanes the PR touches>; one round, each later round asked first), then merge,
-> or merge it into main now? (MA-<n> goes to Done after the merge.)
-
-A bare "yes" means review first; "merge it" or "merge now" means merge with no
-review (`ship-autopilot.md`).
-
-Use the turn's next-step question (or `AskUserQuestion` when there is none)
-with "Review, then merge" and "Merge now" (and "Not now" where the question
-allows a third answer). Do not merge on anything but a yes given in the turn
-that is running.
+7. Then the review, if the yes asked for it (below), or straight to section 4.
 
 On "Review, then merge": run the review as `.claude/rules/ship-autopilot.md`
-says, in parallel lanes.
+says, in parallel lanes, each lane as `crew:reviewer` (`.claude/rules/crew.md`).
 
-1. **Gates first:** the configured gates, then
+1. **Gates first:** the configured gates (plan-sync and the scan on the yes
+   that named them), then
    `python3 scripts/review_regress.py MA-<n>` and
    `python3 scripts/review_regress.py --state MA-<n>` (it may run before
    round 1: no state file means no rounds yet). A FAIL is fixed before
@@ -138,7 +161,8 @@ Arun's "merge it" covers every step below, branch deletion included
 5. Clear the work state if one exists (`.git/jira-flow/MA-<n>.json`):
    `bash "$(ls -d ~/.claude/plugins/cache/jira-flow/jira-flow/*/ | sort -V | tail -1)lib/state.sh" clear MA-<n>`.
 
-After a no: leave the PR open and the issue In Review, and say so in one line.
+After a no to the merge (once a PR is open): leave the PR open and the issue
+In Review, and say so in one line.
 
 ## Report
 

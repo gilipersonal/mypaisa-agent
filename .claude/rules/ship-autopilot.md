@@ -1,4 +1,4 @@
-# Ship on autopilot: the merge is the only question
+# Ship on autopilot: one question, at the end of the work
 
 **This repo only.** It overrides the ship gate in `.claude/rules/jira-flow.md`
 and two rules in the user's global `~/.claude/CLAUDE.md`, "raise, merge and
@@ -18,11 +18,17 @@ this repo on any change just before you merge the PR. just for this Repo".
 - **Offered at every merge.** The merge question also offers the review, in
   the same one question: review it first, then merge, or merge it now. Never
   merge without having offered it.
+- **QA is offered in the same question.** Arun, 25 Nov 2026 (MA-361): any agent
+  that checks another agent's work, the QA agent included, waits for his yes
+  ("Ask me first"). When the story changed something a member sees or runs, the
+  merge question also offers a QA pass by `crew:qa` before the merge
+  (`.claude/rules/crew.md`). It never runs on its own; after it, the merge
+  question comes back with its findings.
 - **Review first** runs the global rule's review (`~/.claude/CLAUDE.md`,
   "Independent review"), in parallel lanes on the delta. Arun, 25 Oct 2026,
   after PR #32's seven one-reviewer rounds: "always use that approach for
   this repo and make it a global rule".
-  1. **Gates first:** the `plan-sync` gate,
+  1. **Gates first:** the `plan-sync` gate (on the yes that named it: Plan-sync and the security scan run only on Arun's yes, asked once at the end of the work (`.claude/rules/ship-autopilot.md`, "Plan-sync and the security scan ask first")),
      `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`
      (locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time, about 9 s), the story's
      other gates, and `python3 scripts/review_regress.py MA-<n>` once the
@@ -72,6 +78,54 @@ this repo on any change just before you merge the PR. just for this Repo".
   and comment the round's result on the issue. The lessons go into
   `.claude/rules/independent-review.md` the same day.
 
+## Plan-sync and the security scan ask first
+
+Arun, 25 Nov 2026 (MA-361): "ask me before running plan-sync and security scan
+like we do for independent review". The global rule (`~/.claude/CLAUDE.md`,
+"Plan-sync and the security scan: ask me first") holds here too, and it is
+stricter than the autopilot: this section is where the two meet.
+
+- **What waits for the yes:** the `/plan-sync` skill in any form (Jira,
+  Confluence, the boards, a publish); `scripts/plan_sync.py` `check`,
+  `selftest`, `pr-files`, `start` and `jira-sync` when run as a step of the
+  work; the `plan-sync` and `security` gates in `.claude/jira-flow.json`
+  (also when `/jira-flow:work` or a review would run them);
+  `scripts/security_scan.sh`, `/security-review`, the claude-security skills and
+  any other scan for vulnerabilities, secrets or dependency advisories.
+- **What does not wait:** the records' generators, which write files and
+  check nothing (`python3 scripts/roadmap.py write`,
+  `python3 scripts/plan_sync.py render`, `python3 scripts/confluence_docs.py write`);
+  the story's other gates (backend, web, ios, infra); and what runs on its own:
+  the plan-sync hook after an edit to a record, the PR hook that runs
+  `plan_sync.py check` on `gh pr create`, and CI, which runs both on every PR.
+- **The question moves before the PR.** The PR hook and CI refuse a PR while
+  plan-sync fails, and the pages a change re-renders must be published before
+  it passes; so the one question comes when the story's work is committed and
+  pushed and its other gates are green, before the PR. It names everything
+  waiting on Arun at once: plan-sync (with the pages it would publish), the
+  security scan, the PR, QA and the review where they apply, and the merge:
+
+  > MA-7 is ready on `MA-7-...` at `abc1234`, gates green (backend, web).
+  > Run plan-sync (publish 3 pages) and the security scan, raise the PR and
+  > wait for its checks, then review it first (lanes: scripts, docs; one
+  > round, each later round asked first) and merge, or merge it into main
+  > straight after the checks? (MA-7 goes to Done after the merge.)
+
+  A yes covers what the question names, once, and nothing it does not name.
+  "Sync and merge" (or "merge it") runs plan-sync and the scan, raises the
+  PR and merges on green checks with no review; a bare "yes", or any answer
+  that asks for the review, reviews first. A later run of either needs its
+  own yes, so a review round's question names them again when the round
+  would run them.
+- **A no,** or no answer: nothing is synced or scanned and no PR is raised.
+  The branch stays pushed and the issue In Progress; the report says plainly
+  that the work is not synced, not scanned and has no PR, and lists the gates
+  that did run.
+- **Starting a story** (`/plan-sync MA-<n>` and `plan_sync.py start`) asks too.
+  The question is put once, before the first edit, naming both; on a no the
+  story may still be worked, and the report says it was not checked against
+  Jira and Confluence before it started.
+
 ## What changes
 
 | Act | Here |
@@ -79,7 +133,8 @@ this repo on any change just before you merge the PR. just for this Repo".
 | Create, edit, comment on a Jira issue | do it, no asking |
 | Any Jira transition (To Do, In Progress, In Review, Done, back again) | do it, no asking (Done only after the merge, see below) |
 | Branch, commit, push an `MA-<n>-<slug>` branch | do it, no asking |
-| Raise the pull request (`gh pr create`) | **do it, no asking**, as soon as the story's work is committed and its gates are green |
+| Run plan-sync or the security scan (see "Plan-sync and the security scan ask first") | **ask once**, at the end of the work, in the one question |
+| Raise the pull request (`gh pr create`) | on the yes to the one question, once plan-sync and the scan it named have passed; no further asking |
 | Wait for the PR's checks (every one, CodeQL's `Analyze (<language>)` included, MA-346) | do it, no asking |
 | Merge the PR into `main` (`gh pr merge`, `git merge`, the merge API) | **ask once**, in words, and wait for a yes in the turn that is running |
 | Move the issue to Done | **do it, no asking**, straight after the merge lands (the order is the rule, not a question) |
@@ -108,7 +163,8 @@ repo their asking is replaced:
   `work.checkpoint` is `phase`, which only drops Checkpoint 3; this rule
   drops 1 and 5. It still stops on a red gate or a failed check, and on
   `python3 scripts/plan_sync.py start MA-<n>` refusing the story (a UI story
-  with no board, `.claude/rules/plan-sync.md`). Its Phase 6 goes through `/autoship`, not
+  with no board, `.claude/rules/plan-sync.md`). Its gate runs leave out the
+  `plan-sync` and `security` gates until the yes names them. Its Phase 6 goes through `/autoship`, not
   `/jira-flow:ship`.
 - `/jira-flow:ship` and `/jira-flow:pr` are not used for ending a story here;
   use `/autoship`. Their "only when the reader asked for a PR" does not apply
@@ -120,17 +176,18 @@ repo their asking is replaced:
 ## How a story ends here
 
 Use `/autoship` (`.claude/skills/autoship/SKILL.md`). When a story's work is
-done, take it to the merge question without stopping: commit, push, raise the
-PR, move the issue to In Review, wait for the checks. Then ask exactly once,
-naming the PR and its checks:
+done, take it to the one question without stopping: run the story's other
+gates, commit, push. Then ask exactly once, naming plan-sync, the security
+scan, the PR, any QA and the review, and the merge (the example is under
+"Plan-sync and the security scan ask first"). On a yes: run plan-sync and the
+scan, raise the PR, move the issue to In Review, wait for the checks, then
+review if asked and merge.
 
-> MA-7 is ready: PR #21 `[MA-7] ...`, checks green (CI, jira-key). Review it
-> first (lanes: scripts, trace, docs, rules; one round, each later round asked first), then merge,
-> or merge it into main now? (MA-7 goes to Done after the merge.)
+Plan-sync and the security scan run only on Arun's yes, asked once at the end of the work (`.claude/rules/ship-autopilot.md`, "Plan-sync and the security scan ask first").
 
 Either yes merges (after a clean review, for the first), closes the issue and
-syncs `main`. A no, or no answer, leaves
-the PR open and the issue In Review; say so in one line.
+syncs `main`. A no, or no answer, leaves the branch pushed with no PR and the
+issue In Progress; say so in one line, naming what was not synced or scanned.
 
 ### "Merge it" is the whole yes
 

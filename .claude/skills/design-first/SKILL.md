@@ -32,7 +32,7 @@ with one obvious fix. When unsure whether something is a design change, treat it
   issues need no asking (`.claude/rules/jira-flow.md`, `.claude/rules/ship-autopilot.md`).
 - Create the branch `MA-<n>-<slug>` from `main` now, so the designs can be committed. The build continues on the same
   branch after the pick.
-- Run `python3 scripts/plan_sync.py start MA-<n>`: it names the story's ARCHITECTURE sections and its boards. It refuses a story with no board (`todo`) or with screens still `undrawn`; inside design-first that refusal is expected, because drawing them is this round's work. Its other refusals (a missing section, a board file, an open question) are not, and stop the round. Boards
+- Plan-sync and the security scan run only on Arun's yes, asked once at the end of the work (`.claude/rules/ship-autopilot.md`, "Plan-sync and the security scan ask first"). On that yes, run `python3 scripts/plan_sync.py start MA-<n>`: it names the story's ARCHITECTURE sections and its boards. It refuses a story with no board (`todo`) or with screens still `undrawn`; inside design-first that refusal is expected, because drawing them is this round's work. Its other refusals (a missing section, a board file, an open question) are not, and stop the round. Boards
   drawn ahead of the story (`design: "planned"`) are the starting point for the options, not a pick
   (`.claude/rules/plan-sync.md`).
 - Read the context:
@@ -250,7 +250,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
 ## 3. Publish the round, then get the pick
 
 - **No gates on the boards** (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design. Lets stop
-  that."). Before publishing, run `python3 scripts/plan_sync.py check`, which keeps the trace, the docs, the recorded
+  that."). Before publishing, on Arun's yes, run `python3 scripts/plan_sync.py check`, which keeps the trace, the docs, the recorded
   Confluence pages and the code in step, and finds every board a story cites on disk; Jira is compared by
   `/plan-sync`. plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). Open each board
   once to see that it loads, in light and dark. Arun judges the round by eye, and no reviewer lane looks at boards
@@ -302,7 +302,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
      JSON model), `web/` for the web app (SvelteKit 3, Tailwind CSS 4, shadcn-svelte, TanStack, LayerChart; MA-229), `cards/` and the card pieces at both doors
      (SwiftUI in `ios/`, Svelte components in `web/`, the card types in `web/src/lib/`) for the chat's cards, the house
      chart style for charts, and the shared motion at both doors.
-  3. Run the gates in `.claude/jira-flow.json` (the plan-sync gate now;
+  3. Run the gates in `.claude/jira-flow.json`, the plan-sync and security gates on Arun's yes (the plan-sync gate now;
      once `pyproject.toml` lands, `uv run ruff check . && uv run pyright && uv run pytest`; once `ios/` exists, the
      iOS gates of MA-166: eslint and Jest for the shell, swift-format lint, `xcodebuild test` on the iPhone and iPad
      simulators with XCUITest, the snapshot tests and `performAccessibilityAudit()`, and the `PERFORMANCE.md` benches

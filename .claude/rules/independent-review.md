@@ -20,7 +20,7 @@ after fixing a round, report it and ask before the next.
 
 As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
 
-- **Gates:** the `plan-sync` gate,
+- **Gates:** the `plan-sync` gate (on the yes that named it: Plan-sync and the security scan run only on Arun's yes, asked once at the end of the work (`.claude/rules/ship-autopilot.md`, "Plan-sync and the security scan ask first").),
   `python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`
   (locally the selftest is reused while plan-sync's code and fixtures are unchanged; CI runs it every time, about 9 s), the story's
   other gates in `.claude/jira-flow.json`, and

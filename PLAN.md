@@ -857,6 +857,19 @@ Claude's:
   me and the Monday digest added, in eight chapters, and is published at
   [MyPaisa Architecture v4](https://claude.ai/artifact/Ns3DLFTCvnLcBxJvRvygBo);
   every link, record page and picture drawn from it moved with it.
+- **The crew knows this repo (MA-361):** you asked, 25 Nov 2026, for a team
+  of subagents that does the dev work in lanes, 10 at most, picked by
+  judgement from a plain prompt. The team is the `crew` plugin
+  (`~/projects/crew-plugin`, 18 agents on Fable, Opus, Sonnet and Haiku,
+  quality first), enabled here. `.claude/crew.json` tells it this repo's
+  areas, rules files, gates, flows, shared files and limits, and copies none
+  of them; `.claude/rules/crew.md` records your decisions. A QA pass by
+  `crew:qa` is offered beside the review in the merge question and never
+  runs on its own ("Ask me first"). The same day you asked that plan-sync and
+  the security scan ask first too, like the review: they run only on your
+  yes, and the one question at the end of a story now comes before the PR,
+  naming plan-sync, the scan, the PR, QA, the review and the merge
+  (`.claude/rules/ship-autopilot.md`).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
