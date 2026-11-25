@@ -45,10 +45,12 @@ describe('the Overview before the first record', () => {
 		expect(o.hero.rate).toBe('£1 = ₹112.50 · ECB reference rate, Fri 23 Oct · prices at the Fri 23 Oct close');
 	});
 
-	it('lays the cards out as board 1a does', () => {
+	it('lays the cards out as board 1a does, the two chart cards first in place of the meters (MA-359)', () => {
 		expect(o.rows.map((r) => r.columns.map((col) => col.map((c) => c.id)))).toEqual([
+			[['own-owe']],
+			[['invested-owed']],
 			[
-				['own-owe', 'by-country', 'by-member'],
+				['by-country', 'by-member'],
 				['liquidity', 'due']
 			],
 			[['runoff'], ['maturing']],
@@ -69,13 +71,23 @@ describe('the Overview after the Monzo savings', () => {
 		expect(o.hero.line).toBe(`at ${timeOf(AT)} · Instant access savings · Monzo, added in the chat`);
 	});
 
-	it('own and owe: £691,694 against £246,743, 36% owed, 3 loans and a card', () => {
-		const c = card(h, 'own-owe');
-		expect(c.aside).toBe('36% of what we own is owed');
-		const [own, owe] = part(c, 'meters').items;
-		expect(own).toMatchObject({ fig: { amount: '691694' }, share: 1, note: '17 assets in the UK and India' });
-		expect(owe).toMatchObject({ fig: { amount: '246743' }, tone: 'owed', note: '3 loans and a card' });
-		expect(owe?.aria).toBe('We owe £246743, 36% of what we own');
+	it('hands own and owe and invested against owed to their own cards, for the view and currency', () => {
+		expect(card(h, 'own-owe')).toMatchObject({
+			title: 'What we own and owe',
+			parts: [{ kind: 'ownowe', view: HOUSEHOLD, currency: 'GBP' }]
+		});
+		expect(card(h, 'invested-owed', 'asha', 'INR')).toMatchObject({
+			title: 'Invested against owed',
+			parts: [{ kind: 'investedowed', view: 'asha', currency: 'INR' }]
+		});
+		expect(buildOverview(h, 'nobody', 'GBP').rows[0]?.columns[0]?.[0]?.parts[0]).toMatchObject({ view: HOUSEHOLD });
+		// The meters card it supersedes is gone: no meter says what we own or owe.
+		const meters = o.rows
+			.flatMap((r) => r.columns.flat())
+			.flatMap((c) => c.parts)
+			.flatMap((p) => (p.kind === 'meters' ? p.items.map((m) => m.label) : []));
+		expect(meters).not.toContain('We own');
+		expect(meters).not.toContain('We owe');
 	});
 
 	it('by country: the UK in pounds, India with its rupees beside it', () => {
@@ -186,8 +198,6 @@ describe('the Overview in rupees', () => {
 		expect(o.hero.net).toEqual({ amount: '50056988', currency: 'INR' });
 		expect(o.hero.delta).toEqual({ amount: '562500', currency: 'INR', pre: '▲ ' });
 		expect(o.hero.line).toContain('about ₹5.01 crore in all');
-		const [own, owe] = part(card(h, 'own-owe', HOUSEHOLD, 'INR'), 'meters').items;
-		expect([own?.fig.amount, owe?.fig.amount]).toEqual(['77815575', '27758587']);
 		const country = card(h, 'by-country', HOUSEHOLD, 'INR');
 		expect(country.aside).toBe('in rupees');
 		const [uk, india] = part(country, 'meters').items;
@@ -221,7 +231,7 @@ describe('a member’s own view', () => {
 		expect(o.hero.net?.amount).toBe('194083');
 		expect(o.hero.delta).toBeUndefined();
 		expect(o.hero.line).toBe('Across 9 records in the UK and India');
-		expect(o.rows[0]?.columns[0]?.map((c) => c.id)).toEqual(['own-owe', 'by-country']);
+		expect(o.rows[2]?.columns[0]?.map((c) => c.id)).toEqual(['by-country']);
 		expect(part(card(h, 'due', 'asha'), 'due').items.map((d) => d.title)).toEqual([
 			'Valuation due: Home, Reading',
 			'Valuation overdue: Flat, Pune',
@@ -229,8 +239,6 @@ describe('a member’s own view', () => {
 			"Close October's budget",
 			'SIP · Parag Parikh'
 		]);
-		const [, owe] = part(card(h, 'own-owe', 'asha'), 'meters').items;
-		expect(owe?.note).toBe('1 loan');
 		const r = part(card(h, 'runoff', 'asha'), 'runoff');
 		expect(r.items.map((i) => i.fig.amount)).toEqual(['112177']);
 		expect(card(h, 'runoff', 'asha').asideFig?.amount).toBe('112176');
@@ -252,9 +260,13 @@ describe('an empty household', () => {
 		expect(o.empty).toBe(true);
 		expect(o.hero.net).toBeUndefined();
 		expect(o.hero.line).toContain('in your own words');
-		expect(o.rows).toHaveLength(1);
-		expect(o.rows[0]?.layout).toBe('one');
-		const [say, start] = o.rows[0]?.columns[0] ?? [];
+		expect(o.rows.map((r) => r.columns.flat().map((c) => c.id))).toEqual([
+			['own-owe'],
+			['invested-owed'],
+			['say-it', 'start']
+		]);
+		expect(o.rows.every((r) => r.layout === 'one')).toBe(true);
+		const [say, start] = o.rows[2]?.columns[0] ?? [];
 		expect(say?.title).toBe('Say it the way you would to a friend');
 		expect(start && part(start, 'list').items.map((i) => i.title)).toEqual([
 			'A savings account or cash',
@@ -297,7 +309,6 @@ describe('records the figure set does not have', () => {
 		const stack = part(card(h, 'liquidity'), 'stack');
 		expect(stack.items[1]?.note).toBe('1 pay out at maturity');
 		expect(stack.items[2]?.note).toBe('nothing locked');
-		expect(part(card(h, 'own-owe'), 'meters').items[1]).toMatchObject({ note: 'nothing owed', share: 0 });
 		expect(part(card(h, 'maturing'), 'due').items[0]?.chip.text).toBe('GOLD');
 		expect(part(card(h, 'runoff'), 'runoff')).toMatchObject({ items: [], axis: [] });
 		expect(card(h, 'largest').parts.map((p) => p.kind)).toEqual(['rows', 'link']);
