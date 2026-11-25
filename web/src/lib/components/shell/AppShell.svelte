@@ -1,7 +1,9 @@
 <script lang="ts">
 	// The web app's shell, 1a Chat beside (MA-199, picked on MA-193): the sidebar from 1024 px, the page, and the chat.
 	// From about 1393 px the chat sits beside every page and may be hidden for a wider page; from 1024 to 1392 px it is
-	// a drawer over the page, from the sidebar's Chat; under 1024 px the tab bar holds Chat, Home, Activity and You.
+	// a drawer over the page, from the sidebar's Chat; under 1024 px the tab bar holds Chat, Home, Assets, Projection
+	// and More (Arun, 5 Nov 2026, MA-334). The wealth pages read a stub of the design figure set (MA-208), which the
+	// scripted chat's Confirm writes to, and privacy mode is one switch for every page and the chat.
 	// ⌘K, or Search at the top of the sidebar, opens the palette over any page (MA-353).
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -13,11 +15,16 @@
 	import { ChatSession, provideChat } from '#lib/chat/session.svelte.ts';
 	import Mark from '#lib/components/brand/Mark.svelte';
 	import ChatPanel from '#lib/components/chat/ChatPanel.svelte';
+	import { provideWealth } from '#lib/components/wealth/context.ts';
+	import { StubHousehold } from '#lib/stub/household.ts';
+	import { StubWealthSource, startsEmpty } from '#lib/stub/source.ts';
+	import { provideShell } from './actions.ts';
 	import { applyAppearance, readAppearance, saveAppearance } from './appearance.ts';
 	import NavIcon from './NavIcon.svelte';
 	import { ADMIN, PAGES, TABS, isCurrent, placeOf } from './nav.ts';
 	import Palette from './Palette.svelte';
 	import { commandKeyLabel, nextAppearance, type PaletteAction } from './palette.ts';
+	import { PrivacyMode, providePrivacy } from './privacy.svelte.ts';
 
 	let { children }: { children: Snippet } = $props();
 
@@ -29,8 +36,15 @@
 		}
 	}
 
+	// The stubbed household: the design figure set, or nothing with ?stub=empty. Each phase's backend story puts the
+	// api behind provideWealth, and the pages do not change.
+	const household = new StubHousehold({ empty: startsEmpty(window.location.search) });
+	provideWealth(new StubWealthSource(household));
+	providePrivacy(new PrivacyMode(storage()));
+
 	// MA-352 swaps the fake for the transport over the chat api and the stream; nothing else here changes.
-	const chat = new ChatSession(useQueryClient(), new FakeTransport(), new Outbox(storage()), {
+	const fake = new FakeTransport(undefined, undefined, undefined, household);
+	const chat = new ChatSession(useQueryClient(), fake, new Outbox(storage()), {
 		online: () => navigator.onLine,
 		addEventListener: (type, fn) => {
 			window.addEventListener(type, fn);
@@ -105,6 +119,13 @@
 		else if (!onChat) await goto(resolve('/chat'));
 		queueMicrotask(() => field?.focus());
 	}
+
+	provideShell({
+		openChat: () => void showChat(),
+		attachFile: () => {
+			void showChat().then(() => picker?.click());
+		}
+	});
 
 	async function onPalette(action: PaletteAction) {
 		if (action.kind === 'go') {

@@ -1,4 +1,5 @@
-/** The shell's places (Shell 1a): the sidebar's pages from 1024 px, and the four tabs under it. A page not built yet
+/** The shell's places (Shell 1a): the sidebar's pages from 1024 px, and the five tabs under it: Chat, Home, Assets,
+ * Projection and More, with the other pages a tap away under More (Arun, 5 Nov 2026, MA-334). A page not built yet
  * opens the shell's "not here yet" page, so the shell is drawn whole from its first story (MA-199). */
 import type { PathnameWithSearchOrHash as Pathname } from '$app/types';
 import { TestIDs, type TestID } from '#lib/test-ids.ts';
@@ -23,21 +24,29 @@ export const PAGES: readonly Place[] = [
 
 export const ADMIN: Place = { href: '/admin', label: 'Admin center', icon: 'shield' };
 
+export const MORE: Place = { href: '/more', label: 'More', icon: 'menu', testId: TestIDs.tabMore };
+
 export const TABS: readonly Place[] = [
 	{ href: '/chat', label: 'Chat', icon: 'message-circle', testId: TestIDs.tabChat },
 	{ href: '/', label: 'Home', icon: 'house', testId: TestIDs.tabHome },
-	{ href: '/activity', label: 'Activity', icon: 'activity', testId: TestIDs.tabActivity },
-	{ href: '/you', label: 'You', icon: 'circle-user', testId: TestIDs.tabYou }
+	{ href: '/assets', label: 'Assets', icon: 'wallet', testId: TestIDs.tabAssets },
+	{ href: '/projection', label: 'Projection', icon: 'trending-up', testId: TestIDs.tabProjection },
+	MORE
 ];
+
+/** What More lists: every page that has no tab of its own, the Admin center last. */
+export const MORE_PAGES: readonly Place[] = [...PAGES.filter((p) => !TABS.some((t) => t.href === p.href)), ADMIN];
 
 /** The page a path belongs to; `/chat` stands for Home's page, with the chat as the tab. */
 export function placeOf(path: string): Place | undefined {
 	const p = path === '/chat' ? '/' : path.replace(/\/+$/, '') || '/';
-	return [...PAGES, ADMIN].find((place) => place.href === p);
+	return [...PAGES, ADMIN, MORE].find((place) => place.href === p);
 }
 
 export function isCurrent(place: Place, path: string): boolean {
 	if (place.href === '/chat') return path === '/chat';
 	if (place.href === '/') return path === '/';
+	// More is current on its own page and on every page it lists.
+	if (place === MORE) return path === MORE.href || MORE_PAGES.some((p) => isCurrent(p, path));
 	return path === place.href || path.startsWith(`${String(place.href)}/`);
 }

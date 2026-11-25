@@ -7,6 +7,8 @@ import type { StreamFrame } from '#lib/api/stream.ts';
 import type { ConfirmCard, FigureCard } from '#lib/cards/kinds.ts';
 import { CARD_SCHEMA_VERSION } from '#lib/cards/types.ts';
 import { formatMoney } from '#lib/formatting/money.ts';
+import type { StubHousehold } from '#lib/stub/household.ts';
+import { monzoSavings } from '#lib/stub/records.ts';
 import type { CardAction, ChatTransport, Outgoing } from './transport.ts';
 
 export interface Clock {
@@ -66,7 +68,9 @@ export class FakeTransport implements ChatTransport {
 		/** How long between two words while a reply streams. */
 		private readonly wordMs = 45,
 		/** How long the agent takes before it answers. */
-		private readonly thinkMs = 500
+		private readonly thinkMs = 500,
+		/** The stub household Confirm writes to (MA-208), so the pages beside the chat move when a record is saved. */
+		private readonly household?: StubHousehold
 	) {}
 
 	connect(onFrame: (frame: StreamFrame) => void): () => void {
@@ -112,6 +116,12 @@ export class FakeTransport implements ChatTransport {
 		if (!draft) return Promise.resolve();
 		if (action === 'confirm') {
 			this.#emit('card', { card: this.#confirm(draft, 'saved') });
+			// As the api does after a write (ARCHITECTURE §19.5): the record is kept, then every open door is told.
+			if (this.household) {
+				const record = monzoSavings(draft.amount, draft.owner ?? 'arun');
+				this.household.add(record, this.clock.now(), 'added in the chat');
+				this.#emit('records.changed', { record_id: record.id, reason: 'added' });
+			}
 			this.#after(`${cardId}.done`, () => {
 				this.#emit('message', { id: `${cardId}.done`, role: 'agent', text: DONE_REPLY });
 			});

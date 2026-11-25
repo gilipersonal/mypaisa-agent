@@ -5,5 +5,8 @@ public enum TestIDs {
   public static let tabHome = "mp.tab.home"
   public static let tabActivity = "mp.tab.activity"
   public static let tabYou = "mp.tab.you"
+  public static let tabAssets = "mp.tab.assets"
+  public static let tabProjection = "mp.tab.projection"
+  public static let tabMore = "mp.tab.more"
   public static let homeHero = "mp.home.hero"
 }

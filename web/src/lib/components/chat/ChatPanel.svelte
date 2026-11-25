@@ -17,6 +17,8 @@
 	import type { CardAction } from '#lib/chat/transport.ts';
 	import Composer from './Composer.svelte';
 	import Timeline from './Timeline.svelte';
+	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
+	import { hideAmounts } from '#lib/privacy/mask.ts';
 
 	let {
 		mode,
@@ -53,11 +55,14 @@
 	);
 	const suggest = $derived(chat.online && !busy && !chat.attachment && !chat.back && text.trim() === '');
 
+	const privacy = usePrivacy();
+
 	// The newest finished reply, for screen readers: the streaming words are not read one by one.
 	const said = $derived.by(() => {
 		const last = messages.findLast((m) => m.role === 'agent' && m.phase === 'done');
 		if (!last) return '';
-		return [last.text, ...(last.cards ?? []).map((c) => c.fallback)].filter(Boolean).join(' ');
+		const words = [last.text, ...(last.cards ?? []).map((c) => c.fallback)].filter(Boolean).join(' ');
+		return hideAmounts(words, privacy.on);
 	});
 </script>
 

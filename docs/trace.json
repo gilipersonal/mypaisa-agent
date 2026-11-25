@@ -3825,7 +3825,7 @@
       "epic": "MA-10",
       "phase": 1,
       "summary": "The web app's chat shows the conversation, renders every card, streams replies and sends text and files, at desktop and phone width",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "design"
       ],
@@ -3936,7 +3936,7 @@
       "epic": "MA-10",
       "phase": 1,
       "summary": "Command-K, or Search in the sidebar, opens one palette over any page to go to a page, find a record, or ask the chat",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "design"
       ],
@@ -3970,7 +3970,7 @@
       "epic": "MA-10",
       "phase": 1,
       "summary": "The web app's page content fills the page column, and the chat column is the width Shell 1a draws",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [
         "bug",
         "design"
@@ -3992,9 +3992,9 @@
           "board": "Browser \u00b7 Shell 1a, Chat beside, phone"
         }
       ],
-      "notes": "Found after MA-199 (24 Nov 2026), from Arun's screenshot: \"The center elements are not fitting to width in the implementation, I need the designs to be matches byte identical\". Measured box by box against Shell 1a at 1440, 1280 (the page alone and the chat as a drawer) and 390: Home's holding cards stopped at 576 px (max-w-xl) where the board's content fills the page column (724 at 1440, 968 at 1280), and the chat column was 1 px narrow with everything in it, because the board's CSS is content-box and Tailwind's reset made .chatcol border-box. Fixed to the board's numbers at every width measured. Home's own content (the hero, the splits, what's due) stays MA-208's. Estimate 0.25.",
+      "notes": "Found after MA-199 (24 Nov 2026), from Arun's screenshot: \"The center elements are not fitting to width in the implementation, I need the designs to be matches byte identical\". Measured box by box against Shell 1a at 1440, 1280 (the page alone and the chat as a drawer) and 390: Home's holding cards stopped at 576 px (max-w-xl) where the board's content fills the page column (724 at 1440, 968 at 1280), and the chat column was 1 px narrow with everything in it, because the board's CSS is content-box and Tailwind's reset made .chatcol border-box. Fixed to the board's numbers at every width measured. Home's own content (the hero, the splits, what's due) stays MA-208's. Estimate 0.25. MA-208 (25 Nov 2026) replaced the holding page this fix was made in with Home itself (web/src/lib/components/home/HomePage.svelte), so the row names that file now. Measured again on the new Home: the hero, each row of cards and each card are the page column's own inner width at 1440 and at 1280, and the chat column is 404.2 px, content-box. The page column is 788 px with 32 px of padding a side at 1440, the board's 724; Home now scrolls, so a browser that draws a classic scrollbar takes 15 px of that (708.8 measured), and one whose scrollbars overlay the page gives the 724.",
       "code": [
-        "web/src/lib/components/shell/HomeHolding.svelte",
+        "web/src/lib/components/home/HomePage.svelte",
         "web/src/lib/styles/shell.css"
       ]
     },
@@ -4247,7 +4247,7 @@
       "epic": "MA-187",
       "phase": 2,
       "summary": "The first dashboard shows net worth and every record at every door, and moves live when a change is confirmed",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "design"
       ],
@@ -4333,7 +4333,26 @@
           "board": "iPad \u00b7 Whole wealth, the chat a sheet away"
         }
       ],
-      "notes": "Starts from the Home boards drawn for MA-78 before MA-186; the wealth dashboard is drawn on MA-193. Drawn: the net worth hero across the UK and India, with the records by class and by member (MA-186) on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home (MA-193). Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. It supersedes the investment-only Home boards drawn for MA-78 before MA-186 (iPhone \u00b7 Home, household, iPhone \u00b7 Home, me, iPad \u00b7 Home with the chat beside it); the iPad and foldable layouts stay on MA-70. MA-301 (23 Nov 2026): its iPad board, renamed from \"iPad \u00b7 Whole wealth with the chat beside it\" to \"iPad \u00b7 Whole wealth, the chat a sheet away\", draws the chat as a sheet (the chat sits beside only from about 1393 pt, Arun, 2 Nov 2026, c 1c)."
+      "notes": "Starts from the Home boards drawn for MA-78 before MA-186; the wealth dashboard is drawn on MA-193. Drawn: the net worth hero across the UK and India, with the records by class and by member (MA-186) on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home (MA-193). Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. It supersedes the investment-only Home boards drawn for MA-78 before MA-186 (iPhone \u00b7 Home, household, iPhone \u00b7 Home, me, iPad \u00b7 Home with the chat beside it); the iPad and foldable layouts stay on MA-70. MA-301 (23 Nov 2026): its iPad board, renamed from \"iPad \u00b7 Whole wealth with the chat beside it\" to \"iPad \u00b7 Whole wealth, the chat a sheet away\", draws the chat as a sheet (the chat sits beside only from about 1393 pt, Arun, 2 Nov 2026, c 1c). Built on stubbed figures first (Arun, 25 Nov 2026: \"Complete all the UX implementation work that we designed using stubbed data for MA end to end\", the web app first, inside the existing phase stories): the web Home as board 1a draws it, read through a wealth source whose stub is the design figure set (docs/design/figures/household-v4.json, copied to web/src/lib/stub/ and held equal by a test); the scripted chat's Confirm adds the record and records.changed moves every card. The story stays In Progress until the api and the stream (MA-30, MA-203) stand behind the same seam and its iOS screens are built. The page's title is Home, not Overview, and the tabs under 1024 px are Chat, Home, Assets, Projection, More, as Arun settled for MA-334 (5 Nov 2026). A masked amount is drawn as its currency and four dots, as ARCHITECTURE and web/CLAUDE.md say, where the board draws a block as wide as the figure. Correcting a figure in place stays MA-201's.",
+      "code": [
+        "web/.prettierignore",
+        "web/src/app.css",
+        "web/src/lib/api/queries.ts",
+        "web/src/lib/api/wealth.ts",
+        "web/src/lib/chat/fake*.ts",
+        "web/src/lib/chat/session.svelte*.ts",
+        "web/src/lib/components/chat/**",
+        "web/src/lib/components/home/**",
+        "web/src/lib/components/shell/**",
+        "web/src/lib/components/wealth/**",
+        "web/src/lib/privacy/**",
+        "web/src/lib/stub/**",
+        "web/src/lib/styles/dashboard.css",
+        "web/src/lib/test-ids.ts",
+        "web/src/lib/wealth/**",
+        "web/src/routes/**",
+        "ios/MyPaisaCore/Testing/TestIDs.swift"
+      ]
     },
     {
       "key": "MA-213",
@@ -8474,7 +8493,7 @@
       "ui": true,
       "design": "todo",
       "boards": [],
-      "notes": "Finding F05 of MA-328 (docs/design/reviews/MA-328/handoff.md). No board is picked until Arun picks: this goes through /design-first. Estimate 0, as other board work here, since an estimate counts build days. It reopens neither MA-193's nor MA-279's pick. Settled: Which compact web navigation is current: Chat, Home, Assets, Projection, More. Assets covers everything owned, Holdings means investments only, Overview and Register stop being navigation labels, and Budget sits under More. Arun, 5 Nov 2026: \"Yes, use all three\"."
+      "notes": "Finding F05 of MA-328 (docs/design/reviews/MA-328/handoff.md). No board is picked until Arun picks: this goes through /design-first. Estimate 0, as other board work here, since an estimate counts build days. It reopens neither MA-193's nor MA-279's pick. Settled: Which compact web navigation is current: Chat, Home, Assets, Projection, More. Assets covers everything owned, Holdings means investments only, Overview and Register stop being navigation labels, and Budget sits under More. Arun, 5 Nov 2026: \"Yes, use all three\". Built ahead of its board on MA-208 (25 Nov 2026), from the settled answer: the web tab bar holds Chat, Home, Assets, Projection and More, and More lists Debts, Budget, Activity, Audit, You and the Admin center."
     },
     {
       "key": "MA-335",
@@ -8602,7 +8621,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "CodeQL scans Swift only when a pull request changes ios/, from a cached build, so other pull requests no longer wait about 28 minutes",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "17.4"

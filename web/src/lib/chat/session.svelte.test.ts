@@ -1,6 +1,6 @@
-import { QueryClient } from '@tanstack/query-core';
-import { describe, expect, it } from 'vitest';
-import { chatKeys, chatTimelineQuery } from '#lib/api/queries.ts';
+import { QueryClient, QueryObserver } from '@tanstack/query-core';
+import { describe, expect, it, vi } from 'vitest';
+import { chatKeys, chatTimelineQuery, wealthKeys } from '#lib/api/queries.ts';
 import type { StreamFrame } from '#lib/api/stream.ts';
 import { Outbox, type KeyValue } from './outbox.ts';
 import { ChatSession, provideChat, useChat, type Connectivity } from './session.svelte.ts';
@@ -169,6 +169,35 @@ describe('the chat session', () => {
 		const r = rig();
 		expect(r.session.timeline).toEqual({ messages: [], lastEventId: 0 });
 		expect(await chatTimelineQuery().queryFn()).toEqual({ messages: [], lastEventId: 0 });
+	});
+
+	it('reads the wealth pages again when the stream says a record changed, and only then', async () => {
+		const r = rig();
+		let reads = 0;
+		const read = () => {
+			reads += 1;
+			return Promise.resolve(reads);
+		};
+		const observer = new QueryObserver(r.queries, {
+			queryKey: [...wealthKeys.overview('household', 'GBP')],
+			queryFn: read,
+			staleTime: Number.POSITIVE_INFINITY
+		});
+		const unsubscribe = observer.subscribe(() => undefined);
+		await vi.waitFor(() => {
+			expect(reads).toBe(1);
+		});
+		const stop = r.session.start();
+		r.transport.emit({ id: 1, event: 'message', data: { id: 'a', role: 'agent', text: 'Hello' } });
+		await Promise.resolve();
+		expect(reads).toBe(1);
+		r.transport.emit({ id: 2, event: 'records.changed', data: { record_id: 'monzo_savings', reason: 'added' } });
+		await vi.waitFor(() => {
+			expect(reads).toBe(2);
+		});
+		expect(r.timeline()?.lastEventId).toBe(2);
+		unsubscribe();
+		stop();
 	});
 
 	it('is provided only inside the shell', () => {

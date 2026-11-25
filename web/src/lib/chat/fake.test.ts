@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { StreamFrame } from '#lib/api/stream.ts';
 import { DONE_REPLY, FakeTransport, LIQUID_REPLY, PREVIEW_REPLY, WHOSE_ASK, realClock, type Clock } from './fake.ts';
+import { StubHousehold } from '#lib/stub/household.ts';
 import { applyFrame, emptyTimeline, type Timeline } from './timeline.ts';
 
 /** A clock that runs only when told. */
@@ -68,6 +69,24 @@ describe('the fake transport', () => {
 		});
 		expect(r.timeline.messages.at(-1)?.text).toBe(DONE_REPLY);
 		expect(r.timeline.messages.find((m) => m.chips)?.chosen).toBe('arun');
+	});
+
+	it('keeps the confirmed record in the stub household and tells every open door, once the card is saved', async () => {
+		const clock = manual();
+		const household = new StubHousehold();
+		const fake = new FakeTransport(clock, 1, 1, household);
+		const events: string[] = [];
+		fake.connect((f) => events.push(f.event));
+		await fake.send({ id: 'm1', text: '£5,000 in Monzo savings' });
+		clock.run();
+		await fake.choose('m1', 'joint');
+		clock.run();
+		expect(household.assets).toHaveLength(16);
+		await fake.tap('m1.card', 'confirm');
+		expect(events.slice(-2)).toEqual(['card', 'records.changed']);
+		expect(household.assets.at(-1)).toMatchObject({ id: 'monzo_savings', value: 5000, owners: [{}, {}] });
+		expect(household.lastChange).toMatchObject({ recordId: 'monzo_savings', how: 'added in the chat' });
+		expect(household.lastChange?.at).toEqual(clock.now());
 	});
 
 	it('reopens whose on Edit, and leaves nothing saved on Cancel', async () => {
