@@ -17,7 +17,11 @@ export const TestIDs = {
 	projectionHorizon: 'mp.projection.horizon',
 	projectionMilestones: 'mp.projection.milestones',
 	projectionPlan: 'mp.projection.plan',
-	projectionAssumptions: 'mp.projection.assumptions'
+	projectionAssumptions: 'mp.projection.assumptions',
+	forecastChart: 'mp.forecast.chart',
+	forecastYear: 'mp.forecast.year',
+	forecastMonths: 'mp.forecast.months',
+	forecastTrace: 'mp.forecast.trace'
 } as const;
 
 export type TestID = (typeof TestIDs)[keyof typeof TestIDs];

@@ -1,6 +1,6 @@
 /** What the Projection's two menus offer (MA-301 a 1b): the title picks the view, the hero's corner button the money.
- * Net worth is the page MA-224 builds; Plans (MA-222) and Budget forecast (MA-262) are their own stories, so the menu
- * names them and each says plainly that it is not built yet, as every page the shell names before its story does. */
+ * Net worth is the page MA-224 builds and Budget forecast MA-262's; Plans (MA-222) is its own story, so the menu names
+ * it and it says plainly that it is not built yet, as every page the shell names before its story does. */
 import type { MoneyBasis } from '#lib/wealth/projection.ts';
 
 export type ViewId = 'net' | 'plans' | 'budget';
@@ -26,12 +26,7 @@ export const VIEWS: readonly View[] = [
 		head: 'Each plan on a timeline',
 		soon: `Plans shows each plan item on a timeline, for an admin to correct or pause in place. ${SOON}`
 	},
-	{
-		id: 'budget',
-		label: 'Budget forecast',
-		head: 'What comes in and goes out, each year to the horizon',
-		soon: `Budget forecast shows each year’s leanest month against the floor, and every figure’s flows. ${SOON}`
-	}
+	{ id: 'budget', label: 'Budget forecast', head: 'What comes in and goes out, each year to the horizon', soon: '' }
 ];
 
 export interface Money {

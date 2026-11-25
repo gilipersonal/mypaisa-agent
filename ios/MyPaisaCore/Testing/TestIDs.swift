@@ -17,4 +17,8 @@ public enum TestIDs {
   public static let projectionMilestones = "mp.projection.milestones"
   public static let projectionPlan = "mp.projection.plan"
   public static let projectionAssumptions = "mp.projection.assumptions"
+  public static let forecastChart = "mp.forecast.chart"
+  public static let forecastYear = "mp.forecast.year"
+  public static let forecastMonths = "mp.forecast.months"
+  public static let forecastTrace = "mp.forecast.trace"
 }

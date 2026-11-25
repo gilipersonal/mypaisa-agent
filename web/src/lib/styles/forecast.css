@@ -1,0 +1,531 @@
+/* The Projection's Budget forecast view (MA-262), ported from the picked board's own rules (docs/design/app-v1/Web v4 ·
+   Budget forecast.dc.html, 1a the surplus first, and its states board) so the build draws what the boards draw. The
+   title, the menus, the horizon chips and the corner button are projection.css's; here they sit on a card (.oncard).
+   Every rule is kept to the view with .bf, so nothing of the Net worth view or Home's cards changes; every colour is a
+   DS v1 token. */
+
+.bf {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+.bf .cpad {
+	padding: 18px 18px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+.bf .pp {
+	margin: 0;
+	text-wrap: pretty;
+}
+.bf .grow1 {
+	flex: 1;
+	min-width: 0;
+}
+.bf .btnrow {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.bf .chip-n {
+	background: var(--mp-surface-2);
+	color: var(--mp-ink);
+}
+
+/* the chart card's head: its title, and money as the card's corner button */
+.bfh {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px 12px;
+}
+.bfh > .grow1 {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+.bf .cornerbtn {
+	background: var(--mp-surface-2);
+	color: var(--mp-ink);
+}
+.bf .cornerbtn .lc {
+	color: var(--mp-accent);
+}
+.bf .hzchips.oncard .hzc {
+	background: var(--mp-surface-2);
+	color: var(--mp-ink-2);
+}
+.bf .hzchips.oncard .hzc.on {
+	background: var(--mp-ink);
+	color: var(--mp-surface);
+}
+.bf :is(.hzc, .cornerbtn):focus-visible {
+	outline: 3px solid var(--mp-focus);
+	outline-offset: 2px;
+}
+.flagl {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 10px;
+}
+
+/* the surplus chart: each year's leanest month against the floor */
+.bch {
+	position: relative;
+	padding-left: 44px;
+	margin-top: 4px;
+}
+.bch.wide {
+	padding-left: 60px;
+}
+.bplot {
+	position: relative;
+	height: 176px;
+}
+.bgl {
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 0;
+	border-top: 1px solid var(--mp-chart-grid);
+}
+.bgl.zero {
+	border-top: 1px solid var(--mp-ink-2);
+}
+.bgl.floor {
+	border-top: 2px dashed var(--mp-ink);
+}
+.byl {
+	position: absolute;
+	left: -44px;
+	width: 38px;
+	text-align: right;
+	transform: translateY(50%);
+	font: 500 12px/16px var(--mp-font);
+	color: var(--mp-ink-2);
+	white-space: nowrap;
+}
+.bch.wide .byl {
+	left: -60px;
+	width: 54px;
+}
+.byl.foot {
+	transform: none;
+}
+.byl.floor {
+	color: var(--mp-ink);
+	font-weight: 700;
+}
+.bcols,
+.bflags,
+.cstrip {
+	display: grid;
+	grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+}
+.bcols {
+	position: absolute;
+	inset: 0;
+}
+.bc {
+	position: relative;
+}
+.bb {
+	position: absolute;
+	left: 18%;
+	right: 18%;
+	min-height: 3px;
+	border-radius: 3px;
+}
+.bb.ok {
+	background: var(--mp-meter);
+}
+.bb.lo {
+	background: var(--mp-alert);
+}
+.bb.rt {
+	background: var(--mp-ink-2);
+}
+.bb.sel {
+	box-shadow:
+		0 0 0 2px var(--mp-surface),
+		0 0 0 4px var(--mp-ink);
+}
+/* a bar past the plot's top or foot carries a break where it leaves */
+.bb.cap {
+	border-radius: 0 0 3px 3px;
+}
+.bb.cap::after,
+.bb.capb::after {
+	content: '';
+	position: absolute;
+	left: -3px;
+	right: -3px;
+	height: 4px;
+	background: var(--mp-surface);
+	transform: skewY(-24deg);
+}
+.bb.cap::after {
+	top: 8px;
+}
+.bb.capb {
+	border-radius: 3px 3px 0 0;
+}
+.bb.capb::after {
+	bottom: 8px;
+}
+.ftk {
+	position: absolute;
+	left: 6%;
+	right: 6%;
+	height: 0;
+	border-top: 2px dashed var(--mp-ink);
+	z-index: 2;
+}
+.bflags {
+	height: 16px;
+	margin-top: 4px;
+	font: 700 12px/16px var(--mp-font);
+	color: var(--mp-alert);
+	text-align: center;
+}
+.cstrip {
+	height: 14px;
+	margin-top: 4px;
+	gap: 0 2px;
+}
+.cstrip > span {
+	border-radius: 2px;
+}
+.cstrip > .neg {
+	background: var(--mp-alert);
+}
+.bch .mp-chartaxis {
+	margin-top: 2px;
+	color: var(--mp-ink-2);
+}
+/* picking a year: the slider lies over the plot, unseen; the selected bar's ring is drawn for it */
+.bsel {
+	position: absolute;
+	top: 0;
+	left: 44px;
+	right: 0;
+	height: 176px;
+	width: calc(100% - 44px);
+	margin: 0;
+	padding: 0;
+	opacity: 0;
+	appearance: none;
+	background: transparent;
+	cursor: pointer;
+	z-index: 3;
+}
+.bch.wide .bsel {
+	left: 60px;
+	width: calc(100% - 60px);
+}
+.bsel::-webkit-slider-thumb {
+	appearance: none;
+	width: 1px;
+	height: 100%;
+}
+.bsel::-moz-range-thumb {
+	width: 1px;
+	border: 0;
+}
+.bch:has(.bsel:focus-visible) .bplot {
+	outline: 3px solid var(--mp-focus);
+	outline-offset: 6px;
+	border-radius: 4px;
+}
+.blgd {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 16px;
+	font: 400 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.blgd > span {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+.k-ok,
+.k-lo,
+.k-retired,
+.k-selected {
+	width: 10px;
+	height: 12px;
+	border-radius: 2px;
+}
+.k-ok {
+	background: var(--mp-meter);
+}
+.k-lo {
+	background: var(--mp-alert);
+}
+.k-retired {
+	background: var(--mp-ink-2);
+}
+.k-selected {
+	box-shadow: inset 0 0 0 2px var(--mp-ink);
+}
+.k-floor {
+	width: 18px;
+	height: 0;
+	border-top: 2px dashed var(--mp-ink);
+}
+.k-floor-dash {
+	width: 14px;
+	height: 0;
+	border-top: 2px dashed var(--mp-ink);
+}
+.k-cash {
+	width: 14px;
+	height: 8px;
+	border-radius: 2px;
+	background: var(--mp-alert);
+}
+
+/* a year's lines: they add up to its surplus */
+.yl,
+.bl {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 10px 0;
+	border-top: 1px solid var(--mp-line);
+}
+.bl {
+	padding: 8px 0;
+}
+.yl > .grow1,
+.bl > .grow1 {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+.bf .yl .fig,
+.bf .bl .fig,
+.bf .trl .fig {
+	font: 600 15px/20px var(--mp-font);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	text-align: right;
+}
+/* a figure that opens its flows: dotted, and 44 px to tap though drawn at 20 */
+.bf .yl .fig.tap {
+	appearance: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	cursor: pointer;
+	position: relative;
+	text-decoration: underline dotted var(--mp-ink-2);
+	text-underline-offset: 4px;
+}
+.bf .yl .fig.tap::after {
+	content: '';
+	position: absolute;
+	inset: -12px 0;
+}
+.bf .yl .fig.tap:focus-visible {
+	outline: 3px solid var(--mp-focus);
+	outline-offset: 2px;
+}
+.yl.tot {
+	border-top: 2px solid var(--mp-ink);
+	padding-top: 12px;
+}
+.bf .yl.tot .fig {
+	font: 800 20px/24px var(--mp-font-round);
+}
+.blh {
+	padding-top: 10px;
+}
+.kvs {
+	display: flex;
+	flex-direction: column;
+}
+.kt {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 8px 0;
+	border-top: 1px solid var(--mp-line);
+	min-width: 0;
+}
+.ptab-meta {
+	margin-top: -6px;
+}
+.lockl {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+}
+.lockl .lc {
+	width: 18px;
+	height: 18px;
+	color: var(--mp-ink-2);
+	margin-top: 1px;
+	flex: none;
+}
+
+/* a year's months */
+.mtab {
+	display: grid;
+	grid-template-columns: minmax(64px, auto) minmax(0, 1fr) auto;
+	column-gap: 12px;
+	align-items: baseline;
+}
+.mt {
+	padding: 8px 0;
+	border-top: 1px solid var(--mp-line);
+	font: 400 15px/20px var(--mp-font);
+	min-width: 0;
+}
+.mt.mfig {
+	font-weight: 600;
+	text-align: right;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+.mt.mnote {
+	font-size: 13px;
+	line-height: 18px;
+	color: var(--mp-ink-2);
+}
+
+/* a trace: the flows that make a figure */
+.trl {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	padding: 8px 0;
+	border-top: 1px solid var(--mp-line);
+}
+.trl > .grow1 {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+.trl.sum {
+	border-top: 2px solid var(--mp-ink);
+}
+.srcchip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	align-self: flex-start;
+	font: 600 12px/16px var(--mp-font);
+	color: var(--mp-ink-2);
+	background: var(--mp-surface-2);
+	border-radius: 999px;
+	padding: 2px 8px 2px 6px;
+}
+.srcchip .lc {
+	width: 14px;
+	height: 14px;
+}
+
+/* the banner over a run that is running again, or did not finish */
+.banner {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 14px 16px;
+	border-radius: var(--mp-r-card);
+	background: var(--mp-surface);
+	box-shadow: inset 0 0 0 1.5px var(--mp-line);
+}
+.banner .lc {
+	width: 22px;
+	height: 22px;
+	margin-top: 1px;
+	color: var(--mp-ink-2);
+	flex: none;
+}
+.banner.err {
+	box-shadow: inset 0 0 0 1.5px var(--mp-alert);
+}
+.banner.err .lc {
+	color: var(--mp-alert);
+}
+.banner > .grow1 {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.pbar {
+	height: 6px;
+	border-radius: 3px;
+	background: var(--mp-track);
+	overflow: hidden;
+}
+.pbar > span {
+	display: block;
+	height: 100%;
+	width: 62%;
+	border-radius: 3px;
+	background: var(--mp-meter);
+}
+.bf .stale {
+	opacity: 0.55;
+}
+.stk {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+/* a household with no budget yet */
+.bf .empty {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 22px 20px 20px;
+}
+.empty .eico {
+	width: 48px;
+	height: 48px;
+	border-radius: 14px;
+	display: grid;
+	place-items: center;
+	background: var(--mp-surface-2);
+}
+.empty .eico .lc {
+	width: 26px;
+	height: 26px;
+	color: var(--mp-ink-2);
+}
+.empty ul {
+	margin: 0;
+	padding: 0 0 0 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	list-style: disc;
+}
+
+/* the moves (MA-182): the bars grow from the zero line, the flags fade in after; under Reduce Motion they are there */
+@media (prefers-reduced-motion: no-preference) {
+	.bb {
+		animation: mo-bary var(--mo-slow) var(--mo-smooth) both;
+		transform-origin: 50% 100%;
+		animation-delay: calc(120ms + var(--i, 0) * 25ms);
+	}
+	.bb.neg {
+		transform-origin: 50% 0;
+	}
+	.bflags,
+	.cstrip {
+		animation: mo-fade var(--mo-base) linear both;
+		animation-delay: var(--mo-slow);
+	}
+}
