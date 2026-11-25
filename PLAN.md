@@ -731,7 +731,19 @@ Claude's:
   sits, what we owe, invested against owed, where growth comes from); and the
   mark animated in the sidebar. Drawn as 2 or 3 options an item and published
   as a private Claude Artifact for Arun to pick before anything is built
-  (Arun, 25 Nov 2026).
+  (Arun, 25 Nov 2026). Picked the same day, 1a of each: the iPad's sheet at
+  every desktop width from 1024 px, closed by a click outside and opened by
+  `⌘J` on a Mac (so the web's chat is never beside the page, superseding
+  MA-301's column from 1393); four labelled pills at the top right, with the
+  iOS appearance in You; a double ring and Invested against owed, where
+  invested is everything but property and the chips are 5, 10, 20 and 30
+  years; and the mark that moves when MyPaisa starts on a message or saves a
+  change.
+- **The boards' icons draw as Lucide draws them (MA-356):** `scripts/board_icons.py`
+  joined an icon's elements into one path, so Projection, Audit, the close mark
+  and other multi-path icons came out broken on every board; each sub-path
+  starts from its own point, a check fails on one that does not, and the
+  previews and the Boards artifact are published again. Found on MA-355.
 - **Prototype v4's controls at 44 pt (MA-302), closed:** the card actions, links,
   suggestion chips, segmented control and composer that MA-300's live
   accessibility gate found under 44x44. Closed by Arun on 2 Nov 2026:
@@ -1007,6 +1019,16 @@ arrives from phase 2.
   record or ask, its first row sending the question to the chat; nothing is
   created in it (MA-301 g 1a). Found while building MA-199, which leaves the
   sidebar's Search row to it.
+- **The web chat as a sheet (MA-357):** from 1024 px the web app's chat opens
+  over the page as the iPad's does, 600 px wide and centred with the page
+  dimmed behind it, at every desktop width and never as a column beside the
+  page; from the sidebar's Chat, a page's Ask or Update, or `⌘J` on a Mac;
+  closed by Esc, its close button, its grabber or a click outside. Picked on
+  MA-355 (a 1a); it supersedes MA-301's column from 1393 and drawer below it.
+- **The mark moves when MyPaisa works (MA-360):** it arrives once when the app
+  opens, makes one lap when MyPaisa starts on a message and swells once with
+  a ring when a change is saved, and is still otherwise; a fade in place under
+  Reduce Motion. Picked on MA-355 (d 1a), on MA-103's mark.
 - **The page and the chat are the widths Shell 1a draws (MA-354, bug):**
   Home's holding cards fill the page column as the board's content does,
   and the chat column keeps its 1 px border outside its width, as the
@@ -1355,6 +1377,12 @@ maths arrives.
   and the records by class and by member, at both doors, in the shell of
   phase 1; a confirmed change reaches every open door over the stream and the
   figures move; privacy mode hides every amount.
+- **The header's controls (MA-358):** at the top right of every page, whose
+  view as a dropdown (Household, Me, each member), the currency, Light or
+  Dark and Hide amounts as labelled pills, carried from page to page; one row
+  under the title on a phone, toolbar buttons on iPad, and the iOS appearance
+  as a setting in You. Picked on MA-355 (b 1a); the hero's currency switch
+  goes.
 
 **Tests:** a property test that every write, from the chat or in place,
 produces exactly one event and one audit row, and the chain verifies; the
@@ -1735,6 +1763,13 @@ Nothing here predicts a market.
   admin; a Plans tab (each plan on a timeline, corrected in place by the
   admin, with a pause toggle and Add in chat) and a Budget forecast tab;
   scenario chips; Ask; at both doors.
+- **Home's interactive charts (MA-359, `ARCHITECTURE.md` §6, §8.3):** what we
+  own and owe as one double ring on one scale, its lists the legend and the
+  table; and invested against owed to 5, 10, 20 or 30 years, with the month
+  one passes the other and where the growth comes from (held today, saved
+  from income, growth and interest). Invested is everything owned except
+  property. The engine returns the monthly series and the split. Picked on
+  MA-355 (c 1a).
 - **Goals and the goal solver (MA-314, `ARCHITECTURE.md` §6.1, §4.1,
   §7.1):** "£40,000 for a car deposit by Sep 2028" kept as a goal; the
   solver, on the base path, gives where it stands, the date reached at
@@ -2282,21 +2317,21 @@ How the dates are worked out:
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
 | 0 Foundations at every door | 56.25 (and 3 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 112.25 (and 0.5 of yours) | 90 | Wed 13 Jan 2027 | Fri 21 May 2027 |
-| 2 The first record: one dynamic structure, one write path | 50.5 | 41 | Mon 24 May 2027 | Tue 20 Jul 2027 |
-| 3 Deposits, policies and four currencies | 18 | 15 | Wed 21 Jul 2027 | Tue 10 Aug 2027 |
-| 4 Debts and check-ins | 19 | 16 | Wed 11 Aug 2027 | Thu 2 Sep 2027 |
-| 5 Investments, priced | 32 | 26 | Fri 3 Sep 2027 | Fri 8 Oct 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Mon 11 Oct 2027 | Fri 22 Oct 2027 |
-| 7 Projection | 33.5 | 27 | Mon 25 Oct 2027 | Tue 30 Nov 2027 |
-| 8 Audit, search and the Admin center at every door | 29 | 24 | Wed 1 Dec 2027 | Wed 12 Jan 2028 |
-| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Thu 13 Jan 2028 | Mon 14 Feb 2028 |
-| 10 Alerts, charts and the Claude client | 15 | 12 | Tue 15 Feb 2028 | Wed 1 Mar 2028 |
-| 11 Ask anything about the household's wealth | 9 | 8 | Thu 2 Mar 2028 | Mon 13 Mar 2028 |
+| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Wed 13 Jan 2027 | Tue 25 May 2027 |
+| 2 The first record: one dynamic structure, one write path | 53 | 43 | Wed 26 May 2027 | Mon 26 Jul 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Tue 27 Jul 2027 | Mon 16 Aug 2027 |
+| 4 Debts and check-ins | 19 | 16 | Tue 17 Aug 2027 | Wed 8 Sep 2027 |
+| 5 Investments, priced | 32 | 26 | Thu 9 Sep 2027 | Thu 14 Oct 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Fri 15 Oct 2027 | Thu 28 Oct 2027 |
+| 7 Projection | 36.5 | 30 | Fri 29 Oct 2027 | Thu 9 Dec 2027 |
+| 8 Audit, search and the Admin center at every door | 29 | 24 | Fri 10 Dec 2027 | Fri 21 Jan 2028 |
+| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Mon 24 Jan 2028 | Wed 23 Feb 2028 |
+| 10 Alerts, charts and the Claude client | 15 | 12 | Thu 24 Feb 2028 | Fri 10 Mar 2028 |
+| 11 Ask anything about the household's wealth | 9 | 8 | Mon 13 Mar 2028 | Wed 22 Mar 2028 |
 | 12 New kinds of holding (when you add one) | 2 | 2 | When a new kind is added | |
-| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Tue 14 Mar 2028 | Tue 4 Apr 2028 |
-| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Wed 5 Apr 2028 | Wed 19 Apr 2028 |
-| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Thu 20 Apr 2028 | Tue 2 May 2028 |
+| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Thu 23 Mar 2028 | Thu 13 Apr 2028 |
+| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Tue 18 Apr 2028 | Fri 28 Apr 2028 |
+| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 2 May 2028 | Thu 11 May 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 13 to 15 can start sooner if you

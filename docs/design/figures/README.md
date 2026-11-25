@@ -220,6 +220,33 @@ from the surplus and then cash.
 - At 21:20 Asha sees that state: the Budget forecast with the cash flag, the Plans tab without pencils, and in her own
   chat the ways, with nothing she can apply.
 
+## Home's two chart cards (MA-355): `home_charts`
+
+Arun picked option 1a of MA-355 c on Wed 25 Nov 2026: on Home, "Invested against owed" and "Where the growth comes
+from" share one card and one row of horizon chips (5, 10, 20 and 30 years; it opens at 5). Their figures are the key
+`home_charts`, written by `home_charts()` from the 26 Oct run (`R26`), on the plan's path: no market swings, future
+pounds, every month's surplus kept as cash.
+
+- **Invested** is everything owned except property: cash, deposits, investments and pensions (Arun, 25 Nov 2026).
+  Property is the two homes. **Owed** is the mortgage, the HDFC loan and the car loan, each run off at its own rate
+  and payment; nothing is owed on the card on Mon 26 Oct.
+- `today`: £178,916 invested against £246,743 owed. The home's correction at 09:52 does not move either figure.
+- `months`: 362 rows, Nov 2026 to Dec 2056, each `{month, invested, owed}` in whole pounds.
+- `crossing`: the first month invested is at or above owed, Jun 2028 (£226,195 against £221,586), with the month
+  before it.
+- `horizons`: for 5, 10, 20 and 30 years (each December), the invested total split into three parts that add up to
+  it by largest remainder, with `growth_share`:
+  - `held_today`, what is invested today;
+  - `saved_from_income`, each month's surplus kept as cash, the SIP and the LIC premiums, less the plans paid from
+    cash (pension income and Balanced sold in retirement only move money already counted, so they are left out);
+  - `growth_and_interest`, what is left: markets, deposit and cash interest, less the rupee's drift.
+
+  Dec 2031: £430,362 = £178,916 + £180,249 + £71,197 (17% growth). Dec 2046: £2,529,610, 32% growth.
+- A deposit maturing is not a part: it only moves money from a deposit into cash.
+- Where it sits and what we owe (the ring) need no key: they are `household-v4.json`'s assets and debts after the
+  first record, grouped as property, pensions, investments, deposits and cash.
+- Adding the key changed no other figure: every leaf of the set as it was is still there with the same value.
+
 # The prototype's figure sets (MA-291, cut by MA-307)
 
 `make_prototype_v5.py` joins `household-v4.json`, `future-plans-v4.json`, `talk-v5.json`, `wealth-v5.json`,

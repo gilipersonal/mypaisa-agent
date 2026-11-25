@@ -8648,14 +8648,872 @@
         "8.4"
       ],
       "ui": true,
-      "design": "todo",
-      "undrawn": [
-        "the desktop web chat as a sheet over the page, like the iPad's, with its closed and open states, in light and dark",
-        "Home's header controls: Household, Me and Asha as a dropdown, with the currency, Light or Dark and Hide amounts controls at the top right, at desktop, at 390 and on iPhone, with each menu closed and open",
-        "interactive Home charts: where it sits, what we owe, invested against owed and where growth comes from, with their hover, tap and privacy states, at both doors",
-        "the mark animated in the sidebar's top left corner, with its still state under Reduce Motion"
+      "design": "picked",
+      "notes": "Arun, 25 Nov 2026, with five reference pictures (\"Since we are desiging I want a few more changes\"): a /design-first options round, 2 or 3 options an item, drawn in docs/design/reviews/MA-355/ and published as a private Claude Artifact (https://claude.ai/artifact/CLEEGezfb8aaiEBfeSKKJ6). Arun picked on 25 Nov 2026: a 1a (the iPad's sheet at every desktop width, so the web's chat is never beside the page), b 1a (four labelled pills at the top right), c 1a (two cards that answer each other: a double ring, and invested against owed) and d 1a (the watcher mark); and answered what the boards left to him: a click on the dimmed page closes the sheet and \u2318J opens it on a Mac; the iOS appearance is a setting in You; invested is everything owned except property; the horizon chips are 5, 10, 20 and 30 years (docs/design/reviews/MA-355/decision.md). The picked options are carried into the board sets as new boards, and the builds are MA-357 (the chat sheet), MA-358 (the header's controls), MA-359 (Home's charts) and MA-360 (the mark). What they supersede is named on the older boards, not redrawn there: on Web v4 \u00b7 Shell and chat, the chat beside the page and as a drawer (MA-301 c 1c's column from 1393 px), and the chat column as a container on the other Web v4 boards' desktop frames; on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home, the Household, Me, Asha switch, the hero's currency switch and the What we own and owe meters card; ds-v1 Logo's intro is extended, not superseded. The 390 frames, the Chat tab, the iPad's own boards and every figure stand. The invested and owed series and the growth split joined docs/design/figures/future-plans-v4.json under home_charts (no existing figure changed), and one easing, --mo-travel, joined motion.css in the three board folders and in the web app's copy (web/src/lib/styles/motion.css, which a test holds equal to the design system's). Drawn: the desktop web chat as a sheet over the page, like the iPad's, with its closed and open states, in light and dark (on Browser \u00b7 Chat sheet, closed at 1440 and Browser \u00b7 Chat sheet, open at 1440 (Web v4 \u00b7 Chat sheet)). Drawn: Home's header controls: Household, Me and Asha as a dropdown, with the currency, Light or Dark and Hide amounts controls at the top right, at desktop, at 390 and on iPhone, with each menu closed and open (on Browser \u00b7 Header controls, Home at rest, its phone board, iPhone \u00b7 Header controls, Home at rest and iPad \u00b7 Header controls, Home at rest (Web v4 and iPhone v4 \u00b7 Header controls)). Drawn: interactive Home charts: where it sits, what we owe, invested against owed and where growth comes from, with their hover, tap and privacy states, at both doors (on Browser \u00b7 Home charts, at rest, its phone board, iPhone \u00b7 Home charts, at rest and iPad \u00b7 Home charts, landscape at rest (Web v4 and iPhone v4 \u00b7 Home charts)). Drawn: the mark animated in the sidebar's top left corner, with its still state under Reduce Motion (on Browser \u00b7 Sidebar mark, arriving as the app opens and iPhone \u00b7 Launch, the mark arriving (ds-v1 Mark in motion and iPhone v4 \u00b7 Mark in motion), with each moment's Reduce Motion version).",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, closed at 1440 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, open at 1440 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Home at rest \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Home at rest, phone \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, Home at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPad \u00b7 Header controls, Home at rest \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, at rest \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, at rest, phone \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Home charts, landscape at rest \u00b7 Light"
+        },
+        {
+          "project": "ds",
+          "file": "Mark in motion.dc.html",
+          "board": "Browser \u00b7 Sidebar mark, arriving as the app opens \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Mark in motion.dc.html",
+          "board": "iPhone \u00b7 Launch, the mark arriving \u00b7 Light"
+        }
       ],
-      "notes": "Arun, 25 Nov 2026, with five reference pictures (\"Since we are desiging I want a few more changes\"): a /design-first options round, 2 or 3 options an item, drawn in docs/design/reviews/MA-355/ and shown as a private Claude Artifact; nothing is built and no picked board changes until he picks. No board yet because drawing them is this round's work. Its charts read docs/design/figures/future-plans-v4.json as regenerated on MA-224 (all to cash)."
+      "code": [
+        "docs/design/reviews/MA-355/",
+        "web/src/lib/styles/motion.css"
+      ]
+    },
+    {
+      "key": "MA-356",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The boards' icon file draws multi-path icons wrongly: Projection, Audit, close and others come out broken on every board",
+      "status": "To Do",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "8.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "notes": "Found on MA-355 (25 Nov 2026) by three design lanes: scripts/board_icons.py joins an icon's elements into one path, so a later sub-path that opens with a relative move starts from the wrong point. It changes what the boards draw, not what a member sees: the web app draws Lucide through its own components. The MA-355 round's boards correct their own inline copies."
+    },
+    {
+      "key": "MA-357",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The web app's chat opens as a sheet over the page at every desktop width, never as a column beside it",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "8.1",
+        "8.4"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, closed at 1440 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, closed at 1440 \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, open at 1440 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, open at 1440 \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, open at 1280 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, open at 1024 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, a long conversation scrolled \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, composer focused \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, Confirm row in view \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, privacy mode on \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, privacy mode on \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, a reply streaming \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, offline \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, a member who is not an admin \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, keyboard focus on Close \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, Tab order \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, the sidebar\u2019s Chat row \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, closed on Windows, no shortcut beside Chat \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, open over the Projection \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Chat sheet.dc.html",
+          "board": "Browser \u00b7 Chat sheet, opened by a check-in with its card \u00b7 Light"
+        }
+      ],
+      "undrawn": [
+        "Home with MA-359's two chart cards under the sheet (the frames keep the cards Web v4 \u00b7 Check-ins draws for Thu 5 Nov)",
+        "a new conversation (an empty thread) in the sheet",
+        "back online after offline, a message waiting to send, and a Confirm tapped while offline, inside the sheet",
+        "sending a statement inside the sheet (the file chip, then Reading it)",
+        "the grabber mid-pull and the sheet mid-rise, with its Reduce Motion cross-fade (written in the board's notes, not drawn)",
+        "the sheet over a page other than Home and the Projection, the Projection's head with MA-358's pills, and privacy mode with the Projection behind the sheet",
+        "a window between 1024 and 1120 px other than 1024 itself, where the sheet shifts clear of the sidebar",
+        "Increase Contrast and Reduce Transparency",
+        "the dim on the page only, the sidebar at full strength (Arun, 25 Nov 2026, settled on MA-360): every open-sheet frame on Web v4 \u00b7 Chat sheet draws the sidebar dimmed too"
+      ],
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: a 1a, the iPad's sheet at every desktop width; a click on the dimmed page closes it and \u2318J opens it on a Mac, with no shortcut on Windows. Its board is Web v4 \u00b7 Chat sheet. It supersedes MA-301 c 1c's column beside the page from 1393 px and the drawer below it (Browser \u00b7 Shell 1a, Chat beside and Browser \u00b7 Shell 1a at 1280, Chat as a drawer on Web v4 \u00b7 Shell and chat), and the chat column on the other Web v4 boards' desktop frames; the app's rule is unchanged. The board draws, for Arun to see: the conversation in the picked 2a cards; under about 1120 px the sheet stopping 12 px clear of the sidebar rather than centring; focus starting in the message with Close as the first Tab stop; a check-in's Asks you chip opening the sheet with its card. The shared board styles (tokens.css) and the web shell still draw the column until this story is built. Changed by Arun's answer on MA-360 (25 Nov 2026): the sheet dims the page only and leaves the sidebar at full strength, so the mark's movement is seen; the board's open-sheet frames are redrawn to that before this story starts."
+    },
+    {
+      "key": "MA-358",
+      "type": "Story",
+      "epic": "MA-187",
+      "phase": 2,
+      "summary": "Every page's header carries whose view, the currency, light or dark and Hide amounts, in one place at every door",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "5.3",
+        "8.1",
+        "8.3",
+        "8.4"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Home at rest \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Home at rest \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Home at rest, 1280 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, whose view open \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, currency open \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, appearance open \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, appearance on System, open \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, keyboard focus on a pill \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Hide amounts on \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Hide amounts on \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, rupees chosen \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Me chosen \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, as Asha sees it \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, a long name chosen \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, a long name in the menu \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, on the Projection \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, on Assets \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, tightest with the sidebar, 1024 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, at 600 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, loading \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, could not be read \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, nothing recorded yet \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Home at rest, phone \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Home at rest, phone \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, whose view sheet, phone \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, currency sheet, phone \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, appearance sheet, phone \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Header controls.dc.html",
+          "board": "Browser \u00b7 Header controls, Hide amounts on, phone \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, Home at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, Home at rest \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, whose view open \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, currency open \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, Hide amounts on \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, rupees chosen \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, Me chosen \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, a long name chosen \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, on the Projection \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 Header controls, on Assets \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 You, Appearance, System \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPhone \u00b7 You, Appearance, Dark chosen \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPad \u00b7 Header controls, Home at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPad \u00b7 Header controls, Home at rest \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPad \u00b7 Header controls, whose view open \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPad \u00b7 Header controls, a long name chosen \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPad \u00b7 Header controls, on the Projection \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPad \u00b7 Header controls, portrait, Home at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Header controls.dc.html",
+          "board": "iPad \u00b7 Header controls, portrait, currency open \u00b7 Light"
+        }
+      ],
+      "undrawn": [
+        "web: pointer hover on a closed pill; the widths from 600 to 1023 px beyond the one 600 frame (768 with the tab bar, dark, a menu open there); 320 px",
+        "web: dark for rupees chosen, Me chosen, loading, error, empty and 1280; Me chosen and a member who is not an admin at 390",
+        "Increase Contrast and Reduce Transparency, at both doors",
+        "iOS: Dynamic Type AX sizes for the pill row and the toolbar buttons; iPhone landscape; a compact iPad window (Slide Over, a folded foldable)",
+        "iOS: loading, error and empty Home with the new row; dark for rupees, Me, a long name, the Projection and Assets on iPhone; rupees and Me on iPad",
+        "iOS: iPad portrait with whose view open; iPad's You, Appearance column; the Appearance row on the You tab itself; hardware-keyboard focus on iPad's toolbar menus"
+      ],
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: b 1a, four labelled pills at the top right; the iOS appearance as a setting in You, Appearance, System by default. Its boards are Web v4 \u00b7 Header controls and iPhone v4 \u00b7 Header controls. It supersedes the Household, Me, Asha switch and the hero's currency switch on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home, and MA-279's four-currency segmented row. Whose view and the currency are carried from page to page. The boards draw, for Arun to see: the pill row taking the next line when the title is long; the whose-view pill cut at 220 px with the menu reading the name whole; the bar never waiting for the page; Hide amounts pressed as ink reversed. Dollars and euros are named in the menu but no frame shows figures in them: the figure set holds only \u00a31 = \u20b9112.50 (MA-213)."
+    },
+    {
+      "key": "MA-359",
+      "type": "Story",
+      "epic": "MA-191",
+      "phase": 7,
+      "summary": "Home shows what we own and owe as one double ring, and invested against owed with where the growth comes from",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "6",
+        "8.3"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, at rest \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, at rest \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, at rest at 1280 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, privacy on \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, at rest, phone \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, at rest, phone \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Home charts, We owe chosen, phone \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, Pensions under the pointer \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, Pensions chosen \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, a row focused with the keyboard \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, loading \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, nothing owed \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, no records \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, could not load \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, long loan names \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, in rupees \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 What we own and owe, Me \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, 10 years \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, 30 years \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, a chip focused with the keyboard \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, scrubbed to Mar 2029 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, the line focused with the keyboard \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, Year by year open \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, a growth part chosen \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, loading \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, nothing owed \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, no records \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Home charts.dc.html",
+          "board": "Browser \u00b7 Invested against owed, could not load \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, at rest \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, loading \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, no records \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, nothing owed \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, could not load \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, in rupees \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Home charts, Me \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 What we own and owe, at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 What we own and owe, Pensions tapped \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 What we own and owe, privacy on \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 What we own and owe, long loan names \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Invested against owed, at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Invested against owed, scrubbed to Mar 2029 \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Invested against owed, 10 years \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Invested against owed, 30 years \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPhone \u00b7 Invested against owed, Year by year open \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Home charts, landscape at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Home charts, landscape at rest \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Home charts, landscape, Pensions under the pointer \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Home charts, landscape, loading \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Home charts, portrait at rest \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Home charts, portrait, no records \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Invested against owed, landscape, scrubbed to Mar 2029 \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Home charts.dc.html",
+          "board": "iPad \u00b7 Invested against owed, landscape, 30 years \u00b7 Light"
+        }
+      ],
+      "undrawn": [
+        "the Invested against owed card for a household that owes nothing (words only in the nothing-owed frames; the figure set has no run for a debt-free household)",
+        "the Invested against owed card in rupees (the set has no rate per month) and for Me and for Asha (the ledger keeps one household cash figure)",
+        "AX5 Dynamic Type for both cards, and the foldable, folded and open",
+        "Year by year for 10, 20 and 30 years (drawn for 5 years only)",
+        "the stale state, when the last run is older than the records"
+      ],
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: c 1a, two cards that answer each other; invested is everything owned except property; the chips are 5, 10, 20 and 30 years, opening at 5. Its boards are Web v4 \u00b7 Home charts and iPhone v4 \u00b7 Home charts. They supersede the What we own and owe meters card on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home. Its figures are the figure set's: home_charts in docs/design/figures/future-plans-v4.json (the 26 Oct run: 362 months of invested and owed, the crossing in Jun 2028, and the split at each horizon). The card looks forward by horizon, as Arun's picture does; the Attribution view (MA-315) explains a past change. Changed from the review board for the build: while a month is scrubbed the card's headline is the readout, and Year by year opens in place. The ring is a new form in the picked chart style (Monzo Pulse); the design system's chart board gains it with the build."
+    },
+    {
+      "key": "MA-360",
+      "type": "Story",
+      "epic": "MA-10",
+      "phase": 1,
+      "summary": "The mark moves when MyPaisa starts on a message or saves a change, and is still otherwise",
+      "status": "To Do",
+      "labels": [
+        "design"
+      ],
+      "arch": [
+        "8.1"
+      ],
+      "ui": true,
+      "design": "picked",
+      "boards": [
+        {
+          "project": "ds",
+          "file": "Mark in motion.dc.html",
+          "board": "Browser \u00b7 Sidebar mark, arriving as the app opens \u00b7 Light"
+        },
+        {
+          "project": "ds",
+          "file": "Mark in motion.dc.html",
+          "board": "Browser \u00b7 Sidebar mark, arriving as the app opens \u00b7 Dark"
+        },
+        {
+          "project": "ds",
+          "file": "Mark in motion.dc.html",
+          "board": "Browser \u00b7 Sidebar mark, the lap under the chat sheet \u00b7 Light"
+        },
+        {
+          "project": "ds",
+          "file": "Mark in motion.dc.html",
+          "board": "Browser \u00b7 Sidebar mark, the lap under the chat sheet \u00b7 Dark"
+        },
+        {
+          "project": "ds",
+          "file": "Mark in motion.dc.html",
+          "board": "Browser \u00b7 Sidebar mark, the ring as a change is saved \u00b7 Light"
+        },
+        {
+          "project": "ds",
+          "file": "Mark in motion.dc.html",
+          "board": "Browser \u00b7 Sidebar mark, the ring with privacy mode on \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Mark in motion.dc.html",
+          "board": "iPhone \u00b7 Launch, the mark arriving \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Mark in motion.dc.html",
+          "board": "iPhone \u00b7 Launch, the mark arriving \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Mark in motion.dc.html",
+          "board": "iPhone \u00b7 Chat, the mark on its lap \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Mark in motion.dc.html",
+          "board": "iPhone \u00b7 Chat, the mark on its lap \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Mark in motion.dc.html",
+          "board": "iPhone \u00b7 Chat, the ring as a change is saved \u00b7 Light"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Mark in motion.dc.html",
+          "board": "iPhone \u00b7 Chat, the ring with privacy mode on \u00b7 Dark"
+        },
+        {
+          "project": "ios",
+          "file": "iPhone v4 \u00b7 Mark in motion.dc.html",
+          "board": "iPad \u00b7 Chat sheet, the mark on its lap \u00b7 Light"
+        }
+      ],
+      "undrawn": [
+        "the ring on a figure saved in place on a web page",
+        "iPad portrait, iPad dark and the iPad launch",
+        "a member who is not an admin (laps happen, rings never do)",
+        "the launch when the app is not ready by 1,540 ms (the still mark waits)",
+        "the web frames at 1280",
+        "the coin mark beside each of MyPaisa's messages on the existing iOS chat boards and in the iOS kit, in place of the ringed dot (Arun, 25 Nov 2026)",
+        "the web sidebar frames with the sidebar at full strength beside the open chat sheet, the dim on the page only (Arun, 25 Nov 2026); they draw the mark under the dim"
+      ],
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: d 1a, watcher at work. Its boards are Mark in motion in ds-v1 and iPhone v4 \u00b7 Mark in motion. It extends MA-103's intro on ds-v1 Logo (the pound now draws itself, and the dot travels on the new easing). One easing, --mo-travel, and the mo-logo-* keyframes joined motion.css in the three board folders; under Reduce Motion nothing travels. On the web only the sidebar's mark moves; on iPhone the mark beside the reply does. Nothing moves on phone web. For the build: motion.css's own Reduce Motion rule lands every keyframe at once, so the dim and the still ring need to be 150 ms opacity transitions or pinned durations. Settled: The lap under the dim (Arun, 25 Nov 2026, asked on MA-355's PR): the chat sheet dims the page, not the sidebar, so the lap and the ring are seen beside the open chat. Settled: The iPhone chat's mark (Arun, 25 Nov 2026): the coin mark sits beside each of MyPaisa's messages on iPhone and iPad, as on the web, and does the lap and the ring; the iOS kit and the chat boards are redrawn with it before this story starts."
     }
   ],
   "others": [
