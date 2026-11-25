@@ -111,13 +111,29 @@ h2 { margin: 0; font: 700 22px/28px var(--ui); letter-spacing: -0.015em; text-wr
 </div>
 <script>
 (function () {
+  // each tab's board, written here when the page is built; never read back from the page
+  var SRC = {
+    "t-a-1a": "reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1a",
+    "t-a-1b": "reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1b",
+    "t-a-1c": "reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1c",
+    "t-b-1a": "reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1a",
+    "t-b-1b": "reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1b",
+    "t-b-1c": "reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1c",
+    "t-c-1a": "reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1a",
+    "t-c-1b": "reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1b",
+    "t-c-1c": "reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1c",
+    "t-d-1a": "reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1a",
+    "t-d-1b": "reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1b",
+    "t-d-1c": "reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1c"
+  };
   document.querySelectorAll('.tabs button').forEach(function (b) {
     b.addEventListener('click', function () {
       var k = b.getAttribute('data-panel'), o = b.getAttribute('data-opt');
       document.querySelectorAll('.tabs button[data-panel="' + k + '"]').forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
       document.querySelectorAll('.opt[data-panel="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-opt') === o); });
       var f = document.getElementById('f-' + k), a = document.getElementById('o-' + k);
-      f.src = b.getAttribute('data-src'); a.href = b.getAttribute('data-src');
+      var s = SRC[b.id];
+      if (s) { f.src = s; a.href = s; }
     });
   });
   var h = (location.hash || '').slice(1);
