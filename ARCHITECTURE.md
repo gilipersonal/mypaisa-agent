@@ -206,7 +206,7 @@ preferences (§1, rule 4).
 | Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so MyPaisa says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
 | Type "I want to log a transaction" | Asks one thing at a time, with chips: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
 | Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)), plus the audit log of every change and what the agent did and spent; an admin adds and deletes in the chat and corrects a figure where it shows |
-| Open `dashboard.mypaisapp.com` on your laptop or your phone's browser, or the web app you installed | Sign in with Apple, Google or a passkey; the same chat, dashboard, Audit and Activity, and for admins the Admin center; the chat beside the dashboard from about 1393 px, a drawer on a smaller laptop, and a tab at phone width; replies stream in as they are written (§8.4, §19.5) |
+| Open `dashboard.mypaisapp.com` on your laptop or your phone's browser, or the web app you installed | Sign in with Apple, Google or a passkey; the same chat, dashboard, Audit and Activity, and for admins the Admin center; the chat as a sheet over the page from 1024 px, at every width, and a tab at phone width; replies stream in as they are written (§8.4, §19.5) |
 | Start something on the laptop and pick up the phone | One conversation per member at every door: a flow started on the laptop finishes on the phone, and a Confirm on the phone moves the laptop's dashboard at once (§19.5) |
 | Type "£5,000 in Monzo savings", or "an SBI FD of ₹5 lakh at 7.1% for three years" | Drafts the record, asks only what is missing (whose is it? which bank?) one thing at a time with chips, and shows a Confirm card with the figures code computed, such as the maturity value and date; an admin registers for any member, and the card names whose it is (§4.8) |
 | As an admin, a check-in arrives: "HDFC home loan: was November's EMI paid?" | Check-ins go to admins only; a member who is not an admin sees it pending, with no buttons. Tap Paid: the card already shows what will be written, so the tap is the Confirm, with Undo. Not yet asks again in a few days; Different amount and Paid off in full open a short flow, and paid off in full closes the loan (§4.9) |
@@ -1698,7 +1698,11 @@ afterwards only its changed digits roll. Charts draw in under a mask, their dots
 and labels landing after, and scrub with a glass lollipop and a selection haptic
 at each point; a range change morphs the series. A holding row zooms into its
 screen (`navigationTransition(.zoom)`); messages push in from the bottom; the
-streamed words fade in as they arrive; a red alert's mark pulses once. Haptics:
+streamed words fade in as they arrive; a red alert's mark pulses once.
+MyPaisa's own mark moves only when it works: it arrives once when the app
+opens, its dot makes one lap when MyPaisa starts on a message, and it swells
+once with a ring when a change is saved (MA-360; Arun, 25 Nov 2026, MA-355
+d 1a). Haptics:
 success on Saved, a warning on a refusal, selection on chips, segments and
 scrubbing, a light impact on Send. Nothing loops forever, and under Reduce
 Motion every movement becomes a short cross-fade or lands at once. The web app
@@ -1802,7 +1806,13 @@ figure its kind marks editable in place; every other member views (§4.10):
   what we owe and how it runs off; this month's cash flow; invested against
   owed and where they cross; by member and by country (UK and India);
   maturing next; where growth comes from; the largest assets; and what's due
-  (EMIs, maturities, open check-ins, §4.9).
+  (EMIs, maturities, open check-ins, §4.9). Where it sits and what we owe are
+  one double ring on one scale, its two lists the legend and the table; and
+  invested against owed carries one row of horizon chips (5, 10, 20 and 30
+  years, opening at 5) for the two lines, the month one passes the other and
+  where the growth comes from (held today, saved from income, growth and
+  interest). Invested is everything owned except property; the engine returns
+  the monthly series and the split (MA-359; Arun, 25 Nov 2026, MA-355 c 1a).
 - **Assets and one asset** (savings, property and pensions from phase 2,
   deposits and policies from phase 3, investments in phase 5): filters by
   kind, member, country and maturity window; one asset's value, its XIRR and
@@ -1889,15 +1899,25 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   streamed over SSE (§19.5); every card drawn by Svelte components from the
   same versioned JSON (MA-174), with its chips and Confirm, Edit and Cancel;
   files and photos through a presigned upload, kept for good (MA-148); text
-  typed offline kept and sent once the browser is back online. From about
-  1393 px the chat sits beside the dashboard; from 1024 to 1393 px it is a
-  drawer over the page, from the sidebar's Chat (the iPad's sheet, on the web;
-  Arun, 2 Nov 2026, MA-301 c 1c); under 1024 px, where the tab bar stays, it is
-  the Chat tab. ⌘K opens one
+  typed offline kept and sent once the browser is back online. From 1024 px
+  the chat is a sheet over the page, at every width: 600 px wide and centred,
+  the page dimmed behind it and the sidebar still in view; opened from the
+  sidebar's Chat, a page's Ask or Update, or ⌘J on a Mac (no shortcut on
+  Windows, where Ctrl+J is the browser's Downloads); closed by Esc, its close
+  button, its grabber or a click on the dimmed page (the iPad's sheet, on the
+  web; Arun, 25 Nov 2026, MA-355 a 1a, which supersedes MA-301 c 1c's column
+  beside the page from 1393 px and drawer below it); under 1024 px, where the
+  tab bar stays, it is the Chat tab. ⌘K opens one
   palette, the same as the iPad's: go to a page, find a record, or ask, its
   first row sending the question to the chat; nothing is created in it (MA-301
   g 1a; Arun, 23 Nov 2026). A flow
   started on the laptop finishes on the phone.
+- **The header's controls** (MA-358): at the top right of every page's head,
+  whose view as a dropdown (Household, Me, each member), the currency, Light
+  or Dark and Hide amounts, as labelled pills carried from page to page; one
+  row under the title at phone width (Arun, 25 Nov 2026, MA-355 b 1a). In the
+  app the same controls sit under the large title on iPhone and in the
+  toolbar on iPad, and the appearance is a setting in You.
 - **The pages:** Overview, Assets, Debts, Budget, Projection, Home, a holding,
   Audit and Files, Activity, and for admins the Admin center: the screens of
   §8.3 with the same correction in place (§4.10), from

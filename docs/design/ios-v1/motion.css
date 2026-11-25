@@ -110,3 +110,17 @@
     transition-duration: 150ms !important; transition-timing-function: linear !important; transition-delay: 0ms !important; scroll-behavior: auto !important; }
 }
 @media print { html.mo-ready * { animation: none !important; opacity: 1 !important; } }
+
+/* MA-355 · the mark in motion (ds-v1 · Mark in motion): --mo-travel, the .smooth spring sampled so a part that travels far leaves from rest, and the mark's keyframes */
+.mp, :root { --mo-travel: linear(0, 0.0137 2.5%, 0.049 5%, 0.0986 7.5%, 0.1569 10%, 0.22 12.5%, 0.2847 15%, 0.4112 20%, 0.526 25%, 0.6249 30%, 0.7074 35%, 0.7746 40%, 0.8282 45%, 0.8705 50%, 0.9034 55%, 0.9288 60%, 0.9483 65%, 0.9631 70%, 0.9743 75%, 0.9828 80%, 0.9891 85%, 0.9938 90%, 0.9974 95%, 1); }
+@keyframes mo-logo-settle { from { opacity: 0; transform: scale(0.86); } to { opacity: 1; transform: none; } }
+@keyframes mo-logo-draw   { from { stroke-dashoffset: var(--logo-len); } to { stroke-dashoffset: 0; } }
+@keyframes mo-logo-arrive { from { transform: rotate(-250deg); } to { transform: none; } }
+@keyframes mo-logo-seat   { 0% { transform: translate(1.6px, -1.6px); } 66% { transform: translate(1.6px, -1.6px); animation-timing-function: var(--mo-smooth); } 100% { transform: none; } }
+@keyframes mo-logo-name   { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+@keyframes mo-logo-lap    { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes mo-logo-lift   { 0% { transform: none; animation-timing-function: var(--mo-snappy); } 15% { transform: translate(1.6px, -1.6px); animation-timing-function: linear; } 72% { transform: translate(1.6px, -1.6px); animation-timing-function: var(--mo-smooth); } 100% { transform: none; } }
+@keyframes mo-logo-swell  { 0% { transform: none; animation-timing-function: var(--mo-snappy); } 35% { transform: scale(1.25); animation-timing-function: var(--mo-bouncy); } 100% { transform: none; } }
+@keyframes mo-logo-ring   { from { opacity: 0.85; transform: scale(1); } to { opacity: 0; transform: scale(2.4); } }
+@keyframes mo-logo-dim    { 0%, 100% { opacity: 1; } 33%, 66% { opacity: 0.3; } }
+@keyframes mo-logo-ring-still { 0%, 100% { opacity: 0; transform: scale(1.6); } 33%, 66% { opacity: 0.7; transform: scale(1.6); } }

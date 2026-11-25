@@ -231,6 +231,8 @@ number, so a reference to it holds wherever it now sits.
     It moved again to "from about 1393 pt" on 2 Nov 2026, carried on 23 Nov
     (Arun, MA-301 c 1c, at both doors): no iPad's own screen is that wide, so
     on iPad the chat is always a sheet away, and on the web a drawer below it.
+    The web's column went altogether on 25 Nov 2026 (Arun, MA-355 a 1a): a sheet
+    over the page from 1024 px, at every width; the phrase stands for the app.
 
 (Lessons 24 to 31: in `docs/qa/checklist.md`.)
 
