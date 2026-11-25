@@ -517,6 +517,10 @@
 	gap: 4px;
 	list-style: disc;
 }
+/* a list of examples, not the Projection's rows: no hairline between them */
+.proj .bf .empty li + li {
+	border-top: 0;
+}
 
 /* the moves (MA-182): the bars grow from the zero line, the flags fade in after; under Reduce Motion they are there */
 @media (prefers-reduced-motion: no-preference) {
