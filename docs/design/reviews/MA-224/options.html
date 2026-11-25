@@ -1,0 +1,131 @@
+<title>All to Cash Redraw</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column of items, each with its options as tabs over a framed board. Warm ledger tokens (MyPaisa DS v1). */
+:root {
+  --bg: #F6F4F1; --surface: #FFFFFF; --fill: #F0EDE8; --line: #E4E0DA; --ink: #14171F; --ink2: #4E5462;
+  --accent: #C2381F; --on-accent: #FFFFFF; --hero: #13213A; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #1D7A3E; --good-bg: #E2F2E7; --focus: #2453C9;
+  --ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+  --round: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0A0F18; --surface: #151C27; --fill: #1E2633; --line: #283141; --ink: #F3F5F8; --ink2: #C5CCD7;
+  --accent: #FFAF9B; --on-accent: #1A0B06; --hero: #1A2944; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #5BDB8B; --good-bg: #16301F; --focus: #8FB2FF; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0A0F18; --surface: #151C27; --fill: #1E2633; --line: #283141; --ink: #F3F5F8; --ink2: #C5CCD7;
+  --accent: #FFAF9B; --on-accent: #1A0B06; --hero: #1A2944; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #5BDB8B; --good-bg: #16301F; --focus: #8FB2FF; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--ui); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 28px; }
+.top { background: var(--hero); color: var(--hero-ink); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.top .k { font: 600 13px/18px var(--mono); color: var(--hero-ink2); }
+.top h1 { margin: 0; font: 800 34px/40px var(--round); letter-spacing: -0.02em; text-wrap: balance; }
+.top p { margin: 0; max-width: 70ch; color: var(--hero-ink2); }
+.top q { color: var(--hero-ink); }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.nav a { color: var(--hero-ink); background: rgba(255,255,255,.1); border-radius: 999px; padding: 10px 14px; text-decoration: none; font: 600 14px/20px var(--ui); }
+.nav a:focus-visible, .tabs button:focus-visible, .open a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.item { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 16px; }
+.ihead { display: flex; gap: 14px; align-items: flex-start; }
+.ikey { flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--hero); color: var(--hero-ink); display: grid; place-items: center; font: 800 20px/1 var(--round); }
+.ihead > div { min-width: 0; }
+h2 { margin: 0; font: 700 22px/28px var(--ui); letter-spacing: -0.015em; text-wrap: balance; }
+.prob { margin: 4px 0 0; color: var(--ink2); max-width: 75ch; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tabs button { min-height: 44px; padding: 0 14px; border-radius: 12px; border: 0; background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); font: 600 15px/20px var(--ui); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+.rec { font: 700 12px/16px var(--ui); padding: 2px 8px; border-radius: 999px; background: var(--good-bg); color: var(--good); }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.opt { background: var(--surface); border-radius: 16px; padding: 12px 14px; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.opt.on { box-shadow: inset 0 0 0 2px var(--accent); }
+.opt p { margin: 0; font-size: 15px; line-height: 21px; }
+.opt .cost { margin-top: 6px; color: var(--ink2); }
+.frame { border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); background: var(--fill); }
+.frame iframe { display: block; width: 100%; height: min(980px, 88vh); border: 0; }
+.open { margin: 0; font-size: 14px; color: var(--ink2); }
+.open a { color: var(--accent); }
+.foot { color: var(--ink2); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; }
+@media (max-width: 520px) { .top h1 { font-size: 28px; line-height: 34px; } .frame iframe { height: 80vh; } }
+
+/* this round's tables: figures in columns, scrolling inside their own box on a phone */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.tbl table { border-collapse: collapse; width: 100%; min-width: 620px; font-variant-numeric: tabular-nums; font-size: 14px; }
+.tbl th, .tbl td { text-align: right; padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl th:first-child, .tbl td:first-child { text-align: left; white-space: normal; }
+.tbl th { font-weight: 600; color: var(--ink2); font-size: 13px; }
+.tbl tr:last-child td { border-bottom: 0; }
+#decide .opts { display: flex; flex-direction: column; gap: 12px; }
+#decide .opt.on { border-color: var(--line); }                /* six things to answer, none of them a selected option */
+#boards .opt { display: none; }                               /* only the open board's note shows */
+#boards .opt.on { display: block; border-color: var(--line); }
+.tbl td:first-child, .tbl th:first-child { min-width: 11em; }
+.tbl table.narrow { min-width: 0; }
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="k">MA-224 · figure redraw · Wed 25 Nov 2026</span>
+    <h1>The plan boards, redrawn to “All to cash”</h1>
+    <p>On 3 Nov you settled the surplus rule: <q>All to cash</q>. Each month’s surplus stays as cash, and nothing is swept into a holding or a loan. The Projection, Budget forecast and plan boards still showed figures from the older rule, where cash was held to six months of outgoings and the rest went into Balanced. The Projection page could not start until they were redrawn, and you said <q>Redraw first</q>.</p>
+    <p>This is not an options round. Nothing about the layouts changed: the 30-year figure set was regenerated under your rule and every figure on 14 boards (7 web, 7 iPhone) was moved to it. There are six things below for you to confirm or decide, then the boards themselves.</p>
+    <nav class="nav" aria-label="Sections"><a href="#moved">What moved</a><a href="#decide">For you to decide</a><a href="#boards">The boards</a></nav>
+  </header>
+
+  <section class="item" id="moved">
+    <div class="ihead"><span class="ikey">1</span><div><h2>What moved</h2><p class="prob">The paths are lower and their bands much narrower, because cash carries no market swings. Each year’s income, spending and surplus are exactly as before; what changed is where the surplus sits. All figures are illustrative.</p></div></div>
+    <div class="tbl"><table>
+      <thead><tr><th>Figure</th><th>Was, middle path</th><th>Was, 8 in 10 runs</th><th>Now, middle path</th><th>Now, 8 in 10 runs</th></tr></thead>
+      <tbody>
+        <tr><td>The 26 Oct run, 2036</td><td>£1,508,000</td><td>£1,146,000 to £1,920,000</td><td><b>£1,472,000</b></td><td>£1,213,000 to £1,710,000</td></tr>
+        <tr><td>The 26 Oct run, 2046</td><td>£3,697,000</td><td>£2,548,000 to £5,766,000</td><td><b>£3,378,000</b></td><td>£2,980,000 to £4,055,000</td></tr>
+        <tr><td>The 26 Oct run, 2056</td><td>£6,626,000</td><td>£3,419,000 to £11,990,000</td><td><b>£5,313,000</b></td><td>£4,597,000 to £6,356,000</td></tr>
+        <tr><td>5 Nov, before the plans, 2046</td><td>£3,897,000</td><td>£2,676,000 to £6,052,000</td><td><b>£3,548,000</b></td><td>£3,150,000 to £4,225,000</td></tr>
+        <tr><td>5 Nov, after the plans, 2046</td><td>£2,923,000</td><td>£2,188,000 to £4,058,000</td><td><b>£2,762,000</b></td><td>£2,364,000 to £3,439,000</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tbl"><table class="narrow">
+      <thead><tr><th>Cash at the end of the year, with the school fees saved</th><th>Was</th><th>Now</th></tr></thead>
+      <tbody>
+        <tr><td>2028</td><td>£30,240</td><td><b>£64,438</b></td></tr>
+        <tr><td>2029</td><td>£35,168</td><td><b>£70,406</b></td></tr>
+        <tr><td>2036</td><td>£62,487</td><td><b>£144,781</b></td></tr>
+        <tr><td>2046</td><td>£26,894</td><td><b>£1,075,189</b></td></tr>
+      </tbody>
+    </table></div>
+    <p class="prob">Unchanged: 2029’s surplus (−£1,285), the 50 months under your £500 floor and the £19,058 gap, the school fees pot, the wedding’s cash below zero from June 2027 to March 2028, and every plan’s own amounts.</p>
+  </section>
+
+  <section class="item" id="decide">
+    <div class="ihead"><span class="ikey">2</span><div><h2>For you to decide</h2><p class="prob">The first is two readings I made of your rule. The next two are places where the story shifts, not only the numbers. Nothing in them has been re-ranked or redesigned.</p></div></div>
+    <div class="opts">
+      <div class="opt on"><p class="why"><b>1 · Two readings of the rule.</b> In retirement a gap now comes out of cash first, and Balanced is sold only if cash runs out; the old set had Balanced pay any gap. In the new set no retirement year sells anything (2053’s gap of £39,119 is paid from cash that stands at about £2.2m). And the design aid keeps one cash figure in pounds, where the plan says “in its own currency”: a rupee flow is converted at its month’s rate.</p><p class="cost"><b>Your call:</b> confirm both, or say how either should work.</p></div>
+      <div class="opt on"><p class="why"><b>2 · The wedding’s three ways.</b> “Take it from Balanced (ISA)” is still ranked first, carries the primary button and is the one applied at 21:17. It used to tie with moving the extension at £3,041,000. Now it has the lowest 2046 figure of the three: £2,840,000, against £2,863,000 for moving the extension and £2,846,000 for pausing the pot. Applying it now reads “£2,862,000 → £2,840,000”, a fall of £22,000.</p><p class="cost"><b>Your call:</b> keep the order and the applied way, or change which way is first and applied.</p></div>
+      <div class="opt on"><p class="why"><b>3 · The schooling gap’s three ways.</b> Against the plan as saved, at 2046: the pot is now level (was +£5,000), trimming spending is +£108,000 (was +£123,000), and taking the gap from the ISA is −£20,000 (was +£2,000). The pot, the way applied, no longer moves the Projection’s headline at all; its case now rests on “months under £500: 50 → 0”. The boards write the pot’s comparison as “No change”.</p><p class="cost"><b>Your call:</b> is “take the gap from Balanced (ISA)” still a way to offer third, now that every surplus sits in cash?</p></div>
+      <div class="opt on"><p class="why"><b>4 · Chart axes sized for the old figures.</b> The figures are right, but the scales were not touched. On the Projection the 20-year fan tops out near £4m on an axis that runs to £6.5m (62% of the height, was 89%), and at 30 years 49% (was 92%); the three end labels sit close together. On the Budget forecast’s 30-year chart the four retirement years now draw as grey bars cut off at the axis’s −£1k bound (the leanest months are about −£3,300 to −£3,600), with no break mark.</p><p class="cost"><b>Your call:</b> rescale the axes and gridlines to fit, and add a break below on the 30-year chart, or leave them.</p></div>
+      <div class="opt on"><p class="why"><b>5 · The cash rate is not on the Assumptions panel.</b> The panel and “What your money earns” list 6% UK funds, 9.06% Parag Parikh, property and 7.1% deposits, but not the 3% that cash earns, which is now what every month’s surplus earns.</p><p class="cost"><b>Your call:</b> add a cash row to the assumptions, or leave it out.</p></div>
+      <div class="opt on"><p class="why"><b>6 · Words that were changed.</b> On the Budget forecast’s 30-year state: “Balanced (ISA) pays the rest of the budget, so the surplus sits at £0” became “cash pays the rest of the budget, so the surplus is below £0”, and the foot and one note the same way. On the web Plans in the chat board: “each with its own middle path” became “each with its run’s middle path (R1’s and R2’s are the same, £2,441,000)”, and “moves with each Confirm” became “runs again with each Confirm”. The figure set’s README says cash pays first in retirement.</p><p class="cost"><b>Your call:</b> confirm, or give the words you want.</p></div>
+    </div>
+  </section>
+
+  <section class="item" id="boards">
+    <div class="ihead"><span class="ikey">3</span><div><h2>The boards</h2><p class="prob">Each tab opens the whole board as it now stands. Boards scroll inside the frame; “Open in a new tab” shows one full size.</p></div></div>
+    <div class="tabs" role="tablist" aria-label="Boards"><button type="button" role="tab" id="t-b-0" aria-selected="true" data-src="app-v1/Web%20v4%20%C2%B7%20Projection.dc.html" data-panel="b" data-opt="0">Web · Projection</button><button type="button" role="tab" id="t-b-1" aria-selected="false" data-src="app-v1/Web%20v4%20%C2%B7%20Budget%20forecast.dc.html" data-panel="b" data-opt="1">Web · Budget forecast</button><button type="button" role="tab" id="t-b-2" aria-selected="false" data-src="app-v1/Web%20v4%20%C2%B7%20Budget%20forecast%201a%20states.dc.html" data-panel="b" data-opt="2">Web · Budget forecast, states</button><button type="button" role="tab" id="t-b-3" aria-selected="false" data-src="app-v1/Web%20v4%20%C2%B7%20Plans%20in%20the%20chat.dc.html" data-panel="b" data-opt="3">Web · Plans in the chat</button><button type="button" role="tab" id="t-b-4" aria-selected="false" data-src="app-v1/Web%20v4%20%C2%B7%20Plans%20in%20the%20chat%202a%20states.dc.html" data-panel="b" data-opt="4">Web · Plans in the chat, states</button><button type="button" role="tab" id="t-b-5" aria-selected="false" data-src="app-v1/Web%20v4%20%C2%B7%20Plans%20tab.dc.html" data-panel="b" data-opt="5">Web · Plans tab</button><button type="button" role="tab" id="t-b-6" aria-selected="false" data-src="app-v1/Web%20v4%20%C2%B7%20Plans%20tab%203a%20states.dc.html" data-panel="b" data-opt="6">Web · Plans tab, states</button><button type="button" role="tab" id="t-b-7" aria-selected="false" data-src="ios-v1/iPhone%20v4%20%C2%B7%20Projection.dc.html" data-panel="b" data-opt="7">iPhone · Projection</button><button type="button" role="tab" id="t-b-8" aria-selected="false" data-src="ios-v1/iPhone%20v4%20%C2%B7%20Budget%20forecast.dc.html" data-panel="b" data-opt="8">iPhone · Budget forecast</button><button type="button" role="tab" id="t-b-9" aria-selected="false" data-src="ios-v1/iPhone%20v4%20%C2%B7%20Budget%20forecast%201a%20states.dc.html" data-panel="b" data-opt="9">iPhone · Budget forecast, states</button><button type="button" role="tab" id="t-b-10" aria-selected="false" data-src="ios-v1/iPhone%20v4%20%C2%B7%20Plans%20in%20the%20chat.dc.html" data-panel="b" data-opt="10">iPhone · Plans in the chat</button><button type="button" role="tab" id="t-b-11" aria-selected="false" data-src="ios-v1/iPhone%20v4%20%C2%B7%20Plans%20in%20the%20chat%202a%20states.dc.html" data-panel="b" data-opt="11">iPhone · Plans in the chat, states</button><button type="button" role="tab" id="t-b-12" aria-selected="false" data-src="ios-v1/iPhone%20v4%20%C2%B7%20Plans%20tab.dc.html" data-panel="b" data-opt="12">iPhone · Plans tab</button><button type="button" role="tab" id="t-b-13" aria-selected="false" data-src="ios-v1/iPhone%20v4%20%C2%B7%20Plans%20tab%203a%20states.dc.html" data-panel="b" data-opt="13">iPhone · Plans tab, states</button></div>
+    <div class="opts"><div class="opt on" data-panel="b" data-opt="0"><p class="why"><b>Web · Projection.</b> The three fans, the hero figures and their ranges, the decades, the what-if (2036 with the flat £1,395,000 against £1,472,000) and the rupee figure at 2026 prices (₹23,19,00,000 in 2046).</p></div><div class="opt" data-panel="b" data-opt="1"><p class="why"><b>Web · Budget forecast.</b> Closing cash for every year from 2028, the “Cash, end of December” tile (£70,406 for 2029) and the small fan. Income, spending, EMIs and each surplus are unchanged.</p></div><div class="opt" data-panel="b" data-opt="2"><p class="why"><b>Web · Budget forecast, states.</b> Closing cash in every state, and the 30-year state: 2053 to 2056 now show cash paying the gap (surplus about −£39,000 to −£43,000 a year) where Balanced used to. See decision 4 for the chart there.</p></div><div class="opt" data-panel="b" data-opt="3"><p class="why"><b>Web · Plans in the chat.</b> The three fans, the impact card (▼ £157,000 · ▼ £505,000 · ▼ £1,107,000), the three ways (£2,441,000, £2,549,000, £2,421,000) and “Against the plan saved”: No change, +£108,000, −£20,000.</p></div><div class="opt" data-panel="b" data-opt="4"><p class="why"><b>Web · Plans in the chat, states.</b> Six fans, the salary step (▲ £321,000), the loan closure (unchanged at £2,762,000), the wedding (▼ £35,000) and its three ways. See decision 2.</p></div><div class="opt" data-panel="b" data-opt="5"><p class="why"><b>Web · Plans tab.</b> The run’s 2046 figures: £2,762,000, between £2,364,000 and £3,439,000. The plans’ own amounts and the pot did not move.</p></div><div class="opt" data-panel="b" data-opt="6"><p class="why"><b>Web · Plans tab, states.</b> The run table for each edit: £2,802,000 paused, £2,762,000 resumed, £2,858,000 with the fees ending a year sooner, £2,897,000 with the car ended, £2,862,000 with the wedding.</p></div><div class="opt" data-panel="b" data-opt="7"><p class="why"><b>iPhone · Projection.</b> The same figures as the web board, on iPhone and iPad frames.</p></div><div class="opt" data-panel="b" data-opt="8"><p class="why"><b>iPhone · Budget forecast.</b> The same rows as the web board.</p></div><div class="opt" data-panel="b" data-opt="9"><p class="why"><b>iPhone · Budget forecast, states.</b> The same rows and the same retirement wording as the web board.</p></div><div class="opt" data-panel="b" data-opt="10"><p class="why"><b>iPhone · Plans in the chat.</b> The same figures as the web board.</p></div><div class="opt" data-panel="b" data-opt="11"><p class="why"><b>iPhone · Plans in the chat, states.</b> The same figures as the web board.</p></div><div class="opt" data-panel="b" data-opt="12"><p class="why"><b>iPhone · Plans tab.</b> The same figures as the web board.</p></div><div class="opt" data-panel="b" data-opt="13"><p class="why"><b>iPhone · Plans tab, states.</b> The same run table as the web board.</p></div></div>
+    <p class="open"><a id="o-b" href="app-v1/Web%20v4%20%C2%B7%20Projection.dc.html" target="_blank" rel="noopener">Open this board in a new tab</a></p>
+    <div class="frame"><iframe id="f-b" src="app-v1/Web%20v4%20%C2%B7%20Projection.dc.html" title="The board"></iframe></div>
+  </section>
+
+  <p class="foot">How it was done: every figure was traced to its place in the old figure set and replaced with the new set’s value at the same place; arrays and embedded forecast rows were rewritten whole and compared with the set by script; six parallel passes, one per board pair, settled the rest and the words. All 14 boards load without errors. Not changed: Prototype v5 and its figure files (your rule), and the dated records of earlier rounds. Illustrative figures and names only.</p>
+</div>
+<script>
+(function () {
+  document.querySelectorAll('.tabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var k = b.getAttribute('data-panel'), o = b.getAttribute('data-opt');
+      document.querySelectorAll('.tabs button[data-panel="' + k + '"]').forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+      document.querySelectorAll('.opt[data-panel="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-opt') === o); });
+      var f = document.getElementById('f-' + k), a = document.getElementById('o-' + k);
+      f.src = b.getAttribute('data-src'); a.href = b.getAttribute('data-src');
+    });
+  });
+})();
+</script>
