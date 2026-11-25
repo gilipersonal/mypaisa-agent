@@ -102,4 +102,12 @@ Motion at full frame rate (the screenshots are taken with motion off; the mark's
 
 ## The pick
 
-Not made yet.
+Arun, Wed 25 Nov 2026, asked item by item on the round's page:
+
+- **a · the desktop web chat:** 1a, the iPad's sheet at every desktop width.
+- **b · Home's header controls:** 1a, four labelled pills at the top right.
+- **c · interactive Home charts:** 1a, two cards that answer each other.
+- **d · the mark:** 1a, watcher at work.
+
+Nothing is built until the picked boards are carried into `app-v1/`, `ios-v1/` and `ds-v1/` with their remaining
+states, and the records that state a changed rule are changed with them (rule 5 of `.claude/rules/plan-sync.md`).
