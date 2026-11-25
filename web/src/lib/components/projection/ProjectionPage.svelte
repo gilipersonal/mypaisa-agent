@@ -3,23 +3,29 @@
 	// net worth is heading. The title is the picker for its three views; Net worth is this page: the fan to a horizon
 	// with its milestones on the line, the shortcut chips that ask in the chat, then the milestones, the plan items and
 	// the assumptions with their sources. An admin corrects an assumption or a plan item in place; nothing is created
-	// or deleted here. £ or ₹ follow the member's own choice (made on Home until the app's currency pill, MA-279), and
-	// the eye hides every amount. Plans (MA-222) is its own story, named in the menu; Budget forecast is MA-262's view,
+	// or deleted here. The head's four pills (MA-358, Web v4 · Header controls b 1a) sit at its top right, beside the
+	// title menu and never sharing a control with it: the currency they set is the one the figures are in, and Hide
+	// amounts hides every amount. Plans (MA-222) is its own story, named in the menu; Budget forecast is MA-262's view,
 	// in place under the same title, keeping the horizon and the money.
 	import { createMutation, createQuery, keepPreviousData, useQueryClient } from '@tanstack/svelte-query';
 	import { tick } from 'svelte';
-	import Eye from '@lucide/svelte/icons/eye';
-	import EyeOff from '@lucide/svelte/icons/eye-off';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
-	import { correctProjectionMutation, plansQuery, projectionQuery, wealthKeys } from '#lib/api/queries.ts';
+	import {
+		correctProjectionMutation,
+		overviewQuery,
+		plansQuery,
+		projectionQuery,
+		wealthKeys
+	} from '#lib/api/queries.ts';
 	import BudgetForecast from '#lib/components/forecast/BudgetForecast.svelte';
+	import { useHeaderChoice } from '#lib/components/header/choice.svelte.ts';
+	import HeaderControls from '#lib/components/header/HeaderControls.svelte';
 	import PlansView from '#lib/components/plans/PlansView.svelte';
 	import { useShell } from '#lib/components/shell/actions.ts';
-	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
 	import Amount from '#lib/components/wealth/Amount.svelte';
 	import { useWealth } from '#lib/components/wealth/context.ts';
 	import { TestIDs } from '#lib/test-ids.ts';
-	import { readCurrency } from '#lib/wealth/prefs.ts';
+	import type { Overview } from '#lib/wealth/overview.ts';
 	import {
 		DEFAULT_HORIZON,
 		HORIZONS,
@@ -35,19 +41,11 @@
 	import { MONEY, VIEWS, moneyOf, viewOf, type ViewId } from './views.ts';
 
 	const source = useWealth();
-	const privacy = usePrivacy();
+	const choice = useHeaderChoice();
 	const shell = useShell();
 	const queries = useQueryClient();
 
-	function storage(): Storage | undefined {
-		try {
-			return window.localStorage;
-		} catch {
-			return undefined;
-		}
-	}
-
-	const currency = readCurrency(storage());
+	const currency = $derived(choice.currency);
 	let view = $state<ViewId>('net');
 	let horizon = $state<Horizon>(DEFAULT_HORIZON);
 	let money = $state<MoneyBasis>('nominal');
@@ -66,6 +64,17 @@
 		// As a records.changed frame does (MA-208): every wealth page reads again. On stubbed data the fan it reads is
 		// the same stored run, since no engine is behind the seam yet; only the corrected row and its saved state move.
 		onSuccess: () => queries.invalidateQueries({ queryKey: wealthKeys.all })
+	}));
+
+	// Whose view lists the household's members, and the currency menu the day's rate, from the overview Home reads
+	// with the same key, so coming from Home it is already in hand.
+	const people = createQuery(() => ({
+		...overviewQuery(source, choice.view, choice.currency),
+		placeholderData: keepPreviousData,
+		select: (o: Overview) => ({
+			views: o.views,
+			rate: o.hero.rate
+		})
 	}));
 
 	// The Plans view (MA-222): read only while it is the view shown.
@@ -132,20 +141,7 @@
 						: forecastHead || current.head}
 			</p>
 		</div>
-		<div class="hctl">
-			<button
-				type="button"
-				class="iconbtn"
-				class:on={privacy.on}
-				aria-label="Privacy mode: hide amounts"
-				aria-pressed={privacy.on}
-				onclick={() => {
-					privacy.toggle();
-				}}
-			>
-				{#if privacy.on}<EyeOff class="lc" aria-hidden="true" />{:else}<Eye class="lc" aria-hidden="true" />{/if}
-			</button>
-		</div>
+		<HeaderControls views={people.data?.views} rate={people.data?.rate} />
 	</header>
 
 	{#if view === 'plans' && plans.data && !plans.data.empty}

@@ -6,7 +6,8 @@
 </script>
 
 <script lang="ts">
-	// The hero (board 1a): net worth in pounds or rupees, what last moved it, and the rate with its day. When a
+	// The hero (board 1a, with MA-358's head): net worth in the member's currency, what last moved it, and the rate with
+	// its day; the currency is the head's pill now, so the card carries no switch. When a
 	// confirmed change lands, the figure rolls from the old total to the new one and "Just now" pops once; under Reduce
 	// Motion the new figure simply stands. An empty household gets words, never £0.
 	import ArrowLeftRight from '@lucide/svelte/icons/arrow-left-right';
@@ -16,13 +17,9 @@
 	import { maskAmounts } from '#lib/privacy/mask.ts';
 	import { TestIDs } from '#lib/test-ids.ts';
 	import { JUST_NOW_MS, isJustNow, rollAt } from '#lib/wealth/fresh.ts';
-	import type { DisplayCurrency, Hero } from '#lib/wealth/overview.ts';
+	import type { Hero } from '#lib/wealth/overview.ts';
 
-	let {
-		hero,
-		currency,
-		onCurrency
-	}: { hero: Hero; currency: DisplayCurrency; onCurrency: (currency: DisplayCurrency) => void } = $props();
+	let { hero }: { hero: Hero } = $props();
 
 	const privacy = usePrivacy();
 	let rolling = $state<Decimal | undefined>();
@@ -62,35 +59,7 @@
 </script>
 
 <section class="mp-hero hero" aria-label="Net worth" data-testid={TestIDs.homeHero}>
-	<div class="flex items-center justify-between gap-3">
-		<span class="mp-over mp-hero-2">{hero.over}</span>
-		<div class="mp-seg ccy" role="group" aria-label="Show amounts in">
-			<button
-				type="button"
-				class="mp-seg-i seg-s"
-				class:on={currency === 'GBP'}
-				aria-label="Pounds"
-				aria-pressed={currency === 'GBP'}
-				onclick={() => {
-					onCurrency('GBP');
-				}}
-			>
-				£ GBP
-			</button>
-			<button
-				type="button"
-				class="mp-seg-i seg-s"
-				class:on={currency === 'INR'}
-				aria-label="Rupees"
-				aria-pressed={currency === 'INR'}
-				onclick={() => {
-					onCurrency('INR');
-				}}
-			>
-				₹ INR
-			</button>
-		</div>
-	</div>
+	<span class="mp-over mp-hero-2">{hero.over}</span>
 	{#if hero.net}
 		<div class="flex flex-wrap items-center gap-3">
 			<span class="mp-num-hero nowrap" aria-hidden={rolling !== undefined && !privacy.on}>

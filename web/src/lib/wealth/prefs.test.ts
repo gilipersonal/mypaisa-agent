@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { KeyValue } from '#lib/chat/outbox.ts';
-import { readCurrency, saveCurrency } from './prefs.ts';
+import { HOUSEHOLD_VIEW, readCurrency, readView, saveCurrency, saveView } from './prefs.ts';
 
 function memory(): KeyValue {
 	const map = new Map<string, string>();
@@ -40,6 +40,29 @@ describe('the currency a member reads totals in', () => {
 			saveCurrency(blocked, 'INR');
 			saveCurrency(blocked, 'GBP');
 			saveCurrency(undefined, 'INR');
+		}).not.toThrow();
+	});
+});
+
+describe('whose view a member reads', () => {
+	it('is the household until they choose a member, and is remembered', () => {
+		const store = memory();
+		expect(readView(store)).toBe(HOUSEHOLD_VIEW);
+		saveView(store, 'asha');
+		expect(readView(store)).toBe('asha');
+		saveView(store, HOUSEHOLD_VIEW);
+		expect(readView(store)).toBe(HOUSEHOLD_VIEW);
+		expect(store.getItem('mp.view')).toBeNull();
+		saveView(store, '');
+		expect(readView(store)).toBe(HOUSEHOLD_VIEW);
+	});
+
+	it('is the household when storage is missing or blocked', () => {
+		expect(readView(undefined)).toBe(HOUSEHOLD_VIEW);
+		expect(readView(blocked)).toBe(HOUSEHOLD_VIEW);
+		expect(() => {
+			saveView(blocked, 'asha');
+			saveView(undefined, 'asha');
 		}).not.toThrow();
 	});
 });
