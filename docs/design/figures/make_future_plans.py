@@ -119,6 +119,7 @@ ASSET_CLASS = {
     "infosys": ("INR", "equity_in"),
 }
 CASH_IDS = ("pot", "monzo_savings", "nre")             # the cash the ledger keeps: Monzo pot and savings, NRE savings
+PROPERTY_IDS = ("home", "pune")                       # the two homes; "invested" on Home is everything owned but these (MA-355)
 RET = {"equity_uk": G["equity_uk (Balanced and ETFs)"], "equity_in": G["equity_in (Parag Parikh)"],
        "property_uk": G["property_uk"], "property_in": G["property_in"], "ppf": 0.071, "lic": 0.06}
 VOL = {"equity_uk": 0.16, "equity_in": 0.20, "property_uk": 0.08, "property_in": 0.10}
@@ -341,11 +342,13 @@ def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict]
         own = sum(val / (f if ASSET_CLASS[k][0] == "INR" else 1) for k, val in v.items()) + cash + sum(pots.values())
         owe = sum(l["bal"] / (f if k == "hdfc" else 1) for k, l in loans.items()) + (card_owed if i == -1 else 0)
         net = own - owe
+        prop = sum(v[k] / (f if ASSET_CLASS[k][0] == "INR" else 1) for k in PROPERTY_IDS)
         row.update({"income": inc, "plans_income": {k: a for k, a in rec.items() if a > 0}, "spend": spend,
                     "emis": emis, "sip": sip, "premium": premium, "plans_spend": {k: a for k, a in rec.items() if a < 0},
                     "surplus_before_pool": surplus, "pot_in": pot_in, "pot_draw": pot_draw, "retired_draw": retired_draw, "surplus": surplus_after,
                     "one_offs": one, "maturities": mat, "closed": closed, "pool_cash": pool_cash, "settle": settle, "interest": interest,
-                    "closing_cash": cash, "pots": dict(pots), "net_worth": net, "income_total": income})
+                    "closing_cash": cash, "pots": dict(pots), "net_worth": net, "income_total": income,
+                    "invested": own - prop, "owed": owe})
         # the ledger's identity, every month
         flows = surplus_after + one_total + sum(mat.values()) + sum(closed.values()) + pool_cash + settle + interest
         assert abs(row["opening_cash"] + flows - cash) < 1e-6
@@ -599,6 +602,53 @@ WHAT_IF_26 = {"id": "flat2", "what": "Second flat deposit", "effect": "new_flow"
               "source_text": "What if we put £60,000 down on a second flat in June 2028?", "status": "active"}
 
 
+def home_charts(ms, run_id, when):
+    """MA-355, Home's two chart cards (Arun, 25 Nov 2026): "Invested against owed" and "Where the growth comes from".
+    Invested is everything owned except property: cash, deposits, investments and pensions. Month by month on the
+    run's plan path (no market swings, future pounds): the two lines, the first month invested is at or above owed,
+    and for 5, 10, 20 and 30 years the invested total split into three parts that add up to it."""
+    v0 = assets_at_start()
+    own0 = sum(val / (FX0 if (k in ASSET_CLASS and ASSET_CLASS[k][0] == "INR") or k == "nre" else 1) for k, val in v0.items())
+    inv0 = own0 - sum(v0[k] / (FX0 if ASSET_CLASS[k][0] == "INR" else 1) for k in PROPERTY_IDS)
+    owe0 = D["mortgage"]["balance"] + D["car"]["balance"] + D["hdfc"]["balance"] / FX0      # nothing on the card on 26 Oct
+    months = [{"month": r["label"], "invested": round(r["invested"]), "owed": round(r["owed"])} for r in ms]
+    k = next(i for i, r in enumerate(ms) if r["invested"] >= r["owed"])
+    assert k > 0 and ms[k - 1]["invested"] < ms[k - 1]["owed"] and all(r["invested"] >= r["owed"] for r in ms[k:])
+
+    def saved(r):
+        # what the month put in from income: the surplus kept as cash and the pots, the SIP and the LIC premium, less
+        # the one-off plans, a card bill or a loan closed from cash; pension income and Balanced sold in retirement
+        # only move money already counted, so they are taken out
+        pension = sum(a for key, a in r["income"].items() if key.startswith("pension_"))
+        return (r["surplus"] - pension - r["retired_draw"] + r["pot_in"] - r["pot_draw"] + sum(r["one_offs"].values())
+                + sum(r["closed"].values()) + r["settle"] + r["sip"] + r["premium"])
+
+    horizons = {}
+    for h in (5, 10, 20, 30):
+        e = idx(2026 + h, 12)
+        total = ms[e]["invested"]
+        s = sum(saved(r) for r in ms[:e + 1])
+        parts = lr_round({"held_today": inv0, "saved_from_income": s, "growth_and_interest": total - inv0 - s}, total)
+        assert sum(parts.values()) == round(total) and min(parts.values()) >= 0, (h, parts)
+        horizons[str(h)] = {"to": ms[e]["label"], "invested": round(total), "owed": round(ms[e]["owed"]), **parts,
+                            "growth_share": round((total - inv0 - s) / total, 3)}
+    return {
+        "about": "Home's two chart cards (MA-355, Arun's pick 1a on Wed 25 Nov 2026): Invested against owed, and Where the growth comes from",
+        "invested_is": "Everything owned except property: cash, deposits, investments and pensions. Property is the two homes (Home, Reading and Flat, Pune).",
+        "owed_is": "The mortgage, the HDFC home loan and the car loan, each run off at its own rate and payment; nothing is owed on the card on Mon 26 Oct.",
+        "run": run_id, "when": when,
+        "path": "the plan's path: the run with no market swings, in future pounds, every month's surplus kept as cash",
+        "today": {"label": H["clock"]["today_label"], "invested": round(inv0), "owed": round(owe0)},
+        "months": months,
+        "crossing": {"month": ms[k]["label"], "invested": round(ms[k]["invested"]), "owed": round(ms[k]["owed"]),
+                     "month_before": {"month": ms[k - 1]["label"], "invested": round(ms[k - 1]["invested"]), "owed": round(ms[k - 1]["owed"])}},
+        "horizons": horizons,
+        "parts": {"held_today": "what is invested today",
+                  "saved_from_income": "each month's surplus kept as cash, the SIP and the LIC premiums, less the plans paid from cash",
+                  "growth_and_interest": "markets, deposit and cash interest, less the rupee's drift: what is left once the other two are taken from the total"},
+    }
+
+
 def with_(plans, pid, **kw):
     return [dict(p, **kw) if p["id"] == pid else p for p in plans]
 
@@ -623,6 +673,7 @@ def build2(B):
     out["R26"] = {"when": "Mon 26 Oct 09:53", "after": "the Monzo savings (09:41) and the home's new value (09:52)",
                   "start": H["totals_after_correction"]["net_gbp"], "fan": fan26,
                   "assumptions": {"salary growth Arun": G["salary growth Arun"], "Asha's bonus growth": None}}
+    out["home_charts"] = home_charts(ms26, "R26", "Mon 26 Oct 09:53")
     out["what_if_26"] = {"when": "Mon 26 Oct 10:20", "asked": WHAT_IF_26["source_text"], "fan": wi,
                          "middle_path_2036": at(wi, 2036), "today_2036": at(fan26, 2036), "change_2036": at(wi, 2036) - at(fan26, 2036),
                          "middle_path_2046": at(wi, 2046), "today_2046": at(fan26, 2046), "change_2046": at(wi, 2046) - at(fan26, 2046),

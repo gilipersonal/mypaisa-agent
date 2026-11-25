@@ -1,0 +1,142 @@
+<title>Four Design Changes</title>
+
+<meta name="claude:viewport-fit-sides" content="cover">
+
+<style>
+/* Layout: one reading column of items, each with its options as tabs over a framed board. Warm ledger tokens (MyPaisa DS v1). */
+:root {
+  --bg: #F6F4F1; --surface: #FFFFFF; --fill: #F0EDE8; --line: #E4E0DA; --ink: #14171F; --ink2: #4E5462;
+  --accent: #C2381F; --on-accent: #FFFFFF; --hero: #13213A; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #1D7A3E; --good-bg: #E2F2E7; --focus: #2453C9;
+  --ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+  --round: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0A0F18; --surface: #151C27; --fill: #1E2633; --line: #283141; --ink: #F3F5F8; --ink2: #C5CCD7;
+  --accent: #FFAF9B; --on-accent: #1A0B06; --hero: #1A2944; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #5BDB8B; --good-bg: #16301F; --focus: #8FB2FF; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0A0F18; --surface: #151C27; --fill: #1E2633; --line: #283141; --ink: #F3F5F8; --ink2: #C5CCD7;
+  --accent: #FFAF9B; --on-accent: #1A0B06; --hero: #1A2944; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #5BDB8B; --good-bg: #16301F; --focus: #8FB2FF; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--ui); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 28px; }
+.top { background: var(--hero); color: var(--hero-ink); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.top .k { font: 600 13px/18px var(--mono); color: var(--hero-ink2); }
+.top h1 { margin: 0; font: 800 34px/40px var(--round); letter-spacing: -0.02em; text-wrap: balance; }
+.top p { margin: 0; max-width: 70ch; color: var(--hero-ink2); }
+.top q { color: var(--hero-ink); }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.nav a { color: var(--hero-ink); background: rgba(255,255,255,.1); border-radius: 999px; padding: 10px 14px; text-decoration: none; font: 600 14px/20px var(--ui); }
+.nav a:focus-visible, .tabs button:focus-visible, .open a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.item { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 16px; }
+.ihead { display: flex; gap: 14px; align-items: flex-start; }
+.ikey { flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--hero); color: var(--hero-ink); display: grid; place-items: center; font: 800 20px/1 var(--round); }
+.ihead > div { min-width: 0; }
+h2 { margin: 0; font: 700 22px/28px var(--ui); letter-spacing: -0.015em; text-wrap: balance; }
+.prob { margin: 4px 0 0; color: var(--ink2); max-width: 75ch; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tabs button { min-height: 44px; padding: 0 14px; border-radius: 12px; border: 0; background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); font: 600 15px/20px var(--ui); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+.rec { font: 700 12px/16px var(--ui); padding: 2px 8px; border-radius: 999px; background: var(--good-bg); color: var(--good); }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.opt { background: var(--surface); border-radius: 16px; padding: 12px 14px; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.opt.on { box-shadow: inset 0 0 0 2px var(--accent); }
+.opt p { margin: 0; font-size: 15px; line-height: 21px; }
+.opt .cost { margin-top: 6px; color: var(--ink2); }
+.frame { border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); background: var(--fill); }
+.frame iframe { display: block; width: 100%; height: min(980px, 88vh); border: 0; }
+.open { margin: 0; font-size: 14px; color: var(--ink2); }
+.open a { color: var(--accent); }
+.foot { color: var(--ink2); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; }
+@media (max-width: 520px) { .top h1 { font-size: 28px; line-height: 34px; } .frame iframe { height: 80vh; } }
+
+/* this round's tables: figures in columns, scrolling inside their own box on a phone */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.tbl table { border-collapse: collapse; width: 100%; min-width: 620px; font-variant-numeric: tabular-nums; font-size: 14px; }
+.tbl th, .tbl td { text-align: right; padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl th:first-child, .tbl td:first-child { text-align: left; white-space: normal; }
+.tbl th { font-weight: 600; color: var(--ink2); font-size: 13px; }
+.tbl tr:last-child td { border-bottom: 0; }
+#decide .opts { display: flex; flex-direction: column; gap: 12px; }
+#decide .opt.on { border-color: var(--line); }                /* six things to answer, none of them a selected option */
+#boards .opt { display: none; }                               /* only the open board's note shows */
+#boards .opt.on { display: block; border-color: var(--line); }
+.tbl td:first-child, .tbl th:first-child { min-width: 11em; }
+.tbl table.narrow { min-width: 0; }
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="k">MA-355 · options round · Wed 25 Nov 2026</span>
+    <h1>Four changes you asked for, 2 or 3 ways each</h1>
+    <p>You sent five pictures and asked for the desktop chat as a sheet, Home’s controls at the top right, more interactive charts on Home, and an animated mark. Each is drawn below as 2 or 3 options, on the Warm ledger design system, in light and dark. Nothing is built and no picked board has changed.</p>
+    <p>Pick one option per item, or say “none of these” for any item and what to change. The first tab of each item is the one I would pick, with the reason.</p>
+    <nav class="nav" aria-label="Items"><a href="#a">a · Desktop chat</a><a href="#b">b · Home’s controls</a><a href="#c">c · Home charts</a><a href="#d">d · The mark</a></nav>
+  </header>
+  <section class="item" id="a">
+  <div class="ihead"><span class="ikey">a</span><div><h2>The desktop web chat, as a sheet</h2><p class="prob">Your words: “The web / pwa desktop version chat should look like” the first picture, the iPad’s chat sheet over the page. Today the web draws the chat as a column beside the page from about 1393 px and as a drawer below that.</p></div></div>
+  <div class="tabs" role="tablist" aria-label="Options for The desktop web chat, as a sheet"><button type="button" role="tab" id="t-a-1a" aria-selected="true" data-src="reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1a" data-panel="a" data-opt="1a">1a · The iPad’s sheet, at every desktop width <span class=rec>Recommended</span></button><button type="button" role="tab" id="t-a-1b" aria-selected="false" data-src="reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1b" data-panel="a" data-opt="1b">1b · A sheet at the side; the page stays live</button><button type="button" role="tab" id="t-a-1c" aria-selected="false" data-src="reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1c" data-panel="a" data-opt="1c">1c · An ask bar on every page; the sheet rises from it</button></div>
+  <div class="opts"><div class="opt on" data-panel="a" data-opt="1a"><p class="why"><b>1a · The iPad’s sheet, at every desktop width.</b> Your picture as drawn: a 600 px sheet centred in the window, a grabber and “Chat” at its top, the page dimmed behind it and the sidebar still in view. From 1024 px the chat is always this sheet and never a column, so the web and the iPad draw one chat and the page keeps its full width (1,180 px at 1440, where today’s column leaves about 788).</p><p class="cost"><b>Trade-off:</b> The page cannot be read or corrected while the chat is open, and the rule “the chat beside every screen from about 1393” would then hold nowhere, so it changes in every record that states it.</p></div><div class="opt" data-panel="a" data-opt="1b"><p class="why"><b>1b · A sheet at the side; the page stays live.</b> The same rounded sheet docked at the right with no dimming: beside the page from about 1393 px (400 px wide), floating over the page’s right edge from 1024 to 1392 px (372 px wide). You can watch a figure move while you talk.</p><p class="cost"><b>Trade-off:</b> The furthest from your picture, and a plan card is only about 300 px wide. It is the smallest build and changes no rule.</p></div><div class="opt" data-panel="a" data-opt="1c"><p class="why"><b>1c · An ask bar on every page; the sheet rises from it.</b> A composer at the foot of every page. Typing raises a 720 px sheet over the page’s own column, with no dimming and no column at any width. It gives the widest cards and one-keystroke reach.</p><p class="cost"><b>Trade-off:</b> The bar covers the foot of every page for good, and it is the ask bar you passed over when you picked 1a Chat beside on MA-193.</p></div></div>
+  <p class="prob"><b>If picked, it changes:</b> the web shell (<code>AppShell.svelte</code>, <code>shell.css</code>, the chat panel as a dialog with a focus trap), the board Web v4 · Shell and chat and every web board that draws the chat beside a page; for 1a and 1c also the width rule in ARCHITECTURE, the design-first skill and the tokens’ comments.</p>
+  <p class="prob"><b>Yours to settle with the pick:</b> does the 1393 px rule go on the web (1a and 1c drop the column, 1b keeps it); should a click on the dimmed page close the sheet (drawn as closing, with Esc and the close button); is ⌘J wanted as a shortcut for the chat (it is not in the app today; on Windows Ctrl+J is the browser’s Downloads).</p>
+  <div class="frame"><iframe id="f-a" title="Desktop chat options" loading="lazy" src="reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1a"></iframe></div>
+  <p class="open"><a id="o-a" href="reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1a" target="_blank" rel="noopener">Open this option’s board on its own</a> · the whole canvas: <a href="reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html" target="_blank" rel="noopener">a · Desktop chat sheet.dc.html</a></p>
+</section>
+  <section class="item" id="b">
+  <div class="ihead"><span class="ikey">b</span><div><h2>Home’s header: whose view as a dropdown, with currency, light or dark and Hide amounts at the top right</h2><p class="prob">Your words: “The homepage should show these as dropdowns. There should be light/dark switch on top right corner, along with ability to switch currencies”, with the pills in your third picture as the reference; and for mobile and iOS, “use your best judgement, show me 2-3 design”.</p></div></div>
+  <div class="tabs" role="tablist" aria-label="Options for Home’s header: whose view as a dropdown, with currency, light or dark and Hide amounts at the top right"><button type="button" role="tab" id="t-b-1a" aria-selected="true" data-src="reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1a" data-panel="b" data-opt="1a">1a · Four labelled pills, top right <span class=rec>Recommended</span></button><button type="button" role="tab" id="t-b-1b" aria-selected="false" data-src="reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1b" data-panel="b" data-opt="1b">1b · The title is whose view; three small controls</button><button type="button" role="tab" id="t-b-1c" aria-selected="false" data-src="reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1c" data-panel="b" data-opt="1c">1c · One View lens, and the eye</button></div>
+  <div class="opts"><div class="opt on" data-panel="b" data-opt="1a"><p class="why"><b>1a · Four labelled pills, top right.</b> Your reference in Warm ledger: Household ▾, then £ GBP ▾, Light ▾ and Hide amounts, at the top right of the page head, whose view set off by a hairline. Nothing has to be opened to know whose money, which currency and whether amounts are hidden, and each change is one click. Phone web: one row under the title, the menus as bottom sheets. iPhone: the same row under the large title, the eye staying in the bar. iPad: the menus join the eye and Ask as toolbar buttons.</p><p class="cost"><b>Trade-off:</b> The widest head, about 530 px; it is drawn at its tightest real width (a 1393 px window) and fits on one line. The currency switch leaves the navy hero.</p></div><div class="opt" data-panel="b" data-opt="1b"><p class="why"><b>1b · The title is whose view; three small controls.</b> The title becomes Household ▾, as the Projection’s title already is a menu; a £ ▾ menu, a two-state sun and moon switch and the eye sit at the top right in about 210 px.</p><p class="cost"><b>Trade-off:</b> Icons say less than your labelled reference, the title no longer says Home, and on phone web the light and dark switch does not fit the title line and moves to More.</p></div><div class="opt" data-panel="b" data-opt="1c"><p class="why"><b>1c · One View lens, and the eye.</b> One pill, “Household · £ GBP ▾”, opens one panel with whose view, the four currencies and System, Light or Dark; the eye stays outside for one-tap privacy. The same at every door.</p><p class="cost"><b>Trade-off:</b> Every change is two clicks and no light or dark switch is in sight, which is the part of your reference it gives up.</p></div></div>
+  <p class="prob"><b>If picked, it changes:</b> the web shell and Home (<code>AppShell.svelte</code>, <code>HomePage.svelte</code>, <code>Hero.svelte</code>, the currency preference from two currencies to four), the iOS Home toolbar and a You → Appearance setting, the boards Web v4 · Dashboard, iPhone v4 · Home and You and settings, and the design system’s pill and popover. Whose view and the currency become shell settings carried from page to page; MA-279’s four-currency segmented row becomes a menu.</p>
+  <p class="prob"><b>Yours to settle with the pick:</b> is whose view carried from page to page (drawn as yes); do you want a light or dark override inside the iOS app at all (drawn in You → Appearance, System by default); dollars and euros are named in the menus but every frame stays in pounds, because the figure set holds only £1 = ₹112.50.</p>
+  <div class="frame"><iframe id="f-b" title="Home’s controls options" loading="lazy" src="reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1a"></iframe></div>
+  <p class="open"><a id="o-b" href="reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1a" target="_blank" rel="noopener">Open this option’s board on its own</a> · the whole canvas: <a href="reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html" target="_blank" rel="noopener">b · Home header controls.dc.html</a></p>
+</section>
+  <section class="item" id="c">
+  <div class="ihead"><span class="ikey">c</span><div><h2>Interactive charts on Home</h2><p class="prob">Your words: “On the home page, I need some more interactive charts like” the fourth and fifth pictures (Where it sits, What we owe, Invested vs owed, Where growth comes from). “They should be interactive, think of best solutions.” Each option draws its hover, tap, keyboard and privacy states.</p></div></div>
+  <div class="tabs" role="tablist" aria-label="Options for Interactive charts on Home"><button type="button" role="tab" id="t-c-1a" aria-selected="true" data-src="reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1a" data-panel="c" data-opt="1a">1a · Two cards that answer each other <span class=rec>Recommended</span></button><button type="button" role="tab" id="t-c-1b" aria-selected="false" data-src="reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1b" data-panel="c" data-opt="1b">1b · Four cards, as in the pictures</button><button type="button" role="tab" id="t-c-1c" aria-selected="false" data-src="reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1c" data-panel="c" data-opt="1c">1c · Bars, no rings</button></div>
+  <div class="opts"><div class="opt on" data-panel="c" data-opt="1a"><p class="why"><b>1a · Two cards that answer each other.</b> Your four charts become two wide cards under the hero. What we own and owe is one double ring: the outer ring is what we own by kind, the inner ring is what we owe on the same scale, so the 36% shows without a sum; its two lists are the legend, the table and the tap targets at once. Invested against owed has one row of horizon chips for both halves: the line and its crossing date on the left, where the growth comes from on the right, and a year-by-year table one tap away. On a phone the two lists sit behind a We own / We owe switch.</p><p class="cost"><b>Trade-off:</b> The double ring needs a one-line key the first time, and each card carries more than one idea.</p></div><div class="opt" data-panel="c" data-opt="1b"><p class="why"><b>1b · Four cards, as in the pictures.</b> Your four cards one for one, redrawn in Warm ledger: two rings with the largest share in the centre and the shares in the legend, the crossing card, and the growth card with its own chips. Pick it if you want exactly what you drew.</p><p class="cost"><b>Trade-off:</b> The ring of what we owe says little (one colour: the mortgage is 90.9%), the two time cards can show different horizons, and it adds four cards to a phone page.</p></div><div class="opt" data-panel="c" data-opt="1c"><p class="why"><b>1c · Bars, no rings.</b> No new chart form: five bars by kind and three loan bars on one scale, each opening into its records; what we owe runs off as a line to Oct 2045 with a dot where each loan ends; the crossing and growth charts as in 1b. It reads small shares most exactly.</p><p class="cost"><b>Trade-off:</b> It is not the rings you asked for, and Home looks much as it does now.</p></div></div>
+  <p class="prob"><b>If picked, it changes:</b> new ring and crossing-line components on the web Home and in Swift Charts on iOS; the boards Web v4 · Dashboard and iPhone v4 · Home, where today’s What we own and owe card is replaced; the ring is a new form in the picked chart style, so ds-v1 · Chart options too. The engine must return two things it does not return today: a month-by-month invested and owed series, and the split of growth.</p>
+  <p class="prob"><b>Yours to settle with the pick:</b> <b>the lines and the growth split are not in the figure set.</b> The set holds net worth per year and each year’s cash, so they were worked out for this board by re-running the ledger’s own rules month by month (the re-run matches the set’s net worth for every year to 2056) and are marked as derived on the board; if you pick 1a or 1b the figure set’s generator gains them first. What “invested” adds up (drawn as everything owned except property: £178,916 today against £246,743 owed, passing it in Jun 2028); whether “where growth comes from” looks forward by horizon, as in your picture, or back, as the plan’s Attribution view does; chips of 5, 10, 20 and 30 years as on the Projection, or your 5, 10, 15 and 20; three growth parts instead of your four (a deposit maturing only moves money already counted).</p>
+  <div class="frame"><iframe id="f-c" title="Home charts options" loading="lazy" src="reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1a"></iframe></div>
+  <p class="open"><a id="o-c" href="reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1a" target="_blank" rel="noopener">Open this option’s board on its own</a> · the whole canvas: <a href="reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html" target="_blank" rel="noopener">c · Home charts.dc.html</a></p>
+</section>
+  <section class="item" id="d">
+  <div class="ihead"><span class="ikey">d</span><div><h2>The mark, animated in the top left corner</h2><p class="prob">Your words: “Make the logo animated on top left corner. It should be engaging.” The motion rules say nothing loops forever, so each option moves for a reason and then is still. In all three the coin stays put and only the coral dot travels, with its bite.</p></div></div>
+  <div class="tabs" role="tablist" aria-label="Options for The mark, animated in the top left corner"><button type="button" role="tab" id="t-d-1a" aria-selected="true" data-src="reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1a" data-panel="d" data-opt="1a">1a · Watcher at work <span class=rec>Recommended</span></button><button type="button" role="tab" id="t-d-1b" aria-selected="false" data-src="reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1b" data-panel="d" data-opt="1b">1b · Arrives once</button><button type="button" role="tab" id="t-d-1c" aria-selected="false" data-src="reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1c" data-panel="d" data-opt="1c">1c · Answers the pointer</button></div>
+  <div class="opts"><div class="opt on" data-panel="d" data-opt="1a"><p class="why"><b>1a · Watcher at work.</b> It arrives once when the app opens (the coin settles, the pound writes itself, the dot comes round the rim into its bite), then moves only when MyPaisa does something for you: one lap of the dot when it starts on your message, and one swell with a coral ring when a change is saved. Every movement tells you something, a few times a session.</p><p class="cost"><b>Trade-off:</b> At 1440 the lap happens at the top left while your eyes are in the chat, and it needs wiring to the chat’s events.</p></div><div class="opt" data-panel="d" data-opt="1b"><p class="why"><b>1b · Arrives once.</b> Only the arrival, once per load: MA-103’s pick, “animates once when the app opens”, built for the sidebar. The smallest build and the least to go wrong.</p><p class="cost"><b>Trade-off:</b> Engaging for about one second a visit, and easily missed.</p></div><div class="opt" data-panel="d" data-opt="1c"><p class="why"><b>1c · Answers the pointer.</b> The arrival, then one lap when the pointer or keyboard focus reaches the mark, which becomes a link to Home. It can never distract.</p><p class="cost"><b>Trade-off:</b> Most people never hover a logo, on touch it is 1b, and the movement means nothing.</p></div></div>
+  <p class="prob"><b>If picked, it changes:</b> <code>Mark.svelte</code> (split into moving parts), <code>shell.css</code> and <code>AppShell.svelte</code> on the web; the launch screen and, for 1a, the mark beside a reply on iOS; the boards ds-v1 · Logo and Web v4 · Shell and chat. All three add one easing to <code>motion.css</code>, so the dot leaves from rest instead of with a jump. Under Reduce Motion nothing travels: a 150 ms fade in place.</p>
+  <p class="prob"><b>Yours to settle with the pick:</b> in 1a, should the mark beside a reply in the web chat move too (drawn still, so one mark moves at a time); in 1c, should the logo become a link to Home at all.</p>
+  <div class="frame"><iframe id="f-d" title="The mark options" loading="lazy" src="reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1a"></iframe></div>
+  <p class="open"><a id="o-d" href="reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1a" target="_blank" rel="noopener">Open this option’s board on its own</a> · the whole canvas: <a href="reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html" target="_blank" rel="noopener">d · Animated mark.dc.html</a></p>
+</section>
+  <p class="foot">Nothing here is built. After your picks, the chosen boards move into app-v1, ios-v1 and ds-v1, the trace marks MA-355 picked, and the build follows inside its stories. Motion cannot be judged from a still: use Play again on the mark’s board. Illustrative figures and names only.</p>
+</div>
+<script>
+(function () {
+  // each tab's board, written here when the page is built; never read back from the page
+  var SRC = {
+    "t-a-1a": "reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1a",
+    "t-a-1b": "reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1b",
+    "t-a-1c": "reviews/MA-355/a%20%C2%B7%20Desktop%20chat%20sheet.dc.html?embed=1c",
+    "t-b-1a": "reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1a",
+    "t-b-1b": "reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1b",
+    "t-b-1c": "reviews/MA-355/b%20%C2%B7%20Home%20header%20controls.dc.html?embed=1c",
+    "t-c-1a": "reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1a",
+    "t-c-1b": "reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1b",
+    "t-c-1c": "reviews/MA-355/c%20%C2%B7%20Home%20charts.dc.html?embed=1c",
+    "t-d-1a": "reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1a",
+    "t-d-1b": "reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1b",
+    "t-d-1c": "reviews/MA-355/d%20%C2%B7%20Animated%20mark.dc.html?embed=1c"
+  };
+  document.querySelectorAll('.tabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var k = b.getAttribute('data-panel'), o = b.getAttribute('data-opt');
+      document.querySelectorAll('.tabs button[data-panel="' + k + '"]').forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+      document.querySelectorAll('.opt[data-panel="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-opt') === o); });
+      var f = document.getElementById('f-' + k), a = document.getElementById('o-' + k);
+      var s = SRC[b.id];
+      if (s) { f.src = s; a.href = s; }
+    });
+  });
+  var h = (location.hash || '').slice(1);
+  if (h && document.getElementById(h)) document.getElementById(h).scrollIntoView();
+})();
+</script>

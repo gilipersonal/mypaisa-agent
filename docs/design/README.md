@@ -133,8 +133,9 @@ MyPaisa DS v1's adaptive shell below it. Name the boards by door and page
   size its class covers (an iPhone from 320 (Display Zoom) to 440 and in
   landscape, an iPad or foldable window from 600 to 1366, and the web from
   320 to 1920). The fit guards live in `tokens.css`: the page is a size
-  container of its own, so with the chat beside it the page's width, not the
-  window's, sets its columns; rows that scroll really scroll, a card's
+  container of its own, so the page's width, not the window's, sets its
+  columns (on the web the chat is a sheet over the page since MA-355, never
+  beside it; in the app it is beside only from about 1393 pt); rows that scroll really scroll, a card's
   answers wrap, a hero figure shrinks to fit, and a list row's figure goes
   under its name. In `motion.js`, a narrow chart's axis labels thin where
   they would touch.
