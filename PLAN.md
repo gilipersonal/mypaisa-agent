@@ -724,6 +724,14 @@ Claude's:
 - **The Maestro iPad plan's bands follow the 1393 rule (MA-341):** the testing
   page's band GIF redrawn for three iPad bands, the beside band at the debug
   width only.
+- **Four changes Arun asked for while designing, as an options round (MA-355):**
+  the desktop web chat as a sheet over the page, like the iPad's; Home's
+  Household, Me and Asha as a dropdown, with the currency, Light or Dark and
+  Hide amounts controls at the top right; interactive Home charts (where it
+  sits, what we owe, invested against owed, where growth comes from); and the
+  mark animated in the sidebar. Drawn as 2 or 3 options an item and published
+  as a private Claude Artifact for Arun to pick before anything is built
+  (Arun, 25 Nov 2026).
 - **Prototype v4's controls at 44 pt (MA-302), closed:** the card actions, links,
   suggestion chips, segmented control and composer that MA-300's live
   accessibility gate found under 44x44. Closed by Arun on 2 Nov 2026:

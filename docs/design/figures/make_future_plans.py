@@ -28,7 +28,10 @@ START = (2026, 11)                                   # the first month the ledge
 YEARS = 30
 N = 12 * (2056 - 2026) + 2                           # Nov 2026 .. Dec 2056
 FLOOR = 500                                          # Arun's floor: the monthly surplus he keeps (his setting)
-BUFFER_MONTHS = 6                                    # the surplus rule: cash up to 6 months of outgoings (and the year's one-offs), the rest into Balanced
+# The surplus rule (Arun, 3 Nov 2026: "All to cash"; ARCHITECTURE 6 and 15): each month's surplus stays as cash, on the
+# base path and the fan alike. Nothing is swept into a holding or a loan; it was cash up to six months of outgoings and
+# the rest into Balanced until MA-224 redrew the figures. This aid keeps one cash figure, in pounds: a rupee flow is
+# converted at its month's rate, and no separate rupee balance is held.
 CASH_RATE = 0.03
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -283,9 +286,12 @@ def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict]
             if c["kind"] == "save_pot":
                 pots.setdefault(c["id"], 0.0)
                 pots[c["id"]] = pots[c["id"]] * (1 + CASH_RATE / 12) + pot_amount(c)
+        # retirement: a gap comes out of cash, as every month's surplus went into it; Balanced is sold only for the
+        # part cash cannot cover (ARCHITECTURE 6: in retirement only cash running out is flagged)
         retired_draw = 0.0
         if i >= min(retire.values()) and surplus - pot_in + pot_draw < 0:
-            retired_draw = min(-(surplus - pot_in + pot_draw), v["balanced"])   # retirement: investments pay the gap
+            gap = -(surplus - pot_in + pot_draw)
+            retired_draw = min(max(0.0, gap - max(cash, 0.0)), v["balanced"])
             v["balanced"] -= retired_draw
         surplus_after = surplus - pot_in + pot_draw + retired_draw
         # maturities into cash
@@ -319,18 +325,7 @@ def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict]
                 pool_cash = min(-cash, v[c["pool"]])
                 v[c["pool"]] -= pool_cash
                 cash += pool_cash
-        # the surplus rule: cash above six months of outgoings, plus the one-offs due in the next twelve months,
-        # goes into Balanced, so a planned one-off is not paid by selling investments
-        due = 0.0
-        for p in plans:
-            moved = next((c for c in changes if c["kind"] == "move" and c["plan"] == p["id"]), None)
-            start = moved["to"] if moved else p.get("start")
-            if (p["effect"] == "new_flow" and p.get("one_off") and p["type"] == "spend"
-                    and p.get("status") not in ("paused", "done") and i < p_idx(start) <= i + 12):
-                due += p["amount"]
-        target = BUFFER_MONTHS * outgo + due
-        invested = max(0.0, cash - target)
-        cash -= invested
+        # the surplus rule: all to cash. What is left of the month stays in cash; nothing is swept into Balanced.
         # the assets grow; the SIP buys Parag Parikh; LIC premiums add to its value
         for k, (ccy, cls) in ASSET_CLASS.items():
             if k not in v or v[k] == 0:
@@ -341,7 +336,6 @@ def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict]
                 continue
             yr = shocks[y - 2026][cls] if shocks and cls in VOL else RET.get(cls, RET.get("equity_uk"))
             v[k] *= (1 + yr) ** (1 / 12)
-        v["balanced"] += invested
         v["ppfas"] += 10000 if sip else 0
         v["lic"] += 42000 if premium else 0
         own = sum(val / (f if ASSET_CLASS[k][0] == "INR" else 1) for k, val in v.items()) + cash + sum(pots.values())
@@ -350,10 +344,10 @@ def run(plans: list[dict], changes: list[dict] | None = None, shocks: list[dict]
         row.update({"income": inc, "plans_income": {k: a for k, a in rec.items() if a > 0}, "spend": spend,
                     "emis": emis, "sip": sip, "premium": premium, "plans_spend": {k: a for k, a in rec.items() if a < 0},
                     "surplus_before_pool": surplus, "pot_in": pot_in, "pot_draw": pot_draw, "retired_draw": retired_draw, "surplus": surplus_after,
-                    "one_offs": one, "maturities": mat, "closed": closed, "pool_cash": pool_cash, "settle": settle, "interest": interest, "invested": invested,
+                    "one_offs": one, "maturities": mat, "closed": closed, "pool_cash": pool_cash, "settle": settle, "interest": interest,
                     "closing_cash": cash, "pots": dict(pots), "net_worth": net, "income_total": income})
         # the ledger's identity, every month
-        flows = surplus_after + one_total + sum(mat.values()) + sum(closed.values()) + pool_cash + settle + interest - invested
+        flows = surplus_after + one_total + sum(mat.values()) + sum(closed.values()) + pool_cash + settle + interest
         assert abs(row["opening_cash"] + flows - cash) < 1e-6
         months.append(row)
         nw.append(net)
@@ -519,7 +513,7 @@ def ledger_rows(ms, rows_of):
         "savings_rate": round(surplus / sum(inc_r.values()), 3) if inc_r else None,
         "one_offs": {k: round(v) for k, v in one.items()}, "maturities": {k: round(v) for k, v in mat.items()},
         "loans_closed": {k: round(v) for k, v in closed.items()},
-        "invested": round(sum(r["invested"] for r in rows_of)), "from_a_pool_to_cash": round(sum(r["pool_cash"] for r in rows_of)),
+        "from_a_pool_to_cash": round(sum(r["pool_cash"] for r in rows_of)),
         "opening_cash": round(rows_of[0]["opening_cash"]),
         "closing_cash": round(rows_of[-1]["closing_cash"]),
         "below_floor": len(below), "below_floor_months": [r["label"] for r in below],
@@ -772,11 +766,11 @@ def main():
                   "net_worth_today": H["totals_after_hdfc_emi_thu_5_nov"]["net_gbp"], "fx": FX0,
                   "base_run": "R5N, Thu 5 Nov 09:13: the run after the EMI was confirmed, the same figures as R0 (the EMI was already in November's flows)"},
         "settings": {"floor_gbp_month": FLOOR, "floor_note": "Arun's floor: the monthly surplus he keeps (his setting)",
-                     "surplus_rule": "Cash up to 6 months of outgoings, plus the one-offs due in the next 12 months; the rest into Balanced (ISA) each month",
+                     "surplus_rule": "All to cash: each month's surplus stays as cash; nothing is swept into a holding or a loan (Arun, 3 Nov 2026)",
                      "inflation_keys": {"UK": INFL["UK"], "UK health": INFL["UK health"], "India": INFL["IN"], "UK school fees": INFL["UK school fees"]},
                      "categories": [{"category": c, "inflation_key": {"IN": "India"}.get(k, k), "plan_today": (FAMILY_INR if c.startswith("Family") else plan_gbp[c]), "ccy": "INR" if c.startswith("Family") else "GBP"} for c, k in CATS],
                      "horizon_default_years": 20, "horizon_choices": [5, 10, 20, 30], "cash_rate": CASH_RATE,
-                     "retirement": "Arun 60 in Jan 2051, Asha in Jan 2053; a pension pays 4% of its pot a year; in retirement Balanced pays any gap",
+                     "retirement": "Arun 60 in Jan 2051, Asha in Jan 2053; a pension pays 4% of its pot a year; in retirement cash pays any gap, and Balanced only once cash has run out",
                      "floor_while": "anyone in the household earns a salary (to Dec 2052); in retirement only cash running out is flagged (Arun, 28 Oct 2026)"},
         "plans": {"existing": EXISTING, "schooling": SCHOOLING, "salary_step": SALARY_STEP, "hdfc_close": HDFC_CLOSE},
         "conversation": [

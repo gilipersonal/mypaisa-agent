@@ -347,7 +347,7 @@
                               <div class="ccard-b">
                                 <div class="pk-sec"><span class="mp-over mp-ink2">Middle path</span><span class="mp-foot mp-ink2">with the fees</span></div>
                                 <div class="pk-mp3"><sc-for list="{{ impMp }}" as="r" hint-placeholder-count="3"><div><span class="mp-foot mp-ink2">{{ r.y }}</span><span class="pk-v3">{{ r.after }}</span><span class="mp-foot down tnum">{{ r.chg }}</span></div></sc-for></div>
-                                <span class="mp-foot mp-ink2 tnum">Was £866,000 · £1,539,000 · £3,897,000</span>
+                                <span class="mp-foot mp-ink2 tnum">Was £855,000 · £1,501,000 · £3,548,000</span>
                                 <div class="pk-bw oncard"><div class="pk-bars" role="img" aria-label="{{ impBars.aria }}">
                                   <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ impBars.grid }}" as="g" hint-placeholder-count="2"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><line class="pk-zero" x1="0" x2="100" sc-camel-y1="{{ impBars.zero }}" sc-camel-y2="{{ impBars.zero }}"></line><path class="pk-before" sc-camel-d="{{ impBars.before }}"></path></svg>
                                   <sc-for list="{{ impBars.grid }}" as="g" hint-placeholder-count="2"><span class="gy" style="top: {{ g.top }}" data-mo="fade">{{ g.l }}</span></sc-for>
@@ -364,7 +364,7 @@
 
                             <!-- the plan saved, collapsed in place with its audit row (2a and 2c) -->
                             <sc-if value="{{ m.c.kSaved }}" hint-placeholder-val="{{ false }}"><div class="ccard">
-                              <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, 4.5% a year · 2046 middle path ▼ £1,317,000</span></div>
+                              <div class="ccard-h"><span class="mp-over c-add fx ac gap4"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.check_circle }}"></path></svg>Added to the plan</span><span class="mp-hl">School fees</span><span class="mp-sub mp-ink2">£4,000 a month, Jan 2029 to Jul 2041, 4.5% a year · 2046 middle path ▼ £1,107,000</span></div>
                               <div class="ccard-tech">Audit · Plan item added · Arun · Thu 5 Nov 20:43 · in the chat</div>
                             </div></sc-if>
 
@@ -393,7 +393,7 @@
                                 <sc-if value="{{ m.c.imp }}" hint-placeholder-val="{{ false }}">
                                   <div class="pk-div">What it does</div>
                                   <div class="pk-mp3"><sc-for list="{{ impMp }}" as="r" hint-placeholder-count="3"><div><span class="mp-foot mp-ink2">{{ r.y }}</span><span class="pk-v3">{{ r.after }}</span><span class="mp-foot down tnum">{{ r.chg }}</span></div></sc-for></div>
-                                  <span class="mp-foot mp-ink2 tnum">Was £866,000 · £1,539,000 · £3,897,000</span>
+                                  <span class="mp-foot mp-ink2 tnum">Was £855,000 · £1,501,000 · £3,548,000</span>
                                   <div class="pk-bw oncard"><div class="pk-bars" role="img" aria-label="{{ impBars.aria }}">
                                     <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><sc-for list="{{ impBars.grid }}" as="g" hint-placeholder-count="2"><line class="fgrid" x1="0" x2="100" sc-camel-y1="{{ g.y }}" sc-camel-y2="{{ g.y }}"></line></sc-for><line class="pk-zero" x1="0" x2="100" sc-camel-y1="{{ impBars.zero }}" sc-camel-y2="{{ impBars.zero }}"></line><path class="pk-before" sc-camel-d="{{ impBars.before }}"></path></svg>
                                     <sc-for list="{{ impBars.grid }}" as="g" hint-placeholder-count="2"><span class="gy" style="top: {{ g.top }}" data-mo="fade">{{ g.l }}</span></sc-for>
@@ -404,7 +404,7 @@
                                   <div class="pk-flag" role="note"><span>▼ Under your £500 floor in 50 months, Jan 2029 to Feb 2035: {{ gapTotal }} short. Cash stays above zero.</span></div>
                                 </sc-if>
                                 <sc-if value="{{ m.c.imp1 }}" hint-placeholder-val="{{ false }}">
-                                  <div class="kv"><span>2046 middle path</span><span class="tnum">£2,580,000</span></div><span class="mp-foot mp-ink2 tnum">Today’s plan: £3,897,000</span>
+                                  <div class="kv"><span>2046 middle path</span><span class="tnum">£2,441,000</span></div><span class="mp-foot mp-ink2 tnum">Today’s plan: £3,548,000</span>
                                   <div class="pk-flag" role="note"><span>▼ Under your £500 floor in 50 months: {{ gapTotal }} short</span></div>
                                 </sc-if>
                                 <sc-if value="{{ m.c.ask }}" hint-placeholder-val="{{ false }}"><p class="pp mp-sub">{{ m.c.ask }}</p></sc-if>
@@ -469,14 +469,14 @@
           const gbp = (n) => (n < 0 ? '−' : '') + '£' + Math.abs(Math.round(n)).toLocaleString('en-GB');
           const pc = (v) => v.toFixed(2) + '%';
           const FAN = {
-            R0: [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 516000, 599000, 681000], [2029, 582000, 684000, 798000], [2030, 647000, 789000, 932000], [2031, 688000, 866000, 1037000], [2032, 783000, 979000, 1200000], [2033, 878000, 1084000, 1373000], [2034, 955000, 1227000, 1525000], [2035, 1050000, 1373000, 1726000], [2036, 1170000, 1539000, 1957000], [2037, 1264000, 1685000, 2176000], [2038, 1380000, 1836000, 2463000], [2039, 1501000, 2053000, 2759000], [2040, 1652000, 2228000, 3061000], [2041, 1781000, 2465000, 3454000], [2042, 1995000, 2748000, 3888000], [2043, 2146000, 3027000, 4502000], [2044, 2274000, 3284000, 4870000], [2045, 2484000, 3601000, 5445000], [2046, 2676000, 3897000, 6052000]],
-            R1: [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 516000, 599000, 681000], [2029, 532000, 635000, 748000], [2030, 548000, 685000, 819000], [2031, 542000, 701000, 863000], [2032, 571000, 753000, 943000], [2033, 608000, 803000, 1017000], [2034, 643000, 863000, 1089000], [2035, 693000, 931000, 1165000], [2036, 726000, 1002000, 1279000], [2037, 789000, 1048000, 1378000], [2038, 845000, 1123000, 1495000], [2039, 902000, 1192000, 1584000], [2040, 941000, 1279000, 1723000], [2041, 1035000, 1417000, 1913000], [2042, 1226000, 1592000, 2167000], [2043, 1395000, 1827000, 2575000], [2044, 1582000, 2042000, 2789000], [2045, 1755000, 2299000, 3187000], [2046, 1950000, 2580000, 3544000]],
-            R2: [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 517000, 598000, 678000], [2029, 530000, 633000, 745000], [2030, 550000, 683000, 812000], [2031, 546000, 700000, 859000], [2032, 569000, 753000, 936000], [2033, 609000, 800000, 1011000], [2034, 653000, 861000, 1080000], [2035, 698000, 929000, 1160000], [2036, 729000, 1001000, 1263000], [2037, 792000, 1046000, 1363000], [2038, 849000, 1122000, 1478000], [2039, 900000, 1191000, 1574000], [2040, 942000, 1280000, 1702000], [2041, 1038000, 1415000, 1894000], [2042, 1219000, 1586000, 2150000], [2043, 1402000, 1822000, 2549000], [2044, 1575000, 2036000, 2779000], [2045, 1758000, 2298000, 3187000], [2046, 1949000, 2585000, 3546000]]
+            R0: [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 518000, 598000, 677000], [2029, 581000, 682000, 789000], [2030, 658000, 782000, 907000], [2031, 705000, 855000, 1011000], [2032, 787000, 968000, 1152000], [2033, 893000, 1078000, 1280000], [2034, 1009000, 1212000, 1422000], [2035, 1130000, 1353000, 1581000], [2036, 1242000, 1501000, 1738000], [2037, 1391000, 1629000, 1933000], [2038, 1538000, 1784000, 2104000], [2039, 1674000, 1970000, 2305000], [2040, 1849000, 2139000, 2533000], [2041, 2018000, 2349000, 2783000], [2042, 2233000, 2568000, 3039000], [2043, 2434000, 2804000, 3349000], [2044, 2656000, 3033000, 3593000], [2045, 2882000, 3298000, 3925000], [2046, 3150000, 3548000, 4225000]],
+            R1: [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 518000, 598000, 677000], [2029, 532000, 633000, 741000], [2030, 557000, 681000, 806000], [2031, 548000, 698000, 854000], [2032, 570000, 750000, 934000], [2033, 611000, 796000, 997000], [2034, 657000, 861000, 1071000], [2035, 704000, 927000, 1155000], [2036, 737000, 996000, 1234000], [2037, 802000, 1040000, 1344000], [2038, 859000, 1104000, 1425000], [2039, 899000, 1194000, 1529000], [2040, 971000, 1261000, 1655000], [2041, 1064000, 1395000, 1829000], [2042, 1250000, 1586000, 2057000], [2043, 1422000, 1792000, 2337000], [2044, 1613000, 1990000, 2550000], [2045, 1807000, 2223000, 2850000], [2046, 2043000, 2441000, 3118000]],
+            R2: [[2026, 459000, 468000, 477000], [2027, 452000, 511000, 562000], [2028, 518000, 598000, 677000], [2029, 532000, 633000, 740000], [2030, 557000, 681000, 806000], [2031, 548000, 698000, 854000], [2032, 570000, 750000, 934000], [2033, 611000, 796000, 997000], [2034, 657000, 861000, 1071000], [2035, 704000, 927000, 1155000], [2036, 737000, 996000, 1234000], [2037, 802000, 1040000, 1343000], [2038, 859000, 1104000, 1425000], [2039, 899000, 1194000, 1529000], [2040, 971000, 1261000, 1655000], [2041, 1064000, 1395000, 1829000], [2042, 1250000, 1586000, 2057000], [2043, 1422000, 1791000, 2336000], [2044, 1613000, 1990000, 2549000], [2045, 1807000, 2223000, 2850000], [2046, 2043000, 2441000, 3118000]]
           };
           const START = 456747, NOW = 2026 + 10 / 12 + 4 / 30, SPAN = 2047 - NOW;   // today is Thu 5 Nov; each point is a year's end
           const fan = (run) => {
             const rows = [[NOW, START, START, START]].concat(FAN[run].map((r) => [r[0] + 1, r[1], r[2], r[3]]));
-            const vmax = run === 'R0' ? 6.5e6 : 4e6, step = run === 'R0' ? 2e6 : 1e6;
+            const vmax = run === 'R0' ? 4.7e6 : 3.5e6, step = 1e6;
             const X = (t) => (t - NOW) / SPAN * 100, Y = (v) => 100 - v / vmax * 100;
             const pt = (r, i) => X(r[0]).toFixed(2) + ',' + Y(r[i]).toFixed(2);
             const grid = []; for (let g = step; g < vmax; g += step) grid.push({ y: Y(g).toFixed(2), top: pc(Y(g)), l: '£' + (g / 1e6) + 'm' });
@@ -497,7 +497,7 @@
           const page = (run, cmp) => Object.assign(fan(run), { run: { R0: 'Thu 5 Nov 09:13', R1: 'Thu 5 Nov 20:43', R2: 'Thu 5 Nov 20:46' }[run], ms: MS(run), cmp: !!cmp });
 
           // the impact: the middle path before and after, and the surplus each year (impact.surplus_by_year_before/after)
-          const impMp = [['In 5 years', '2031', 866000, 701000], ['In 10 years', '2036', 1539000, 1002000], ['In 20 years', '2046', 3897000, 2580000]]
+          const impMp = [['In 5 years', '2031', 855000, 698000], ['In 10 years', '2036', 1501000, 996000], ['In 20 years', '2046', 3548000, 2441000]]
             .map((r) => ({ k: r[0], y: r[1], before: gbp(r[2]), after: gbp(r[3]), chg: '▼ ' + gbp(r[2] - r[3]) }));
           const BEFORE = [36379, 39738, 46715, 52671, 59007, 62919, 67015, 71303, 75794, 80497, 85421, 90577, 95977, 101629, 107548, 113745, 120233, 127026, 138466, 159064];
           const AFTER = [36379, 39738, -1285, 2511, 6590, 8143, 9774, 11486, 13286, 15176, 17160, 19244, 21434, 23732, 60063, 113745, 120233, 127026, 138466, 159064];
@@ -518,17 +518,17 @@
           const gapTotal = '£19,058';
           // the ways code works out (rearrange.options), ranked; and 2c's comparison of them
           const W = [
-            { n: '1', rk: 'one', bc: 'cbtn-primary', open: true, shut: false, t: 'Start a school fees pot this month', mp: '£2,585,000',
+            { n: '1', rk: 'one', bc: 'cbtn-primary', open: true, shut: false, t: 'Start a school fees pot this month', mp: '£2,441,000',
               chg: ['£690 a month into a School fees pot, Nov 2026 to Dec 2028 (£17,940), this month included: November’s planned surplus £2,636 → £1,946', 'From Jan 2029 the pot tops the surplus up to £500, until Feb 2035'],
               why: 'It uses the room in today’s budget before the fees start, still leaves cash for the extension in June, and keeps your spending and investing from 2029 as they are.' },
-            { n: '2', rk: '', bc: '', open: false, shut: true, t: 'Spend less on holidays, eating out and shopping from Jan 2029', mp: '£2,703,000',
+            { n: '2', rk: '', bc: '', open: false, shut: true, t: 'Spend less on holidays, eating out and shopping from Jan 2029', mp: '£2,549,000',
               chg: ['Holidays £400 → £150, Eating out £180 → £100, Shopping £250 → £150 a month, Jan 2029 to Jul 2041, in today’s money', 'Balanced (ISA) covers what the trims do not: £5,458, in 2029 to 2031'],
               why: 'The highest net worth of the three, for £430 a month less to spend, in today’s money, for twelve and a half years.' },
-            { n: '3', rk: '', bc: '', open: false, shut: true, t: 'Take the gap from Balanced (ISA)', mp: '£2,582,000',
+            { n: '3', rk: '', bc: '', open: false, shut: true, t: 'Take the gap from Balanced (ISA)', mp: '£2,421,000',
               chg: ['Balanced (ISA) pays £19,058 over 2029 to 2035, £9,090 of it in 2029'],
               why: 'Nothing you spend changes; the investments you would have kept pay for it.' }
           ];
-          const SURPLUS2029 = ['£7,805', '£8,269', '£7,805'], VSPLAN = ['+£5,000', '+£123,000', '+£2,000'];
+          const SURPLUS2029 = ['£7,805', '£8,269', '£7,805'], VSPLAN = ['No change', '+£108,000', '−£20,000'];
           const OPT_SURPLUS = [
             [28099, 31458, 7805, 8031, 8916, 9144, 10388, 11863, 13414, 15176, 17160, 19244, 21434, 23732, 60063, 113745, 120233, 127026, 138466, 159064],
             [36379, 39738, 8269, 9587, 12508, 14127, 15907, 17773, 19730, 21781, 23930, 26184, 28547, 31023, 64422, 113745, 120233, 127026, 138466, 159064],
@@ -559,8 +559,8 @@
           ];
           const AUD = ['Audit · Plan item added · School fees pot, £690 a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Thu 5 Nov 20:46 · in the chat',
                        'Audit · November’s budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat'];
-          // 2b saves the plan and the pot with one Confirm, so its first row is the 20:46 Confirm's too (−£1,312,000 = £2,585,000 − £3,897,000)
-          const AUD_B = ['Audit · Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Thu 5 Nov 20:46 · in the chat · with the pot, 2046 middle path −£1,312,000'].concat(AUD);
+          // 2b saves the plan and the pot with one Confirm, so its first row is the 20:46 Confirm's too (−£1,107,000 = £2,441,000 − £3,548,000)
+          const AUD_B = ['Audit · Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Thu 5 Nov 20:46 · in the chat · with the pot, 2046 middle path −£1,107,000'].concat(AUD);
 
           // the conversation (conversation[]), message by message
           const day = { isDay: true, t: 'Today' };
@@ -620,9 +620,9 @@
           };
           const boards = [
             { anchor: 'o2a', id: '2a', name: 'Browser · Plans in the chat 2a, a card per step', rec: true, keys: 'MA-222 · MA-263 · MA-223 · MA-264',
-              lead: 'Three cards, each with one job and one Confirm: the questions (20:41), the impact from the engine (20:42), then, once the plan is saved, the ways to cover the gap, each with its own Confirm (20:43). At 20:46 the card shows what was applied, with its two audit rows and Undo. The Projection beside the chat moves with each Confirm. Recommended: it is how every card in the chat already works at both doors, and each card has one plain line for push and screen readers.',
+              lead: 'Three cards, each with one job and one Confirm: the questions (20:41), the impact from the engine (20:42), then, once the plan is saved, the ways to cover the gap, each with its own Confirm (20:43). At 20:46 the card shows what was applied, with its two audit rows and Undo. The Projection beside the chat runs again with each Confirm. Recommended: it is how every card in the chat already works at both doors, and each card has one plain line for push and screen readers.',
               frames: frames('a', 'Browser · Plans in the chat 2a, a card per step'),
-              notes: [{ h: 'The figures:', t: 'conversation, impact and rearrange in future-plans-v4.json; the page shows R5N (Thu 5 Nov 09:13, R0’s figures) until the plan is saved, R1 (20:43) after it, and R2 (20:46) once the pot is applied, each with its own middle path in 2046.' },
+              notes: [{ h: 'The figures:', t: 'conversation, impact and rearrange in future-plans-v4.json; the page shows R5N (Thu 5 Nov 09:13, R0’s figures) until the plan is saved, R1 (20:43) after it, and R2 (20:46) once the pot is applied, each with its run’s middle path in 2046 (R1’s and R2’s are the same, £2,441,000).' },
                 { h: 'The floor is monthly, the bars yearly,', t: 'so the chart marks a year with a month under £500 (▼, in the alert colour) rather than draw a yearly line that would not match the flag.' },
                 { h: 'One Confirm each,', t: 'in §6.6’s order: the plan first, with its audit row; then the rearrangement, with one row for the plan item it adds and one for this month’s budget, each with Undo (MA-263).' },
                 { h: 'Under about 1393 px', t: 'the chat is a drawer over the page, opened from the sidebar’s Chat, and under 600 a tab, as at 390 (MA-301 c 1c: the chat beside every screen from about 1393 px, a sheet away from about 600 to 1393 px, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)); the 390 frames draw the ways on the phone-web door.' }] },
@@ -630,7 +630,7 @@
               lead: 'One plan card that fills in as Arun answers: each slot ticks from its question to its answer; the impact appears inside it; then Cover the gap, a single choice, and one Confirm that saves the plan and the way together.',
               frames: frames('b', 'Browser · Plans in the chat 2b, one card that grows'),
               notes: [{ h: 'Against §6.6’s order:', t: 'one Confirm saves the plan item and the rearrangement together, where §6.6 saves the plan first and then proposes the ways. Picking 2b changes §6.6 and MA-263 first (rule 6).' },
-                { h: 'So the times move:', t: 'nothing is saved at 20:43, so the page beside still shows R0; both audit rows read 20:46, and the plan’s row carries the change with the pot, −£1,312,000 (£2,585,000 − £3,897,000).' },
+                { h: 'So the times move:', t: 'nothing is saved at 20:43, so the page beside still shows R0; both audit rows read 20:46, and the plan’s row carries the change with the pot, −£1,107,000 (£2,441,000 − £3,548,000).' },
                 { h: 'The cost:', t: 'a long card; the impact scrolls away before the choice, so the choice shows the 2046 figure again.' }] },
             { anchor: 'o2c', id: '2c', name: 'Browser · Plans in the chat 2c, compare side by side', rec: false, keys: 'MA-222 · MA-263 · MA-223 · MA-264',
               lead: 'The questions one at a time, answered from reply chips above the field; the impact card; then the ways: at the laptop, a short list in the chat and the full comparison on the page beside it, an Apply under each way; at 390, a pager of three cards.',

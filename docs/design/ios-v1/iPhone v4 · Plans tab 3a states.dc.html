@@ -453,9 +453,9 @@
           });
           const SEVEN = ['pot', 'bonus', 'ext', 'sal', 'fees', 'hdfc', 'car'];
           const RUN = {
-            R4: ['20:59', '£2,923,000', '£2,188,000', '£4,058,000'], R5: ['21:08', '£2,977,000', '£2,220,000', '£4,145,000'],
-            R5b: ['21:09', '£2,923,000', '£2,188,000', '£4,058,000'], R6: ['21:11', '£3,037,000', '£2,270,000', '£4,212,000'],
-            R7: ['21:13', '£3,091,000', '£2,298,000', '£4,296,000'], W: ['21:18', '£3,040,000', '£2,275,000', '£4,224,000']
+            R4: ['20:59', '£2,762,000', '£2,364,000', '£3,439,000'], R5: ['21:08', '£2,802,000', '£2,404,000', '£3,479,000'],
+            R5b: ['21:09', '£2,762,000', '£2,364,000', '£3,439,000'], R6: ['21:11', '£2,858,000', '£2,459,000', '£3,534,000'],
+            R7: ['21:13', '£2,897,000', '£2,499,000', '£3,574,000'], W: ['21:18', '£2,862,000', '£2,464,000', '£3,538,000']
           };
           const sumOf = (r, priv) => masked(S('On them, the middle path reaches ', [RUN[r][1]], ' in 2046; 8 in 10 runs end between ', [RUN[r][2]], ' and ', [RUN[r][3]], '.'), priv);
           const MEET = [
@@ -467,9 +467,9 @@
           const axis = [['Today', 0, 'ax0'], ['2031', 25, ''], ['2036', 50, ''], ['2041', 75, ''], ['2046', 100, 'ax1']].map((a) => ({ l: a[0], left: pc(a[1]), c: a[2] }));
           const FOOT_ADMIN = 'Tap a plan to correct its figures, pause it or end it. Nothing is added here: a new plan starts in the chat.';
           const FOOT_MEMBER = 'Plans are kept by the admins: you see them here, without pencils. Ask in the chat about any of them, or try a what-if.';
-          const H1 = 'Plan item added · v1 · his words “£4,000 a month from Jan 2029 for my kid’s schooling” · Arun · Thu 5 Nov 20:43 · in the chat · run Thu 5 Nov 09:13 → 20:43: 2046 middle path £3,897,000 → £2,580,000';
+          const H1 = 'Plan item added · v1 · his words “£4,000 a month from Jan 2029 for my kid’s schooling” · Arun · Thu 5 Nov 20:43 · in the chat · run Thu 5 Nov 09:13 → 20:43: 2046 middle path £3,548,000 → £2,441,000';
           const H2 = 'Covered by the school fees pot · Arun · Thu 5 Nov 20:46 · in the chat';
-          const H3 = 'Plan item corrected · ends Jul 2041 → Jul 2040 · v1 → v2 · Arun · Thu 5 Nov 21:11 · in place · run 21:09 → 21:11: 2046 middle path £2,923,000 → £3,037,000';
+          const H3 = 'Plan item corrected · ends Jul 2041 → Jul 2040 · v1 → v2 · Arun · Thu 5 Nov 21:11 · in place · run 21:09 → 21:11: 2046 middle path £2,762,000 → £2,858,000';
           const wheel = (list, on) => list.map((t) => ({ t, c: t === on ? 'on' : '' }));
           const feesRows = (state) => [
             { plain: true, editing: false, k: 'Amount', v: '£4,000 a month', src: '', si: '' },
@@ -485,7 +485,7 @@
             rows: feesRows(state), saved: state !== 'edit', run: state === 'edit' ? '21:09' : '21:11', off: off || '0px',
             eng: state === 'edit'
               ? ['£48,000 in 2029; £6,784 a month by Jul 2041; £789,759 in all.', 'The school fees pot tops up £1,361 in Jan and Feb 2029.']
-              : ['£48,000 in 2029; £6,491 a month by Jul 2040; £709,817 in all.', 'On the plans, 2046’s middle path goes from £2,923,000 to £3,037,000; the pot still tops up £1,361 in Jan and Feb 2029.'],
+              : ['£48,000 in 2029; £6,491 a month by Jul 2040; £709,817 in all.', 'On the plans, 2046’s middle path goes from £2,762,000 to £2,858,000; the pot still tops up £1,361 in Jan and Feb 2029.'],
             hist: state === 'edit' ? [H1, H2] : [H1, H2, H3] });
           const T = [['Light', 't-light'], ['Dark', 't-dark']];
           const ARUN = { adm: true, mem: false, footI: 'edit', foot: FOOT_ADMIN };
@@ -510,15 +510,15 @@
             priv: { clock: '21:06', run: 'R4', head: ADMIN_HEAD, priv: true, meet: true },
             menu: { clock: '21:08', run: 'R4', head: ADMIN_HEAD, rowo: { sel: 'car', menu: 'car' } },
             paused: { clock: '21:08', run: 'R5', head: '7 plans · 1 paused', rowo: { paused: ['car'], sel: 'car' },
-              banner: { c: 'ok-pause', i: 'pause_circle', t: 'Paused. The Projection runs again without it.', audit: 'Audit · Plan item paused · Replace the car · v1 → v2 · Arun · Thu 5 Nov 21:08 · in place · run 20:59 → 21:08: 2046 middle path £2,923,000 → £2,977,000' } },
+              banner: { c: 'ok-pause', i: 'pause_circle', t: 'Paused. The Projection runs again without it.', audit: 'Audit · Plan item paused · Replace the car · v1 → v2 · Arun · Thu 5 Nov 21:08 · in place · run 20:59 → 21:08: 2046 middle path £2,762,000 → £2,802,000' } },
             resumed: { clock: '21:09', run: 'R5b', head: ADMIN_HEAD, rowo: { sel: 'car' },
-              banner: { c: 'ok-add', i: 'play_circle', t: 'Resumed. The Projection runs again with it.', audit: 'Audit · Plan item resumed · Replace the car · v2 → v3 · Arun · Thu 5 Nov 21:09 · in place · run 21:08 → 21:09: 2046 middle path £2,977,000 → £2,923,000' } },
+              banner: { c: 'ok-add', i: 'play_circle', t: 'Resumed. The Projection runs again with it.', audit: 'Audit · Plan item resumed · Replace the car · v2 → v3 · Arun · Thu 5 Nov 21:09 · in place · run 21:08 → 21:09: 2046 middle path £2,802,000 → £2,762,000' } },
             edit: { clock: '21:11', run: 'R5b', head: ADMIN_HEAD, rowo: { sel: 'fees' }, sh: feesSheet('edit') },
             saved: { clock: '21:11', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'fees2' }, sh: feesSheet('saved') },
             confirm: { clock: '21:13', run: 'R6', head: ADMIN_HEAD, ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc', 'car'], rowo: { sel: 'car' },
               cf: { title: 'End Replace the car?', body: 'It stops counting from now, and the Projection runs again without it. It stays in its history and in Audit; a new plan starts in the chat.', label: 'A word for the audit (optional)', typed: 'we’re keeping the car' } },
             ended: { clock: '21:13', run: 'R7', meta: 'Six plans, kept by the admins, and one ended · the engine’s run of Thu 5 Nov 21:13', head: '6 plans · kept by the admins', ids: ['pot', 'bonus', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
-              banner: { c: 'ok-neutral', i: 'event_busy', t: 'Ended. The Projection runs again without it.', audit: 'Audit · Plan item ended · Replace the car · v3 → v4 · his words “we’re keeping the car” · Arun · Thu 5 Nov 21:13 · in place · run 21:11 → 21:13: 2046 middle path £3,037,000 → £3,091,000' } },
+              banner: { c: 'ok-neutral', i: 'event_busy', t: 'Ended. The Projection runs again without it.', audit: 'Audit · Plan item ended · Replace the car · v3 → v4 · his words “we’re keeping the car” · Arun · Thu 5 Nov 21:13 · in place · run 21:11 → 21:13: 2046 middle path £2,858,000 → £2,897,000' } },
             asha: { who: ASHA, clock: '21:19', run: 'W', head: '7 plans · kept by the admins', ids: ['pot', 'bonus', 'wed', 'ext', 'sal', 'fees2', 'hdfc'], ended: ENDED,
               note: { h: 'Cash runs short', s: 'from the engine, run of 21:18', t: 'The wedding in Mar 2027 and the extension in Jun 2027 take cash £19,871 below zero that June; it is back above zero in Mar 2028. Ask in the chat to see the ways to cover it; applying one is an admin’s.' } }
           };
@@ -535,24 +535,24 @@
             { anchor: 's2', id: '3a', name: 'iPhone · Plans tab 3a, a plan paused', keys: 'MA-222 · MA-224',
               lead: '21:08: Arun taps ⋯ on Replace the car; the glass menu has Open, Pause, End it and Ask in chat. He taps Pause: the row stays, its mark drawn hollow and a Paused chip on it, and the summary shows the engine’s new run with the audit row above it.',
               frames: [fr('iPhone · Plans tab 3a, a plan paused', IP, T[0], SC(st.menu, '-507px'), 'the menu'), fr('iPhone · Plans tab 3a, a plan paused', IP, T[0], SC(st.paused, '0px'), 'paused'), fr('iPhone · Plans tab 3a, a plan paused', IP, T[1], SC(st.paused, '-703px'), 'paused, scrolled'), fr('iPhone · Plans tab 3a, a plan paused', PD, T[0], SC(st.paused, '-317px'), 'paused, scrolled')],
-              notes: [{ h: 'Pause, not delete:', t: 'a paused plan keeps its words, figures and place on the timeline, and stops counting until it is resumed: a correction event, status active → paused, version 1 → 2.' }, { h: 'The engine’s figures:', t: 'without the car, 2046’s middle path is £2,977,000 (R5), from £2,923,000.' }, { h: 'Glass is the menu only:', t: 'it floats over solid content and carries labels; End it is in the alert colour, as a destructive item is.' }, { h: 'Two scroll positions:', t: 'the light frame opens at the top, with the line it leaves and its audit row; the dark frame and the iPad are scrolled to the paused row.' }] },
+              notes: [{ h: 'Pause, not delete:', t: 'a paused plan keeps its words, figures and place on the timeline, and stops counting until it is resumed: a correction event, status active → paused, version 1 → 2.' }, { h: 'The engine’s figures:', t: 'without the car, 2046’s middle path is £2,802,000 (R5), from £2,762,000.' }, { h: 'Glass is the menu only:', t: 'it floats over solid content and carries labels; End it is in the alert colour, as a destructive item is.' }, { h: 'Two scroll positions:', t: 'the light frame opens at the top, with the line it leaves and its audit row; the dark frame and the iPad are scrolled to the paused row.' }] },
             { anchor: 's3', id: '3a', name: 'iPhone · Plans tab 3a, a plan resumed', keys: 'MA-222 · MA-224',
               lead: '21:09: Resume, from the same menu. The car counts again, the figures go back to 20:59’s, and the audit row says so, version 2 → 3.',
               frames: [fr('iPhone · Plans tab 3a, a plan resumed', IP, T[0], SC(st.resumed, '0px')), fr('iPhone · Plans tab 3a, a plan resumed', PD, T[0], SC(st.resumed, '0px'))],
-              notes: [{ h: 'The same run as before:', t: 'the plans are as they were at 20:59, so the engine’s figures are R4’s again: £2,923,000 in 2046.' }] },
+              notes: [{ h: 'The same run as before:', t: 'the plans are as they were at 20:59, so the engine’s figures are R4’s again: £2,762,000 in 2046.' }] },
             { anchor: 's4', id: '3a', name: 'iPhone · Plans tab 3a, a plan corrected in place', keys: 'MA-222 · MA-224',
               lead: '21:11: Arun opens School fees and taps its end, Jul 2041. iOS’s month and year wheels show Jul 2040; he sees Jul 2041 → Jul 2040 and saves. The pill shows the new month and that he corrected it; the engine’s figures move; the history gains the correction.',
               frames: [fr('iPhone · Plans tab 3a, a plan corrected in place', IP, T[0], Object.assign({}, st.edit, { sh: feesSheet('edit', '-150px') }), 'editing'), fr('iPhone · Plans tab 3a, a plan corrected in place', IP, T[0], Object.assign({}, st.saved, { sh: feesSheet('saved', '-250px') }), 'saved'), fr('iPhone · Plans tab 3a, a plan corrected in place', IP, T[1], Object.assign({}, st.saved, { sh: feesSheet('saved', '-250px') }), 'saved'), fr('iPhone · Plans tab 3a, a plan corrected in place', PD, T[0], Object.assign({}, st.saved, { sh: feesSheet('saved', '-150px') }), 'saved')],
-              notes: [{ h: 'Correct in place:', t: 'tap the figure, pick the month, a before → after line, Save. A correction event, via inline_edit, version 1 → 2; the admin’s words stay the ones he said in the chat.' }, { h: 'The engine’s figures:', t: '£6,491 a month by Jul 2040 and £709,817 in all, against £789,759; 2046’s middle path £2,923,000 → £3,037,000 (R6). The pot still tops up £1,361 in Jan and Feb 2029.' }, { h: 'The sheet is solid', t: 'and scrolled to the figures it changes; the history keeps the creation with his words and its run, the pot, and the correction.' }] },
+              notes: [{ h: 'Correct in place:', t: 'tap the figure, pick the month, a before → after line, Save. A correction event, via inline_edit, version 1 → 2; the admin’s words stay the ones he said in the chat.' }, { h: 'The engine’s figures:', t: '£6,491 a month by Jul 2040 and £709,817 in all, against £789,759; 2046’s middle path £2,762,000 → £2,858,000 (R6). The pot still tops up £1,361 in Jan and Feb 2029.' }, { h: 'The sheet is solid', t: 'and scrolled to the figures it changes; the history keeps the creation with his words and its run, the pot, and the correction.' }] },
             { anchor: 's5', id: '3a', name: 'iPhone · Plans tab 3a, a plan ended', keys: 'MA-222 · MA-224',
               lead: '21:13: End it asks first, in an alert with a field for a word for the audit; Arun types “we’re keeping the car” and ends it. The car leaves the timeline for an Ended list, the count drops to 6, and the audit row carries his words.',
               frames: [fr('iPhone · Plans tab 3a, a plan ended', IP, T[0], SC(st.confirm, '-507px'), 'the confirm'), fr('iPhone · Plans tab 3a, a plan ended', IP, T[0], SC(st.ended, '0px'), 'ended'), fr('iPhone · Plans tab 3a, a plan ended', IP, T[1], SC(st.ended, '-830px'), 'ended, scrolled'), fr('iPhone · Plans tab 3a, a plan ended', PD, T[0], SC(st.ended, '-385px'), 'ended, scrolled')],
-              notes: [{ h: 'Ending asks:', t: 'unlike Pause, End takes the plan out of the count for good; it stays in its history and in Audit, and a new one starts in the chat.' }, { h: 'The alert is solid,', t: 'since it carries a sentence and the admin’s words; End it is in the alert colour.' }, { h: 'The engine’s figures:', t: '2046’s middle path £3,091,000 (R7); 8 in 10 runs end between £2,298,000 and £4,296,000.' }, { h: 'Two scroll positions:', t: 'the light frame at the top with the audit row, the dark frame and the iPad scrolled to the Ended list.' }] },
+              notes: [{ h: 'Ending asks:', t: 'unlike Pause, End takes the plan out of the count for good; it stays in its history and in Audit, and a new one starts in the chat.' }, { h: 'The alert is solid,', t: 'since it carries a sentence and the admin’s words; End it is in the alert colour.' }, { h: 'The engine’s figures:', t: '2046’s middle path £2,897,000 (R7); 8 in 10 runs end between £2,499,000 and £3,574,000.' }, { h: 'Two scroll positions:', t: 'the light frame at the top with the audit row, the dark frame and the iPad scrolled to the Ended list.' }] },
             { anchor: 's6', id: '3a', name: 'iPhone · Plans tab 3a, as Asha sees it', keys: 'MA-224 · MA-222 · MA-263',
               head: { n: '2', t: 'As Asha sees it', p: '21:19: Asha, a member, opens the tab after Arun saved his sister’s wedding at 21:16 and undid, at 21:18, the way he had chosen to cover it. She sees every plan and the engine’s figures, and saves nothing.' },
               lead: 'The plans with the wedding, and the car under Ended; no pencils, no menus, no Add in chat, and a lock line instead of the admin’s hint. The engine’s flag on the wedding and its note: cash £19,871 below zero in Jun 2027, back above zero in Mar 2028. On iPad, no Admin center in her sidebar.',
               frames: [fr('iPhone · Plans tab 3a, as Asha sees it', IP, T[0], SC(st.asha, '-50px')), fr('iPhone · Plans tab 3a, as Asha sees it', IP, T[1], SC(st.asha, '-888px'), 'scrolled'), fr('iPhone · Plans tab 3a, as Asha sees it', PD, T[0], SC(st.asha, '-23px'))],
-              notes: [{ h: 'Read, ask, never save:', t: 'figures show plain, without pencils; her chat is her own, where she can ask about a plan, see the ways to cover the wedding, or try a what-if.' }, { h: 'The engine’s figures', t: 'are the run after Arun’s Undo (21:18): 2046’s middle path £3,040,000; 8 in 10 runs end between £2,275,000 and £4,224,000.' }, { h: 'Colour is never alone:', t: 'the wedding’s flag says ▼ and what is short; the Ended chip says Ended.' }, { h: 'Two scroll positions:', t: 'the light frame shows the wedding’s row and its flag; the dark frame is scrolled to the Ended list and the engine’s note.' }] }
+              notes: [{ h: 'Read, ask, never save:', t: 'figures show plain, without pencils; her chat is her own, where she can ask about a plan, see the ways to cover the wedding, or try a what-if.' }, { h: 'The engine’s figures', t: 'are the run after Arun’s Undo (21:18): 2046’s middle path £2,862,000; 8 in 10 runs end between £2,464,000 and £3,538,000.' }, { h: 'Colour is never alone:', t: 'the wedding’s flag says ▼ and what is short; the Ended chip says Ended.' }, { h: 'Two scroll positions:', t: 'the light frame shows the wedding’s row and its flag; the dark frame is scrolled to the Ended list and the engine’s note.' }] }
           ];
           return {
             boards, axis, grid: [pc(25), pc(50), pc(75)],

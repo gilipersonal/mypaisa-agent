@@ -82,8 +82,8 @@ Arun is the owner and admin; Asha is a member. Their five UK holdings are the iO
 **The Projection**
 - Its runs come from `make_future_plans.py` (MA-264), month by month; they replaced this script's yearly sketch on
   28 Oct 2026. The 26 Oct run at 09:53 (`R26` in `future-plans-v4.json`) starts after the correction, at £457,951.
-- **The 26 Oct run's middle path:** £1,508,000 in 2036, £3,697,000 in 2046 and £6,626,000 in
-  2056. In 2056, 8 in 10 runs end between £3,419,000 and £11,990,000.
+- **The 26 Oct run's middle path:** £1,472,000 in 2036, £3,378,000 in 2046 and £5,313,000 in
+  2056. In 2056, 8 in 10 runs end between £4,597,000 and £6,356,000.
 - The assumptions:
   - Parag Parikh's 10.7% XIRR is shrunk to 9.06% (3.8 years of history moves the prior only a little).
   - The FD and the PPF are at their contract rate of 7.1%.
@@ -94,8 +94,8 @@ Arun is the owner and admin; Asha is a member. Their five UK holdings are the iO
   - a home extension, −£35,000 in Jun 2027;
   - Asha's bonus, +£3,000 every March (growing 3.5% a year from Arun's correction at 10:44);
   - a new car, −£25,000 in Jun 2031.
-- **The what-if** (10:20): £60,000 down on a second flat in Jun 2028 puts 2036's middle path at £1,417,000,
-  £91,000 lower. Code flags cash £14,462 below zero in Jun 2028, back above zero in
+- **The what-if** (10:20): £60,000 down on a second flat in Jun 2028 puts 2036's middle path at £1,395,000,
+  £77,000 lower. Code flags cash £14,462 below zero in Jun 2028, back above zero in
   Nov 2028.
 
 # The future plans (MA-264): `future-plans-v4.json`
@@ -114,7 +114,7 @@ Thursday comes before the plans. Every board of MA-264 shares this clock.
 - **The evening's base run** is R5N, Thu 5 Nov 09:13, after the EMI was confirmed. It has R0's figures (Sun 1 Nov
   09:03), since the EMI was already in November's flows.
 - **Prototype v4's Projection** shows R5N. Its what-if at 10:20 (`what_if_5nov`) puts 2036's middle path at
-  £1,446,000 against £1,539,000, £93,000 lower. Code flags cash
+  £1,423,000 against £1,501,000, £78,000 lower. Code flags cash
   £15,377 below zero in Jun 2028, back above zero in Nov 2028.
 
 Two corrections drawn on the v4 Projection boards on Mon 26 Oct hold here (lesson 19): Arun's salary growth is 4.8% (he
@@ -124,7 +124,7 @@ set it at 10:40), and Asha's bonus grows 3.5% a year (corrected at 10:44).
 
 - **Income:** each member's take-home, rising each April (Arun 4.8%, Asha 3.5%); the Pune rent in rupees, rising 5%
   each April; Asha's bonus each March. From 60 (Arun in Jan 2051, Asha in Jan 2053) a pension pays 4% of its pot a
-  year, and Balanced pays any gap.
+  year, and cash pays any gap, Balanced only once cash has run out.
 - **Spending:** October's plan per category (£2,682 a month), each category with its inflation key, stepping up each
   January: UK 2.5%, UK health 4% (Health), India 5% (Family support, ₹25,000 a month).
 - **Commitments:** the three EMIs to their end dates (car Feb 2029, HDFC Jul 2030, mortgage Oct 2045), the Parag
@@ -134,8 +134,14 @@ set it at 10:40), and Asha's bonus grows 3.5% a year (corrected at 10:44).
 - **Cash:** the Monzo pot, the Monzo savings and the NRE savings (£7,092 on 1 Nov), plus the maturities (the saver in
   Dec 2026, the SBI FD in Mar 2029, the PPF and LIC in Mar 2031). October's card statement (£1,458) is paid from it
   in November. Cash earns 3%.
-- **The surplus rule:** cash keeps six months of outgoings plus the one-offs due in the next twelve months; the rest
-  goes into Balanced (ISA) each month.
+- **The surplus rule: all to cash** (Arun, 3 Nov 2026; `ARCHITECTURE.md` §6 and §15). Each month's surplus stays as
+  cash, on the base path and the fan alike; nothing is swept into a holding or a loan. Until MA-224 redrew the figures
+  (25 Nov 2026) cash kept six months of outgoings plus the year's one-offs and the rest went into Balanced (ISA). Two
+  readings this aid makes, for Arun to confirm when he looks at the redrawn boards:
+  - **One cash figure, in pounds.** The plan says "in its own currency"; the aid converts each rupee flow at its
+    month's rate and holds no separate rupee balance.
+  - **In retirement a gap comes out of cash first,** and Balanced is sold only for what cash cannot cover. It was
+    "Balanced pays any gap" while cash was held to six months.
 - **Arun's floor:** a surplus of £500 a month (his setting). A month below it is flagged while anyone in the
   household earns a salary (to Dec 2052); in retirement only cash running out is flagged (Arun, 28 Oct 2026).
 - **FX:** £1 = ₹112.50 on 1 Nov, drifting 2.44% a year (the inflation gap); each rupee flow converts at its month's
@@ -154,19 +160,19 @@ set it at 10:40), and Asha's bonus grows 3.5% a year (corrected at 10:44).
    until when (Jul 2041), how the fees grow (4.5% a year, the UK school-fees prior), paid from where (the monthly
    budget).
 2. **20:42** The impact card. The middle path moves:
-   - 2031: £866,000 → £701,000;
-   - 2036: £1,539,000 → £1,002,000;
-   - 2046: £3,897,000 → £2,580,000 (−£1,317,000).
+   - 2031: £855,000 → £698,000;
+   - 2036: £1,501,000 → £996,000;
+   - 2046: £3,548,000 → £2,441,000 (−£1,107,000).
 
    The surplus is below the floor in 50 months, Jan 2029 to Feb 2035, at worst −£903 in Jan 2029. Cash stays above
    zero.
 3. **20:43** Confirm saves it, with its audit row. The plan leaves the household short, so code works out the
    options, and the agent ranks them. Each one covers the £19,058 gap:
    1. A School fees pot from this month: £690 a month, Nov 2026 to Dec 2028 (£17,940); November's planned surplus
-      £2,636 → £1,946. 2046: £2,585,000.
+      £2,636 → £1,946. 2046: £2,441,000.
    2. Holidays £400 → £150, Eating out £180 → £100, Shopping £250 → £150 a month, from Jan 2029 to Jul 2041, and
-      £5,458 from Balanced in 2029 to 2031. 2046: £2,703,000.
-   3. £19,058 from Balanced over 2029 to 2035, £9,090 of it in 2029. 2046: £2,582,000.
+      £5,458 from Balanced in 2029 to 2031. 2046: £2,549,000.
+   3. £19,058 from Balanced over 2029 to 2035, £9,090 of it in 2029. 2046: £2,421,000.
 
    Two more: start the fees in Jan 2032 instead (only if the date can move), or pause the SIP (it covers £3,436, not
    enough on its own).
@@ -195,21 +201,21 @@ MA-261's sentences are used as this household would say them, keeping lesson 13:
 
 | Time | What happens | 2046 middle path |
 | --- | --- | --- |
-| 21:08 | Arun pauses Replace the car | £2,977,000 |
-| 21:09 | He resumes it, back to 21:05's run | £2,923,000 |
-| 21:11 | He corrects School fees' end in place, Jul 2041 → Jul 2040 (version 2) | £3,037,000 |
-| 21:13 | He ends Replace the car ("we're keeping the car") | £3,091,000 |
+| 21:08 | Arun pauses Replace the car | £2,802,000 |
+| 21:09 | He resumes it, back to 21:05's run | £2,762,000 |
+| 21:11 | He corrects School fees' end in place, Jul 2041 → Jul 2040 (version 2) | £2,858,000 |
+| 21:13 | He ends Replace the car ("we're keeping the car") | £2,897,000 |
 
 **The wedding (21:15 to 21:18).** Arun: "£20,000 for my sister's wedding in Mar 2027". It is a one-off with no source, so it is paid
 from the surplus and then cash.
 
-- Saved at 21:16, it takes 2046's middle path to £3,040,000.
+- Saved at 21:16, it takes 2046's middle path to £2,862,000.
 - Cash goes £19,871 below zero in Jun 2027, when the extension is paid, and is back above zero in
   Mar 2028. This is the rearrangement offered for cash, not for the floor.
 - The ways code finds, each keeping cash at zero or above and the surplus at the floor:
-  1. Take it from Balanced (ISA) when cash runs short: Balanced (ISA) pays £19,871 in Jun 2027. 2046: £3,041,000.
-  2. Move the home extension to Mar 2028. 2046: £3,041,000.
-  3. Pause the School fees pot until Jun 2027, and take the rest from Balanced: Balanced (ISA) pays £14,302 in Jun 2027. 2046: £3,038,000.
+  1. Take it from Balanced (ISA) when cash runs short: Balanced (ISA) pays £19,871 in Jun 2027. 2046: £2,840,000.
+  2. Move the home extension to Mar 2028. 2046: £2,863,000.
+  3. Pause the School fees pot until Jun 2027, and take the rest from Balanced: Balanced (ISA) pays £14,302 in Jun 2027. 2046: £2,846,000.
 - At 21:17 Arun applies the first way. At 21:18 he undoes it: the wedding stays saved, and cash is flagged again.
 - At 21:20 Asha sees that state: the Budget forecast with the cash flag, the Plans tab without pencils, and in her own
   chat the ways, with nothing she can apply.
