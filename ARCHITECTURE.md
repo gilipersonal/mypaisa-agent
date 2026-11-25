@@ -1905,6 +1905,9 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   the chat is a sheet over the page, at every width: 600 px wide and at most
   760 px tall, centred in the window both ways (Arun, 25 Nov 2026, MA-357:
   "I need the chat window to be centered for web and ipad/tablet layout"),
+  and from 1024 px, with the sidebar in view, centred in the page area
+  beside the sidebar rather than the whole window (Arun, 25 Nov 2026: "Chat
+  needs to centered inside the area apart from sidebar"),
   the page dimmed behind it and the sidebar in view and not dimmed, so the
   mark's movement is seen (Arun, 25 Nov 2026, MA-360); opened from the
   sidebar's Chat, a page's Ask or Update, or ⌘J on a Mac (no shortcut on

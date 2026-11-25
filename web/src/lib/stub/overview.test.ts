@@ -45,16 +45,15 @@ describe('the Overview before the first record', () => {
 		expect(o.hero.rate).toBe('£1 = ₹112.50 · ECB reference rate, Fri 23 Oct · prices at the Fri 23 Oct close');
 	});
 
-	it('lays the cards out as board 1a does, the two chart cards first in place of the meters (MA-359)', () => {
+	it('lays the cards out with the two chart cards first, then two columns balanced by height (MA-359)', () => {
 		expect(o.rows.map((r) => r.columns.map((col) => col.map((c) => c.id)))).toEqual([
 			[['own-owe']],
 			[['invested-owed']],
 			[
-				['by-country', 'by-member'],
+				['by-country', 'by-member', 'runoff'],
 				['liquidity', 'due']
 			],
-			[['runoff'], ['maturing']],
-			[['largest']]
+			[['maturing'], ['largest']]
 		]);
 	});
 });
@@ -231,7 +230,7 @@ describe('a member’s own view', () => {
 		expect(o.hero.net?.amount).toBe('194083');
 		expect(o.hero.delta).toBeUndefined();
 		expect(o.hero.line).toBe('Across 9 records in the UK and India');
-		expect(o.rows[2]?.columns[0]?.map((c) => c.id)).toEqual(['by-country']);
+		expect(o.rows[2]?.columns[0]?.map((c) => c.id)).toEqual(['by-country', 'runoff']);
 		expect(part(card(h, 'due', 'asha'), 'due').items.map((d) => d.title)).toEqual([
 			'Valuation due: Home, Reading',
 			'Valuation overdue: Flat, Pune',

@@ -7,6 +7,7 @@ import {
 	SHEET_TALLEST,
 	SHEET_WIDTH,
 	SIDEBAR_FROM,
+	SIDEBAR_WIDTH,
 	chatKeyLabel,
 	chatPlace,
 	dimDuring,
@@ -50,7 +51,7 @@ describe('the sheet’s frame', () => {
 		return { x: f.left + f.width / 2, y: f.top + f.height / 2, f };
 	};
 
-	it('is centred in the window across and down, with the sidebar (desktop) and with the tab bar (tablet)', () => {
+	it('is centred across and down: in the page area beside the sidebar from 1024 px, in the window under it', () => {
 		for (const [w, h] of [
 			[1920, 1080],
 			[1440, 900],
@@ -63,14 +64,25 @@ describe('the sheet’s frame', () => {
 			[1101, 701]
 		] as const) {
 			const { x, y, f } = centre(w, h);
-			expect(Math.abs(x - w / 2), `${String(w)}×${String(h)} across`).toBeLessThanOrEqual(0.5);
+			const start = w >= SIDEBAR_FROM ? SIDEBAR_WIDTH : 0;
+			expect(Math.abs(x - (start + (w - start) / 2)), `${String(w)}×${String(h)} across`).toBeLessThanOrEqual(0.5);
 			expect(Math.abs(y - h / 2), `${String(w)}×${String(h)} down`).toBeLessThanOrEqual(0.5);
 			expect(Math.abs(f.top - (h - f.top - f.height)), 'the same margin above and below').toBeLessThanOrEqual(1);
 		}
 	});
 
-	it('does not stop clear of the sidebar any more: at 1024 px it crosses the sidebar’s edge, centred', () => {
-		expect(sheetFrame(1024, 768)).toMatchObject({ left: 212, width: 600 });
+	it('never lies over the sidebar: at 1024 px it runs from 336 to 936, at 1440 from 544 to 1144', () => {
+		expect(sheetFrame(1024, 768)).toMatchObject({ left: 336, width: 600 });
+		expect(sheetFrame(1280, 800)).toMatchObject({ left: 464, width: 600 });
+		expect(sheetFrame(1440, 900)).toMatchObject({ left: 544, width: 600 });
+		for (const w of [1024, 1060, 1100, 1280, 1440, 1920]) {
+			expect(sheetFrame(w, 800).left, `${String(w)} px`).toBeGreaterThanOrEqual(SIDEBAR_WIDTH + SHEET_MARGIN.inline);
+		}
+	});
+
+	it('is centred in the window under 1024 px, where the tab bar shows instead of the sidebar', () => {
+		expect(sheetFrame(1023, 768)).toMatchObject({ left: 212, width: 600 });
+		expect(sheetFrame(768, 1024)).toMatchObject({ left: 84, width: 600 });
 	});
 
 	it('is 600 px wide, or the window less 16 px a side when narrower', () => {
