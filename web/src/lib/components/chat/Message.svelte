@@ -5,6 +5,7 @@
 	import CheckCheck from '@lucide/svelte/icons/check-check';
 	import Clock from '@lucide/svelte/icons/clock';
 	import FileText from '@lucide/svelte/icons/file-text';
+	import { isCheckInCard } from '#lib/cards/checkin.ts';
 	import { isConfirmCard, isFigureCard } from '#lib/cards/kinds.ts';
 	import { isPlanCard } from '#lib/cards/plan.ts';
 	import { canRender } from '#lib/cards/types.ts';
@@ -13,6 +14,7 @@
 	import Mark from '#lib/components/brand/Mark.svelte';
 	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
 	import { maskAmounts } from '#lib/privacy/mask.ts';
+	import CheckInCard from './CheckInCard.svelte';
 	import ConfirmCard from './ConfirmCard.svelte';
 	import FigureCard from './FigureCard.svelte';
 	import PlanCard from './PlanCard.svelte';
@@ -99,6 +101,14 @@
 						{card}
 						privacy={privacy.on}
 						{onChoose}
+						onTap={(action: CardAction) => {
+							onTap(card.id, action);
+						}}
+					/>
+				{:else if canRender(card) && isCheckInCard(card)}
+					<CheckInCard
+						{card}
+						privacy={privacy.on}
 						onTap={(action: CardAction) => {
 							onTap(card.id, action);
 						}}

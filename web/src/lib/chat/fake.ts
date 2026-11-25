@@ -9,6 +9,7 @@ import { CARD_SCHEMA_VERSION } from '#lib/cards/types.ts';
 import { formatMoney } from '#lib/formatting/money.ts';
 import type { StubHousehold } from '#lib/stub/household.ts';
 import { monzoSavings } from '#lib/stub/records.ts';
+import type { CheckInScript } from './checkins.ts';
 import { PlanScript } from './plans.ts';
 import type { CardAction, ChatTransport, Outgoing } from './transport.ts';
 
@@ -82,11 +83,25 @@ export class FakeTransport implements ChatTransport {
 		/** How long the agent takes before it answers. */
 		private readonly thinkMs = 500,
 		/** The stub household Confirm writes to (MA-208), so the pages beside the chat move when a record is saved. */
-		private readonly household?: StubHousehold
-	) {}
+		private readonly household?: StubHousehold,
+		/** The scripted check-ins (MA-205), when the address asks for them. */
+		private readonly checkIns?: CheckInScript
+	) {
+		// MA-205: the check-ins speak through this transport's frames and clock.
+		this.checkIns?.attach({
+			emit: (event, data) => {
+				this.#emit(event, data);
+			},
+			after: (key, fn) => {
+				this.#after(key, fn);
+			},
+			now: () => this.clock.now()
+		});
+	}
 
 	connect(onFrame: (frame: StreamFrame) => void): () => void {
 		this.#onFrame = onFrame;
+		this.checkIns?.arrive(); // MA-205: today's check-in arrives once the chat is connected
 		return () => {
 			this.#onFrame = undefined;
 			for (const cancel of this.#cancels.values()) cancel();
@@ -126,6 +141,11 @@ export class FakeTransport implements ChatTransport {
 
 	tap(cardId: string, action: CardAction): Promise<void> {
 		if (this.#plans.tap(cardId, action)) return Promise.resolve();
+		// MA-205: a check-in card, or a step of its short flow, is the script's own.
+		if (this.checkIns?.owns(cardId)) {
+			this.checkIns.tap(cardId, action);
+			return Promise.resolve();
+		}
 		const draft = [...this.#drafts.values()].find((d) => d.cardId === cardId);
 		if (!draft) return Promise.resolve();
 		if (action === 'confirm') {
@@ -177,6 +197,8 @@ export class FakeTransport implements ChatTransport {
 		}
 		if (this.#plans.answer(message)) return;
 		const text = message.text.trim();
+		// MA-205: an amount a check-in's short flow asked for.
+		if (this.checkIns?.takeText(text)) return;
 		const savings = /£\s?([\d,]+(?:\.\d+)?)\s+in\s+monzo/i.exec(text);
 		if (savings?.[1]) {
 			const amount = savings[1].replaceAll(',', '');

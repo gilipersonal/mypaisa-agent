@@ -21,4 +21,8 @@ public enum TestIDs {
   public static let plansTimeline = "mp.plans.timeline"
   public static let plansSheet = "mp.plans.sheet"
   public static let chatPlanCard = "mp.chat.planCard"
+  public static let chatCheckIn = "mp.chat.checkin"
+  public static let chatCheckInConfirm = "mp.chat.checkin.confirm"
+  public static let chatCheckInMore = "mp.chat.checkin.more"
+  public static let chatCheckInUndo = "mp.chat.checkin.undo"
 }

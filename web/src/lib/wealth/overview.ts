@@ -56,6 +56,8 @@ export interface DueItem {
 	noteFig?: Fig;
 	fig?: Fig;
 	chip: Chip;
+	/** Answered in the chat just now: the row is tinted as it ticks to Done (MA-205). */
+	done?: boolean;
 }
 
 export interface RunoffItem {

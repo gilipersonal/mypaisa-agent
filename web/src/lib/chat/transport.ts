@@ -10,8 +10,8 @@ export interface Outgoing {
 	file?: FileRef;
 }
 
-/** What a card's buttons ask for. */
-export type CardAction = 'confirm' | 'edit' | 'cancel';
+/** What a card's buttons ask for. A check-in card's buttons send their own ids, `checkin.<answer>` (MA-205). */
+export type CardAction = 'confirm' | 'edit' | 'cancel' | `checkin.${string}`;
 
 export interface ChatTransport {
 	/** Starts delivering frames, in order; returns a function that stops. */

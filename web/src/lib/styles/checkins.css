@@ -1,0 +1,194 @@
+/* The check-in card, 1b (MA-205): Paid is the Confirm, the rest behind Something else. Ported from the picked board's
+   own rules (docs/design/app-v1/Web v4 · Check-ins.dc.html); the card's frame, rows and foot are shell.css's (.cc,
+   .cc-h, .cc-b, .kvr, .cc-a, .cc-f). Every colour is a DS v1 token. */
+
+.ci-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	min-height: 28px;
+}
+.ci-top .mp-chip .lc {
+	width: 16px;
+	height: 16px;
+}
+.ci-top .mp-btn-plain {
+	margin: -8px -8px -8px 0;
+}
+.ci-a .lc {
+	width: 18px;
+	height: 18px;
+}
+.ci-a .sel {
+	box-shadow: inset 0 0 0 2px var(--mp-accent);
+}
+
+/* Something else's answers, opened in place under the buttons */
+.ci-opts {
+	border-top: 1px solid var(--mp-line);
+}
+.ci-opt {
+	appearance: none;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	min-height: 56px;
+	padding: 6px 16px;
+	box-sizing: border-box;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+.ci-opt + .ci-opt {
+	border-top: 1px solid var(--mp-line);
+}
+.ci-opt:hover {
+	background: var(--mp-surface-2);
+}
+.ci-opt .chev {
+	width: 20px;
+	height: 20px;
+	color: var(--mp-ink-2);
+}
+.ci-nm {
+	font: 600 15px/20px var(--mp-font);
+}
+.ci-sub {
+	font: 400 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+
+/* an answer folded to its line */
+.ci-dn {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-height: 32px;
+	border-top: 1px solid var(--mp-line);
+	font: 400 15px/20px var(--mp-font);
+}
+.ci-dn:first-child {
+	border-top: 0;
+}
+.ci-dn > :first-child {
+	color: var(--mp-ink-2);
+}
+.ci-dn b {
+	font-weight: 600;
+}
+.ci-dn .lc {
+	width: 18px;
+	height: 18px;
+	color: var(--mp-accent);
+}
+.ci-t {
+	font: 400 15px/20px var(--mp-font);
+	color: var(--mp-ink-2);
+	padding-bottom: 8px;
+	text-wrap: pretty;
+}
+.ci-pick {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.ci-pick .full {
+	width: 100%;
+}
+.ci-undone {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+	padding-top: 8px;
+	font: 400 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.ci-undone .lc {
+	width: 18px;
+	height: 18px;
+	flex: none;
+	color: var(--mp-accent);
+}
+
+/* several due at once: 1c's compact rows inside 1b's card */
+.ci-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-height: 56px;
+	padding: 6px 0;
+	box-sizing: border-box;
+	border-top: 1px solid var(--mp-line);
+}
+.ci-tile {
+	width: 32px;
+	height: 32px;
+	border-radius: 9px;
+	display: grid;
+	place-items: center;
+	flex: none;
+	font: 700 13px/1 var(--mp-font);
+	background: var(--mp-surface-2);
+	color: var(--mp-ink-2);
+}
+.ci-v {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 2px;
+	flex: none;
+}
+.ci-chk {
+	width: 20px;
+	height: 20px;
+	flex: none;
+	color: var(--mp-accent);
+}
+
+/* privacy on: the amounts on this card only */
+.ci-reveal {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 0 0 8px;
+	font: 400 13px/18px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.ci-reveal.col {
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0;
+}
+.ci-reveal .lc {
+	width: 16px;
+	height: 16px;
+}
+.ci-fref {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	min-height: 44px;
+	margin: -6px 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: 600 13px/18px var(--mp-font);
+	color: var(--mp-accent);
+	cursor: pointer;
+}
+
+/* Home's due row ticking to Done in the same second */
+.drow.moved {
+	background: var(--mp-add-bg);
+	margin: 0 -10px;
+	padding: 8px 10px;
+	border-radius: 12px;
+}

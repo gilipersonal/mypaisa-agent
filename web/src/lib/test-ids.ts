@@ -21,7 +21,11 @@ export const TestIDs = {
 	plansSummary: 'mp.plans.summary',
 	plansTimeline: 'mp.plans.timeline',
 	plansSheet: 'mp.plans.sheet',
-	chatPlanCard: 'mp.chat.planCard'
+	chatPlanCard: 'mp.chat.planCard',
+	chatCheckIn: 'mp.chat.checkin',
+	chatCheckInConfirm: 'mp.chat.checkin.confirm',
+	chatCheckInMore: 'mp.chat.checkin.more',
+	chatCheckInUndo: 'mp.chat.checkin.undo'
 } as const;
 
 export type TestID = (typeof TestIDs)[keyof typeof TestIDs];
