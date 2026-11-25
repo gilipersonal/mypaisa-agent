@@ -21,4 +21,8 @@ public enum TestIDs {
   public static let forecastYear = "mp.forecast.year"
   public static let forecastMonths = "mp.forecast.months"
   public static let forecastTrace = "mp.forecast.trace"
+  public static let chatCheckIn = "mp.chat.checkin"
+  public static let chatCheckInConfirm = "mp.chat.checkin.confirm"
+  public static let chatCheckInMore = "mp.chat.checkin.more"
+  public static let chatCheckInUndo = "mp.chat.checkin.undo"
 }

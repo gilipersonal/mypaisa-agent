@@ -21,7 +21,11 @@ export const TestIDs = {
 	forecastChart: 'mp.forecast.chart',
 	forecastYear: 'mp.forecast.year',
 	forecastMonths: 'mp.forecast.months',
-	forecastTrace: 'mp.forecast.trace'
+	forecastTrace: 'mp.forecast.trace',
+	chatCheckIn: 'mp.chat.checkin',
+	chatCheckInConfirm: 'mp.chat.checkin.confirm',
+	chatCheckInMore: 'mp.chat.checkin.more',
+	chatCheckInUndo: 'mp.chat.checkin.undo'
 } as const;
 
 export type TestID = (typeof TestIDs)[keyof typeof TestIDs];

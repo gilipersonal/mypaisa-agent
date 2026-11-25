@@ -10,6 +10,7 @@
 	import { page } from '$app/state';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { onMount, type Snippet } from 'svelte';
+	import { CheckInScript, checkInScenario } from '#lib/chat/checkins.ts';
 	import { FakeTransport } from '#lib/chat/fake.ts';
 	import { Outbox } from '#lib/chat/outbox.ts';
 	import { ChatSession, provideChat } from '#lib/chat/session.svelte.ts';
@@ -50,7 +51,15 @@
 	providePrivacy(new PrivacyMode(storage()));
 
 	// MA-352 swaps the fake for the transport over the chat api and the stream; nothing else here changes.
-	const fake = new FakeTransport(undefined, undefined, undefined, household);
+	// MA-205: ?checkin=emi or ?checkin=several puts that check-in in the chat, as the daily worker will.
+	const scenario = checkInScenario(window.location.search);
+	const fake = new FakeTransport(
+		undefined,
+		undefined,
+		undefined,
+		household,
+		scenario ? new CheckInScript(household, scenario) : undefined
+	);
 	const chat = new ChatSession(useQueryClient(), fake, new Outbox(storage()), {
 		online: () => navigator.onLine,
 		addEventListener: (type, fn) => {
