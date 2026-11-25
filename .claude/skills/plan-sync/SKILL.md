@@ -10,6 +10,8 @@ The rule is `.claude/rules/plan-sync.md`; the trace's schema is
 check that needs Jira and Confluence; `scripts/plan_sync.py` is the
 repo-side half and runs as a gate.
 
+Plan-sync and the security scan run only on Arun's yes, asked once at the end of the work (`.claude/rules/ship-autopilot.md`, "Plan-sync and the security scan ask first"). This skill runs on that yes, or when Arun asks for it in his own words; its scripts run as part of it.
+
 Arguments: `MA-<n>` (one story, before it starts), none (the default: Jira
 read incrementally, Confluence and the repo in full), `--all` (the full
 sweep, Jira included: weekly, or when unsure), `--jira`, `--design` or

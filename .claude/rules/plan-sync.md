@@ -138,11 +138,13 @@ A hook reminds the session when a prompt talks about a new design or feature
 
 ## When to run what
 
+Plan-sync and the security scan run only on Arun's yes, asked once at the end of the work (`.claude/rules/ship-autopilot.md`, "Plan-sync and the security scan ask first"). Every row below that runs `/plan-sync`, `plan_sync.py check`, `selftest`, `pr-files`, `start` or `jira-sync` as a step of the work waits for that yes; the generators (`roadmap.py write`, `plan_sync.py render`, `confluence_docs.py write`), the hooks and CI do not.
+
 | When | Run | What must be true |
 | --- | --- | --- |
 | Starting a story (`/jira-flow:work`, or by hand) | `/plan-sync MA-<n>` (refreshes the row from Jira), then `python3 scripts/plan_sync.py start MA-<n>` | The story is traced, its sections exist, its cited board files and board names exist; a UI story's design is `planned` (run `/design-first`) or `picked`; no `open` question |
 | After any change to a record | `python3 scripts/roadmap.py write` (when an estimate or a phase changed), `python3 scripts/plan_sync.py render`, `python3 scripts/confluence_docs.py write`, then `/plan-sync --confluence` to publish the changed pages and record their read-back | The check is clean; the hook after each edit to a record reports new drift at once (an edit to a board runs nothing) |
-| Before every PR (`/autoship` step 1) | `/plan-sync --confluence`, `python3 scripts/plan_sync.py pr-files`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`) | No drift; every product file the branch changes is claimed by its story; `docs/TRACE.md` is rendered. The selftest runs only when its code or fixtures changed since a pass in the last 7 days (`selftest REUSED`); `selftest --force` always runs it. CI has no cache and runs it on every PR (about 9 s) |
+| Before every PR (`/autoship` section 3a, on the yes) | `/plan-sync --confluence`, `python3 scripts/plan_sync.py pr-files`, then the `plan-sync` gate in `.claude/jira-flow.json` (`python3 scripts/plan_sync.py selftest && python3 scripts/plan_sync.py check && python3 scripts/plan_sync.py pr-files`) | No drift; every product file the branch changes is claimed by its story; `docs/TRACE.md` is rendered. The selftest runs only when its code or fixtures changed since a pass in the last 7 days (`selftest REUSED`); `selftest --force` always runs it. CI has no cache and runs it on every PR (about 9 s) |
 | On every PR, in CI | `.github/workflows/ci.yml` (MA-305: one CI workflow, its jobs in parallel: Plan sync, Plan-sync selftest, Review tooling, Confluence receipts, Workflow lint) | The same checks, offline, with nothing to sign in to: the `plan-sync` gate |
 | After planning (a new phase, a new story, a design round) | `/plan-sync` | Jira (read incrementally, from `docs/jira-sync.json`), the trace's boards and the trace agree; drift is fixed or filed |
 | Weekly, or when unsure | `/plan-sync --all` | The whole backlog, read in full from Jira, and every board folder under `claude_design` agree with the trace |
@@ -242,6 +244,6 @@ and the fix. The boards need
 no tool: they live only in the repo, so `scripts/plan_sync.py check` reads
 the cited ones offline, and the same command works in a session, in the gate, in the
 PR hook and in CI. `/autoship` runs `/plan-sync --confluence` and the gate
-before every PR.
+before every PR, on the yes to its one question.
 A status the trace records lags Jira by one step at most: Done is set after
 the merge, so the next `/plan-sync` brings it in.

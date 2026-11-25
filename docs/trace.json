@@ -9614,6 +9614,33 @@
         "the web sidebar frames with the sidebar at full strength beside the open chat sheet, the dim on the page only (Arun, 25 Nov 2026); they draw the mark under the dim"
       ],
       "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: d 1a, watcher at work. Its boards are Mark in motion in ds-v1 and iPhone v4 \u00b7 Mark in motion. It extends MA-103's intro on ds-v1 Logo (the pound now draws itself, and the dot travels on the new easing). One easing, --mo-travel, and the mo-logo-* keyframes joined motion.css in the three board folders; under Reduce Motion nothing travels. On the web only the sidebar's mark moves; on iPhone the mark beside the reply does. Nothing moves on phone web. For the build: motion.css's own Reduce Motion rule lands every keyframe at once, so the dim and the still ring need to be 150 ms opacity transitions or pinned durations. Settled: The lap under the dim (Arun, 25 Nov 2026, asked on MA-355's PR): the chat sheet dims the page, not the sidebar, so the lap and the ring are seen beside the open chat. Settled: The iPhone chat's mark (Arun, 25 Nov 2026): the coin mark sits beside each of MyPaisa's messages on iPhone and iPad, as on the web, and does the lap and the ring; the iOS kit and the chat boards are redrawn with it before this story starts."
+    },
+    {
+      "key": "MA-361",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The crew plugin knows this repo: its areas, rules, gates and limits are in .claude/crew.json, and QA is offered in the merge question",
+      "status": "In Progress",
+      "labels": [],
+      "arch": [
+        "15"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 25 Nov 2026: \"design me a team of subagents to do all the dev work ... break it up into multiple lanes (upto max 10 if needed)\"; then \"convert this into an plugin project\" and \"inject it to this current project\". The crew plugin (~/projects/crew-plugin, 18 agents, quality-first mix) is enabled here at local scope; .claude/crew.json is its overlay and .claude/rules/crew.md records the decisions. He chose \"Ask me first\" for any agent that checks another agent's work, so crew:qa is offered beside the review in the merge question. Dev tooling only, no product UI; not Phase 13's agent team (MA-127). Then, the same day: \"I need you to create a global rule to ask me before running plan-sync and security scan like we do for independent review\", and \"Yes, in MA-361\" for this repo's records: ship-autopilot.md's new section \"Plan-sync and the security scan ask first\" moves the one question before the PR, and /autoship, jira-flow.md, plan-sync.md, independent-review.md, the plan-sync and design-first skills and .claude/crew.json say it in one phrase.",
+      "code": [
+        ".claude/crew.json",
+        ".claude/rules/crew.md",
+        ".claude/rules/ship-autopilot.md",
+        ".claude/rules/jira-flow.md",
+        ".claude/rules/plan-sync.md",
+        ".claude/rules/independent-review.md",
+        ".claude/skills/autoship/SKILL.md",
+        ".claude/skills/plan-sync/SKILL.md",
+        ".claude/skills/design-first/SKILL.md"
+      ]
     }
   ],
   "others": [
