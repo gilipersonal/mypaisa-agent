@@ -110,7 +110,8 @@
 					<Square class="lc" aria-hidden="true" />
 				</button>
 			{:else}
-				<button type="button" class="send" class:on={ready} aria-label="Send" onclick={send}>
+				<!-- Send joins the Tab order once there is something to send (Web v4 · Chat sheet, Tab order). -->
+				<button type="button" class="send" class:on={ready} aria-label="Send" tabindex={ready ? 0 : -1} onclick={send}>
 					<ArrowUp class="lc" aria-hidden="true" />
 				</button>
 			{/if}

@@ -1,26 +1,31 @@
 <script lang="ts">
-	// The web app's shell, 1a Chat beside (MA-199, picked on MA-193): the sidebar from 1024 px, the page, and the chat.
-	// From about 1393 px the chat sits beside every page and may be hidden for a wider page; from 1024 to 1392 px it is
-	// a drawer over the page, from the sidebar's Chat; under 1024 px the tab bar holds Chat, Home, Assets, Projection
-	// and More (Arun, 5 Nov 2026, MA-334). The wealth pages read a stub of the design figure set (MA-208), which the
-	// scripted chat's Confirm writes to, and privacy mode is one switch for every page and the chat.
-	// ⌘K, or Search at the top of the sidebar, opens the palette over any page (MA-353).
+	// The web app's shell (MA-199, picked on MA-193; the chat as a sheet, MA-357, picked in MA-355 a 1a): the sidebar
+	// from 1024 px, the page, and the chat. From 1024 px the chat is a sheet over the page at every width, 600 px wide,
+	// the page dimmed and the sidebar not; it opens from the sidebar's Chat, ⌘J on a Mac, a page's Ask or Update, or ⌘K,
+	// and closes on Esc, Close, a click on the dimmed page, its grabber, or ⌘J again, giving the focus back to what opened
+	// it. Under 1024 px the tab bar holds Chat, Home, Assets, Projection and More (Arun, 5 Nov 2026, MA-334). The wealth
+	// pages read a stub of the design figure set (MA-208), which the scripted chat's Confirm writes to, and privacy mode
+	// is one switch for every page and the chat. ⌘K, or Search at the top of the sidebar, opens the palette (MA-353).
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { onMount, type Snippet } from 'svelte';
+	import { onMount, tick, untrack, type Snippet } from 'svelte';
+	import { chatKeys } from '#lib/api/queries.ts';
 	import { CheckInScript, checkInScenario } from '#lib/chat/checkins.ts';
 	import { FakeTransport } from '#lib/chat/fake.ts';
 	import { Outbox } from '#lib/chat/outbox.ts';
 	import { ChatSession, provideChat } from '#lib/chat/session.svelte.ts';
+	import { emptyTimeline, type Timeline } from '#lib/chat/timeline.ts';
 	import Mark from '#lib/components/brand/Mark.svelte';
 	import ChatPanel from '#lib/components/chat/ChatPanel.svelte';
+	import { freshThread } from '#lib/components/chat/thread.ts';
 	import { HeaderChoice, provideHeaderChoice } from '#lib/components/header/choice.svelte.ts';
 	import { provideWealth } from '#lib/components/wealth/context.ts';
 	import { forecastRunOf } from '#lib/stub/forecast.ts';
 	import { StubHousehold } from '#lib/stub/household.ts';
 	import { StubWealthSource, signedInAs, startsEmpty } from '#lib/stub/source.ts';
+	import { TestIDs } from '#lib/test-ids.ts';
 	import { provideShell } from './actions.ts';
 	import { applyAppearance } from './appearance.ts';
 	import { AppearanceSetting, provideAppearance } from './appearance.svelte.ts';
@@ -29,6 +34,18 @@
 	import Palette from './Palette.svelte';
 	import { commandKeyLabel, nextAppearance, type PaletteAction } from './palette.ts';
 	import { PrivacyMode, providePrivacy } from './privacy.svelte.ts';
+	import {
+		ChatSheet,
+		SHEET_FROM,
+		chatKeyLabel,
+		dimDuring,
+		isChatShortcut,
+		isMac,
+		pullCloses,
+		pullOffset,
+		trapIndex,
+		type Focusable
+	} from './sheet.svelte.ts';
 
 	let { children }: { children: Snippet } = $props();
 
@@ -51,7 +68,6 @@
 	// ?forecast=pot or ?forecast=wedding opens the Budget forecast on a later state of the evening it draws (MA-262).
 	provideWealth(new StubWealthSource(household, undefined, forecastRunOf(window.location.search)));
 	providePrivacy(new PrivacyMode(storage()));
-	// whose view and the currency, carried from page to page by the header's pills (MA-358)
 	provideHeaderChoice(new HeaderChoice(storage()));
 
 	// MA-352 swaps the fake for the transport over the chat api and the stream; nothing else here changes.
@@ -64,7 +80,8 @@
 		household,
 		scenario ? new CheckInScript(household, scenario) : undefined
 	);
-	const chat = new ChatSession(useQueryClient(), fake, new Outbox(storage()), {
+	const queries = useQueryClient();
+	const chat = new ChatSession(queries, fake, new Outbox(storage()), {
 		online: () => navigator.onLine,
 		addEventListener: (type, fn) => {
 			window.addEventListener(type, fn);
@@ -75,16 +92,23 @@
 	});
 	provideChat(chat);
 
-	const HIDDEN_KEY = 'mp.chat.hidden';
-	let hidden = $state(storage()?.getItem(HIDDEN_KEY) === '1');
-	let drawer = $state(false);
-	let wide = $state(false);
+	const sheet = new ChatSheet();
+	/** The window is 1024 px or wider: the sidebar shows, and the chat is the sheet. */
 	let roomy = $state(false);
+	let pulled = $state(0);
+	let pulling = $state(false);
+	let sheetHeight = $state(0);
+	let sheetEl: HTMLElement | undefined = $state();
+	let chatButton: HTMLButtonElement | undefined = $state();
 	let field: HTMLTextAreaElement | undefined = $state();
 	let picker: HTMLInputElement | undefined = $state();
 	let paletteOpen = $state(false);
 	const appearance = provideAppearance(new AppearanceSetting(storage()));
 	const keyLabel = commandKeyLabel(navigator.platform);
+	const mac = isMac(navigator.platform);
+	const chatKey = chatKeyLabel(navigator.platform);
+	const admin = household.members.find((m) => m.id === household.me)?.admin ?? true;
+	const open = $derived(roomy && sheet.open);
 
 	$effect(() => {
 		applyAppearance(document.documentElement, appearance.value);
@@ -95,68 +119,136 @@
 	const place = $derived(placeOf(path));
 
 	onMount(() => {
-		const beside = window.matchMedia('(min-width: 1393px)');
-		const sidebar = window.matchMedia('(min-width: 1024px)');
+		const wide = window.matchMedia(`(min-width: ${String(SHEET_FROM)}px)`);
 		const sync = () => {
-			wide = beside.matches;
-			roomy = sidebar.matches;
-			if (wide) drawer = false;
+			roomy = wide.matches;
+			if (!roomy) {
+				sheet.drop();
+				pulled = 0;
+			}
 		};
 		sync();
-		beside.addEventListener('change', sync);
-		sidebar.addEventListener('change', sync);
+		wide.addEventListener('change', sync);
 		const stop = chat.start();
 		return () => {
-			beside.removeEventListener('change', sync);
-			sidebar.removeEventListener('change', sync);
+			wide.removeEventListener('change', sync);
 			stop();
 		};
 	});
 
-	function setHidden(value: boolean) {
-		hidden = value;
-		try {
-			storage()?.setItem(HIDDEN_KEY, value ? '1' : '0');
-		} catch {
-			// the choice lasts for this page only
-		}
+	// The Chat tab's address, wider than 1024 px: Home, with the sheet open over it.
+	$effect(() => {
+		if (onChat && roomy) untrack(() => void openSheet(undefined, false));
+	});
+
+	function focusable(el: Element | null | undefined): Focusable | undefined {
+		return el instanceof HTMLElement && el !== document.body && !sheetEl?.contains(el) ? el : undefined;
 	}
 
-	function openChat() {
-		if (wide) {
-			setHidden(false);
-			queueMicrotask(() => field?.focus());
-		} else {
-			drawer = !drawer;
-			if (drawer) queueMicrotask(() => field?.focus());
+	/** Where the focus starts in the sheet: the message, so typing works at once; or, when a page opened it on a
+	 * check-in, that card's first answer. */
+	function focusInside(fromPage: boolean) {
+		if (fromPage && sheetEl) {
+			const rows = [...sheetEl.querySelectorAll<HTMLElement>('.msgs-row')];
+			const last = rows.sort((x, y) => Number(y.dataset.index) - Number(x.dataset.index))[0];
+			const answer = last
+				?.querySelector(`[data-testid="${TestIDs.chatCheckIn}"]`)
+				?.querySelector<HTMLButtonElement>('.cc-a button, .cc-b button.mp-btn');
+			if (answer) {
+				answer.focus({ preventScroll: true });
+				return;
+			}
 		}
+		field?.focus({ preventScroll: true });
 	}
 
-	/** Brings the chat into view at whatever width the window is, and puts the caret in it. */
-	async function showChat() {
-		if (wide) setHidden(false);
-		else if (roomy) drawer = true;
-		else if (!onChat) await goto(resolve('/chat'));
-		queueMicrotask(() => field?.focus());
+	async function openSheet(opener: Element | null | undefined, fromPage: boolean) {
+		pulled = 0;
+		if (!sheet.open) sheet.show(focusable(opener));
+		await tick();
+		// The sheet is laid out while closed, so its conversation is already measured: the focus can go in at once.
+		requestAnimationFrame(() => {
+			focusInside(fromPage);
+		});
+	}
+
+	function closeSheet() {
+		const back = sheet.hide();
+		pulled = 0;
+		pulling = false;
+		// The page is inert until the sheet's close is drawn, and an inert control takes no focus: give it back after.
+		void tick().then(() => {
+			(back ?? chatButton)?.focus();
+		});
+	}
+
+	function toggleSheet(opener: Element | null) {
+		if (sheet.open) closeSheet();
+		else void openSheet(opener, false);
+	}
+
+	/** Brings the chat into view at whatever width the window is: the sheet from 1024 px, the Chat tab under it. */
+	async function showChat(fromPage: boolean) {
+		if (roomy) {
+			await openSheet(document.activeElement, fromPage);
+			return;
+		}
+		if (!onChat) await goto(resolve('/chat'));
+		await tick();
+		field?.focus();
 	}
 
 	provideShell({
 		openChat: (question?: string) => {
-			void showChat().then(() => (question ? chat.send(question) : undefined));
+			void showChat(question === undefined).then(() => (question ? chat.send(question) : undefined));
 		},
 		attachFile: () => {
-			void showChat().then(() => picker?.click());
+			void showChat(false).then(() => picker?.click());
 		}
 	});
+
+	/** New conversation: an empty thread; a reply still being written stops where it is first. */
+	async function newConversation() {
+		await chat.stop();
+		queries.setQueryData<Timeline>(chatKeys.timeline, (t) => freshThread(t ?? emptyTimeline()));
+		await tick();
+		field?.focus({ preventScroll: true });
+	}
+
+	function onPull(dy: number) {
+		pulling = true;
+		pulled = pullOffset(dy);
+	}
+
+	function onLetGo(dy: number, ms: number) {
+		pulling = false;
+		if (pullCloses(dy, ms)) closeSheet();
+		else pulled = 0;
+	}
+
+	/** Tab stays inside the sheet while it is open. */
+	function trap(event: KeyboardEvent) {
+		if (event.key !== 'Tab' || !open || !sheetEl) return;
+		const stops = [
+			...sheetEl.querySelectorAll<HTMLElement>(
+				'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+			)
+		].filter((el) => el.tabIndex >= 0 && !el.matches(':disabled') && el.getClientRects().length > 0);
+		const current = stops.indexOf(document.activeElement as HTMLElement);
+		const next = trapIndex(stops.length, current, event.shiftKey);
+		if (next === -1) return;
+		event.preventDefault();
+		stops[next]?.focus();
+	}
 
 	async function onPalette(action: PaletteAction) {
 		if (action.kind === 'go') {
 			await goto(resolve(action.href));
 		} else if (action.kind === 'ask') {
-			await showChat();
+			await showChat(false);
 			await chat.send(action.text);
 		} else if (action.kind === 'flow') {
-			await showChat();
+			await showChat(false);
 			if (action.flow === 'statement') picker?.click();
 			else await chat.send('Log money');
 		} else {
@@ -168,8 +260,15 @@
 		if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
 			event.preventDefault();
 			paletteOpen = !paletteOpen;
-		} else if (event.key === 'Escape' && drawer && !paletteOpen) {
-			drawer = false;
+		} else if (paletteOpen) {
+			// the palette's own keys while it is up
+		} else if (isChatShortcut(event, mac)) {
+			event.preventDefault();
+			if (roomy) toggleSheet(document.activeElement);
+			else void showChat(false);
+		} else if (event.key === 'Escape' && open) {
+			event.preventDefault();
+			closeSheet();
 		}
 	}
 </script>
@@ -184,7 +283,7 @@
 </a>
 
 <div class="mp mp-app mp-root">
-	<div class="mp-shell shl sh-a" class:v-chat={onChat} class:c-drawer={drawer} class:nochat={hidden}>
+	<div class="mp-shell shl" class:v-chat={onChat}>
 		<aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
 			<div class="brand"><Mark size={32} live /><span class="mp-hl">MyPaisa</span></div>
 			<nav class="flex flex-col gap-1" aria-label="Pages">
@@ -198,13 +297,19 @@
 					<NavIcon name="search" />Search<span class="kbd" aria-hidden="true">{keyLabel}</span>
 				</button>
 				<button
+					bind:this={chatButton}
 					type="button"
 					class="mp-side-i"
-					class:pr={drawer}
-					aria-expanded={wide ? !hidden : drawer}
-					onclick={openChat}
+					class:pr={open}
+					aria-haspopup="dialog"
+					aria-controls="chat-sheet"
+					aria-expanded={open}
+					aria-keyshortcuts={chatKey ? 'Meta+J' : undefined}
+					onclick={(event: MouseEvent) => {
+						toggleSheet(event.currentTarget as Element);
+					}}
 				>
-					<NavIcon name="message-circle" />Chat
+					<NavIcon name="message-circle" />Chat{#if chatKey}<span class="kbd" aria-hidden="true">{chatKey}</span>{/if}
 				</button>
 				{#each PAGES as p (p.href)}
 					<a
@@ -228,20 +333,47 @@
 			</nav>
 		</aside>
 
-		<main id="main" tabindex="-1" class="mp-shell-main main outline-none">
+		<main id="main" tabindex="-1" class="mp-shell-main main outline-none" inert={open}>
 			{@render children()}
 		</main>
 
-		<section class="chatcol" aria-label="Chat">
+		<!-- The dimmed page: a click closes the sheet. For the pointer only; the keyboard has Esc and Close. -->
+		<div
+			class="mp-scrim scrim"
+			class:open
+			class:pulling
+			style:--dim={dimDuring(pulled, sheetHeight)}
+			title="Click to close the chat"
+			aria-hidden="true"
+			onclick={closeSheet}
+		></div>
+
+		<section
+			bind:this={sheetEl}
+			bind:clientHeight={sheetHeight}
+			id="chat-sheet"
+			class="csheet"
+			class:open
+			class:pulling
+			style:--pull="{pulled}px"
+			role={roomy ? 'dialog' : 'region'}
+			aria-modal={roomy ? true : undefined}
+			aria-labelledby={roomy ? 'chat-title' : undefined}
+			aria-label={roomy ? undefined : 'Chat'}
+			inert={roomy && !sheet.open}
+			onkeydown={trap}
+		>
 			<ChatPanel
-				mode={wide ? 'beside' : 'drawer'}
+				place={roomy ? 'sheet' : 'tab'}
 				context={onChat ? undefined : place?.label}
+				{admin}
+				titleId="chat-title"
 				bind:field
 				bind:picker
-				onClose={() => {
-					if (wide) setHidden(true);
-					else drawer = false;
-				}}
+				onClose={closeSheet}
+				onNew={() => void newConversation()}
+				{onPull}
+				{onLetGo}
 			/>
 		</section>
 

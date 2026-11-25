@@ -1,8 +1,9 @@
-/* The shell and the chat (MA-199), ported from the picked board's own rules (docs/design/app-v1/Web v4 · Shell and
-   chat.dc.html, Shell 1a and the chat's states) so the build draws what the board draws. Every colour is a DS v1 token;
-   the adaptive shell, the sidebar and the tab bar are tokens.css's. The board's frame is .mp-app, a size container: the
-   window decides, never the device. The chat sits beside every page from about 1393 px, is a drawer over the page from
-   1024 to 1392 px (from the sidebar's Chat), and is the Chat tab under 1024 px (MA-301 c 1c). */
+/* The shell and the chat (MA-199, MA-357), ported from the picked boards' own rules (docs/design/app-v1/Web v4 · Shell and
+   chat.dc.html, Shell 1a and the chat's states; Web v4 · Chat sheet.dc.html, MA-355 a 1a) so the build draws what the
+   boards draw. Every colour is a DS v1 token; the adaptive shell, the sidebar and the tab bar are tokens.css's. The
+   board's frame is .mp-app, a size container: the window decides, never the device. From 1024 px the chat is a sheet
+   over the page at every width, opened from the sidebar's Chat; under 1024 px it is the Chat tab (Arun, 25 Nov 2026,
+   MA-355 a 1a: never a column beside the page, never a drawer). */
 
 .mp-root {
 	height: 100dvh;
@@ -54,7 +55,7 @@
 .mp-side-i.pr {
 	color: var(--mp-accent);
 	font-weight: 600;
-} /* Chat while its drawer is open: pressed, the page stays current */
+} /* Chat while its sheet is open: pressed, the page stays current */
 .mp-tab {
 	font-size: 12px;
 	line-height: 14px;
@@ -103,24 +104,14 @@
 	animation-duration: 150ms !important;
 }
 
-/* the chat column. The board's CSS is content-box, so its width leaves the 1 px border outside it (404.2 px at 1440);
-   Tailwind's reset makes everything border-box, which drew the column and all it holds 1 px narrow (MA-354). */
-.chatcol {
-	box-sizing: content-box;
+/* the chat: the sheet from 1024 px, the Chat tab under it; nowhere else */
+.csheet {
 	display: none;
 	flex-direction: column;
 	min-height: 0;
 	background: var(--mp-bg);
+	color: var(--mp-ink);
 	position: relative;
-}
-.chd {
-	flex: none;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
-	padding: 12px 12px 10px 20px;
-	border-bottom: 1px solid var(--mp-line);
 }
 .ban {
 	flex: none;
@@ -568,57 +559,194 @@
 	white-space: nowrap;
 }
 
-/* 1a: the chat beside every page from about 1393 px; the member may hide it for a wider page (board 2e) */
-@container app (min-width: 1393px) {
-	.sh-a .chatcol {
-		display: flex;
-		flex: none;
-		width: clamp(340px, 28%, 420px);
-		border-left: 1px solid var(--mp-line);
-	}
-	.sh-a.nochat .chatcol {
-		display: none;
-	}
-}
-/* from 1024 to 1392 px the page has the room; Chat in the sidebar opens the chat as a drawer from the right */
-@container app (min-width: 1024px) and (max-width: 1392px) {
-	.mp .mp-shell.sh-a.c-drawer .chatcol {
-		display: flex;
-		position: absolute;
-		z-index: 6;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		width: 380px;
-		border-left: 1px solid var(--mp-line);
-		box-shadow: var(--mp-shadow);
-	}
-}
 /* under 1024 px the Chat tab is the page */
 @container app (max-width: 1023px) {
 	.v-chat .main {
 		display: none;
 	}
-	.v-chat .chatcol {
+	.v-chat .csheet {
 		display: flex;
 		flex: 1;
 		min-width: 0;
 		padding-bottom: 76px;
 	}
-	.v-chat .chd {
-		display: none;
+}
+
+/* From 1024 px: the chat as a sheet over the page (MA-357, Web v4 · Chat sheet, MA-355 a 1a). 600 px wide, 56 px from
+   the top and 20 px from the foot of the window, centred in it; under about 1120 px it stops 12 px clear of the
+   sidebar instead (260 px from the left), so at 1024 it runs from 260 to 860. It rises from the foot of the window on
+   the system sheet curve while the page dims, and closing reverses it; under Reduce Motion both cross-fade in place
+   (motion.css keeps only the fades). The dim covers the page, never the sidebar (Arun, 25 Nov 2026), so the mark is
+   seen beside the open chat. */
+.scrim {
+	display: none;
+}
+@container app (min-width: 1024px) {
+	.csheet {
+		display: flex;
+		position: absolute;
+		z-index: 8;
+		top: 56px;
+		bottom: 20px;
+		left: max(260px, calc(50% - 300px));
+		width: 600px;
+		max-width: calc(100% - 284px);
+		box-sizing: border-box;
+		overflow: hidden;
+		border-radius: 28px;
+		box-shadow:
+			0 0 0 1px var(--mp-line),
+			var(--mp-shadow);
+		transform: translateY(calc(100% + 96px));
+		pointer-events: none;
+		transition: transform var(--mo-slow) var(--mo-sheet);
+	}
+	.csheet.open {
+		transform: translateY(var(--pull, 0px));
+		pointer-events: auto;
+	}
+	.csheet.pulling {
+		transition: none;
+	}
+	.scrim {
+		display: block;
+		z-index: 7;
+		left: 248px; /* the sidebar's width: the page dims, the sidebar stays at full strength */
+		opacity: 0;
+		pointer-events: none;
+		cursor: pointer;
+		transition: opacity var(--mo-base) linear;
+	}
+	.scrim.open {
+		opacity: var(--dim, 1);
+		pointer-events: auto;
+	}
+	.scrim.pulling {
+		transition: none;
 	}
 }
-/* the sidebar's Chat item and the header's button act only where they mean something */
-@container app (min-width: 1393px) {
-	.only-drawer {
-		display: none;
+@media (prefers-reduced-motion: reduce) {
+	@container app (min-width: 1024px) {
+		.csheet:not(.open) {
+			transform: none;
+			opacity: 0;
+		}
+		.csheet {
+			transition: opacity 150ms linear;
+		}
 	}
 }
-@container app (max-width: 1392px) {
-	.only-beside {
-		display: none;
+/* Increase Contrast: the sheet keeps a plain edge, as a card does, and the page under it dims further. Reduce
+   Transparency: the dim is nearer opaque. Both lay the scrim's own colour twice, so no new colour is made. */
+@media (prefers-contrast: more) {
+	.csheet {
+		box-shadow:
+			0 0 0 1px var(--mp-ink-3),
+			var(--mp-shadow);
 	}
+	.grab {
+		box-shadow: inset 0 0 0 1px var(--mp-ink-3);
+	}
+	.scrim::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: inherit;
+	}
+}
+@media (prefers-reduced-transparency: reduce) {
+	.scrim::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: inherit;
+	}
+	.csheet .msgs {
+		-webkit-mask-image: none;
+		mask-image: none;
+	}
+}
+
+/* the sheet's head: a grabber, "Chat", then New conversation and Close at the right */
+.grabb {
+	flex: none;
+	display: grid;
+	place-items: center;
+	height: 20px;
+	width: 100%;
+	cursor: grab;
+	touch-action: none;
+}
+.grabb:active {
+	cursor: grabbing;
+}
+.grab {
+	display: block;
+	width: 36px;
+	height: 5px;
+	border-radius: 3px;
+	background: var(--mp-track);
+	box-shadow: inset 0 0 0 1px var(--mp-line);
+}
+.csh {
+	flex: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	min-height: 48px;
+	padding: 0 12px 4px 20px;
+}
+.csh > h2 {
+	margin: 0;
+}
+.csh-a {
+	display: flex;
+	flex-direction: row-reverse; /* Close is first in the markup (the trap's first stop) and drawn last, at the right */
+	align-items: center;
+	gap: 4px;
+}
+.iconbtn.rnd {
+	border-radius: 50%;
+	background: var(--mp-surface);
+	box-shadow: inset 0 0 0 1px var(--mp-line);
+}
+/* inside the sheet: 20 px gutters, and a soft edge under the head and over the composer */
+.csheet .ban {
+	margin: 2px 20px 8px;
+}
+.csheet .msgs {
+	-webkit-mask-image: linear-gradient(180deg, transparent 0, #000 12px, #000 calc(100% - 20px), transparent);
+	mask-image: linear-gradient(180deg, transparent 0, #000 12px, #000 calc(100% - 20px), transparent);
+}
+.csheet .msgs-row {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+.csheet .sugg,
+.csheet .comp {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+.csheet .comp {
+	padding-bottom: 16px;
+}
+/* a new conversation: nothing yet but a line on what the chat is for */
+.cempty {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 6px;
+	padding: 24px 32px;
+	text-align: center;
+	text-wrap: pretty;
+}
+.cempty > p {
+	margin: 0;
+	max-width: 400px;
 }
 
 /* ⌘K: one palette over any page, to go, find or ask (MA-353, board 2h; MA-301 g 1a). The board draws it inside the
