@@ -9228,7 +9228,18 @@
         "iOS: loading, error and empty Home with the new row; dark for rupees, Me, a long name, the Projection and Assets on iPhone; rupees and Me on iPad",
         "iOS: iPad portrait with whose view open; iPad's You, Appearance column; the Appearance row on the You tab itself; hardware-keyboard focus on iPad's toolbar menus"
       ],
-      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: b 1a, four labelled pills at the top right; the iOS appearance as a setting in You, Appearance, System by default. Its boards are Web v4 \u00b7 Header controls and iPhone v4 \u00b7 Header controls. It supersedes the Household, Me, Asha switch and the hero's currency switch on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home, and MA-279's four-currency segmented row. Whose view and the currency are carried from page to page. The boards draw, for Arun to see: the pill row taking the next line when the title is long; the whose-view pill cut at 220 px with the menu reading the name whole; the bar never waiting for the page; Hide amounts pressed as ink reversed. Dollars and euros are named in the menu but no frame shows figures in them: the figure set holds only \u00a31 = \u20b9112.50 (MA-213)."
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: b 1a, four labelled pills at the top right; the iOS appearance as a setting in You, Appearance, System by default. Its boards are Web v4 \u00b7 Header controls and iPhone v4 \u00b7 Header controls. It supersedes the Household, Me, Asha switch and the hero's currency switch on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home, and MA-279's four-currency segmented row. Whose view and the currency are carried from page to page. The boards draw, for Arun to see: the pill row taking the next line when the title is long; the whose-view pill cut at 220 px with the menu reading the name whole; the bar never waiting for the page; Hide amounts pressed as ink reversed. Dollars and euros are named in the menu but no frame shows figures in them: the figure set holds only \u00a31 = \u20b9112.50 (MA-213). Built on stubbed data, web only (Arun, 25 Nov 2026: the web app first, then iOS): the four labelled pills from Web v4 \u00b7 Header controls at the top right of Home's and the Projection's heads: whose view (Household, Me, each other member), the currency, Light or Dark (System, Light, Dark) and Hide amounts. Menus from 600 px, bottom sheets under 600 px, one row under the title on the phone. Whose view and the currency are carried from page to page and remembered; the old Household, Me, Asha switch, the eye button and the hero's currency switch are gone; dollars and euros are listed as not available yet (MA-213). Filled by judgement (Arun, 25 Nov 2026: \"Fill in by judgement\"), to be checked by eye: a hover fill on a closed pill (pointer devices only); from 600 to 1023 px the full pills with menus, the bar taking the next line when the title and bar do not fit; at 320 px the name gives way first, cut with an ellipsis; dark, loading, error, empty and 1280 follow the tokens with no special rules; Increase Contrast steps every hairline up to ink-3; Reduce Transparency changes nothing, since nothing here is glass; the whose-view menu's lines are worded without pronouns, as the views carry none. Not built here: iOS (the toolbar, You's Appearance), the Projection's fan by member (its query takes no view yet).",
+      "code": [
+        "web/src/lib/components/header/**",
+        "web/src/lib/components/shell/appearance.svelte.ts",
+        "web/src/lib/components/shell/appearance.svelte.test.ts",
+        "web/src/lib/components/shell/AppShell.svelte",
+        "web/src/lib/wealth/prefs.ts",
+        "web/src/lib/wealth/prefs.test.ts",
+        "web/src/lib/components/home/HomePage.svelte",
+        "web/src/lib/components/home/Hero.svelte",
+        "web/src/lib/components/projection/ProjectionPage.svelte"
+      ]
     },
     {
       "key": "MA-359",

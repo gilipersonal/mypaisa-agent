@@ -16,12 +16,14 @@
 	import { ChatSession, provideChat } from '#lib/chat/session.svelte.ts';
 	import Mark from '#lib/components/brand/Mark.svelte';
 	import ChatPanel from '#lib/components/chat/ChatPanel.svelte';
+	import { HeaderChoice, provideHeaderChoice } from '#lib/components/header/choice.svelte.ts';
 	import { provideWealth } from '#lib/components/wealth/context.ts';
 	import { forecastRunOf } from '#lib/stub/forecast.ts';
 	import { StubHousehold } from '#lib/stub/household.ts';
 	import { StubWealthSource, signedInAs, startsEmpty } from '#lib/stub/source.ts';
 	import { provideShell } from './actions.ts';
-	import { applyAppearance, readAppearance, saveAppearance } from './appearance.ts';
+	import { applyAppearance } from './appearance.ts';
+	import { AppearanceSetting, provideAppearance } from './appearance.svelte.ts';
 	import NavIcon from './NavIcon.svelte';
 	import { ADMIN, PAGES, TABS, isCurrent, placeOf } from './nav.ts';
 	import Palette from './Palette.svelte';
@@ -49,6 +51,8 @@
 	// ?forecast=pot or ?forecast=wedding opens the Budget forecast on a later state of the evening it draws (MA-262).
 	provideWealth(new StubWealthSource(household, undefined, forecastRunOf(window.location.search)));
 	providePrivacy(new PrivacyMode(storage()));
+	// whose view and the currency, carried from page to page by the header's pills (MA-358)
+	provideHeaderChoice(new HeaderChoice(storage()));
 
 	// MA-352 swaps the fake for the transport over the chat api and the stream; nothing else here changes.
 	// MA-205: ?checkin=emi or ?checkin=several puts that check-in in the chat, as the daily worker will.
@@ -79,11 +83,11 @@
 	let field: HTMLTextAreaElement | undefined = $state();
 	let picker: HTMLInputElement | undefined = $state();
 	let paletteOpen = $state(false);
-	let appearance = $state(readAppearance(storage()));
+	const appearance = provideAppearance(new AppearanceSetting(storage()));
 	const keyLabel = commandKeyLabel(navigator.platform);
 
 	$effect(() => {
-		applyAppearance(document.documentElement, appearance);
+		applyAppearance(document.documentElement, appearance.value);
 	});
 
 	const path = $derived(page.url.pathname);
@@ -156,8 +160,7 @@
 			if (action.flow === 'statement') picker?.click();
 			else await chat.send('Log money');
 		} else {
-			appearance = nextAppearance(appearance);
-			saveAppearance(storage(), appearance);
+			appearance.set(nextAppearance(appearance.value));
 		}
 	}
 
@@ -253,4 +256,8 @@
 	</div>
 </div>
 
-<Palette bind:open={paletteOpen} {appearance} onAction={(action: PaletteAction) => void onPalette(action)} />
+<Palette
+	bind:open={paletteOpen}
+	appearance={appearance.value}
+	onAction={(action: PaletteAction) => void onPalette(action)}
+/>
