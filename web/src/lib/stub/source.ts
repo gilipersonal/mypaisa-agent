@@ -2,10 +2,11 @@
  * a record the chat has just confirmed is in the next read. */
 import type { WealthSource } from '#lib/api/wealth.ts';
 import type { BudgetForecast } from '#lib/wealth/forecast.ts';
-import type { DisplayCurrency, Overview } from '#lib/wealth/overview.ts';
+import type { DisplayCurrency, InvestedOwed, Overview, OwnOwe } from '#lib/wealth/overview.ts';
 import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '#lib/wealth/projection.ts';
 import type { PlanChange, Plans } from '#lib/wealth/plans.ts';
 import type { StubHousehold } from './household.ts';
+import { buildInvestedOwed, buildOwnOwe } from './home-charts.ts';
 import { buildOverview } from './overview.ts';
 import { buildBudgetForecast, type ForecastRun } from './forecast.ts';
 import { setPlanStatus } from './plan-state.ts';
@@ -24,6 +25,14 @@ export class StubWealthSource implements WealthSource {
 
 	overview(view: string, currency: DisplayCurrency): Promise<Overview> {
 		return Promise.resolve(buildOverview(this.household, view, currency));
+	}
+
+	ownOwe(view: string, currency: DisplayCurrency): Promise<OwnOwe> {
+		return Promise.resolve(buildOwnOwe(this.household, view, currency));
+	}
+
+	investedOwed(view: string, currency: DisplayCurrency): Promise<InvestedOwed> {
+		return Promise.resolve(buildInvestedOwed(this.household, view, currency));
 	}
 
 	projection(horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency): Promise<Projection> {

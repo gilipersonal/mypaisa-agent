@@ -1,0 +1,587 @@
+/* Home's two chart cards (MA-359), ported from the picked board's own rules (docs/design/app-v1/Web v4 · Home
+   charts.dc.html, the hc- rules) so the build draws what the board draws. The lines, the legend's keys and the dots are
+   the Monzo Pulse kit's (tokens.css, opt in with .mp-ck-pulse on the card). Every colour is a DS v1 token. */
+
+/* each card is its own size container: from 660 px of card the ring sits beside both lists and the line beside the
+   growth split; below that they stack and the two lists share one switch */
+.hc-band {
+	container: hcb / inline-size;
+}
+.hc-a {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 14px 26px;
+	align-items: start;
+}
+.hc-a.hc-a2 {
+	align-items: center;
+}
+.hc-b {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 16px 0;
+	align-items: start;
+}
+.hc-bl,
+.hc-br {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	min-width: 0;
+}
+.hc-br {
+	padding-top: 16px;
+	border-top: 1px solid var(--mp-line);
+}
+@container hcb (max-width: 659px) {
+	.hc-a.t-own .hc-leg.owe,
+	.hc-a.t-owe .hc-leg.own {
+		display: none;
+	}
+	.hc-a.t-owe .hc-seg:not(.owed) {
+		opacity: 0.36;
+	}
+	.hc-bl > .hc-head {
+		min-height: 94px;
+	}
+}
+@container hcb (min-width: 660px) {
+	.hc-tabs {
+		display: none;
+	}
+	.hc-a {
+		grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+	}
+	.hc-a.hc-a2 {
+		grid-template-columns: auto minmax(0, 1fr);
+	}
+	.hc-b {
+		grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+	}
+	.hc-br {
+		padding: 0 0 0 28px;
+		margin-left: 28px;
+		border-top: 0;
+		border-left: 1px solid var(--mp-line);
+	}
+	.hc-bl > .hc-head {
+		min-height: 76px;
+	}
+}
+.hc-wide {
+	grid-column: 1 / -1;
+}
+
+/* the ring: a capsule meter bent round, its label in the centre as HTML */
+.hc-ringw {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+}
+.hc-ring {
+	position: relative;
+	flex: none;
+	width: 188px;
+	height: 188px;
+}
+.hc-ring > svg {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+	display: block;
+}
+.hc-ringc {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	pointer-events: none;
+}
+.hc-cnum {
+	line-height: 1.12;
+}
+.hc-cname {
+	max-width: 104px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	overflow-wrap: anywhere;
+}
+.hc-key {
+	max-width: 188px;
+	text-align: center;
+}
+.hc-seg,
+.hc-trk,
+.hc-farc {
+	fill: none;
+	stroke-linecap: butt;
+	transition:
+		opacity var(--mp-t-tap) var(--mp-ease),
+		stroke-width var(--mp-t-tap) var(--mp-ease);
+}
+.hc-trk {
+	stroke: var(--mp-track);
+}
+.hc-farc {
+	stroke: var(--mp-focus);
+	stroke-linecap: round;
+}
+.hc-seg.c1 {
+	stroke: var(--mp-chart-line);
+}
+.hc-seg.c2 {
+	stroke: var(--mp-chart-2);
+}
+.hc-seg.c3 {
+	stroke: var(--mp-chart-3);
+}
+.hc-seg.c4 {
+	stroke: var(--mp-chart-4);
+}
+.hc-seg.c5 {
+	stroke: var(--mp-chart-5);
+}
+.hc-seg.owed {
+	stroke: var(--mp-down-quiet);
+}
+.hc-seg.hc-dim {
+	opacity: 0.36;
+}
+.hc-trk.hc-dim {
+	opacity: 0.55;
+}
+.hc-load .hc-trk {
+	opacity: 0.6;
+}
+
+/* a legend row is a button: the legend, the table and the hit target at once */
+.hc-leg {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+.hc-legh {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 8px;
+	padding-bottom: 10px;
+}
+.hc-rows {
+	display: flex;
+	flex-direction: column;
+}
+.hc-row {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-height: 44px;
+	padding: 6px 8px;
+	margin: 0 -8px;
+	width: calc(100% + 16px);
+	box-sizing: border-box;
+	border: 0;
+	border-radius: 10px;
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+.hc-row + .hc-row::before {
+	content: '';
+	position: absolute;
+	left: 8px;
+	right: 8px;
+	top: 0;
+	height: 1px;
+	background: var(--mp-line);
+}
+.hc-row.on,
+.hc-row.hov {
+	background: var(--mp-surface-2);
+}
+.hc-row.on::before,
+.hc-row.on + .hc-row::before,
+.hc-row.hov::before,
+.hc-row.hov + .hc-row::before {
+	display: none;
+}
+.hc-row.hc-dim .hc-sw {
+	opacity: 0.36;
+}
+.hc-row.hc-none {
+	cursor: default;
+}
+.hc-row:focus-visible {
+	outline: 3px solid var(--mp-focus);
+	outline-offset: 2px;
+}
+.hc-rn {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+.hc-rn > .mp-sub {
+	overflow-wrap: anywhere;
+}
+.hc-rv {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	text-align: right;
+	flex: none;
+}
+.hc-go {
+	color: var(--mp-ink-2);
+	display: grid;
+	place-items: center;
+	flex: none;
+	margin: 0 -2px;
+}
+.hc-sw {
+	width: 12px;
+	height: 12px;
+	border-radius: 3px;
+	flex: none;
+}
+.hc-sw.c1 {
+	background: var(--mp-chart-line);
+}
+.hc-sw.c2 {
+	background: var(--mp-chart-2);
+}
+.hc-sw.c3 {
+	background: var(--mp-chart-3);
+}
+.hc-sw.c4 {
+	background: var(--mp-chart-4);
+}
+.hc-sw.c5 {
+	background: var(--mp-chart-5);
+}
+.hc-sw.owed {
+	background: var(--mp-down-quiet);
+}
+.hc-sw.c0 {
+	background: transparent;
+	box-shadow: inset 0 0 0 1.5px var(--mp-ink-2);
+}
+.hc-band .g0 {
+	background: var(--mp-down-quiet);
+}
+.hc-band .g1 {
+	background: var(--mp-chart-5);
+}
+.hc-band .g2 {
+	background: var(--mp-chart-line);
+}
+.hc-lnk {
+	align-self: flex-start;
+	margin: 4px 0 -8px -8px;
+}
+.hc-lnk .lc {
+	transition: transform var(--mp-t-tap) var(--mp-ease);
+}
+.hc-lnk[aria-expanded='true'] .lc {
+	transform: rotate(180deg);
+}
+
+/* the line: the Pulse kit's own line, wash, dots and scrub, with an axis gutter */
+.hc-head {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+.hc-big {
+	font: 800 28px/32px var(--mp-font-round);
+	letter-spacing: -0.02em;
+}
+.hc-ctl {
+	align-items: center;
+}
+.hc-chips {
+	flex: none;
+}
+.hc-chips .mp-seg-i {
+	min-width: 54px;
+	padding: 0 10px;
+	white-space: nowrap;
+}
+.hc-plotw {
+	padding-left: 52px;
+}
+.hc-plot {
+	position: relative;
+	height: 200px;
+	border-radius: 4px;
+	touch-action: pan-y;
+	cursor: crosshair;
+}
+.hc-plot:focus-visible {
+	outline: 3px solid var(--mp-focus);
+	outline-offset: 2px;
+}
+.hc-plot > svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+.hc-area {
+	fill: var(--mp-chart-area);
+}
+/* the Pulse kit's fgrid, fline and fdet, under names of their own: the Projection's page styles hold the kit's names */
+.hc-grid {
+	stroke: var(--mp-chart-grid);
+	stroke-width: 1;
+	vector-effect: non-scaling-stroke;
+}
+.hc-grid.hc-base {
+	stroke: var(--mp-line);
+}
+.hc-line {
+	fill: none;
+	stroke: var(--mp-chart-line);
+	stroke-width: 2.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	vector-effect: non-scaling-stroke;
+}
+.hc-owline {
+	fill: none;
+	stroke: var(--mp-ink-2);
+	stroke-width: 1.5;
+	stroke-dasharray: 4 3;
+	vector-effect: non-scaling-stroke;
+}
+.hc-yl {
+	position: absolute;
+	left: -54px;
+	width: 42px;
+	text-align: right;
+	transform: translateY(-50%);
+	font: 500 12px/16px var(--mp-font);
+	color: var(--mp-ink-2);
+}
+.mp-ck-pulse .mp-chartdot.hc-qdot {
+	box-shadow: 0 0 0 2px var(--mp-down-quiet);
+}
+.mp-ck-pulse .mp-chartdot.hc-pastdot {
+	width: 8px;
+	height: 8px;
+	background: var(--mp-surface);
+	box-shadow: 0 0 0 2px var(--mp-chart-line);
+}
+.hc-clbl {
+	margin-top: -13px;
+	color: var(--mp-ink);
+}
+.hc-endl {
+	position: absolute;
+	right: 2px;
+	transform: translateY(-135%);
+	color: var(--mp-ink);
+}
+.hc-ax {
+	margin-top: 6px;
+}
+.hc-ax .ax0 {
+	transform: none;
+}
+.hc-ax .ax1 {
+	transform: translateX(-100%);
+}
+.hc-lgd {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 12px;
+	margin-top: -2px;
+	font: 400 13px/18px var(--mp-font);
+}
+.hc-lgd > span {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+.mp-ck-pulse .mp5-scrub-dot.hc-sd-q {
+	background: var(--mp-down-quiet);
+}
+i.k-inv,
+i.k-owed {
+	display: inline-block;
+	width: 14px;
+	height: 0;
+	flex: none;
+}
+i.k-inv {
+	border-top: 2.5px solid var(--mp-chart-line);
+}
+i.k-owed {
+	border-top: 1.5px dashed var(--mp-ink-2);
+}
+.hc-read {
+	min-height: 74px;
+}
+.hc-ro {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px 14px;
+	align-items: center;
+	color: var(--mp-ink);
+}
+.hc-ro > span {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	white-space: nowrap;
+}
+.hc-ro b {
+	font-weight: 600;
+}
+
+/* where the growth comes from: the stacked bar Home already has on Liquid and locked */
+.hc-stk {
+	display: flex;
+	gap: 2px;
+	height: 14px;
+}
+.hc-stk > span {
+	display: block;
+	height: 100%;
+	border-radius: 3px;
+	min-width: 3px;
+	transition: opacity var(--mp-t-tap) var(--mp-ease);
+}
+.hc-stk > span.hc-dim {
+	opacity: 0.36;
+}
+
+/* Year by year */
+.hc-tblw {
+	border-top: 1px solid var(--mp-line);
+	padding-top: 10px;
+	overflow-x: auto;
+}
+.hc-tbl {
+	width: 100%;
+	border-collapse: collapse;
+	font: 400 13px/18px var(--mp-font);
+}
+.hc-tbl caption {
+	caption-side: bottom;
+	text-align: left;
+	padding-top: 8px;
+}
+.hc-tbl th,
+.hc-tbl td {
+	padding: 7px 0 7px 12px;
+	text-align: right;
+	border-top: 1px solid var(--mp-line);
+	white-space: nowrap;
+}
+.hc-tbl thead th {
+	border-top: 0;
+	font-weight: 600;
+	color: var(--mp-ink-2);
+}
+.hc-tbl th:first-child {
+	text-align: left;
+	padding-left: 0;
+	font-weight: 600;
+}
+
+/* states: loading keeps the card's shape; a message says what is safe and what to do */
+.hc-sk {
+	display: block;
+	background: var(--mp-surface-2);
+	border-radius: 8px;
+}
+.hc-sk-sw {
+	width: 12px;
+	height: 12px;
+	border-radius: 3px;
+	flex: none;
+}
+.hc-sk-a {
+	width: 96px;
+	height: 14px;
+	margin: 3px 0;
+}
+.hc-sk-b {
+	width: 64px;
+	height: 10px;
+	margin: 3px 0;
+}
+.hc-sk-c {
+	width: 72px;
+	height: 14px;
+}
+.hc-sk-d {
+	width: 36px;
+	height: 10px;
+	margin-top: 6px;
+}
+.hc-sk-h {
+	width: 150px;
+	height: 12px;
+}
+.hc-sk-k {
+	width: 170px;
+	height: 28px;
+}
+.hc-sk-big {
+	width: 150px;
+	height: 30px;
+}
+.hc-sk-line {
+	width: min(100%, 360px);
+	height: 14px;
+	margin-top: 8px;
+}
+.hc-sk-plot {
+	height: 200px;
+	border-radius: 12px;
+}
+.hc-sk-bar {
+	width: 100%;
+	height: 14px;
+}
+@media (prefers-reduced-motion: no-preference) {
+	.hc-sk {
+		animation: mp-pulse 1.2s ease-in-out 4 alternate;
+	}
+}
+.hc-msg {
+	display: flex;
+	align-items: center;
+	gap: 12px 14px;
+	flex-wrap: wrap;
+	padding: 4px 0;
+}
+.hc-msgt {
+	flex: 1 1 16em;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+.hc-note {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 10px 12px;
+	border-radius: 12px;
+	background: var(--mp-surface-2);
+}
