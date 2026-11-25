@@ -3,7 +3,8 @@
 import { getContext, setContext } from 'svelte';
 
 export interface ShellActions {
-	openChat(): void;
+	/** Brings the chat into view; with a question, asks it there too, as a page's shortcut chip does. */
+	openChat(question?: string): void;
 	attachFile(): void;
 }
 

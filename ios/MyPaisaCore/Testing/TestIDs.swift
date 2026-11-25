@@ -9,4 +9,12 @@ public enum TestIDs {
   public static let tabProjection = "mp.tab.projection"
   public static let tabMore = "mp.tab.more"
   public static let homeHero = "mp.home.hero"
+  public static let projectionView = "mp.projection.view"
+  public static let projectionHero = "mp.projection.hero"
+  public static let projectionMoney = "mp.projection.money"
+  public static let projectionFan = "mp.projection.fan"
+  public static let projectionHorizon = "mp.projection.horizon"
+  public static let projectionMilestones = "mp.projection.milestones"
+  public static let projectionPlan = "mp.projection.plan"
+  public static let projectionAssumptions = "mp.projection.assumptions"
 }

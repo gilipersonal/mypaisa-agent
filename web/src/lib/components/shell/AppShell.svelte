@@ -17,7 +17,7 @@
 	import ChatPanel from '#lib/components/chat/ChatPanel.svelte';
 	import { provideWealth } from '#lib/components/wealth/context.ts';
 	import { StubHousehold } from '#lib/stub/household.ts';
-	import { StubWealthSource, startsEmpty } from '#lib/stub/source.ts';
+	import { StubWealthSource, signedInAs, startsEmpty } from '#lib/stub/source.ts';
 	import { provideShell } from './actions.ts';
 	import { applyAppearance, readAppearance, saveAppearance } from './appearance.ts';
 	import NavIcon from './NavIcon.svelte';
@@ -36,9 +36,14 @@
 		}
 	}
 
-	// The stubbed household: the design figure set, or nothing with ?stub=empty. Each phase's backend story puts the
-	// api behind provideWealth, and the pages do not change.
-	const household = new StubHousehold({ empty: startsEmpty(window.location.search) });
+	// The stubbed household: the design figure set, or nothing with ?stub=empty, as the owner or with ?as=asha as a
+	// member who is not an admin. Each phase's backend story puts the api behind provideWealth, and the pages do not
+	// change.
+	const signedIn = signedInAs(window.location.search);
+	const household = new StubHousehold({
+		empty: startsEmpty(window.location.search),
+		...(signedIn ? { me: signedIn } : {})
+	});
 	provideWealth(new StubWealthSource(household));
 	providePrivacy(new PrivacyMode(storage()));
 
@@ -121,7 +126,9 @@
 	}
 
 	provideShell({
-		openChat: () => void showChat(),
+		openChat: (question?: string) => {
+			void showChat().then(() => (question ? chat.send(question) : undefined));
+		},
 		attachFile: () => {
 			void showChat().then(() => picker?.click());
 		}

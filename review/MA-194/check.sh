@@ -29,6 +29,8 @@ copy() {
   mkdir -p "$dir/docs/design" && cp -R docs/design/ds-v1 "$dir/docs/design/"
   # the design figure set: the stub household's test holds web/src/lib/stub/household.json equal to it (MA-208)
   mkdir -p "$dir/docs/design/figures" && cp docs/design/figures/household-v4.json "$dir/docs/design/figures/"
+  # the future plans' figures: the stubbed Projection's test holds web/src/lib/stub/future-plans.json equal to them (MA-224)
+  cp docs/design/figures/future-plans-v4.json "$dir/docs/design/figures/"
   locked cp -c -R web "$dir/web" 2>/dev/null || locked cp -R web "$dir/web"
   rm -rf "$dir/web/build" "$dir/web/.svelte-kit"
   echo "$dir"
