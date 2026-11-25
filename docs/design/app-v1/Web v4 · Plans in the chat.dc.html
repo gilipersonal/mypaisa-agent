@@ -497,7 +497,7 @@
           const page = (run, cmp) => Object.assign(fan(run), { run: { R0: 'Thu 5 Nov 09:13', R1: 'Thu 5 Nov 20:43', R2: 'Thu 5 Nov 20:46' }[run], ms: MS(run), cmp: !!cmp });
 
           // the impact: the middle path before and after, and the surplus each year (impact.surplus_by_year_before/after)
-          const impMp = [['In 5 years', '2031', 866000, 698000], ['In 10 years', '2036', 1539000, 996000], ['In 20 years', '2046', 3897000, 2441000]]
+          const impMp = [['In 5 years', '2031', 855000, 698000], ['In 10 years', '2036', 1501000, 996000], ['In 20 years', '2046', 3548000, 2441000]]
             .map((r) => ({ k: r[0], y: r[1], before: gbp(r[2]), after: gbp(r[3]), chg: '▼ ' + gbp(r[2] - r[3]) }));
           const BEFORE = [36379, 39738, 46715, 52671, 59007, 62919, 67015, 71303, 75794, 80497, 85421, 90577, 95977, 101629, 107548, 113745, 120233, 127026, 138466, 159064];
           const AFTER = [36379, 39738, -1285, 2511, 6590, 8143, 9774, 11486, 13286, 15176, 17160, 19244, 21434, 23732, 60063, 113745, 120233, 127026, 138466, 159064];
@@ -528,7 +528,7 @@
               chg: ['Balanced (ISA) pays £19,058 over 2029 to 2035, £9,090 of it in 2029'],
               why: 'Nothing you spend changes; the investments you would have kept pay for it.' }
           ];
-          const SURPLUS2029 = ['£7,805', '£8,269', '£7,805'], VSPLAN = ['+£5,000', '+£108,000', '+£2,000'];
+          const SURPLUS2029 = ['£7,805', '£8,269', '£7,805'], VSPLAN = ['No change', '+£108,000', '−£20,000'];
           const OPT_SURPLUS = [
             [28099, 31458, 7805, 8031, 8916, 9144, 10388, 11863, 13414, 15176, 17160, 19244, 21434, 23732, 60063, 113745, 120233, 127026, 138466, 159064],
             [36379, 39738, 8269, 9587, 12508, 14127, 15907, 17773, 19730, 21781, 23930, 26184, 28547, 31023, 64422, 113745, 120233, 127026, 138466, 159064],
@@ -620,9 +620,9 @@
           };
           const boards = [
             { anchor: 'o2a', id: '2a', name: 'Browser · Plans in the chat 2a, a card per step', rec: true, keys: 'MA-222 · MA-263 · MA-223 · MA-264',
-              lead: 'Three cards, each with one job and one Confirm: the questions (20:41), the impact from the engine (20:42), then, once the plan is saved, the ways to cover the gap, each with its own Confirm (20:43). At 20:46 the card shows what was applied, with its two audit rows and Undo. The Projection beside the chat moves with each Confirm. Recommended: it is how every card in the chat already works at both doors, and each card has one plain line for push and screen readers.',
+              lead: 'Three cards, each with one job and one Confirm: the questions (20:41), the impact from the engine (20:42), then, once the plan is saved, the ways to cover the gap, each with its own Confirm (20:43). At 20:46 the card shows what was applied, with its two audit rows and Undo. The Projection beside the chat runs again with each Confirm. Recommended: it is how every card in the chat already works at both doors, and each card has one plain line for push and screen readers.',
               frames: frames('a', 'Browser · Plans in the chat 2a, a card per step'),
-              notes: [{ h: 'The figures:', t: 'conversation, impact and rearrange in future-plans-v4.json; the page shows R5N (Thu 5 Nov 09:13, R0’s figures) until the plan is saved, R1 (20:43) after it, and R2 (20:46) once the pot is applied, each with its own middle path in 2046.' },
+              notes: [{ h: 'The figures:', t: 'conversation, impact and rearrange in future-plans-v4.json; the page shows R5N (Thu 5 Nov 09:13, R0’s figures) until the plan is saved, R1 (20:43) after it, and R2 (20:46) once the pot is applied, each with its run’s middle path in 2046 (R1’s and R2’s are the same, £2,441,000).' },
                 { h: 'The floor is monthly, the bars yearly,', t: 'so the chart marks a year with a month under £500 (▼, in the alert colour) rather than draw a yearly line that would not match the flag.' },
                 { h: 'One Confirm each,', t: 'in §6.6’s order: the plan first, with its audit row; then the rearrangement, with one row for the plan item it adds and one for this month’s budget, each with Undo (MA-263).' },
                 { h: 'Under about 1393 px', t: 'the chat is a drawer over the page, opened from the sidebar’s Chat, and under 600 a tab, as at 390 (MA-301 c 1c: the chat beside every screen from about 1393 px, a sheet away from about 600 to 1393 px, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)); the 390 frames draw the ways on the phone-web door.' }] },
