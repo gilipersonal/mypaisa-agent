@@ -58,8 +58,9 @@ something a member sees or runs, the review, and the merge:
 > touches>; one round, each later round asked first) and merge, or merge it
 > into main straight after the checks? (MA-<n> goes to Done after the merge.)
 
-A bare "yes" means sync, scan, PR, review first; "merge it" or "merge now"
-means sync, scan, PR and merge with no review (`ship-autopilot.md`). A yes
+A bare "yes" means review first, after the sync, the scan and the PR; "merge
+it" or "merge now" means sync, scan, PR and merge with no review
+(`ship-autopilot.md`). A yes
 covers only what the question names.
 
 Use the turn's next-step question (or `AskUserQuestion` when there is none)
