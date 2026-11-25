@@ -1,6 +1,7 @@
 /** Where the wealth pages read from (MA-208). Today a stub of the design figure set stands behind it
  * (`#lib/stub/source.ts`; Arun, 25 Nov 2026: the whole UX on stubbed data first); each phase's backend story puts the
  * api behind the same seam, and no page changes. Shared by both doors: types only. */
+import type { BudgetForecast } from '../wealth/forecast.ts';
 import type { DisplayCurrency, Overview } from '../wealth/overview.ts';
 import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '../wealth/projection.ts';
 import type { PlanChange, Plans } from '../wealth/plans.ts';
@@ -19,4 +20,13 @@ export interface WealthSource {
 	plans(horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency): Promise<Plans>;
 	/** An admin pauses, resumes or ends a plan item in place; refused for a member who is not an admin. */
 	changePlan(change: PlanChange): Promise<void>;
+	/** The Projection's Budget forecast view (MA-262): each year to a horizon against the admins' floor, in each year's
+	 * money or today's, with one year's lines, months and the flows behind its spending; the year the chart leads with
+	 * when none is asked for. The whole household's, as the Net worth view is. */
+	budgetForecast(
+		horizon: Horizon,
+		money: MoneyBasis,
+		currency: DisplayCurrency,
+		year?: number
+	): Promise<BudgetForecast>;
 }

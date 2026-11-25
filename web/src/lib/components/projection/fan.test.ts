@@ -90,7 +90,7 @@ describe('the Projection’s menus', () => {
 	it('offers Net worth, Plans and Budget forecast, and falls back to Net worth', () => {
 		expect(VIEWS.map((v) => v.label)).toEqual(['Net worth', 'Plans', 'Budget forecast']);
 		expect(viewOf('plans').label).toBe('Plans');
-		expect(viewOf('plans').soon).toMatch(/It arrives with its story in the plan/);
+		expect(viewOf('plans').head).toBe('Each plan on a timeline');
 		expect(viewOf('budget').head).not.toBe('');
 		expect(viewOf('elsewhere').id).toBe('net');
 	});
