@@ -6,6 +6,7 @@
 	import Clock from '@lucide/svelte/icons/clock';
 	import FileText from '@lucide/svelte/icons/file-text';
 	import { isConfirmCard, isFigureCard } from '#lib/cards/kinds.ts';
+	import { isPlanCard } from '#lib/cards/plan.ts';
 	import { canRender } from '#lib/cards/types.ts';
 	import type { ChatMessage } from '#lib/chat/timeline.ts';
 	import type { CardAction } from '#lib/chat/transport.ts';
@@ -14,6 +15,7 @@
 	import { maskAmounts } from '#lib/privacy/mask.ts';
 	import ConfirmCard from './ConfirmCard.svelte';
 	import FigureCard from './FigureCard.svelte';
+	import PlanCard from './PlanCard.svelte';
 
 	let {
 		message,
@@ -92,6 +94,15 @@
 					/>
 				{:else if canRender(card) && isFigureCard(card)}
 					<FigureCard {card} privacy={privacy.on} />
+				{:else if canRender(card) && isPlanCard(card)}
+					<PlanCard
+						{card}
+						privacy={privacy.on}
+						{onChoose}
+						onTap={(action: CardAction) => {
+							onTap(card.id, action);
+						}}
+					/>
 				{:else}
 					<div class="ait">{maskAmounts(card.fallback, privacy.on)}</div>
 				{/if}

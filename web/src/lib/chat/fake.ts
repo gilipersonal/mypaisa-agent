@@ -9,6 +9,7 @@ import { CARD_SCHEMA_VERSION } from '#lib/cards/types.ts';
 import { formatMoney } from '#lib/formatting/money.ts';
 import type { StubHousehold } from '#lib/stub/household.ts';
 import { monzoSavings } from '#lib/stub/records.ts';
+import { PlanScript } from './plans.ts';
 import type { CardAction, ChatTransport, Outgoing } from './transport.ts';
 
 export interface Clock {
@@ -62,6 +63,17 @@ export class FakeTransport implements ChatTransport {
 	#cancels = new Map<string, () => void>();
 	#drafts = new Map<string, Draft>();
 	#seq = 0;
+	/** MA-222: a plan item made by talking, in its own script (`./plans.ts`). */
+	#plans = new PlanScript({
+		emit: (event, data) => {
+			this.#emit(event, data);
+		},
+		after: (key, fn) => {
+			this.#after(key, fn);
+		},
+		now: () => this.clock.now(),
+		household: () => this.household
+	});
 
 	constructor(
 		private readonly clock: Clock = realClock,
@@ -98,6 +110,7 @@ export class FakeTransport implements ChatTransport {
 	}
 
 	choose(messageId: string, chipId: string): Promise<void> {
+		if (this.#plans.choose(messageId, chipId)) return Promise.resolve();
 		const draft = this.#drafts.get(messageId);
 		const chip = WHOSE.find((c) => c.id === chipId);
 		if (!draft || !chip) return Promise.resolve();
@@ -112,6 +125,7 @@ export class FakeTransport implements ChatTransport {
 	}
 
 	tap(cardId: string, action: CardAction): Promise<void> {
+		if (this.#plans.tap(cardId, action)) return Promise.resolve();
 		const draft = [...this.#drafts.values()].find((d) => d.cardId === cardId);
 		if (!draft) return Promise.resolve();
 		if (action === 'confirm') {
@@ -161,6 +175,7 @@ export class FakeTransport implements ChatTransport {
 			this.#emit('reading', { turn_id: id, text: 'Reading it…', meta: READING_META });
 			return;
 		}
+		if (this.#plans.answer(message)) return;
 		const text = message.text.trim();
 		const savings = /£\s?([\d,]+(?:\.\d+)?)\s+in\s+monzo/i.exec(text);
 		if (savings?.[1]) {
