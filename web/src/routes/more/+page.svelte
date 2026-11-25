@@ -1,10 +1,20 @@
 <script lang="ts">
 	// More (Arun, 5 Nov 2026, MA-334): under 1024 px the tab bar holds Chat, Home, Assets and Projection, and every
 	// other page is one tap from here. From 1024 px the sidebar lists them all, and this page is the same list.
+	// Sign out (MA-185): no board draws it yet, so it is a quiet row of its own under the list, on the stubbed session,
+	// to go back to the sign-in page.
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import LogOut from '@lucide/svelte/icons/log-out';
+	import { browserSession } from '#lib/auth/session.ts';
 	import NavIcon from '#lib/components/shell/NavIcon.svelte';
 	import { MORE_PAGES } from '#lib/components/shell/nav.ts';
+
+	async function signOut() {
+		browserSession().signOut();
+		await goto(resolve('/sign-in'));
+	}
 </script>
 
 <svelte:head><title>More · MyPaisa</title></svelte:head>
@@ -27,4 +37,12 @@
 			{/each}
 		</div>
 	</nav>
+	<div class="mp-card cpad">
+		<div class="lrows">
+			<button type="button" class="lrow" onclick={() => void signOut()}>
+				<span class="mp-icontile mp-neutral"><LogOut class="lc lc-s" aria-hidden="true" /></span>
+				<span class="rtx mp-sub mp-w6">Sign out</span>
+			</button>
+		</div>
+	</div>
 </div>

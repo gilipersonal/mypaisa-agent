@@ -1,6 +1,7 @@
 # MA-185: the web app's sign-in, as an options round
 
-An options round. Wed 25 Nov 2026. **Awaiting Arun's pick.**
+An options round. Wed 25 Nov 2026. **Picked: 1b · The navy door** (Arun, 25 Nov 2026: "For login, I want Navy door
+option."). The pick, what it changed in `app-v1` and the boards to cite are under "The pick", at the end.
 
 ## The request, in Arun's words
 
@@ -29,7 +30,8 @@ Only the option he picks is built, on stubbed data: a stub sign-in that lands on
   `ds-v1/motion.js`, `ds-v1/fonts.css`, `ds-v1/inter-latin-wght-normal.woff2`,
   `ds-v1/inter-latin-ext-wght-normal.woff2`, `ds-v1/nunito-figures-latin-800.woff2`,
   `ds-v1/nunito-figures-rupee-800.woff2`. The board's runtime loads React from unpkg, as every board does.
-- `current/`: today's planned boards, captured from the repo: Browser · Sign in at 1440 and 390, light and dark
+- `current/`: the planned boards as they stood before the pick, captured from the repo on 25 Nov 2026 (the pick has
+  since redrawn them): Browser · Sign in at 1440 and 390, light and dark
   (Web v4 · Shell and chat); Browser · Login, Refusals & Invite Landing at 1440 and 390, and the join page, its
   passkey offer and its used link (Web v4 · Login, invite and responsive). The web app has no sign-in page yet.
 - `tokens.css` here is the snapshot of `docs/design/ds-v1/tokens.css` on the day. The round adds and changes no
@@ -87,6 +89,9 @@ sign-in later; and it is the same page at every width and in the installed app's
 
 ## For Arun to settle with the pick
 
+Not answered with the pick. Each stands as it was drawn, a default, until Arun says otherwise; the picked boards in
+`app-v1` carry the same four defaults and say so in their notes.
+
 1. **A removed member.** ARCHITECTURE gives a paused member one line and says nothing for a removed one. Drawn: a
    removed member meets the "isn't linked to MyPaisa" page, because their account is linked to no member any more.
    Should they get a line of their own?
@@ -113,4 +118,90 @@ sign-in later; and it is the same page at every width and in the installed app's
 
 ## The pick
 
-Awaiting Arun's pick.
+**1b · The navy door.** Arun, 25 Nov 2026:
+
+> For login, I want Navy door option.
+
+He picked it over the recommended 1a. What 1b gives up is written in the options table above and stands as he read it:
+half the window repeats one line at every sign-in, the navy pushes the buttons into the lower half on a phone, the join
+page picked on MA-301 changes shape (not its words), and a paused member's one line sits beside an empty navy half.
+
+Only 1b is built. 1a and 1c stay in `Web sign-in.dc.html` as the round's record and are drawn nowhere else.
+
+### What changed in `app-v1`
+
+Carried the same day, frame for frame from this round's board. Every element's box, colour and type in a carried frame
+was compared with its frame here and found equal, with one difference: the two phone frames in Web v4 · Shell and chat
+sit under that file's own address bar, 10 px taller, so the page below it is 9 px shorter. A frame derived from one of
+the round's is listed below.
+
+- **`Web v4 · Login, invite and responsive.dc.html`, section 1**, now "Signing in, the refusals and the passkey offer
+  (Desktop and 390)": the specification sheet inside the app's shell is gone, and 1b's pages are drawn in its place, eight at
+  1440 and eight at 390, light and dark. The two board names the trace already cites are kept, each now the set of
+  pages at its width: Browser · Login, Refusals & Invite Landing · Desktop, and · Phone 390.
+- **The same file, section 3**, "Joining from an invite in a browser": the seven join frames keep their names and are
+  redrawn as 1b, with the invite added at 320. The words are MA-301 e 1a's, unchanged; its one-card layout is superseded,
+  and Google's button is Google's own. The file's styles for that card are removed.
+- **The same file, section 2** (the responsive Overview and the installed PWA, MA-240) is not touched.
+- **`Web v4 · Shell and chat.dc.html`**: Browser · Sign in and Browser · Sign in, phone are kept, as this record said
+  1b would, and redrawn as 1b's signing-in page at 1440 and 390, light and dark. "The chat is here too, on every page",
+  "With the account you use in the MyPaisa app", the Illustrative footnote and "Get MyPaisa for iPhone" are gone.
+  Nothing else in that file changed.
+- No token was added or changed. Nothing in `ios-v1`, `ds-v1` or Prototype v5 changed.
+
+### Drawn beyond the round's 1b, each from one of its frames
+
+- **Signing you in at 1440** (the round drew it at 390 only): the 1440 sign-in page with the waiting frame's buttons.
+- **The invite at 390 in light** (the round drew 390 in dark): the same frame in the other theme, because the trace
+  cites Browser · Join from an invite · Phone 390 · Light.
+- **The passkey offer after joining**, at 1440 in dark and 390 in light: 1b's passkey offer with the three things the
+  picked join flow already said: "You're in the Dutta household" in place of "Signed in with Apple", the address
+  `/welcome`, and "Next: three short questions, then your household." after "You can add one later from You."
+  On a laptop its navy half keeps the household's line.
+
+### The boards to cite for MA-185
+
+All in project `app`. The first four are the ones the trace cites today; they still exist, redrawn.
+
+| File | Board |
+| --- | --- |
+| Web v4 · Shell and chat.dc.html | Browser · Sign in |
+| Web v4 · Shell and chat.dc.html | Browser · Sign in, phone |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Login, Refusals & Invite Landing · Desktop |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Login, Refusals & Invite Landing · Phone 390 |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Join from an invite · Desktop · Light |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Join from an invite · Phone 390 · Light |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Join from an invite · Phone 390 · Dark |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Join from an invite · Phone 320 · Light |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Join, a passkey after Apple · Desktop · Dark |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Join, a passkey after Apple · Phone 390 · Light |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Join, the link already used · Desktop · Dark |
+| Web v4 · Login, invite and responsive.dc.html | Browser · Join, the link already used · Phone 390 · Light |
+
+Each page inside the two sets has its own name too, for a row that wants one moment:
+
+- at 1440: Browser · Sign in · Desktop · Light; Browser · Sign in · Desktop · Dark; Browser · Sign in, signing you in ·
+  Desktop · Dark; Browser · Sign in, an account linked to nobody · Desktop · Light; Browser · Sign in, a paused member ·
+  Desktop · Dark; Browser · Sign in, the passkey offer · Desktop · Light; Browser · Sign in, offline · Desktop · Light;
+  Browser · Sign in, no answer · Desktop · Dark;
+- at 390: Browser · Sign in · Phone 390 · Light; Browser · Sign in · Phone 390 · Dark; Browser · Sign in, signing you
+  in · Phone 390 · Light; Browser · Sign in, an account linked to nobody · Phone 390 · Dark; Browser · Sign in, a paused
+  member · Phone 390 · Light; Browser · Sign in, the passkey offer · Phone 390 · Dark; Browser · Sign in, offline ·
+  Phone 390 · Dark; Browser · Sign in, no answer · Phone 390 · Light.
+
+No board name any trace row cites was removed: MA-32, MA-77 and MA-279 cite the two sets, and MA-301 cites Browser · Join
+from an invite · Phone 390 · Light.
+
+### What the pick leaves for other records
+
+- **The old section 1 also held two notes that were not sign-in pages**: a first-run setup row ("Asha joined": default
+  currency, quiet hours, app lock) and a card for cancelling an invite (Confirm, then the second check, an audit row).
+  Both left with the sheet. Cancelling an invite is MA-32's; it is drawn at iPhone · Cancel invite confirm · Dark, and
+  on the web it is now drawn nowhere. MA-32's row still cites the two sets, which no longer show it.
+- **MA-77** cites the two sets as well. They show what they showed of it before: the refusal that points to adding a
+  second sign-in from You. Adding one on the web is still not drawn.
+- **MA-301's pick e 1a** stands for the join page's words and its flow; its layout is superseded here.
+- **`app-v1`'s Prototype v4 files** (`PrototypeV4Web.dc.html`, the sign-in page with "With the account you use in the
+  MyPaisa app") still draw the page as it was planned. They were not part of this change.
+- Not drawn, as before: an expired link (it reads as the used one, with "This invite has expired" and the time it
+  ended), and the rest of "Not drawn, not checked" above.

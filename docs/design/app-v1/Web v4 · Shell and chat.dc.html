@@ -215,32 +215,45 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 .lock-date { margin-top: 20px; font: 600 19px/24px var(--mp-font); color: var(--mp-hero-ink-2); }
 .lock-time { font: 800 88px/92px var(--mp-font-round); letter-spacing: -0.03em; }
 .lock .notif { position: static; width: 100%; margin-top: 36px; }
-/* sign-in (MA-185): Apple's and Google's own buttons, as Browser · Login draws them */
-.login { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
-.lhero { background: var(--mp-hero); color: var(--mp-hero-ink); padding: 24px 24px 28px; display: flex; flex-direction: column; gap: 18px; }
-.tagline { font: 800 30px/36px var(--mp-font-round); letter-spacing: -0.03em; max-width: 480px; text-wrap: balance; margin: 0; }
-.lform { display: flex; align-items: flex-start; justify-content: center; padding: 28px 24px; background: var(--mp-bg); }
-.lbox { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 12px; }
-.lnote { display: flex; gap: 10px; align-items: flex-start; }
-.getapp { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
-.siwa { min-height: 50px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; font: 600 17px/22px var(--mp-font); text-decoration: none; background: #000000; color: #FFFFFF; }
-.t-dark .siwa { background: #FFFFFF; color: #000000; }
-.siwa svg { width: 17px; height: 20px; fill: currentColor; margin-top: -2px; flex: none; }
-.gsi { min-height: 50px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px; font: 500 16px/20px Roboto, var(--mp-font); letter-spacing: 0.01em; text-decoration: none; background: #FFFFFF; color: #1F1F1F; box-shadow: inset 0 0 0 1px #747775; }
-.t-dark .gsi { background: #131314; color: #E3E3E3; box-shadow: inset 0 0 0 1px #8E918F; }
-.gsi svg { width: 20px; height: 20px; flex: none; }
+/* sign-in (MA-185): 1b, The navy door (Arun, 25 Nov 2026: "For login, I want Navy door option."), as Web v4 · Login, invite and
+   responsive draws every moment of it. Apple's and Google's own buttons keep the colours those two ask for; a theme is declared
+   on the frame that names it and inherited (lesson 56). */
+.t-light { --apl-bg: #000000; --apl-fg: #FFFFFF; --ggl-bg: #FFFFFF; --ggl-fg: #1F1F1F; --ggl-ln: #747775; }
+.t-dark { --apl-bg: #FFFFFF; --apl-fg: #000000; --ggl-bg: #131314; --ggl-fg: #E3E3E3; --ggl-ln: #8E918F; }
+.sgn { flex: 1; min-height: 0; display: flex; flex-direction: column; background: var(--mp-bg); overflow: hidden; }
+:where(.sgn button) { -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: inherit; cursor: pointer; }   /* no specificity: .mp-btn draws over it */
+.sgn .pp { margin: 0; text-wrap: pretty; }
+.sgn .brandrow { display: flex; align-items: center; gap: 10px; }
+.sgn .mpm-pound { stroke: var(--mp-hero-ink); }
+.sgn .si-h { margin: 0; font: 700 28px/34px var(--mp-font); letter-spacing: -0.02em; text-wrap: balance; color: var(--mp-ink); }
+.sgn .ways { display: flex; flex-direction: column; gap: 10px; }
+.sgn .way { width: 100%; box-sizing: border-box; gap: 10px; }
+.sgn .way-apple, .sgn .way-apple:hover { background: var(--apl-bg); color: var(--apl-fg); }
+.sgn .way-google, .sgn .way-google:hover { background: var(--ggl-bg); color: var(--ggl-fg); box-shadow: inset 0 0 0 1px var(--ggl-ln); }
+.sgn .way .apl { width: 17px; height: 20px; fill: currentColor; margin-top: -3px; flex: none; }
+.sgn .way .ggl { width: 20px; height: 20px; flex: none; }
+.sgn .way .lc { width: 20px; height: 20px; }
+.sgn .way-key .lc { color: var(--mp-accent); }
+.sgn .hairline { padding-top: 14px; border-top: 1px solid var(--mp-line); }
+.sgn.b-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.sgn .b-navy { background: var(--mp-hero); color: var(--mp-hero-ink); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding: 56px 64px; box-sizing: border-box; min-width: 0; }
+.sgn .b-saywrap { display: flex; flex-direction: column; gap: 16px; }
+.sgn .b-say { margin: 0; font: 700 40px/46px var(--mp-font); letter-spacing: -0.025em; max-width: 520px; text-wrap: balance; }
+.sgn .b-sub { font: 400 17px/24px var(--mp-font); color: var(--mp-hero-ink-2); max-width: 470px; }
+.sgn .b-end { display: block; height: 48px; }
+.sgn .b-col { display: flex; align-items: center; justify-content: center; padding: 40px; background: var(--mp-bg); min-width: 0; }
+.sgn .b-box { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 14px; }
+.sgn.b-stack .b-navy { padding: 22px 20px 26px; gap: 18px; justify-content: flex-start; flex: none; }
+.sgn.b-stack .b-say { font-size: 28px; line-height: 34px; letter-spacing: -0.02em; }
+.sgn.b-stack .b-sub { font-size: 16px; line-height: 21px; }
+.sgn.b-stack .b-end { display: none; }
+.sgn.b-stack .b-col { align-items: flex-start; padding: 26px 20px 24px; flex: 1; }
 .purl { flex: none; height: 36px; margin: 0 12px 8px; border-radius: 12px; background: var(--mp-surface-2); display: flex; align-items: center; justify-content: center; gap: 6px; font: 400 14px/18px var(--mp-font); color: var(--mp-ink-2); }
 .purl .lc { width: 15px; height: 15px; }
 /* size classes: the frame decides, never the device */
 @container app (min-width: 600px) {
 .hctl { flex-wrap: nowrap; }
 .whose { flex: none; width: 240px; }
-}
-@container app (min-width: 760px) {
-.login { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr; }
-.lhero { padding: 56px 64px; justify-content: space-between; }
-.tagline { font-size: 44px; line-height: 50px; }
-.lform { align-items: center; }
 }
 @container app (min-width: 1393px) {   /* 1a: the chat beside every screen from about 1393 px (MA-301 c 1c; it was 1133, MA-240) */
 .sh-a .chatcol { display: flex; flex: none; width: clamp(340px, 28%, 420px); border-left: 1px solid var(--mp-line); }
@@ -486,27 +499,8 @@ button.strip-go::after { content: ""; position: absolute; inset: -11px; }   /* 2
 <sc-if value="{{ f.signin }}" hint-placeholder-val="{{ false }}">
 <sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.lock }}"></path></svg>dashboard.mypaisapp.com</span><span class="chrome-r"></span></div></sc-if>
 <sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="sbar wurl" aria-hidden="true"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.lock }}"></path></svg>dashboard.mypaisapp.com</div></sc-if>
-<div class="login">
-<div class="lhero">
-<div class="fx ac gap12"><svg class="mpm mpm-hero" width="44" height="44" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div>
-<div class="fx col gap16">
-<h1 class="tagline" data-mo="rise">Everything your household owns and owes, in one calm place.</h1>
-<p class="mp-callout mp-hero-2" style="margin: 0; max-width: 440px">The UK and India together, kept up to date by talking to MyPaisa. The chat is here too, on every page.</p>
-</div>
-<div class="mp-foot mp-hero-2">Illustrative</div>
-</div>
-<div class="lform">
-<div class="lbox" data-mo="card">
-<div class="mp-t1">Sign in</div>
-<div class="mp-sub mp-ink2" style="margin-bottom: 12px">With the account you use in the MyPaisa app.</div>
-<a class="siwa" href="#2g"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>Sign in with Apple</a>
-<a class="gsi" href="#2g"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>Sign in with Google</a>
-<a class="mp-btn mp-btn-plain" href="#2g"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.passkey }}"></path></svg>Sign in with a passkey</a>
-<div class="lnote mp-foot mp-ink2" style="margin-top: 8px"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.key }}"></path></svg><span>No password. A passkey works after your first sign-in with Apple or Google.</span></div>
-<a class="getapp mp-foot mp-w6 mp-link" href="#2g"><svg class="lc lc-s" viewBox="0 0 24 24" aria-hidden="true"><path sc-camel-d="{{ LUC.phone_iphone }}"></path></svg>Get MyPaisa for iPhone</a>
-</div>
-</div>
-</div>
+<sc-if value="{{ f.desk }}" hint-placeholder-val="{{ true }}"><div class="sgn b-split"><div class="b-navy"><div class="brandrow"><svg class="mpm mpm-hero" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div><div class="b-saywrap"><p class="b-say" data-mo="rise">Everything your household owns and owes, in one calm place.</p><p class="pp b-sub">The UK and India together, kept up to date by talking to MyPaisa.</p></div><span class="b-end"></span></div><div class="b-col"><div class="b-box"><h1 class="si-h">Sign in</h1><p class="pp mp-body mp-ink2">With the Apple or Google account you joined with.</p><div class="ways"><button type="button" class="mp-btn way way-apple"><svg class="apl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>Sign in with Apple</button><button type="button" class="mp-btn way way-google"><svg class="ggl" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>Sign in with Google</button><button type="button" class="mp-btn mp-btn-tinted way way-key"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><path d="M16 7.5a0.5 0.5 0 1 0 1 0a0.5 0.5 0 1 0 -1 0"></path></svg>Sign in with a passkey</button></div><p class="pp mp-foot mp-ink2">No password. A passkey works after your first sign-in with Apple or Google.</p><div class="hairline"><p class="pp mp-foot mp-ink2">New here? MyPaisa is by invite. Ask your household’s owner for a link.</p></div></div></div></div></sc-if>
+<sc-if value="{{ f.phone }}" hint-placeholder-val="{{ false }}"><div class="sgn b-stack"><div class="b-navy"><div class="brandrow"><svg class="mpm mpm-hero" width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><path class="mpm-ring" d="M41.32 14 A20 20 0 1 1 34 6.68" stroke-width="1.6"></path><circle class="mpm-coin" cx="24" cy="24" r="14.6"></circle><g class="mpm-pound" stroke-width="2.46"><path d="M28.58 20.25 C28.3 17.95 26.79 16.55 24.77 16.55 C22.48 16.55 20.96 18.18 20.96 20.47 L20.96 27.64 C20.96 29.38 20.35 30.5 18.95 31.45"></path><path d="M18.95 31.45 L29.7 31.45"></path><path d="M18.5 24.84 L25.78 24.84"></path></g><circle class="mpm-dot" cx="38.14" cy="9.86" r="3.8"></circle></svg><span class="mp-t3">MyPaisa</span></div><div class="b-saywrap"><p class="b-say" data-mo="rise">Everything your household owns and owes, in one calm place.</p><p class="pp b-sub">The UK and India together, kept up to date by talking to MyPaisa.</p></div><span class="b-end"></span></div><div class="b-col"><div class="b-box"><h1 class="si-h">Sign in</h1><p class="pp mp-body mp-ink2">With the Apple or Google account you joined with.</p><div class="ways"><button type="button" class="mp-btn way way-apple"><svg class="apl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>Sign in with Apple</button><button type="button" class="mp-btn way way-google"><svg class="ggl" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>Sign in with Google</button><button type="button" class="mp-btn mp-btn-tinted way way-key"><svg class="lc" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><path d="M16 7.5a0.5 0.5 0 1 0 1 0a0.5 0.5 0 1 0 -1 0"></path></svg>Sign in with a passkey</button></div><p class="pp mp-foot mp-ink2">No password. A passkey works after your first sign-in with Apple or Google.</p><div class="hairline"><p class="pp mp-foot mp-ink2">New here? MyPaisa is by invite. Ask your household’s owner for a link.</p></div></div></div></div></sc-if>
 </sc-if>
 </div>
 </div>
@@ -769,11 +763,13 @@ notes: [
 { b: 'Drawn as the system draws it:', t: "the laptop's banner names the site; the phone's lock screen shows the installed app." }
 ] };
 const b2g = { anchor: '2g', tag: '2g', keys: 'Jira: MA-185', name: 'Browser · Sign in', cap: 'Browser · Sign in, phone',
-desc: 'The sign-in page at dashboard.mypaisapp.com, re-skinned because the shell now has the chat.',
+desc: 'The sign-in page at dashboard.mypaisapp.com: 1b, The navy door, picked on MA-185 (Arun, 25 Nov 2026).',
 rows: [row('Browser · Sign in', D({ app: false, signin: true }, 'Browser · Sign in')), row('Browser · Sign in, phone', P({ app: false, signin: true, time: '09:38' }, 'Browser · Sign in, phone'))],
 notes: [
-{ b: 'What changed from Browser · Login:', t: 'the copy. "The chat is in the MyPaisa app on your iPhone" goes; the page says the chat is here too, and the whole household, UK and India. The layout and the three ways in stay.' },
-{ b: 'No data, no name, no password:', t: "Apple's and Google's own buttons, and a passkey after the first sign-in (MA-185)." }
+{ b: 'Picked:', t: '1b, The navy door (Arun, 25 Nov 2026: "For login, I want Navy door option."; docs/design/reviews/MA-185). The window is two halves: the navy half says what this is, the other half is the way in. On a phone the navy is a band above the buttons.' },
+{ b: 'What changed from the planned page:', t: "the words under the line and under Sign in, the buttons at the system's 14 px corner with the passkey tinted, an invite line in place of Get MyPaisa for iPhone, and no Illustrative footnote. The layout and the three ways in stay." },
+{ b: 'No data, no name, no password:', t: "Apple's and Google's own buttons, Apple's first, and a passkey after the first sign-in (MA-185)." },
+{ b: 'Every other moment:', t: 'waiting, an account linked to nobody, a paused member, the passkey offer, offline, no answer and the join page are on Web v4 · Login, invite and responsive, sections 1 and 3.' }
 ] };
 
 const b2h = { anchor: '2h', tag: '2h', keys: 'Jira: MA-301 · MA-229', name: 'Browser · ⌘K palette', cap: 'Browser · ⌘K palette',

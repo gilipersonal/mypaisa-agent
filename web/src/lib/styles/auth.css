@@ -1,0 +1,324 @@
+/* MA-185 · the sign-in and join pages, option 1b "The navy door" (picked by Arun on 25 Nov 2026), from
+   docs/design/reviews/MA-185/Web sign-in.dc.html. Under 1024 px the navy is a band above the way in; from 1024 px the
+   window is two halves. Every colour is a DS v1 token, but for Apple's and Google's own buttons, which keep the colours
+   those two ask for, as the board draws them. A theme is declared on the element that names it and inherited, as
+   tokens.css does (lesson 56). */
+:root {
+	--door-apple-bg: #000000;
+	--door-apple-fg: #ffffff;
+	--door-google-bg: #ffffff;
+	--door-google-fg: #1f1f1f;
+	--door-google-ln: #747775;
+}
+.t-dark {
+	--door-apple-bg: #ffffff;
+	--door-apple-fg: #000000;
+	--door-google-bg: #131314;
+	--door-google-fg: #e3e3e3;
+	--door-google-ln: #8e918f;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not(.t-light) {
+		--door-apple-bg: #ffffff;
+		--door-apple-fg: #000000;
+		--door-google-bg: #131314;
+		--door-google-fg: #e3e3e3;
+		--door-google-ln: #8e918f;
+	}
+}
+
+/* ---------- the page: a band above the way in, two halves from 1024 px ---------- */
+.door {
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	background: var(--mp-bg);
+	color: var(--mp-ink);
+	font-family: var(--mp-font);
+}
+.door-navy {
+	flex: none;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	padding: 22px 20px 26px;
+	box-sizing: border-box;
+	min-width: 0;
+	background: var(--mp-hero);
+	color: var(--mp-hero-ink);
+}
+.door-navy.slim,
+.door-navy.quiet {
+	padding: 16px 20px;
+}
+.door-navy.slim .door-saywrap {
+	display: none;
+}
+.door-brand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.door-mark {
+	display: block;
+	flex: none;
+	width: 40px;
+	height: 40px;
+}
+.door-mark .ring {
+	fill: none;
+	stroke: var(--mp-hero-ink-2);
+}
+.door-mark .coin {
+	fill: var(--mp-hero-2);
+}
+.door-mark .pound {
+	fill: none;
+	stroke: var(--mp-hero-ink);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.door-mark .dot {
+	fill: var(--mp-coral);
+}
+.door-saywrap {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+.door-say {
+	margin: 0;
+	max-width: 520px;
+	font: 700 28px/34px var(--mp-font);
+	letter-spacing: -0.02em;
+	text-wrap: balance;
+	color: var(--mp-hero-ink);
+}
+.door-sub {
+	margin: 0;
+	max-width: 470px;
+	font: 400 16px/21px var(--mp-font);
+	color: var(--mp-hero-ink-2);
+	text-wrap: pretty;
+}
+.door-end {
+	display: none;
+}
+/* what a member can do, on the invitation: the laptop's navy only */
+.door-see {
+	list-style: none;
+	margin: 10px 0 0;
+	padding: 0;
+	max-width: 470px;
+	display: none;
+	flex-direction: column;
+	gap: 12px;
+}
+.door-see li {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	font: 400 16px/22px var(--mp-font);
+	color: var(--mp-hero-ink);
+}
+.door-see .lc {
+	color: var(--mp-coral);
+	margin-top: 2px;
+}
+.door-col {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 26px 20px 24px;
+	min-width: 0;
+	background: var(--mp-bg);
+}
+.door-box {
+	width: 100%;
+	max-width: 380px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+@media (min-width: 1024px) {
+	.door {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	}
+	.door-navy,
+	.door-navy.slim {
+		justify-content: space-between;
+		gap: 24px;
+		padding: 56px 64px;
+	}
+	.door-navy.quiet {
+		justify-content: flex-start;
+		padding: 56px 64px;
+	}
+	.door-navy.slim .door-saywrap {
+		display: flex;
+	}
+	.door-mark {
+		width: 48px;
+		height: 48px;
+	}
+	.door-say {
+		font-size: 40px;
+		line-height: 46px;
+		letter-spacing: -0.025em;
+	}
+	.door-sub {
+		font-size: 17px;
+		line-height: 24px;
+	}
+	.door-see {
+		display: flex;
+	}
+	.door-end {
+		display: block;
+		height: 48px;
+	}
+	.door-col {
+		align-items: center;
+		padding: 40px;
+	}
+}
+
+/* ---------- the way in ---------- */
+.door-h {
+	margin: 0;
+	font: 700 28px/34px var(--mp-font);
+	letter-spacing: -0.02em;
+	text-wrap: balance;
+	color: var(--mp-ink);
+}
+.door-h.sm {
+	font-size: 22px;
+	line-height: 28px;
+	letter-spacing: -0.015em;
+}
+.door-line {
+	margin: 0;
+	font: 600 20px/26px var(--mp-font);
+	letter-spacing: -0.01em;
+	text-wrap: balance;
+	color: var(--mp-ink);
+}
+.door-p {
+	margin: 0;
+	text-wrap: pretty;
+}
+.door-ways {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+/* Apple's and Google's own buttons, then the passkey: 50 px tall, the system's 14 px corner */
+.door-way {
+	width: 100%;
+	box-sizing: border-box;
+	gap: 10px;
+}
+.door-apple,
+.door-apple:hover {
+	background: var(--door-apple-bg);
+	color: var(--door-apple-fg);
+}
+.door-google,
+.door-google:hover {
+	background: var(--door-google-bg);
+	color: var(--door-google-fg);
+	box-shadow: inset 0 0 0 1px var(--door-google-ln);
+}
+.door-way .apl {
+	width: 17px;
+	height: 20px;
+	fill: currentColor;
+	margin-top: -3px;
+	flex: none;
+}
+.door-way .ggl {
+	width: 20px;
+	height: 20px;
+	flex: none;
+}
+.door-way .lc {
+	width: 20px;
+	height: 20px;
+}
+.door-key .lc {
+	color: var(--mp-accent);
+}
+/* A way that does nothing for now (signing in, offline) stays in its place and in the tab order: tokens.css dims an
+   aria-disabled control and takes the pointer off it. */
+.door-way[aria-busy='true'] {
+	cursor: progress;
+}
+.door-done {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font: 600 15px/20px var(--mp-font);
+	color: var(--mp-up);
+}
+.door-done .lc {
+	width: 20px;
+	height: 20px;
+}
+/* a notice on the page's own ground: the chat sheet's banner */
+.door-ban {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	padding: 10px 14px;
+	border-radius: 14px;
+	font: 500 14px/19px var(--mp-font);
+}
+.door-ban > .lc {
+	margin-top: 1px;
+}
+.door-ban b {
+	font-weight: 700;
+}
+.door-ban.off {
+	background: var(--mp-pause-bg);
+	color: var(--mp-pause);
+}
+.door-ban.err {
+	background: var(--mp-surface-2);
+	color: var(--mp-ink);
+	box-shadow: inset 0 0 0 1px var(--mp-line);
+}
+.door-hair {
+	padding-top: 14px;
+	border-top: 1px solid var(--mp-line);
+}
+.door-linkrow {
+	display: flex;
+	padding-top: 4px;
+	border-top: 1px solid var(--mp-line);
+}
+.door-linkrow a {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	font: 600 15px/20px var(--mp-font);
+}
+/* a heading the focus is moved to, to be read first, is not a control: no ring */
+.door [tabindex='-1']:focus {
+	outline: none;
+}
+
+/* The page gives way to Home in one 340 ms cross-fade (1b, "How it lands"); under Reduce Motion, 150 ms. */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: var(--mo-base);
+}
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 150ms;
+	}
+}
