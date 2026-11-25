@@ -38,6 +38,43 @@
 	background: var(--mp-line);
 	margin: 8px 12px;
 }
+/* the sidebar's foot (MA-185, Arun, 25 Nov 2026): who is signed in, and Sign out; under 1024 px it is on More */
+.side-foot {
+	margin-top: auto;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 4px 0 12px;
+	border-top: 1px solid var(--mp-line);
+}
+.side-who {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+.side-out {
+	flex: none;
+	min-height: 44px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 0 10px;
+	border: 0;
+	border-radius: 10px;
+	background: none;
+	color: var(--mp-ink-2);
+	font: 500 0.875rem/1.25rem var(--mp-font);
+	cursor: pointer;
+}
+.side-out:hover {
+	background: var(--mp-surface-2);
+	color: var(--mp-ink);
+}
+.side-out:focus-visible {
+	outline: 2px solid var(--mp-focus);
+	outline-offset: 2px;
+}
 .main {
 	position: relative;
 	overflow-y: auto;

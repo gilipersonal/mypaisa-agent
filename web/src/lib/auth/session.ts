@@ -119,3 +119,11 @@ export function browserSession(): StubSession {
 	shared ??= new StubSession(browserStorage());
 	return shared;
 }
+
+/** The line at the sidebar's foot (MA-185, Arun, 25 Nov 2026: Sign out lives there from 1024 px): who is signed in,
+ * by their name and their role in the household, beside Sign out. */
+export function signedInLine(member: { name: string; role: string } | undefined): { name: string; role: string } {
+	if (!member) return { name: 'Signed in', role: '' };
+	const role = member.role.trim();
+	return { name: member.name, role: role.charAt(0).toUpperCase() + role.slice(1) };
+}
