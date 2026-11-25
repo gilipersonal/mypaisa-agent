@@ -8,7 +8,13 @@
 	import { timeOf } from '#lib/chat/days.ts';
 	import type { CardAction } from '#lib/chat/transport.ts';
 
-	let { card, onTap }: { card: ConfirmCard; onTap: (action: CardAction) => void } = $props();
+	import { maskAmounts } from '#lib/privacy/mask.ts';
+
+	let {
+		card,
+		privacy = false,
+		onTap
+	}: { card: ConfirmCard; privacy?: boolean; onTap: (action: CardAction) => void } = $props();
 	const body = $derived(card.body);
 	const savedAt = $derived(body.saved_at ? timeOf(new Date(body.saved_at)) : '');
 </script>
@@ -23,7 +29,7 @@
 	</div>
 	<div class="cc-b">
 		{#each body.rows as row (row.label)}
-			<div class="kvr"><span>{row.label}</span><span>{row.value}</span></div>
+			<div class="kvr"><span>{row.label}</span><span>{maskAmounts(row.value, privacy)}</span></div>
 		{/each}
 		{#if body.state === 'open' && body.hint}<span class="mp-foot mp-ink2 cc-hint">{body.hint}</span>{/if}
 	</div>

@@ -2,7 +2,9 @@
  * its fetch. Plain option objects with no framework import, so Svelte Query and React Query take the same definitions. */
 import type { components } from '../api-types.d.ts';
 import { emptyTimeline, type Timeline } from '../chat/timeline.ts';
+import type { DisplayCurrency, Overview } from '../wealth/overview.ts';
 import { toApiError, type ApiClient } from './client.ts';
+import type { WealthSource } from './wealth.ts';
 
 export type Liveness = components['schemas']['LivenessOut'];
 export type Readiness = components['schemas']['ReadinessOut'];
@@ -21,6 +23,19 @@ export function chatTimelineQuery() {
 		queryFn: (): Promise<Timeline> => Promise.resolve(emptyTimeline()),
 		staleTime: Number.POSITIVE_INFINITY,
 		gcTime: Number.POSITIVE_INFINITY
+	};
+}
+
+/** The household's wealth (MA-208): everything under `all` is refetched when the stream says `records.changed`. */
+export const wealthKeys = {
+	all: ['wealth'] as const,
+	overview: (view: string, currency: DisplayCurrency) => ['wealth', 'overview', view, currency] as const
+};
+
+export function overviewQuery(source: WealthSource, view: string, currency: DisplayCurrency) {
+	return {
+		queryKey: wealthKeys.overview(view, currency),
+		queryFn: (): Promise<Overview> => source.overview(view, currency)
 	};
 }
 

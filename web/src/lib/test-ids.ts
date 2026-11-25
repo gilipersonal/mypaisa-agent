@@ -6,6 +6,9 @@ export const TestIDs = {
 	tabHome: 'mp.tab.home',
 	tabActivity: 'mp.tab.activity',
 	tabYou: 'mp.tab.you',
+	tabAssets: 'mp.tab.assets',
+	tabProjection: 'mp.tab.projection',
+	tabMore: 'mp.tab.more',
 	homeHero: 'mp.home.hero'
 } as const;
 

@@ -12,7 +12,8 @@ corepack pnpm@12.16.1 --dir web dev
 ```
 
 The first starts moto on 8788 and the app on 8787, both on loopback only. The second serves the web app, which proxies
-`/v1` to it; its home page runs the scripted journey in a card that only development builds have.
+`/v1` to it; `http://localhost:5173/?local` runs the scripted journey in a card under Home that only development builds
+have (MA-208: Home itself now shows the stubbed dashboard).
 
 For the iOS app, start Metro and build the MyPaisa Dev scheme's Debug configuration, then launch it with the local
 address and a member to sign in as:

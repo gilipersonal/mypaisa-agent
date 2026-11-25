@@ -10,6 +10,8 @@
 	import type { ChatMessage } from '#lib/chat/timeline.ts';
 	import type { CardAction } from '#lib/chat/transport.ts';
 	import Mark from '#lib/components/brand/Mark.svelte';
+	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
+	import { maskAmounts } from '#lib/privacy/mask.ts';
 	import ConfirmCard from './ConfirmCard.svelte';
 	import FigureCard from './FigureCard.svelte';
 
@@ -22,6 +24,9 @@
 		onChoose: (chipId: string) => void;
 		onTap: (cardId: string, action: CardAction) => void;
 	} = $props();
+	// Privacy mode hides the amounts in the conversation too (board Browser · Dashboard, privacy on).
+	const privacy = usePrivacy();
+	const text = $derived(maskAmounts(message.text, privacy.on));
 </script>
 
 {#if message.role === 'member'}
@@ -34,10 +39,10 @@
 					<span class="fmeta">{message.file.meta}</span>
 				</span>
 			</div>
-			{#if message.text}<span class="mft">{message.text}</span>{/if}
+			{#if message.text}<span class="mft">{text}</span>{/if}
 		</div>
 	{:else}
-		<div class="me">{message.text}</div>
+		<div class="me">{text}</div>
 	{/if}
 	{#if message.delivery === 'waiting'}
 		<div class="mest"><Clock class="lc" aria-hidden="true" />Waiting · sends when you're back online</div>
@@ -50,11 +55,11 @@
 		<div class="aib">
 			{#if message.phase === 'reading'}
 				<div class="reading">
-					<span class="typing" aria-hidden="true"><i></i><i></i><i></i></span><span>{message.text}</span>
+					<span class="typing" aria-hidden="true"><i></i><i></i><i></i></span><span>{text}</span>
 				</div>
 			{:else if message.text}
 				<div class="ait">
-					{message.text}{#if message.phase === 'streaming'}<span class="caret" aria-hidden="true"></span>{/if}
+					{text}{#if message.phase === 'streaming'}<span class="caret" aria-hidden="true"></span>{/if}
 				</div>
 			{/if}
 			{#if message.chips}
@@ -80,14 +85,15 @@
 				{#if canRender(card) && isConfirmCard(card)}
 					<ConfirmCard
 						{card}
+						privacy={privacy.on}
 						onTap={(action: CardAction) => {
 							onTap(card.id, action);
 						}}
 					/>
 				{:else if canRender(card) && isFigureCard(card)}
-					<FigureCard {card} />
+					<FigureCard {card} privacy={privacy.on} />
 				{:else}
-					<div class="ait">{card.fallback}</div>
+					<div class="ait">{maskAmounts(card.fallback, privacy.on)}</div>
 				{/if}
 			{/each}
 			{#if message.phase === 'streaming'}

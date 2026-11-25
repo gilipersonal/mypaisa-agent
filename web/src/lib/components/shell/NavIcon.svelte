@@ -6,11 +6,14 @@
 	import ChartPie from '@lucide/svelte/icons/chart-pie';
 	import CircleUser from '@lucide/svelte/icons/circle-user';
 	import ClipboardCheck from '@lucide/svelte/icons/clipboard-check';
+	import FileText from '@lucide/svelte/icons/file-text';
 	import House from '@lucide/svelte/icons/house';
 	import Landmark from '@lucide/svelte/icons/landmark';
+	import Menu from '@lucide/svelte/icons/menu';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import Monitor from '@lucide/svelte/icons/monitor';
 	import Moon from '@lucide/svelte/icons/moon';
+	import PiggyBank from '@lucide/svelte/icons/piggy-bank';
 	import Receipt from '@lucide/svelte/icons/receipt';
 	import Search from '@lucide/svelte/icons/search';
 	import Shield from '@lucide/svelte/icons/shield';
@@ -25,11 +28,14 @@
 		'chart-pie': ChartPie,
 		'circle-user': CircleUser,
 		'clipboard-check': ClipboardCheck,
+		'file-text': FileText,
 		house: House,
 		landmark: Landmark,
+		menu: Menu,
 		'message-circle': MessageCircle,
 		monitor: Monitor,
 		moon: Moon,
+		'piggy-bank': PiggyBank,
 		receipt: Receipt,
 		search: Search,
 		shield: Shield,

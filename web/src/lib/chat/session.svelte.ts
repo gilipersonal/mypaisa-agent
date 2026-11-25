@@ -4,7 +4,7 @@
  * `chatTimelineQuery` and act through this session, which the shell provides by context. */
 import type { QueryClient } from '@tanstack/query-core';
 import { getContext, setContext } from 'svelte';
-import { chatKeys } from '#lib/api/queries.ts';
+import { chatKeys, wealthKeys } from '#lib/api/queries.ts';
 import { timeOf } from './days.ts';
 import type { Outbox } from './outbox.ts';
 import {
@@ -86,6 +86,9 @@ export class ChatSession {
 		this.#stops.push(
 			this.transport.connect((frame) => {
 				this.#update((t) => applyFrame(t, frame, this.#now));
+				// A confirmed change reaches every open door on this stream (ARCHITECTURE §19.5): the wealth pages read
+				// again, and their figures move with no reload (MA-208).
+				if (frame.event === 'records.changed') void this.queries.invalidateQueries({ queryKey: wealthKeys.all });
 			})
 		);
 		const goOnline = () => {
