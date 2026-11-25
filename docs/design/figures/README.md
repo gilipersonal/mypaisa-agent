@@ -134,8 +134,14 @@ set it at 10:40), and Asha's bonus grows 3.5% a year (corrected at 10:44).
 - **Cash:** the Monzo pot, the Monzo savings and the NRE savings (£7,092 on 1 Nov), plus the maturities (the saver in
   Dec 2026, the SBI FD in Mar 2029, the PPF and LIC in Mar 2031). October's card statement (£1,458) is paid from it
   in November. Cash earns 3%.
-- **The surplus rule:** cash keeps six months of outgoings plus the one-offs due in the next twelve months; the rest
-  goes into Balanced (ISA) each month.
+- **The surplus rule: all to cash** (Arun, 3 Nov 2026; `ARCHITECTURE.md` §6 and §15). Each month's surplus stays as
+  cash, on the base path and the fan alike; nothing is swept into a holding or a loan. Until MA-224 redrew the figures
+  (25 Nov 2026) cash kept six months of outgoings plus the year's one-offs and the rest went into Balanced (ISA). Two
+  readings this aid makes, for Arun to confirm when he looks at the redrawn boards:
+  - **One cash figure, in pounds.** The plan says "in its own currency"; the aid converts each rupee flow at its
+    month's rate and holds no separate rupee balance.
+  - **In retirement a gap comes out of cash first,** and Balanced is sold only for what cash cannot cover. It was
+    "Balanced pays any gap" while cash was held to six months.
 - **Arun's floor:** a surplus of £500 a month (his setting). A month below it is flagged while anyone in the
   household earns a salary (to Dec 2052); in retirement only cash running out is flagged (Arun, 28 Oct 2026).
 - **FX:** £1 = ₹112.50 on 1 Nov, drifting 2.44% a year (the inflation gap); each rupee flow converts at its month's
