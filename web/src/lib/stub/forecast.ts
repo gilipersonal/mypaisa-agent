@@ -164,11 +164,13 @@ function floorTo(h: StubHousehold, years: YearFigures[]): number {
 	return Math.max(...years.filter((y) => names.some((n) => n in y.income)).map((y) => y.year));
 }
 
-/** The first year cash goes below zero; failing that, the year of the leanest month. */
-function defaultYear(rows: YearFigures[]): number {
+/** The first year cash goes below zero; failing that, the year of the leanest month while the floor holds (the boards
+ * keep 2029 at every horizon: a retired year, with no floor, is never the one the chart leads with). */
+function defaultYear(rows: YearFigures[], to: number): number {
 	const short = rows.find((r) => r.cash_negative !== null);
 	if (short) return short.year;
-	return rows.reduce((a, r) => (r.lowest_surplus < a.lowest_surplus ? r : a)).year;
+	const held = rows.filter((r) => r.year <= to);
+	return (held.length > 0 ? held : rows).reduce((a, r) => (r.lowest_surplus < a.lowest_surplus ? r : a)).year;
 }
 
 /** Where cash goes below zero in a run, as the figure set says it: the months, and the month it is back. */
@@ -351,7 +353,7 @@ function chart(c: Ctx, all: YearFigures[], rows: YearFigures[], years: Horizon, 
 	}
 	if (retired) notes.push({ said: [text(retirementNote(c, all, last))] });
 	const pot = potWords(all);
-	if (pot && c.currency === 'GBP' && c.money === 'nominal') {
+	if (pot && !short && c.currency === 'GBP' && c.money === 'nominal') {
 		const into = all.filter((r) => r.to_pot > 0);
 		notes.push({
 			said: [
@@ -483,10 +485,20 @@ function line(
 }
 
 /** Parts with their names: "Arun £59,395 · Asha £40,236"; each part converted and rounded, the total their sum. */
-function parts(flows: Flows, k: number, c: Ctx, name: (n: string) => string = curly): { sub: Said[]; total: number } {
-	const each = Object.entries(flows).map(([n, v]) => ({ n: name(n), v: Math.round(v * k) }));
+function parts(
+	flows: Flows,
+	k: number,
+	c: Ctx,
+	name: (n: string) => string = curly,
+	after: Record<string, string> = {}
+): { sub: Said[]; total: number } {
+	const each = Object.entries(flows).map(([n, v]) => ({ n: name(n), v: Math.round(v * k), after: after[n] }));
 	return {
-		sub: each.flatMap((p, i) => [text(`${i > 0 ? ' · ' : ''}${p.n} `), said(p.v, c.currency)]),
+		sub: each.flatMap((p, i) => [
+			text(`${i > 0 ? ' · ' : ''}${p.n} `),
+			said(p.v, c.currency),
+			...(p.after ? [text(p.after)] : [])
+		]),
 		total: each.reduce((a, p) => a + p.v, 0)
 	};
 }
@@ -508,8 +520,16 @@ function yearCard(c: Ctx, all: YearFigures[], r: YearFigures, run: RunFigures): 
 			{ traced: true }
 		)
 	);
+	const months = run[`months_${String(r.year)}` as `months_${number}`];
 	if (Object.keys(r.emis).length > 0) {
-		const emis = parts(r.emis, k, c, (n) => LOAN[n]?.short ?? n);
+		// a loan whose last EMI falls in the year's months says so, as the board's EMIs line does
+		const ends: Record<string, string> = {};
+		for (const loan of Object.keys(r.emis)) {
+			const last = months?.findLastIndex((m) => loan in m.emis) ?? -1;
+			if (months && last >= 0 && last < months.length - 1)
+				ends[loan] = `, its last in ${months[last]?.month.slice(0, 3) ?? ''}`;
+		}
+		const emis = parts(r.emis, k, c, (n) => LOAN[n]?.short ?? n, ends);
 		lines.push(line('emis', 'EMIs', emis.sub, -emis.total, c));
 	}
 	if (r.sip > 0 || r.premium > 0) {
@@ -604,8 +624,7 @@ function yearCard(c: Ctx, all: YearFigures[], r: YearFigures, run: RunFigures): 
 	if (r.closing_cash >= 0) facts.push({ label: cashLabel, said: [said(cv(r.closing_cash), c.currency)] });
 	facts.push({
 		label: 'Leanest month',
-		said: [text(`${r.lowest_month.slice(0, 3)}, `), said(cv(r.lowest_surplus), c.currency)],
-		alert: r.below_floor > 0
+		said: [text(`${r.lowest_month.slice(0, 3)}, `), said(cv(r.lowest_surplus), c.currency)]
 	});
 
 	const retired = r.year > c.floorTo;
@@ -629,7 +648,6 @@ function yearCard(c: Ctx, all: YearFigures[], r: YearFigures, run: RunFigures): 
 			: c.money === 'today'
 				? 'in today’s rupees'
 				: `in rupees, at ${String(r.year)}’s projected rate`;
-	const months = run[`months_${String(r.year)}` as `months_${number}`];
 	const flagged = !retired && (r.below_floor > 0 || r.cash_negative !== null);
 	return {
 		year: r.year,
@@ -786,7 +804,7 @@ export function buildBudgetForecast(
 	const base = all[0]?.year ?? 0;
 	const rows = all.filter((r) => r.year > base && r.year <= base + horizon);
 	const selectedRow =
-		rows.find((r) => r.year === year) ?? rows.find((r) => r.year === defaultYear(rows)) ?? rows[0] ?? all[0];
+		rows.find((r) => r.year === year) ?? rows.find((r) => r.year === defaultYear(rows, c.floorTo)) ?? rows[0] ?? all[0];
 	if (!selectedRow) throw new Error('The figure set has no forecast for this run.');
 	const when = runWhen(run);
 	const last = rows.at(-1)?.year ?? base;

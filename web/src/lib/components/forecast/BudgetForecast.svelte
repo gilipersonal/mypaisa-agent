@@ -49,7 +49,7 @@
 
 	/** The year asked for; until one is, the chart's own (the first year cash goes short, or the leanest). */
 	let year = $state<number | undefined>();
-	let traceOpen = $state(true);
+	let traceAsked = $state<boolean | undefined>();
 	let monthsShown = $state<boolean | undefined>();
 	let traceCard: HTMLElement | undefined = $state();
 
@@ -60,6 +60,9 @@
 	const data = $derived(forecast.data);
 	// The months stay folded where a pot already holds every lean month at the floor (board S1); open otherwise.
 	const months = $derived(monthsShown ?? data?.pot === undefined);
+	// The flows behind Spending are open as the picked board draws them; where the pot's card fills that column, on a
+	// tap (board S1).
+	const traceOpen = $derived(traceAsked ?? data?.pot === undefined);
 	const running = $derived(Boolean(data) && forecast.isFetching && !forecast.isPlaceholderData && !forecast.isError);
 	const failed = $derived(Boolean(data) && forecast.isError);
 
@@ -68,8 +71,8 @@
 	});
 
 	async function openTrace() {
-		traceOpen = !traceOpen;
-		if (!traceOpen) return;
+		traceAsked = !traceOpen;
+		if (!traceAsked) return;
 		await tick();
 		traceCard?.scrollIntoView({ block: 'nearest' });
 	}
@@ -138,7 +141,7 @@
 			<p class="mp-foot mp-ink2 pp">Nothing is created here: the chat asks, you confirm, and the forecast fills in.</p>
 		</div>
 	{:else if data}
-		<div class="stk" class:stale={running}>
+		<div class="bfstk" class:stale={running}>
 			<section class="mp-card cpad" aria-labelledby="bf-chart" data-testid={TestIDs.forecastChart}>
 				<div class="bfh">
 					<div class="grow1">

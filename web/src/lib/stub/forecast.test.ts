@@ -105,7 +105,7 @@ describe('the picked board’s state: the school fees just saved (R1, 20:43)', (
 			['School fees', '−£48,000']
 		]);
 		expect(words(line(f, 'income').sub)).toBe('Arun £59,395 · Asha £40,236 · Pune rent £2,061 · Asha’s bonus £3,214');
-		expect(words(line(f, 'emis').sub)).toBe('Mortgage £17,478 · Car loan £693 · HDFC £3,944');
+		expect(words(line(f, 'emis').sub)).toBe('Mortgage £17,478 · Car loan £693, its last in Feb · HDFC £3,944');
 		expect(words(line(f, 'sip').sub)).toBe('Parag Parikh £1,001 · LIC £353 in March');
 		expect(words(line(f, 'plan-School fees').sub)).toBe(
 			'Your plan, saved at 20:43 · £4,000 a month from Jan 2029, 4.5% a year'
@@ -234,6 +234,7 @@ describe('the horizons', () => {
 		const f = buildBudgetForecast(arun(), 'R1', 30, 'nominal', 'GBP');
 		expect(f.head).toBe('Each year to 2056, in pounds of each year · the engine’s run, Thu 5 Nov 20:43');
 		expect(f.chart.axis.map((a) => a.label)).toEqual(['2027', '2036', '2046', '2056']);
+		expect(f.selected).toBe(2029);
 		const rt = f.chart.bars.filter((b) => b.tone === 'rt');
 		expect(rt.map((b) => b.year)).toEqual([2053, 2054, 2055, 2056]);
 		expect(rt.every((b) => b.capFoot && b.floorAt === undefined)).toBe(true);

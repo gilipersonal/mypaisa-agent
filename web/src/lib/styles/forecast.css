@@ -6,8 +6,13 @@
 
 .bf {
 	display: flex;
+	flex: none;
 	flex-direction: column;
 	gap: 16px;
+	min-width: 0;
+}
+.bf > * {
+	flex: none;
 }
 .bf .cpad {
 	padding: 18px 18px 16px;
@@ -477,7 +482,7 @@
 .bf .stale {
 	opacity: 0.55;
 }
-.stk {
+.bfstk {
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
