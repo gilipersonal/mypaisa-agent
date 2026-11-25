@@ -89,8 +89,13 @@ sign-in later; and it is the same page at every width and in the installed app's
 
 ## For Arun to settle with the pick
 
-Not answered with the pick. Each stands as it was drawn, a default, until Arun says otherwise; the picked boards in
-`app-v1` carry the same four defaults and say so in their notes.
+**Settled: all four stand as drawn** (Arun, 25 Nov 2026, after the merge of PR #152: "Keep all four"). A removed
+member meets the "isn't linked to MyPaisa" page with no line of its own; the passkey is offered once per browser; the
+page has no "Get MyPaisa for iPhone" link; Google's own button everywhere, the join page included. ARCHITECTURE §4.5,
+the trace row and the picked boards' notes say so.
+
+Not answered with the pick, so they were drawn as defaults until Arun said otherwise; the picked boards in `app-v1`
+carried the same four defaults and said so in their notes.
 
 1. **A removed member.** ARCHITECTURE gives a paused member one line and says nothing for a removed one. Drawn: a
    removed member meets the "isn't linked to MyPaisa" page, because their account is linked to no member any more.
