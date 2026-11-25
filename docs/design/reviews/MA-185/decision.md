@@ -20,7 +20,7 @@ Only the option he picks is built, on stubbed data: a stub sign-in that lands on
   side (`all`). `?embed=<id>` shows one of the four and scales a frame wider than the panel to fit it;
   `?theme=dark` draws the canvas itself in dark (each frame keeps its own theme); `?static=1` stills the motion.
 - The round's page: `options.html`, to be published as a private Claude Artifact with root `docs/design`. Link: https://claude.ai/artifact/3Qi16PACWiVmD4WAtYnqAs (published 25 Nov 2026 by the lead).
-  published yet (the lead publishes it and writes the link here). The page finds the board from either place: at
+  The page finds the board from either place: at
   the root of `docs/design`, where the Artifact puts it, and in this folder, when it is opened from the repo on a
   static server. Its script holds both sets of paths as a table and reads none back from the page. The page is plain
   ASCII and declares UTF-8, so a server that sends no charset cannot garble it.
