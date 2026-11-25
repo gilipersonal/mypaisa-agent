@@ -3,6 +3,10 @@ import {
 	ChatSheet,
 	PULL_CLOSE,
 	SHEET_FROM,
+	SHEET_MARGIN,
+	SHEET_TALLEST,
+	SHEET_WIDTH,
+	SIDEBAR_FROM,
 	chatKeyLabel,
 	chatPlace,
 	dimDuring,
@@ -10,6 +14,7 @@ import {
 	isMac,
 	pullCloses,
 	pullOffset,
+	sheetFrame,
 	trapIndex,
 	type Focusable
 } from './sheet.svelte.ts';
@@ -29,11 +34,72 @@ function opener(connected = true): Focusable & { focused: number } {
 }
 
 describe('the width rule', () => {
-	it('is the sheet from 1024 px at every width, and the Chat tab under it', () => {
-		expect(SHEET_FROM).toBe(1024);
-		expect(chatPlace(1023)).toBe('tab');
+	it('is the sheet from 600 px, with the tab bar or the sidebar, and the Chat tab’s page under it', () => {
+		expect(SHEET_FROM).toBe(600);
+		expect(SIDEBAR_FROM).toBe(1024);
+		expect(chatPlace(599)).toBe('tab');
 		expect(chatPlace(390)).toBe('tab');
-		for (const w of [1024, 1120, 1280, 1392, 1393, 1440, 1920]) expect(chatPlace(w)).toBe('sheet');
+		expect(chatPlace(320)).toBe('tab');
+		for (const w of [600, 768, 834, 1023, 1024, 1120, 1280, 1392, 1393, 1440, 1920]) expect(chatPlace(w)).toBe('sheet');
+	});
+});
+
+describe('the sheet’s frame', () => {
+	const centre = (w: number, h: number) => {
+		const f = sheetFrame(w, h);
+		return { x: f.left + f.width / 2, y: f.top + f.height / 2, f };
+	};
+
+	it('is centred in the window across and down, with the sidebar (desktop) and with the tab bar (tablet)', () => {
+		for (const [w, h] of [
+			[1920, 1080],
+			[1440, 900],
+			[1280, 800],
+			[1024, 768],
+			[1023, 768],
+			[834, 1194],
+			[768, 1024],
+			[600, 800],
+			[1101, 701]
+		] as const) {
+			const { x, y, f } = centre(w, h);
+			expect(Math.abs(x - w / 2), `${String(w)}×${String(h)} across`).toBeLessThanOrEqual(0.5);
+			expect(Math.abs(y - h / 2), `${String(w)}×${String(h)} down`).toBeLessThanOrEqual(0.5);
+			expect(Math.abs(f.top - (h - f.top - f.height)), 'the same margin above and below').toBeLessThanOrEqual(1);
+		}
+	});
+
+	it('does not stop clear of the sidebar any more: at 1024 px it crosses the sidebar’s edge, centred', () => {
+		expect(sheetFrame(1024, 768)).toMatchObject({ left: 212, width: 600 });
+	});
+
+	it('is 600 px wide, or the window less 16 px a side when narrower', () => {
+		expect(sheetFrame(1440, 900).width).toBe(SHEET_WIDTH);
+		expect(sheetFrame(768, 1024).width).toBe(SHEET_WIDTH);
+		expect(sheetFrame(632, 800).width).toBe(SHEET_WIDTH);
+		expect(sheetFrame(600, 800)).toMatchObject({ left: SHEET_MARGIN.inline, width: 600 - 2 * SHEET_MARGIN.inline });
+	});
+
+	it('is 760 px tall at most, or the window less 40 px above and below', () => {
+		expect(sheetFrame(1440, 900)).toMatchObject({ top: 70, height: SHEET_TALLEST });
+		expect(sheetFrame(768, 1024)).toMatchObject({ top: 132, height: SHEET_TALLEST });
+		expect(sheetFrame(1280, 800)).toMatchObject({ top: SHEET_MARGIN.block, height: 800 - 2 * SHEET_MARGIN.block });
+		expect(sheetFrame(1024, 600)).toMatchObject({ top: 40, height: 520 });
+	});
+
+	it('waits wholly below the window when closed, its shadow too', () => {
+		for (const [w, h] of [
+			[1440, 900],
+			[1920, 1440],
+			[768, 1024]
+		] as const) {
+			const f = sheetFrame(w, h);
+			expect(f.top + f.away).toBeGreaterThan(h + 24);
+		}
+	});
+
+	it('never has a size under nothing', () => {
+		expect(sheetFrame(0, 0)).toMatchObject({ width: 0, height: 0 });
 	});
 });
 
@@ -143,7 +209,7 @@ describe('the sheet', () => {
 		expect(sheet.open).toBe(false);
 	});
 
-	it('goes without a focus to give back when the window narrows under 1024 px', () => {
+	it('goes without a focus to give back when the window narrows under 600 px', () => {
 		const sheet = new ChatSheet();
 		sheet.show(opener());
 		sheet.drop();

@@ -1,9 +1,11 @@
 <script lang="ts">
 	// The web app's shell (MA-199, picked on MA-193; the chat as a sheet, MA-357, picked in MA-355 a 1a): the sidebar
-	// from 1024 px, the page, and the chat. From 1024 px the chat is a sheet over the page at every width, 600 px wide,
-	// the page dimmed and the sidebar not; it opens from the sidebar's Chat, ⌘J on a Mac, a page's Ask or Update, or ⌘K,
-	// and closes on Esc, Close, a click on the dimmed page, its grabber, or ⌘J again, giving the focus back to what opened
-	// it. Under 1024 px the tab bar holds Chat, Home, Assets, Projection and More (Arun, 5 Nov 2026, MA-334). The wealth
+	// from 1024 px, the page, and the chat. From 600 px the chat is a sheet over the page, a window centred in the
+	// browser window (Arun, 25 Nov 2026), 600 px wide, the page dimmed and the sidebar not; it opens from the sidebar's
+	// Chat, the tab bar's Chat under 1024 px, ⌘J on a Mac, a page's Ask or Update, or ⌘K, and closes on Esc, Close, a
+	// click on the dimmed page, its grabber, or ⌘J again, giving the focus back to what opened it. Under 600 px the Chat
+	// tab is the chat's page. Under 1024 px the tab bar holds Chat, Home, Assets, Projection and More (Arun, 5 Nov 2026,
+	// MA-334). The wealth
 	// pages read a stub of the design figure set (MA-208), which the scripted chat's Confirm writes to, and privacy mode
 	// is one switch for every page and the chat. ⌘K, or Search at the top of the sidebar, opens the palette (MA-353).
 	import { goto } from '$app/navigation';
@@ -30,7 +32,7 @@
 	import { applyAppearance } from './appearance.ts';
 	import { AppearanceSetting, provideAppearance } from './appearance.svelte.ts';
 	import NavIcon from './NavIcon.svelte';
-	import { ADMIN, PAGES, TABS, isCurrent, placeOf } from './nav.ts';
+	import { ADMIN, CHAT_TAB, PAGES, TABS, isCurrentTab, placeOf } from './nav.ts';
 	import Palette from './Palette.svelte';
 	import { commandKeyLabel, nextAppearance, type PaletteAction } from './palette.ts';
 	import { PrivacyMode, providePrivacy } from './privacy.svelte.ts';
@@ -43,6 +45,7 @@
 		isMac,
 		pullCloses,
 		pullOffset,
+		sheetFrame,
 		trapIndex,
 		type Focusable
 	} from './sheet.svelte.ts';
@@ -93,13 +96,17 @@
 	provideChat(chat);
 
 	const sheet = new ChatSheet();
-	/** The window is 1024 px or wider: the sidebar shows, and the chat is the sheet. */
+	/** The window is 600 px or wider: the chat is the sheet, centred in the window. */
 	let roomy = $state(false);
+	let innerWidth = $state(0);
+	let innerHeight = $state(0);
+	const frame = $derived(sheetFrame(innerWidth, innerHeight));
 	let pulled = $state(0);
 	let pulling = $state(false);
 	let sheetHeight = $state(0);
 	let sheetEl: HTMLElement | undefined = $state();
 	let chatButton: HTMLButtonElement | undefined = $state();
+	let chatTab: HTMLButtonElement | undefined = $state();
 	let field: HTMLTextAreaElement | undefined = $state();
 	let picker: HTMLInputElement | undefined = $state();
 	let paletteOpen = $state(false);
@@ -136,7 +143,7 @@
 		};
 	});
 
-	// The Chat tab's address, wider than 1024 px: Home, with the sheet open over it.
+	// The Chat tab's address, from 600 px: Home, with the sheet open over it.
 	$effect(() => {
 		if (onChat && roomy) untrack(() => void openSheet(undefined, false));
 	});
@@ -177,8 +184,9 @@
 		pulled = 0;
 		pulling = false;
 		// The page is inert until the sheet's close is drawn, and an inert control takes no focus: give it back after.
+		// With no opener to go back to, the Chat that shows takes it: the sidebar's, or the tab bar's under 1024 px.
 		void tick().then(() => {
-			(back ?? chatButton)?.focus();
+			(back ?? [chatButton, chatTab].find((b) => b && b.getClientRects().length > 0))?.focus();
 		});
 	}
 
@@ -187,7 +195,7 @@
 		else void openSheet(opener, false);
 	}
 
-	/** Brings the chat into view at whatever width the window is: the sheet from 1024 px, the Chat tab under it. */
+	/** Brings the chat into view at whatever width the window is: the sheet from 600 px, the Chat tab under it. */
 	async function showChat(fromPage: boolean) {
 		if (roomy) {
 			await openSheet(document.activeElement, fromPage);
@@ -273,7 +281,7 @@
 	}
 </script>
 
-<svelte:window {onkeydown} />
+<svelte:window {onkeydown} bind:innerWidth bind:innerHeight />
 
 <a
 	href="#main"
@@ -356,6 +364,11 @@
 			class:open
 			class:pulling
 			style:--pull="{pulled}px"
+			style:--away={roomy ? `${String(frame.away)}px` : undefined}
+			style:left={roomy ? `${String(frame.left)}px` : undefined}
+			style:top={roomy ? `${String(frame.top)}px` : undefined}
+			style:width={roomy ? `${String(frame.width)}px` : undefined}
+			style:height={roomy ? `${String(frame.height)}px` : undefined}
 			role={roomy ? 'dialog' : 'region'}
 			aria-modal={roomy ? true : undefined}
 			aria-labelledby={roomy ? 'chat-title' : undefined}
@@ -377,12 +390,38 @@
 			/>
 		</section>
 
-		<nav class="mp-tabbar mp-shell-tabs tabs" aria-label="Sections">
+		<!-- Under the dim while the sheet is open (600 to 1023 px), so out of reach until it closes. -->
+		<nav class="mp-tabbar mp-shell-tabs tabs" aria-label="Sections" inert={open}>
 			{#each TABS as t (t.href)}
-				{@const on = isCurrent(t, path)}
-				<a class="mp-tab" class:on href={resolve(t.href)} data-testid={t.testId} aria-current={on ? 'page' : undefined}>
-					<NavIcon name={t.icon} />{t.label}
-				</a>
+				{@const on = isCurrentTab(t, path, roomy)}
+				{#if t === CHAT_TAB && roomy}
+					<!-- From 600 px the Chat tab opens the sheet over the page it is on, as the sidebar's Chat does. -->
+					<button
+						bind:this={chatTab}
+						type="button"
+						class="mp-tab"
+						class:pr={open}
+						data-testid={t.testId}
+						aria-haspopup="dialog"
+						aria-controls="chat-sheet"
+						aria-expanded={open}
+						onclick={(event: MouseEvent) => {
+							toggleSheet(event.currentTarget as Element);
+						}}
+					>
+						<NavIcon name={t.icon} />{t.label}
+					</button>
+				{:else}
+					<a
+						class="mp-tab"
+						class:on
+						href={resolve(t.href)}
+						data-testid={t.testId}
+						aria-current={on ? 'page' : undefined}
+					>
+						<NavIcon name={t.icon} />{t.label}
+					</a>
+				{/if}
 			{/each}
 		</nav>
 	</div>
