@@ -574,10 +574,10 @@
 	}
 }
 
-/* From 600 px: the chat as a sheet over the page (MA-357, Web v4 · Chat sheet, MA-355 a 1a), a window centred in the
-   browser window across and down (Arun, 25 Nov 2026). The shell sets its frame from sheetFrame() in sheet.svelte.ts:
-   600 px wide (the window less 16 px a side when narrower), as tall as the smaller of 760 px and the window less 40 px
-   above and below, centred even with the sidebar showing (near 1024 px it crosses the sidebar's right edge). It rises
+/* From 600 px: the chat as a sheet over the page (MA-357, Web v4 · Chat sheet, MA-355 a 1a), centred across and down:
+   from 1024 px in the page area beside the sidebar, never over it, and under 1024 px in the window (Arun, 25 Nov 2026).
+   The shell sets its frame from sheetFrame() in sheet.svelte.ts: 600 px wide (the area less 16 px a side when
+   narrower), as tall as the smaller of 760 px and the window less 40 px above and below. It rises
    from the foot of the window on the system sheet curve while the page dims, and closing reverses it; under Reduce
    Motion both cross-fade in place (motion.css keeps only the fades). From 1024 px the dim covers the page, never the
    sidebar (Arun, 25 Nov 2026), so the mark is seen beside the open chat; under 1024 px it covers the page and the tab
