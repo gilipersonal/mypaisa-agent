@@ -23,6 +23,8 @@ export const SHEET_WIDTH = 600;
 export const SHEET_TALLEST = 760;
 /** The least room kept above and below the sheet, and beside it in a window too narrow for its width. */
 export const SHEET_MARGIN = { block: 40, inline: 16 } as const;
+/** The sidebar's width from 1024 px (shell.css draws it): the sheet is centred in the page area beside it. */
+export const SIDEBAR_WIDTH = 248;
 /** How far past the window's foot the closed sheet waits, so its shadow is out of sight too. */
 const AWAY = 48;
 
@@ -35,13 +37,17 @@ export interface SheetFrame {
 	away: number;
 }
 
-/** Where the sheet sits in a window `width` × `height` px: centred in it, across and down, whether or not the sidebar
- * shows (it may cross the sidebar's edge near 1024 px). 600 px wide, or the window less 16 px a side; as tall as the
- * smaller of 760 px and the window less 40 px above and below, so the margin above equals the margin below. */
+/** Where the sheet sits in a window `width` × `height` px, centred across and down: from 1024 px, with the sidebar in
+ * view, in the page area beside the sidebar, never over it (Arun, 25 Nov 2026: "Chat needs to centered inside the
+ * area apart from sidebar"); under 1024 px, with the tab bar, in the window. 600 px wide, or the area less 16 px a
+ * side; as tall as the smaller of 760 px and the window less 40 px above and below, so the margin above equals the
+ * margin below. */
 export function sheetFrame(width: number, height: number): SheetFrame {
-	const w = Math.max(0, Math.min(SHEET_WIDTH, width - 2 * SHEET_MARGIN.inline));
+	const start = width >= SIDEBAR_FROM ? SIDEBAR_WIDTH : 0;
+	const area = width - start;
+	const w = Math.max(0, Math.min(SHEET_WIDTH, area - 2 * SHEET_MARGIN.inline));
 	const h = Math.max(0, Math.min(SHEET_TALLEST, height - 2 * SHEET_MARGIN.block));
-	const left = Math.round((width - w) / 2);
+	const left = start + Math.round((area - w) / 2);
 	const top = Math.round((height - h) / 2);
 	return { left, top, width: w, height: h, away: height - top + AWAY };
 }
