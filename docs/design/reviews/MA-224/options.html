@@ -118,13 +118,31 @@ h2 { margin: 0; font: 700 22px/28px var(--ui); letter-spacing: -0.015em; text-wr
 </div>
 <script>
 (function () {
+  // each tab's board, written here when the page is built; never read back from the page
+  var SRC = {
+    "t-b-0": "app-v1/Web%20v4%20%C2%B7%20Projection.dc.html",
+    "t-b-1": "app-v1/Web%20v4%20%C2%B7%20Budget%20forecast.dc.html",
+    "t-b-2": "app-v1/Web%20v4%20%C2%B7%20Budget%20forecast%201a%20states.dc.html",
+    "t-b-3": "app-v1/Web%20v4%20%C2%B7%20Plans%20in%20the%20chat.dc.html",
+    "t-b-4": "app-v1/Web%20v4%20%C2%B7%20Plans%20in%20the%20chat%202a%20states.dc.html",
+    "t-b-5": "app-v1/Web%20v4%20%C2%B7%20Plans%20tab.dc.html",
+    "t-b-6": "app-v1/Web%20v4%20%C2%B7%20Plans%20tab%203a%20states.dc.html",
+    "t-b-7": "ios-v1/iPhone%20v4%20%C2%B7%20Projection.dc.html",
+    "t-b-8": "ios-v1/iPhone%20v4%20%C2%B7%20Budget%20forecast.dc.html",
+    "t-b-9": "ios-v1/iPhone%20v4%20%C2%B7%20Budget%20forecast%201a%20states.dc.html",
+    "t-b-10": "ios-v1/iPhone%20v4%20%C2%B7%20Plans%20in%20the%20chat.dc.html",
+    "t-b-11": "ios-v1/iPhone%20v4%20%C2%B7%20Plans%20in%20the%20chat%202a%20states.dc.html",
+    "t-b-12": "ios-v1/iPhone%20v4%20%C2%B7%20Plans%20tab.dc.html",
+    "t-b-13": "ios-v1/iPhone%20v4%20%C2%B7%20Plans%20tab%203a%20states.dc.html"
+  };
   document.querySelectorAll('.tabs button').forEach(function (b) {
     b.addEventListener('click', function () {
       var k = b.getAttribute('data-panel'), o = b.getAttribute('data-opt');
       document.querySelectorAll('.tabs button[data-panel="' + k + '"]').forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
       document.querySelectorAll('.opt[data-panel="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-opt') === o); });
       var f = document.getElementById('f-' + k), a = document.getElementById('o-' + k);
-      f.src = b.getAttribute('data-src'); a.href = b.getAttribute('data-src');
+      var s = SRC[b.id];
+      if (s) { f.src = s; a.href = s; }
     });
   });
 })();
