@@ -1,16 +1,49 @@
-/** The chat as a sheet over the page (MA-357, Web v4 · Chat sheet, picked in MA-355 a 1a): from 1024 px the chat is
- * always this sheet, 600 px wide over a dimmed page, never a column beside it and never a drawer; under 1024 px it is
- * the Chat tab. It opens from the sidebar's Chat, ⌘J on a Mac (Windows has no shortcut: Ctrl and J is the browser's
- * Downloads), a page's Ask or Update, or a question typed into ⌘K; it closes on Esc, its close button, a click on the
- * dimmed page, its grabber, and ⌘J again, and the focus goes back to whatever opened it. */
+/** The chat as a sheet over the page (MA-357, Web v4 · Chat sheet, picked in MA-355 a 1a): from 600 px the chat is
+ * always this sheet, a window centred in the browser window over a dimmed page, never a column beside it and never a
+ * drawer; under 600 px it is the Chat tab, a page of its own (Arun, 25 Nov 2026: "I need the chat window to be
+ * centered for web and ipad/tablet layout"). It opens from the sidebar's Chat (from 1024 px), the tab bar's Chat (600
+ * to 1023 px), ⌘J on a Mac (Windows has no shortcut: Ctrl and J is the browser's Downloads), a page's Ask or Update,
+ * or a question typed into ⌘K; it closes on Esc, its close button, a click on the dimmed page, its grabber, and ⌘J
+ * again, and the focus goes back to whatever opened it. */
 
 /** From this window width the chat is the sheet; under it, the Chat tab. */
-export const SHEET_FROM = 1024;
+export const SHEET_FROM = 600;
+/** From this window width the sidebar shows (and the page's dim stops at its edge); under it, the tab bar. */
+export const SIDEBAR_FROM = 1024;
 
 export type ChatPlace = 'sheet' | 'tab';
 
 export function chatPlace(windowWidth: number): ChatPlace {
 	return windowWidth >= SHEET_FROM ? 'sheet' : 'tab';
+}
+
+/** The sheet's width, when the window has room for it. */
+export const SHEET_WIDTH = 600;
+/** The sheet's tallest: room for a conversation, without a tall window stretching it into a column. */
+export const SHEET_TALLEST = 760;
+/** The least room kept above and below the sheet, and beside it in a window too narrow for its width. */
+export const SHEET_MARGIN = { block: 40, inline: 16 } as const;
+/** How far past the window's foot the closed sheet waits, so its shadow is out of sight too. */
+const AWAY = 48;
+
+export interface SheetFrame {
+	left: number;
+	top: number;
+	width: number;
+	height: number;
+	/** How far down the sheet moves to be out of the window when it is closed. */
+	away: number;
+}
+
+/** Where the sheet sits in a window `width` × `height` px: centred in it, across and down, whether or not the sidebar
+ * shows (it may cross the sidebar's edge near 1024 px). 600 px wide, or the window less 16 px a side; as tall as the
+ * smaller of 760 px and the window less 40 px above and below, so the margin above equals the margin below. */
+export function sheetFrame(width: number, height: number): SheetFrame {
+	const w = Math.max(0, Math.min(SHEET_WIDTH, width - 2 * SHEET_MARGIN.inline));
+	const h = Math.max(0, Math.min(SHEET_TALLEST, height - 2 * SHEET_MARGIN.block));
+	const left = Math.round((width - w) / 2);
+	const top = Math.round((height - h) / 2);
+	return { left, top, width: w, height: h, away: height - top + AWAY };
 }
 
 export function isMac(platform: string): boolean {
@@ -93,7 +126,7 @@ export class ChatSheet {
 		return undefined;
 	}
 
-	/** The window went under 1024 px: the sheet goes, and nothing takes the focus back (the Chat tab is the chat). */
+	/** The window went under 600 px: the sheet goes, and nothing takes the focus back (the Chat tab is the chat). */
 	drop(): void {
 		this.open = false;
 		this.#opener = undefined;

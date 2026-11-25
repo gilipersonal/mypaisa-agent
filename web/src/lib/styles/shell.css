@@ -1,9 +1,10 @@
 /* The shell and the chat (MA-199, MA-357), ported from the picked boards' own rules (docs/design/app-v1/Web v4 · Shell and
    chat.dc.html, Shell 1a and the chat's states; Web v4 · Chat sheet.dc.html, MA-355 a 1a) so the build draws what the
    boards draw. Every colour is a DS v1 token; the adaptive shell, the sidebar and the tab bar are tokens.css's. The
-   board's frame is .mp-app, a size container: the window decides, never the device. From 1024 px the chat is a sheet
-   over the page at every width, opened from the sidebar's Chat; under 1024 px it is the Chat tab (Arun, 25 Nov 2026,
-   MA-355 a 1a: never a column beside the page, never a drawer). */
+   board's frame is .mp-app, a size container: the window decides, never the device. From 600 px the chat is a sheet
+   over the page, centred in the window, opened from the sidebar's Chat or, under 1024 px, the tab bar's; under 600 px
+   it is the Chat tab (Arun, 25 Nov 2026, MA-355 a 1a: never a column beside the page, never a drawer; and "I need the
+   chat window to be centered for web and ipad/tablet layout"). */
 
 .mp-root {
 	height: 100dvh;
@@ -52,7 +53,8 @@
 .tabs .mp-tab:not(.on) {
 	color: var(--mp-ink-2);
 }
-.mp-side-i.pr {
+.mp-side-i.pr,
+.tabs .mp-tab.pr {
 	color: var(--mp-accent);
 	font-weight: 600;
 } /* Chat while its sheet is open: pressed, the page stays current */
@@ -104,7 +106,7 @@
 	animation-duration: 150ms !important;
 }
 
-/* the chat: the sheet from 1024 px, the Chat tab under it; nowhere else */
+/* the chat: the sheet from 600 px, the Chat tab under it; nowhere else */
 .csheet {
 	display: none;
 	flex-direction: column;
@@ -559,8 +561,8 @@
 	white-space: nowrap;
 }
 
-/* under 1024 px the Chat tab is the page */
-@container app (max-width: 1023px) {
+/* under 600 px the Chat tab is the page */
+@container app (max-width: 599px) {
 	.v-chat .main {
 		display: none;
 	}
@@ -572,32 +574,29 @@
 	}
 }
 
-/* From 1024 px: the chat as a sheet over the page (MA-357, Web v4 · Chat sheet, MA-355 a 1a). 600 px wide, 56 px from
-   the top and 20 px from the foot of the window, centred in it; under about 1120 px it stops 12 px clear of the
-   sidebar instead (260 px from the left), so at 1024 it runs from 260 to 860. It rises from the foot of the window on
-   the system sheet curve while the page dims, and closing reverses it; under Reduce Motion both cross-fade in place
-   (motion.css keeps only the fades). The dim covers the page, never the sidebar (Arun, 25 Nov 2026), so the mark is
-   seen beside the open chat. */
+/* From 600 px: the chat as a sheet over the page (MA-357, Web v4 · Chat sheet, MA-355 a 1a), a window centred in the
+   browser window across and down (Arun, 25 Nov 2026). The shell sets its frame from sheetFrame() in sheet.svelte.ts:
+   600 px wide (the window less 16 px a side when narrower), as tall as the smaller of 760 px and the window less 40 px
+   above and below, centred even with the sidebar showing (near 1024 px it crosses the sidebar's right edge). It rises
+   from the foot of the window on the system sheet curve while the page dims, and closing reverses it; under Reduce
+   Motion both cross-fade in place (motion.css keeps only the fades). From 1024 px the dim covers the page, never the
+   sidebar (Arun, 25 Nov 2026), so the mark is seen beside the open chat; under 1024 px it covers the page and the tab
+   bar. */
 .scrim {
 	display: none;
 }
-@container app (min-width: 1024px) {
+@container app (min-width: 600px) {
 	.csheet {
 		display: flex;
 		position: absolute;
 		z-index: 8;
-		top: 56px;
-		bottom: 20px;
-		left: max(260px, calc(50% - 300px));
-		width: 600px;
-		max-width: calc(100% - 284px);
 		box-sizing: border-box;
 		overflow: hidden;
 		border-radius: 28px;
 		box-shadow:
 			0 0 0 1px var(--mp-line),
 			var(--mp-shadow);
-		transform: translateY(calc(100% + 96px));
+		transform: translateY(var(--away, 100dvh));
 		pointer-events: none;
 		transition: transform var(--mo-slow) var(--mo-sheet);
 	}
@@ -611,7 +610,6 @@
 	.scrim {
 		display: block;
 		z-index: 7;
-		left: 248px; /* the sidebar's width: the page dims, the sidebar stays at full strength */
 		opacity: 0;
 		pointer-events: none;
 		cursor: pointer;
@@ -624,9 +622,21 @@
 	.scrim.pulling {
 		transition: none;
 	}
+	/* the suggestions wrap inside the sheet, every one whole: never cut at its right edge */
+	.csheet .sugg {
+		flex-wrap: wrap;
+		overflow: visible;
+		-webkit-mask-image: none;
+		mask-image: none;
+	}
+}
+@container app (min-width: 1024px) {
+	.scrim {
+		left: 248px; /* the sidebar's width: the page dims, the sidebar stays at full strength */
+	}
 }
 @media (prefers-reduced-motion: reduce) {
-	@container app (min-width: 1024px) {
+	@container app (min-width: 600px) {
 		.csheet:not(.open) {
 			transform: none;
 			opacity: 0;

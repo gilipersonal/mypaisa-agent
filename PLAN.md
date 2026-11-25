@@ -1032,10 +1032,10 @@ arrives from phase 2.
   record or ask, its first row sending the question to the chat; nothing is
   created in it (MA-301 g 1a). Found while building MA-199, which leaves the
   sidebar's Search row to it.
-- **The web chat as a sheet (MA-357):** from 1024 px the web app's chat opens
-  over the page as the iPad's does, 600 px wide and centred with the page
-  dimmed behind it, at every desktop width and never as a column beside the
-  page; from the sidebar's Chat, a page's Ask or Update, or `⌘J` on a Mac;
+- **The web chat as a sheet (MA-357):** from 600 px the web app's chat opens
+  over the page as the iPad's does, 600 px wide and centred in the window both
+  ways with the page dimmed behind it, at desktop and tablet widths and never
+  as a column beside the page (centred, Arun, 25 Nov 2026); from the sidebar's Chat, a page's Ask or Update, or `⌘J` on a Mac;
   closed by Esc, its close button, its grabber or a click outside. Picked on
   MA-355 (a 1a); it supersedes MA-301's column from 1393 and drawer below it.
 - **The mark moves when MyPaisa works (MA-360):** it arrives once when the app
