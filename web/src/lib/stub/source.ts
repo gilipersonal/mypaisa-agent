@@ -4,9 +4,12 @@ import type { WealthSource } from '#lib/api/wealth.ts';
 import type { BudgetForecast } from '#lib/wealth/forecast.ts';
 import type { DisplayCurrency, Overview } from '#lib/wealth/overview.ts';
 import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '#lib/wealth/projection.ts';
+import type { PlanChange, Plans } from '#lib/wealth/plans.ts';
 import type { StubHousehold } from './household.ts';
 import { buildOverview } from './overview.ts';
 import { buildBudgetForecast, type ForecastRun } from './forecast.ts';
+import { setPlanStatus } from './plan-state.ts';
+import { buildPlans } from './plans.ts';
 import { buildProjection, correctProjection } from './projection.ts';
 
 export class StubWealthSource implements WealthSource {
@@ -42,6 +45,19 @@ export class StubWealthSource implements WealthSource {
 		// A refusal thrown here is the promise's rejection, as the api's 403 or 422 would be.
 		return new Promise<void>((resolve) => {
 			correctProjection(this.household, correction, this.now());
+			resolve();
+		});
+	}
+
+	/** The Plans view (MA-222): worked out from the plans as they stand; its middle path is a stored run of the
+	 * figure set's, where it holds one for them (`./plans.ts`). */
+	plans(horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency): Promise<Plans> {
+		return Promise.resolve(buildPlans(this.household, horizon, money, currency));
+	}
+
+	changePlan(change: PlanChange): Promise<void> {
+		return new Promise<void>((resolve) => {
+			setPlanStatus(this.household, change, this.now());
 			resolve();
 		});
 	}

@@ -31,6 +31,7 @@ import type {
 import { dayLabel, dayParts, shortDay } from './dates.ts';
 import plans from './future-plans.json';
 import type { RecordCurrency, StubCorrection, StubHousehold, StubPlanItem } from './household.ts';
+import { addedPlanItems, correctPlan, isPlanPart, movedSetItem, standingPlans, statusOf } from './plan-state.ts';
 
 const RUN = plans.R26;
 const RATE_DAY = 'Fri 23 Oct';
@@ -55,7 +56,7 @@ const MONTHS = [
 ];
 
 /** Which years the axis names at each horizon, and which of them a narrow chart leaves out (board P8). */
-const AXIS: Record<Horizon, { at: number[]; minor: number[] }> = {
+export const AXIS: Record<Horizon, { at: number[]; minor: number[] }> = {
 	5: { at: [0, 1, 2, 3, 4, 5], minor: [1, 2, 4] },
 	10: { at: [0, 5, 10], minor: [] },
 	20: { at: [0, 5, 10, 15, 20], minor: [5, 15] },
@@ -264,7 +265,11 @@ export function lineLabel(amount: number, currency: DisplayCurrency): string {
 }
 
 /** A year's figure in the money and currency asked for, `n` years on. Pounds of each year are the run's own. */
-function converter(h: StubHousehold, money: MoneyBasis, currency: DisplayCurrency): (v: number, n: number) => number {
+export function converter(
+	h: StubHousehold,
+	money: MoneyBasis,
+	currency: DisplayCurrency
+): (v: number, n: number) => number {
 	const { UK, IN } = h.projection.inflation;
 	if (currency === 'GBP') return money === 'nominal' ? (v) => v : (v, n) => roundTo(v / (1 + UK) ** n, 1000);
 	// The engine drifts the rate by the inflation gap, so at today's prices the rupee figure is the pound figure at
@@ -462,6 +467,8 @@ export function buildProjection(
 	const me = h.member(h.me);
 	const admin = h.members.find((m) => m.admin)?.name ?? '';
 	const canEdit = me?.admin === true;
+	// The set's plan items as they stand on the Plans view (MA-222): moved, paused or ended there; an ended one is gone.
+	const setItems = h.projection.plan_items.filter((p) => statusOf(h, p.id) !== 'ended').map((p) => movedSetItem(h, p));
 	const labelled = horizon === 30 ? LABELLED.far : currency === 'INR' ? [] : LABELLED.near;
 	const editable = <T extends object>(x: { view: T; standing: Standing }): T =>
 		canEdit ? { ...x.view, edit: x.standing.spec } : x.view;
@@ -487,9 +494,14 @@ export function buildProjection(
 			...(look.label && labelled.includes(m.when) ? { label: look.label } : {})
 		})),
 		// A one-off plan item is a square on the line at its month; a recurring one has no single place.
-		...h.projection.plan_items
+		...setItems
 			.filter((p) => !p.repeat)
 			.map((p) => ({ id: p.id, shape: 'square' as const, at: yearsTo(h.today, p.when) }))
+			.filter(({ at }) => at <= horizon),
+		// A plan item the chat added is a square where it starts (MA-222).
+		...standingPlans(h)
+			.filter((p) => !p.fromSet && p.status !== 'ended')
+			.map((p) => ({ id: p.id, shape: 'square' as const, at: yearsTo(h.today, p.start) }))
 			.filter(({ at }) => at <= horizon)
 	];
 
@@ -521,7 +533,13 @@ export function buildProjection(
 		milestones,
 		plan: {
 			aside: canEdit ? 'yours to change, as an admin' : `${admin}’s, the admin’s`,
-			items: h.projection.plan_items.map((p) => editable(planItem(h, p))),
+			items: [
+				...setItems.map((p) => {
+					const item = editable(planItem(h, p));
+					return statusOf(h, p.id) === 'paused' ? { ...item, when: `${item.when} · paused, not counted` } : item;
+				}),
+				...addedPlanItems(h)
+			],
 			canAdd: canEdit,
 			...(canEdit
 				? {}
@@ -545,6 +563,11 @@ export function buildProjection(
 /** Keeps an admin's correction in place, as the write service would: checked, then recorded with its audit line. The
  * stored run is not run again (see the note at the top), so the next read shows the corrected row and the same fan. */
 export function correctProjection(h: StubHousehold, correction: ProjectionCorrection, at: Date): void {
+	// A plan figure the Plans view keeps (its start, end, a flow's amount; MA-222) is corrected there.
+	if (isPlanPart(h, correction)) {
+		correctPlan(h, correction, at);
+		return;
+	}
 	const who = h.member(h.me);
 	if (who?.admin !== true) throw new Error('Only an admin corrects a figure of the Projection.');
 	const standing =

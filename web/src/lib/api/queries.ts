@@ -5,6 +5,7 @@ import { emptyTimeline, type Timeline } from '../chat/timeline.ts';
 import type { BudgetForecast } from '../wealth/forecast.ts';
 import type { DisplayCurrency, Overview } from '../wealth/overview.ts';
 import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '../wealth/projection.ts';
+import type { PlanChange, Plans } from '../wealth/plans.ts';
 import { toApiError, type ApiClient } from './client.ts';
 import type { WealthSource } from './wealth.ts';
 
@@ -35,6 +36,9 @@ export const wealthKeys = {
 	projection: (horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency) =>
 		['wealth', 'projection', horizon, money, currency] as const,
 	correctProjection: ['wealth', 'projection', 'correct'] as const,
+	plans: (horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency) =>
+		['wealth', 'plans', horizon, money, currency] as const,
+	changePlan: ['wealth', 'plans', 'change'] as const,
 	budgetForecast: (horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency, year: number | undefined) =>
 		['wealth', 'forecast', horizon, money, currency, year ?? 'first'] as const
 };
@@ -60,6 +64,22 @@ export function correctProjectionMutation(source: WealthSource) {
 	return {
 		mutationKey: wealthKeys.correctProjection,
 		mutationFn: (correction: ProjectionCorrection): Promise<void> => source.correctProjection(correction)
+	};
+}
+
+/** The Projection's Plans view (MA-222): one entry for each horizon, money and currency a member looks at. */
+export function plansQuery(source: WealthSource, horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency) {
+	return {
+		queryKey: wealthKeys.plans(horizon, money, currency),
+		queryFn: (): Promise<Plans> => source.plans(horizon, money, currency)
+	};
+}
+
+/** An admin's pause, resume or end of a plan item. Whoever runs it reads the wealth again once it is kept. */
+export function changePlanMutation(source: WealthSource) {
+	return {
+		mutationKey: wealthKeys.changePlan,
+		mutationFn: (change: PlanChange): Promise<void> => source.changePlan(change)
 	};
 }
 

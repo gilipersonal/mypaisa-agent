@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { correctProjectionMutation, overviewQuery, projectionQuery, wealthKeys } from '#lib/api/queries.ts';
+import {
+	changePlanMutation,
+	correctProjectionMutation,
+	overviewQuery,
+	plansQuery,
+	projectionQuery,
+	wealthKeys
+} from '#lib/api/queries.ts';
 import { StubHousehold } from './household.ts';
 import { monzoSavings } from './records.ts';
 import { StubWealthSource, signedInAs, startsEmpty } from './source.ts';
@@ -47,6 +54,23 @@ describe('the stub behind the wealth seam', () => {
 		await expect(arun.correctProjection({ target: 'plan', id: 'bonus', value: 'more' })).rejects.toThrow(
 			/Not a new value/
 		);
+	});
+
+	it('answers the Plans view, and pauses, resumes and ends a plan for an admin only (MA-222)', async () => {
+		const h = new StubHousehold();
+		const source = new StubWealthSource(h, () => new Date('2026-10-26T10:40:00'));
+		const query = plansQuery(source, 20, 'nominal', 'GBP');
+		expect(query.queryKey).toEqual(['wealth', 'plans', 20, 'nominal', 'GBP']);
+		expect(query.queryKey.slice(0, 1)).toEqual([...wealthKeys.all]);
+		expect((await query.queryFn()).timeline.rows).toHaveLength(3);
+		const mutation = changePlanMutation(source);
+		expect(mutation.mutationKey).toEqual(['wealth', 'plans', 'change']);
+		await mutation.mutationFn({ id: 'car2', action: 'pause' });
+		expect((await query.queryFn()).banner?.kind).toBe('pause');
+		await source.correctProjection({ target: 'plan', id: 'car2', value: 'Jun 2032', part: 'start' });
+		expect((await query.queryFn()).timeline.rows.find((r) => r.id === 'car2')?.sub).toBe('−£25,000 once, Jun 2032');
+		const asha = new StubWealthSource(new StubHousehold({ me: 'asha' }));
+		await expect(asha.changePlan({ id: 'car2', action: 'end' })).rejects.toThrow(/Only an admin ends/);
 	});
 
 	it('opens as another member only when the address asks for it', () => {

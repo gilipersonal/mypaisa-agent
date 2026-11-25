@@ -10,6 +10,7 @@ import { formatMoney } from '#lib/formatting/money.ts';
 import type { StubHousehold } from '#lib/stub/household.ts';
 import { monzoSavings } from '#lib/stub/records.ts';
 import type { CheckInScript } from './checkins.ts';
+import { PlanScript } from './plans.ts';
 import type { CardAction, ChatTransport, Outgoing } from './transport.ts';
 
 export interface Clock {
@@ -63,6 +64,17 @@ export class FakeTransport implements ChatTransport {
 	#cancels = new Map<string, () => void>();
 	#drafts = new Map<string, Draft>();
 	#seq = 0;
+	/** MA-222: a plan item made by talking, in its own script (`./plans.ts`). */
+	#plans = new PlanScript({
+		emit: (event, data) => {
+			this.#emit(event, data);
+		},
+		after: (key, fn) => {
+			this.#after(key, fn);
+		},
+		now: () => this.clock.now(),
+		household: () => this.household
+	});
 
 	constructor(
 		private readonly clock: Clock = realClock,
@@ -113,6 +125,7 @@ export class FakeTransport implements ChatTransport {
 	}
 
 	choose(messageId: string, chipId: string): Promise<void> {
+		if (this.#plans.choose(messageId, chipId)) return Promise.resolve();
 		const draft = this.#drafts.get(messageId);
 		const chip = WHOSE.find((c) => c.id === chipId);
 		if (!draft || !chip) return Promise.resolve();
@@ -127,6 +140,7 @@ export class FakeTransport implements ChatTransport {
 	}
 
 	tap(cardId: string, action: CardAction): Promise<void> {
+		if (this.#plans.tap(cardId, action)) return Promise.resolve();
 		// MA-205: a check-in card, or a step of its short flow, is the script's own.
 		if (this.checkIns?.owns(cardId)) {
 			this.checkIns.tap(cardId, action);
@@ -181,6 +195,7 @@ export class FakeTransport implements ChatTransport {
 			this.#emit('reading', { turn_id: id, text: 'Reading it…', meta: READING_META });
 			return;
 		}
+		if (this.#plans.answer(message)) return;
 		const text = message.text.trim();
 		// MA-205: an amount a check-in's short flow asked for.
 		if (this.checkIns?.takeText(text)) return;

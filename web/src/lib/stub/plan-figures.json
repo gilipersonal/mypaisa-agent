@@ -1,0 +1,561 @@
+{
+	"about": "The plan items' figures (MA-222): an extract of docs/design/figures/future-plans-v4.json, each key equal to the source's, held so by stub/plans.test.ts. The plans as the chat makes them, the engine's impact of the school fees, the salary step and the HDFC closure as the set stored them, the floor gap they leave, and the run with the fees saved (R1). Illustrative.",
+	"settings": {
+		"floor_gbp_month": 500
+	},
+	"plans": {
+		"existing": [
+			{
+				"id": "extension",
+				"what": "Home extension",
+				"effect": "new_flow",
+				"type": "spend",
+				"member_id": "arun",
+				"category": "Home",
+				"one_off": true,
+				"start": "2027-06",
+				"amount": 35000,
+				"ccy": "GBP",
+				"growth": null,
+				"funded_from": null,
+				"source_text": "A £35,000 extension next June",
+				"status": "active",
+				"version": 1,
+				"created": "Sun 25 Oct 20:09"
+			},
+			{
+				"id": "bonus",
+				"what": "Asha's annual bonus",
+				"effect": "new_flow",
+				"type": "income",
+				"member_id": "asha",
+				"category": "Income",
+				"recurring": "yearly",
+				"start": "2027-03",
+				"end": "2052-03",
+				"amount": 3000,
+				"ccy": "GBP",
+				"growth": {
+					"kind": "fixed",
+					"pct": 0.035
+				},
+				"source_text": "Add Asha's bonus to the plan: £3,000 every March from 2027 to 2052",
+				"status": "active",
+				"version": 2,
+				"created": "Sun 25 Oct 20:15",
+				"corrected": "Mon 26 Oct 10:44, growth none → 3.5% a year (the v4 Projection boards, P7)"
+			},
+			{
+				"id": "car2",
+				"what": "Replace the car",
+				"effect": "new_flow",
+				"type": "spend",
+				"member_id": "arun",
+				"category": "Transport",
+				"one_off": true,
+				"start": "2031-06",
+				"amount": 25000,
+				"ccy": "GBP",
+				"growth": null,
+				"funded_from": null,
+				"source_text": "New car around June 2031, £25k",
+				"status": "active",
+				"version": 1,
+				"created": "Sun 25 Oct 20:12"
+			}
+		],
+		"schooling": {
+			"id": "schooling",
+			"what": "School fees",
+			"effect": "new_flow",
+			"type": "spend",
+			"member_id": "arun",
+			"for_member": null,
+			"for_note": "your kid (not a member)",
+			"category": "Education",
+			"recurring": "monthly",
+			"start": "2029-01",
+			"end": "2041-07",
+			"amount": 4000,
+			"ccy": "GBP",
+			"growth": {
+				"kind": "prior",
+				"key": "UK school fees",
+				"pct": 0.045
+			},
+			"funded_from": null,
+			"source_text": "£4,000 a month from Jan 2029 for my kid's schooling",
+			"status": "active",
+			"version": 1
+		},
+		"salary_step": {
+			"id": "salary_step",
+			"what": "Arun's salary steps up",
+			"effect": "change_flow",
+			"type": "income",
+			"member_id": "arun",
+			"category": "Income",
+			"start": "2028-09",
+			"amount": 5500,
+			"ccy": "GBP",
+			"target_ref": {
+				"commitment": "Salary · Arun",
+				"how": "set to"
+			},
+			"growth": {
+				"kind": "member",
+				"pct": 0.048,
+				"note": "his own growth, from the next April"
+			},
+			"source_text": "my salary goes to £5,500 a month from Sep 2028",
+			"status": "active",
+			"version": 1
+		},
+		"hdfc_close": {
+			"id": "hdfc_close",
+			"what": "Close the HDFC home loan",
+			"effect": "record_event",
+			"type": "spend",
+			"member_id": "arun",
+			"category": "Debt",
+			"start": "2029-03",
+			"one_off_event": true,
+			"ccy": "INR",
+			"target_ref": {
+				"record": "Home loan · HDFC (Pune flat)",
+				"how": "prepay the balance"
+			},
+			"funded_from": "Fixed deposit · SBI, at maturity",
+			"source_text": "close my HDFC loan with the SBI FD when it matures",
+			"status": "active",
+			"version": 1
+		}
+	},
+	"conversation": [
+		{
+			"t": "20:41",
+			"who": "Arun",
+			"says": "£4,000 a month from Jan 2029 for my kid's schooling"
+		},
+		{
+			"t": "20:41",
+			"who": "MyPaisa",
+			"asks": [
+				{
+					"slot": "until when",
+					"q": "Until when?",
+					"chips": ["Jul 2041", "For 10 years", "No end date"],
+					"answer": "Jul 2041"
+				},
+				{
+					"slot": "how it grows",
+					"q": "How do the fees grow?",
+					"chips": ["4.5% a year, UK school fees", "No growth", "Another rate"],
+					"answer": "4.5% a year, UK school fees"
+				},
+				{
+					"slot": "paid from where",
+					"q": "Paid from where?",
+					"chips": ["The monthly budget", "A pool you name"],
+					"answer": "The monthly budget"
+				}
+			],
+			"known": {
+				"amount": "£4,000 a month",
+				"from": "Jan 2029",
+				"whose": "the household's, paid by Arun's budget",
+				"for": "your kid (not a member)",
+				"category": "Education, new"
+			}
+		},
+		{
+			"t": "20:42",
+			"who": "MyPaisa",
+			"card": "impact"
+		},
+		{
+			"t": "20:43",
+			"who": "Arun",
+			"taps": "Confirm",
+			"audit": "Plan item added · School fees, £4,000 a month from Jan 2029 to Jul 2041, 4.5% a year · Arun · Thu 5 Nov 20:43 · in the chat · 2046 middle path −£1,107,000"
+		},
+		{
+			"t": "20:43",
+			"who": "MyPaisa",
+			"card": "rearrange"
+		},
+		{
+			"t": "20:46",
+			"who": "Arun",
+			"taps": "Confirm option 1",
+			"audit": [
+				"Plan item added · School fees pot, £690 a month from Nov 2026 to Dec 2028, drawn from Jan 2029 · Arun · Thu 5 Nov 20:46 · in the chat · Undo",
+				"November's budget changed · School fees pot £690 added; planned surplus £2,636 → £1,946 · Arun · Thu 5 Nov 20:46 · in the chat · Undo"
+			]
+		},
+		{
+			"t": "20:52",
+			"who": "Arun",
+			"says": "my salary goes to £5,500 a month from Sep 2028"
+		},
+		{
+			"t": "20:58",
+			"who": "Arun",
+			"says": "close my HDFC loan with the SBI FD when it matures"
+		}
+	],
+	"impact": {
+		"plan": "schooling",
+		"middle_path_before": {
+			"2031": 855000,
+			"2036": 1501000,
+			"2046": 3548000
+		},
+		"middle_path_after": {
+			"2031": 698000,
+			"2036": 996000,
+			"2046": 2441000
+		},
+		"change": {
+			"2031": -157000,
+			"2036": -505000,
+			"2046": -1107000
+		},
+		"surplus_by_year_before": {
+			"2027": 36379,
+			"2028": 39738,
+			"2029": 46715,
+			"2030": 52671,
+			"2031": 59007,
+			"2032": 62919,
+			"2033": 67015,
+			"2034": 71303,
+			"2035": 75794,
+			"2036": 80497,
+			"2037": 85421,
+			"2038": 90577,
+			"2039": 95977,
+			"2040": 101629,
+			"2041": 107548,
+			"2042": 113745,
+			"2043": 120233,
+			"2044": 127026,
+			"2045": 138466,
+			"2046": 159064
+		},
+		"surplus_by_year_after": {
+			"2027": 36379,
+			"2028": 39738,
+			"2029": -1285,
+			"2030": 2511,
+			"2031": 6590,
+			"2032": 8143,
+			"2033": 9774,
+			"2034": 11486,
+			"2035": 13286,
+			"2036": 15176,
+			"2037": 17160,
+			"2038": 19244,
+			"2039": 21434,
+			"2040": 23732,
+			"2041": 60063,
+			"2042": 113745,
+			"2043": 120233,
+			"2044": 127026,
+			"2045": 138466,
+			"2046": 159064
+		},
+		"below_floor_months": 50,
+		"first_below_floor": "Jan 2029",
+		"last_below_floor": "Feb 2035",
+		"lowest_month": "Jan 2029",
+		"lowest_surplus": -903,
+		"cash_negative": null,
+		"new_milestones": [
+			{
+				"when": "2029-01",
+				"what": "School fees start",
+				"amount": "£4,000 a month"
+			},
+			{
+				"when": "2041-07",
+				"what": "School fees end",
+				"frees": "£6,784 a month"
+			}
+		]
+	},
+	"later": {
+		"salary_step": {
+			"middle_path_before": {
+				"2031": 698000,
+				"2036": 996000,
+				"2046": 2441000
+			},
+			"middle_path_after": {
+				"2031": 731000,
+				"2036": 1095000,
+				"2046": 2762000
+			},
+			"arun_take_home_aug_2028": 4778,
+			"set_to": 5500
+		},
+		"hdfc_close": {
+			"balance_mar_2029_inr": 593849,
+			"fd_inr": 617538,
+			"middle_path_before": {
+				"2031": 731000,
+				"2036": 1095000,
+				"2046": 2762000
+			},
+			"middle_path_after": {
+				"2031": 731000,
+				"2036": 1095000,
+				"2046": 2762000
+			},
+			"left_over_inr": 23689,
+			"frees_inr_a_month": 39390,
+			"emis_saved": 16
+		}
+	},
+	"rearrange": {
+		"gap_total": 19058,
+		"gap_by_year": {
+			"2029": 9090,
+			"2030": 5520,
+			"2031": 2326,
+			"2032": 1001,
+			"2033": 614,
+			"2034": 377,
+			"2035": 128
+		},
+		"first": "Jan 2029",
+		"last": "Feb 2035",
+		"months": 50
+	},
+	"runs": {
+		"R1": {
+			"when": "Thu 5 Nov 20:43",
+			"after": "School fees saved",
+			"plans": ["extension", "bonus", "car2", "schooling"],
+			"fan": [
+				{
+					"year": 2026,
+					"p10": 459000,
+					"p50": 468000,
+					"p90": 477000,
+					"deterministic": 469000
+				},
+				{
+					"year": 2027,
+					"p10": 452000,
+					"p50": 511000,
+					"p90": 562000,
+					"deterministic": 513000
+				},
+				{
+					"year": 2028,
+					"p10": 518000,
+					"p50": 598000,
+					"p90": 677000,
+					"deterministic": 597000
+				},
+				{
+					"year": 2029,
+					"p10": 532000,
+					"p50": 633000,
+					"p90": 741000,
+					"deterministic": 639000
+				},
+				{
+					"year": 2030,
+					"p10": 557000,
+					"p50": 681000,
+					"p90": 806000,
+					"deterministic": 684000
+				},
+				{
+					"year": 2031,
+					"p10": 548000,
+					"p50": 698000,
+					"p90": 854000,
+					"deterministic": 708000
+				},
+				{
+					"year": 2032,
+					"p10": 570000,
+					"p50": 750000,
+					"p90": 934000,
+					"deterministic": 759000
+				},
+				{
+					"year": 2033,
+					"p10": 611000,
+					"p50": 796000,
+					"p90": 997000,
+					"deterministic": 814000
+				},
+				{
+					"year": 2034,
+					"p10": 657000,
+					"p50": 861000,
+					"p90": 1071000,
+					"deterministic": 873000
+				},
+				{
+					"year": 2035,
+					"p10": 704000,
+					"p50": 927000,
+					"p90": 1155000,
+					"deterministic": 936000
+				},
+				{
+					"year": 2036,
+					"p10": 737000,
+					"p50": 996000,
+					"p90": 1234000,
+					"deterministic": 1004000
+				},
+				{
+					"year": 2037,
+					"p10": 802000,
+					"p50": 1040000,
+					"p90": 1344000,
+					"deterministic": 1076000
+				},
+				{
+					"year": 2038,
+					"p10": 859000,
+					"p50": 1104000,
+					"p90": 1425000,
+					"deterministic": 1154000
+				},
+				{
+					"year": 2039,
+					"p10": 899000,
+					"p50": 1194000,
+					"p90": 1529000,
+					"deterministic": 1236000
+				},
+				{
+					"year": 2040,
+					"p10": 971000,
+					"p50": 1261000,
+					"p90": 1655000,
+					"deterministic": 1325000
+				},
+				{
+					"year": 2041,
+					"p10": 1064000,
+					"p50": 1395000,
+					"p90": 1829000,
+					"deterministic": 1453000
+				},
+				{
+					"year": 2042,
+					"p10": 1250000,
+					"p50": 1586000,
+					"p90": 2057000,
+					"deterministic": 1641000
+				},
+				{
+					"year": 2043,
+					"p10": 1422000,
+					"p50": 1792000,
+					"p90": 2337000,
+					"deterministic": 1841000
+				},
+				{
+					"year": 2044,
+					"p10": 1613000,
+					"p50": 1990000,
+					"p90": 2550000,
+					"deterministic": 2056000
+				},
+				{
+					"year": 2045,
+					"p10": 1807000,
+					"p50": 2223000,
+					"p90": 2850000,
+					"deterministic": 2286000
+				},
+				{
+					"year": 2046,
+					"p10": 2043000,
+					"p50": 2441000,
+					"p90": 3118000,
+					"deterministic": 2531000
+				},
+				{
+					"year": 2047,
+					"p10": 2282000,
+					"p50": 2708000,
+					"p90": 3358000,
+					"deterministic": 2792000
+				},
+				{
+					"year": 2048,
+					"p10": 2531000,
+					"p50": 2946000,
+					"p90": 3611000,
+					"deterministic": 3071000
+				},
+				{
+					"year": 2049,
+					"p10": 2779000,
+					"p50": 3225000,
+					"p90": 4046000,
+					"deterministic": 3367000
+				},
+				{
+					"year": 2050,
+					"p10": 3064000,
+					"p50": 3540000,
+					"p90": 4437000,
+					"deterministic": 3683000
+				},
+				{
+					"year": 2051,
+					"p10": 3177000,
+					"p50": 3707000,
+					"p90": 4601000,
+					"deterministic": 3849000
+				},
+				{
+					"year": 2052,
+					"p10": 3299000,
+					"p50": 3888000,
+					"p90": 4885000,
+					"deterministic": 4024000
+				},
+				{
+					"year": 2053,
+					"p10": 3335000,
+					"p50": 3922000,
+					"p90": 4954000,
+					"deterministic": 4105000
+				},
+				{
+					"year": 2054,
+					"p10": 3366000,
+					"p50": 4016000,
+					"p90": 5020000,
+					"deterministic": 4188000
+				},
+				{
+					"year": 2055,
+					"p10": 3411000,
+					"p50": 4118000,
+					"p90": 5199000,
+					"deterministic": 4273000
+				},
+				{
+					"year": 2056,
+					"p10": 3453000,
+					"p50": 4169000,
+					"p90": 5213000,
+					"deterministic": 4359000
+				}
+			]
+		}
+	}
+}

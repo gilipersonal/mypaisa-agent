@@ -35,7 +35,8 @@
 
 	function save(event: SubmitEvent) {
 		event.preventDefault();
-		if (ready && value !== undefined) onSave({ target: spec.target, id: spec.id, value });
+		if (ready && value !== undefined)
+			onSave({ target: spec.target, id: spec.id, value, ...(spec.part ? { part: spec.part } : {}) });
 	}
 
 	function onkeydown(event: KeyboardEvent) {
@@ -58,7 +59,7 @@
 			bind:this={field}
 			bind:value={typed}
 			type="text"
-			inputmode="decimal"
+			inputmode={spec.kind === 'month' ? 'text' : 'decimal'}
 			autocomplete="off"
 			spellcheck="false"
 			aria-labelledby="{uid}-t {uid}-f"

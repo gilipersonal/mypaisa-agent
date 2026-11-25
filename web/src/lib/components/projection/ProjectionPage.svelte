@@ -11,8 +11,9 @@
 	import Eye from '@lucide/svelte/icons/eye';
 	import EyeOff from '@lucide/svelte/icons/eye-off';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
-	import { correctProjectionMutation, projectionQuery, wealthKeys } from '#lib/api/queries.ts';
+	import { correctProjectionMutation, plansQuery, projectionQuery, wealthKeys } from '#lib/api/queries.ts';
 	import BudgetForecast from '#lib/components/forecast/BudgetForecast.svelte';
+	import PlansView from '#lib/components/plans/PlansView.svelte';
 	import { useShell } from '#lib/components/shell/actions.ts';
 	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
 	import Amount from '#lib/components/wealth/Amount.svelte';
@@ -67,6 +68,13 @@
 		onSuccess: () => queries.invalidateQueries({ queryKey: wealthKeys.all })
 	}));
 
+	// The Plans view (MA-222): read only while it is the view shown.
+	const plans = createQuery(() => ({
+		...plansQuery(source, horizon, money, currency),
+		enabled: view === 'plans',
+		placeholderData: keepPreviousData
+	}));
+
 	const data = $derived(projection.data);
 	const current = $derived(viewOf(view));
 	const editingIn = (target: ProjectionCorrection['target']) => (editing?.target === target ? editing.id : undefined);
@@ -117,7 +125,11 @@
 				/>
 			</h1>
 			<p class="mp-foot mp-ink2">
-				{view === 'net' ? (data?.head ?? 'Net worth') : view === 'budget' ? forecastHead || current.head : current.head}
+				{view === 'net'
+					? (data?.head ?? 'Net worth')
+					: view === 'plans'
+						? (plans.data?.head ?? current.head)
+						: forecastHead || current.head}
 			</p>
 		</div>
 		<div class="hctl">
@@ -136,16 +148,27 @@
 		</div>
 	</header>
 
-	{#if view === 'budget'}
-		<BudgetForecast bind:horizon bind:money {currency} bind:head={forecastHead} />
-	{:else if view !== 'net'}
-		<div class="mp-card cpad loose">
-			<h2 class="mp-hl">{current.label} is not built yet</h2>
-			<p class="mp-foot mp-ink2 pp">{current.soon}</p>
-			<button type="button" class="mp-btn mp-btn-tinted mp-btn-small self-start" onclick={() => (view = 'net')}>
-				Back to Net worth
+	{#if view === 'plans' && plans.data && !plans.data.empty}
+		<PlansView
+			plans={plans.data}
+			{horizon}
+			{money}
+			onHorizon={(h: Horizon) => (horizon = h)}
+			onMoney={(m: MoneyBasis) => (money = m)}
+		/>
+	{:else if view === 'plans' && plans.isError}
+		<div class="mp-card cpad loose" role="alert">
+			<h2 class="mp-hl">The plans could not be read</h2>
+			<p class="mp-foot mp-ink2 pp">Nothing is lost: the plans are as they were. Try again in a moment.</p>
+			<button type="button" class="mp-btn mp-btn-tinted mp-btn-small self-start" onclick={() => plans.refetch()}>
+				Try again
 			</button>
 		</div>
+	{:else if view === 'plans' && !plans.data}
+		<div class="mp-skel h-96" aria-hidden="true"></div>
+		<p class="sr-only" aria-live="polite">Reading the plans…</p>
+	{:else if view === 'budget'}
+		<BudgetForecast bind:horizon bind:money {currency} bind:head={forecastHead} />
 	{:else if data?.empty}
 		<div class="mp-card cpad loose">
 			<h2 class="mp-hl">Nothing to project yet</h2>
