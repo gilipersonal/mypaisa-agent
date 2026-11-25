@@ -109,5 +109,19 @@ Arun, Wed 25 Nov 2026, asked item by item on the round's page:
 - **c · interactive Home charts:** 1a, two cards that answer each other.
 - **d · the mark:** 1a, watcher at work.
 
+His answers the same day to what the boards left to him:
+
+- **The chat sheet closes** on a click on the dimmed page, as on Esc, the close button and the grabber; **`⌘J`** opens
+  and closes the chat on a Mac, with no shortcut on Windows (Ctrl+J is the browser's Downloads).
+- **iOS appearance:** System, Light or Dark as a setting in You, Appearance, System by default; nothing added to the
+  iPhone's bar.
+- **"Invested"** is everything owned except property (cash, deposits, investments and pensions): £178,916 today,
+  passing what is owed in Jun 2028.
+- **The horizon chips** are the Projection's own: 5, 10, 20 and 30 years; the card opens at 5.
+
+Carried as drawn, with no question put: the 1393 px rule goes on the web (it is what a 1a says); whose view and the
+currency are carried from page to page; "where growth comes from" looks forward by horizon, as in his picture, in
+three parts; one easing is added to `motion.css`; on the web only the sidebar's mark moves.
+
 Nothing is built until the picked boards are carried into `app-v1/`, `ios-v1/` and `ds-v1/` with their remaining
 states, and the records that state a changed rule are changed with them (rule 5 of `.claude/rules/plan-sync.md`).
