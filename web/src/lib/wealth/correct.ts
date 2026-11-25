@@ -27,8 +27,53 @@ export function parseAmount(typed: string): Decimal | undefined {
 	return digits;
 }
 
+const MONTHS = [
+	'january',
+	'february',
+	'march',
+	'april',
+	'may',
+	'june',
+	'july',
+	'august',
+	'september',
+	'october',
+	'november',
+	'december'
+];
+const MONTH = /^([a-z]{3,9})\.?\s+(\d{4})$/;
+const ISO_MONTH = /^(\d{4})-(\d{2})$/;
+
+/** A month and its year, as a plan item's start or end is typed (MA-222): "Jul 2040", "july 2040" or "2040-07", sent
+ * as "2040-07"; a year from 2000 to 2099. */
+export function parseMonth(typed: string): string | undefined {
+	const t = typed.trim().toLowerCase();
+	const iso = ISO_MONTH.exec(t);
+	const named = MONTH.exec(t);
+	let year: string | undefined;
+	let month = 0;
+	if (iso) {
+		year = iso[1];
+		month = Number(iso[2]);
+	} else if (named) {
+		const [, word = '', y] = named;
+		month = MONTHS.findIndex((m) => m.startsWith(word)) + 1;
+		year = y;
+	}
+	if (!year || month < 1 || month > 12 || !year.startsWith('20')) return undefined;
+	return `${year}-${String(month).padStart(2, '0')}`;
+}
+
+/** "2040-07" as the boards write it: "Jul 2040". */
+export function monthLabel(value: string): string {
+	const [year = '', month = '1'] = value.split('-');
+	const name = MONTHS[Number(month) - 1] ?? '';
+	return `${name.charAt(0).toUpperCase()}${name.slice(1, 3)} ${year}`;
+}
+
 /** The value a correction would send for what is typed into this figure. */
 export function parseTyped(spec: Pick<EditSpec, 'kind'>, typed: string): Decimal | undefined {
+	if (spec.kind === 'month') return parseMonth(typed);
 	return spec.kind === 'rate' ? parseRate(typed) : parseAmount(typed);
 }
 
@@ -40,6 +85,7 @@ export function changes(spec: Pick<EditSpec, 'kind' | 'current'>, typed: string)
 
 /** What the new value reads as, beside the old one: "4.8%", "3.5% a year", or the amount. */
 export function after(spec: Pick<EditSpec, 'kind' | 'unit' | 'currency' | 'sign'>, value: Decimal): EditValue {
+	if (spec.kind === 'month') return { text: monthLabel(value) };
 	if (spec.kind === 'rate' || spec.currency === undefined) return { text: `${value}${spec.unit}` };
 	return { fig: { amount: value, currency: spec.currency, ...(spec.sign ? { pre: spec.sign } : {}) } };
 }
@@ -47,6 +93,7 @@ export function after(spec: Pick<EditSpec, 'kind' | 'unit' | 'currency' | 'sign'
 /** What to say while what is typed cannot be saved; nothing while the field is still empty. */
 export function problem(spec: Pick<EditSpec, 'kind'>, typed: string): string | undefined {
 	if (typed.trim() === '' || parseTyped(spec, typed) !== undefined) return undefined;
+	if (spec.kind === 'month') return 'Type a month and its year: Jul 2040';
 	return spec.kind === 'rate'
 		? 'Type a rate from 0 to 100, with up to two decimals: 4.8'
 		: 'Type a whole amount above nothing: 35,000';

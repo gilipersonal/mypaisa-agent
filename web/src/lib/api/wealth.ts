@@ -3,6 +3,7 @@
  * api behind the same seam, and no page changes. Shared by both doors: types only. */
 import type { DisplayCurrency, Overview } from '../wealth/overview.ts';
 import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '../wealth/projection.ts';
+import type { PlanChange, Plans } from '../wealth/plans.ts';
 
 export interface WealthSource {
 	/** The Overview for the household (`household`) or one member's id, in the currency the member reads totals in. */
@@ -13,4 +14,9 @@ export interface WealthSource {
 	/** An admin's correction in place to one of the Projection's figures: an assumption or a plan item. It is refused
 	 * for a member who is not an admin, and for a value the figure cannot take; the next read shows it. */
 	correctProjection(correction: ProjectionCorrection): Promise<void>;
+	/** The Projection's Plans view (MA-222): each plan item on a timeline to the horizon, in the money and currency the
+	 * member reads totals in. A plan's figures are corrected through `correctProjection`, naming the figure's part. */
+	plans(horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency): Promise<Plans>;
+	/** An admin pauses, resumes or ends a plan item in place; refused for a member who is not an admin. */
+	changePlan(change: PlanChange): Promise<void>;
 }

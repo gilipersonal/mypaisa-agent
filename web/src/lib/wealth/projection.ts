@@ -81,8 +81,10 @@ export type EditValue = { text: string } | { fig: Fig };
 export interface EditSpec {
 	target: 'assumption' | 'plan';
 	id: string;
-	/** A rate in per cent, or an amount in `currency`. */
-	kind: 'rate' | 'amount';
+	/** A rate in per cent, an amount in `currency`, or a month ("Jul 2041", sent as "2041-07"; MA-222). */
+	kind: 'rate' | 'amount' | 'month';
+	/** Which of a plan item's figures this is, when the plan has more than one to correct (MA-222's Plans view). */
+	part?: PlanField;
 	title: string;
 	/** "A year · now 4.17%, his history blended with a prior". */
 	field: string;
@@ -104,7 +106,12 @@ export interface ProjectionCorrection {
 	target: 'assumption' | 'plan';
 	id: string;
 	value: Decimal;
+	/** Which figure of a plan item, when it has several (MA-222); absent, it is the one the Net worth view corrects. */
+	part?: PlanField;
 }
+
+/** The figures of a plan item an admin corrects in place on the Plans view (MA-222). */
+export type PlanField = 'amount' | 'start' | 'end' | 'growth';
 
 export interface Source {
 	kind: 'history' | 'prior' | 'contract' | 'member';

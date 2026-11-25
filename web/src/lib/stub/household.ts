@@ -113,6 +113,42 @@ export interface StubCorrection {
 	audit: string;
 }
 
+/** A plan item the chat added on an admin's Confirm (MA-222), in the fields the Plans view shows and corrects: a new
+ * monthly flow, a change to a flow from a date, or an event on a record. Its figures are the ones the chat settled. */
+export interface StubPlan {
+	id: string;
+	effect: 'new_flow' | 'change_flow' | 'record_event';
+	what: string;
+	type: 'spend' | 'income';
+	ccy: RecordCurrency;
+	/** Whole units a month; an event that pays a balance has none. */
+	amount?: string;
+	/** "YYYY-MM". */
+	start: string;
+	end?: string;
+	/** Per cent a year, as typed: "4.5". */
+	growth?: string;
+	paidFrom?: string;
+	/** The admin's own words (source_text). */
+	words: string;
+	by: string;
+	at: Date;
+	/** True while its figures are exactly the figure set's, so the set's stored impact speaks for it. */
+	asSet: boolean;
+}
+
+/** A change to a plan item made in place on the Plans view (MA-222): a figure corrected, or the plan paused, resumed
+ * or ended; kept with its audit line, as the write service would. */
+export interface StubPlanChange {
+	id: string;
+	field: 'amount' | 'start' | 'end' | 'growth' | 'status';
+	/** The new value: a decimal, a "YYYY-MM", or `active`, `paused` or `ended`. */
+	value: string;
+	by: string;
+	at: Date;
+	audit: string;
+}
+
 const SET = figures as unknown as FigureSet;
 
 export class StubHousehold {
@@ -130,6 +166,8 @@ export class StubHousehold {
 	#assets: StubAsset[];
 	#debts: StubDebt[];
 	#corrections: StubCorrection[] = [];
+	#plans: StubPlan[] = [];
+	#planChanges: StubPlanChange[] = [];
 
 	constructor(options: { empty?: boolean; me?: string } = {}) {
 		this.#assets = options.empty ? [] : [...SET.assets];
@@ -161,6 +199,25 @@ export class StubHousehold {
 	/** Keeps a correction to one of the Projection's figures. The figure set's own file never changes. */
 	correct(correction: StubCorrection): void {
 		this.#corrections = [...this.#corrections, correction];
+	}
+
+	/** The plan items the chat added, oldest first (MA-222). */
+	get plans(): readonly StubPlan[] {
+		return this.#plans;
+	}
+
+	/** Adds a plan item, as the chat's Confirm does; a second with the same id replaces the first. */
+	addPlan(plan: StubPlan): void {
+		this.#plans = [...this.#plans.filter((p) => p.id !== plan.id), plan];
+	}
+
+	/** The changes made to plan items in place, oldest first (MA-222). */
+	get planChanges(): readonly StubPlanChange[] {
+		return this.#planChanges;
+	}
+
+	changePlan(change: StubPlanChange): void {
+		this.#planChanges = [...this.#planChanges, change];
 	}
 
 	/** Adds a record, as the chat's Confirm does, and remembers it as the last change. A second record with the same

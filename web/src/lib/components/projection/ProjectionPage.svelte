@@ -10,7 +10,8 @@
 	import Eye from '@lucide/svelte/icons/eye';
 	import EyeOff from '@lucide/svelte/icons/eye-off';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
-	import { correctProjectionMutation, projectionQuery, wealthKeys } from '#lib/api/queries.ts';
+	import { correctProjectionMutation, plansQuery, projectionQuery, wealthKeys } from '#lib/api/queries.ts';
+	import PlansView from '#lib/components/plans/PlansView.svelte';
 	import { useShell } from '#lib/components/shell/actions.ts';
 	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
 	import Amount from '#lib/components/wealth/Amount.svelte';
@@ -63,6 +64,13 @@
 		onSuccess: () => queries.invalidateQueries({ queryKey: wealthKeys.all })
 	}));
 
+	// The Plans view (MA-222): read only while it is the view shown.
+	const plans = createQuery(() => ({
+		...plansQuery(source, horizon, money, currency),
+		enabled: view === 'plans',
+		placeholderData: keepPreviousData
+	}));
+
 	const data = $derived(projection.data);
 	const current = $derived(viewOf(view));
 	const editingIn = (target: ProjectionCorrection['target']) => (editing?.target === target ? editing.id : undefined);
@@ -112,7 +120,13 @@
 					onChoose={(id: string) => (view = viewOf(id).id)}
 				/>
 			</h1>
-			<p class="mp-foot mp-ink2">{view === 'net' ? (data?.head ?? 'Net worth') : current.head}</p>
+			<p class="mp-foot mp-ink2">
+				{view === 'net'
+					? (data?.head ?? 'Net worth')
+					: view === 'plans'
+						? (plans.data?.head ?? current.head)
+						: current.head}
+			</p>
 		</div>
 		<div class="hctl">
 			<button
@@ -130,7 +144,26 @@
 		</div>
 	</header>
 
-	{#if view !== 'net'}
+	{#if view === 'plans' && plans.data && !plans.data.empty}
+		<PlansView
+			plans={plans.data}
+			{horizon}
+			{money}
+			onHorizon={(h: Horizon) => (horizon = h)}
+			onMoney={(m: MoneyBasis) => (money = m)}
+		/>
+	{:else if view === 'plans' && plans.isError}
+		<div class="mp-card cpad loose" role="alert">
+			<h2 class="mp-hl">The plans could not be read</h2>
+			<p class="mp-foot mp-ink2 pp">Nothing is lost: the plans are as they were. Try again in a moment.</p>
+			<button type="button" class="mp-btn mp-btn-tinted mp-btn-small self-start" onclick={() => plans.refetch()}>
+				Try again
+			</button>
+		</div>
+	{:else if view === 'plans' && !plans.data}
+		<div class="mp-skel h-96" aria-hidden="true"></div>
+		<p class="sr-only" aria-live="polite">Reading the plans…</p>
+	{:else if view !== 'net' && view !== 'plans'}
 		<div class="mp-card cpad loose">
 			<h2 class="mp-hl">{current.label} is not built yet</h2>
 			<p class="mp-foot mp-ink2 pp">{current.soon}</p>
