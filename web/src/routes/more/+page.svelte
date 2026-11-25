@@ -1,8 +1,8 @@
 <script lang="ts">
 	// More (Arun, 5 Nov 2026, MA-334): under 1024 px the tab bar holds Chat, Home, Assets and Projection, and every
 	// other page is one tap from here. From 1024 px the sidebar lists them all, and this page is the same list.
-	// Sign out (MA-185): no board draws it yet, so it is a quiet row of its own under the list, on the stubbed session,
-	// to go back to the sign-in page.
+	// Sign out (MA-185): a quiet row of its own under the list, on the stubbed session, back to the sign-in page. From
+	// 1024 px it is at the sidebar's foot instead (Arun, 25 Nov 2026; noted on Web v4 · Shell and chat).
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';

@@ -16,7 +16,8 @@
 	import { chatKeys } from '#lib/api/queries.ts';
 	import { CheckInScript, checkInScenario } from '#lib/chat/checkins.ts';
 	import { FakeTransport } from '#lib/chat/fake.ts';
-	import { browserSession } from '#lib/auth/session.ts';
+	import LogOut from '@lucide/svelte/icons/log-out';
+	import { browserSession, signedInLine } from '#lib/auth/session.ts';
 	import { Outbox } from '#lib/chat/outbox.ts';
 	import { ChatSession, provideChat } from '#lib/chat/session.svelte.ts';
 	import { emptyTimeline, type Timeline } from '#lib/chat/timeline.ts';
@@ -117,6 +118,12 @@
 	const mac = isMac(navigator.platform);
 	const chatKey = chatKeyLabel(navigator.platform);
 	const admin = household.members.find((m) => m.id === household.me)?.admin ?? true;
+	// Sign out at the sidebar's foot (MA-185, Arun, 25 Nov 2026), from 1024 px; under it, on More.
+	const who = signedInLine(household.members.find((m) => m.id === household.me));
+	async function signOut() {
+		browserSession().signOut();
+		await goto(resolve('/sign-in'));
+	}
 	const open = $derived(roomy && sheet.open);
 
 	$effect(() => {
@@ -341,6 +348,15 @@
 					<NavIcon name={ADMIN.icon} />{ADMIN.label}
 				</a>
 			</nav>
+			<div class="side-foot">
+				<span class="side-who">
+					<span class="mp-sub mp-w6 clip">{who.name}</span>
+					{#if who.role}<span class="mp-foot mp-ink2">{who.role}</span>{/if}
+				</span>
+				<button type="button" class="side-out" onclick={() => void signOut()}>
+					<LogOut class="lc lc-s" aria-hidden="true" />Sign out
+				</button>
+			</div>
 		</aside>
 
 		<main id="main" tabindex="-1" class="mp-shell-main main outline-none" inert={open}>

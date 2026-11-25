@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { KeyValue } from '#lib/chat/outbox.ts';
-import { StubSession, browserSession, browserStorage } from './session.ts';
+import { StubSession, browserSession, browserStorage, signedInLine } from './session.ts';
 
 function memory(): KeyValue & { data: Map<string, string> } {
 	const data = new Map<string, string>();
@@ -138,5 +138,17 @@ describe("the browser's session", () => {
 	it('is one session for the page', () => {
 		vi.stubGlobal('window', { localStorage: memory() });
 		expect(browserSession()).toBe(browserSession());
+	});
+});
+
+describe("the sidebar's signed-in line", () => {
+	it('names the member and their role, capitalised', () => {
+		expect(signedInLine({ name: 'Arun', role: 'owner' })).toEqual({ name: 'Arun', role: 'Owner' });
+		expect(signedInLine({ name: 'Asha', role: 'member' })).toEqual({ name: 'Asha', role: 'Member' });
+	});
+
+	it('says only that someone is signed in when the member is unknown, and leaves a blank role out', () => {
+		expect(signedInLine(undefined)).toEqual({ name: 'Signed in', role: '' });
+		expect(signedInLine({ name: 'Ravi', role: ' ' })).toEqual({ name: 'Ravi', role: '' });
 	});
 });
