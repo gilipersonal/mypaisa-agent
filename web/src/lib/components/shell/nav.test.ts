@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ADMIN, MORE, MORE_PAGES, PAGES, TABS, isCurrent, placeOf } from './nav.ts';
+import { ADMIN, CHAT_TAB, MORE, MORE_PAGES, PAGES, TABS, isCurrent, isCurrentTab, placeOf } from './nav.ts';
 
 describe('the shell places', () => {
 	it('finds the page a path belongs to, the Chat tab standing for Home', () => {
@@ -38,5 +38,24 @@ describe('the shell places', () => {
 		expect(isCurrent(MORE, '/admin')).toBe(true);
 		expect(isCurrent(MORE, '/assets')).toBe(false);
 		expect(isCurrent(MORE, '/')).toBe(false);
+	});
+
+	it('opens the chat from the Chat tab as a sheet from 600 px: Chat is never the current tab, and /chat is Home', () => {
+		const [chat, home, assets] = TABS;
+		expect(chat).toBe(CHAT_TAB);
+		expect(CHAT_TAB.href).toBe('/chat');
+		expect(home && isCurrentTab(home, '/chat', true)).toBe(true);
+		expect(isCurrentTab(CHAT_TAB, '/chat', true)).toBe(false);
+		expect(isCurrentTab(CHAT_TAB, '/', true)).toBe(false);
+		expect(home && isCurrentTab(home, '/', true)).toBe(true);
+		expect(assets && isCurrentTab(assets, '/assets', true)).toBe(true);
+		expect(isCurrentTab(MORE, '/budget', true)).toBe(true);
+	});
+
+	it('keeps the Chat tab’s page under 600 px', () => {
+		const [, home] = TABS;
+		expect(isCurrentTab(CHAT_TAB, '/chat', false)).toBe(true);
+		expect(home && isCurrentTab(home, '/chat', false)).toBe(false);
+		expect(home && isCurrentTab(home, '/', false)).toBe(true);
 	});
 });

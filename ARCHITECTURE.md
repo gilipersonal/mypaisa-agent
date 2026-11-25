@@ -206,7 +206,7 @@ preferences (§1, rule 4).
 | Type "I put ₹20,000 into Balanced" | Balanced is in pounds, so MyPaisa says so and asks for the pounds that arrived, offers the day's ECB rate as an estimate, or a holding in rupees instead; nothing is saved until Confirm (§4.7) |
 | Type "I want to log a transaction" | Asks one thing at a time, with chips: bought or sold, which holding, how much, when; skips whatever you already said; a Confirm card at the end |
 | Open Home, or the app on your iPad or an open foldable | The same figures as a dashboard (on the iPad and the foldable too, with the chat beside it from about 1393 pt, a sheet away from about 600 to 1393 pt, and a tab in a compact window (every iPhone, a folded foldable, Slide Over)), plus the audit log of every change and what the agent did and spent; an admin adds and deletes in the chat and corrects a figure where it shows |
-| Open `dashboard.mypaisapp.com` on your laptop or your phone's browser, or the web app you installed | Sign in with Apple, Google or a passkey; the same chat, dashboard, Audit and Activity, and for admins the Admin center; the chat as a sheet over the page from 1024 px, at every width, and a tab at phone width; replies stream in as they are written (§8.4, §19.5) |
+| Open `dashboard.mypaisapp.com` on your laptop or your phone's browser, or the web app you installed | Sign in with Apple, Google or a passkey; the same chat, dashboard, Audit and Activity, and for admins the Admin center; the chat as a sheet centred in the window from 600 px, at desktop and tablet widths, and a tab at phone width; replies stream in as they are written (§8.4, §19.5) |
 | Start something on the laptop and pick up the phone | One conversation per member at every door: a flow started on the laptop finishes on the phone, and a Confirm on the phone moves the laptop's dashboard at once (§19.5) |
 | Type "£5,000 in Monzo savings", or "an SBI FD of ₹5 lakh at 7.1% for three years" | Drafts the record, asks only what is missing (whose is it? which bank?) one thing at a time with chips, and shows a Confirm card with the figures code computed, such as the maturity value and date; an admin registers for any member, and the card names whose it is (§4.8) |
 | As an admin, a check-in arrives: "HDFC home loan: was November's EMI paid?" | Check-ins go to admins only; a member who is not an admin sees it pending, with no buttons. Tap Paid: the card already shows what will be written, so the tap is the Confirm, with Undo. Not yet asks again in a few days; Different amount and Paid off in full open a short flow, and paid off in full closes the loan (§4.9) |
@@ -1651,8 +1651,8 @@ foldable or two-panel device (Arun's "Duo"), folded or open:
 | Width | Where | Layout |
 | --- | --- | --- |
 | Compact: under about 600 pt, and every iPhone | Every iPhone, in portrait or landscape; Slide Over and one-third Split View; a foldable when folded | The tab bar; one column; sheets for detail; the chat is a tab |
-| Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet over the screen, from its Ask or the ⌘K palette's ask row |
-| Regular, about 900 to 1393 pt | Every iPad in landscape, from the iPad mini (1133 pt) to the 13-inch (1376 pt); a 13-inch iPad upright; a wide Split View pane or Stage Manager window | The sidebar and the screen; the chat as a sheet over the screen, from the sidebar's Chat, its Ask or the ⌘K palette's ask row |
+| Regular, about 600 to 900 pt | iPad in portrait; two-thirds Split View; a foldable open; a Stage Manager window | The sidebar, collapsing to a tab bar at the top; the chat as a sheet centred over the screen, from its Ask or the ⌘K palette's ask row |
+| Regular, about 900 to 1393 pt | Every iPad in landscape, from the iPad mini (1133 pt) to the 13-inch (1376 pt); a 13-inch iPad upright; a wide Split View pane or Stage Manager window | The sidebar and the screen; the chat as a sheet centred over the screen, from the sidebar's Chat, its Ask or the ⌘K palette's ask row |
 | Regular, from about 1393 pt | No iPad's own screen: only a Stage Manager window on an external display | The sidebar, the screen, and the chat beside every screen as a trailing column |
 
 The rule is the window's width, never the device, with one exception: an iPhone is always compact, its tab bar in
@@ -1899,16 +1899,19 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   streamed over SSE (§19.5); every card drawn by Svelte components from the
   same versioned JSON (MA-174), with its chips and Confirm, Edit and Cancel;
   files and photos through a presigned upload, kept for good (MA-148); text
-  typed offline kept and sent once the browser is back online. From 1024 px
-  the chat is a sheet over the page, at every width: 600 px wide and centred,
+  typed offline kept and sent once the browser is back online. From 600 px
+  the chat is a sheet over the page, at every width: 600 px wide and at most
+  760 px tall, centred in the window both ways (Arun, 25 Nov 2026, MA-357:
+  "I need the chat window to be centered for web and ipad/tablet layout"),
   the page dimmed behind it and the sidebar in view and not dimmed, so the
   mark's movement is seen (Arun, 25 Nov 2026, MA-360); opened from the
   sidebar's Chat, a page's Ask or Update, or ⌘J on a Mac (no shortcut on
   Windows, where Ctrl+J is the browser's Downloads); closed by Esc, its close
   button, its grabber or a click on the dimmed page (the iPad's sheet, on the
   web; Arun, 25 Nov 2026, MA-355 a 1a, which supersedes MA-301 c 1c's column
-  beside the page from 1393 px and drawer below it); under 1024 px, where the
-  tab bar stays, it is the Chat tab. ⌘K opens one
+  beside the page from 1393 px and drawer below it); from 600 to 1023 px the
+  tab bar's Chat opens the same sheet, the dim over the page and the tab bar;
+  under 600 px it is the Chat tab. ⌘K opens one
   palette, the same as the iPad's: go to a page, find a record, or ask, its
   first row sending the question to the chat; nothing is created in it (MA-301
   g 1a; Arun, 23 Nov 2026). A flow
