@@ -3,7 +3,7 @@
 import type { components } from '../api-types.d.ts';
 import { emptyTimeline, type Timeline } from '../chat/timeline.ts';
 import type { BudgetForecast } from '../wealth/forecast.ts';
-import type { DisplayCurrency, Overview } from '../wealth/overview.ts';
+import type { DisplayCurrency, InvestedOwed, Overview, OwnOwe } from '../wealth/overview.ts';
 import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '../wealth/projection.ts';
 import type { PlanChange, Plans } from '../wealth/plans.ts';
 import { toApiError, type ApiClient } from './client.ts';
@@ -33,6 +33,8 @@ export function chatTimelineQuery() {
 export const wealthKeys = {
 	all: ['wealth'] as const,
 	overview: (view: string, currency: DisplayCurrency) => ['wealth', 'overview', view, currency] as const,
+	ownOwe: (view: string, currency: DisplayCurrency) => ['wealth', 'own-owe', view, currency] as const,
+	investedOwed: (view: string, currency: DisplayCurrency) => ['wealth', 'invested-owed', view, currency] as const,
 	projection: (horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency) =>
 		['wealth', 'projection', horizon, money, currency] as const,
 	correctProjection: ['wealth', 'projection', 'correct'] as const,
@@ -47,6 +49,22 @@ export function overviewQuery(source: WealthSource, view: string, currency: Disp
 	return {
 		queryKey: wealthKeys.overview(view, currency),
 		queryFn: (): Promise<Overview> => source.overview(view, currency)
+	};
+}
+
+/** Home's What we own and owe (MA-359): its own query, so the card loads and fails by itself. */
+export function ownOweQuery(source: WealthSource, view: string, currency: DisplayCurrency) {
+	return {
+		queryKey: wealthKeys.ownOwe(view, currency),
+		queryFn: (): Promise<OwnOwe> => source.ownOwe(view, currency)
+	};
+}
+
+/** Home's Invested against owed (MA-359): its own query, so the card loads and fails by itself. */
+export function investedOwedQuery(source: WealthSource, view: string, currency: DisplayCurrency) {
+	return {
+		queryKey: wealthKeys.investedOwed(view, currency),
+		queryFn: (): Promise<InvestedOwed> => source.investedOwed(view, currency)
 	};
 }
 

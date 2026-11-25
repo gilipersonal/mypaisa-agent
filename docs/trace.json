@@ -3575,7 +3575,7 @@
       "epic": "MA-10",
       "phase": 1,
       "summary": "In a browser a member signs in to the web app with Apple, Google or a passkey, and the session lives in an HttpOnly cookie",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "design"
       ],
@@ -8840,7 +8840,7 @@
       "epic": "MA-10",
       "phase": 1,
       "summary": "The web app's chat opens as a sheet over the page at every desktop width, never as a column beside it",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "design"
       ],
@@ -8971,7 +8971,7 @@
       "epic": "MA-187",
       "phase": 2,
       "summary": "Every page's header carries whose view, the currency, light or dark and Hide amounts, in one place at every door",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "design"
       ],
@@ -9247,7 +9247,7 @@
       "epic": "MA-191",
       "phase": 7,
       "summary": "Home shows what we own and owe as one double ring, and invested against owed with where the growth comes from",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "design"
       ],
@@ -9531,7 +9531,21 @@
         "Year by year for 10, 20 and 30 years (drawn for 5 years only)",
         "the stale state, when the last run is older than the records"
       ],
-      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: c 1a, two cards that answer each other; invested is everything owned except property; the chips are 5, 10, 20 and 30 years, opening at 5. Its boards are Web v4 \u00b7 Home charts and iPhone v4 \u00b7 Home charts. They supersede the What we own and owe meters card on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home. Its figures are the figure set's: home_charts in docs/design/figures/future-plans-v4.json (the 26 Oct run: 362 months of invested and owed, the crossing in Jun 2028, and the split at each horizon). The card looks forward by horizon, as Arun's picture does; the Attribution view (MA-315) explains a past change. Changed from the review board for the build: while a month is scrubbed the card's headline is the readout, and Year by year opens in place. The ring is a new form in the picked chart style (Monzo Pulse); the design system's chart board gains it with the build."
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: c 1a, two cards that answer each other; invested is everything owned except property; the chips are 5, 10, 20 and 30 years, opening at 5. Its boards are Web v4 \u00b7 Home charts and iPhone v4 \u00b7 Home charts. They supersede the What we own and owe meters card on Web v4 \u00b7 Dashboard and iPhone v4 \u00b7 Home. Its figures are the figure set's: home_charts in docs/design/figures/future-plans-v4.json (the 26 Oct run: 362 months of invested and owed, the crossing in Jun 2028, and the split at each horizon). The card looks forward by horizon, as Arun's picture does; the Attribution view (MA-315) explains a past change. Changed from the review board for the build: while a month is scrubbed the card's headline is the readout, and Year by year opens in place. The ring is a new form in the picked chart style (Monzo Pulse); the design system's chart board gains it with the build. Built on stubbed data, web only (Arun, 25 Nov 2026: the web app first, then iOS): the two cards from Web v4 \u00b7 Home charts in place of the What we own and owe meters card. What we own and owe is a double ring worked out from the records (owned by kind outside, owed inside on one scale), its two lists as legend and table, a part's amount and share under the pointer, by keyboard or by a tap, and the We own and We owe switch at 390. Invested against owed draws home_charts from the design figure set (copied unchanged into web/src/lib/stub/future-plans.json): the two lines to the chosen horizon, the crossing month named, the growth split beside it, the 5, 10, 20 and 30 year chips, scrubbing, and Year by year. Each card loads and fails on its own query; privacy mode masks every amount, the chart labels included. Filled by judgement (Arun, 25 Nov 2026: \"Fill in by judgement\"), to be checked by eye: for Me and for Asha, and in rupees, Invested against owed shows the household's pounds with a note saying why (one household cash figure; no rupee rate a month ahead); a household that owes nothing gets the words-only Nothing is owed state; Year by year for 10, 20 and 30 years lists every December to the horizon; the stale state is a quiet note above the chart when a change made since the run moves today's invested or owed; on an empty household both cards show their no-records state above the Start from cards. Not built here: the engine's series (MA-219), iOS, the loading and could-not-load states seen in a browser (built, but the stub never waits or fails).",
+      "code": [
+        "web/src/lib/components/home/charts/**",
+        "web/src/lib/stub/home-charts.ts",
+        "web/src/lib/stub/home-charts.test.ts",
+        "web/src/lib/stub/overview.ts",
+        "web/src/lib/stub/overview.test.ts",
+        "web/src/lib/stub/source.ts",
+        "web/src/lib/stub/future-plans.json",
+        "web/src/lib/wealth/overview.ts",
+        "web/src/lib/api/queries.ts",
+        "web/src/lib/api/wealth.ts",
+        "web/src/lib/components/wealth/CardParts.svelte",
+        "web/src/lib/components/wealth/WealthCardView.svelte"
+      ]
     },
     {
       "key": "MA-360",
@@ -9539,7 +9553,7 @@
       "epic": "MA-10",
       "phase": 1,
       "summary": "The mark moves when MyPaisa starts on a message or saves a change, and is still otherwise",
-      "status": "To Do",
+      "status": "In Progress",
       "labels": [
         "design"
       ],
@@ -9624,7 +9638,15 @@
         "the coin mark beside each of MyPaisa's messages on the existing iOS chat boards and in the iOS kit, in place of the ringed dot (Arun, 25 Nov 2026)",
         "the web sidebar frames with the sidebar at full strength beside the open chat sheet, the dim on the page only (Arun, 25 Nov 2026); they draw the mark under the dim"
       ],
-      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: d 1a, watcher at work. Its boards are Mark in motion in ds-v1 and iPhone v4 \u00b7 Mark in motion. It extends MA-103's intro on ds-v1 Logo (the pound now draws itself, and the dot travels on the new easing). One easing, --mo-travel, and the mo-logo-* keyframes joined motion.css in the three board folders; under Reduce Motion nothing travels. On the web only the sidebar's mark moves; on iPhone the mark beside the reply does. Nothing moves on phone web. For the build: motion.css's own Reduce Motion rule lands every keyframe at once, so the dim and the still ring need to be 150 ms opacity transitions or pinned durations. Settled: The lap under the dim (Arun, 25 Nov 2026, asked on MA-355's PR): the chat sheet dims the page, not the sidebar, so the lap and the ring are seen beside the open chat. Settled: The iPhone chat's mark (Arun, 25 Nov 2026): the coin mark sits beside each of MyPaisa's messages on iPhone and iPad, as on the web, and does the lap and the ring; the iOS kit and the chat boards are redrawn with it before this story starts."
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: d 1a, watcher at work. Its boards are Mark in motion in ds-v1 and iPhone v4 \u00b7 Mark in motion. It extends MA-103's intro on ds-v1 Logo (the pound now draws itself, and the dot travels on the new easing). One easing, --mo-travel, and the mo-logo-* keyframes joined motion.css in the three board folders; under Reduce Motion nothing travels. On the web only the sidebar's mark moves; on iPhone the mark beside the reply does. Nothing moves on phone web. For the build: motion.css's own Reduce Motion rule lands every keyframe at once, so the dim and the still ring need to be 150 ms opacity transitions or pinned durations. Settled: The lap under the dim (Arun, 25 Nov 2026, asked on MA-355's PR): the chat sheet dims the page, not the sidebar, so the lap and the ring are seen beside the open chat. Settled: The iPhone chat's mark (Arun, 25 Nov 2026): the coin mark sits beside each of MyPaisa's messages on iPhone and iPad, as on the web, and does the lap and the ring; the iOS kit and the chat boards are redrawn with it before this story starts. Built on stubbed data, web only (Arun, 25 Nov 2026: the web app first, then iOS): the sidebar's mark, live, from DS v1 \u00b7 Mark in motion. It arrives once per load (about 1.1 s, the name after it), laps once when MyPaisa's turn starts on a member's message (1.2 s), and rings once when a change is saved (0.6 s): a Confirm, plan or check-in saved in the chat, or a figure saved in place on a page (any wealth mutation). One movement at a time, none while the tab is hidden, nothing loops; Reduce Motion fades in place. Filled by judgement (Arun, 25 Nov 2026: \"Fill in by judgement\"), to be checked by eye: the ring on a figure saved in place on a web page; a member who is not an admin laps and never rings, since only their own saves ring; nothing changes at 1280. Not built here: the iOS launch, the coin mark beside iOS chat messages, the iPad.",
+      "code": [
+        "web/src/lib/brand/activity.svelte.ts",
+        "web/src/lib/brand/activity.svelte.test.ts",
+        "web/src/lib/brand/watch.ts",
+        "web/src/lib/components/brand/Mark.svelte",
+        "web/src/lib/styles/shell.css",
+        "web/src/lib/components/shell/AppShell.svelte"
+      ]
     },
     {
       "key": "MA-361",
@@ -9632,7 +9654,7 @@
       "epic": "MA-9",
       "phase": 0,
       "summary": "The crew plugin knows this repo: its areas, rules, gates and limits are in .claude/crew.json, and QA is offered in the merge question",
-      "status": "In Progress",
+      "status": "Done",
       "labels": [],
       "arch": [
         "15"
