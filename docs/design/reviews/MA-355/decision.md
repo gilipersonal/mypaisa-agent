@@ -119,6 +119,14 @@ His answers the same day to what the boards left to him:
   passing what is owed in Jun 2028.
 - **The horizon chips** are the Projection's own: 5, 10, 20 and 30 years; the card opens at 5.
 
+Two more answers the same day, to what the mark's boards raised (asked on the PR):
+
+- **The dim.** The chat sheet dims the page, not the sidebar, so the mark's lap and ring are seen beside the open chat.
+  The Chat sheet board and the mark's web frames draw the sidebar dimmed; they are redrawn before MA-357 and MA-360
+  start, and both rows list it.
+- **The iOS chat's mark.** The coin mark sits beside each of MyPaisa's messages on iPhone and iPad, in place of the
+  ringed dot; the iOS kit and the chat boards are redrawn with it before MA-360 starts.
+
 Carried as drawn, with no question put: the 1393 px rule goes on the web (it is what a 1a says); whose view and the
 currency are carried from page to page; "where growth comes from" looks forward by horizon, as in his picture, in
 three parts; one easing is added to `motion.css`; on the web only the sidebar's mark moves.

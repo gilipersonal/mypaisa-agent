@@ -1901,7 +1901,8 @@ iPad or a phone (MA-73, MA-194), at desktop and phone width.
   files and photos through a presigned upload, kept for good (MA-148); text
   typed offline kept and sent once the browser is back online. From 1024 px
   the chat is a sheet over the page, at every width: 600 px wide and centred,
-  the page dimmed behind it and the sidebar still in view; opened from the
+  the page dimmed behind it and the sidebar in view and not dimmed, so the
+  mark's movement is seen (Arun, 25 Nov 2026, MA-360); opened from the
   sidebar's Chat, a page's Ask or Update, or ⌘J on a Mac (no shortcut on
   Windows, where Ctrl+J is the browser's Downloads); closed by Esc, its close
   button, its grabber or a click on the dimmed page (the iPad's sheet, on the

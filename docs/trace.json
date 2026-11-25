@@ -8860,9 +8860,10 @@
         "the grabber mid-pull and the sheet mid-rise, with its Reduce Motion cross-fade (written in the board's notes, not drawn)",
         "the sheet over a page other than Home and the Projection, the Projection's head with MA-358's pills, and privacy mode with the Projection behind the sheet",
         "a window between 1024 and 1120 px other than 1024 itself, where the sheet shifts clear of the sidebar",
-        "Increase Contrast and Reduce Transparency"
+        "Increase Contrast and Reduce Transparency",
+        "the dim on the page only, the sidebar at full strength (Arun, 25 Nov 2026, settled on MA-360): every open-sheet frame on Web v4 \u00b7 Chat sheet draws the sidebar dimmed too"
       ],
-      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: a 1a, the iPad's sheet at every desktop width; a click on the dimmed page closes it and \u2318J opens it on a Mac, with no shortcut on Windows. Its board is Web v4 \u00b7 Chat sheet. It supersedes MA-301 c 1c's column beside the page from 1393 px and the drawer below it (Browser \u00b7 Shell 1a, Chat beside and Browser \u00b7 Shell 1a at 1280, Chat as a drawer on Web v4 \u00b7 Shell and chat), and the chat column on the other Web v4 boards' desktop frames; the app's rule is unchanged. The board draws, for Arun to see: the conversation in the picked 2a cards; under about 1120 px the sheet stopping 12 px clear of the sidebar rather than centring; focus starting in the message with Close as the first Tab stop; a check-in's Asks you chip opening the sheet with its card. The shared board styles (tokens.css) and the web shell still draw the column until this story is built."
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: a 1a, the iPad's sheet at every desktop width; a click on the dimmed page closes it and \u2318J opens it on a Mac, with no shortcut on Windows. Its board is Web v4 \u00b7 Chat sheet. It supersedes MA-301 c 1c's column beside the page from 1393 px and the drawer below it (Browser \u00b7 Shell 1a, Chat beside and Browser \u00b7 Shell 1a at 1280, Chat as a drawer on Web v4 \u00b7 Shell and chat), and the chat column on the other Web v4 boards' desktop frames; the app's rule is unchanged. The board draws, for Arun to see: the conversation in the picked 2a cards; under about 1120 px the sheet stopping 12 px clear of the sidebar rather than centring; focus starting in the message with Close as the first Tab stop; a check-in's Asks you chip opening the sheet with its card. The shared board styles (tokens.css) and the web shell still draw the column until this story is built. Changed by Arun's answer on MA-360 (25 Nov 2026): the sheet dims the page only and leaves the sidebar at full strength, so the mark's movement is seen; the board's open-sheet frames are redrawn to that before this story starts."
     },
     {
       "key": "MA-358",
@@ -9509,13 +9510,10 @@
         "a member who is not an admin (laps happen, rings never do)",
         "the launch when the app is not ready by 1,540 ms (the still mark waits)",
         "the web frames at 1280",
-        "the ringed dot beside MyPaisa's messages replaced by the coin mark on the existing iOS chat boards and in the iOS kit"
+        "the coin mark beside each of MyPaisa's messages on the existing iOS chat boards and in the iOS kit, in place of the ringed dot (Arun, 25 Nov 2026)",
+        "the web sidebar frames with the sidebar at full strength beside the open chat sheet, the dim on the page only (Arun, 25 Nov 2026); they draw the mark under the dim"
       ],
-      "open": [
-        "The lap under the dim: on the desktop web the chat sheet (MA-357) dims the whole shell, the sidebar included, so the lap, and the ring for a change confirmed in the chat, play under the dim. Whether the dim leaves the sidebar clear, or the movement shows in the sheet instead, is Arun's.",
-        "The iPhone chat's mark: the lap needs the coin mark beside the reply, where the iOS kit and the chat boards draw a ringed dot. Whether they move to the coin mark is Arun's."
-      ],
-      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: d 1a, watcher at work. Its boards are Mark in motion in ds-v1 and iPhone v4 \u00b7 Mark in motion. It extends MA-103's intro on ds-v1 Logo (the pound now draws itself, and the dot travels on the new easing). One easing, --mo-travel, and the mo-logo-* keyframes joined motion.css in the three board folders; under Reduce Motion nothing travels. On the web only the sidebar's mark moves; on iPhone the mark beside the reply does. Nothing moves on phone web. For the build: motion.css's own Reduce Motion rule lands every keyframe at once, so the dim and the still ring need to be 150 ms opacity transitions or pinned durations."
+      "notes": "Filed on MA-355 (25 Nov 2026). Picked there by Arun: d 1a, watcher at work. Its boards are Mark in motion in ds-v1 and iPhone v4 \u00b7 Mark in motion. It extends MA-103's intro on ds-v1 Logo (the pound now draws itself, and the dot travels on the new easing). One easing, --mo-travel, and the mo-logo-* keyframes joined motion.css in the three board folders; under Reduce Motion nothing travels. On the web only the sidebar's mark moves; on iPhone the mark beside the reply does. Nothing moves on phone web. For the build: motion.css's own Reduce Motion rule lands every keyframe at once, so the dim and the still ring need to be 150 ms opacity transitions or pinned durations. Settled: The lap under the dim (Arun, 25 Nov 2026, asked on MA-355's PR): the chat sheet dims the page, not the sidebar, so the lap and the ring are seen beside the open chat. Settled: The iPhone chat's mark (Arun, 25 Nov 2026): the coin mark sits beside each of MyPaisa's messages on iPhone and iPad, as on the web, and does the lap and the ring; the iOS kit and the chat boards are redrawn with it before this story starts."
     }
   ],
   "others": [
