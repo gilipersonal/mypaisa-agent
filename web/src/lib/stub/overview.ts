@@ -18,8 +18,9 @@ import type {
 	WealthCard
 } from '#lib/wealth/overview.ts';
 import { dayLabel, dayParts, monthsBetween, shortDay } from './dates.ts';
-import type { RecordCurrency, Share, StubAsset, StubDebt, StubHousehold } from './household.ts';
+import type { Change, RecordCurrency, Share, StubAsset, StubDebt, StubHousehold } from './household.ts';
 import { HOUSEHOLD, liquidityOf, toGbp, totals, weight, type Totals, type View } from './sums.ts';
+import { CARD_NOV, EMI_NOV, emiFigures } from './checkins.ts';
 
 const RATE_DAY = 'Fri 23 Oct';
 const FOOT = 'Illustrative figures. Figures from the engine and the price registry; nothing here can trade.';
@@ -96,6 +97,19 @@ function inDisplay(t: Totals, currency: DisplayCurrency, fx: number) {
 	};
 }
 
+/** A change to a debt that a check-in recorded (MA-205): what it moved the view's net worth by, in pounds, and its words. */
+function checkInChange(h: StubHousehold, view: View, change: Change) {
+	if (change.line === undefined) return undefined;
+	const debt = [...h.debts, ...h.closed].find((d) => d.id === change.recordId);
+	if (!debt) return undefined;
+	const now = h.closed.includes(debt) ? 0 : debt.balance;
+	const moved =
+		change.before === undefined ? 0 : toGbp(change.before - now, debt.ccy, h.fx) * weight(debt.owners, view);
+	// What is owed is rounded once, so the total moves by the change in that rounded sum.
+	const owed = h.debts.reduce((all, d) => all + toGbp(d.balance, d.ccy, h.fx) * weight(d.owners, view), 0);
+	return { added: Math.round(owed + moved) - Math.round(owed), at: change.at, line: change.line };
+}
+
 function hero(h: StubHousehold, view: View, currency: DisplayCurrency, t: Totals, shown: number): Hero {
 	const over = `Net worth · ${dayLabel(h.today)}`;
 	const rateLine = `£1 = ₹${h.fx.toFixed(2)} · ECB reference rate, ${RATE_DAY} · prices at the ${RATE_DAY} close`;
@@ -112,8 +126,11 @@ function hero(h: StubHousehold, view: View, currency: DisplayCurrency, t: Totals
 	const across = `Across ${plural(t.nAssets + t.nDebts, 'record')} in ${where}`;
 	const change = h.lastChange;
 	const record = change && h.assets.find((a) => a.id === change.recordId);
-	const added = record ? toGbp(record.value, record.ccy, h.fx) * weight(record.owners, view) : 0;
-	if (!change || !record || added === 0) return { over, net, line: across, rate: rateLine };
+	// MA-205: a payment a check-in recorded moves a debt; Undo says so with no figure.
+	const paid = change && checkInChange(h, view, change);
+	if (paid?.added === 0) return { over, net, line: `at ${timeOf(paid.at)} · ${paid.line}`, rate: rateLine };
+	const added = paid ? paid.added : record ? toGbp(record.value, record.ccy, h.fx) * weight(record.owners, view) : 0;
+	if (!change || (!record && !paid) || added === 0) return { over, net, line: across, rate: rateLine };
 
 	const inr = currency === 'INR';
 	const delta = inr ? Math.round(added * h.fx) : Math.round(added);
@@ -124,7 +141,7 @@ function hero(h: StubHousehold, view: View, currency: DisplayCurrency, t: Totals
 		delta: money(delta, currency, '▲ '),
 		rollFrom: whole(shown - delta),
 		changedAt: change.at.toISOString(),
-		line: `at ${timeOf(change.at)} · ${record.name}, ${change.how}${crore}`,
+		line: `at ${timeOf(change.at)} · ${paid ? paid.line : `${record?.name ?? ''}, ${change.how}`}${crore}`,
 		rate: rateLine
 	};
 }
@@ -354,7 +371,16 @@ function due(h: StubHousehold, view: View): WealthCard {
 		hdfc?.payment !== undefined &&
 			dueItem(h, '2026-11-05', 'hdfc', {
 				title: 'Home loan EMI · HDFC',
-				note: 'India · Arun',
+				...emiDue(h, hdfc.balance),
+				fig: money(hdfc.payment, hdfc.ccy),
+				chip: h.answerOf(EMI_NOV)?.answer === 'paid' ? { tone: 'add', text: 'Done' } : asks
+			}),
+		// MA-205: once November's EMI is paid, December's joins what is due.
+		hdfc?.payment !== undefined &&
+			h.answerOf(EMI_NOV)?.answer === 'paid' &&
+			dueItem(h, emiFigures().next, 'hdfc', {
+				title: 'Home loan EMI · HDFC',
+				note: 'India · Arun · December’s',
 				fig: money(hdfc.payment, hdfc.ccy),
 				chip: asks
 			}),
@@ -384,10 +410,26 @@ function due(h: StubHousehold, view: View): WealthCard {
 			{ kind: 'due', items },
 			{
 				kind: 'text',
-				text: 'Also Fri 20 Nov: the Barclaycard bill, from the statement on Sun 1 Nov. Each check-in arrives in the chat; one tap records it.'
+				// MA-205: the card bill paid in its check-in leaves what is due.
+				text:
+					h.answerOf(CARD_NOV)?.answer === 'paid'
+						? 'Each check-in arrives in the chat; one tap records it.'
+						: 'Also Fri 20 Nov: the Barclaycard bill, from the statement on Sun 1 Nov. Each check-in arrives in the chat; one tap records it.'
 			}
 		]
 	};
+}
+
+/** November's EMI as its check-in left it (MA-205; board Web v4 · Check-ins): paid, with what is left to pay and the
+ * row ticked to Done; open again after Undo; or as it was asked. */
+function emiDue(h: StubHousehold, balance: number): Pick<DueItem, 'note' | 'noteFig' | 'done'> {
+	const answer = h.answerOf(EMI_NOV);
+	if (answer?.answer === 'paid') {
+		return { note: `Paid ${timeOf(answer.at)} · left to pay`, noteFig: money(balance, 'INR'), done: true };
+	}
+	if (answer?.answer === 'undone')
+		return { note: 'Open again after Undo · left to pay', noteFig: money(balance, 'INR') };
+	return { note: 'India · Arun' };
 }
 
 function debtNote(h: StubHousehold, d: StubDebt): string {

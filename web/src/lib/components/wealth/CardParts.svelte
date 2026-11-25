@@ -61,7 +61,7 @@
 	{:else if part.kind === 'due'}
 		<div class="drows">
 			{#each part.items as it (it.id)}
-				<div class="drow">
+				<div class="drow" class:moved={it.done}>
 					<div class="dtile" class:today={it.today}>
 						<span class="mp-cap mp-w6">{it.weekday}</span>
 						<span class="mp-t3">{it.day}</span>

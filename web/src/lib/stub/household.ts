@@ -96,6 +96,16 @@ export interface Change {
 	recordId: string;
 	at: Date;
 	how: string;
+	/** For a payment to a debt (MA-205): its balance before, so Home can say what the payment moved. */
+	before?: number;
+	/** What Home's hero says of it, when that is not "<the record>, <how>" (MA-205). */
+	line?: string;
+}
+
+/** A check-in's answer, as the stub keeps it (MA-205): which answer, and when. */
+export interface StubAnswer {
+	answer: string;
+	at: Date;
 }
 
 /** A figure of the Projection an admin corrected in place: kept with its audit line, as the write service would. */
@@ -130,6 +140,8 @@ export class StubHousehold {
 	#assets: StubAsset[];
 	#debts: StubDebt[];
 	#corrections: StubCorrection[] = [];
+	#answers = new Map<string, StubAnswer>();
+	#closed: StubDebt[] = [];
 
 	constructor(options: { empty?: boolean; me?: string } = {}) {
 		this.#assets = options.empty ? [] : [...SET.assets];
@@ -168,5 +180,36 @@ export class StubHousehold {
 	add(asset: StubAsset, at: Date, how: string): void {
 		this.#assets = [...this.#assets.filter((a) => a.id !== asset.id), asset];
 		this.lastChange = { recordId: asset.id, at, how };
+	}
+
+	/** The check-ins' answers (MA-205), by the check-in's id. */
+	answerOf(id: string): StubAnswer | undefined {
+		return this.#answers.get(id);
+	}
+
+	/** Keeps a check-in's answer; none clears it. */
+	answer(id: string, answer: StubAnswer | undefined): void {
+		if (answer) this.#answers.set(id, answer);
+		else this.#answers.delete(id);
+	}
+
+	/** Replaces a debt with its new state, as a payment the check-in recorded leaves it, and remembers the change. */
+	setDebt(debt: StubDebt, change?: Change): void {
+		this.#debts = this.#debts.map((d) => (d.id === debt.id ? debt : d));
+		if (change) this.lastChange = change;
+	}
+
+	/** Closes a debt paid off in full: it leaves what is owed and is kept in the history. */
+	closeDebt(id: string, change?: Change): void {
+		const debt = this.#debts.find((d) => d.id === id);
+		if (!debt) return;
+		this.#debts = this.#debts.filter((d) => d.id !== id);
+		this.#closed = [...this.#closed, debt];
+		if (change) this.lastChange = change;
+	}
+
+	/** The debts closed by a payoff, kept in the history. */
+	get closed(): readonly StubDebt[] {
+		return this.#closed;
 	}
 }

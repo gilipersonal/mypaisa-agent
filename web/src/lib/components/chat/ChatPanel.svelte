@@ -101,7 +101,11 @@
 <Timeline
 	{messages}
 	onChoose={(id: string, chip: string) => void chat.choose(id, chip)}
-	onTap={(card: string, action: CardAction) => void chat.tap(card, action)}
+	onTap={(card: string, action: CardAction) => {
+		// MA-205: "Type HDFC's figure" puts the caret in the composer, where the amount is typed.
+		if (action === 'checkin.type') field?.focus();
+		void chat.tap(card, action);
+	}}
 />
 <p class="sr-only" aria-live="polite">{said}</p>
 
