@@ -3,6 +3,7 @@
 import type { components } from '../api-types.d.ts';
 import { emptyTimeline, type Timeline } from '../chat/timeline.ts';
 import type { DisplayCurrency, Overview } from '../wealth/overview.ts';
+import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '../wealth/projection.ts';
 import { toApiError, type ApiClient } from './client.ts';
 import type { WealthSource } from './wealth.ts';
 
@@ -29,13 +30,33 @@ export function chatTimelineQuery() {
 /** The household's wealth (MA-208): everything under `all` is refetched when the stream says `records.changed`. */
 export const wealthKeys = {
 	all: ['wealth'] as const,
-	overview: (view: string, currency: DisplayCurrency) => ['wealth', 'overview', view, currency] as const
+	overview: (view: string, currency: DisplayCurrency) => ['wealth', 'overview', view, currency] as const,
+	projection: (horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency) =>
+		['wealth', 'projection', horizon, money, currency] as const,
+	correctProjection: ['wealth', 'projection', 'correct'] as const
 };
 
 export function overviewQuery(source: WealthSource, view: string, currency: DisplayCurrency) {
 	return {
 		queryKey: wealthKeys.overview(view, currency),
 		queryFn: (): Promise<Overview> => source.overview(view, currency)
+	};
+}
+
+/** The Projection's Net worth view (MA-224): one entry for each horizon, money and currency a member looks at. */
+export function projectionQuery(source: WealthSource, horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency) {
+	return {
+		queryKey: wealthKeys.projection(horizon, money, currency),
+		queryFn: (): Promise<Projection> => source.projection(horizon, money, currency)
+	};
+}
+
+/** An admin's correction in place on the Projection. Whoever runs it reads the wealth again once it is kept
+ * (`wealthKeys.all`), as a `records.changed` frame does. */
+export function correctProjectionMutation(source: WealthSource) {
+	return {
+		mutationKey: wealthKeys.correctProjection,
+		mutationFn: (correction: ProjectionCorrection): Promise<void> => source.correctProjection(correction)
 	};
 }
 

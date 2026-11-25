@@ -9,7 +9,15 @@ export const TestIDs = {
 	tabAssets: 'mp.tab.assets',
 	tabProjection: 'mp.tab.projection',
 	tabMore: 'mp.tab.more',
-	homeHero: 'mp.home.hero'
+	homeHero: 'mp.home.hero',
+	projectionView: 'mp.projection.view',
+	projectionHero: 'mp.projection.hero',
+	projectionMoney: 'mp.projection.money',
+	projectionFan: 'mp.projection.fan',
+	projectionHorizon: 'mp.projection.horizon',
+	projectionMilestones: 'mp.projection.milestones',
+	projectionPlan: 'mp.projection.plan',
+	projectionAssumptions: 'mp.projection.assumptions'
 } as const;
 
 export type TestID = (typeof TestIDs)[keyof typeof TestIDs];
