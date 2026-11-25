@@ -678,15 +678,18 @@ export function buildOverview(h: StubHousehold, view: View, currency: DisplayCur
 		foot: FOOT
 	};
 	if (h.empty) return { ...base, rows: [...chartCards(known, currency), ...emptyRows()] };
+	// The two columns under the chart cards are balanced by height (Arun, 25 Nov 2026: the meters card left the left
+	// column short, a gap beside What's due): By country, By member and the run-off on the left; Liquid and locked and
+	// What's due on the right; then Maturing next beside Largest assets.
 	const left = [byCountry(h, known, t, d, currency)];
 	if (known === HOUSEHOLD) left.push(byMember(t, d, currency));
+	left.push(runoff(h, known, d, currency));
 	return {
 		...base,
 		rows: [
 			...chartCards(known, currency),
 			{ layout: 'two', columns: [left, [liquidity(h, known, t, d, currency), due(h, known)]] },
-			{ layout: 'two', columns: [[runoff(h, known, d, currency)], [maturing(h, known)]] },
-			{ layout: 'one', columns: [[largest(h, known, currency)]] }
+			{ layout: 'two', columns: [[maturing(h, known)], [largest(h, known, currency)]] }
 		]
 	};
 }
