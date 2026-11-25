@@ -16,6 +16,7 @@
 	import { chatKeys } from '#lib/api/queries.ts';
 	import { CheckInScript, checkInScenario } from '#lib/chat/checkins.ts';
 	import { FakeTransport } from '#lib/chat/fake.ts';
+	import { browserSession } from '#lib/auth/session.ts';
 	import { Outbox } from '#lib/chat/outbox.ts';
 	import { ChatSession, provideChat } from '#lib/chat/session.svelte.ts';
 	import { emptyTimeline, type Timeline } from '#lib/chat/timeline.ts';
@@ -63,7 +64,8 @@
 	// The stubbed household: the design figure set, or nothing with ?stub=empty, as the owner or with ?as=asha as a
 	// member who is not an admin. Each phase's backend story puts the api behind provideWealth, and the pages do not
 	// change.
-	const signedIn = signedInAs(window.location.search);
+	// ?as= first (a dev switch), else whoever the stub session signed in on this browser (MA-185: Asha after her join)
+	const signedIn = signedInAs(window.location.search) ?? browserSession().current()?.member;
 	const household = new StubHousehold({
 		empty: startsEmpty(window.location.search),
 		...(signedIn ? { me: signedIn } : {})

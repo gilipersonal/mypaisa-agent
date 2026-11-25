@@ -1,0 +1,165 @@
+<meta charset="utf-8">
+<title>Web Sign-in Options</title>
+
+<meta name="claude:viewport-fit-sides" content="cover">
+
+<style>
+/* Layout: one reading column. The three options side by side first, then each one in full as tabs over a framed board, then what is left to settle. Warm ledger tokens (MyPaisa DS v1). */
+:root {
+  --bg: #F6F4F1; --surface: #FFFFFF; --fill: #F0EDE8; --line: #E4E0DA; --ink: #14171F; --ink2: #4E5462;
+  --accent: #C2381F; --on-accent: #FFFFFF; --hero: #13213A; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #1D7A3E; --good-bg: #E2F2E7; --focus: #2453C9;
+  --ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+  --round: ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0A0F18; --surface: #151C27; --fill: #1E2633; --line: #283141; --ink: #F3F5F8; --ink2: #C5CCD7;
+  --accent: #FFAF9B; --on-accent: #1A0B06; --hero: #1A2944; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #5BDB8B; --good-bg: #16301F; --focus: #8FB2FF; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0A0F18; --surface: #151C27; --fill: #1E2633; --line: #283141; --ink: #F3F5F8; --ink2: #C5CCD7;
+  --accent: #FFAF9B; --on-accent: #1A0B06; --hero: #1A2944; --hero-ink: #FFFFFF; --hero-ink2: #B7C2D6; --good: #5BDB8B; --good-bg: #16301F; --focus: #8FB2FF; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--ui); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 32px; }
+.top { background: var(--hero); color: var(--hero-ink); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.top .k { font: 600 13px/18px var(--mono); color: var(--hero-ink2); }
+.top h1 { margin: 0; font: 800 34px/40px var(--round); letter-spacing: -0.02em; text-wrap: balance; }
+.top p { margin: 0; max-width: 70ch; color: var(--hero-ink2); }
+.top q { color: var(--hero-ink); }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.nav a { color: var(--hero-ink); background: rgba(255,255,255,.1); border-radius: 999px; padding: 10px 14px; text-decoration: none; font: 600 14px/20px var(--ui); }
+.nav a:focus-visible, .tabs button:focus-visible, .open a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.item { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 16px; min-width: 0; }
+.ihead { display: flex; gap: 14px; align-items: flex-start; }
+.ikey { flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--hero); color: var(--hero-ink); display: grid; place-items: center; font: 800 20px/1 var(--round); }
+.ihead > div { min-width: 0; }
+h2 { margin: 0; font: 700 22px/28px var(--ui); letter-spacing: -0.015em; text-wrap: balance; }
+.prob { margin: 4px 0 0; color: var(--ink2); max-width: 75ch; }
+.prob b { color: var(--ink); }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tabs button { min-height: 44px; padding: 0 14px; border-radius: 12px; border: 0; background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); font: 600 15px/20px var(--ui); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-align: left; }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+.rec { font: 700 12px/16px var(--ui); padding: 2px 8px; border-radius: 999px; background: var(--good-bg); color: var(--good); }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.opt { background: var(--surface); border-radius: 16px; padding: 12px 14px; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.opt.on { box-shadow: inset 0 0 0 2px var(--accent); }
+.opt p { margin: 0; font-size: 15px; line-height: 21px; }
+.opt .cost { margin-top: 6px; color: var(--ink2); }
+.frame { border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); background: var(--fill); }
+.frame iframe { display: block; width: 100%; height: min(980px, 88vh); border: 0; }
+.frame iframe.side { height: auto; aspect-ratio: 1240 / 1300; }   /* the three side by side scale with the panel, so its height does too: nothing to scroll inside */
+.open { margin: 0; font-size: 14px; color: var(--ink2); }
+.open a { color: var(--accent); }
+.list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; max-width: 80ch; color: var(--ink2); }
+.list b { color: var(--ink); }
+.foot { color: var(--ink2); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; margin: 0; }
+@media (max-width: 520px) { .top h1 { font-size: 28px; line-height: 34px; } .frame iframe { height: 80vh; } .frame iframe.side { height: auto; } }
+</style>
+<div class="wrap">
+  <header class="top">
+    <span class="k">MA-185 &middot; options round &middot; Wed 25 Nov 2026</span>
+    <h1>Signing in on the web, three ways</h1>
+    <p>You asked for every designed web page on stubbed data, <q>including login page</q>, with an options round for each planned area before it is built. Sign-in is the first. Its boards today are planned, not picked, and they are three different things: a navy split page for signing in, a specification sheet for the refusals, and the join page you picked on MA-301.</p>
+    <p>Below are three ways to make them one. Each is drawn for the same six moments, on a laptop and on a phone, in light and dark: signing in, an account linked to nobody, a paused member, the passkey offer, an invite link, and waiting, offline and no answer. The words are the same in all three, so what differs is the page. Nothing is built and no picked board has changed.</p>
+    <p>Pick one, or say &ldquo;none of these&rdquo; and what to change. The first tab is the one I would pick, with the reason.</p>
+    <nav class="nav" aria-label="On this page"><a href="#side">Side by side</a><a href="#full">Each one in full</a><a href="#settle">Yours to settle</a></nav>
+  </header>
+
+  <section class="item" id="side">
+    <div class="ihead"><span class="ikey">1</span><div><h2>The three, side by side</h2><p class="prob">The sign-in page of each option: on a laptop, drawn small to show the shape of the page, and on a phone under it.</p></div></div>
+    <div class="frame"><iframe id="f-side" class="side" title="The three options side by side"></iframe></div>
+  </section>
+
+  <section class="item" id="full">
+    <div class="ihead"><span class="ikey">2</span><div><h2>Each one in full</h2><p class="prob">Every moment of the option in the open tab. Frames wider than the panel are scaled to fit it, with a button for true size; the chips at the top of the panel jump to a moment.</p></div></div>
+    <div class="tabs" role="tablist" aria-label="Options for signing in on the web"><button type="button" role="tab" id="t-1a" aria-selected="true" data-opt="1a">1a &middot; One card, everything in place <span class="rec">Recommended</span></button><button type="button" role="tab" id="t-1b" aria-selected="false" data-opt="1b">1b &middot; The navy door</button><button type="button" role="tab" id="t-1c" aria-selected="false" data-opt="1c">1c &middot; A sheet over the app</button></div>
+    <div class="opts">
+      <div class="opt on" data-opt="1a"><p class="why"><b>1a &middot; One card, everything in place.</b> One card on the warm ground holds every moment. The join page you picked is already this card; signing in, a refusal, the passkey offer and offline become the same one. A refusal is said inside the card and the buttons stay live where they were, so trying the right account is one tap. It is the smallest build, and the same page at every width and in the installed app&rsquo;s own window.</p><p class="cost"><b>Trade-off:</b> No welcome: the page says nothing about what MyPaisa is. On a laptop most of the window is plain ground.</p></div>
+      <div class="opt" data-opt="1b"><p class="why"><b>1b &middot; The navy door.</b> The window in two halves, as today&rsquo;s planned sign-in page. The navy half says what this is: the household&rsquo;s line when you sign in, the invitation itself when you open an invite link. The other half is the way in, in the same place on every page. An invitee&rsquo;s first sight is the invitation, large, on the navy of Home&rsquo;s net worth card.</p><p class="cost"><b>Trade-off:</b> Half the window repeats one line at every sign-in. On a phone the navy pushes the buttons into the lower half. The join page you picked changes shape, though not its words. A paused member&rsquo;s one line sits beside an empty navy half.</p></div>
+      <div class="opt" data-opt="1c"><p class="why"><b>1c &middot; A sheet over the app.</b> The app is already there as bones: the sidebar with the mark, the page as blank blocks, no figure and no name. Signing in is a sheet over it, the size and corner of the chat&rsquo;s sheet. When you are in, the sheet drops and the blocks fill; the passkey offer shows Home behind it. The same sheet could later serve signing in again when a session ends, and the second check.</p><p class="cost"><b>Trade-off:</b> Blank blocks before sign-in can read as a page that failed to load, and a refused or paused person is left looking at an app they cannot open. The shell must draw with no session, which the stub does not need. It is the largest build.</p></div>
+    </div>
+    <p class="prob"><b>If picked, it changes:</b> the web app gains a sign-in page and a join page, with a stub that lands on Home (no real sign-in yet). <b>1a:</b> one card on two routes; Web v4 &middot; Login, invite and responsive has its section 1 redrawn and its section 3 kept. <b>1b:</b> a two-pane page; sections 1 and 3 are both redrawn. <b>1c:</b> the shell learns to draw signed out and gains the sheet; sections 1 and 3 are both redrawn, and Web v4 &middot; Shell and chat gains the signed-out shell. In all three, Browser &middot; Sign in in Web v4 &middot; Shell and chat is redrawn or retired, and the trace follows.</p>
+    <div class="frame"><iframe id="f-full" title="The open option, every moment"></iframe></div>
+    <p class="open"><a id="o-full" target="_blank" rel="noopener">Open this option on its own</a> &middot; the whole canvas, all three at true size: <a id="o-canvas" target="_blank" rel="noopener">Web sign-in.dc.html</a></p>
+  </section>
+
+  <section class="item" id="settle">
+    <div class="ihead"><span class="ikey">3</span><div><h2>Yours to settle with the pick</h2><p class="prob">Four things the boards had to assume. Each is drawn the same way in all three options.</p></div></div>
+    <ol class="list">
+      <li><b>A removed member.</b> ARCHITECTURE gives a paused member one line and says nothing for a removed one. Drawn: a removed member meets the &ldquo;isn&rsquo;t linked to MyPaisa&rdquo; page, because their account is linked to no member any more. Say if they should get a line of their own.</li>
+      <li><b>How often the passkey is offered.</b> Drawn once per browser, straight after the first Apple or Google sign-in there. Not now is remembered on that browser, and You still offers it.</li>
+      <li><b>&ldquo;Get MyPaisa for iPhone&rdquo;.</b> Today&rsquo;s planned sign-in page ends with this link. It is left off here: the app comes by TestFlight invite, and the page says nothing else to a stranger. Say if you want it back.</li>
+      <li><b>Google&rsquo;s button.</b> All three draw Google&rsquo;s own mark and colours beside Apple&rsquo;s, where the join page you picked draws a tinted button with a blue G. Drawn as Google&rsquo;s own everywhere, the join page included.</li>
+    </ol>
+    <p class="prob"><b>The same in all three:</b> Apple&rsquo;s and Google&rsquo;s own buttons, Apple&rsquo;s first, then a passkey, with no password and nothing to type. Nothing about a household shows before sign-in; only an invite link names one. A paused member gets the one line and nothing else. The join page keeps the words and the rules you picked on MA-301. Offline reads as the chat sheet&rsquo;s banner does. The mark is still on these pages and arrives once, in the sidebar, when Home first paints.</p>
+  </section>
+
+  <p class="foot">Nothing here is built. After your pick, the chosen pages are carried into app-v1 with their remaining states, the trace marks MA-185 picked, and the build follows on stubbed data. Not drawn in this round: a link that has expired (it reads as the used one, with the time it ended), a passkey this device does not hold, 1920 wide, and the pages in the installed app&rsquo;s own window. Illustrative names and times.</p>
+</div>
+<script>
+(function () {
+  // Each panel's board, written here when the page is built; never read back from the page. The same paths twice:
+  // published as an Artifact, this page sits at the root of docs/design; opened from the repo
+  // (docs/design/reviews/MA-185/options.html, on any static server) it sits in its own folder, beside the board.
+  var AT_ROOT = {
+    "side": "reviews/MA-185/Web%20sign-in.dc.html?embed=all",
+    "t-1a": "reviews/MA-185/Web%20sign-in.dc.html?embed=1a",
+    "t-1b": "reviews/MA-185/Web%20sign-in.dc.html?embed=1b",
+    "t-1c": "reviews/MA-185/Web%20sign-in.dc.html?embed=1c",
+    "canvas": "reviews/MA-185/Web%20sign-in.dc.html"
+  };
+  var IN_PLACE = {
+    "side": "Web%20sign-in.dc.html?embed=all",
+    "t-1a": "Web%20sign-in.dc.html?embed=1a",
+    "t-1b": "Web%20sign-in.dc.html?embed=1b",
+    "t-1c": "Web%20sign-in.dc.html?embed=1c",
+    "canvas": "Web%20sign-in.dc.html"
+  };
+  var inPlace = /\/reviews\/MA-185\/options\.html$/.test(location.pathname);
+  var SRC = inPlace ? IN_PLACE : AT_ROOT;
+  if (inPlace) {   // a plain static server has no favicon to give: say there is none, so the browser does not ask
+    var icon = document.createElement('link');
+    icon.rel = 'icon';
+    icon.href = 'data:,';
+    document.head.appendChild(icon);
+  }
+  // The canvas around the frames follows this page's theme (the viewer's choice, else the system's); each frame
+  // keeps its own. A frame is pointed again only when its board changes: a new tab, or a change of theme.
+  var root = document.documentElement;
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function board(key) {
+    var s = Object.prototype.hasOwnProperty.call(SRC, key) ? SRC[key] : '';
+    if (!s) return '';
+    var t = root.getAttribute('data-theme');
+    var dark = t === 'dark' || (t !== 'light' && !!(mq && mq.matches));
+    return dark ? s + (s.indexOf('?') < 0 ? '?' : '&') + 'theme=dark' : s;
+  }
+  var side = document.getElementById('f-side'), full = document.getElementById('f-full');
+  var own = document.getElementById('o-full'), canvas = document.getElementById('o-canvas');
+  var current = 't-1a', shown = {};
+  function point(frame, name, s) {
+    if (s && shown[name] !== s) { shown[name] = s; frame.src = s; }
+  }
+  function paint() {
+    point(side, 'side', board('side'));
+    point(full, 'full', board(current));
+    own.href = board(current);
+    canvas.href = board('canvas');
+  }
+  paint();
+  if (window.MutationObserver) new MutationObserver(paint).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  if (mq && mq.addEventListener) mq.addEventListener('change', paint);
+  var tabs = document.querySelectorAll('.tabs button');
+  tabs.forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (!board(b.id)) return;
+      var o = b.getAttribute('data-opt');
+      tabs.forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+      document.querySelectorAll('.opt').forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-opt') === o); });
+      current = b.id;
+      paint();
+    });
+  });
+  var h = (location.hash || '').slice(1);
+  if (h && document.getElementById(h)) document.getElementById(h).scrollIntoView();
+})();
+</script>

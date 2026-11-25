@@ -424,7 +424,9 @@
         }
       ],
       "notes": "Drawn ahead of the story (MA-158, 25 Oct 2026); put through design-first's options round when it starts. Options round: /invite is drawn behind a card, Confirm and the second check (as MA-102), while the Agent Journey page shows the link at once. MA-161: its Telegram and Mini App boards are superseded (any browser boards stay as the web app's spec, ARCHITECTURE 8.4); these are its iOS boards, planned until Arun picks (/design-first). Its undrawn items still apply and are drawn on the iOS boards before it starts. Drawn: cancelling an invite: a card, Confirm, the second check and an audit row (b2 and c1 cancel at once; fix made, waiting on MA-160). Drawn: the invite page at dashboard(-dev).mypaisapp.com/join/<token> opened on a device without the app: what MyPaisa is, where to get it (TestFlight while it is private), and that the link works once (served by MA-73). Drawn: its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279). MA-301 (Arun, 2 Nov 2026, e 1a; settled 23 Nov: \"Browser joins\"): the invite page a browser shows is now a join page, Continue with Apple and Continue with Google creating the member, then a passkey offer; it supersedes the page above that said where to get the app.",
-      "undrawn": []
+      "undrawn": [
+        "the web's cancel-an-invite card and the first-run setup row, which left Web v4 \u00b7 Login, invite and responsive when MA-185 redrew its section 1 as 1b (25 Nov 2026); iOS still draws iPhone \u00b7 Cancel invite confirm \u00b7 Dark"
+      ]
     },
     {
       "key": "MA-33",
@@ -3585,7 +3587,7 @@
         "13"
       ],
       "ui": true,
-      "design": "planned",
+      "design": "picked",
       "boards": [
         {
           "project": "app",
@@ -3606,10 +3608,65 @@
           "project": "app",
           "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
           "board": "Browser \u00b7 Login, Refusals & Invite Landing \u00b7 Phone 390"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
+          "board": "Browser \u00b7 Join from an invite \u00b7 Desktop \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
+          "board": "Browser \u00b7 Join from an invite \u00b7 Phone 390 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
+          "board": "Browser \u00b7 Join from an invite \u00b7 Phone 390 \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
+          "board": "Browser \u00b7 Join from an invite \u00b7 Phone 320 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
+          "board": "Browser \u00b7 Join, a passkey after Apple \u00b7 Desktop \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
+          "board": "Browser \u00b7 Join, a passkey after Apple \u00b7 Phone 390 \u00b7 Light"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
+          "board": "Browser \u00b7 Join, the link already used \u00b7 Desktop \u00b7 Dark"
+        },
+        {
+          "project": "app",
+          "file": "Web v4 \u00b7 Login, invite and responsive.dc.html",
+          "board": "Browser \u00b7 Join, the link already used \u00b7 Phone 390 \u00b7 Light"
         }
       ],
-      "notes": "The login board was picked with Telegram's button on it; MA-161 redrew it (Browser \u00b7 Login in Browser 2.dc.html), so it is planned again until Arun looks at it in this story's options round. Drawn: the sign-in page with Sign in with Apple, Google and a passkey, without Telegram. Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3). Drawn: the Prototype's Login link to the Telegram-era Link a Google account flow, removed or redrawn for adding a second sign-in (Prototype, Wealth; MA-161). Drawn: Browser \u00b7 Login's refusals: an account linked to nobody, and a member removed or paused (an invite link opened in a browser shows MA-32's invite page, not the login page; joining is in the iPhone app, ARCHITECTURE 4.5). Drawn: its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279). MA-301 (23 Nov 2026): an invite link in a browser shows the join page, which creates the member; \"a browser never joins\" is overturned.",
-      "undrawn": []
+      "notes": "The login board was picked with Telegram's button on it; MA-161 redrew it (Browser \u00b7 Login in Browser 2.dc.html), so it is planned again until Arun looks at it in this story's options round. Drawn: the sign-in page with Sign in with Apple, Google and a passkey, without Telegram. Drawn on MA-193 in the styles Arun picked on 26 Oct 2026 (the shell 1a, the dashboard 1a, the check-in card 1b, the Projection 1a); its own options round runs when it starts (rule 3). Drawn: the Prototype's Login link to the Telegram-era Link a Google account flow, removed or redrawn for adding a second sign-in (Prototype, Wealth; MA-161). Drawn: Browser \u00b7 Login's refusals: an account linked to nobody, and a member removed or paused (an invite link opened in a browser shows MA-32's invite page, not the login page; joining is in the iPhone app, ARCHITECTURE 4.5). Drawn: its screens drawn once in the consolidated v4 design, on the whole-wealth household and in the picked shell 1a, at every door it needs, in place of its first-generation boards (MA-279). MA-301 (23 Nov 2026): an invite link in a browser shows the join page, which creates the member; \"a browser never joins\" is overturned. Options round on 25 Nov 2026 (docs/design/reviews/MA-185/, the private Artifact https://claude.ai/artifact/3Qi16PACWiVmD4WAtYnqAs): 1a one card, 1b the navy door, 1c a sheet over the app. Picked by Arun on 25 Nov 2026: 1b (\"For login, I want Navy door option\"), carried into Web v4 \u00b7 Login, invite and responsive (sections 1 and 3 redrawn; the cited set names kept, now the eight 1b pages at 1440 and at 390) and the two sign-in boards of Web v4 \u00b7 Shell and chat. The round's four questions stand as drawn until Arun says otherwise: a removed member meets the isn't-linked page; the passkey offer once per browser, after the first Apple or Google sign-in there; no Get MyPaisa for iPhone link; Google's own button, the join page included. Built on stubbed data, web only (Arun, 25 Nov 2026: the web app first, then iOS): the sign-in and join pages of 1b without the shell; a stub session on the browser, so the app opens signed out on /sign-in, Apple, Google or a passkey (stubbed, no network) lands on Home, with the passkey offer once per browser after a first Apple or Google sign-in; an invite link (/join/<token>) shows the join page, then the offer (You're in the Dutta household), then Home as the member who joined; a Sign out row on More. Review switches: /sign-in?state=waiting|offline|noanswer|unlinked|paused|passkey, /join/used, /join/expired; ?as=, ?stub=, ?checkin=, ?forecast= and ?local count as signed in. Filled by judgement (Arun, 25 Nov 2026), to be checked by eye: the expired link's words; Joining\u2026 while joining; two halves from 1024 px, a band above the buttons below; a passkey sign-in skips the offer; the stub waits 700 ms so the waiting state shows. Not built here: real sign-in, the cookie and CORS (MA-109, MA-143, MA-73), iOS.",
+      "undrawn": [
+        "an expired invite link (a note on the board, not a frame; built by judgement as the used page with the time it ended)",
+        "a passkey this device does not hold",
+        "a session that ends while the app is open"
+      ],
+      "code": [
+        "web/src/lib/auth/**",
+        "web/src/lib/components/auth/**",
+        "web/src/lib/styles/auth.css",
+        "web/src/routes/sign-in/**",
+        "web/src/routes/join/**",
+        "web/src/routes/+layout.svelte",
+        "web/src/routes/+layout.ts",
+        "web/src/routes/more/+page.svelte",
+        "web/src/lib/components/shell/AppShell.svelte"
+      ]
     },
     {
       "key": "MA-193",
@@ -7734,7 +7791,7 @@
           "board": "iPad \u00b7 \u2318K palette, nothing typed \u00b7 Light"
         }
       ],
-      "notes": "Arun, 2 Nov 2026, from the deep scan's P2-2, P2-3, P2-4, P2-5 and P1-7: drawn as a /design-first options round in docs/design/reviews/MA-301/ and published as a private Claude Artifact (https://claude.ai/artifact/YCuDtgRHdMHtj6Xewte6g5). Arun picked on 2 Nov 2026: a 1b (the title is the picker), b 1a (questions first, then a short Confirm), c 1c (the chat beside only from 1393, on the web and the iPad), d 1a (hairlines, sentence-case labels), e 1a (one join page, two live buttons), f 1a (platform type, Lucide on the web), g 1a (one palette: go, find or ask). Settled: does a browser join the household? Arun, 23 Nov 2026: \"Browser joins\" (ARCHITECTURE 4.5 changed; MA-32, MA-73, MA-185 and MA-331 with it). Settled: does iPad's \u2318K open the same palette? Arun, 23 Nov 2026: \"Same palette on iPad\". Carried into ios-v1, app-v1 and ds-v1 only, not Prototype v5 (Arun, 23 Nov 2026: \"no need to update Prototype v5, just the ios-v1 and app-v1 and design system updates are all that is needed.. make it a rule\"; plan-sync rule 5). Follow-ups: MA-340 (the web app and the boards drop Google Fonts and Material Symbols), MA-341 (the Maestro plan's band GIF).",
+      "notes": "Arun, 2 Nov 2026, from the deep scan's P2-2, P2-3, P2-4, P2-5 and P1-7: drawn as a /design-first options round in docs/design/reviews/MA-301/ and published as a private Claude Artifact (https://claude.ai/artifact/YCuDtgRHdMHtj6Xewte6g5). Arun picked on 2 Nov 2026: a 1b (the title is the picker), b 1a (questions first, then a short Confirm), c 1c (the chat beside only from 1393, on the web and the iPad), d 1a (hairlines, sentence-case labels), e 1a (one join page, two live buttons), f 1a (platform type, Lucide on the web), g 1a (one palette: go, find or ask). Settled: does a browser join the household? Arun, 23 Nov 2026: \"Browser joins\" (ARCHITECTURE 4.5 changed; MA-32, MA-73, MA-185 and MA-331 with it). Settled: does iPad's \u2318K open the same palette? Arun, 23 Nov 2026: \"Same palette on iPad\". Carried into ios-v1, app-v1 and ds-v1 only, not Prototype v5 (Arun, 23 Nov 2026: \"no need to update Prototype v5, just the ios-v1 and app-v1 and design system updates are all that is needed.. make it a rule\"; plan-sync rule 5). Follow-ups: MA-340 (the web app and the boards drop Google Fonts and Material Symbols), MA-341 (the Maestro plan's band GIF). Superseded in part by MA-185 1b (Arun, 25 Nov 2026): the join page's one-card layout is now the navy door's two halves; e 1a's words and flow (a browser joins, Continue with Apple or Google, then a passkey offer) stand.",
       "code": [
         "docs/design/reviews/MA-301/",
         "web/src/lib/styles/tokens.css"
