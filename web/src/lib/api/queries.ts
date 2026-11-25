@@ -2,6 +2,7 @@
  * its fetch. Plain option objects with no framework import, so Svelte Query and React Query take the same definitions. */
 import type { components } from '../api-types.d.ts';
 import { emptyTimeline, type Timeline } from '../chat/timeline.ts';
+import type { BudgetForecast } from '../wealth/forecast.ts';
 import type { DisplayCurrency, Overview } from '../wealth/overview.ts';
 import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '../wealth/projection.ts';
 import { toApiError, type ApiClient } from './client.ts';
@@ -33,7 +34,9 @@ export const wealthKeys = {
 	overview: (view: string, currency: DisplayCurrency) => ['wealth', 'overview', view, currency] as const,
 	projection: (horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency) =>
 		['wealth', 'projection', horizon, money, currency] as const,
-	correctProjection: ['wealth', 'projection', 'correct'] as const
+	correctProjection: ['wealth', 'projection', 'correct'] as const,
+	budgetForecast: (horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency, year: number | undefined) =>
+		['wealth', 'forecast', horizon, money, currency, year ?? 'first'] as const
 };
 
 export function overviewQuery(source: WealthSource, view: string, currency: DisplayCurrency) {
@@ -57,6 +60,20 @@ export function correctProjectionMutation(source: WealthSource) {
 	return {
 		mutationKey: wealthKeys.correctProjection,
 		mutationFn: (correction: ProjectionCorrection): Promise<void> => source.correctProjection(correction)
+	};
+}
+
+/** The Projection's Budget forecast view (MA-262): one entry for each horizon, money, currency and year looked at. */
+export function budgetForecastQuery(
+	source: WealthSource,
+	horizon: Horizon,
+	money: MoneyBasis,
+	currency: DisplayCurrency,
+	year?: number
+) {
+	return {
+		queryKey: wealthKeys.budgetForecast(horizon, money, currency, year),
+		queryFn: (): Promise<BudgetForecast> => source.budgetForecast(horizon, money, currency, year)
 	};
 }
 

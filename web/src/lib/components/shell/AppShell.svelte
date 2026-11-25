@@ -17,6 +17,7 @@
 	import Mark from '#lib/components/brand/Mark.svelte';
 	import ChatPanel from '#lib/components/chat/ChatPanel.svelte';
 	import { provideWealth } from '#lib/components/wealth/context.ts';
+	import { forecastRunOf } from '#lib/stub/forecast.ts';
 	import { StubHousehold } from '#lib/stub/household.ts';
 	import { StubWealthSource, signedInAs, startsEmpty } from '#lib/stub/source.ts';
 	import { provideShell } from './actions.ts';
@@ -45,7 +46,8 @@
 		empty: startsEmpty(window.location.search),
 		...(signedIn ? { me: signedIn } : {})
 	});
-	provideWealth(new StubWealthSource(household));
+	// ?forecast=pot or ?forecast=wedding opens the Budget forecast on a later state of the evening it draws (MA-262).
+	provideWealth(new StubWealthSource(household, undefined, forecastRunOf(window.location.search)));
 	providePrivacy(new PrivacyMode(storage()));
 
 	// MA-352 swaps the fake for the transport over the chat api and the stream; nothing else here changes.

@@ -4,13 +4,15 @@
 	// with its milestones on the line, the shortcut chips that ask in the chat, then the milestones, the plan items and
 	// the assumptions with their sources. An admin corrects an assumption or a plan item in place; nothing is created
 	// or deleted here. £ or ₹ follow the member's own choice (made on Home until the app's currency pill, MA-279), and
-	// the eye hides every amount. Plans (MA-222) and Budget forecast (MA-262) are their own stories, named in the menu.
+	// the eye hides every amount. Plans (MA-222) is its own story, named in the menu; Budget forecast is MA-262's view,
+	// in place under the same title, keeping the horizon and the money.
 	import { createMutation, createQuery, keepPreviousData, useQueryClient } from '@tanstack/svelte-query';
 	import { tick } from 'svelte';
 	import Eye from '@lucide/svelte/icons/eye';
 	import EyeOff from '@lucide/svelte/icons/eye-off';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import { correctProjectionMutation, projectionQuery, wealthKeys } from '#lib/api/queries.ts';
+	import BudgetForecast from '#lib/components/forecast/BudgetForecast.svelte';
 	import { useShell } from '#lib/components/shell/actions.ts';
 	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
 	import Amount from '#lib/components/wealth/Amount.svelte';
@@ -51,6 +53,8 @@
 	/** The figure being corrected in place: one at a time on the page. */
 	let editing = $state<{ target: ProjectionCorrection['target']; id: string } | undefined>();
 	let titleWrap: HTMLElement | undefined = $state();
+	/** The Budget forecast's line under the title, once it is read. */
+	let forecastHead = $state('');
 
 	const projection = createQuery(() => ({
 		...projectionQuery(source, horizon, money, currency),
@@ -112,7 +116,9 @@
 					onChoose={(id: string) => (view = viewOf(id).id)}
 				/>
 			</h1>
-			<p class="mp-foot mp-ink2">{view === 'net' ? (data?.head ?? 'Net worth') : current.head}</p>
+			<p class="mp-foot mp-ink2">
+				{view === 'net' ? (data?.head ?? 'Net worth') : view === 'budget' ? forecastHead || current.head : current.head}
+			</p>
 		</div>
 		<div class="hctl">
 			<button
@@ -130,7 +136,9 @@
 		</div>
 	</header>
 
-	{#if view !== 'net'}
+	{#if view === 'budget'}
+		<BudgetForecast bind:horizon bind:money {currency} bind:head={forecastHead} />
+	{:else if view !== 'net'}
 		<div class="mp-card cpad loose">
 			<h2 class="mp-hl">{current.label} is not built yet</h2>
 			<p class="mp-foot mp-ink2 pp">{current.soon}</p>

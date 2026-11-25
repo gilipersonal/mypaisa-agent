@@ -1,17 +1,22 @@
 /** The stub behind the wealth pages' seam: every answer is worked out from the stub household when it is asked for, so
  * a record the chat has just confirmed is in the next read. */
 import type { WealthSource } from '#lib/api/wealth.ts';
+import type { BudgetForecast } from '#lib/wealth/forecast.ts';
 import type { DisplayCurrency, Overview } from '#lib/wealth/overview.ts';
 import type { Horizon, MoneyBasis, Projection, ProjectionCorrection } from '#lib/wealth/projection.ts';
 import type { StubHousehold } from './household.ts';
 import { buildOverview } from './overview.ts';
+import { buildBudgetForecast, type ForecastRun } from './forecast.ts';
 import { buildProjection, correctProjection } from './projection.ts';
 
 export class StubWealthSource implements WealthSource {
 	constructor(
 		private readonly household: StubHousehold,
 		/** The clock a correction's audit line reads; a test passes its own. */
-		private readonly now: () => Date = () => new Date()
+		private readonly now: () => Date = () => new Date(),
+		/** Which of the evening's runs the Budget forecast shows (`./forecast.ts`): the school fees just saved, unless
+		 * the session opens on a later state. */
+		private readonly forecastRun: ForecastRun = 'R1'
 	) {}
 
 	overview(view: string, currency: DisplayCurrency): Promise<Overview> {
@@ -20,6 +25,15 @@ export class StubWealthSource implements WealthSource {
 
 	projection(horizon: Horizon, money: MoneyBasis, currency: DisplayCurrency): Promise<Projection> {
 		return Promise.resolve(buildProjection(this.household, horizon, money, currency));
+	}
+
+	budgetForecast(
+		horizon: Horizon,
+		money: MoneyBasis,
+		currency: DisplayCurrency,
+		year?: number
+	): Promise<BudgetForecast> {
+		return Promise.resolve(buildBudgetForecast(this.household, this.forecastRun, horizon, money, currency, year));
 	}
 
 	/** Keeps the correction and its audit line. The stub holds one stored run and no engine, so the fan the next read
