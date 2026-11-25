@@ -93,6 +93,15 @@
 .mpm-dot {
 	fill: var(--mp-coral);
 }
+/* the name beside the live mark arrives after it (MA-360; DS v1 · Mark in motion, 1 · The arrival: 300 to 640 ms), or
+   fades in with it under Reduce Motion. The mark's own scene rules are in components/brand/Mark.svelte. */
+.mpm.mpm-go.mpm-open + .mp-hl {
+	animation: mo-logo-name var(--mo-base) var(--mo-smooth) 300ms both;
+}
+.mpm.mpm-go.mpm-open.mpm-rm + .mp-hl {
+	animation: mo-fade 150ms linear 0ms both;
+	animation-duration: 150ms !important;
+}
 
 /* the chat column. The board's CSS is content-box, so its width leaves the 1 px border outside it (404.2 px at 1440);
    Tailwind's reset makes everything border-box, which drew the column and all it holds 1 px narrow (MA-354). */
