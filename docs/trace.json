@@ -4628,7 +4628,29 @@
           "board": "Browser \u00b7 Check-ins: several due at once, phone"
         }
       ],
-      "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts. Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. Drawn: the check-in cards in the web chat at desktop and 390 (MA-193 drew them on iPhone; the card JSON is the same), on Web v4 \u00b7 Check-ins.dc.html (MA-227)."
+      "notes": "Drawn on MA-193, the whole-wealth design round (MA-186), before it starts. Picked on MA-193 (26 Oct 2026): the web shell 1a Chat beside, the dashboard 1a Net worth first, the check-in card 1b Paid as the Confirm, the Projection 1a the fan first; this row lists the picked boards and the states drawn in those styles. Drawn: the check-in cards in the web chat at desktop and 390 (MA-193 drew them on iPhone; the card JSON is the same), on Web v4 \u00b7 Check-ins.dc.html (MA-227). Built on stubbed data, web only (Arun, 25 Nov 2026: the web app first, then iOS): the check-in card 1b in the scripted chat, from Web v4 \u00b7 Check-ins, with the iPhone board's wording for the states the web board leaves out (Not yet, Different amount, the card bill, the masked card): Paid as the Confirm with Undo, Something else's Not yet, Different amount and Paid off in full, several due at once with All paid and One by one, Asha's card with no buttons. A tap records it in the stub and Home moves (the HDFC EMI: net worth up \u00a3254, What's due ticks to Done). With no daily worker, a check-in arrives only with ?checkin=emi or ?checkin=several in the address. Not built here: the worker and push, the toast and the roll, a Different amount over the EMI (MA-209), the card bill's minimum and part payments (MA-210), iOS.",
+      "code": [
+        "web/src/lib/cards/checkin.ts",
+        "web/src/lib/cards/checkin.test.ts",
+        "web/src/lib/stub/checkins.ts",
+        "web/src/lib/stub/checkins.test.ts",
+        "web/src/lib/chat/checkins.ts",
+        "web/src/lib/chat/checkins.test.ts",
+        "web/src/lib/components/chat/CheckInCard.svelte",
+        "web/src/lib/styles/checkins.css",
+        "web/src/lib/chat/fake.ts",
+        "web/src/lib/chat/transport.ts",
+        "web/src/lib/components/chat/Message.svelte",
+        "web/src/lib/components/chat/ChatPanel.svelte",
+        "web/src/lib/components/shell/AppShell.svelte",
+        "web/src/lib/stub/household.ts",
+        "web/src/lib/stub/overview.ts",
+        "web/src/lib/wealth/overview.ts",
+        "web/src/lib/components/wealth/CardParts.svelte",
+        "web/src/app.css",
+        "web/src/lib/test-ids.ts",
+        "ios/MyPaisaCore/Testing/TestIDs.swift"
+      ]
     },
     {
       "key": "MA-210",

@@ -5,6 +5,7 @@
 	import CheckCheck from '@lucide/svelte/icons/check-check';
 	import Clock from '@lucide/svelte/icons/clock';
 	import FileText from '@lucide/svelte/icons/file-text';
+	import { isCheckInCard } from '#lib/cards/checkin.ts';
 	import { isConfirmCard, isFigureCard } from '#lib/cards/kinds.ts';
 	import { canRender } from '#lib/cards/types.ts';
 	import type { ChatMessage } from '#lib/chat/timeline.ts';
@@ -12,6 +13,7 @@
 	import Mark from '#lib/components/brand/Mark.svelte';
 	import { usePrivacy } from '#lib/components/shell/privacy.svelte.ts';
 	import { maskAmounts } from '#lib/privacy/mask.ts';
+	import CheckInCard from './CheckInCard.svelte';
 	import ConfirmCard from './ConfirmCard.svelte';
 	import FigureCard from './FigureCard.svelte';
 
@@ -92,6 +94,14 @@
 					/>
 				{:else if canRender(card) && isFigureCard(card)}
 					<FigureCard {card} privacy={privacy.on} />
+				{:else if canRender(card) && isCheckInCard(card)}
+					<CheckInCard
+						{card}
+						privacy={privacy.on}
+						onTap={(action: CardAction) => {
+							onTap(card.id, action);
+						}}
+					/>
 				{:else}
 					<div class="ait">{maskAmounts(card.fallback, privacy.on)}</div>
 				{/if}
