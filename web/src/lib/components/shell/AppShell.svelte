@@ -183,7 +183,7 @@
 <div class="mp mp-app mp-root">
 	<div class="mp-shell shl sh-a" class:v-chat={onChat} class:c-drawer={drawer} class:nochat={hidden}>
 		<aside class="mp-side mp-shell-side side" aria-label="MyPaisa">
-			<div class="brand"><Mark size={32} /><span class="mp-hl">MyPaisa</span></div>
+			<div class="brand"><Mark size={32} live /><span class="mp-hl">MyPaisa</span></div>
 			<nav class="flex flex-col gap-1" aria-label="Pages">
 				<button
 					type="button"

@@ -1,7 +1,7 @@
 {
  "version": 1,
  "about": "Jira read incrementally by /plan-sync (MA-303): the last sync's time, the keys still drifting, the trace keys Jira does not have (missing, kept out of the query and reported), the last query printed (its JQL, kind, the keys it names and its time), and per key a short hash of what Jira said (summary, parent, labels, status, due date) and of the trace's row. Written only by `python3 scripts/plan_sync.py jira-sync query` and `record`: `record <file> --for-query` moves last_sync to the query's time only when the file answers that query whole; `record <file> --keys MA-n` records those keys and never moves it. `/plan-sync --all` reads everything again.",
- "last_sync": "2026-11-25T11:35:42+00:00",
+ "last_sync": "2026-11-25T17:32:06+00:00",
  "pending": [],
  "missing": [],
  "query": null,
@@ -743,8 +743,8 @@
    "repo": "aa37db6118f8"
   },
   "MA-185": {
-   "jira": "f1f73f71f20f",
-   "repo": "90df4a69f680"
+   "jira": "1ab2dca716ff",
+   "repo": "332160a22c3c"
   },
   "MA-186": {
    "jira": "d6cd623365de",
@@ -823,8 +823,8 @@
    "repo": "60a3c0ddcb18"
   },
   "MA-205": {
-   "jira": "c4ce9868dee5",
-   "repo": "5545de573f4d"
+   "jira": "ffb4fa2c86b6",
+   "repo": "709f4fd95861"
   },
   "MA-206": {
    "jira": "177f080d4261",
@@ -891,8 +891,8 @@
    "repo": "b6e0dfa33c57"
   },
   "MA-222": {
-   "jira": "a5f2305d1b87",
-   "repo": "f161b38d9ee9"
+   "jira": "f7674e9a2a66",
+   "repo": "e23404e2225e"
   },
   "MA-223": {
    "jira": "6dfa036469f6",
@@ -1051,8 +1051,8 @@
    "repo": "0b8a09c83d5a"
   },
   "MA-262": {
-   "jira": "9710d97bb4ed",
-   "repo": "cefd80f96831"
+   "jira": "d4da3132d6bd",
+   "repo": "96b8c678827b"
   },
   "MA-263": {
    "jira": "f1722dcdd3ab",
@@ -1423,28 +1423,32 @@
    "repo": "324a23f5461a"
   },
   "MA-355": {
-   "jira": "bad3c596c9a9",
-   "repo": "16af51f6476e"
+   "jira": "297543a9d4ad",
+   "repo": "295d071fbf80"
   },
   "MA-356": {
    "jira": "ed28eaec2b95",
    "repo": "5cc9d49c2900"
   },
   "MA-357": {
-   "jira": "f7b96b51844a",
-   "repo": "fb1e0c7017ae"
+   "jira": "c2ad73276476",
+   "repo": "2bce0ab67f40"
   },
   "MA-358": {
-   "jira": "0f5fee691a82",
-   "repo": "aa3a77e761b1"
+   "jira": "9f00f7104b13",
+   "repo": "49bf9752f9bd"
   },
   "MA-359": {
-   "jira": "13ed5ea6fe32",
-   "repo": "5f77db66e812"
+   "jira": "7c8e9205ef1a",
+   "repo": "ef840faec0d1"
   },
   "MA-360": {
-   "jira": "c0166e189c36",
-   "repo": "337b6f70538b"
+   "jira": "07158bcf0a54",
+   "repo": "f0af0f17e337"
+  },
+  "MA-361": {
+   "jira": "6750d74dee1c",
+   "repo": "6d0bdd6999f9"
   }
  }
 }
