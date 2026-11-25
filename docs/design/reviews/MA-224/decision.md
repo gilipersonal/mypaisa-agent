@@ -28,7 +28,9 @@ A figure redraw, not an options round. Wed 25 Nov 2026.
    moved to it: traced to its place in the old set and replaced with the new set's value at the same place; fan
    arrays and embedded forecast rows rewritten whole and compared with the set by script; six parallel passes, one
    per board pair and one for the README, for what tracing could not settle and for the words.
-3. No layout, class, script logic or chart scale was changed.
+3. No layout, class, script logic or chart scale was changed in the redraw itself. After Arun's answers below, the
+   fan scales were refit, a break was added to the 30-year Budget forecast chart and a cash row was drawn (points 4
+   and 5).
 
 ## What moved
 
@@ -72,7 +74,25 @@ at the end of 2028.
 
 ## The answers
 
-Not given yet.
+Arun, Wed 25 Nov 2026, asked point by point ("I'll answer each"):
+
+1. **Two readings of the rule:** "Both right". The figures stay as regenerated: in retirement cash pays a gap first
+   and Balanced only once cash has run out; the design figures keep one cash balance in pounds.
+2. **The wedding's three ways:** "Keep the order". "Take it from Balanced (ISA)" stays first and applied; the applied
+   card reads £2,862,000 → £2,840,000. Nothing redrawn.
+3. **The schooling gap's three ways:** "Keep all three", in the same order, with the new figures. Nothing redrawn.
+4. **Chart axes:** "Rescale and add a break". Done at both doors:
+   - Projection: the 20-year fan runs to £4.5m with lines at £1m, £2m, £3m and £4m (it ran to £6.5m); the 30-year fan
+     to £7m with lines at £2m, £4m and £6m (£13m); in rupees to ₹34 crore at 20 years and ₹38 crore at 30, with lines
+     at ₹10, ₹20 and ₹30 crore.
+   - Plans in the chat: the 09:13 run's fan runs to £4.7m and the later runs' to £3.5m, lines every £1m; on the 2a
+     states board every fan runs to £4m.
+   - Budget forecast 1a states, 30 years: a bar that runs past the −£1k bound carries a break at its foot, as one past
+     £4k carries it at its head, and a line under the chart says "2053 to 2056 fall below −£1,000 a month at their
+     leanest, so they are drawn with a break."
+5. **The cash rate:** "Add a cash row". "Cash 3%", a prior (long-run UK savings rates), is the seventh return on the
+   Assumptions panel at both doors; "What your money earns" ends "3% cash"; the web panel's count reads 11 figures.
+6. **The changed words:** "Confirm all".
 
 ## Not changed
 

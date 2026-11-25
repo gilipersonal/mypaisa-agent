@@ -469,7 +469,7 @@
           const START = 456747, NOW = 2026 + 10 / 12 + 4 / 30, SPAN = 2047 - NOW;   // today is Thu 5 Nov; each point is a year's end
           const fan = (run) => {
             const rows = [[NOW, START, START, START]].concat(FAN[run].map((r) => [r[0] + 1, r[1], r[2], r[3]]));
-            const vmax = run === 'R0' ? 6.5e6 : 4e6, step = run === 'R0' ? 2e6 : 1e6;
+            const vmax = run === 'R0' ? 4.7e6 : 3.5e6, step = 1e6;
             const X = (t) => (t - NOW) / SPAN * 100, Y = (v) => 100 - v / vmax * 100;
             const pt = (r, i) => X(r[0]).toFixed(2) + ',' + Y(r[i]).toFixed(2);
             const grid = []; for (let g = step; g < vmax; g += step) grid.push({ y: Y(g).toFixed(2), top: pc(Y(g)), l: '£' + (g / 1e6) + 'm' });

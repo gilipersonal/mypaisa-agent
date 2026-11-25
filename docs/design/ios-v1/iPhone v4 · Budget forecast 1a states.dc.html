@@ -99,6 +99,8 @@ a.plan-k:hover { color: #FFFFFF; background: #233558; }
 .bb.sel { box-shadow: 0 0 0 2px var(--mp-surface), 0 0 0 4px var(--mp-ink); }
 .bb.cap { border-radius: 0 0 3px 3px; }
 .bb.cap::after { content: ""; position: absolute; left: -3px; right: -3px; top: 8px; height: 4px; background: var(--mp-surface); transform: skewY(-24deg); }
+.bb.capb { border-radius: 3px 3px 0 0; }   /* a bar that runs past the lower bound: the same break, at its foot (MA-224) */
+.bb.capb::after { content: ""; position: absolute; left: -3px; right: -3px; bottom: 8px; height: 4px; background: var(--mp-surface); transform: skewY(-24deg); }
 .bflags { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); height: 16px; margin-top: 4px; font: 700 12px/16px var(--mp-font); color: var(--mp-alert); text-align: center; }
 .bch .mp-chartaxis { margin-top: 2px; }
 .blgd { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font: 400 13px/18px var(--mp-font); color: var(--mp-ink-2); }
@@ -511,7 +513,7 @@ const chart = (Y, o) => {
     const v = Math.round(r.low * M.f(r)), t = yp(v), fl = FLOOR * M.f(r), flag = r.below > 0;
     const st = v >= 0 ? 'bottom: ' + z.toFixed(2) + '%; height: ' + (t - z).toFixed(2) + '%' : 'top: ' + (100 - z).toFixed(2) + '%; height: ' + (z - t).toFixed(2) + '%';
     const rt = r.y > D.floorTo;
-    return { cls: (rt ? 'rt' : (flag ? 'lo' : 'ok')) + (r.y === o.sel ? ' sel' : '') + (v > HI ? ' cap' : ''), st: st, mo: v >= 0 ? 'bary' : 'fade', flag: flag ? '▼' : '',
+    return { cls: (rt ? 'rt' : (flag ? 'lo' : 'ok')) + (r.y === o.sel ? ' sel' : '') + (v > HI ? ' cap' : '') + (v < LO ? ' capb' : ''), st: st, mo: v >= 0 ? 'bary' : 'fade', flag: flag ? '▼' : '',
       ft: line || rt ? '' : 'bottom: ' + yp(fl).toFixed(2) + '%', cash: r.cashNeg ? 'neg' : '' };
   });
   const lab = inrM ? [[HI, '₹6 lakh'], [300000, '₹3 lakh'], [0, '₹0'], [LO, '−₹1 lakh']] : [[HI, '£4k'], [2000, '£2k'], [0, '£0'], [LO, '−£1k']];
@@ -527,6 +529,8 @@ const chart = (Y, o) => {
   if (o.cash) lgd.push({ k: 'k-cash', t: 'Cash below zero in the year' });
   const notes = [];
   if (capped.length && !o.priv) notes.push(capped[0].y + (capped.length > 1 ? ' to ' + capped[capped.length - 1].y : '') + ' run past ' + (inrM ? '₹6 lakh' : '£4,000') + ' a month at their leanest, so they are drawn with a break.');
+  const cappedLo = rows.filter((r) => Math.round(r.low * M.f(r)) < LO);
+  if (cappedLo.length && !o.priv) notes.push(cappedLo[0].y + (cappedLo.length > 1 ? ' to ' + cappedLo[cappedLo.length - 1].y : '') + ' fall below ' + (inrM ? '−₹1 lakh' : '−£1,000') + ' a month at their leanest, so they are drawn with a break.');
   if (o.notes) notes.push.apply(notes, o.notes);
   const sub = (rows[0].y) + ' to ' + rows[rows.length - 1].y + ' · against ' + yf;
   return { title: 'Your leanest month, each year', sub: sub, chips: o.chips || [], wide: inrM ? 'wide' : '', cols: 'repeat(' + n + ', minmax(0, 1fr))',
