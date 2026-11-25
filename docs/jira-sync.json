@@ -1,7 +1,7 @@
 {
  "version": 1,
  "about": "Jira read incrementally by /plan-sync (MA-303): the last sync's time, the keys still drifting, the trace keys Jira does not have (missing, kept out of the query and reported), the last query printed (its JQL, kind, the keys it names and its time), and per key a short hash of what Jira said (summary, parent, labels, status, due date) and of the trace's row. Written only by `python3 scripts/plan_sync.py jira-sync query` and `record`: `record <file> --for-query` moves last_sync to the query's time only when the file answers that query whole; `record <file> --keys MA-n` records those keys and never moves it. `/plan-sync --all` reads everything again.",
- "last_sync": "2026-11-25T08:45:36+00:00",
+ "last_sync": "2026-11-25T10:33:39+00:00",
  "pending": [],
  "missing": [],
  "query": null,
@@ -835,8 +835,8 @@
    "repo": "d3573d87f679"
   },
   "MA-208": {
-   "jira": "1591d9ebe830",
-   "repo": "c2cfc95e5b35"
+   "jira": "3998e2f22ea8",
+   "repo": "8286e3057350"
   },
   "MA-209": {
    "jira": "5c448744015a",
@@ -899,8 +899,8 @@
    "repo": "3847d2ac9ac4"
   },
   "MA-224": {
-   "jira": "b7336e43b116",
-   "repo": "171f84b99175"
+   "jira": "eb235301ddde",
+   "repo": "bb9473ee65ef"
   },
   "MA-225": {
    "jira": "47aef6138901",
@@ -1421,6 +1421,10 @@
   "MA-354": {
    "jira": "879506f86a7f",
    "repo": "324a23f5461a"
+  },
+  "MA-355": {
+   "jira": "bad3c596c9a9",
+   "repo": "16af51f6476e"
   }
  }
 }
