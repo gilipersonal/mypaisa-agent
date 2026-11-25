@@ -127,6 +127,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-350 | Dependabot moves the Lambda images' Python and uv to new minor versions, away from the 3.14 and 0.12 the backend is tested on | Done | §17.4 | none |  |
 | MA-351 | CodeQL scans Swift only when a pull request changes ios/, from a cached build, so other pull requests no longer wait about 28 minutes | Done | §17.4 | none |  |
 | MA-355 | Design options for the desktop web chat as a sheet, Home's header controls, interactive Home charts and an animated mark | In Progress | §8.1, §8.3, §8.4 | todo |  |
+| MA-356 | The boards' icon file draws multi-path icons wrongly: Projection, Audit, close and others come out broken on every board | To Do | §8.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

@@ -8656,6 +8656,23 @@
         "the mark animated in the sidebar's top left corner, with its still state under Reduce Motion"
       ],
       "notes": "Arun, 25 Nov 2026, with five reference pictures (\"Since we are desiging I want a few more changes\"): a /design-first options round, 2 or 3 options an item, drawn in docs/design/reviews/MA-355/ and shown as a private Claude Artifact; nothing is built and no picked board changes until he picks. No board yet because drawing them is this round's work. Its charts read docs/design/figures/future-plans-v4.json as regenerated on MA-224 (all to cash)."
+    },
+    {
+      "key": "MA-356",
+      "type": "Bug",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "The boards' icon file draws multi-path icons wrongly: Projection, Audit, close and others come out broken on every board",
+      "status": "To Do",
+      "labels": [
+        "bug"
+      ],
+      "arch": [
+        "8.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "notes": "Found on MA-355 (25 Nov 2026) by three design lanes: scripts/board_icons.py joins an icon's elements into one path, so a later sub-path that opens with a relative move starts from the wrong point. It changes what the boards draw, not what a member sees: the web app draws Lucide through its own components. The MA-355 round's boards correct their own inline copies."
     }
   ],
   "others": [

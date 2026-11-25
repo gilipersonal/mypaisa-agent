@@ -732,6 +732,11 @@ Claude's:
   mark animated in the sidebar. Drawn as 2 or 3 options an item and published
   as a private Claude Artifact for Arun to pick before anything is built
   (Arun, 25 Nov 2026).
+- **The boards' icons draw as Lucide draws them (MA-356):** `scripts/board_icons.py`
+  joined an icon's elements into one path, so Projection, Audit, the close mark
+  and other multi-path icons came out broken on every board; each sub-path
+  starts from its own point, a check fails on one that does not, and the
+  previews and the Boards artifact are published again. Found on MA-355.
 - **Prototype v4's controls at 44 pt (MA-302), closed:** the card actions, links,
   suggestion chips, segmented control and composer that MA-300's live
   accessibility gate found under 44x44. Closed by Arun on 2 Nov 2026:
