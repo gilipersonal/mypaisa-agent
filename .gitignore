@@ -25,3 +25,11 @@ crash.log
 
 # The probe Lambda's zip, built by Terraform at plan time (MA-231).
 infra/*/.build/
+
+# Key and signing files never enter git (MA-363, finding F11; the App Store Connect key's home is MA-167).
+# The repo is public. Nothing here ignores an example or template file.
+*.p8
+*.p12
+*.pem
+*.mobileprovision
+AuthKey_*.p8

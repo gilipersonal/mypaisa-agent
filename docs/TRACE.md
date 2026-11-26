@@ -131,6 +131,7 @@ The rules are in `.claude/rules/plan-sync.md`.
 | MA-361 | The crew plugin knows this repo: its areas, rules, gates and limits are in .claude/crew.json, and QA is offered in the merge question | Done | §15 | none |  |
 | MA-362 | Testing rules: every QA check has a place, a dedicated crew agent and a guard, with axe only in CI | To Do | §15, §17.4 | none |  |
 | MA-363 | Security framework: local scans, a threat model, OWASP ASVS and MASVS mapping, and crew agents that triage and verify every finding | To Do | §13, §17.4 | none |  |
+| MA-366 | Close the twelve findings of MA-363's first threat model before household data reaches prod | To Do | §13, §17.4 | none |  |
 
 ## Phase 1: Talk: sign in and chat with the agent at every door (MA-10)
 

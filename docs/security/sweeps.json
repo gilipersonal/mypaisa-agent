@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "about": "The registry of verified security sweeps (MA-363). A sweep is /sec-check --sweep <zone>: the verified-security-sweep skill over one zone, run monthly on Arun's yes, one zone a month in turn. The lead adds an entry to sweeps when a sweep ends: zone id, date, the commit swept, the Jira keys it filed, and a one-line result. Nothing here holds a secret's value.",
+  "zones": [
+    {
+      "id": "auth-sessions",
+      "name": "Authentication and sessions",
+      "covers": "Apple, Google and passkey sign-in, the second check, the session cookie, tokens and the epoch, invites, web/src/lib/auth, backend api auth",
+      "threat_model": ["Boundary 1", "Boundary 4"]
+    },
+    {
+      "id": "documents-s3",
+      "name": "Documents and S3",
+      "covers": "uploads, the five-minute open links, the quarantined extractor, the Excel importer and its one-time link, the buckets and their policies",
+      "threat_model": ["Boundary 6"]
+    },
+    {
+      "id": "agent-tools",
+      "name": "The agent's tools and guardrails",
+      "covers": "the Claude API calls, Confirm and PendingAction, the policy gate, memory notes, the DuckDB views, the spend ceiling, the T0 suite",
+      "threat_model": ["Boundary 7"]
+    },
+    {
+      "id": "ios-storage",
+      "name": "iOS storage and keychain",
+      "covers": "Keychain items and accessibility, file protection, entitlements, links and the association file, the Release app's strings, the privacy manifest",
+      "threat_model": ["Boundary 2"]
+    },
+    {
+      "id": "iam-prod-guard",
+      "name": "IAM and the prod guard",
+      "covers": "the developer role and the identity under it, the CI roles and their OIDC subjects, the prod guard and its checker, the release workflow, secrets handling",
+      "threat_model": ["Boundary 8", "Boundary 9", "Boundary 5"]
+    }
+  ],
+  "sweeps": []
+}

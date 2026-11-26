@@ -1,0 +1,80 @@
+{
+  "notes": [
+    "What the iOS app may declare, read by scripts/security_scan.sh ios (MA-363). Anything not listed here is refused: an App Transport Security exception, a background mode, an entitlement key or value. Every entry carries its reason; add one only with the change that needs it.",
+    "The mode runs on the laptop only (MA-166: no iOS build or Swift analysis on GitHub Actions). Its selftest is scripts/security_scan_selftest.sh, run on planted fixtures with this file.",
+    "The entitlements below are the planned ones (ARCHITECTURE.md section 4.5, section 8.4 'One site, two jobs'); the app has no entitlements file yet."
+  ],
+  "ats": {
+    "debug_only": {
+      "NSAllowsLocalNetworking": "The Debug build reaches the local stack on the Mac (scripts/local, MA-198). The 'Stamp the build' build phase in ios/MyPaisa.xcodeproj deletes the key from every configuration but Debug, and the Release app's Info.plist is refused here if it still carries it."
+    },
+    "exception_domains": {}
+  },
+  "background_modes": {},
+  "entitlements": {
+    "aps-environment": {
+      "type": "string",
+      "values": ["development", "production"],
+      "reason": "Push notifications through APNs (ARCHITECTURE.md section 4.5: each signed-in device keeps its push token)."
+    },
+    "com.apple.developer.applesignin": {
+      "type": "array",
+      "values": ["Default"],
+      "reason": "Sign in with Apple, natively (ARCHITECTURE.md section 4.5)."
+    },
+    "com.apple.developer.associated-domains": {
+      "type": "array",
+      "values": [
+        "applinks:dashboard.mypaisapp.com",
+        "applinks:dashboard-dev.mypaisapp.com",
+        "webcredentials:dashboard.mypaisapp.com",
+        "webcredentials:dashboard-dev.mypaisapp.com"
+      ],
+      "reason": "The dashboard serves the app's apple-app-site-association file: applinks open invite and holding links in the app, webcredentials let one passkey work in the app and the web app (ARCHITECTURE.md section 4.5 and section 8.4). The relying-party id is the dashboard's domain, which MA-109 confirms."
+    },
+    "keychain-access-groups": {
+      "type": "array",
+      "values": [
+        "$(AppIdentifierPrefix)com.mypaisapp.agent",
+        "$(AppIdentifierPrefix)com.mypaisapp.agent.dev"
+      ],
+      "reason": "Tokens live in the Keychain, this device only (ARCHITECTURE.md section 4.5); each app keeps to its own group, never a shared one."
+    }
+  },
+  "release_bundle": {
+    "canaries": {
+      "binary": "MPApiBaseURL",
+      "jsbundle": "v1/health"
+    },
+    "deny": [
+      {
+        "string": "localhost:8787",
+        "in": ["binary", "jsbundle"],
+        "reason": "The local stack's API (scripts/local). Only a Debug build reaches it, through MYPAISA_API_URL at launch; nothing in the Release app may name it."
+      },
+      {
+        "string": "127.0.0.1:8787",
+        "in": ["binary", "jsbundle"],
+        "reason": "The local stack's API by address, as above."
+      },
+      {
+        "string": "api-dev.mypaisapp.com",
+        "in": ["binary", "jsbundle"],
+        "reason": "The dev API. The Release app is prod, compiled against api.mypaisapp.com (ios/Config/Prod.xcconfig); dev's host anywhere in it means a dev setting leaked in."
+      },
+      {
+        "string": "MP_PROBES",
+        "in": ["binary", "jsbundle"],
+        "reason": "The probes' compilation condition is set for MyPaisa Dev only (ios/Config/Dev.xcconfig)."
+      },
+      {
+        "string": "MYPAISA_AUTH_STUB",
+        "in": ["jsbundle"],
+        "reason": "The local sign-in stub's launch hook (MA-198) is Debug only. scripts/ios_gates.sh already refuses it in the Release binary, so it is checked here in the JavaScript bundle only."
+      }
+    ],
+    "checked_by_ios_gates": [
+      "scripts/ios_gates.sh (its 'prod' step) already refuses these in the Release app, so they are not repeated here: MYPAISA_API_URL, MYPAISA_AUTH_STUB, MYPAISA_STATIC_MOTION, MYPAISA_VIEWPORT_WIDTH and mpProbe in the binary; auth/local in main.jsbundle; the bundle id, the base URL and the build epoch in Info.plist."
+    ]
+  }
+}

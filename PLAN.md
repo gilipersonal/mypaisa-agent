@@ -173,15 +173,15 @@ Claude's:
 - **The PR gates, seven-layer vulnerability scanning and the five-layer
   regression pyramid (MA-25, MA-267, MA-269, MA-273, `docs/RESEARCH.md` §7, §8):** on
   every PR (`ubuntu-24.04-arm`, 1x), ruff (lint + Bandit `S` SAST), pyright,
-  `semgrep` across Python, TypeScript and Swift, pytest (`scripts/regression.py`
+  `semgrep` across Python and TypeScript (Swift on the laptop only, MA-363), pytest (`scripts/regression.py`
   L1 unit + Hypothesis property tests, L2 full-stack local ASGI with moto, L3
   golden financial maths and OTel PII-leak check), `openapi-typescript`
   zero-diff contract check (MA-266), `python3 scripts/maestro_local.py check-syntax`
   and `TestIDs.swift` ↔ `web/src/lib/test-ids.ts` selector parity (MA-273),
   `terraform fmt` and `validate`, tflint,
   `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`,
-  `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`,
-  `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
+  `pnpm audit --audit-level=high`, osv-scanner on
+  `ios/Packages/MyPaisaUI/Package.resolved`, `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
   both environments on every PR touching `infra/`. The web gates (`scripts/web_gates.sh`) run on
   every PR (MA-194), Playwright runs on the laptop when Arun asks (MA-304), axe and Argos
   run only in `qa-web.yml` on GitHub, started by hand, never on the laptop (MA-362), and the
@@ -199,7 +199,8 @@ Claude's:
   every PR and push to `main` and by a sweep every Monday at 04:00 UTC:
   gitleaks over the whole history (and staged changes in pre-commit), semgrep
   over `backend/`, `web/`, `scripts/` and the workflows, osv-scanner over every
-  lockfile, zizmor over the workflows, each tool pinned and checksum-checked;
+  lockfile, zizmor over the workflows, each tool pinned (gitleaks and osv-scanner
+  checksum-checked, semgrep and zizmor by version, MA-363);
   `pip-audit --strict` in the backend's gates; grouped weekly Dependabot
   updates. MA-194 added web's TypeScript
   rules, its lockfile and pnpm audit; MA-267 keeps eslint-plugin-security for
@@ -598,8 +599,8 @@ Claude's:
   phase-wise regression matrix and GitHub Actions runner cost analysis
   (MA-267, MA-268, MA-269, MA-272, `docs/RESEARCH.md` §7, `ARCHITECTURE.md`
   §17.4):** the seven open-source security gates across secrets, SAST,
-  dependencies, Terraform and arm64 ECR images (`scripts/security_scan.py` and
-  the weekly Monday CVE sweep, MA-267); the phase-progressive smoke runner
+  dependencies, Terraform and arm64 ECR images (`scripts/security_scan.sh`, first
+  called `security_scan.py`, and the weekly Monday CVE sweep, MA-267); the phase-progressive smoke runner
   (`scripts/smoke.py --env dev|prod --up-to-phase <N>`) with full synthetic
   round-trip and X-Ray trace assertion in dev, read-only health/auth/alarm
   verification in prod and under-five-second Lambda `live` alias rollback
@@ -909,6 +910,11 @@ Claude's:
   `/sec-check` runs `crew:sec-scan`, `crew:security`, `claude-security:scan`
   and `crew:sec-verify` in waves on your yes, against OWASP ASVS, MASVS and
   a threat model in `docs/security/`.
+- **The first threat model's findings (MA-366):** MA-363's `crew:security` pass
+  ranked twelve findings (no P0; one P1 to verify: standing admin rights behind
+  the developer role), each proved or refuted by `crew:sec-verify` on your yes,
+  then fixed, accepted in your words or moved to the story it blocks
+  (`docs/security/threat-model.md`).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -2368,22 +2374,22 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 61.25 (and 3 of yours) | 49 | Mon 2 Nov 2026 | Mon 18 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Tue 19 Jan 2027 | Tue 1 Jun 2027 |
-| 2 The first record: one dynamic structure, one write path | 53 | 43 | Wed 2 Jun 2027 | Fri 30 Jul 2027 |
-| 3 Deposits, policies and four currencies | 18 | 15 | Mon 2 Aug 2027 | Fri 20 Aug 2027 |
-| 4 Debts and check-ins | 19 | 16 | Mon 23 Aug 2027 | Tue 14 Sep 2027 |
-| 5 Investments, priced | 32 | 26 | Wed 15 Sep 2027 | Wed 20 Oct 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Thu 21 Oct 2027 | Wed 3 Nov 2027 |
-| 7 Projection | 36.5 | 30 | Thu 4 Nov 2027 | Wed 15 Dec 2027 |
-| 8 Audit, search and the Admin center at every door | 29 | 24 | Thu 16 Dec 2027 | Thu 27 Jan 2028 |
-| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Fri 28 Jan 2028 | Tue 29 Feb 2028 |
-| 10 Alerts, charts and the Claude client | 15 | 12 | Wed 1 Mar 2028 | Thu 16 Mar 2028 |
-| 11 Ask anything about the household's wealth | 9 | 8 | Fri 17 Mar 2028 | Tue 28 Mar 2028 |
+| 0 Foundations at every door | 64.25 (and 3 of yours) | 52 | Mon 2 Nov 2026 | Thu 21 Jan 2027 |
+| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Fri 22 Jan 2027 | Fri 4 Jun 2027 |
+| 2 The first record: one dynamic structure, one write path | 53 | 43 | Mon 7 Jun 2027 | Wed 4 Aug 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Thu 5 Aug 2027 | Wed 25 Aug 2027 |
+| 4 Debts and check-ins | 19 | 16 | Thu 26 Aug 2027 | Fri 17 Sep 2027 |
+| 5 Investments, priced | 32 | 26 | Mon 20 Sep 2027 | Mon 25 Oct 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Tue 26 Oct 2027 | Mon 8 Nov 2027 |
+| 7 Projection | 36.5 | 30 | Tue 9 Nov 2027 | Mon 20 Dec 2027 |
+| 8 Audit, search and the Admin center at every door | 29 | 24 | Tue 21 Dec 2027 | Tue 1 Feb 2028 |
+| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Wed 2 Feb 2028 | Fri 3 Mar 2028 |
+| 10 Alerts, charts and the Claude client | 15 | 12 | Mon 6 Mar 2028 | Tue 21 Mar 2028 |
+| 11 Ask anything about the household's wealth | 9 | 8 | Wed 22 Mar 2028 | Fri 31 Mar 2028 |
 | 12 New kinds of holding (when you add one) | 2 | 2 | When a new kind is added | |
-| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Wed 29 Mar 2028 | Fri 21 Apr 2028 |
-| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Mon 24 Apr 2028 | Fri 5 May 2028 |
-| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Mon 8 May 2028 | Wed 17 May 2028 |
+| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Mon 3 Apr 2028 | Wed 26 Apr 2028 |
+| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Thu 27 Apr 2028 | Wed 10 May 2028 |
+| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Thu 11 May 2028 | Mon 22 May 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 13 to 15 can start sooner if you

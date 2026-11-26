@@ -9804,7 +9804,35 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 26 Nov 2026: \"I need a framework/Agent setup to do Security/Vulnerability using the best skills/plugins you have\", run locally by dedicated agents. Builds on MA-326's scanners: semgrep p/swift replaces CodeQL Swift (MA-166), a local-only ios mode checks ATS, entitlements and the Release app for secrets; /sec-check runs crew:sec-scan, crew:security, claude-security:scan and crew:sec-verify in waves on Arun's yes. Dev tooling only, no product UI."
+      "notes": "Arun, 26 Nov 2026: \"I need a framework/Agent setup to do Security/Vulnerability using the best skills/plugins you have\", run locally by dedicated agents. Builds on MA-326's scanners: semgrep p/swift replaces CodeQL Swift (MA-166), a local-only ios mode checks ATS, entitlements and the Release app for secrets; /sec-check runs crew:sec-scan, crew:security, claude-security:scan and crew:sec-verify in waves on Arun's yes. Dev tooling only, no product UI.",
+      "code": [
+        "scripts/security_scan.sh",
+        "scripts/security_scan_selftest.sh",
+        "scripts/security/ios-allow.json",
+        "docs/security/**",
+        ".claude/rules/security.md",
+        ".claude/skills/sec-check/SKILL.md",
+        ".gitignore",
+        "ios/.gitignore"
+      ]
+    },
+    {
+      "key": "MA-366",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Close the twelve findings of MA-363's first threat model before household data reaches prod",
+      "status": "To Do",
+      "labels": [
+        "security"
+      ],
+      "arch": [
+        "13",
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "notes": "Filed from MA-363's crew:security pass (26 Nov 2026, read only, no scanner run): F1 to F12 in docs/security/threat-model.md, none P0 (prod holds no household data). Each is proved or refuted by crew:sec-verify on Arun's yes, then fixed, accepted in his words, or moved to the story it blocks (MA-109, MA-143, MA-73, MA-347, MA-167). Dev tooling and infrastructure only, no product UI."
     }
   ],
   "others": [
