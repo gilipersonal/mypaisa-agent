@@ -14,12 +14,17 @@
   "entitlements": {
     "aps-environment": {
       "type": "string",
-      "values": ["development", "production"],
+      "values": [
+        "development",
+        "production"
+      ],
       "reason": "Push notifications through APNs (ARCHITECTURE.md section 4.5: each signed-in device keeps its push token)."
     },
     "com.apple.developer.applesignin": {
       "type": "array",
-      "values": ["Default"],
+      "values": [
+        "Default"
+      ],
       "reason": "Sign in with Apple, natively (ARCHITECTURE.md section 4.5)."
     },
     "com.apple.developer.associated-domains": {
@@ -43,38 +48,53 @@
   },
   "release_bundle": {
     "canaries": {
-      "binary": "MPApiBaseURL",
+      "binary": "MPBENCH launch first_piece_ms",
       "jsbundle": "v1/health"
     },
     "deny": [
       {
         "string": "localhost:8787",
-        "in": ["binary", "jsbundle"],
+        "in": [
+          "binary",
+          "jsbundle"
+        ],
         "reason": "The local stack's API (scripts/local). Only a Debug build reaches it, through MYPAISA_API_URL at launch; nothing in the Release app may name it."
       },
       {
         "string": "127.0.0.1:8787",
-        "in": ["binary", "jsbundle"],
+        "in": [
+          "binary",
+          "jsbundle"
+        ],
         "reason": "The local stack's API by address, as above."
       },
       {
         "string": "api-dev.mypaisapp.com",
-        "in": ["binary", "jsbundle"],
+        "in": [
+          "binary",
+          "jsbundle"
+        ],
         "reason": "The dev API. The Release app is prod, compiled against api.mypaisapp.com (ios/Config/Prod.xcconfig); dev's host anywhere in it means a dev setting leaked in."
       },
       {
         "string": "MP_PROBES",
-        "in": ["binary", "jsbundle"],
+        "in": [
+          "binary",
+          "jsbundle"
+        ],
         "reason": "The probes' compilation condition is set for MyPaisa Dev only (ios/Config/Dev.xcconfig)."
       },
       {
         "string": "MYPAISA_AUTH_STUB",
-        "in": ["jsbundle"],
+        "in": [
+          "jsbundle"
+        ],
         "reason": "The local sign-in stub's launch hook (MA-198) is Debug only. scripts/ios_gates.sh already refuses it in the Release binary, so it is checked here in the JavaScript bundle only."
       }
     ],
     "checked_by_ios_gates": [
       "scripts/ios_gates.sh (its 'prod' step) already refuses these in the Release app, so they are not repeated here: MYPAISA_API_URL, MYPAISA_AUTH_STUB, MYPAISA_STATIC_MOTION, MYPAISA_VIEWPORT_WIDTH and mpProbe in the binary; auth/local in main.jsbundle; the bundle id, the base URL and the build epoch in Info.plist."
-    ]
+    ],
+    "canaries_note": "Swift keeps a string of 15 bytes or fewer inline in the code, not as text, so `strings` cannot see it: the binary's canary must be longer (MPApiBaseURL, 12 bytes, was never found; MA-363). The same limit applies to a deny-listed Swift literal of 15 bytes or fewer, so short deny strings are caught in the JavaScript bundle and the plist, not reliably in the binary."
   }
 }

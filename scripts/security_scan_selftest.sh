@@ -76,7 +76,7 @@ app() {
   bundle="$derived/Build/Products/Release-iphonesimulator/MyPaisa.app"
   plist "$bundle/Info.plist" "$APP_KEYS$ATS_RELEASE"
   plutil -convert binary1 "$bundle/Info.plist"
-  printf 'planted Mach-O stand-in\0MPApiBaseURL\0https://api.mypaisapp.com\0' > "$bundle/MyPaisa"
+  printf 'planted Mach-O stand-in\0MPBENCH launch first_piece_ms\0https://api.mypaisapp.com\0' > "$bundle/MyPaisa"
   printf 'var health = "v1/health";\n' > "$bundle/main.jsbundle"
   (cd "$derived" && pwd)
 }

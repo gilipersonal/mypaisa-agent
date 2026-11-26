@@ -127,6 +127,8 @@ source only. Strings are read with `grep -c`-style checks, never `! ... | grep -
 | `otool -hv`: `PIE`. `otool -Iv`: `___stack_chk_guard` present; `_CC_MD5`, `_CC_SHA1`, `_strcpy`, `_sprintf`, `_system`, `_popen` absent from the app's own binary | Hardening and banned calls | to add |
 | `nm` on the app binary: no local symbols beyond what a stripped build keeps | Symbols | to add |
 
+A limit found on the first run (26 Nov 2026): Swift keeps a string of 15 bytes or fewer inline in the code, not as text, so `strings` cannot see it. The binary's canary is therefore `MPBENCH launch first_piece_ms` (it was `MPApiBaseURL`, never found), and a deny-listed Swift literal of 15 bytes or fewer is caught reliably only in `main.jsbundle` and the plist, not in the binary.
+
 ## 3. Other gaps (all to add)
 
 | Gap | Where | Add |

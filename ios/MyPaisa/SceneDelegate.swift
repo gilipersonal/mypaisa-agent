@@ -40,6 +40,8 @@ class SceneDelegate: RCTDefaultReactNativeFactoryDelegate, UIWindowSceneDelegate
 
     if UserDefaults.standard.string(forKey: "mpBench") == "hero" {
       let result = HeroBench.run()
+      // A benchmark timing, never member data (ios/PERFORMANCE.md); MA-363 triaged semgrep's log rule here.
+      // nosemgrep: mobsf.mobsfscan.swift.logging.ios_log
       NSLog("MPBENCH hero decode_us=%.1f layout_us=%.1f", result.decodeMicroseconds, result.layoutMicroseconds)
     }
   }
