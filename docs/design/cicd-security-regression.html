@@ -175,9 +175,9 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>PR Gates (<code>.github/workflows/pr-gates.yml</code>):</strong> Runs on <code>ubuntu-24.04-arm</code> (1x) for L1–L3 regression, OpenAPI contract parity, 7-layer security scans, <code>T0</code> agent replays, and <code>terraform plan</code> via OIDC role <code>ci-plan</code>. Path-filters macOS <code>XCUITest</code> (<code>ios/**</code>); svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright, axe and Argos run only when Arun asks (a manual run or a <code>qa</code> label; MA-303, MA-304).</li>
+        <li><strong>PR Gates (<code>.github/workflows/pr-gates.yml</code>):</strong> Runs on <code>ubuntu-24.04-arm</code> (1x) for L1–L3 regression, OpenAPI contract parity, 7-layer security scans, <code>T0</code> agent replays, and <code>terraform plan</code> via OIDC role <code>ci-plan</code>. No job builds iOS, runs Xcode or analyses Swift (MA-166): <code>XCUITest</code> and Maestro run on the laptop; svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright runs on the laptop when Arun asks (MA-304), and axe and Argos run only in <code>qa-web.yml</code> on GitHub, started by hand, never on the laptop (MA-303, MA-362).</li>
         <li><strong>Build Once on GitHub's Arm64 Runner (<code>MA-237</code>):</strong> CI's <code>Images</code> job (a matrix over the <code>Dockerfile</code> targets <code>lambda</code> and <code>stream</code>) builds natively for <code>linux/arm64</code> on <code>ubuntu-24.04-arm</code>, free and unlimited for this public repository, with BuildKit's GitHub Actions layer cache and no emulation. On a push to <code>main</code> it pushes each image to the single private <code>mypaisa</code> ECR repository as <code>lambda-&lt;sha&gt;</code> and <code>stream-&lt;sha&gt;</code> (immutable tags, scan on push, a plain single-platform manifest) through the OIDC role <code>mypaisa-ci-image</code>, which may push only to that repository, and records the immutable <code>sha256</code> digests in the run summary and an <code>image-digest-&lt;target&gt;</code> artifact. A pull request that changes the <code>Dockerfile</code>, <code>.dockerignore</code>, <code>backend/pyproject.toml</code> or <code>backend/uv.lock</code> builds both without pushing. <code>trivy image --exit-code 1 --severity HIGH,CRITICAL</code> joins this job when <code>MA-267</code> builds it. Until 24 Nov 2026 the plan was AWS CodeBuild <code>arm1.small</code>; it is no longer used.</li>
-        <li><strong>Dev Auto-Deploy &amp; Prod Promotion (<code>MA-107</code>, <code>MA-268</code>):</strong> Terraform applies <code>infra/dev</code> with the new digests, runs <code>scripts/smoke.py --env dev</code>, and pauses at the GitHub <code>prod</code> environment gate. After your approval, <code>infra/prod</code> applies the <strong>identical ECR digests</strong>, flips each Lambda's <code>:live</code> alias, runs <code>scripts/smoke.py --env prod</code>, and only then syncs S3/CloudFront and promotes TestFlight.</li>
+        <li><strong>Dev Auto-Deploy &amp; Prod Promotion (<code>MA-107</code>, <code>MA-268</code>):</strong> Terraform applies <code>infra/dev</code> with the new digests, runs <code>scripts/smoke.py --env dev</code>, and pauses at the GitHub <code>prod</code> environment gate. After your approval, <code>infra/prod</code> applies the <strong>identical ECR digests</strong>, flips each Lambda's <code>:live</code> alias, runs <code>scripts/smoke.py --env prod</code>, and only then syncs S3/CloudFront; no job archives the app or uploads it to TestFlight, which runs from the laptop (MA-166, MA-167).</li>
       </ul>
     </div>
     <figure class="fig" id="fig-1">
@@ -224,7 +224,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="496" y="102">Flips dev :live aliases</text>
         <rect class="s-box" x="486" y="130" width="190" height="52" rx="8"/>
         <text class="s-t" x="496" y="152">S3 + CloudFront + Seed</text>
-        <text class="s-m" x="496" y="170">MyPaisa Dev → TestFlight</text>
+        <text class="s-m" x="496" y="170">TestFlight: from the laptop</text>
         <rect class="s-upbg" x="486" y="194" width="190" height="74" rx="8"/>
         <text class="s-upt" x="496" y="216">smoke.py --env dev</text>
         <text class="s-m" x="496" y="234">Sign-in + SSE + Chat turn</text>
@@ -243,7 +243,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-m" x="738" y="172">Read-only deep probe + 401</text>
         <text class="s-m" x="738" y="188">Zero writes to prod tables</text>
         <rect class="s-box" x="728" y="212" width="204" height="50" rx="8"/>
-        <text class="s-t" x="738" y="232">PASS → Web &amp; TestFlight</text>
+        <text class="s-t" x="738" y="232">PASS → Web (TestFlight: laptop)</text>
         <text class="s-m" x="738" y="248">Frontend promoted after API</text>
         <rect class="s-albg" x="728" y="274" width="204" height="54" rx="8"/>
         <text class="s-alt" x="738" y="294">FAIL → &lt;5s Auto-Rollback</text>
@@ -367,7 +367,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-alt" x="520" y="210">3. Instant Atomic Rollback on Failure (&lt; 5 s)</text>
         <text class="s-m" x="520" y="230">aws lambda update-alias --name live --function-version PREV</text>
         <text class="s-m" x="520" y="248">Restores S3 web manifest + invalidates CloudFront + SNS alert</text>
-        <text class="s-upt" x="520" y="270">✓ On PASS: syncs prod web &amp; promotes TestFlight</text>
+        <text class="s-upt" x="520" y="270">✓ On PASS: syncs prod web (TestFlight: laptop)</text>
       </svg>
       </div>
       <figcaption>dev runs a full synthetic chat and X-Ray trace check; prod runs strictly read-only checks to protect household data and rewinds Lambda :live aliases in under five seconds on any fault.</figcaption>
@@ -382,12 +382,12 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
   </div>
   <div class="body">
     <div class="copy plain">
-      <p>GitHub charges ten minutes of quota for every one minute on a Mac runner, so running iPhone simulator tests on every commit would burn through the free monthly allowance in twenty runs. By running Python, web, and iOS TypeScript tests on fast Linux arm64 runners, building Docker images on GitHub's free arm64 runner (the repository is public; until 24 Nov 2026 they were to be built on AWS CodeBuild's free tier), and running Xcode Simulator tests only when iOS files change, the entire regression suite runs for <strong>£0.00/month</strong>.</p>
+      <p>GitHub charges ten minutes of quota for every one minute on a Mac runner, so running iPhone simulator tests on every commit would burn through the free monthly allowance in twenty runs. By running Python, web, and iOS TypeScript tests on fast Linux arm64 runners, building Docker images on GitHub's free arm64 runner (the repository is public; until 24 Nov 2026 they were to be built on AWS CodeBuild's free tier), and running Xcode Simulator tests on the laptop, never on a Mac runner (MA-166, 26 Nov 2026), the entire regression suite runs for <strong>£0.00/month</strong>.</p>
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Five-Layer Pyramid (<code>scripts/regression.py</code>):</strong> L1 Unit + Hypothesis + <code>openapi-typescript</code> zero-diff (~20s); L2 <code>moto</code> + FastAPI ASGI multi-Lambda integration (~30s); L3 Inspect AI <code>T0</code> deterministic replay + 646 wealth-tracker golden maths fixtures + PII leak check (~45s); L4 web: svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright, axe and Argos run only when Arun asks (a manual run or a <code>qa</code> label; MA-303, MA-304); the QA is Playwright 1.64 on <code>web/</code> (<code>390x844</code> &amp; <code>1440x900</code>, light/dark, fail-closed <code>@axe-core/playwright</code> WCAG 2.2 AA + <strong>Argos CI</strong> Tokenless OIDC visual PNG &amp; light-deduplicated YAML <code>ariaSnapshot</code> diffing at most ~3,600 snapshots/mo inside the 5,000/mo £0 Free Hobby cap; see <code>docs/design/argos-visual-a11y.html</code>) &amp; iOS <code>XCUITest</code>/Snapshot/AX5; L5 Change-gated live <code>T1</code>/<code>T2</code> evals.</li>
-        <li><strong>Option D Hybrid Runner Math:</strong> ~450 Linux mins/mo (<code>1x</code>) + ~80–120 path-gated macOS mins/mo (<code>800–1,200</code> billed at <code>10x</code>, or <code>0</code> on self-hosted Mac) = <strong>450–1,650 billed GitHub mins/mo</strong> (&lt; 2,000 free tier) = <strong>£0.00/month</strong>. The 28 Oct 2026 figure also counted <strong>~63 CodeBuild arm64 mins/mo</strong> (&lt; 100 free tier) for the image build; since 24 Nov 2026 (<code>MA-237</code>) that build runs on GitHub's <code>ubuntu-24.04-arm</code>, free on the public repository, and CodeBuild is no longer used. Options A to C below are the 28 Oct 2026 comparison, unchanged.</li>
+        <li><strong>Five-Layer Pyramid (<code>scripts/regression.py</code>):</strong> L1 Unit + Hypothesis + <code>openapi-typescript</code> zero-diff (~20s); L2 <code>moto</code> + FastAPI ASGI multi-Lambda integration (~30s); L3 Inspect AI <code>T0</code> deterministic replay + 646 wealth-tracker golden maths fixtures + PII leak check (~45s); L4 web: svelte-check, eslint and vitest run on every PR touching <code>web/</code>; Playwright runs on the laptop when Arun asks (MA-304), and axe and Argos run only in <code>qa-web.yml</code> on GitHub, started by hand, never on the laptop (MA-303, MA-362); the QA is Playwright 1.64 on <code>web/</code> (<code>390x844</code> &amp; <code>1440x900</code>, light/dark; on GitHub, fail-closed <code>@axe-core/playwright</code> WCAG 2.2 AA + <strong>Argos CI</strong> Tokenless OIDC visual PNG &amp; light-deduplicated YAML <code>ariaSnapshot</code> diffing at most ~3,600 snapshots/mo inside the 5,000/mo £0 Free Hobby cap; see <code>docs/design/argos-visual-a11y.html</code>) &amp; iOS <code>XCUITest</code>/Snapshot/AX5 and Maestro on the laptop (MA-166, MA-273); L5 Change-gated live <code>T1</code>/<code>T2</code> evals.</li>
+        <li><strong>Option D Hybrid Runner Math:</strong> ~450 Linux mins/mo (<code>1x</code>) + ~80–120 path-gated macOS mins/mo (<code>800–1,200</code> billed at <code>10x</code>, or <code>0</code> on self-hosted Mac) = <strong>450–1,650 billed GitHub mins/mo</strong> (&lt; 2,000 free tier) = <strong>£0.00/month</strong>. The 28 Oct 2026 figure also counted <strong>~63 CodeBuild arm64 mins/mo</strong> (&lt; 100 free tier) for the image build; since 24 Nov 2026 (<code>MA-237</code>) that build runs on GitHub's <code>ubuntu-24.04-arm</code>, free on the public repository, and CodeBuild is no longer used. Since 26 Nov 2026 (<code>MA-166</code>) no iOS job runs on GitHub at all, so the macOS minutes are <code>0</code> and the total is the Linux ~450. Options A to C below are the 28 Oct 2026 comparison, unchanged.</li>
       </ul>
     </div>
     <figure class="fig" id="fig-4">
@@ -402,7 +402,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 
         <rect class="s-vibg" x="86" y="106" width="330" height="46" rx="8"/>
         <text class="s-vit" x="98" y="126">L4 · Web Playwright &amp; iOS XCUITest / AX5</text>
-        <text class="s-m" x="98" y="143">Web on request (qa label); ios/** path-gated</text>
+        <text class="s-m" x="98" y="143">Web on request; iOS on the laptop</text>
 
         <rect class="s-blbg" x="62" y="160" width="378" height="48" rx="8"/>
         <text class="s-blt" x="74" y="180">L3 · T0 Replay, PII Gate &amp; 646 Golden Maths</text>
@@ -433,10 +433,10 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
 
         <rect class="s-upbg" x="520" y="252" width="408" height="60" rx="8"/>
         <text class="s-upt" x="532" y="274">Option D (Selected) · Hybrid GH arm64 + Split iOS</text>
-        <text class="s-m" x="532" y="292">450–1,650 GH mins; images on GH arm64 → £0.00 / mo</text>
+        <text class="s-m" x="532" y="292">~450 GH mins, no macOS; images on GH arm64 → £0.00 / mo</text>
       </svg>
       </div>
-      <figcaption>Option D keeps GitHub Actions under 2,000 free minutes at £0.00/month. Superseded in part, 24 Nov 2026 (MA-237): Option D's image build moved from AWS CodeBuild (under 100 free arm64 minutes) to GitHub's free <code>ubuntu-24.04-arm</code> runner on the public repository, and CodeBuild is no longer used; Options A to C are the 28 Oct 2026 comparison and stand as written.</figcaption>
+      <figcaption>Option D keeps GitHub Actions under 2,000 free minutes at £0.00/month. Superseded in part, 24 Nov 2026 (MA-237): Option D's image build moved from AWS CodeBuild (under 100 free arm64 minutes) to GitHub's free <code>ubuntu-24.04-arm</code> runner on the public repository, and CodeBuild is no longer used. Superseded in part, 26 Nov 2026 (MA-166): no iOS job runs on GitHub, so Option D's path-gated macOS minutes are 0 and iOS tests run on the laptop; Options A to C are the 28 Oct 2026 comparison and stand as written.</figcaption>
     </figure>
   </div>
 </section>

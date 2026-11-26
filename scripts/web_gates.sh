@@ -2,7 +2,8 @@
 # The web app's gates (MA-194), in one place: the jira-flow `web` gate, CI's Web job and a person run the same thing.
 #   scripts/web_gates.sh            # every gate
 #   scripts/web_gates.sh --offline  # every gate but the dependency audit, which needs the network
-# Playwright, axe and Argos are not here: they run only when Arun asks (MA-303, MA-304).
+# Playwright, axe and Argos are not here (MA-303, MA-304, MA-362). Playwright functional tests run locally, by crew:qa-web, only when Arun asks.
+# axe and Argos run only in .github/workflows/qa-web.yml on GitHub, started only when Arun asks; axe never runs on the laptop.
 set -euo pipefail
 cd "$(dirname "$0")/../web"
 pnpm() { corepack pnpm@12.16.1 "$@"; }

@@ -26,8 +26,7 @@ board name is one of its canvas's titles, and a UI story has a board before
 it starts. A board edit can leave a Confluence preview stale until the
 preview is composed again (2b): that is Confluence sync, not a check on the
 board. The checks that left the boards come back as QA on the built code when
-Arun asks: MA-304 for the web app, and the iOS app's after MA-165, with no
-story yet.
+Arun asks: MA-304 for the web app (Playwright, with the 25% contrast floors and the 320 to 1920 width sweep; it depends on MA-194; axe and Argos run only in `qa-web.yml` on GitHub, never on the laptop, MA-362), and MA-273 for the iOS app (Maestro on the laptop).
 
 Ids: Jira cloudId `81c51173-bbea-4905-bbc5-1a880fa348bb`, project `MA`,
 transitions in `.claude/jira-flow.json`. The board folders in

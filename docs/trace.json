@@ -8354,7 +8354,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 3 Nov 2026: \"All artifacts and design should be in sync with local.\" docs/design/artifacts.json and scripts/artifacts_sync.py; plan_sync check runs it. The Agent Journey moved to a new artifact (HPcNrDt2TvR2hdMBzjFE9u) as Mg2VPWVEAdbJPfeivYZ5J7 no longer exists. Tooling and records only, no product UI."
+      "notes": "Arun, 3 Nov 2026: \"All artifacts and design should be in sync with local.\" docs/design/artifacts.json and scripts/artifacts_sync.py; plan_sync check runs it. The Agent Journey moved to a new artifact (KJrjzJenvcQFSronBNY4D6) as Mg2VPWVEAdbJPfeivYZ5J7 no longer exists. Tooling and records only, no product UI."
     },
     {
       "key": "MA-325",
@@ -9774,7 +9774,20 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 26 Nov 2026: Argos on GitHub for visual regression and accessibility; a QA framework for functional testing; iOS tested locally with Maestro through its MCP; \"No AXE testing should be done on local\"; no iOS build on GitHub Actions; then \"I want all things to be done locally done my dedicated agents, update the Crew SubAgents if needed with proper models and effort and concurrency (max 10)\". The crew plugin 0.2.0 adds qa-web, qa-ios, sec-scan and sec-verify and a hook that refuses an 11th live crew agent; .claude/rules/testing.md says where each check runs and which agent runs it. Dev tooling only, no product UI."
+      "notes": "Arun, 26 Nov 2026: Argos on GitHub for visual regression and accessibility; a QA framework for functional testing; iOS tested locally with Maestro through its MCP; \"No AXE testing should be done on local\"; no iOS build on GitHub Actions; then \"I want all things to be done locally done my dedicated agents, update the Crew SubAgents if needed with proper models and effort and concurrency (max 10)\". The crew plugin 0.2.0 adds qa-web, qa-ios, sec-scan and sec-verify and a hook that refuses an 11th live crew agent; .claude/rules/testing.md says where each check runs and which agent runs it. Dev tooling only, no product UI.",
+      "code": [
+        ".claude/rules/testing.md",
+        "docs/qa/README.md",
+        "docs/qa/test-plan-template.md",
+        "docs/qa/checklist.md",
+        ".claude/crew.json",
+        ".claude/rules/crew.md",
+        ".claude/rules/independent-review.md",
+        ".claude/rules/plan-sync.md",
+        "scripts/web_gates.sh",
+        "scripts/ios_gates.sh",
+        "web/CLAUDE.md"
+      ]
     },
     {
       "key": "MA-363",

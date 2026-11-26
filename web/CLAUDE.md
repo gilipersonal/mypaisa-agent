@@ -68,7 +68,7 @@ job. In order:
 7. the build, which must emit the CSP and the service worker;
 8. `pnpm audit` at high.
 
-Playwright, axe and Argos run only when Arun asks (MA-304).
+Playwright runs on the laptop, by `crew:qa-web`, when Arun asks (MA-304). axe and Argos run only in `qa-web.yml` on GitHub, started by hand, never on the laptop (MA-362, `.claude/rules/testing.md`).
 
 Needs Node 24 or later with corepack (on Node 25 and later, `brew install corepack` first). Run locally:
 `corepack pnpm@12.16.1 --dir web dev`, with the local stack running (`scripts/local/README.md`): Vite proxies `/v1` to it on

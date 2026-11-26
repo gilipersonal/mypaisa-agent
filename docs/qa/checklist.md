@@ -2,9 +2,11 @@
 
 The lessons the independent reviews of the design boards taught (MA-155 to
 MA-303), kept with their numbers for the QA of the built code. They are
-applied when Arun asks for QA: MA-304 for the web app (Playwright, axe and
-Argos, with the 25% contrast floors and the 320 to 1920 width sweep; it
-depends on MA-194), and the iOS app's after MA-165, with no story yet. The
+applied by `crew:qa-web` and `crew:qa-ios` when Arun asks for QA, as
+`.claude/rules/testing.md` sets out (MA-362): MA-304 for the web app (Playwright,
+with the 25% contrast floors and the 320 to 1920 width sweep; it depends on
+MA-194; axe and Argos run only in `qa-web.yml` on GitHub, never on the laptop,
+MA-362), and MA-273 for the iOS app (Maestro on the laptop). The
 active review checklist is in `.claude/rules/independent-review.md`, where
 these numbers are pointed here from. Moved out of that rule by MA-306 so it
 fits an Antigravity rule (24 KB).

@@ -16,9 +16,7 @@ Every new UI or UX change to MyPaisa is designed before it is built, in four ste
 2. **No gates on the boards** (Arun, 2 Nov 2026, MA-303: "All the 6 checks currently run on docs/design. Lets stop
    that."). Open each board once to see that it loads, in light and dark, then go on; Arun judges the round by eye.
    plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303). The glitch review at every size class (MA-101) and the board gates are retired; the same checks come
-   back as QA on the built code when Arun asks: MA-304 for the web app (Playwright, axe and Argos, with the 25%
-   contrast floors and the 320 to 1920 width sweep; it depends on MA-194), and the iOS app's after MA-165, with no
-   story yet.
+   back as QA on the built code when Arun asks: MA-304 for the web app (Playwright, with the 25% contrast floors and the 320 to 1920 width sweep; it depends on MA-194; axe and Argos run only in `qa-web.yml` on GitHub, never on the laptop, MA-362), and MA-273 for the iOS app (Maestro on the laptop).
 3. **Publish the round as a private Claude Artifact**, give Arun its link and ask for the pick. A round run in
    Google Antigravity, which cannot publish a Claude Artifact, shows its options as a local page instead (MA-297).
 4. **Arun picks one option.** Build only that option, and only after the pick, made in the current request.
@@ -139,7 +137,7 @@ the web app and the chat. `ltx-clip` makes video assets only, never interface mo
   - every colour pair meets these, at full brightness and with the screen dimmed to 25% (primary text and figures
     7:1, and 4.5:1 dimmed; secondary and coloured text 4.5:1, and 3:1 dimmed; a chart line, a meter, a switch's ring
     or focus 3:1, and 1.8:1 dimmed); they are targets for the design and are measured on the built code when Arun
-    asks for QA (MA-304 for the web app; the iOS app's after MA-165, with no story yet), not by a gate on the boards
+    asks for QA (MA-304 for the web app (Playwright, with the 25% contrast floors and the 320 to 1920 width sweep; it depends on MA-194; axe and Argos run only in `qa-web.yml` on GitHub, never on the laptop, MA-362), and MA-273 for the iOS app (Maestro on the laptop)), not by a gate on the boards
     (MA-303);
   - no tertiary grey (`--mp-ink-3`) for anything a member must read: a figure, a label, a caption that carries
     meaning; it is for decoration and dividers only;
