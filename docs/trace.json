@@ -8366,7 +8366,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 3 Nov 2026: \"All artifacts and design should be in sync with local.\" docs/design/artifacts.json and scripts/artifacts_sync.py; plan_sync check runs it. The Agent Journey moved to a new artifact (HPcNrDt2TvR2hdMBzjFE9u) as Mg2VPWVEAdbJPfeivYZ5J7 no longer exists. Tooling and records only, no product UI."
+      "notes": "Arun, 3 Nov 2026: \"All artifacts and design should be in sync with local.\" docs/design/artifacts.json and scripts/artifacts_sync.py; plan_sync check runs it. The Agent Journey moved to a new artifact (KJrjzJenvcQFSronBNY4D6) as Mg2VPWVEAdbJPfeivYZ5J7 no longer exists. Tooling and records only, no product UI."
     },
     {
       "key": "MA-325",
@@ -9851,6 +9851,24 @@
       "ui": false,
       "design": "none",
       "notes": "Found by crew:tester writing MA-304's Projection spec (26 Nov 2026): Home's hero shows 439,951 pounds and the Projection's fan starts from 457,951. Stub data from MA-208 and MA-224; MA-224's owner says whether the gap is meant. Changes data or a caption the boards already draw, not a screen."
+    },
+    {
+      "key": "MA-366",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Close the twelve findings of MA-363's first threat model before household data reaches prod",
+      "status": "To Do",
+      "labels": [
+        "security"
+      ],
+      "arch": [
+        "13",
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "notes": "Filed from MA-363's crew:security pass (26 Nov 2026, read only, no scanner run): F1 to F12 in docs/security/threat-model.md, none P0 (prod holds no household data). Each is proved or refuted by crew:sec-verify on Arun's yes, then fixed, accepted in his words, or moved to the story it blocks (MA-109, MA-143, MA-73, MA-347, MA-167). Dev tooling and infrastructure only, no product UI."
     }
   ],
   "others": [
