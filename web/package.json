@@ -22,6 +22,10 @@
 		"format:check": "prettier --check .",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
+		"test:e2e": "playwright test",
+		"test:e2e:smoke": "playwright test --grep @smoke",
+		"test:e2e:sweep": "playwright test --grep @sweep",
+		"test:qa": "node -e \"if (process.env.GITHUB_ACTIONS !== 'true') { console.error('test:qa runs axe and Argos, on GitHub Actions only (MA-362: no axe on the laptop). Here, run test:e2e.'); process.exit(1); }\" && MP_QA=1 playwright test",
 		"api:types": "openapi-typescript ../backend/openapi.json -o src/lib/api-types.d.ts"
 	},
 	"dependencies": {
@@ -31,10 +35,13 @@
 		"openapi-fetch": "catalog:"
 	},
 	"devDependencies": {
+		"@argos-ci/playwright": "catalog:",
+		"@axe-core/playwright": "catalog:",
 		"@eslint/js": "catalog:",
 		"@fontsource-variable/inter": "catalog:",
 		"@fontsource/nunito": "catalog:",
 		"@lucide/svelte": "catalog:",
+		"@playwright/test": "catalog:",
 		"@sveltejs/adapter-static": "catalog:",
 		"@sveltejs/kit": "catalog:",
 		"@sveltejs/vite-plugin-svelte": "catalog:",

@@ -7908,7 +7908,26 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 26 Nov 2026: Argos CI on the GitHub pipeline for visual regression and accessibility, \"Only When I ask, create a manual triggered CI\"; axe in CI plus Argos ARIA snapshots; \"No AXE testing should be done on local\"; functional QA run locally by a dedicated crew agent (crew:qa-web, MA-362). Arun, 2 Nov 2026, in MA-303: \"I need this checks as QA when I ask, but on actual code implemented (probably using playwright and Argos CI tool)\". Runs only when Arun asks: a manual run of the QA workflow (the qa label is dropped, 26 Nov 2026). Brings the 25% brightness floors (MA-181) and the 320 to 1920 width sweep (MA-240) to the web app as built, Arun, 2 Nov 2026. Depends on MA-194."
+      "notes": "Arun, 26 Nov 2026: Argos CI on the GitHub pipeline for visual regression and accessibility, \"Only When I ask, create a manual triggered CI\"; axe in CI plus Argos ARIA snapshots; \"No AXE testing should be done on local\"; functional QA run locally by a dedicated crew agent (crew:qa-web, MA-362). Arun, 2 Nov 2026, in MA-303: \"I need this checks as QA when I ask, but on actual code implemented (probably using playwright and Argos CI tool)\". Runs only when Arun asks: a manual run of the QA workflow (the qa label is dropped, 26 Nov 2026). Brings the 25% brightness floors (MA-181) and the 320 to 1920 width sweep (MA-240) to the web app as built, Arun, 2 Nov 2026. Depends on MA-194.",
+      "code": [
+        "web/e2e/**",
+        "web/playwright.config.ts",
+        "web/package.json",
+        "web/pnpm-workspace.yaml",
+        "web/pnpm-lock.yaml",
+        "web/tsconfig.json",
+        "web/eslint.config.js",
+        "web/.gitignore",
+        "web/src/lib/test-ids.ts",
+        "web/src/lib/components/shell/nav.ts",
+        "web/src/lib/components/shell/nav.test.ts",
+        "web/src/lib/components/shell/AppShell.svelte",
+        "web/src/lib/components/auth/SignInPage.svelte",
+        "ios/MyPaisaCore/Testing/TestIDs.swift",
+        ".github/workflows/qa-web.yml",
+        "scripts/web_gates.sh",
+        "scripts/web_gates_selftest.sh"
+      ]
     },
     {
       "key": "MA-305",

@@ -7,6 +7,7 @@
 	import { resolve } from '$app/paths';
 	import { onMount, tick } from 'svelte';
 	import { browserSession, type Way } from '#lib/auth/session.ts';
+	import { TestIDs } from '#lib/test-ids.ts';
 	import Door from './Door.svelte';
 	import { navyOf, takesFocus, waysLive, type Moment } from './door.ts';
 	import Notice from './Notice.svelte';
@@ -71,41 +72,46 @@
 
 <svelte:head><title>Sign in · MyPaisa</title></svelte:head>
 
-<Door {navy}>
-	{#if shown === 'paused'}
-		<p bind:this={message} class="door-line" role="alert" tabindex="-1">
-			The household’s owner has paused your access to MyPaisa.
-		</p>
-	{:else if shown === 'passkey'}
-		<PasskeyOffer way={signedInWith} ondone={() => void finishOffer()} />
-	{:else}
-		{#if shown === 'unlinked'}
-			<h1 bind:this={message} class="door-h sm" role="alert" tabindex="-1">
-				That Google account isn’t linked to MyPaisa
-			</h1>
-			<p class="door-p mp-body mp-ink2">
-				Sign in with the account you joined with. If that was Apple, sign in with Apple; you can add Google afterwards,
-				from You.
+<!-- The page's root for tests (MA-304): `display: contents`, so the door lays out as if it were not there. -->
+<div class="contents" data-testid={TestIDs.signInView}>
+	<Door {navy}>
+		{#if shown === 'paused'}
+			<p bind:this={message} class="door-line" role="alert" tabindex="-1">
+				The household’s owner has paused your access to MyPaisa.
 			</p>
+		{:else if shown === 'passkey'}
+			<PasskeyOffer way={signedInWith} ondone={() => void finishOffer()} />
 		{:else}
-			<h1 class="door-h">Sign in</h1>
-			<p class="door-p mp-body mp-ink2">With the Apple or Google account you joined with.</p>
+			{#if shown === 'unlinked'}
+				<h1 bind:this={message} class="door-h sm" role="alert" tabindex="-1">
+					That Google account isn’t linked to MyPaisa
+				</h1>
+				<p class="door-p mp-body mp-ink2">
+					Sign in with the account you joined with. If that was Apple, sign in with Apple; you can add Google
+					afterwards, from You.
+				</p>
+			{:else}
+				<h1 class="door-h">Sign in</h1>
+				<p class="door-p mp-body mp-ink2">With the Apple or Google account you joined with.</p>
+			{/if}
+			{#if shown === 'offline'}
+				<Notice kind="offline" />
+			{:else if shown === 'noanswer'}
+				<Notice kind="noanswer" />
+			{/if}
+			<Ways verb="Sign in" {busy} live={waysLive(shown)} onway={(way: Way) => void signIn(way)} />
+			<p class="sr-only" role="status">{busy ? 'Signing in…' : ''}</p>
+			{#if shown !== 'unlinked'}
+				<p class="door-p mp-foot mp-ink2">
+					No password. A passkey works after your first sign-in with Apple or Google.
+				</p>
+			{/if}
+			<div class="door-hair">
+				<p class="door-p mp-foot mp-ink2">
+					{shown === 'unlinked' ? 'Not a member yet?' : 'New here?'} MyPaisa is by invite. Ask your household’s owner for
+					a link.
+				</p>
+			</div>
 		{/if}
-		{#if shown === 'offline'}
-			<Notice kind="offline" />
-		{:else if shown === 'noanswer'}
-			<Notice kind="noanswer" />
-		{/if}
-		<Ways verb="Sign in" {busy} live={waysLive(shown)} onway={(way: Way) => void signIn(way)} />
-		<p class="sr-only" role="status">{busy ? 'Signing in…' : ''}</p>
-		{#if shown !== 'unlinked'}
-			<p class="door-p mp-foot mp-ink2">No password. A passkey works after your first sign-in with Apple or Google.</p>
-		{/if}
-		<div class="door-hair">
-			<p class="door-p mp-foot mp-ink2">
-				{shown === 'unlinked' ? 'Not a member yet?' : 'New here?'} MyPaisa is by invite. Ask your household’s owner for a
-				link.
-			</p>
-		</div>
-	{/if}
-</Door>
+	</Door>
+</div>
