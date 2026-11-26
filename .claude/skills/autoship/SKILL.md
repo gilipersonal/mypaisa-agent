@@ -96,8 +96,9 @@ not synced or scanned.
 6. **Checks**: `gh run list --commit <HEAD sha>` for every run on this HEAD:
    CI, jira-key, and CodeQL (`codeql.yml`; MA-346, MA-351), then
    `gh run watch <id> --exit-status` for each. If none has started after a
-   minute, look once more; give up after 30 minutes (CodeQL's Swift analysis,
-   run only when `ios/` changes, takes the longest) and say so. A failed
+   minute, look once more; give up after 30 minutes (CodeQL's three Linux
+   jobs, actions, javascript-typescript and python, stop at 20; Swift is not
+   analysed on GitHub, MA-166) and say so. A failed
    check stops here: report it with the failing step.
 7. Then the review, if the yes asked for it (below), or straight to section 4.
 

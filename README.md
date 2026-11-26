@@ -126,7 +126,7 @@ builds it, phase by phase:
 | `backend/tests/` | pytest: golden files for the wealth maths (the old tracker's cases, MA-105), property tests for the FX split, moto for AWS, respx for HTTP, recorded Claude responses for rendering. |
 | `scripts/` | The plan's checks today (`plan_sync.py`, `confluence_docs.py`, `roadmap.py`, `review_regress.py`; the checks on the boards' content were stopped by MA-303); from phase 0, the local stack in `scripts/local/` (MA-198), the seed (`scripts/seed.sh local` or `dev`, which loads the design figure set's illustrative household through the write service, MA-110), `scripts/security_scan.py` (MA-267), `scripts/smoke.py` (MA-268), `scripts/regression.py` (MA-269), and `scripts/maestro_local.py` (MA-273). |
 | `infra/` | Every AWS resource, Terraform only: `modules/mypaisa` holds the stack once (the Lambdas and their images, the REST API with its streaming route, Cognito, the Scheduler rules, DynamoDB, S3, the web app's S3 and CloudFront, the DNS records, the IAM roles, the budget and the alarms); `dev/` and `prod/` call it with their own settings and state; `modules/secrets` holds every SSM parameter, called by `dev-secrets/` and `prod-secrets/` with state of their own, so the plan on a pull request never reads one (MA-25); `bootstrap/` makes, once, the CI roles (`mypaisa-ci-image` among them, which alone pushes the images), and the ECR repository the images go to; they are built on GitHub's free arm64 runner (MA-237). `ARCHITECTURE.md` §17. |
-| `.github/workflows/` | The gates and a plan for both environments on every pull request, the iOS gates on a macOS runner when it touches `ios/` (MA-166), and `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304); from `main`, build once, deploy dev, then prod after approval, and send MyPaisa Dev (`environment: dev`, Arun only) to TestFlight, then MyPaisa (`environment: prod`, Household Beta) after the same approval, plus `testflight-keepalive.yml` renewing the 90-day TestFlight lease at day 60 (MA-167); a nightly drift check; all through OIDC. |
+| `.github/workflows/` | The gates and a plan for both environments on every pull request, the ubuntu `ios-shell` job (Jest, tsc, eslint, prettier and the Metro bundle, `scripts/ios_gates.sh --no-xcode`; no job builds iOS, runs Xcode or analyses Swift, MA-166), and `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304); from `main`, build once, deploy dev, then prod after approval (the release deploys the backend and the web app only and never archives the iOS app, MA-166); a nightly drift check; all through OIDC. The app's TestFlight archive and upload run from the laptop (MA-166, MA-167). |
 | `docs/` | The mark, "Watcher" (MA-103): `mark.svg` and `mark-dark.svg` for light and dark grounds, `mark-animated.svg` and `mark-animated-dark.svg` for this page (the intro plays once, and Reduce Motion shows the final frame), `mark-small.svg` for 32 px and below and the favicon, `mark-icon.svg` and `mark-1024.png`, the source of the app icon (made in Icon Composer: default, dark, clear and tinted, MA-165), `mark-256.png` and `mark-64.png` for anywhere smaller. `docs/RESEARCH.md`, the research note. `docs/design/`, the design pages as source and the boards, drawn there (MA-260), the iOS boards in `ios-v1/` among them. |
 | `Dockerfile` | The container images for every Lambda, arm64, on the AWS Python 3.14 base, since pandas, numpy and pyarrow exceed the zip limit; the stream is its own build target, run through the Lambda Web Adapter. |
 
@@ -267,10 +267,9 @@ Nothing here goes into AWS. Each id waits for step 4's apply to make its paramet
   Arun only) and one for MyPaisa (Internal Group `"Household Beta"`, Arun plus household members invited in App Store
   Connect with least-privilege `Customer Support` or `Marketing` roles scoped strictly to `MyPaisa`, never `MyPaisa Dev`),
   so TestFlight reaches them privately (`testFlightInternalTestingOnly = true`) with no Beta App Review and no public App
-  Store listing. An App Store Connect `.p8` API key goes into the `main`-only GitHub `dev` and `prod` environments as a
-  secret (MA-26, unreachable from pull-request branches and never stored on disk), and nowhere else; the release and
-  day-60 keepalive workflows use it to upload `MyPaisa Dev` in `environment: dev` and `MyPaisa` in `environment: prod`
-  after Arun's approval (MA-167).
+  Store listing. An App Store Connect `.p8` API key stays on the laptop, not in GitHub, and is never committed (MA-166, Arun,
+  26 Nov 2026: no iOS build runs on GitHub Actions); the laptop archives and uploads `MyPaisa Dev` and, after your
+  approval, `MyPaisa` (the script and where the key lives are decided in MA-167).
 - **Two Google clients per environment** (MA-143): in the Google Cloud console, an OAuth client of type iOS for
   that environment's bundle id, and one of type Web application with `https://dashboard.mypaisapp.com` (or
   `https://dashboard-dev.mypaisapp.com`, and `http://localhost:5173`, the SvelteKit dev server, for local work on dev)
@@ -380,11 +379,11 @@ others with one-time links (MA-32). Smoothness is measured on the phone, not the
 holds the budgets and the benches.
 
 The household gets the app privately through TestFlight Internal Testing (`testFlightInternalTestingOnly = true`,
-`ITSAppUsesNonExemptEncryption = false`, zero public App Store listing): a merge to `main` that touches `ios/` sends
-MyPaisa Dev (`environment: dev`, Arun only) there after dev's smoke check passes, and MyPaisa (`environment: prod`,
-`"Household Beta"`) after your approval in the GitHub `prod` environment and prod's read-only smoke check (MA-167).
+`ITSAppUsesNonExemptEncryption = false`, zero public App Store listing): no GitHub Actions job archives the app or
+uploads it (MA-166, Arun, 26 Nov 2026), so the laptop archives and sends MyPaisa Dev (`"Dev Dogfood"`, Arun only) there,
+and MyPaisa (`"Household Beta"`) only after your approval and once prod's Lambdas are live; how is decided in MA-167.
 Each TestFlight build runs for 90 days (3 months) with silent Automatic Updates preserving the Keychain and the offline store, renewed
-at day 60 by `testflight-keepalive.yml` (or Xcode Cloud's 25 free compute hours a month) and guarded by a day-60 alert
+at day 60 by a rebuild from the laptop (MA-167) and guarded by a day-60 alert
 and a day-75 `itms-beta://` update banner (`docs/RESEARCH.md` §8.8).
 
 ### 8. The web app
@@ -479,7 +478,7 @@ and dark, with axe before each capture, Argos's diffs and the sign-in cookie's r
 corepack pnpm@12.16.1 --dir web test:e2e
 ```
 
-A pull request that touches `ios/` also runs the app's gates on a macOS runner (MA-166) and locally across the five
+No GitHub Actions job builds iOS, runs Xcode or analyses Swift (MA-166, Arun, 26 Nov 2026). Xcode's gates (`scripts/ios_gates.sh`: snapshot tests, XCUITest with the accessibility audit, the Release build) run on your laptop before every PR that touches `ios/`, and the app runs across the five
 cloned Apple Silicon simulators via `scripts/maestro_local.py` (MA-273):
 
 ```bash
@@ -504,8 +503,8 @@ Everything in the cloud is two sets of resources, dev and prod, in the wealth tr
 Terraform in `infra/` and read with the AWS MCP and the CLI. The rules (`.claude/rules/aws-changes.md`): every
 resource is Terraform, never made by hand; the AWS MCP reads and never changes; IAM is never edited in the console;
 plans are read in full before they are applied; prod is applied only by CI; no AWS key exists anywhere; every secret
-lives in SSM Parameter Store only, put by hand (the App Store Connect `.p8` API key, a secret of the `main`-only GitHub
-`dev` and `prod` environments, is the one outside AWS; MA-26, MA-164); anything that adds cost is asked about first, with its price.
+lives in SSM Parameter Store only, put by hand (the App Store Connect `.p8` API key, kept on the laptop and not in GitHub, is the one
+outside AWS; MA-166, MA-167); anything that adds cost is asked about first, with its price.
 
 ### The account
 
@@ -580,9 +579,11 @@ tests against `api-dev`; then it waits for your approval in the GitHub `prod` en
 each function's `live` alias to the new version. A failed smoke test moves the alias back on its own. To roll back
 by hand, re-run the release workflow for the previous commit; prod is never applied from a laptop.
 
-When the merge touches `ios/`, the same run archives the app once per configuration: MyPaisa Dev goes to TestFlight
-after dev's smoke tests pass, and MyPaisa after your approval, once prod's Lambdas are live, so a new app never meets
-an old api. An app older than the api's minimum version asks to update from TestFlight (MA-167).
+The release deploys the backend and the web app only and never archives the iOS app (MA-166, Arun, 26 Nov 2026: no
+iOS build runs on GitHub Actions). MyPaisa Dev and MyPaisa are archived and uploaded to TestFlight from the laptop
+(`testFlightInternalTestingOnly = true`, `ExportOptions-Internal.plist`): MyPaisa goes up only after your approval and
+once prod's Lambdas are live, a step you or the laptop script do after the release, so a new app never meets an old
+api; how is decided in MA-167. An app older than the api's minimum version asks to update from TestFlight (MA-167).
 
 ### Logs and alarms
 
@@ -607,8 +608,7 @@ of Claude on the standard setup and $48 on the full one (`ARCHITECTURE.md` §14.
 Apple Developer Program's $99 a year (about £76, £6.35 a month, MA-162) included: about £20 lean, £51 standard, £64
 full; two members on the standard setup, about £54 (`ARCHITECTURE.md` §14). The agents' Claude allowance is the Max
 20x plan's $200 credit ($160 prod, $40 dev) and AWS and others have £50; you set every cap and threshold in the Admin
-center, and alerts reach the app, the web app, push and email. Outside the monthly figures: the macOS minutes CI uses
-for the app, which count ten to one against GitHub's free minutes (measured in the first month, MA-166).
+center, and alerts reach the app, the web app, push and email. The app's CI uses no macOS minutes: none (MA-166).
 `TECH_STACK.md` has the table for dev and prod.
 
 ## How work is done here

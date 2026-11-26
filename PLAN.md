@@ -109,9 +109,9 @@ Yours:
   for you alone, and `MyPaisa` Internal Group `"Household Beta"` with your wife
   and household members invited under least-privilege `Customer Support` or
   `Marketing` roles scoped strictly to `MyPaisa`, never `MyPaisa Dev`); an App
-  Store Connect `.p8` API key stored in the `main`-only GitHub `dev` and `prod`
-  environments (MA-26, unreachable from pull-request branches and never written
-  to disk).
+  Store Connect `.p8` API key kept on the laptop, not in GitHub, and never
+  written into the repo (MA-166, Arun, 26 Nov 2026: no iOS build runs on GitHub
+  Actions; where it lives is decided in MA-167).
 - **Claude API access from the plan (MA-21).** Link a Claude Console
   organisation to your Max or Team plan (claude.ai Settings → Billing → API
   credits; 7 days on the plan first; the link cannot be moved later without
@@ -184,10 +184,12 @@ Claude's:
   `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
   both environments on every PR touching `infra/`. The web gates (`scripts/web_gates.sh`) run on
   every PR (MA-194), Playwright, axe and Argos run only when Arun asks (MA-304), and the
-  native SwiftUI Xcode Simulator gates (`macos-15` or a self-hosted Mac runner,
-  paired locally on Apple Silicon with `scripts/maestro_local.py`, MA-273)
-  join on PRs touching `ios/` or `cards/` (MA-166), keeping monthly CI inside
-  the 2,000 free GitHub minutes (`docs/RESEARCH.md` §7.5, §8.7). A weekly Monday
+  native SwiftUI Xcode Simulator gates (`scripts/ios_gates.sh`, with Maestro
+  from `scripts/maestro_local.py`, MA-273) run on the laptop before every PR
+  touching `ios/` or `cards/`; no GitHub Actions job builds iOS, runs Xcode or
+  analyses Swift, so no macOS minutes are used (MA-166, Arun, 26 Nov 2026:
+  "We dont need to do any iOS build on Github actions as it is taking long
+  time on workers, all testing and quality check will be done on local"). A weekly Monday
   04:00 UTC schedule and grouped Dependabot updates catch newly disclosed CVEs
   when no code changes (MA-267).
 - **The scans for what exists today (MA-326, `ARCHITECTURE.md` §17.4):** you
@@ -204,10 +206,11 @@ Claude's:
 - **CodeQL is part of CI (MA-346, `ARCHITECTURE.md` §17.4):** you asked, 24 Nov
   2026, "make codeQL check part of this ci process", and kept GitHub's default
   setup. The repo is public, so it is free: CodeQL analyses the workflows,
-  JavaScript and TypeScript, Python and Swift on every PR, every push to `main`
+  JavaScript and TypeScript and Python on every PR, every push to `main`
   and weekly, and secret scanning with push protection is on. A merge waits for
   CodeQL's checks like every other; no CodeQL job is added to `ci.yml`. The
-  default setup gave way to CodeQL's own workflow in MA-351, below.
+  default setup gave way to CodeQL's own workflow in MA-351, below; Swift
+  left it on 26 Nov 2026 (MA-166).
 - **CI bundles the iOS app (MA-327, `ARCHITECTURE.md` §17.4):** the iOS shell
   job builds the app's JavaScript with Metro on Linux, since Jest and tsc pass on
   a toolchain Metro refuses, as Dependabot's Babel 8 showed (PR #96). Dependabot
@@ -272,12 +275,18 @@ Claude's:
   runs `python3 scripts/smoke.py --env dev --up-to-phase <N>` (health, deep
   read-only probe, OpenAPI `401` perimeter, synthetic sign-in, `/v1/stream`
   SSE, scripted chat turn, `RunRecord` and unbroken X-Ray trace, MA-232,
-  MA-268), sends MyPaisa Dev to TestFlight, then deploys prod with the exact
+  MA-268), then deploys prod with the exact
   same ECR `sha256` digests after your approval behind each Lambda's `live`
   alias, running `python3 scripts/smoke.py --env prod` (strictly read-only,
   zero synthetic writes to prod tables) and shifting every `live` alias back
   to its previous version in under five seconds on failure, before syncing
-  prod's web app and sending MyPaisa to TestFlight. Its first run, in this
+  prod's web app. The release deploys the backend and the web app only and
+  never archives the iOS app (MA-166, Arun, 26 Nov 2026: "We dont need to do
+  any iOS build on Github actions as it is taking long time on workers, all
+  testing and quality check will be done on local."): MyPaisa Dev and MyPaisa
+  are archived and uploaded to TestFlight from the laptop, MyPaisa only after
+  your approval and once prod's Lambdas are live, a step you or the laptop
+  script do after the release; how is decided in MA-167. Its first run, in this
   phase, applies prod's empty stack; from the first release that ships a
   Lambda (phase 1), it refuses prod while any `/mypaisa-agent/prod/*`
   parameter is still at version 1, the placeholder Terraform wrote, which
@@ -337,19 +346,21 @@ Claude's:
   configurations, with the bundle ids unchanged. A `PERFORMANCE.md` holds the
   benches, measured on the phone: no dropped frames at 120 Hz scrolling the
   chat and the dashboard and as cards arrive, a chart scrub at 120 Hz, and a
-  launch budget. Its CI on a macOS runner (MA-166: Jest for the shell;
+  launch budget. Its gates on the laptop (MA-166, no macOS runner: Jest for the shell;
   XCUITest including `⌘*` keyboard shortcuts, snapshot and accessibility checks
   for the SwiftUI pieces), its local multi-simulator Maestro workspace `.maestro/`
   and cloned simulator runner `scripts/maestro_local.py` across all four adaptive
   width sub-bands, `TestIDs.swift` ↔ `test-ids.ts` parity and `xcrun simctl` plus
   Local File Provider capabilities at £0/month with
   `python3 scripts/maestro_local.py check-syntax` on Linux CI (MA-273, MA-274;
-  `docs/RESEARCH.md` §8), and its private TestFlight Internal Testing lanes
+  `docs/RESEARCH.md` §8), and its private TestFlight Internal Testing groups
   (`testFlightInternalTestingOnly = true`, `ITSAppUsesNonExemptEncryption = false`,
-  `MyPaisa Dev` uploaded in `environment: dev` for you alone and `MyPaisa` in
-  `environment: prod` for `"Household Beta"` after your approval, 90-day /
+  `ExportOptions-Internal.plist`, `MyPaisa Dev` archived and uploaded from the
+  laptop for you alone (`"Dev Dogfood"`) and `MyPaisa` for `"Household Beta"`
+  after your approval, 90-day /
   3-month untethered household installs renewed silently in place via Automatic
-  Updates and a day-60 evergreen keepalive rebuild without ever listing on the
+  Updates and a day-60 evergreen keepalive rebuild from the laptop (MA-166, no
+  iOS build on GitHub Actions; the script is MA-167) without ever listing on the
   public App Store, plus a day-60 SNS alert from phase 0 joining §14.2's alert
   router in phase 8, a day-75 `itms-beta://` banner from phase 0 and
   `GET /v1/app/minimum-version` on FastAPI from phase 1; MA-167, MA-266,
@@ -601,8 +612,8 @@ Claude's:
   MA-194, MA-269); and the 2026
   GitHub Actions versus AWS CodeBuild runner cost model showing how Option D
   (GitHub `ubuntu-24.04-arm` for the Linux gates, Playwright + Argos CI only
-  when Arun asks (MA-303, MA-304), and split iOS testing to avoid the 10x
-  macOS multiplier trap) stays at £0.00 a month; its CodeBuild `arm1.small`
+  when Arun asks (MA-303, MA-304), and no iOS job on GitHub at all, so no macOS
+  minutes, MA-166) stays at £0.00 a month; its CodeBuild `arm1.small`
   for the Docker builds is superseded: since the repository went public the
   images build on GitHub's free `ubuntu-24.04-arm` runner too (MA-237, Arun,
   24 Nov 2026)
@@ -618,10 +629,13 @@ Claude's:
   the images now take only new digests and patch releases of the lines the
   backend is tested on, and a new line moves with its own story.
 - **CodeQL scans Swift only when Swift changes (MA-351):** the Swift scan
-  spends about 18 minutes building the app from cold and 10 waiting for a
-  macOS runner on every pull request; an advanced-setup workflow runs it
-  only when `ios/` changes (and on `main` and weekly), building only the two
+  spent about 18 minutes building the app from cold and 10 waiting for a
+  macOS runner on every pull request; an advanced-setup workflow ran it
+  only when `ios/` changed (and on `main` and weekly), building only the two
   Swift packages the old scan ended up compiling; other languages as before.
+  MA-166 removed the Swift scan on 26 Nov 2026: CodeQL analyses actions,
+  JavaScript and TypeScript and Python only, and Swift is scanned on the
+  laptop by semgrep's Swift rules (MA-363).
 - **The research pages show the counted cost of watching (MA-348):** the
   observability and VPC research pages, the Architecture v4 explainer's
   CloudWatch card, their Confluence pages, previews and GIF
@@ -791,11 +805,13 @@ Claude's:
   against the stories that claim them. Plan-sync keeps its board-name check:
   it reads each cited board's canvas titles only. QA on the code moves to
   MA-304; MA-302 is closed (Prototype v4 superseded).
-- **QA on request for the web app (MA-304):** Playwright, axe and Argos on
-  the built web app, with the 25% contrast floors and the 320 to 1920 width
-  sweep; `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR;
-  Playwright, axe and Argos run only when Arun asks (a manual run or a `qa`
-  label; MA-303, MA-304). Depends on MA-194.
+- **QA on request for the web app (MA-304):** Playwright functional tests
+  on the built web app, run on the laptop by `crew:qa-web`; Argos's
+  screenshots and ARIA snapshots and axe, with the 25% contrast floors and
+  the 320 to 1920 width sweep, run only in `qa-web.yml`, a GitHub workflow
+  started by hand when Arun asks, and axe never on the laptop (Arun, 26 Nov
+  2026, MA-362); `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR.
+  Depends on MA-194.
 - **One CI workflow, its jobs in parallel (MA-305):** CI runs Plan sync,
   Plan-sync selftest, Review tooling (every ledger and state file), Confluence
   receipts and Workflow lint side by side, as mypaisaa-prediction does
@@ -870,13 +886,40 @@ Claude's:
   yes, and the one question at the end of a story now comes before the PR,
   naming plan-sync, the scan, the PR, QA, the review and the merge
   (`.claude/rules/ship-autopilot.md`).
+- **Every test has a place and an agent (MA-362, `ARCHITECTURE.md` §15,
+  §17.4):** you asked, 26 Nov 2026, for Argos on GitHub for visual
+  regression and accessibility, a QA framework for functional testing,
+  Maestro for iOS on the laptop, no axe on the laptop, no iOS build on
+  GitHub Actions, and "all things to be done locally done my dedicated
+  agents", the crew updated with "proper models and effort and concurrency
+  (max 10)". `.claude/rules/testing.md` names, for each check, where it runs
+  and which crew agent runs it; the crew plugin 0.2.0 adds `qa-web`,
+  `qa-ios`, `sec-scan` and `sec-verify` and a hook that refuses an eleventh
+  live crew agent.
+- **A security framework run by agents (MA-363, `ARCHITECTURE.md` §13,
+  §17.4):** you asked, 26 Nov 2026, for "a framework/Agent setup to do
+  Security/Vulnerability using the best skills/plugins". MA-326's scanners
+  stay; semgrep's Swift rules replace CodeQL Swift (MA-166), a local `ios`
+  mode checks ATS, entitlements and the Release app for secrets, and
+  `/sec-check` runs `crew:sec-scan`, `crew:security`, `claude-security:scan`
+  and `crew:sec-verify` in waves on your yes, against OWASP ASVS, MASVS and
+  a threat model in `docs/security/`.
+- **Two bugs found while proving the QA frameworks (MA-364, MA-365):** on the iPhone
+  Duo simulator, Maestro's taps land on the neighbouring tab, so the foldable's
+  smoke flow fails while the iPhone and iPad pass (MA-364); and the stub household's
+  Home hero and the Projection's starting point differ by 18,000 pounds (MA-365).
+- **The first threat model's findings (MA-366):** MA-363's `crew:security` pass
+  ranked twelve findings (no P0; one P1 to verify: standing admin rights behind
+  the developer role), each proved or refuted by `crew:sec-verify` on your yes,
+  then fixed, accepted in your words or moved to the story it blocks
+  (`docs/security/threat-model.md`).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
 **Tests:** the skeleton's gates on the empty project; `terraform validate`
 and a plan for both environments; the web shell at 390 and 1440 in both
 themes, with the association file served, not swallowed by the fallback
-(MA-194), its Playwright screenshots taken when Arun asks (MA-304); the iOS shell's Jest and XCUITest runs, its first
+(MA-194), its Playwright screenshots taken when Arun asks (MA-304); the iOS shell's Jest runs in CI and its XCUITest runs on the laptop, its first
 bench (MA-165, MA-166), `maestro_local.py selftest`, `maestro_local.py check-syntax`,
 `TestIDs.swift` ↔ `test-ids.ts` parity and `p00_shell_smoke.yaml` across the five
 cloned Apple Silicon simulators (`375`, `402`, `834`, `1032`, `1376 pt`, MA-273),
@@ -896,7 +939,7 @@ Apple key and its key id, Apple team id, the app's bundle id (the audience
 phase 1's sign-in checks), the Services ID for the web app, and the APNs key
 and its key id are in SSM, over the placeholders dev's apply made; the empty
 shells answer at `dashboard-dev.mypaisapp.com`, from TestFlight (MyPaisa Dev
-builds in CI and installs from it) and on the laptop, each with the seed
+is archived on the laptop and installs from it, MA-166) and on the laptop, each with the seed
 household loaded. The release workflow's first run, after your
 approval, applies prod's empty stack, `infra/prod` and `infra/prod-secrets`
 (MA-107, in this phase; Arun, 24 Nov 2026), and prod's values go in after it,
@@ -2329,22 +2372,22 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 56.25 (and 3 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Wed 13 Jan 2027 | Tue 25 May 2027 |
-| 2 The first record: one dynamic structure, one write path | 53 | 43 | Wed 26 May 2027 | Mon 26 Jul 2027 |
-| 3 Deposits, policies and four currencies | 18 | 15 | Tue 27 Jul 2027 | Mon 16 Aug 2027 |
-| 4 Debts and check-ins | 19 | 16 | Tue 17 Aug 2027 | Wed 8 Sep 2027 |
-| 5 Investments, priced | 32 | 26 | Thu 9 Sep 2027 | Thu 14 Oct 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Fri 15 Oct 2027 | Thu 28 Oct 2027 |
-| 7 Projection | 36.5 | 30 | Fri 29 Oct 2027 | Thu 9 Dec 2027 |
-| 8 Audit, search and the Admin center at every door | 29 | 24 | Fri 10 Dec 2027 | Fri 21 Jan 2028 |
-| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Mon 24 Jan 2028 | Wed 23 Feb 2028 |
-| 10 Alerts, charts and the Claude client | 15 | 12 | Thu 24 Feb 2028 | Fri 10 Mar 2028 |
-| 11 Ask anything about the household's wealth | 9 | 8 | Mon 13 Mar 2028 | Wed 22 Mar 2028 |
+| 0 Foundations at every door | 65.25 (and 3 of yours) | 53 | Mon 2 Nov 2026 | Fri 22 Jan 2027 |
+| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Mon 25 Jan 2027 | Mon 7 Jun 2027 |
+| 2 The first record: one dynamic structure, one write path | 53 | 43 | Tue 8 Jun 2027 | Thu 5 Aug 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Fri 6 Aug 2027 | Thu 26 Aug 2027 |
+| 4 Debts and check-ins | 19 | 16 | Fri 27 Aug 2027 | Mon 20 Sep 2027 |
+| 5 Investments, priced | 32 | 26 | Tue 21 Sep 2027 | Tue 26 Oct 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Wed 27 Oct 2027 | Tue 9 Nov 2027 |
+| 7 Projection | 36.5 | 30 | Wed 10 Nov 2027 | Tue 21 Dec 2027 |
+| 8 Audit, search and the Admin center at every door | 29 | 24 | Wed 22 Dec 2027 | Wed 2 Feb 2028 |
+| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Thu 3 Feb 2028 | Mon 6 Mar 2028 |
+| 10 Alerts, charts and the Claude client | 15 | 12 | Tue 7 Mar 2028 | Wed 22 Mar 2028 |
+| 11 Ask anything about the household's wealth | 9 | 8 | Thu 23 Mar 2028 | Mon 3 Apr 2028 |
 | 12 New kinds of holding (when you add one) | 2 | 2 | When a new kind is added | |
-| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Thu 23 Mar 2028 | Thu 13 Apr 2028 |
-| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Tue 18 Apr 2028 | Fri 28 Apr 2028 |
-| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 2 May 2028 | Thu 11 May 2028 |
+| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Tue 4 Apr 2028 | Thu 27 Apr 2028 |
+| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Fri 28 Apr 2028 | Thu 11 May 2028 |
+| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Fri 12 May 2028 | Tue 23 May 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 13 to 15 can start sooner if you
@@ -2371,7 +2414,7 @@ tflint --recursive
 scripts/web_gates.sh
 # QA on request (MA-304): Playwright 1.64 + @axe-core/playwright WCAG 2.2 AA + Argos CI visual & ARIA snapshots at 390 and 1440 in both themes
 corepack pnpm@12.16.1 --dir web test:e2e
-# when ios/ changed (MA-165, MA-166, MA-273): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks; Maestro syntax + local 5-simulator matrix
+# when ios/ changed, run on the laptop (MA-165, MA-166, MA-273; no GitHub job builds iOS): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks; Maestro syntax + local 5-simulator matrix
 python3 scripts/maestro_local.py check-syntax
 npm run lint --prefix ios && npm test --prefix ios
 xcrun swift-format lint --strict --recursive ios
@@ -2415,7 +2458,7 @@ runs read by a person and their failure modes turned into checks or cases
 | CocoaPods trunk goes read-only on 2 Dec 2026 | Settled (MA-229): the iOS project starts on Swift Package Manager with React Native 0.88 (opt-in, hardened in 0.88) and never uses CocoaPods; a native library that cannot build with it is replaced (MA-165) |
 | The React Native shell is not smooth enough | Every piece a member looks at is SwiftUI, fed one formatted model; `PERFORMANCE.md` benches on the phone: no dropped frames at 120 Hz scrolling the chat and the dashboard and as cards arrive, a chart scrub at 120 Hz, a launch budget (MA-165) |
 | The web app's fallback swallows the iOS association file | Settled (MA-229): there is no S3 error-page fallback; a CloudFront Function sends only extension-less page paths to the shell, and the file is served as itself with `Content-Type: application/json`, with a test for it (MA-73, MA-194) |
-| A new app meets an old api, or a TestFlight build expires | From phase 1 the FastAPI api states its minimum app version (`GET /v1/app/minimum-version`, MA-266) and an older app asks to update; prod's Lambdas go live and pass read-only smoke before the prod app uploads; `testflight-keepalive.yml` (or Xcode Cloud's 25 free compute hours a month) rebuilds at day 60 of a build's 90, backed by a day-60 alert and a day-75 `itms-beta://` update banner (MA-167) |
+| A new app meets an old api, or a TestFlight build expires | From phase 1 the FastAPI api states its minimum app version (`GET /v1/app/minimum-version`, MA-266) and an older app asks to update; prod's Lambdas go live and pass read-only smoke before the prod app uploads, a step Arun or the laptop script does after the release (MA-166, MA-167); a rebuild from the laptop at day 60 of a build's 90, backed by a day-60 alert and a day-75 `itms-beta://` update banner (MA-167) |
 | A card the app does not know yet | Every card carries a plain line; an unknown type or newer version shows it with "Update MyPaisa to see this card" (MA-174) |
 | Alert fatigue, or too many check-ins | Weekly red budget, cooldowns, repeat filter; autopay assumed and a weekly digest, about ten notifications a week (MA-211) |
 | An agent changes something it should not | One settings service enforcing schema, range and band; approval with the second check for anything outside the band; every change a version and an audit row; secrets and infrastructure out of agents' reach |
