@@ -1,19 +1,12 @@
 name: CodeQL
 
-# CodeQL's advanced setup (MA-351), in place of the repository's default setup (MA-346), so Swift is scanned only when
-# Swift can have changed. Arun, 24 Nov 2026: "why is Analyze Swift takes so much time ?" ... "I need Option 1 to be
-# done fast". The default setup scanned every language on every pull request and could not be path-filtered: its
-# Swift job waited about 10 minutes for a macOS runner, then spent about 17 more in an autobuild that failed on the app
-# (the React Native packages need `pnpm spm` first) and fell back until it compiled the two Swift packages.
+# CodeQL's advanced setup (MA-351), in place of the repository's default setup (MA-346).
 #
 # - actions, javascript-typescript and python: every pull request, every push to main and weekly, on Linux, with no
-#   build (build-mode none), as before.
-# - swift: on a pull request only when it changes ios/ (Arun, 24 Nov 2026: not for a change to this workflow alone);
-#   on every push to main and weekly, so a change here is first scanned on main. Otherwise
-#   its job is skipped by its condition, and a skipped job reports success, so "Analyze (swift)" never holds a merge it
-#   has nothing to say about. It builds the MyPaisaUI package (which builds MyPaisaCore with it) by hand: the Swift the
-#   default setup's fallback compiled, without its failed attempts. The app target's Swift is not built here, as it was
-#   not under the default setup either; it needs the React Native packages (MA-166 builds them on its macOS runner).
+#   build (build-mode none).
+# - Swift is not analysed on GitHub (MA-166; Arun, 26 Nov 2026: "CodeQL Swift check, lets turn it off. We dont need
+#   to do any iOS build on Github actions ... all testing and quality check will be done on local."). No iOS build
+#   runs on GitHub Actions; Swift is scanned on the laptop by semgrep's Swift rules (MA-363).
 #
 # The check names stay "Analyze (<language>)", the names the merge rule reads (MA-346). The query suite stays the
 # default one (no `queries` input: naming one would add a pack, and "default" is not a pack). Default setup is switched off in the repository's settings, since the two cannot run side by side.
@@ -57,66 +50,3 @@ jobs:
       - uses: github/codeql-action/analyze@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
         with:
           category: /language:${{ matrix.language }}
-
-  # Whether a pull request touches Swift; every push to main, the schedule and a manual run always scan it.
-  swift-changed:
-    name: Swift changed?
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      scan: ${{ steps.what.outputs.scan }}
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          # A pull request's merge commit and its first parent, the base, so its own change can be read.
-          fetch-depth: 2
-      - id: what
-        env:
-          EVENT: ${{ github.event_name }}
-        run: |
-          if [ "$EVENT" != "pull_request" ]; then
-            echo "scan=true" >> "$GITHUB_OUTPUT"
-          elif git diff --quiet HEAD^1 HEAD -- ios/; then
-            echo "scan=false" >> "$GITHUB_OUTPUT"
-            echo "Nothing under ios/ changed: no Swift scan, and Analyze (swift) is skipped." >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "scan=true" >> "$GITHUB_OUTPUT"
-          fi
-
-  analyze-swift:
-    name: Analyze (swift)
-    needs: swift-changed
-    if: needs.swift-changed.outputs.scan == 'true'
-    runs-on: macos-26
-    timeout-minutes: 45
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      # The Swift packages MyPaisaUI pulls in, cached by its lock. Only the dependencies are cached: CodeQL sees only
-      # what is compiled, so our own sources are always built from scratch.
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ runner.temp }}/spm
-          key: spm-${{ runner.os }}-${{ hashFiles('ios/Packages/MyPaisaUI/Package.resolved') }}
-      - uses: github/codeql-action/init@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
-        with:
-          languages: swift
-          build-mode: manual
-      - name: Build MyPaisaUI and MyPaisaCore for the iOS Simulator
-        working-directory: ios/Packages/MyPaisaUI
-        env:
-          SPM_DIR: ${{ runner.temp }}/spm
-          DERIVED: ${{ runner.temp }}/derived
-        run: |
-          xcodebuild build -scheme MyPaisaUI -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath "$DERIVED" -clonedSourcePackagesDirPath "$SPM_DIR" \
-            CODE_SIGNING_ALLOWED=NO COMPILER_INDEX_STORE_ENABLE=NO \
-            COMPILATION_CACHE_ENABLE_CACHING=NO SWIFT_ENABLE_COMPILE_CACHE=NO SWIFT_USE_INTEGRATED_DRIVER=NO
-      - uses: github/codeql-action/analyze@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
-        with:
-          category: /language:swift

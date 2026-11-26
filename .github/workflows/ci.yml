@@ -23,9 +23,9 @@ name: CI
 #
 # CodeQL is part of CI but not a job here (MA-346; Arun, 24 Nov 2026: "make
 # codeQL check part of this ci process"): its own workflow, codeql.yml (MA-351),
-# analyses the workflows, JavaScript and TypeScript and Python on every PR, and
-# Swift when a PR changes ios/, as the checks "Analyze (<language>)", and a merge
-# waits for them like every check here.
+# analyses the workflows, JavaScript and TypeScript and Python on every PR, as
+# the checks "Analyze (<language>)", and a merge waits for them like every check
+# here. Swift is not analysed on GitHub and no iOS build runs here (MA-166).
 
 on:
   pull_request:
@@ -195,8 +195,8 @@ jobs:
           node-version: "24"
       - name: Install pnpm
         run: corepack enable && corepack prepare pnpm@12.16.1 --activate
-      # The gates that need no Mac: the colour assets, the selectors, types, lint and Jest. Xcode's own gates run on
-      # the laptop until MA-166 brings a macOS runner.
+      # The gates that need no Mac: the colour assets, the selectors, types, lint and Jest. Xcode's own gates
+      # (scripts/ios_gates.sh without --no-xcode) run on the laptop, never on GitHub Actions (MA-166).
       - name: Tokens, selectors, types, lint, format and Jest
         run: scripts/ios_gates.sh --no-xcode
 
