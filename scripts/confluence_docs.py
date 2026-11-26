@@ -49,7 +49,7 @@ GITHUB = "https://github.com/gilipersonal/mypaisa-agent/blob/main/"
 ARTIFACTS = {
     "Inside MyPaisa": "https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5",
     "MyPaisa Architecture v4": "https://claude.ai/artifact/Ns3DLFTCvnLcBxJvRvygBo",
-    "MyPaisa Agent Journey": "https://claude.ai/artifact/HPcNrDt2TvR2hdMBzjFE9u",
+    "MyPaisa Agent Journey": "https://claude.ai/artifact/KJrjzJenvcQFSronBNY4D6",
     "MyPaisa Guardrails and Evals": "https://claude.ai/artifact/K4esevpFaFVYQKk2QAw3bT",
 }
 GUARDRAILS_GIFS = [  # (gif in docs/design/guardrails-evals, tab title, caption): the explainer's diagrams, animated (MA-258)
