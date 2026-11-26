@@ -43,7 +43,7 @@ call, no research cards, track record, news or Forecaster. So:
 Status: planning. Nothing is built. The architecture is drawn in Lucid (eight
 AWS views and a sequence, linked from `ARCHITECTURE.md`), and a page walks
 through the flows end to end:
-[MyPaisa Agent Journey](https://claude.ai/artifact/HPcNrDt2TvR2hdMBzjFE9u)
+[MyPaisa Agent Journey](https://claude.ai/artifact/KJrjzJenvcQFSronBNY4D6)
 (MA-141), and [Inside MyPaisa](https://claude.ai/artifact/NQecwzUjudjq1Kigri13g5) explains the whole of it in
 plain words, from the first screen to the chatbot and the agent team
 (MA-239), and [MyPaisa Architecture v4](https://claude.ai/artifact/Ns3DLFTCvnLcBxJvRvygBo) draws it technically, with

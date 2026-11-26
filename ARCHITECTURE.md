@@ -95,7 +95,7 @@ The design is drawn and explained in these places (24 Oct 2026, MA-141; redrawn 
   iPad in MyPaisa iOS v1, from one illustrative figure set
   (`docs/design/figures/household-v4.json`), with a clickable Prototype v4 at
   all three doors for Arun to walk through and pick from.
-- **[MyPaisa Agent Journey](https://claude.ai/artifact/HPcNrDt2TvR2hdMBzjFE9u)**:
+- **[MyPaisa Agent Journey](https://claude.ai/artifact/KJrjzJenvcQFSronBNY4D6)**:
   the twenty-three flows end to end (invite, sign-in, adding a holding,
   logging money, the daily prices, a question, the dashboard, the Admin center,
   failures and replay, the spend ladder, the first of the month, money in any
