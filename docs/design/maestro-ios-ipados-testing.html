@@ -174,7 +174,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
     </div>
     <div class="copy tech">
       <ul>
-        <li><strong>Why isolation is mandatory:</strong> Every <code>maestro --device &lt;UDID&gt; test</code> CLI run reinstalls <code>maestro-driver-ios</code> (killing any attached <code>maestro</code> MCP XCTest socket) and runs <code>clearState: true</code>. <code>scripts/maestro_local.py setup-pool</code> clones 5 dedicated simulators (<code>MyPaisa-Maestro-iPhone-375</code>, <code>iPhone-402</code>, <code>iPad-834</code>, <code>iPad-1032</code>, <code>iPad-1376</code> + optional <code>Duo</code>), boots them headlessly via <code>xcrun simctl boot</code>, and guards each UDID with <code>fcntl.flock</code> (<code>/tmp/mypaisa-maestro-&lt;UDID&gt;.lock</code>).</li>
+        <li><strong>Why isolation is mandatory:</strong> Every <code>maestro --device &lt;UDID&gt; test</code> CLI run reinstalls <code>maestro-driver-ios</code> (killing any attached <code>maestro</code> MCP XCTest socket) and runs <code>clearState: true</code>. <code>scripts/maestro_local.py setup-pool</code> makes 3 dedicated simulators with <code>simctl create</code> (<code>MP-QA-iPhone</code>, <code>MP-QA-iPad</code>, and <code>MP-QA-Fold</code> on the iPhone Duo when Xcode 27.1 is installed), one per <code>crew:qa-ios</code> lane, apart from <code>MP-Interactive</code>, the lead's and the Maestro MCP's; width bands come from <code>--width</code> (<code>MYPAISA_VIEWPORT_WIDTH</code>) on the iPad; each UDID is guarded with <code>fcntl.flock</code> (<code>~/Library/Caches/mypaisa-maestro/&lt;UDID&gt;.lock</code>) (MA-273, 26 Nov 2026).</li>
         <li><strong>Two backend modes:</strong> Mode A (<code>--mode stub</code>, default, £0) drives the local FastAPI + <code>moto</code> + T0 recorded Claude SSE server (<code>MYPAISA_API_URL=http://127.0.0.1:8787</code>, compiled inside <code>#if DEBUG</code> only). Mode B (<code>--mode dev-live</code>) runs <code>MyPaisa Dev</code> against <code>api-dev.mypaisapp.com</code> and asserts an unbroken mobile-to-Claude X-Ray trace (<code>MA-232</code>).</li>
       </ul>
     </div>
@@ -193,7 +193,7 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-upt" x="42" y="194">✓ Never wiped by CLI runs</text>
         <rect class="s-albg" x="30" y="222" width="258" height="86" rx="8"/>
         <text class="s-alt" x="42" y="244">Hard Isolation Boundary</text>
-        <text class="s-s" x="42" y="264">CLI refuses non-MyPaisa-Maestro-*</text>
+        <text class="s-s" x="42" y="264">CLI refuses MP-Interactive</text>
         <text class="s-m" x="42" y="282">Prevents XCTest driver teardown</text>
         <text class="s-m" x="42" y="298">&amp; clearKeychain collisions</text>
         <rect class="step-ring" data-f1="0" x="28" y="56" width="262" height="154" rx="10"/>
@@ -204,14 +204,14 @@ footer{border-top:1px solid var(--line);padding-block:24px;color:var(--ink-3);fo
         <text class="s-h" x="334" y="42">B · Automated CLI Pool (maestro_local.py)</text>
         <rect class="s-vibg" x="334" y="58" width="344" height="54" rx="8"/>
         <text class="s-vit" x="346" y="78">Per-UDID flock + Headless simctl boot</text>
-        <text class="s-m" x="346" y="96">/tmp/mypaisa-maestro-&lt;UDID&gt;.lock · 09:41 bar</text>
+        <text class="s-m" x="346" y="96">~/Library/Caches lock per UDID</text>
         <rect class="s-upbg" x="334" y="124" width="344" height="122" rx="8"/>
         <text class="s-upt" x="346" y="146">5 Cloned Simulators (Apple Silicon GPU)</text>
-        <text class="s-m" x="346" y="166">• MyPaisa-Maestro-iPhone-375 (320/375 pt)</text>
-        <text class="s-m" x="346" y="184">• MyPaisa-Maestro-iPhone-402 (portrait/land)</text>
-        <text class="s-m" x="346" y="202">• MyPaisa-Maestro-iPad-834   (834 ↔ 1210 pt)</text>
-        <text class="s-m" x="346" y="220">• MyPaisa-Maestro-iPad-1032  (MA-240 sheet)</text>
-        <text class="s-m" x="346" y="236">• MyPaisa-Maestro-iPad-1376  (+ Duo beta)</text>
+        <text class="s-m" x="346" y="166">• MP-QA-iPhone (iPhone 17 Pro)</text>
+        <text class="s-m" x="346" y="184">• MP-QA-iPad (iPad Pro 11)</text>
+        <text class="s-m" x="346" y="202">• MP-QA-Fold (iPhone Duo, 27.1)</text>
+        <text class="s-m" x="346" y="220">• bands: --width on the iPad</text>
+        <text class="s-m" x="346" y="236">• MP-Interactive: lead + MCP</text>
         <rect class="s-box" x="334" y="258" width="344" height="50" rx="8"/>
         <text class="s-t" x="346" y="278">JUnit XML + HTML-DETAILED + PNGs</text>
         <text class="s-m" x="346" y="294">maestro_local.py check-syntax (3s, 1x)</text>

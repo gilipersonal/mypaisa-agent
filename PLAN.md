@@ -909,6 +909,10 @@ Claude's:
   `/sec-check` runs `crew:sec-scan`, `crew:security`, `claude-security:scan`
   and `crew:sec-verify` in waves on your yes, against OWASP ASVS, MASVS and
   a threat model in `docs/security/`.
+- **Two bugs found while proving the QA frameworks (MA-364, MA-365):** on the iPhone
+  Duo simulator, Maestro's taps land on the neighbouring tab, so the foldable's
+  smoke flow fails while the iPhone and iPad pass (MA-364); and the stub household's
+  Home hero and the Projection's starting point differ by 18,000 pounds (MA-365).
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -2368,22 +2372,22 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 61.25 (and 3 of yours) | 49 | Mon 2 Nov 2026 | Mon 18 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Tue 19 Jan 2027 | Tue 1 Jun 2027 |
-| 2 The first record: one dynamic structure, one write path | 53 | 43 | Wed 2 Jun 2027 | Fri 30 Jul 2027 |
-| 3 Deposits, policies and four currencies | 18 | 15 | Mon 2 Aug 2027 | Fri 20 Aug 2027 |
-| 4 Debts and check-ins | 19 | 16 | Mon 23 Aug 2027 | Tue 14 Sep 2027 |
-| 5 Investments, priced | 32 | 26 | Wed 15 Sep 2027 | Wed 20 Oct 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Thu 21 Oct 2027 | Wed 3 Nov 2027 |
-| 7 Projection | 36.5 | 30 | Thu 4 Nov 2027 | Wed 15 Dec 2027 |
-| 8 Audit, search and the Admin center at every door | 29 | 24 | Thu 16 Dec 2027 | Thu 27 Jan 2028 |
-| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Fri 28 Jan 2028 | Tue 29 Feb 2028 |
-| 10 Alerts, charts and the Claude client | 15 | 12 | Wed 1 Mar 2028 | Thu 16 Mar 2028 |
-| 11 Ask anything about the household's wealth | 9 | 8 | Fri 17 Mar 2028 | Tue 28 Mar 2028 |
+| 0 Foundations at every door | 62.25 (and 3 of yours) | 50 | Mon 2 Nov 2026 | Tue 19 Jan 2027 |
+| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Wed 20 Jan 2027 | Wed 2 Jun 2027 |
+| 2 The first record: one dynamic structure, one write path | 53 | 43 | Thu 3 Jun 2027 | Mon 2 Aug 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Tue 3 Aug 2027 | Mon 23 Aug 2027 |
+| 4 Debts and check-ins | 19 | 16 | Tue 24 Aug 2027 | Wed 15 Sep 2027 |
+| 5 Investments, priced | 32 | 26 | Thu 16 Sep 2027 | Thu 21 Oct 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Fri 22 Oct 2027 | Thu 4 Nov 2027 |
+| 7 Projection | 36.5 | 30 | Fri 5 Nov 2027 | Thu 16 Dec 2027 |
+| 8 Audit, search and the Admin center at every door | 29 | 24 | Fri 17 Dec 2027 | Fri 28 Jan 2028 |
+| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Mon 31 Jan 2028 | Wed 1 Mar 2028 |
+| 10 Alerts, charts and the Claude client | 15 | 12 | Thu 2 Mar 2028 | Fri 17 Mar 2028 |
+| 11 Ask anything about the household's wealth | 9 | 8 | Mon 20 Mar 2028 | Wed 29 Mar 2028 |
 | 12 New kinds of holding (when you add one) | 2 | 2 | When a new kind is added | |
-| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Wed 29 Mar 2028 | Fri 21 Apr 2028 |
-| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Mon 24 Apr 2028 | Fri 5 May 2028 |
-| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Mon 8 May 2028 | Wed 17 May 2028 |
+| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Thu 30 Mar 2028 | Mon 24 Apr 2028 |
+| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Tue 25 Apr 2028 | Mon 8 May 2028 |
+| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 9 May 2028 | Thu 18 May 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 13 to 15 can start sooner if you
