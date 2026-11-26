@@ -2,7 +2,8 @@
 # The iOS app's gates (MA-165), in one place: the jira-flow `ios` gate, CI's iOS shell job and a person run the same thing.
 #   scripts/ios_gates.sh              # every gate; needs a Mac with Xcode
 #   scripts/ios_gates.sh --no-xcode   # the gates that run anywhere (CI's Linux job); MA-166 adds the macOS job
-# QA on the built app (Maestro across the width bands, screenshots, Argos) runs only when Arun asks (MA-303, MA-273).
+# QA on the built app runs only when Arun asks (MA-303, MA-273, MA-362): Maestro across the width bands, locally, by crew:qa-ios.
+# iOS accessibility is XCUITest's performAccessibilityAudit() below, never axe. Any iOS build or Swift analysis runs on the laptop, never on GitHub Actions.
 set -euo pipefail
 repo="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$repo"

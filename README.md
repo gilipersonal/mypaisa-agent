@@ -126,7 +126,7 @@ builds it, phase by phase:
 | `backend/tests/` | pytest: golden files for the wealth maths (the old tracker's cases, MA-105), property tests for the FX split, moto for AWS, respx for HTTP, recorded Claude responses for rendering. |
 | `scripts/` | The plan's checks today (`plan_sync.py`, `confluence_docs.py`, `roadmap.py`, `review_regress.py`; the checks on the boards' content were stopped by MA-303); from phase 0, the local stack in `scripts/local/` (MA-198), the seed (`scripts/seed.sh local` or `dev`, which loads the design figure set's illustrative household through the write service, MA-110), `scripts/security_scan.py` (MA-267), `scripts/smoke.py` (MA-268), `scripts/regression.py` (MA-269), and `scripts/maestro_local.py` (MA-273). |
 | `infra/` | Every AWS resource, Terraform only: `modules/mypaisa` holds the stack once (the Lambdas and their images, the REST API with its streaming route, Cognito, the Scheduler rules, DynamoDB, S3, the web app's S3 and CloudFront, the DNS records, the IAM roles, the budget and the alarms); `dev/` and `prod/` call it with their own settings and state; `modules/secrets` holds every SSM parameter, called by `dev-secrets/` and `prod-secrets/` with state of their own, so the plan on a pull request never reads one (MA-25); `bootstrap/` makes, once, the CI roles (`mypaisa-ci-image` among them, which alone pushes the images), and the ECR repository the images go to; they are built on GitHub's free arm64 runner (MA-237). `ARCHITECTURE.md` §17. |
-| `.github/workflows/` | The gates and a plan for both environments on every pull request, the ubuntu `ios-shell` job (Jest, tsc, eslint, prettier and the Metro bundle, `scripts/ios_gates.sh --no-xcode`; no job builds iOS, runs Xcode or analyses Swift, MA-166), and `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304); from `main`, build once, deploy dev, then prod after approval (the release deploys the backend and the web app only and never archives the iOS app, MA-166); a nightly drift check; all through OIDC. The app's TestFlight archive and upload run from the laptop (MA-166, MA-167). |
+| `.github/workflows/` | The gates and a plan for both environments on every pull request, the ubuntu `ios-shell` job (Jest, tsc, eslint, prettier and the Metro bundle, `scripts/ios_gates.sh --no-xcode`; no job builds iOS, runs Xcode or analyses Swift, MA-166), and `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright runs on the laptop when Arun asks (MA-304), and axe and Argos run only in `qa-web.yml`, a GitHub workflow started by hand, never on the laptop (MA-303, MA-362); from `main`, build once, deploy dev, then prod after approval (the release deploys the backend and the web app only and never archives the iOS app, MA-166); a nightly drift check; all through OIDC. The app's TestFlight archive and upload run from the laptop (MA-166, MA-167). |
 | `docs/` | The mark, "Watcher" (MA-103): `mark.svg` and `mark-dark.svg` for light and dark grounds, `mark-animated.svg` and `mark-animated-dark.svg` for this page (the intro plays once, and Reduce Motion shows the final frame), `mark-small.svg` for 32 px and below and the favicon, `mark-icon.svg` and `mark-1024.png`, the source of the app icon (made in Icon Composer: default, dark, clear and tinted, MA-165), `mark-256.png` and `mark-64.png` for anywhere smaller. `docs/RESEARCH.md`, the research note. `docs/design/`, the design pages as source and the boards, drawn there (MA-260), the iOS boards in `ios-v1/` among them. |
 | `Dockerfile` | The container images for every Lambda, arm64, on the AWS Python 3.14 base, since pandas, numpy and pyarrow exceed the zip limit; the stream is its own build target, run through the Lambda Web Adapter. |
 
@@ -393,7 +393,7 @@ corepack pnpm@12.16.1 --dir web install --frozen-lockfile   # the web app's pack
 corepack pnpm@12.16.1 --dir web dev          # the SvelteKit dev server on localhost:5173; /v1 goes to the local backend on :8000
 scripts/web_gates.sh                          # every web gate, as CI's Web job runs them
 corepack pnpm@12.16.1 --dir web exec playwright install chromium   # once (MA-304)
-corepack pnpm@12.16.1 --dir web test:e2e   # QA on request (MA-304): Playwright, every page at 390 and 1440, light and dark
+corepack pnpm@12.16.1 --dir web test:e2e   # QA on request (MA-304, laptop): Playwright, every page at 390 and 1440, light and dark; axe and Argos only in qa-web.yml (MA-362)
 ```
 
 Dev's api admits `http://localhost:5173`, and so does dev's Google web client, so signing in with Apple, Google or
@@ -462,17 +462,17 @@ breaks copies on purpose and expects the refusal; CI runs it on every PR (about 
 The checks on the boards' content (`board_fit.js`, `a11y_live.js`, `prototype_smoke.js`, `contrast_check.py`,
 the board readers in `plan_sync.py` and the generators' `--check`) were stopped by MA-303. Arun, 2 Nov 2026: "All
 the 6 checks currently run on docs/design. Lets stop that. I need this checks as QA when I ask, but on actual code
-implemented". The QA is measured on the built web app by MA-304, QA on request, with the 25% brightness floors
-and the 320 to 1920 width sweep; iOS QA comes after MA-165 (the iOS shell), with no story yet.
+implemented". QA on the built code is MA-304 for the web app (Playwright, with the 25% contrast floors and the 320 to 1920 width sweep; it depends on MA-194; axe and Argos run only in `qa-web.yml` on GitHub, never on the laptop, MA-362), and MA-273 for the iOS app (Maestro on the laptop).
+The rule is `.claude/rules/testing.md`, and `docs/qa/README.md` shows how to run each layer.
 
-`scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304). The PR gates:
+`scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright runs on the laptop when Arun asks (MA-304), and axe and Argos run only in `qa-web.yml` on GitHub, started by hand (`gh workflow run qa-web.yml -r <branch>`), never on the laptop (MA-303, MA-362). The PR gates:
 
 ```bash
 scripts/web_gates.sh
 ```
 
-The QA, when Arun asks (MA-304): Playwright's flows and screenshots of every page at phone and laptop widths, in light
-and dark, with axe before each capture, Argos's diffs and the sign-in cookie's refusals (MA-185, MA-304):
+The QA, when Arun asks (MA-304), run on the laptop by `crew:qa-web`: Playwright's flows and screenshots of every page at phone and laptop widths, in light
+and dark, and the sign-in cookie's refusals (MA-185, MA-304). axe before each capture and Argos's diffs run only in `qa-web.yml` on GitHub, never on the laptop (MA-362):
 
 ```bash
 corepack pnpm@12.16.1 --dir web test:e2e

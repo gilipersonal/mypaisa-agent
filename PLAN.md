@@ -183,7 +183,8 @@ Claude's:
   `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`,
   `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
   both environments on every PR touching `infra/`. The web gates (`scripts/web_gates.sh`) run on
-  every PR (MA-194), Playwright, axe and Argos run only when Arun asks (MA-304), and the
+  every PR (MA-194), Playwright runs on the laptop when Arun asks (MA-304), axe and Argos
+  run only in `qa-web.yml` on GitHub, started by hand, never on the laptop (MA-362), and the
   native SwiftUI Xcode Simulator gates (`scripts/ios_gates.sh`, with Maestro
   from `scripts/maestro_local.py`, MA-273) run on the laptop before every PR
   touching `ios/` or `cards/`; no GitHub Actions job builds iOS, runs Xcode or
@@ -317,11 +318,12 @@ Claude's:
   prettier, the build with its CSP and service worker, and the api types
   checked against `backend/openapi.json`, which a backend test holds equal to
   the app. Its gates:
-  svelte-check, eslint, vitest and pnpm audit; `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only
-  when Arun asks (a manual run or a `qa` label; MA-303, MA-304). That QA is
-  MA-304's: Playwright 1.64 at `390x844` and `1440x900` in both themes
-  through one `auditAndCapture()` fixture (`@axe-core/playwright` WCAG 2.2 AA
-  fail-closed before capture, keyboard focus/landmark checks, and **Argos
+  svelte-check, eslint, vitest and pnpm audit; `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright runs on the laptop when
+  Arun asks (MA-304), and axe and Argos run only in `qa-web.yml` on GitHub, a
+  workflow started by hand when he asks, never on the laptop (MA-362). That QA
+  is MA-304's: Playwright 1.64 at `390x844` and `1440x900` in both themes
+  (on GitHub, through one `auditAndCapture()` fixture: `@axe-core/playwright`
+  WCAG 2.2 AA fail-closed before capture, keyboard focus/landmark checks, and **Argos
   CI** `@argos-ci/playwright` Tokenless OIDC cloud visual PNG diffs in both
   themes plus a light-theme-deduplicated YAML `ariaSnapshot` accessibility
   tree diff inside the 5,000/month £0 Free Hobby tier, `docs/RESEARCH.md`
@@ -611,8 +613,9 @@ Claude's:
   £0 Free Hobby cap, `docs/RESEARCH.md` §10, `docs/design/argos-visual-a11y.html`,
   MA-194, MA-269); and the 2026
   GitHub Actions versus AWS CodeBuild runner cost model showing how Option D
-  (GitHub `ubuntu-24.04-arm` for the Linux gates, Playwright + Argos CI only
-  when Arun asks (MA-303, MA-304), and no iOS job on GitHub at all, so no macOS
+  (GitHub `ubuntu-24.04-arm` for the Linux gates, Argos CI and axe only
+  in `qa-web.yml`, started by hand when Arun asks (MA-303, MA-304, MA-362), Playwright
+  on the laptop, and no iOS job on GitHub at all, so no macOS
   minutes, MA-166) stays at £0.00 a month; its CodeBuild `arm1.small`
   for the Docker builds is superseded: since the repository went public the
   images build on GitHub's free `ubuntu-24.04-arm` runner too (MA-237, Arun,
@@ -699,7 +702,9 @@ Claude's:
   `aria-hidden` completed; and `contrast_check.py` plus `prototype_smoke.js`
   widened with selftest mutations to refuse regressions.
 - **SvelteKit 3 web visual regression, ARIA snapshot diffing and WCAG 2.2 AA
-  accessibility pipeline with Argos CI, recorded (MA-299, MA-194, MA-269,
+  accessibility pipeline with Argos CI, recorded (MA-299, MA-194, MA-269; since
+  26 Nov 2026 it runs only in `qa-web.yml` on GitHub, started by hand when Arun
+  asks, and axe never on the laptop, MA-362;
   `docs/RESEARCH.md` §7.4 and §10, `ARCHITECTURE.md` §8.4 and §17.4,
   `TECH_STACK.md` §3 and §4):** the `auditAndCapture(page, name, opts)` "One
   Helper, Four Gates" Playwright 1.64 fixture in `web/` (deterministic
@@ -1208,7 +1213,7 @@ arrives from phase 2.
   VoiceOver, Dynamic Type to AX5 and the other accessibility settings on
   every screen; every text and control legible in light and dark at 25% brightness
   (ARCHITECTURE §8.1), measured on the built web app by MA-304, QA on request
-  (iOS QA comes after MA-165, with no story yet); MA-303 stopped
+  (MA-304 for the web app (Playwright, with the 25% contrast floors and the 320 to 1920 width sweep; it depends on MA-194; axe and Argos run only in `qa-web.yml` on GitHub, never on the laptop, MA-362), and MA-273 for the iOS app (Maestro on the laptop)); MA-303 stopped
   `scripts/contrast_check.py`, which measured it on the boards.
 - **Web Push (MA-200):** a reply or a check-in reaches the installed web app
   when it is closed, only on a device with no fresh presence, under the same
@@ -1266,8 +1271,8 @@ and iPad, light and dark, Large and AX5, privacy on) (MA-166) plus local Maestro
 Universal Link `/join/<token>`, simulated APNs push and `--mode dev-live` X-Ray
 trace verification (MA-273), and `GET /v1/app/minimum-version` prompt check
 (MA-167, MA-266); in the web
-app, svelte-check, vitest, Playwright at 390 and 1440 in both themes, an axe
-audit, and the service worker caching no figure.
+app, svelte-check, vitest, Playwright at 390 and 1440 in both themes (on the laptop, when Arun asks, MA-304), an axe
+audit (only in `qa-web.yml` on GitHub, MA-362), and the service worker caching no figure.
 
 **Exit:** you and your wife are members, each signed in on your own iPhone
 with your own Apple or Google account, and in a browser on the laptop and on
@@ -2401,9 +2406,9 @@ uv run pytest --cov --cov-fail-under=90
 terraform fmt -check -recursive infra
 for env in dev prod; do terraform -chdir=infra/$env validate; done
 tflint --recursive
-# when web/ changed (MA-194): `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright, axe and Argos run only when Arun asks (a manual run or a `qa` label; MA-303, MA-304)
+# when web/ changed (MA-194): `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR; Playwright runs on the laptop when Arun asks (MA-304); axe and Argos run only in `qa-web.yml` on GitHub, started by hand, never on the laptop (MA-362)
 scripts/web_gates.sh
-# QA on request (MA-304): Playwright 1.64 + @axe-core/playwright WCAG 2.2 AA + Argos CI visual & ARIA snapshots at 390 and 1440 in both themes
+# QA on request (MA-304, laptop, crew:qa-web): Playwright 1.64 at 390 and 1440 in both themes (axe and Argos: only `gh workflow run qa-web.yml`, MA-362)
 corepack pnpm@12.16.1 --dir web test:e2e
 # when ios/ changed, run on the laptop (MA-165, MA-166, MA-273; no GitHub job builds iOS): eslint and Jest for the shell; XCUITest, snapshot and accessibility checks; Maestro syntax + local 5-simulator matrix
 python3 scripts/maestro_local.py check-syntax

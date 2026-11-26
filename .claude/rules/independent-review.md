@@ -31,9 +31,7 @@ As `ship-autopilot.md` "Review first" says, and `/autoship` step 3 does:
   `prototype_smoke.js`, `contrast_check.py`, plan_sync's board-content readers
   and the generators' `--check` are gone; plan-sync reads each board a trace row cites only for its canvas titles, to check the board's name, and compares each Confluence preview's age with the boards it shows; nothing else on a board is read or checked (Arun, 2 Nov 2026, MA-303).
   Arun judges a design round by eye. The same checks come back as QA on the
-  built code when Arun asks: MA-304 for the web app (Playwright, axe and
-  Argos, with the 25% contrast floors and the 320 to 1920 width sweep; it
-  depends on MA-194), and the iOS app's after MA-165, with no story yet.
+  built code when Arun asks: MA-304 for the web app (Playwright, with the 25% contrast floors and the 320 to 1920 width sweep; it depends on MA-194; axe and Argos run only in `qa-web.yml` on GitHub, never on the laptop, MA-362), and MA-273 for the iOS app (Maestro on the laptop).
 - **The runner's exits.** `review_regress.py` skips a ledger entry marked
   `retired` and counts it; every command has a timeout, and its process group
   is killed when it runs over; a FAIL shows the tail of its output; identical
@@ -360,6 +358,6 @@ number, so a reference to it holds wherever it now sits.
 Lessons 1 (its board half), 9 to 11, 13, 19, 21 (its board half), 24 to 31
 and 37 to 39 are kept, with their numbers, in `docs/qa/checklist.md`: the
 checklist for QA on the built code, which runs when Arun asks (MA-304 for the
-web app; the iOS app's after MA-165). They moved there so this rule stays
+web app, MA-273 for the iOS app; axe only in CI, MA-362). They moved there so this rule stays
 under the 24 KB an Antigravity rule can hold (MA-306); nothing applies them
 to boards.

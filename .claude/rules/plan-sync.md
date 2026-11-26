@@ -169,10 +169,7 @@ Since MA-303, plan-sync reads each board a trace row cites only for its canvas t
 tool-name, motion-role, chart-label transform, shared-stroke and Telegram checks
 on the boards went, with `contrast_check.py`, `board_fit.js`, `a11y_live.js` and
 `prototype_smoke.js`. Arun judges each design round by eye. The same checks
-come back as QA on the built code when Arun asks: MA-304 for the web app
-(Playwright, axe and Argos, with the 25% contrast floors and the 320 to 1920
-width sweep; it depends on MA-194), and the iOS app's after MA-165, with no
-story yet.
+come back as QA on the built code when Arun asks: MA-304 for the web app (Playwright, with the 25% contrast floors and the 320 to 1920 width sweep; it depends on MA-194; axe and Argos run only in `qa-web.yml` on GitHub, never on the laptop, MA-362), and MA-273 for the iOS app (Maestro on the laptop).
 
 `python3 scripts/plan_sync.py pr-files [--base <ref>]` (default: the merge-base
 with `origin/main`) is the branch's own check, run before every PR: it lists the
