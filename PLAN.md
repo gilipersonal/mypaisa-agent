@@ -791,11 +791,13 @@ Claude's:
   against the stories that claim them. Plan-sync keeps its board-name check:
   it reads each cited board's canvas titles only. QA on the code moves to
   MA-304; MA-302 is closed (Prototype v4 superseded).
-- **QA on request for the web app (MA-304):** Playwright, axe and Argos on
-  the built web app, with the 25% contrast floors and the 320 to 1920 width
-  sweep; `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR;
-  Playwright, axe and Argos run only when Arun asks (a manual run or a `qa`
-  label; MA-303, MA-304). Depends on MA-194.
+- **QA on request for the web app (MA-304):** Playwright functional tests
+  on the built web app, run on the laptop by `crew:qa-web`; Argos's
+  screenshots and ARIA snapshots and axe, with the 25% contrast floors and
+  the 320 to 1920 width sweep, run only in `qa-web.yml`, a GitHub workflow
+  started by hand when Arun asks, and axe never on the laptop (Arun, 26 Nov
+  2026, MA-362); `scripts/web_gates.sh` (lockfile, api types, svelte-check, eslint, prettier, vitest, the build with its CSP, pnpm audit) runs in CI's Web job on every PR.
+  Depends on MA-194.
 - **One CI workflow, its jobs in parallel (MA-305):** CI runs Plan sync,
   Plan-sync selftest, Review tooling (every ledger and state file), Confluence
   receipts and Workflow lint side by side, as mypaisaa-prediction does
@@ -870,6 +872,24 @@ Claude's:
   yes, and the one question at the end of a story now comes before the PR,
   naming plan-sync, the scan, the PR, QA, the review and the merge
   (`.claude/rules/ship-autopilot.md`).
+- **Every test has a place and an agent (MA-362, `ARCHITECTURE.md` §15,
+  §17.4):** you asked, 26 Nov 2026, for Argos on GitHub for visual
+  regression and accessibility, a QA framework for functional testing,
+  Maestro for iOS on the laptop, no axe on the laptop, no iOS build on
+  GitHub Actions, and "all things to be done locally done my dedicated
+  agents", the crew updated with "proper models and effort and concurrency
+  (max 10)". `.claude/rules/testing.md` names, for each check, where it runs
+  and which crew agent runs it; the crew plugin 0.2.0 adds `qa-web`,
+  `qa-ios`, `sec-scan` and `sec-verify` and a hook that refuses an eleventh
+  live crew agent.
+- **A security framework run by agents (MA-363, `ARCHITECTURE.md` §13,
+  §17.4):** you asked, 26 Nov 2026, for "a framework/Agent setup to do
+  Security/Vulnerability using the best skills/plugins". MA-326's scanners
+  stay; semgrep's Swift rules replace CodeQL Swift (MA-166), a local `ios`
+  mode checks ATS, entitlements and the Release app for secrets, and
+  `/sec-check` runs `crew:sec-scan`, `crew:security`, `claude-security:scan`
+  and `crew:sec-verify` in waves on your yes, against OWASP ASVS, MASVS and
+  a threat model in `docs/security/`.
 - **Already done:** the architecture and its records (MA-106, MA-112,
   MA-138, MA-141, MA-150), plan-sync (MA-155) and the opt-in review (MA-157).
 
@@ -2329,22 +2349,22 @@ How the dates are worked out:
 <!-- roadmap:start -->
 | Phase | Build days | Working days | Starts | Target end |
 | --- | --- | --- | --- | --- |
-| 0 Foundations at every door | 56.25 (and 3 of yours) | 45 | Mon 2 Nov 2026 | Tue 12 Jan 2027 |
-| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Wed 13 Jan 2027 | Tue 25 May 2027 |
-| 2 The first record: one dynamic structure, one write path | 53 | 43 | Wed 26 May 2027 | Mon 26 Jul 2027 |
-| 3 Deposits, policies and four currencies | 18 | 15 | Tue 27 Jul 2027 | Mon 16 Aug 2027 |
-| 4 Debts and check-ins | 19 | 16 | Tue 17 Aug 2027 | Wed 8 Sep 2027 |
-| 5 Investments, priced | 32 | 26 | Thu 9 Sep 2027 | Thu 14 Oct 2027 |
-| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Fri 15 Oct 2027 | Thu 28 Oct 2027 |
-| 7 Projection | 36.5 | 30 | Fri 29 Oct 2027 | Thu 9 Dec 2027 |
-| 8 Audit, search and the Admin center at every door | 29 | 24 | Fri 10 Dec 2027 | Fri 21 Jan 2028 |
-| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Mon 24 Jan 2028 | Wed 23 Feb 2028 |
-| 10 Alerts, charts and the Claude client | 15 | 12 | Thu 24 Feb 2028 | Fri 10 Mar 2028 |
-| 11 Ask anything about the household's wealth | 9 | 8 | Mon 13 Mar 2028 | Wed 22 Mar 2028 |
+| 0 Foundations at every door | 61.25 (and 3 of yours) | 49 | Mon 2 Nov 2026 | Mon 18 Jan 2027 |
+| 1 Talk: sign in and chat with the agent at every door | 114.75 (and 0.5 of yours) | 92 | Tue 19 Jan 2027 | Tue 1 Jun 2027 |
+| 2 The first record: one dynamic structure, one write path | 53 | 43 | Wed 2 Jun 2027 | Fri 30 Jul 2027 |
+| 3 Deposits, policies and four currencies | 18 | 15 | Mon 2 Aug 2027 | Fri 20 Aug 2027 |
+| 4 Debts and check-ins | 19 | 16 | Mon 23 Aug 2027 | Tue 14 Sep 2027 |
+| 5 Investments, priced | 32 | 26 | Wed 15 Sep 2027 | Wed 20 Oct 2027 |
+| 6 Budget: statements and monthly check-ins | 12.5 | 10 | Thu 21 Oct 2027 | Wed 3 Nov 2027 |
+| 7 Projection | 36.5 | 30 | Thu 4 Nov 2027 | Wed 15 Dec 2027 |
+| 8 Audit, search and the Admin center at every door | 29 | 24 | Thu 16 Dec 2027 | Thu 27 Jan 2028 |
+| 9 The whole dashboard, and the old wealth tracker retired | 28 | 23 | Fri 28 Jan 2028 | Tue 29 Feb 2028 |
+| 10 Alerts, charts and the Claude client | 15 | 12 | Wed 1 Mar 2028 | Thu 16 Mar 2028 |
+| 11 Ask anything about the household's wealth | 9 | 8 | Fri 17 Mar 2028 | Tue 28 Mar 2028 |
 | 12 New kinds of holding (when you add one) | 2 | 2 | When a new kind is added | |
-| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Thu 23 Mar 2028 | Thu 13 Apr 2028 |
-| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Tue 18 Apr 2028 | Fri 28 Apr 2028 |
-| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Tue 2 May 2028 | Thu 11 May 2028 |
+| 13 The agent team: configured, approved, self-healing, self-learning | 20 | 16 | Wed 29 Mar 2028 | Fri 21 Apr 2028 |
+| 14 Indian holdings and the existing Indian portfolio | 11 | 9 | Mon 24 Apr 2028 | Fri 5 May 2028 |
+| 15 The app beyond the chat: widgets, Siri, the share sheet, Live Activities | 10 | 8 | Mon 8 May 2028 | Wed 17 May 2028 |
 <!-- roadmap:end -->
 
 **Starting parts earlier.** Parts of phases 13 to 15 can start sooner if you

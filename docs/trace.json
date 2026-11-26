@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-11-25",
+  "updated": "2026-11-26",
   "claude_design": {
     "app": {
       "id": "0bf02ae1-2de2-42a8-98ff-96046b2a26d7",
@@ -3069,7 +3069,7 @@
       "type": "Story",
       "epic": "MA-9",
       "phase": 0,
-      "summary": "CI builds and tests the iOS app on every pull request that touches it, with snapshot and accessibility checks",
+      "summary": "The iOS app is built, tested and analysed only on the laptop: GitHub Actions runs no iOS build and CodeQL Swift is off",
       "status": "To Do",
       "labels": [],
       "arch": [
@@ -3079,7 +3079,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "MA-274 (29 Oct 2026): XCUITest covers iPad hardware keyboard shortcuts (Cmd+K, Cmd+1..5, Cmd+F via XCUIKeyModifierCommand) alongside performAccessibilityAudit() and snapshot tests, pairing with MA-273's local Maestro 5-simulator runner."
+      "notes": "Arun, 26 Nov 2026: \"CodeQL Swift check, lets turn it off. We dont need to do any iOS build on Github actions as it is taking long time on workers, all testing and quality check will be done on local.\" Rescoped from a macOS CI runner to the laptop: codeql.yml loses its Swift jobs (MA-351's), ci.yml keeps the ubuntu ios-shell job (Jest, tsc, eslint, the Metro bundle, no Xcode), and scripts/ios_gates.sh with Xcode is the iOS gate, run on the laptop. Swift keeps a local scanner, semgrep p/swift (MA-363). MA-274 (29 Oct 2026): XCUITest covers iPad hardware keyboard shortcuts (Cmd+K, Cmd+1..5, Cmd+F via XCUIKeyModifierCommand) alongside performAccessibilityAudit() and snapshot tests, pairing with MA-273's local Maestro 5-simulator runner."
     },
     {
       "key": "MA-167",
@@ -7336,7 +7336,7 @@
       "type": "Story",
       "epic": "MA-9",
       "phase": 0,
-      "summary": "A local Maestro workspace and multi-simulator runner test the iOS and iPadOS app across compact, sheet-away and chat-beside size bands, system capabilities and phase flows",
+      "summary": "A local Maestro workspace, a simulator pool and the Maestro MCP let crew:qa-ios test the iOS and iPadOS app across the size bands, with accessibility audits in XCUITest",
       "status": "To Do",
       "labels": [],
       "arch": [
@@ -7347,7 +7347,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Filed from MA-274 (29 Oct 2026): Phase 0 delivers .maestro/config.yaml, scripts/maestro_local.py --up-to-phase <N> isolated cloned simulator pool (MyPaisa-Maestro-iPhone-375, iPhone-402, iPad-834, iPad-1032, iPad-1376 + optional iPhone Duo, flock-locked per UDID with localhost simctl BiometricKit_Sim/APNs/network bridge and Local File Provider PDF/workbook staging so automated runs never collide with interactive Maestro MCP), shared mp.* TestIDs.swift and web/src/lib/test-ids.ts selector parity + maestro_local.py check-syntax on Linux CI (1x), and flows/p00_shell_smoke.yaml across all four simulator width sub-bands (<600, 600-899, 900-1132, >=1133 pt) at GBP 0.00/month; flows p01 to p20 (including Mode B api-dev X-Ray trace verification, Face ID second check, Universal Links, APNs privacy redaction, Photos addMedia + Files PDFs and live iPad rotation) join phase by phase in Phases 1 to 20. Build time is covered by MA-165, MA-166 and MA-269. MA-301 (23 Nov 2026): the bands are under 600, 600 to 899, 900 to 1392 pt (every iPad in landscape) and from 1393 pt at the debug width only; MA-341 redraws the testing page's band GIF."
+      "notes": "Arun, 26 Nov 2026: \"For iOS testing, I will use maestro.dev on local (preferrably an MCP may be)\", all iOS testing local, run by dedicated crew agents (crew:qa-ios, one per pool simulator, MA-362). Filed from MA-274 (29 Oct 2026): Phase 0 delivers .maestro/config.yaml, scripts/maestro_local.py --up-to-phase <N> isolated cloned simulator pool (MyPaisa-Maestro-iPhone-375, iPhone-402, iPad-834, iPad-1032, iPad-1376 + optional iPhone Duo, flock-locked per UDID with localhost simctl BiometricKit_Sim/APNs/network bridge and Local File Provider PDF/workbook staging so automated runs never collide with interactive Maestro MCP), shared mp.* TestIDs.swift and web/src/lib/test-ids.ts selector parity + maestro_local.py check-syntax on Linux CI (1x), and flows/p00_shell_smoke.yaml across all four simulator width sub-bands (<600, 600-899, 900-1132, >=1133 pt) at GBP 0.00/month; flows p01 to p20 (including Mode B api-dev X-Ray trace verification, Face ID second check, Universal Links, APNs privacy redaction, Photos addMedia + Files PDFs and live iPad rotation) join phase by phase in Phases 1 to 20. Build time is covered by MA-165, MA-166 and MA-269. MA-301 (23 Nov 2026): the bands are under 600, 600 to 899, 900 to 1392 pt (every iPad in landscape) and from 1393 pt at the debug width only; MA-341 redraws the testing page's band GIF."
     },
     {
       "key": "MA-274",
@@ -7893,7 +7893,7 @@
       "type": "Story",
       "epic": "MA-9",
       "phase": 0,
-      "summary": "QA on request for the web app: Playwright, axe and Argos, with the 25% contrast floors and the 320 to 1920 width sweep",
+      "summary": "Web QA on request: Playwright functional tests run locally by crew:qa-web, and Argos visual and ARIA diffs with axe run only in a manually started GitHub workflow",
       "status": "To Do",
       "labels": [],
       "arch": [
@@ -7903,7 +7903,7 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 2 Nov 2026, in MA-303: \"I need this checks as QA when I ask, but on actual code implemented (probably using playwright and Argos CI tool)\". Runs only when Arun asks: a manual run of the QA workflow or a qa label on the PR. Brings the 25% brightness floors (MA-181) and the 320 to 1920 width sweep (MA-240) to the web app as built, Arun, 2 Nov 2026. Depends on MA-194."
+      "notes": "Arun, 26 Nov 2026: Argos CI on the GitHub pipeline for visual regression and accessibility, \"Only When I ask, create a manual triggered CI\"; axe in CI plus Argos ARIA snapshots; \"No AXE testing should be done on local\"; functional QA run locally by a dedicated crew agent (crew:qa-web, MA-362). Arun, 2 Nov 2026, in MA-303: \"I need this checks as QA when I ask, but on actual code implemented (probably using playwright and Argos CI tool)\". Runs only when Arun asks: a manual run of the QA workflow (the qa label is dropped, 26 Nov 2026). Brings the 25% brightness floors (MA-181) and the 320 to 1920 width sweep (MA-240) to the web app as built, Arun, 2 Nov 2026. Depends on MA-194."
     },
     {
       "key": "MA-305",
@@ -9753,6 +9753,40 @@
         ".claude/skills/plan-sync/SKILL.md",
         ".claude/skills/design-first/SKILL.md"
       ]
+    },
+    {
+      "key": "MA-362",
+      "type": "Task",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Testing rules: every QA check has a place, a dedicated crew agent and a guard, with axe only in CI",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "15",
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 26 Nov 2026: Argos on GitHub for visual regression and accessibility; a QA framework for functional testing; iOS tested locally with Maestro through its MCP; \"No AXE testing should be done on local\"; no iOS build on GitHub Actions; then \"I want all things to be done locally done my dedicated agents, update the Crew SubAgents if needed with proper models and effort and concurrency (max 10)\". The crew plugin 0.2.0 adds qa-web, qa-ios, sec-scan and sec-verify and a hook that refuses an 11th live crew agent; .claude/rules/testing.md says where each check runs and which agent runs it. Dev tooling only, no product UI."
+    },
+    {
+      "key": "MA-363",
+      "type": "Story",
+      "epic": "MA-9",
+      "phase": 0,
+      "summary": "Security framework: local scans, a threat model, OWASP ASVS and MASVS mapping, and crew agents that triage and verify every finding",
+      "status": "To Do",
+      "labels": [],
+      "arch": [
+        "13",
+        "17.4"
+      ],
+      "ui": false,
+      "design": "none",
+      "boards": [],
+      "notes": "Arun, 26 Nov 2026: \"I need a framework/Agent setup to do Security/Vulnerability using the best skills/plugins you have\", run locally by dedicated agents. Builds on MA-326's scanners: semgrep p/swift replaces CodeQL Swift (MA-166), a local-only ios mode checks ATS, entitlements and the Release app for secrets; /sec-check runs crew:sec-scan, crew:security, claude-security:scan and crew:sec-verify in waves on Arun's yes. Dev tooling only, no product UI."
     }
   ],
   "others": [
