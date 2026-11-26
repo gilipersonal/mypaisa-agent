@@ -318,6 +318,7 @@
 					type="button"
 					class="mp-side-i"
 					class:pr={open}
+					data-testid={CHAT_TAB.sideId}
 					aria-haspopup="dialog"
 					aria-controls="chat-sheet"
 					aria-expanded={open}
@@ -333,6 +334,7 @@
 						class="mp-side-i"
 						class:on={place === p}
 						href={resolve(p.href)}
+						data-testid={p.sideId}
 						aria-current={place === p ? 'page' : undefined}
 					>
 						<NavIcon name={p.icon} />{p.label}
@@ -343,6 +345,7 @@
 					class="mp-side-i"
 					class:on={place === ADMIN}
 					href={resolve(ADMIN.href)}
+					data-testid={ADMIN.sideId}
 					aria-current={place === ADMIN ? 'page' : undefined}
 				>
 					<NavIcon name={ADMIN.icon} />{ADMIN.label}

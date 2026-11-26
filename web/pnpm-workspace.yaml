@@ -4,11 +4,17 @@ packages:
   - '.'
   - '../ios'
 catalog:
+  # GitHub only (MA-304, MA-362): Argos's screenshots and ARIA snapshots, and axe, imported by web/e2e/fixtures/qa.ci.ts
+  # alone, which refuses to run off GitHub Actions; scripts/web_gates.sh fails unless it is axe's one importer.
+  '@argos-ci/playwright': 7.10.2
+  '@axe-core/playwright': 4.14.1
   '@eslint/js': 10.0.1
   # The web app's fonts are copied from these by scripts/fonts.py, never fetched from Google (MA-340).
   '@fontsource-variable/inter': 5.3.0
   '@fontsource/nunito': 5.3.0
   '@lucide/svelte': 1.77.0
+  # The web app's functional e2e (MA-304): web/e2e, run on the laptop by crew:qa-web when Arun asks, never in a gate.
+  '@playwright/test': 1.65.1
   '@sveltejs/adapter-static': 4.0.1
   '@sveltejs/kit': 3.4.0
   '@sveltejs/vite-plugin-svelte': 7.3.1

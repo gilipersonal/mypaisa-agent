@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { TestIDs } from '#lib/test-ids.ts';
 import { ADMIN, CHAT_TAB, MORE, MORE_PAGES, PAGES, TABS, isCurrent, isCurrentTab, placeOf } from './nav.ts';
 
 describe('the shell places', () => {
@@ -57,5 +58,23 @@ describe('the shell places', () => {
 		expect(isCurrentTab(CHAT_TAB, '/chat', false)).toBe(true);
 		expect(home && isCurrentTab(home, '/chat', false)).toBe(false);
 		expect(home && isCurrentTab(home, '/', false)).toBe(true);
+	});
+
+	it('names every sidebar link for tests, apart from the tab bar’s names (MA-304)', () => {
+		const side = [CHAT_TAB, ...PAGES, ADMIN].map((p) => p.sideId);
+		expect(side).toEqual([
+			TestIDs.sideChat,
+			TestIDs.sideHome,
+			TestIDs.sideAssets,
+			TestIDs.sideDebts,
+			TestIDs.sideBudget,
+			TestIDs.sideProjection,
+			TestIDs.sideActivity,
+			TestIDs.sideAudit,
+			TestIDs.sideYou,
+			TestIDs.sideAdmin
+		]);
+		expect(new Set(side).size).toBe(side.length);
+		expect(side.some((id) => TABS.some((t) => t.testId === id))).toBe(false);
 	});
 });

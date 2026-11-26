@@ -5,7 +5,18 @@ import globals from 'globals';
 import ts from 'typescript-eslint';
 
 export default ts.config(
-	{ ignores: ['.svelte-kit/', 'build/', 'coverage/', 'src/lib/api-types.d.ts'] },
+	{
+		ignores: [
+			'.svelte-kit/',
+			'build/',
+			'coverage/',
+			'src/lib/api-types.d.ts',
+			// Playwright's output (MA-304): its report carries the trace viewer's own scripts.
+			'test-results/',
+			'playwright-report/',
+			'blob-report/'
+		]
+	},
 	js.configs.recommended,
 	...ts.configs.strictTypeChecked,
 	...ts.configs.stylisticTypeChecked,
