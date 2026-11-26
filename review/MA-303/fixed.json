@@ -101,7 +101,12 @@
   "finding": "Records still said Playwright, axe or Argos run on every PR touching web/",
   "check": {
    "type": "cmd",
-   "run": "python3 -c \"import re,sys; bad=[f for f in ['README.md','TECH_STACK.md','ARCHITECTURE.md','PLAN.md','docs/RESEARCH.md'] if re.search(r'vitest and Playwright when it touches|Playwright screenshots at 390 and 1440 in both themes on every PR', open(f).read())]; miss=[f for f in ['README.md','TECH_STACK.md','ARCHITECTURE.md','PLAN.md','docs/RESEARCH.md'] if not re.search(r'Playwright, axe and Argos run only when Arun asks', open(f).read())]; sys.exit(('per-PR claim in '+', '.join(bad)+'; ' if bad else '')+('phrase missing in '+', '.join(miss) if miss else '') or 0)\""
+   "run": "python3 -c \"import re,sys; bad=[f for f in ['README.md','TECH_STACK.md','ARCHITECTURE.md','PLAN.md','docs/RESEARCH.md'] if re.search(r'vitest and Playwright when it touches|Playwright screenshots at 390 and 1440 in both themes on every PR', open(f).read())]; miss=[f for f in ['README.md','TECH_STACK.md','ARCHITECTURE.md','PLAN.md','docs/RESEARCH.md'] if not re.search(r'axe and Argos run only in\\s+.qa-web\\.yml.|Playwright, axe and Argos run only when Arun asks', open(f).read())]; sys.exit(('per-PR claim in '+', '.join(bad)+'; ' if bad else '')+('phrase missing in '+', '.join(miss) if miss else '') or 0)\""
+  },
+  "narrowed": {
+   "on": "2026-11-26",
+   "by": "MA-362",
+   "why": "Arun, 26 Nov 2026: \"No AXE testing should be done on local\" and the Argos run \"Only When I ask, create a manual triggered CI\": the records now say axe and Argos run only in `qa-web.yml` on GitHub. The per-PR refusal is unchanged; the phrase it requires accepts the new wording or the old (docs/RESEARCH.md keeps the old as dated history)."
   }
  },
  {
