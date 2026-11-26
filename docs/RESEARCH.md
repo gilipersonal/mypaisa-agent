@@ -631,6 +631,14 @@ Every commit, pull request, container image build (CI's `Images` job on `ubuntu-
 | **6. LLM & data-boundary security gate** | Inspect AI `T0` security suite (`MA-247`, `MA-249`) + OTel PII-leak scanner (`MA-232`) | `pr-gates.yml` on every PR | Prompt injection via untrusted PDF/web text attempting to invoke a write or exfiltration tool, cross-household key access, missing refusal on trade/tax advice, or any financial figure/PII appearing in logs or OTel spans. | **£0** (`T0` uses recorded cassettes) |
 | **7. Live API & security-header scan** | `scripts/smoke.py --security` (TLS, HSTS, CSP with SvelteKit hashes, CORS, `HttpOnly; Secure; SameSite=Strict` cookies, OpenAPI `401` perimeter) | Post-deploy in `release.yml` (`dev` & `prod`) + weekly schedule | Any protected route in `/openapi.json` that fails to return `401` without credentials, permissive CORS, or missing CSP/HSTS headers on CloudFront. | **£0** |
 
+> **Note, 26 Nov 2026 (MA-363, MA-166).** The script is `scripts/security_scan.sh`, not `security_scan.py` as written
+> above, and it runs on every PR in CI's Security job, not in `pr-gates.yml`. Gate 3's iOS row is osv-scanner on
+> `ios/Packages/MyPaisaUI/Package.resolved`, not `trivy fs` on `ios/Package.resolved`. Gate 2's iOS row, `semgrep`
+> (`p/swift`), runs on the laptop only, with `p/mobsfscan`'s Swift rules and the `ios` mode, because no Swift
+> analysis runs on GitHub Actions (MA-166). semgrep and zizmor are pinned by version; gitleaks and osv-scanner by
+> SHA-256. The table above stays as MA-267 wrote it. How security is checked now is
+> `docs/security/` and `.claude/rules/security.md`.
+
 ---
 
 ### 7.3 Phase-progressive smoke test suite & `prod` read-only safety (`MA-268`)

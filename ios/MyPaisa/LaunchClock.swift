@@ -11,6 +11,8 @@ enum LaunchClock {
     reported = true
     guard let start = processStart() else { return }
     let milliseconds = Date().timeIntervalSince(start) * 1000
+    // A benchmark timing, never member data (ios/PERFORMANCE.md); MA-363 triaged semgrep's log rule here.
+    // nosemgrep: mobsf.mobsfscan.swift.logging.ios_log
     NSLog("MPBENCH launch first_piece_ms=%.0f", milliseconds)
   }
 

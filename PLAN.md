@@ -173,15 +173,15 @@ Claude's:
 - **The PR gates, seven-layer vulnerability scanning and the five-layer
   regression pyramid (MA-25, MA-267, MA-269, MA-273, `docs/RESEARCH.md` §7, §8):** on
   every PR (`ubuntu-24.04-arm`, 1x), ruff (lint + Bandit `S` SAST), pyright,
-  `semgrep` across Python, TypeScript and Swift, pytest (`scripts/regression.py`
+  `semgrep` across Python and TypeScript (Swift on the laptop only, MA-363), pytest (`scripts/regression.py`
   L1 unit + Hypothesis property tests, L2 full-stack local ASGI with moto, L3
   golden financial maths and OTel PII-leak check), `openapi-typescript`
   zero-diff contract check (MA-266), `python3 scripts/maestro_local.py check-syntax`
   and `TestIDs.swift` ↔ `web/src/lib/test-ids.ts` selector parity (MA-273),
   `terraform fmt` and `validate`, tflint,
   `trivy config --severity HIGH,CRITICAL infra/`, gitleaks, `pip-audit --strict`,
-  `pnpm audit --audit-level=high`, `trivy fs` on `ios/Package.resolved`,
-  `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
+  `pnpm audit --audit-level=high`, osv-scanner on
+  `ios/Packages/MyPaisaUI/Package.resolved`, `jira-key`, the iOS TypeScript shell `Jest` tests, and a Terraform plan for
   both environments on every PR touching `infra/`. The web gates (`scripts/web_gates.sh`) run on
   every PR (MA-194), Playwright runs on the laptop when Arun asks (MA-304), axe and Argos
   run only in `qa-web.yml` on GitHub, started by hand, never on the laptop (MA-362), and the
@@ -199,7 +199,8 @@ Claude's:
   every PR and push to `main` and by a sweep every Monday at 04:00 UTC:
   gitleaks over the whole history (and staged changes in pre-commit), semgrep
   over `backend/`, `web/`, `scripts/` and the workflows, osv-scanner over every
-  lockfile, zizmor over the workflows, each tool pinned and checksum-checked;
+  lockfile, zizmor over the workflows, each tool pinned (gitleaks and osv-scanner
+  checksum-checked, semgrep and zizmor by version, MA-363);
   `pip-audit --strict` in the backend's gates; grouped weekly Dependabot
   updates. MA-194 added web's TypeScript
   rules, its lockfile and pnpm audit; MA-267 keeps eslint-plugin-security for
@@ -598,8 +599,8 @@ Claude's:
   phase-wise regression matrix and GitHub Actions runner cost analysis
   (MA-267, MA-268, MA-269, MA-272, `docs/RESEARCH.md` §7, `ARCHITECTURE.md`
   §17.4):** the seven open-source security gates across secrets, SAST,
-  dependencies, Terraform and arm64 ECR images (`scripts/security_scan.py` and
-  the weekly Monday CVE sweep, MA-267); the phase-progressive smoke runner
+  dependencies, Terraform and arm64 ECR images (`scripts/security_scan.sh`, first
+  called `security_scan.py`, and the weekly Monday CVE sweep, MA-267); the phase-progressive smoke runner
   (`scripts/smoke.py --env dev|prod --up-to-phase <N>`) with full synthetic
   round-trip and X-Ray trace assertion in dev, read-only health/auth/alarm
   verification in prod and under-five-second Lambda `live` alias rollback

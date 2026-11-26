@@ -9835,7 +9835,19 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 26 Nov 2026: \"I need a framework/Agent setup to do Security/Vulnerability using the best skills/plugins you have\", run locally by dedicated agents. Builds on MA-326's scanners: semgrep p/swift replaces CodeQL Swift (MA-166), a local-only ios mode checks ATS, entitlements and the Release app for secrets; /sec-check runs crew:sec-scan, crew:security, claude-security:scan and crew:sec-verify in waves on Arun's yes. Dev tooling only, no product UI."
+      "notes": "Arun, 26 Nov 2026: \"I need a framework/Agent setup to do Security/Vulnerability using the best skills/plugins you have\", run locally by dedicated agents. Builds on MA-326's scanners: semgrep p/swift replaces CodeQL Swift (MA-166), a local-only ios mode checks ATS, entitlements and the Release app for secrets; /sec-check runs crew:sec-scan, crew:security, claude-security:scan and crew:sec-verify in waves on Arun's yes. Dev tooling only, no product UI.",
+      "code": [
+        "scripts/security_scan.sh",
+        "scripts/security_scan_selftest.sh",
+        "scripts/security/ios-allow.json",
+        "docs/security/**",
+        ".claude/rules/security.md",
+        ".claude/skills/sec-check/SKILL.md",
+        ".gitignore",
+        "ios/.gitignore",
+        "ios/MyPaisa/LaunchClock.swift",
+        "ios/MyPaisa/SceneDelegate.swift"
+      ]
     },
     {
       "key": "MA-364",
