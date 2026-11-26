@@ -84,7 +84,7 @@ to Arun stays in Xcode; Maestro drives simulators only for tests.
 
 - `review/MA-<n>/qa.md`: the QA report (the template is `docs/qa/test-plan-template.md`).
 - `qa-output/` (gitignored): Playwright traces and reports, Maestro JUnit and
-  screenshots in `qa-output/maestro/<ts>/`.
+  screenshots in `qa-output/maestro/<ts>-<device>/`.
 - Argos: the build `qa-web.yml` sends; the axe report is that run's artifact.
 - Jira: a bug per failure, linked to the story, and a comment on the story.
 

@@ -1,0 +1,63 @@
+# Every wired shell element gives VoiceOver something to read (MA-273).
+#
+# What Maestro can check here: that an element with the id exists, is enabled, and carries non-empty
+# text. On iOS Maestro matches `text:` against the element's accessibility label, its title and its
+# value, so a pass means at least one of the three is non-empty, not the label alone; it cannot tell
+# which. The pattern '(?s).*\S.*' needs one non-space character (Maestro's text match is a full regex).
+#
+# What Maestro cannot check: traits (button, header, selected as VoiceOver speaks it), hints, reading
+# order, hit-target size, contrast, Dynamic Type clipping, or whether a label makes sense. The full
+# audit is XCUITest's performAccessibilityAudit() in ShellUITests.testTheScreenPassesTheAccessibilityAudit,
+# run by scripts/ios_gates.sh on every iOS story. No accessibility engine runs here (testing.md).
+appId: '${typeof APP_ID !== "undefined" && APP_ID ? APP_ID : "com.mypaisapp.agent.dev"}'
+name: "MA-273 AC4: every wired shell element carries an accessibility label"
+tags:
+  - regression
+  - iphone
+  - ipad
+  - foldable
+---
+- runFlow:
+    file: ../../subflows/launch.yaml
+    label: Launch MyPaisa Dev
+
+# The tab bar: each tab is a control, so it must be labelled and enabled.
+- assertVisible:
+    id: mp.tab.chat
+    text: '(?s).*\S.*'
+    enabled: true
+    label: "MA-273-AC4-1: the Chat tab is labelled"
+- assertVisible:
+    id: mp.tab.home
+    text: '(?s).*\S.*'
+    enabled: true
+    label: "MA-273-AC4-1: the Home tab is labelled"
+- assertVisible:
+    id: mp.tab.activity
+    text: '(?s).*\S.*'
+    enabled: true
+    label: "MA-273-AC4-1: the Activity tab is labelled"
+- assertVisible:
+    id: mp.tab.you
+    text: '(?s).*\S.*'
+    enabled: true
+    label: "MA-273-AC4-1: the You tab is labelled"
+
+# The hero is a card. ios/CLAUDE.md rule 4 makes an interactive card a container
+# (.accessibilityElement(children: .contain)), which may carry no label of its own; then VoiceOver
+# reads its children. So the hero passes with a label of its own, or with a labelled element inside it.
+- assertVisible:
+    id: mp.home.hero
+    label: "MA-273-AC4-2: the hero is on screen"
+- runFlow:
+    label: "MA-273-AC4-2: the hero has no label of its own, so something inside it must have one"
+    when:
+      notVisible:
+        id: mp.home.hero
+        text: '(?s).*\S.*'
+    commands:
+      - assertVisible:
+          id: mp.home.hero
+          containsDescendants:
+            - text: '(?s).*\S.*'
+          label: "MA-273-AC4-2: the hero holds a labelled element"

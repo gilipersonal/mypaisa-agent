@@ -7352,7 +7352,19 @@
       "ui": false,
       "design": "none",
       "boards": [],
-      "notes": "Arun, 26 Nov 2026: \"For iOS testing, I will use maestro.dev on local (preferrably an MCP may be)\", all iOS testing local, run by dedicated crew agents (crew:qa-ios, one per pool simulator, MA-362). Filed from MA-274 (29 Oct 2026): Phase 0 delivers .maestro/config.yaml, scripts/maestro_local.py --up-to-phase <N> isolated cloned simulator pool (MyPaisa-Maestro-iPhone-375, iPhone-402, iPad-834, iPad-1032, iPad-1376 + optional iPhone Duo, flock-locked per UDID with localhost simctl BiometricKit_Sim/APNs/network bridge and Local File Provider PDF/workbook staging so automated runs never collide with interactive Maestro MCP), shared mp.* TestIDs.swift and web/src/lib/test-ids.ts selector parity + maestro_local.py check-syntax on Linux CI (1x), and flows/p00_shell_smoke.yaml across all four simulator width sub-bands (<600, 600-899, 900-1132, >=1133 pt) at GBP 0.00/month; flows p01 to p20 (including Mode B api-dev X-Ray trace verification, Face ID second check, Universal Links, APNs privacy redaction, Photos addMedia + Files PDFs and live iPad rotation) join phase by phase in Phases 1 to 20. Build time is covered by MA-165, MA-166 and MA-269. MA-301 (23 Nov 2026): the bands are under 600, 600 to 899, 900 to 1392 pt (every iPad in landscape) and from 1393 pt at the debug width only; MA-341 redraws the testing page's band GIF."
+      "notes": "Arun, 26 Nov 2026: \"For iOS testing, I will use maestro.dev on local (preferrably an MCP may be)\", all iOS testing local, run by dedicated crew agents (crew:qa-ios, one per pool simulator, MA-362). Filed from MA-274 (29 Oct 2026): Phase 0 delivers .maestro/config.yaml, scripts/maestro_local.py --up-to-phase <N> isolated cloned simulator pool (MyPaisa-Maestro-iPhone-375, iPhone-402, iPad-834, iPad-1032, iPad-1376 + optional iPhone Duo, flock-locked per UDID with localhost simctl BiometricKit_Sim/APNs/network bridge and Local File Provider PDF/workbook staging so automated runs never collide with interactive Maestro MCP), shared mp.* TestIDs.swift and web/src/lib/test-ids.ts selector parity + maestro_local.py check-syntax on Linux CI (1x), and flows/p00_shell_smoke.yaml across all four simulator width sub-bands (<600, 600-899, 900-1132, >=1133 pt) at GBP 0.00/month; flows p01 to p20 (including Mode B api-dev X-Ray trace verification, Face ID second check, Universal Links, APNs privacy redaction, Photos addMedia + Files PDFs and live iPad rotation) join phase by phase in Phases 1 to 20. Build time is covered by MA-165, MA-166 and MA-269. MA-301 (23 Nov 2026): the bands are under 600, 600 to 899, 900 to 1392 pt (every iPad in landscape) and from 1393 pt at the debug width only; MA-341 redraws the testing page's band GIF.",
+      "code": [
+        ".maestro/**",
+        "scripts/maestro_local.py",
+        ".mcp.json",
+        ".gitignore",
+        "ios/CLAUDE.md",
+        "ios/MyPaisa/AppConfig.swift",
+        "ios/src/config.ts",
+        "ios/src/App.tsx",
+        "ios/__tests__/config.test.ts",
+        "docs/design/maestro-ios-ipados-testing.html"
+      ]
     },
     {
       "key": "MA-274",

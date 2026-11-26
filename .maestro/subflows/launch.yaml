@@ -1,0 +1,58 @@
+# Opens MyPaisa Dev the one way every flow does (MA-273), then waits until the shell has drawn.
+#
+# Env from scripts/maestro_local.py (maestro test -e ...):
+#   APP_ID          the bundle id, com.mypaisapp.agent.dev (MyPaisa Dev)
+#   API_URL         the local stack, http://localhost:8787
+#   VIEWPORT_WIDTH  a debug width in pt, or empty for the device's own width
+# Each is read through `typeof`, so a run that leaves one out falls back instead of failing on an
+# undefined name.
+#
+# How the settings reach the app. Maestro 2.11 runs `xcrun simctl launch <udid> <bundle> <args>` for
+# launchApp, with the Maestro process's own environment:
+#   - `arguments:` below become launch arguments, `-MYPAISA_API_URL <url>` and so on, which the app can
+#     read from UserDefaults.standard (the argument domain), as it already reads `mpProbe`;
+#   - simctl copies every SIMCTL_CHILD_<NAME> variable of the Maestro process into the app's
+#     environment as <NAME>, which is what the app's AppConfig reads today (ProcessInfo environment,
+#     under #if DEBUG). So the runner exports SIMCTL_CHILD_MYPAISA_API_URL,
+#     SIMCTL_CHILD_MYPAISA_STATIC_MOTION=1 and SIMCTL_CHILD_MYPAISA_VIEWPORT_WIDTH before `maestro test`.
+# The arguments are sent as well, so the flows hold the same settings whichever the app reads.
+#
+# The app's state is kept (clearState: false): a flow that needs a clean app clears it itself.
+appId: '${typeof APP_ID !== "undefined" && APP_ID ? APP_ID : "com.mypaisapp.agent.dev"}'
+---
+- runFlow:
+    label: Launch with a debug width
+    when:
+      true: '${typeof VIEWPORT_WIDTH !== "undefined" && !!VIEWPORT_WIDTH}'
+    commands:
+      - launchApp:
+          appId: '${typeof APP_ID !== "undefined" && APP_ID ? APP_ID : "com.mypaisapp.agent.dev"}'
+          clearState: false
+          stopApp: true
+          arguments:
+            MYPAISA_API_URL: '${typeof API_URL !== "undefined" && API_URL ? API_URL : "http://localhost:8787"}'
+            MYPAISA_STATIC_MOTION: "1"
+            MYPAISA_VIEWPORT_WIDTH: '${typeof VIEWPORT_WIDTH !== "undefined" ? VIEWPORT_WIDTH : ""}'
+- runFlow:
+    label: Launch at the device's own width
+    when:
+      true: '${typeof VIEWPORT_WIDTH === "undefined" || !VIEWPORT_WIDTH}'
+    commands:
+      - launchApp:
+          appId: '${typeof APP_ID !== "undefined" && APP_ID ? APP_ID : "com.mypaisapp.agent.dev"}'
+          clearState: false
+          stopApp: true
+          arguments:
+            MYPAISA_API_URL: '${typeof API_URL !== "undefined" && API_URL ? API_URL : "http://localhost:8787"}'
+            MYPAISA_STATIC_MOTION: "1"
+# The hero is the first SwiftUI piece the shell draws; the same 30 s ShellUITests allows it.
+- extendedWaitUntil:
+    visible:
+      id: mp.home.hero
+    timeout: 30000
+    label: Wait for the hero to draw
+- extendedWaitUntil:
+    visible:
+      id: mp.tab.chat
+    timeout: 5000
+    label: Wait for the tab bar

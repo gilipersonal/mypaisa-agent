@@ -42,6 +42,33 @@ optimised and bundles its JavaScript. **MyPaisa** is prod, `Release`.
 
 On the local stack: `scripts/local/README.md`.
 
+## Testing with Maestro
+
+The functional flows are in `.maestro/` (its `README.md`), run by `scripts/maestro_local.py` on simulators made for
+it (MA-273, `.claude/rules/testing.md`). Showing the app to Arun stays in Xcode.
+
+```bash
+python3 scripts/maestro_local.py doctor
+python3 scripts/maestro_local.py setup-pool
+python3 scripts/maestro_local.py build
+python3 scripts/maestro_local.py run --device MP-QA-iPhone --tags smoke
+python3 scripts/maestro_local.py check-syntax
+```
+
+- **`build` runs React Native's Swift package step first,** then a Debug build with the JavaScript bundled, and installs it on the pool. `run` launches the app with `MYPAISA_STATIC_MOTION=1` through `SIMCTL_CHILD_*`, which also passes `testMode` to the shell so LogBox stays quiet (its toast covered the tab bar); Release has neither (MA-273).
+- **One Maestro owner per simulator.** `MP-QA-iPhone`, `MP-QA-iPad` and `MP-QA-Fold` (iPhone Duo, iOS 27.1, made
+  only when Xcode 27.1 is installed) are for `crew:qa-ios` lanes, one each. `MP-Interactive` is the lead's and the
+  Maestro MCP's (`.mcp.json`); `run` refuses it, because a CLI run reinstalls the driver and breaks a live MCP
+  session. A lock per device in `~/Library/Caches/mypaisa-maestro/` stops two runs sharing one.
+- **`build`** builds MyPaisa Dev in `Debug` (the only configuration with the `MYPAISA_*` hooks and local networking),
+  bundles the JavaScript so the pool needs no Metro (`--no-bundle` leaves it to Metro), boots the pool and installs.
+- **`run`** hands the app `MYPAISA_API_URL` (the local stack, `:8787`), `MYPAISA_STATIC_MOTION=1` and, with
+  `--width`, `MYPAISA_VIEWPORT_WIDTH`, as `SIMCTL_CHILD_*` in Maestro's environment, and the flows `APP_ID`, `API_URL`
+  and `VIEWPORT_WIDTH` with `-e`. A device runs only flows carrying its tag (`iphone`, `ipad`, `foldable`), and with
+  `--tags` one of those too. JUnit and screenshots go to `qa-output/maestro/<ts>-<device>/` (not committed).
+- **`check-syntax`** needs no device: Maestro's own check, then every `id:` against `MyPaisaCore/Testing/TestIDs.swift`.
+  `selftest` proves the runner offline.
+
 ## The rules
 
 1. **No CocoaPods, ever** (MA-229). `Podfile` is one comment because the React Native CLI finds an iOS project only

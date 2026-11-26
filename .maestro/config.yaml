@@ -1,0 +1,15 @@
+# The MyPaisa iOS Maestro workspace (MA-273). Run it through scripts/maestro_local.py, never by hand on
+# MP-Interactive: see README.md. Rule: .claude/rules/testing.md.
+#
+# Every flow lives under flows/<area>/ and carries:
+#   - one suite tag: smoke (the set that runs under 2 minutes) or regression (the rest);
+#   - the device tags it holds on: iphone, ipad, foldable (one per pool simulator,
+#     MP-QA-iPhone, MP-QA-iPad, MP-QA-Fold).
+# Maestro's includeTags is an OR, so the device fit is the runner's job (README.md, "Tags").
+# subflows/ holds pieces a flow runs with runFlow; they are not flows of their own.
+flows:
+  - flows/**
+
+executionOrder:
+  # One red flow does not hide the rest of the suite from the report.
+  continueOnFailure: true

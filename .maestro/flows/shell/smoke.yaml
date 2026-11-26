@@ -1,0 +1,90 @@
+# The shell end to end on a pool simulator (MA-273): the app opens on the Chat tab, the hero draws, and
+# each wired tab answers a tap. The Maestro twin of ShellUITests.testTheTabsAndTheFirstPiece.
+#
+# Selectors are mp.* ids from ios/MyPaisaCore/Testing/TestIDs.swift. A tab "answers" when the tab bar
+# marks it selected and the one before it is no longer selected (XCUITest's isSelected, which Maestro
+# reads as `selected`). Text is used once, where no id exists yet: "Household total" on Home. Chat,
+# Activity and You have no screen id yet, so for them the selected tab is the whole check.
+# The hero's figure ("£0" in ShellUITests) is not asserted: against the local stack it shows that
+# stack's data.
+appId: '${typeof APP_ID !== "undefined" && APP_ID ? APP_ID : "com.mypaisapp.agent.dev"}'
+name: "MA-273 AC2: the shell opens on the Chat tab, the hero draws and each tab answers"
+tags:
+  - smoke
+  - iphone
+  - ipad
+  - foldable
+---
+- runFlow:
+    file: ../../subflows/launch.yaml
+    label: Launch MyPaisa Dev
+
+- assertVisible:
+    id: mp.home.hero
+    label: "MA-273-AC2-1: the hero draws"
+- assertVisible:
+    id: mp.tab.chat
+    selected: true
+    label: "MA-273-AC2-2: the app opens on the Chat tab"
+- assertVisible:
+    id: mp.tab.home
+    selected: false
+    label: "MA-273-AC2-2: Home is not selected at launch"
+
+# Home
+- tapOn:
+    id: mp.tab.home
+    label: Tap the Home tab
+- assertVisible:
+    id: mp.tab.home
+    selected: true
+    label: "MA-273-AC2-3: Home is selected"
+- assertVisible:
+    id: mp.tab.chat
+    selected: false
+    label: "MA-273-AC2-3: Chat is no longer selected"
+# Text: no id for the Home screen's total yet.
+- extendedWaitUntil:
+    visible:
+      text: Household total
+    timeout: 5000
+    label: "MA-273-AC2-3: Home shows the household total"
+
+# Activity
+- tapOn:
+    id: mp.tab.activity
+    label: Tap the Activity tab
+- assertVisible:
+    id: mp.tab.activity
+    selected: true
+    label: "MA-273-AC2-4: Activity is selected"
+- assertVisible:
+    id: mp.tab.home
+    selected: false
+    label: "MA-273-AC2-4: Home is no longer selected"
+
+# You
+- tapOn:
+    id: mp.tab.you
+    label: Tap the You tab
+- assertVisible:
+    id: mp.tab.you
+    selected: true
+    label: "MA-273-AC2-5: You is selected"
+- assertVisible:
+    id: mp.tab.activity
+    selected: false
+    label: "MA-273-AC2-5: Activity is no longer selected"
+
+# Back to Chat: the round trip leaves the app where it opened.
+- tapOn:
+    id: mp.tab.chat
+    label: Tap the Chat tab
+- assertVisible:
+    id: mp.tab.chat
+    selected: true
+    label: "MA-273-AC2-6: Chat is selected again"
+- assertVisible:
+    id: mp.tab.you
+    selected: false
+    label: "MA-273-AC2-6: You is no longer selected"
