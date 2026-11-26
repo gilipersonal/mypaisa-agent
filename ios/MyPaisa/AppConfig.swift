@@ -11,6 +11,11 @@ enum AppConfig {
       if let member = ProcessInfo.processInfo.environment["MYPAISA_AUTH_STUB"], !member.isEmpty {
         properties["authStub"] = member
       }
+      // A launch under test (Maestro sets it on every run): the shell shows no LogBox, whose toast lies over the
+      // tab bar and takes the taps meant for it.
+      if ProcessInfo.processInfo.environment["MYPAISA_STATIC_MOTION"] == "1" {
+        properties["testMode"] = true
+      }
     #endif
     #if MP_PROBES
       if let probe = UserDefaults.standard.string(forKey: "mpProbe") {

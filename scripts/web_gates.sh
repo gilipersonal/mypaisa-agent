@@ -2,13 +2,54 @@
 # The web app's gates (MA-194), in one place: the jira-flow `web` gate, CI's Web job and a person run the same thing.
 #   scripts/web_gates.sh            # every gate
 #   scripts/web_gates.sh --offline  # every gate but the dependency audit, which needs the network
-# Playwright, axe and Argos are not here (MA-303, MA-304, MA-362). Playwright functional tests run locally, by crew:qa-web, only when Arun asks.
+#   scripts/web_gates.sh --check-axe <web folder>  # only the one-axe-importer check, on that folder (its selftest uses it)
+# Playwright, axe and Argos do not run here (MA-303, MA-304, MA-362); only the check that axe has one importer does. Playwright functional tests run locally, by crew:qa-web, only when Arun asks.
 # axe and Argos run only in .github/workflows/qa-web.yml on GitHub, started only when Arun asks; axe never runs on the laptop.
 set -euo pipefail
 cd "$(dirname "$0")/../web"
 pnpm() { corepack pnpm@12.16.1 "$@"; }
 
 step() { printf '\n== %s\n' "$1"; }
+
+# axe is imported in web/e2e/fixtures/qa.ci.ts alone, which refuses to run off GitHub Actions (MA-304, MA-362: "No AXE
+# testing should be done on local"). Every form an import takes counts (from, a bare import, import(), require()), of
+# @axe-core/* and of axe-core itself, in e2e/, src/ and the folder's own top-level files. It fails closed: a folder it
+# cannot read, or a grep that errors, fails; and it first finds a string it knows is there in each folder, so a read that
+# sees nothing fails rather than passing (lesson 49). scripts/web_gates_selftest.sh plants each fault and expects it.
+axe_check() {
+  local root=${1%/} rc out known f
+  local imports="(^|[^[:alnum:]_$.])(from|import|require)[[:space:]]*[(]?[[:space:]]*['\"\`](@axe-core/[^'\"\`]+|axe-core(/[^'\"\`]*)?)['\"\`]"
+  local -a files=()
+  for f in e2e src; do
+    [[ -d "$root/$f" ]] || { echo "axe check: no $f/ under $root" >&2; return 1; }
+  done
+  # The known strings: the suite imports Playwright's test, and the app imports its own #lib.
+  for f in "e2e:from ['\"]@playwright/test['\"]" "src:from ['\"]#lib/"; do
+    set +e
+    known=$(grep -rlE -- "${f#*:}" "$root/${f%%:*}" | wc -l | tr -d ' ')
+    set -e
+    [[ "$known" -ge 1 ]] || { echo "axe check: read nothing under ${f%%:*}/ (no file matched a string known to be there)" >&2; return 1; }
+  done
+  while IFS= read -r f; do files+=("$f"); done < <(find "$root" -maxdepth 1 -type f \( -name '*.ts' -o -name '*.js' -o -name '*.mjs' -o -name '*.cjs' -o -name '*.mts' -o -name '*.cts' \))
+  set +e
+  out=$(grep -rlE -- "$imports" "$root/e2e" "$root/src" ${files[@]+"${files[@]}"})
+  rc=$?
+  set -e
+  (( rc <= 1 )) || { echo "axe check: grep failed (exit $rc) reading $root" >&2; return 1; }
+  local count
+  count=$(printf '%s\n' "$out" | grep -c . || true)
+  if [[ "$count" != 1 || "$out" != "$root/e2e/fixtures/qa.ci.ts" ]]; then
+    echo "axe check: axe must be imported in e2e/fixtures/qa.ci.ts alone; $count file(s) import it:" >&2
+    [[ -z "$out" ]] || printf '  %s\n' "${out//$root\//}" >&2
+    return 1
+  fi
+  echo "axe check: one importer, e2e/fixtures/qa.ci.ts"
+}
+
+if [[ "${1:-}" == "--check-axe" ]]; then
+  axe_check "${2:?--check-axe needs the web folder to check}"
+  exit
+fi
 
 step "install: pnpm-lock.yaml as committed"
 pnpm install --frozen-lockfile --silent
@@ -26,6 +67,9 @@ step "format: prettier"
 pnpm --silent format:check
 step "tests: vitest, 90% coverage of src/lib"
 pnpm --silent test:coverage
+step "axe: imported in e2e/fixtures/qa.ci.ts alone, and the check's selftest (MA-304, MA-362)"
+axe_check "$PWD"
+../scripts/web_gates_selftest.sh
 step "build: adapter-static, the service worker, the CSP"
 pnpm --silent build >/dev/null
 for f in index.html service-worker.js manifest.webmanifest .well-known/apple-app-site-association; do

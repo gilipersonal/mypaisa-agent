@@ -5,7 +5,7 @@ import { createApiClient, type ApiClient } from '#lib/api/client.ts';
 import { livenessQuery } from '#lib/api/queries.ts';
 import { createQueryClient } from '#lib/query/client.ts';
 import { TestIDs } from '#lib/test-ids.ts';
-import { apiBaseUrl, type AppProps } from './config';
+import { apiBaseUrl, quietLogBoxUnderTest, type AppProps } from './config';
 import { heroModel } from './models/hero';
 import { HOME_TAB, TABS } from './models/tabs';
 import MPTabBar, { type SelectEvent } from './native/MPTabBarNativeComponent';
@@ -70,6 +70,7 @@ function Shell({ api, journey, probe }: Readonly<{ api: ApiClient; journey?: str
 }
 
 export default function App(props: Readonly<AppProps>) {
+  quietLogBoxUnderTest(props);
   const client = useMemo(() => createQueryClient(), []);
   const api = useMemo(() => createApiClient(apiBaseUrl(props)), [props]);
   const journey = useLocalJourney(apiBaseUrl(props), props.authStub);

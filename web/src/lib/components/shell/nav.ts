@@ -10,25 +10,33 @@ export interface Place {
 	label: string;
 	icon: string;
 	testId?: TestID;
+	/** The sidebar's link to this place, from 1024 px (MA-304); `testId` is the tab bar's, under it. */
+	sideId?: TestID;
 }
 
 export const PAGES: readonly Place[] = [
-	{ href: '/', label: 'Home', icon: 'house' },
-	{ href: '/assets', label: 'Assets', icon: 'wallet' },
-	{ href: '/debts', label: 'Debts', icon: 'landmark' },
-	{ href: '/budget', label: 'Budget', icon: 'chart-pie' },
-	{ href: '/projection', label: 'Projection', icon: 'trending-up' },
-	{ href: '/activity', label: 'Activity', icon: 'activity' },
-	{ href: '/audit', label: 'Audit', icon: 'clipboard-check' },
-	{ href: '/you', label: 'You', icon: 'circle-user' }
+	{ href: '/', label: 'Home', icon: 'house', sideId: TestIDs.sideHome },
+	{ href: '/assets', label: 'Assets', icon: 'wallet', sideId: TestIDs.sideAssets },
+	{ href: '/debts', label: 'Debts', icon: 'landmark', sideId: TestIDs.sideDebts },
+	{ href: '/budget', label: 'Budget', icon: 'chart-pie', sideId: TestIDs.sideBudget },
+	{ href: '/projection', label: 'Projection', icon: 'trending-up', sideId: TestIDs.sideProjection },
+	{ href: '/activity', label: 'Activity', icon: 'activity', sideId: TestIDs.sideActivity },
+	{ href: '/audit', label: 'Audit', icon: 'clipboard-check', sideId: TestIDs.sideAudit },
+	{ href: '/you', label: 'You', icon: 'circle-user', sideId: TestIDs.sideYou }
 ];
 
-export const ADMIN: Place = { href: '/admin', label: 'Admin center', icon: 'shield' };
+export const ADMIN: Place = { href: '/admin', label: 'Admin center', icon: 'shield', sideId: TestIDs.sideAdmin };
 
 export const MORE: Place = { href: '/more', label: 'More', icon: 'menu', testId: TestIDs.tabMore };
 
 /** The Chat tab: the chat's page under 600 px, the sheet's opener from 600 px. */
-export const CHAT_TAB: Place = { href: '/chat', label: 'Chat', icon: 'message-circle', testId: TestIDs.tabChat };
+export const CHAT_TAB: Place = {
+	href: '/chat',
+	label: 'Chat',
+	icon: 'message-circle',
+	testId: TestIDs.tabChat,
+	sideId: TestIDs.sideChat
+};
 
 export const TABS: readonly Place[] = [
 	CHAT_TAB,

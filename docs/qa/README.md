@@ -31,7 +31,7 @@ axe is never run on the laptop; no agent runs it or another accessibility engine
   `@regression` too). `@sweep` adds widths 320 to 1920.
 - **iOS e2e:** `python3 scripts/maestro_local.py doctor`, then `setup-pool`, `build`,
   `run`. `check-syntax` lints flows with no device. JUnit goes to
-  `qa-output/maestro/<ts>/`. One Maestro owner per simulator: `MP-QA-iPhone`,
+  `qa-output/maestro/<ts>-<device>/`. One Maestro owner per simulator: `MP-QA-iPhone`,
   `MP-QA-iPad`, `MP-QA-Fold` for `crew:qa-ios` lanes; `MP-Interactive` for the lead
   and the Maestro MCP.
 - **Web visual and accessibility:** only on GitHub, and only when Arun asks. Never

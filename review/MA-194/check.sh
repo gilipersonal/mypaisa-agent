@@ -24,6 +24,8 @@ copy() {
   local dir; dir=$(mktemp -d)
   mkdir -p "$dir/scripts" "$dir/backend"
   cp scripts/web_gates.sh "$dir/scripts/"
+  # the gate runs its own selftest of the one-importer axe check (MA-304)
+  cp scripts/web_gates_selftest.sh "$dir/scripts/"
   cp backend/openapi.json "$dir/backend/"
   # the whole of DS v1: the web tests read its tokens, motion, ios.css, fonts.css and font files (MA-340)
   mkdir -p "$dir/docs/design" && cp -R docs/design/ds-v1 "$dir/docs/design/"
